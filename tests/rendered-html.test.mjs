@@ -152,7 +152,7 @@ test("legacy patient URLs redirect to the canonical B2C routes", async () => {
   assert.doesNotMatch(legacyPatient, /class="devicebar"/);
 });
 
-test("onboarding is an immersive bilingual photo sequence with a stable CTA progression", async () => {
+test("onboarding is a clean bilingual three-step value sequence with stable controls", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const i18n = await readFile(path.join(publicRoot, "i18n.js"), "utf8");
@@ -163,23 +163,24 @@ test("onboarding is an immersive bilingual photo sequence with a stable CTA prog
   assert.ok(start >= 0 && end > start, "onboarding block must remain extractable");
   assert.equal((onboarding.match(/class="screen screen--onboard"/g) || []).length, 3);
   assert.equal((onboarding.match(/select data-language aria-label="Language"/g) || []).length, 3);
-  assert.doesNotMatch(onboarding, /entry-visual__icon|data-lucide="(?:heart-pulse|stethoscope|package-check)"/);
-  assert.match(onboarding, /data-go="onboard2">Next<\/button>/);
-  assert.match(onboarding, /data-go="onboard3">Next<\/button>/);
-  assert.match(onboarding, /data-go="concern">Start<\/button>/);
-
-  const images = [...onboarding.matchAll(/<img src="(assets\/[^"]+\.(?:png|jpg))" alt="[^"]+">/g)]
-    .map((match) => match[1]);
-  assert.equal(images.length, 3, "every onboarding step needs one photographic image");
-  assert.equal(new Set(images).size, 3, "onboarding photographs must be distinct");
-  for (const image of images) {
-    await assert.doesNotReject(access(path.join(publicRoot, "b2c", image)), `missing onboarding image ${image}`);
-  }
+  assert.equal((onboarding.match(/<figure class="onboard-visual /g) || []).length, 3);
+  assert.match(onboarding, /onboard-visual--consult/);
+  assert.match(onboarding, /onboard-visual--plan/);
+  assert.match(onboarding, /onboard-visual--delivery/);
+  assert.doesNotMatch(onboarding, /<img|entry-media|doctor-profile-male|cure_clarity|mens-health-review/);
+  assert.match(onboarding, /data-go="onboard2" aria-label="Next"/);
+  assert.match(onboarding, /data-go="onboard3" aria-label="Next"/);
+  assert.match(onboarding, /data-go="concern">Start /);
+  assert.match(onboarding, /aria-label="Step 1 of 3"/);
+  assert.match(onboarding, /aria-label="Step 2 of 3"/);
+  assert.match(onboarding, /aria-label="Step 3 of 3"/);
 
   assert.match(components, /\.screen--onboard \.screen__top\{[\s\S]*position:absolute/);
-  assert.match(components, /\.screen--onboard \.screen__footer\{[\s\S]*position:absolute/);
-  assert.match(components, /\.entry-media img\{[\s\S]*object-fit:cover/);
-  assert.match(components, /\.onboard-language select\{[\s\S]*min-width:54px[\s\S]*height:44px/);
+  assert.match(components, /\.screen--onboard \.screen__footer\.onboard-footer\{[\s\S]*position:absolute/);
+  assert.match(components, /\.onboard-visual\{[\s\S]*border-radius:36px[\s\S]*overflow:hidden/);
+  assert.match(components, /\.onboard-language select\{[\s\S]*min-width:64px[\s\S]*height:44px/);
+  assert.match(components, /\.onboard-progress\{/);
+  assert.match(components, /\.onboard-arrow,/);
   assert.match(i18n, /select\[data-language\]/);
   assert.match(i18n, /"Start":"เริ่มต้น"/);
   assert.match(i18n, /"Private care, wherever you are\.":"ดูแลสุขภาพอย่างเป็นส่วนตัวได้ทุกที่"/);
