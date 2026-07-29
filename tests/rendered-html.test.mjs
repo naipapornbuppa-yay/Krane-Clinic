@@ -614,6 +614,26 @@ test("doctor cards open matching responsive profiles instead of a placeholder te
   assert.match(legacy, /location\.replace\("b2c\/doctor-detail\.html" \+ location\.search \+ location\.hash\)/);
 });
 
+test("all canonical B2C brand placements use the new Krane wordmark without clinic", async () => {
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const doctor = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
+  const advisor = await readFile(path.join(publicRoot, "b2c/advisor-detail.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const canonicalBrand = /krane-review-wordmark\.svg\?v=20260730logo1/;
+
+  assert.match(screenFragment(patient, "profile"), canonicalBrand);
+  assert.match(patient, new RegExp(canonicalBrand.source, "g"));
+  assert.match(landing, canonicalBrand);
+  assert.match(doctor, canonicalBrand);
+  assert.match(advisor, canonicalBrand);
+  for (const html of [patient, landing, doctor, advisor]) {
+    assert.doesNotMatch(html, /krane-lockup-(?:charcoal|navy|bone)\.svg/);
+  }
+  assert.doesNotMatch(landing, /hero-clinic\.svg|hero__brand-clinic|hero__brand-divider/);
+  assert.match(components, /\.brand-logo\{[^}]*width:112px[^}]*max-height:29px[^}]*object-fit:contain/);
+});
+
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
