@@ -78,6 +78,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
+  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
+  assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-concern'\)/);
+  assert.doesNotMatch(html, /id="insurance-policy-number"|Policy number \(เลขกรมธรรม์\)|placeholder="Policy no\."/);
   assert.match(html, /id="partner-concern"[\s\S]*data-partner-duration-step="-1"[\s\S]*data-partner-duration-unit="วัน"[\s\S]*data-partner-relief-value="ยังไม่ได้ทำ"/);
   assert.doesNotMatch(html, /id="partner-concern-severity"/);
   assert.match(components, /\.partner-duration-units button\[aria-selected="true"\]/);
