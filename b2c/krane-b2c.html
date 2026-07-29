@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260729m">
+<link rel="stylesheet" href="components.css?v=20260729n">
 <link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
@@ -287,17 +287,16 @@
     <details class="rail-group">
       <summary><span class="rail-step">09</span><span>Partner access</span></summary>
       <div class="rail-group__body">
-        <a data-go="partner-access">Corporate entry <span class="rail-state">skips stage 1</span></a>
+        <a data-go="partner-access">Corporate entry <span class="rail-state">client start</span></a>
         <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
-        <a data-go="partner-payment-choice">วิธีการชำระเงิน <span class="rail-state">self-pay vs insurance</span></a>
-        <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">self-pay path</span></a>
+        <a data-go="partner-payment-choice">เลือกใช้สิทธิ์ <span class="rail-state">insurance first</span></a>
         <a data-go="partner-insurance">เช็คสิทธิ์ประกัน</a>
+        <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
         <a data-go="partner-review">ตรวจทานข้อมูล</a>
         <a data-go="partner-nurse">พยาบาลคัดกรอง <span class="rail-state">partner only</span></a>
-        <a data-go="partner-nurse-session">คำถามคัดกรอง</a>
-        <a data-go="partner-phr">ยืนยันบันทึกสุขภาพ <span class="rail-state">→ joins booking</span></a>
+        <a data-go="partner-nurse-session">วิดีโอคัดกรอง <span class="rail-state">→ joins doctor matching</span></a>
       </div>
     </details>
 
@@ -2050,16 +2049,16 @@
   <section class="screen" id="partner-access">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">เข้าผ่านพันธมิตร</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">เข้าใช้งานผ่านพันธมิตร</h2><p class="muted">คุณเข้าสู่ Krane ด้วยสิทธิ์จากองค์กรพันธมิตร ตรวจสอบข้อมูลสิทธิ์ก่อนเริ่ม</p></div>
+      <div class="stack-2"><h2 class="h1">เข้าใช้งานผ่านพันธมิตร</h2><p class="muted">ตรวจสอบสิทธิ์จากองค์กร แล้วดำเนินการต่อด้วยขั้นตอนความยินยอมเดียวกับผู้รับบริการ Krane</p></div>
       <div class="card card--pad-sm stack-3">
         <div class="section-label">สิทธิ์ของคุณ</div>
         <div class="between"><span class="muted">องค์กร</span><strong>MTL Group</strong></div>
         <div class="between"><span class="muted">สิทธิ์ที่ได้รับ</span><strong>ปรึกษาแพทย์ออนไลน์</strong></div>
         <div class="between"><span class="muted">สถานะ</span><span class="badge badge--ok">ใช้ได้</span></div>
       </div>
-      <p class="hint">ข้ามขั้นตอนเลือกหัวข้อปรึกษา เพราะองค์กรกำหนดสิทธิ์ไว้ให้แล้ว</p>
+      <p class="hint">สิทธิ์นี้มีพยาบาลคัดกรองก่อนส่งต่อแพทย์ เพื่อให้คุณได้รับการดูแลที่เหมาะสม</p>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-access-continue>เริ่มใช้สิทธิ์</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-access-continue>ตรวจสอบสิทธิ์และเริ่ม</button></div>
   </section>
 
   <section class="screen" id="partner-patient-info">
@@ -2086,10 +2085,10 @@
   <section class="screen" id="partner-payment-choice">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">วิธีการชำระเงิน</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">ต้องการชำระเงินอย่างไร?</h2><p class="muted">เลือกวิธีที่คุณต้องการใช้สำหรับค่าปรึกษาแพทย์</p></div>
+      <div class="stack-2"><h2 class="h1">ต้องการใช้สิทธิ์แบบใด?</h2><p class="muted">ระบบเลือกสิทธิ์ประกันจากลิงก์พันธมิตรไว้ให้แล้ว คุณสามารถเปลี่ยนเป็นชำระเองได้</p></div>
       <div class="stack-3">
-        <button class="option" aria-selected="true" data-select data-partner-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ชำระเงินเอง</span><span class="opt-sub">จ่ายค่าปรึกษาด้วยตัวเอง</span></span><span class="opt-check"></span></button>
-        <button class="option" data-select data-partner-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ใช้กรมธรรม์จากลิงก์พันธมิตรนี้</span></span><span class="opt-check"></span></button>
+        <button class="option" aria-selected="true" data-select data-partner-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์จากลิงก์พันธมิตรนี้</span></span><span class="opt-check"></span></button>
+        <button class="option" data-select data-partner-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ชำระเงินเอง</span><span class="opt-sub">จ่ายค่าปรึกษาด้วยตัวเอง</span></span><span class="opt-check"></span></button>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-payment-continue>ดำเนินการต่อ</button></div>
@@ -2194,22 +2193,29 @@
   <section class="screen" id="partner-nurse">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
     <div class="screen__body stack-4">
-      <div class="card card--pad-sm row"><span class="avatar"></span><div class="grow"><div style="font-weight:var(--fw-semibold)">พยาบาล ปรียา</div><div class="hint">พยาบาลวิชาชีพ · พันธมิตร MTL</div></div><span class="badge badge--line">ออนไลน์</span></div>
-      <div class="stack-2"><div class="eyebrow">ก่อนพบแพทย์</div><p class="muted">พยาบาลจะคัดกรองสั้นๆ เพื่อให้คุณพบแพทย์ที่เหมาะสม ใช้เวลาราว 2-3 นาที</p></div>
+      <div class="card card--pad-sm row"><span class="avatar partner-nurse-avatar"><span data-demo-icon="video"></span></span><div class="grow"><div style="font-weight:var(--fw-semibold)">ทีมพยาบาลคัดกรอง</div><div class="hint">พยาบาลวิชาชีพขององค์กรพันธมิตร</div></div><span class="badge badge--line">พร้อมรับเคส</span></div>
+      <div class="stack-2"><div class="eyebrow">ก่อนพบแพทย์</div><p class="muted">พูดคุยกับพยาบาลผ่านวิดีโอเพื่อยืนยันอาการ ตรวจความเร่งด่วน และส่งต่อแพทย์ที่เหมาะสม</p></div>
       <div class="card card--pad-sm stack-2">
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ยืนยันอาการของคุณ</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ตรวจคุณสมบัติเบื้องต้น</div></div>
+        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ยืนยันอาการและประวัติสุขภาพ</div></div>
+        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">คัดกรองอาการเร่งด่วน</div></div>
         <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ส่งต่อแพทย์ที่เหมาะสม</div></div>
       </div>
       <p class="hint">ใช้เวลาประมาณ 2-3 นาที</p>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="partner-nurse-session">เริ่มการคัดกรอง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="partner-nurse-session">เริ่มวิดีโอคัดกรอง</button></div>
   </section>
 
   <section class="screen" id="partner-nurse-session">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">ตอบคำถามสั้น ๆ กับพยาบาล</h2><p class="muted">คำตอบนี้ใช้ประเมินความเหมาะสมและเลือกแพทย์ ไม่ได้แทนการวินิจฉัย</p></div>
+      <div class="partner-nurse-call" aria-label="กำลังวิดีโอคอลกับทีมพยาบาลคัดกรอง">
+        <div class="partner-nurse-call__status"><span></span>วิดีโอเชื่อมต่อแล้ว · 00:42</div>
+        <div class="partner-nurse-call__avatar"><span data-demo-icon="stethoscope"></span></div>
+        <strong>ทีมพยาบาลคัดกรอง</strong>
+        <span>องค์กรพันธมิตร</span>
+        <div class="partner-nurse-call__self"><span data-demo-icon="video"></span><small>คุณ</small></div>
+      </div>
+      <div class="stack-2"><h2 class="h1">ยืนยันข้อมูลกับพยาบาล</h2><p class="muted">เลือกคำตอบตามที่พูดคุยกับพยาบาล เพื่อบันทึกผลคัดกรองและส่งต่อแพทย์</p></div>
       <div class="stack-3" data-partner-screening-question="urgent">
         <div class="section-label">มีอาการหายใจลำบาก เจ็บหน้าอก หมดสติ หรือเลือดออกมากตอนนี้หรือไม่?</div>
         <button class="option" data-partner-screening-value="no"><span class="opt-body"><span class="opt-title">ไม่มี</span><span class="opt-sub">ดำเนินการคัดกรองต่อ</span></span><span class="opt-check"></span></button>
@@ -2226,7 +2232,7 @@
         <button class="option" data-partner-screening-value="no"><span class="opt-body"><span class="opt-title">ไม่สะดวก</span></span><span class="opt-check"></span></button>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-nurse-complete disabled>ยืนยันผลการคัดกรอง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-nurse-complete disabled>ยืนยันและส่งต่อแพทย์</button></div>
   </section>
 
   <section class="screen" id="partner-phr">
@@ -3893,7 +3899,7 @@
     });
     const paymentStatus=document.querySelector('[data-consultation-payment-status]');
     if(paymentStatus) paymentStatus.textContent=covered
-      ? `${baht(CONSULTATION_FEE_BAHT)} covered`
+      ? `${baht(CONSULTATION_FEE_BAHT)} อยู่ในสิทธิ์`
       : `${baht(CONSULTATION_FEE_BAHT)} ชำระแล้ว`;
   }
   function consultationHandoffTarget(){
@@ -4759,7 +4765,7 @@
     const partnerPaymentContinue=e.target.closest('[data-partner-payment-continue]');
     if(partnerPaymentContinue){
       const selected=document.querySelector('#partner-payment-choice [data-partner-payment-choice-value][aria-selected="true"]');
-      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'self-pay';
+      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
       flowState.entryChannel='partner';
       flowState.partnerPaymentChosen=true;
       flowState.partnerPaymentMethod=paymentMethod;
@@ -4872,9 +4878,16 @@
       }
       submitOnce('partner-nurse-session',partnerNurseComplete,() => {
         flowState.partnerNurseComplete=true;
+        flowState.draftReady=true;
+        flowState.accountCreated=true;
+        flowState.otpVerified=true;
+        flowState.consentsComplete=true;
+        flowState.patientInfoComplete=true;
+        flowState.identityVerified=true;
+        flowState.patientName=flowState.partnerName||'Mali Suthida';
         persistFlowState();
-        showActionToast('พยาบาลคัดกรองเรียบร้อยแล้ว','success');
-        show('partner-phr');
+        showActionToast('คัดกรองเรียบร้อย กำลังส่งต่อเพื่อจับคู่แพทย์','success');
+        show('booking');
       });
       return;
     }
