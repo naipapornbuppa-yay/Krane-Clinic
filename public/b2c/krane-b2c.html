@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
-<script src="i18n.js?v=20260730profile1" defer></script>
+<script src="i18n.js?v=20260730rail1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -58,6 +58,15 @@
   .rail-sub{margin:1px 0 4px 30px;border-left:1px solid var(--color-line)}
   .rail-sub a{padding-left:16px;font-size:12px;color:var(--color-ink-3)}
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
+  .rail-legend{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
+  .rail-legend span{display:inline-flex;align-items:center;gap:5px}
+  .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
+  .rail-legend .is-error{color:var(--color-danger-ink)}
+  .rail-legend .is-error i{background:var(--color-danger-ink)}
+  .rail-error-menu{margin:5px 8px 4px 30px;padding:6px 0 2px;border-left:1px solid var(--color-danger-ink)}
+  .rail-error-menu__label{display:block;padding:0 10px 4px 14px;color:var(--color-danger-ink);font-size:9.5px;font-weight:var(--fw-semibold);letter-spacing:.02em}
+  .rail-error-menu a{margin:0;padding:6px 8px 6px 14px;font-size:11.5px}
+  .rail-error-tag{display:inline-block;margin-right:4px;font-size:9px;font-weight:var(--fw-semibold);letter-spacing:.02em;text-transform:uppercase}
   /* Error and empty-state screens read in dark red so they are distinguishable
      from happy-path entries at a glance. Colour comes from the token library
      (--color-danger-ink), never a literal. Applies to the link and its inline
@@ -160,6 +169,7 @@
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" aria-label="Prototype patient journey">
     <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span></div>
+    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span></div>
 
     <details class="rail-group" open>
       <summary><span class="rail-step">01</span><span>Start &amp; discover</span></summary>
@@ -199,6 +209,8 @@
         <a data-go="intake3">3 · Previous care</a>
         <details class="rail-page"><summary>4 · Urgent safety</summary><div class="rail-sub">
           <a data-go="intake4">Default</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
         <a data-go="intake-general">6 · General health <span class="rail-state">required · penultimate</span></a>
@@ -214,9 +226,14 @@
         <a data-go="nurse">Nurse pre-screen</a>
         <details class="rail-page"><summary>Doctor matching</summary><div class="rail-sub">
           <a data-go="booking">Default · Auto-match</a><a data-go="matching">State · Matching</a><a data-go="choosedoc">Option · Choose doctor</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-demo-nomatch><span class="rail-error-tag">Error case</span>No doctor available now</a>
+          <a class="is-exception" data-go="noslots"><span class="rail-error-tag">Error case</span>No booking slots</a>
         </div></details>
         <details class="rail-page"><summary>Consultation payment</summary><div class="rail-sub">
-          <a data-go="consultpay">Order summary</a><a data-go="consultpay-gw">Payment gateway</a><a class="is-exception" data-go="consultpay-fail">State · Payment failed</a>
+          <a data-go="consultpay">Order summary</a><a data-go="consultpay-gw">Payment gateway</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="consultpay-fail"><span class="rail-error-tag">Error case</span>Consultation payment failed</a>
         </div></details>
         <a data-go="waitroom">Waiting room</a>
       </div>
@@ -244,9 +261,13 @@
         </div></details>
         <details class="rail-page"><summary>Insurance checkout</summary><div class="rail-sub">
           <a data-go="insurance">Check entitlement</a><a data-go="insurance-policy">Choose policy</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="reduce-order"><span class="rail-error-tag">Error case</span>Insurance limit exceeded</a>
         </div></details>
         <details class="rail-page"><summary>Medication payment</summary><div class="rail-sub">
           <a data-go="payment">Default</a><a data-go="payment-gw">Bank gateway</a><a data-go="payment-success">Payment confirmed</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="payfail"><span class="rail-error-tag">Error case</span>Medication payment failed</a>
         </div></details>
       </div>
     </details>
@@ -256,6 +277,10 @@
       <div class="rail-group__body">
         <details class="rail-page"><summary>Pharmacy confirmation</summary><div class="rail-sub">
           <a data-go="pharmacypending">State · Preparing</a><a data-go="pharmacyaccepted">State · Accepted</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-demo-nostock><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
+          <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
+          <a class="is-exception" data-go="refund"><span class="rail-error-tag">Error case</span>Refund required</a>
         </div></details>
         <a data-go="confirm">Order confirmation</a>
         <a data-go="tracking">Delivery tracking</a>
@@ -271,9 +296,13 @@
         <a data-go="profile">Profile home</a>
         <details class="rail-page"><summary>Activity</summary><div class="rail-sub">
           <a data-go="activity">Default</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="empty-activities"><span class="rail-error-tag">Error case</span>No activity yet</a>
         </div></details>
         <details class="rail-page"><summary>Medical history</summary><div class="rail-sub">
           <a data-go="history">Default</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="empty-history"><span class="rail-error-tag">Error case</span>No medical history yet</a>
         </div></details>
         <a data-go="notifications">Notifications</a>
         <a data-go="account">Personal details</a>
@@ -300,32 +329,6 @@
       </div>
     </details>
 
-
-    <details class="rail-group rail-group--exceptions">
-      <summary><span class="rail-step">QA</span><span>Demo edge cases</span></summary>
-      <div class="rail-group__body">
-        <details class="rail-page"><summary>Clinical safety</summary><div class="rail-sub">
-          <a class="is-exception" data-go="ineligible">State · In-person care</a>
-        </div></details>
-        <details class="rail-page"><summary>Doctor availability</summary><div class="rail-sub">
-          <a class="is-exception" data-demo-nomatch>State · No doctor now (run fallback)</a>
-          <a class="is-exception" data-go="noslots">Screen · Booking slot</a>
-        </div></details>
-        <details class="rail-page"><summary>Coverage &amp; payment</summary><div class="rail-sub">
-          <a class="is-exception" data-go="reduce-order">State · Over limit</a>
-          <a class="is-exception" data-go="payfail">State · Payment failed</a>
-        </div></details>
-        <details class="rail-page"><summary>Pharmacy &amp; fulfilment</summary><div class="rail-sub">
-          <a class="is-exception" data-demo-nostock>State · Pharmacy declines (run reroute)</a>
-          <a class="is-exception" data-go="pharmacyissue">State · SLA issue</a>
-          <a class="is-exception" data-go="refund">State · Refund</a>
-        </div></details>
-        <details class="rail-page"><summary>Empty states</summary><div class="rail-sub">
-          <a class="is-exception" data-go="empty-activities">Activity · Empty</a>
-          <a class="is-exception" data-go="empty-history">Medical history · Empty</a>
-        </div></details>
-      </div>
-    </details>
 
     <details class="rail-group">
       <summary><span class="rail-step">10</span><span>System states</span></summary>

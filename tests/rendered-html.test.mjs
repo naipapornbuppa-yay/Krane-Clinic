@@ -648,6 +648,19 @@ test("mobile profile scales medication lists and keeps navigation compact", asyn
   assert.match(components, /\.screen:has\(\.bottomnav\) \.screen__body\{padding-bottom:calc\(72px/);
 });
 
+test("prototype rail nests error cases under related happy-flow pages", async () => {
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+
+  assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
+  assert.match(patient, /4 · Urgent safety[\s\S]*data-go="intake4"[\s\S]*class="rail-error-menu"[\s\S]*data-go="ineligible"/);
+  assert.match(patient, /Doctor matching[\s\S]*data-go="booking"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
+  assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance-policy"[\s\S]*class="rail-error-menu"[\s\S]*data-go="reduce-order"/);
+  assert.match(patient, /Pharmacy confirmation[\s\S]*data-go="pharmacyaccepted"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nostock/);
+  assert.doesNotMatch(patient, /rail-group--exceptions/);
+  assert.doesNotMatch(patient, /<span class="rail-step">QA<\/span>/);
+  assert.match(patient, /\.rail-error-menu\{[^}]*--color-danger-ink/);
+});
+
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
