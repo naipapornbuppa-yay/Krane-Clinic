@@ -76,6 +76,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /data-partner-review-concern/);
   assert.match(html, /target==='partner-insurance' \? 4 : order\.indexOf\(target\)/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
+  assert.match(html, /aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
+  assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
+  assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
+  assert.doesNotMatch(html, /พยาบาล ปรียา/);
   assert.match(html, /viewport-fit=cover/);
   assert.doesNotMatch(html, /class="devicebar"|id="fontPreview"|fontPreviewStacks|krane_font_preview/, "client-facing QA must not expose prototype device or font controls");
   const designTokens = await readFile(path.join(publicRoot, "b2c/design-tokens.css"), "utf8");
