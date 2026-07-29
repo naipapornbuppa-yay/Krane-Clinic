@@ -83,7 +83,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.care-journey__current\{display:none\}[\s\S]*\.care-journey__name\{display:block/);
   assert.match(html, /flowState\.phoneOtpPending/);
-  assert.match(html, /function prepareFreshOtpChallenge\(\)\{[\s\S]*input\.value='';[\s\S]*inputs\[0\]\?\.focus\(\{preventScroll:true\}\)/);
+  assert.match(html, /data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6"/);
+  assert.doesNotMatch(html, /maxlength="1"/);
+  assert.match(html, /function prepareFreshOtpChallenge\(\)\{[\s\S]*input\.value='';[\s\S]*input\?\.focus\(\{preventScroll:true\}\)/);
+  assert.match(html, /input\.value=input\.value\.replace\(\/\\D\/g,''\)\.slice\(0,6\)/);
   assert.match(html, /if\(id === 'otp'\) prepareFreshOtpChallenge\(\)/);
   assert.match(html, /returnFromPhoneOtp\('partner-patient-info'\)/);
   assert.match(html, /returnFromPhoneOtp\(returnTarget\)/);
