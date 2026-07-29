@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260729w">
+<link rel="stylesheet" href="components.css?v=20260729x">
 <link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
@@ -1892,13 +1892,13 @@
        CLIENT-REQUESTED "MISSING CONTENT" SCREENS (v3, 2026-07)
        ============================================================ -->
 
-  <!-- Required Phase 1 consent. Each document must be opened and read to the end
-       before its own checkbox becomes available. Reading never checks it. -->
+  <!-- Required Phase 1 consent. PDPA and telemedicine terms are presented as one
+       continuous page. Reaching the end confirms both items automatically. -->
   <section class="screen" id="consent-terms">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ความยินยอม</span></div>
-    <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">อ่านและให้ความยินยอม</h2><p class="muted">เลื่อนอ่านให้จบ แล้วเลือกให้ความยินยอม</p></div>
-      <div class="card card--pad-sm stack-4">
+    <div class="screen__body stack-4" data-consent-page-scroll>
+      <div class="stack-2 consent-page__intro"><p class="eyebrow">ความเป็นส่วนตัวและการรักษาความลับ</p><h2 class="h1">เพื่อความสบายใจในการใช้บริการ</h2><p class="muted">Krane มีมาตรการให้บริการและคุ้มครองข้อมูลที่คุณวางใจได้ กรุณาเลื่อนอ่านจนจบ ระบบจะเลือกความยินยอมให้อัตโนมัติ</p></div>
+      <div class="card card--pad-sm stack-4 consent-page__content">
         <div class="consent-doc" data-consent-scroll="all" tabindex="0" role="region" aria-label="รายละเอียดความยินยอม PDPA และการแพทย์ทางไกล"></div>
         <div class="divider"></div>
         <div class="stack-3">
@@ -1911,8 +1911,10 @@
             <div class="hint consent-note" data-consent-read-state="telemedicine" role="status">กรุณาอ่านเพื่อให้ความยินยอม</div>
           </div>
         </div>
+        <span class="consent-page__sentinel" data-consent-end aria-hidden="true"></span>
       </div>
     </div>
+    <div class="consent-scroll-cue" data-consent-scroll-cue aria-hidden="true"><span>↓</span> เลื่อนลงจนสุด</div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button></div>
   </section>
 
@@ -2767,9 +2769,7 @@
     }
   }
 
-  // Each document is read in its own scroll box on this screen. The checkbox stays
-  // disabled until that box has been scrolled to the end, so the consent always
-  // follows the reading rather than the other way round.
+  // Reading is recorded only after the patient reaches the end of the legal page.
   function markConsentRead(type){
     if(consentRead[type]) return;
     consentRead[type] = true;
@@ -2778,19 +2778,33 @@
     renderConsentReadState(type);
     syncConsentContinue();
   }
-  // Client 28 Jul: PDPA and telemedicine consent read as one continuous document now,
-  // not two separate scroll boxes. Reaching the end of the merged box marks both
-  // documents read at once; each checkbox below still tracks its own checked state.
+  // PDPA and telemedicine consent read as one continuous page. Reaching the end
+  // marks both records read and selects both confirmations automatically.
   function checkConsentScrollEnd(box){
-    const type = box.dataset.consentScroll;
-    if(!type || (type === 'all' ? (consentRead.pdpa && consentRead.telemedicine) : consentRead[type])) return;
-    // While the screen is hidden every height is 0, which would read as "nothing to
-    // scroll" and unlock the checkbox without the patient seeing a word.
+    const type = box.hasAttribute('data-consent-page-scroll') ? 'all' : box.dataset.consentScroll;
+    const bundleComplete = consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine;
+    if(!type || (type === 'all' ? bundleComplete : (consentRead[type] && consentChecked[type]))) return;
+    // While the screen is hidden every height is 0, which would otherwise look like
+    // a completed document before the patient has seen it.
     if(!box.clientHeight) return;
     const overflows = box.scrollHeight > box.clientHeight + 4;
     const reachedEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 12;
     if(!overflows || reachedEnd){
-      if(type === 'all'){ markConsentRead('pdpa'); markConsentRead('telemedicine'); }
+      if(type === 'all'){
+        markConsentRead('pdpa');
+        markConsentRead('telemedicine');
+        if(consentIdentityVerified()){
+          consentChecked.pdpa = true;
+          consentChecked.telemedicine = true;
+          flowState.consentChecked = Object.assign({},consentChecked);
+          persistFlowState();
+          renderConsentReadState('pdpa');
+          renderConsentReadState('telemedicine');
+          syncConsentContinue();
+        }
+        const cue=document.querySelector('[data-consent-scroll-cue]');
+        if(cue) cue.hidden=true;
+      }
       else markConsentRead(type);
     }
   }
@@ -2806,10 +2820,27 @@
       const doc = consentDocuments[box.dataset.consentScroll];
       if(doc) box.innerHTML = doc.body + '<p class="consent-doc__end">จบเอกสาร</p>';
     }
-    box.addEventListener('scroll',() => checkConsentScrollEnd(box),{passive:true});
-    // Re-check when the box gains a real height, i.e. when this screen is shown.
-    if(window.ResizeObserver) new ResizeObserver(() => checkConsentScrollEnd(box)).observe(box);
   });
+  const consentPageScroll=document.querySelector('[data-consent-page-scroll]');
+  if(consentPageScroll){
+    consentPageScroll.addEventListener('scroll',() => checkConsentScrollEnd(consentPageScroll),{passive:true});
+    // Re-check when the page gains a real height, i.e. when this screen is shown.
+    if(window.ResizeObserver) new ResizeObserver(() => checkConsentScrollEnd(consentPageScroll)).observe(consentPageScroll);
+    const consentEnd=consentPageScroll.querySelector('[data-consent-end]');
+    if(window.IntersectionObserver && consentEnd){
+      new IntersectionObserver(entries => {
+        if(entries.some(entry => entry.isIntersecting)) checkConsentScrollEnd(consentPageScroll);
+      },{root:consentPageScroll,threshold:.8}).observe(consentEnd);
+    }
+    // Some partner in-app webviews throttle scroll events and do not expose
+    // IntersectionObserver. A lightweight monitor keeps the end-of-page action
+    // reliable there without changing the visible flow.
+    window.setInterval(() => {
+      if(document.getElementById('consent-terms')?.classList.contains('active')){
+        checkConsentScrollEnd(consentPageScroll);
+      }
+    },300);
+  }
 
   function syncConsentContinue(){
     if(consentContinue) consentContinue.disabled = !consentIdentityVerified() || !consentChecks.every(input => !input.disabled && input.checked);
@@ -2822,6 +2853,10 @@
   }));
   Object.keys(consentRead).forEach(renderConsentReadState);
   syncConsentContinue();
+  if(consentChecked.pdpa && consentChecked.telemedicine){
+    const cue=document.querySelector('[data-consent-scroll-cue]');
+    if(cue) cue.hidden=true;
+  }
 
   // Full labels are read by screen readers and shown for the current step.
   // Short labels keep all five visible at once in a phone frame, so the patient can

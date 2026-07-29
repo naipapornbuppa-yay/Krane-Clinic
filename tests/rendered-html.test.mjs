@@ -134,8 +134,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const sharePreviewSource = await readFile(path.join(publicRoot, "b2c/assets/krane-qa-line-share.svg"), "utf8");
   assert.doesNotMatch(sharePreviewSource, /proud|naipaporn|chatgpt\.site/i);
   assert.match(sharePreviewSource, /demo\.patient@example\.com/);
-  assert.match(components, /#consent-terms\{height:100%;min-height:0;max-height:100%;overflow:hidden\}/);
-  assert.match(components, /#consent-terms \.consent-doc\{height:auto;min-height:120px;max-height:none;flex:1 1 auto/);
+  assert.match(components, /#consent-terms\{min-height:0;overflow:hidden\}/);
+  assert.match(components, /#consent-terms\{height:100%;max-height:100%\}/);
+  assert.match(components, /#consent-terms \.consent-doc\{height:auto;min-height:0;max-height:none;overflow:visible/);
   assert.match(components, /\.option\{[\s\S]*font:inherit;color:var\(--color-ink\)/);
   assert.match(html, /if\(location\.hash\) applyHash\(\);\s*else \{\s*history=\['landing'\];\s*show\('landing',false\);\s*\}/);
   assert.doesNotMatch(html, /กู้คืนแบบประเมินและขั้นตอนล่าสุดแล้ว/);
@@ -406,6 +407,9 @@ test("public login and legal routes bypass intake while consent acceptance still
   })();
   assert.equal(consentButton.disabled, false, "verified partner patients use the same consent control");
 
+  assert.match(html, /data-consent-page-scroll/, "consent must read as one continuous legal page");
+  assert.match(html, /consentChecked\.pdpa = true;[\s\S]*consentChecked\.telemedicine = true;/,
+    "reaching the end must select both consent records automatically");
   assert.match(html, /signup:'summary', login:'landing'/);
   assert.match(html, /'consent-terms':'landing'/);
   assert.match(html, /const consentSubmit = e\.target\.closest\('\[data-consent-continue\]'\);[\s\S]*if\(!consentIdentityVerified\(\)\)/);
