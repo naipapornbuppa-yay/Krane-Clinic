@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260729o">
+<link rel="stylesheet" href="components.css?v=20260729p">
 <link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
@@ -290,7 +290,6 @@
         <a data-go="partner-access">Corporate entry <span class="rail-state">client start</span></a>
         <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
-        <a data-go="partner-payment-choice">เลือกใช้สิทธิ์ <span class="rail-state">insurance first</span></a>
         <a data-go="partner-insurance">เช็คสิทธิ์ประกัน</a>
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
@@ -2071,27 +2070,18 @@
         <div class="field"><label for="partner-phone">เบอร์โทรศัพท์ที่ยืนยันแล้ว</label><input class="input" id="partner-phone" type="tel" autocomplete="tel" value="081-234-5678" readonly aria-readonly="true" data-phone-input></div>
         <div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div>
       </div>
-      <div class="card card--pad-sm">
-        <div class="list-row" data-go="partner-payment-choice" style="cursor:pointer"><span class="ic" data-demo-icon="shield-check"></span><div class="grow"><strong>ใช้สิทธิ์ประกันสุขภาพ</strong><div class="hint">ตรวจสอบสิทธิ์จากองค์กรพันธมิตรโดยอัตโนมัติ</div></div><span class="chev">›</span></div>
+      <div class="stack-3">
+        <div class="stack-1">
+          <div class="section-label">วิธีชำระค่าปรึกษา</div>
+          <p class="hint">ระบบเลือกสิทธิ์ประกันจากลิงก์พันธมิตรไว้ให้แล้ว คุณสามารถเปลี่ยนเป็นชำระเองได้</p>
+        </div>
+        <div class="stack-3" data-partner-payment-options>
+          <button class="option" aria-selected="true" data-select data-partner-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์จากลิงก์พันธมิตรนี้</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select data-partner-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ชำระเงินเอง</span><span class="opt-sub">จ่ายค่าปรึกษาด้วยตัวเอง</span></span><span class="opt-check"></span></button>
+        </div>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-info-continue>ยืนยันข้อมูลและไปต่อ</button></div>
-  </section>
-
-  <!-- ===================== PARTNER PAYMENT CHOICE (client flow diagram, 27 Jul) =====================
-       Self-Pay vs Claim Insurance branch requested by the client. Self-Pay skips straight to
-       today's concern (partner-concern); Claim Insurance goes through partner-insurance, which
-       falls back to partner-concern if entitlement isn't found. -->
-  <section class="screen" id="partner-payment-choice">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">วิธีการชำระเงิน</span></div>
-    <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">ต้องการใช้สิทธิ์แบบใด?</h2><p class="muted">ระบบเลือกสิทธิ์ประกันจากลิงก์พันธมิตรไว้ให้แล้ว คุณสามารถเปลี่ยนเป็นชำระเองได้</p></div>
-      <div class="stack-3">
-        <button class="option" aria-selected="true" data-select data-partner-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์จากลิงก์พันธมิตรนี้</span></span><span class="opt-check"></span></button>
-        <button class="option" data-select data-partner-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ชำระเงินเอง</span><span class="opt-sub">จ่ายค่าปรึกษาด้วยตัวเอง</span></span><span class="opt-check"></span></button>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment-continue>ดำเนินการต่อ</button></div>
   </section>
 
   <!-- ===================== PARTNER TODAY'S CONCERN (client flow diagram, 27 Jul) =====================
@@ -3624,6 +3614,10 @@
     if(note) note.textContent=flowState.partnerPhoneVerified
       ? 'ยืนยันด้วยรหัส OTP แล้ว'
       : 'กรอกเบอร์ใหม่ แล้วยืนยันด้วยรหัส OTP';
+    const paymentMethod=flowState.partnerPaymentMethod || 'insurance';
+    document.querySelectorAll('#partner-patient-info [data-partner-payment-choice-value]').forEach(option => {
+      option.setAttribute('aria-selected',String(option.dataset.partnerPaymentChoiceValue===paymentMethod));
+    });
     renderPartnerPhotos();
   }
   function partnerSexLabel(value){
@@ -3663,11 +3657,11 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
-    const order=['partner-access','consent-terms','partner-patient-info','partner-payment-choice',
+    const order=['partner-access','consent-terms','partner-patient-info',
       'partner-concern','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'];
-    // Insurance is the covered branch after payment choice, not a second linear
-    // step. Treat it as that checkpoint so its desktop QA shortcut opens directly.
-    const targetIndex=target==='partner-insurance' ? 4 : order.indexOf(target);
+    // Insurance branches from the confirmation screen. Treat it as the same
+    // checkpoint as today's concern when a QA shortcut opens it directly.
+    const targetIndex=target==='partner-insurance' ? 3 : order.indexOf(target);
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0) flowState.partnerAccessComplete=true;
@@ -3680,23 +3674,21 @@
     if(targetIndex>2){
       flowState.partnerInfoComplete=true;
       flowState.partnerPhoneVerified=true;
-    }
-    if(targetIndex>3){
       flowState.partnerPaymentChosen=true;
       flowState.partnerPaymentMethod=target==='partner-insurance' ? 'insurance' : (flowState.partnerPaymentMethod || 'self-pay');
       if(target==='partner-insurance'){
         flowState.coverage=Object.assign({},flowState.coverage,{provider:'MTL Group',policyId:'MTL-778120'});
       }
     }
-    if(targetIndex>4){
+    if(targetIndex>3){
       flowState.partnerConcernComplete=true;
       flowState.partnerConcern=flowState.partnerConcern || 'ผื่นคันที่แขนมา 3 วัน';
       flowState.partnerConcernDuration=flowState.partnerConcernDuration || '2-7 วัน';
       flowState.partnerConcernSeverity=flowState.partnerConcernSeverity || 'ปานกลาง';
     }
-    if(targetIndex>5) flowState.partnerHealthComplete=true;
-    if(targetIndex>6) flowState.partnerReviewComplete=true;
-    if(targetIndex>8){
+    if(targetIndex>4) flowState.partnerHealthComplete=true;
+    if(targetIndex>5) flowState.partnerReviewComplete=true;
+    if(targetIndex>7){
       flowState.partnerNurseComplete=true;
       flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
     }
@@ -3829,8 +3821,8 @@
     // Partner access reuses the same consent screen as direct entry. Its only
     // clinical difference is the additional nurse screening before handoff.
     'partner-access':'landing',
-    'partner-patient-info':'consent-terms', 'partner-payment-choice':'partner-patient-info',
-    'partner-concern':'partner-payment-choice', 'partner-insurance':'partner-payment-choice',
+    'partner-patient-info':'consent-terms',
+    'partner-concern':'partner-patient-info', 'partner-insurance':'partner-patient-info',
     'partner-intake':'partner-concern', 'partner-review':'partner-intake',
     'partner-nurse':'partner-review', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
@@ -3838,7 +3830,7 @@
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
   const PARTNER_SCREENS = ['partner-access','partner-patient-info',
-    'partner-payment-choice','partner-concern','partner-insurance','partner-intake',
+    'partner-concern','partner-insurance','partner-intake',
     'partner-review','partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
@@ -4101,7 +4093,7 @@
       if(target!=='partner-access' && !flowState.partnerAccessComplete) return 'partner-access';
       if(target!=='partner-access' && !flowState.partnerConsentComplete) return 'consent-terms';
       if(!['partner-access','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-concern','partner-insurance','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-payment-choice';
+      if(['partner-concern','partner-insurance','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(['partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'partner-concern';
       if(['partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerReviewComplete) return 'partner-review';
@@ -4749,33 +4741,25 @@
     if(partnerInfoContinue){
       const name=document.getElementById('partner-full-name')?.value.trim() || '';
       const phone=document.getElementById('partner-phone')?.value.trim() || '';
+      const selected=document.querySelector('#partner-patient-info [data-partner-payment-choice-value][aria-selected="true"]');
+      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
       if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
       if(!flowState.partnerPhoneVerified){ showActionToast('กรุณายืนยันเบอร์ใหม่ด้วยรหัส OTP ก่อน','warning'); return; }
       submitOnce('partner-patient-info',partnerInfoContinue,() => {
+        flowState.entryChannel='partner';
         flowState.partnerName=name;
         flowState.partnerPhone=phone;
         flowState.partnerInfoComplete=true;
-        persistFlowState();
-        showActionToast('ยืนยันข้อมูลผู้รับบริการแล้ว','success');
-        show('partner-payment-choice');
-      });
-      return;
-    }
-    const partnerPaymentContinue=e.target.closest('[data-partner-payment-continue]');
-    if(partnerPaymentContinue){
-      const selected=document.querySelector('#partner-payment-choice [data-partner-payment-choice-value][aria-selected="true"]');
-      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
-      flowState.entryChannel='partner';
-      flowState.partnerPaymentChosen=true;
-      flowState.partnerPaymentMethod=paymentMethod;
-      if(paymentMethod==='self-pay'){
-        flowState.partnerConsultationBalanceDue=CONSULTATION_FEE_BAHT;
+        flowState.partnerPaymentChosen=true;
+        flowState.partnerPaymentMethod=paymentMethod;
+        flowState.partnerConsultationBalanceDue=paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null;
         flowState.partnerMedicineCredit=0;
         flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
-      }
-      persistFlowState();
-      show(paymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern');
+        persistFlowState();
+        showActionToast('ยืนยันข้อมูลผู้รับบริการแล้ว','success');
+        show(paymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern');
+      });
       return;
     }
     const partnerPayment=e.target.closest('[data-partner-payment]');

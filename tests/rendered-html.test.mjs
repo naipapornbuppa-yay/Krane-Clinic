@@ -65,18 +65,19 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "partner-access", "consent-terms", "partner-patient-info", "partner-payment-choice",
+    "partner-access", "consent-terms", "partner-patient-info",
     "partner-concern", "partner-intake", "partner-review", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
+  assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
   assert.doesNotMatch(html, /id="partner-consent"|data-partner-consent/);
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentSource=flowState\.entryChannel==='partner' \? 'partner' : 'direct'/);
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.match(html, /data-partner-review-concern/);
-  assert.match(html, /target==='partner-insurance' \? 4 : order\.indexOf\(target\)/);
+  assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
-  assert.match(html, /aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
+  assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
