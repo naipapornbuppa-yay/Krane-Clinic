@@ -290,7 +290,8 @@
         <a data-go="partner-access">Corporate entry <span class="rail-state">client start</span></a>
         <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
-        <a data-go="partner-insurance">เช็คสิทธิ์ประกัน</a>
+        <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
+        <a data-go="partner-insurance">เลือกกรมธรรม์</a>
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
         <a data-go="partner-review">ตรวจทานข้อมูล</a>
@@ -2134,18 +2135,18 @@
   </section>
 
   <section class="screen" id="partner-insurance">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">สิทธิ์ประกัน</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">เลือกกรมธรรม์</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">สิทธิ์ประกันของคุณ</h2><p class="muted">กรมธรรม์จากลิงก์พันธมิตรถูกเลือกไว้แล้ว</p></div>
+      <div class="stack-2"><h2 class="h1">เลือกสิทธิ์ประกันที่ต้องการใช้</h2><p class="muted">พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้</p></div>
       <div class="card card--pad-sm stack-3">
         <div class="section-label">ผลการตรวจสอบ</div>
         <div class="between"><span class="muted">ผู้ถือสิทธิ์</span><strong>Mali Suthida</strong></div>
-        <div class="between"><span class="muted">เลขที่กรมธรรม์</span><strong>MTL-778120</strong></div>
+        <div class="between"><span class="muted">บริษัทประกัน</span><strong>เมืองไทยประกันชีวิต</strong></div>
         <div class="between"><span class="muted">ความคุ้มครอง</span><span class="badge badge--ok">ใช้สิทธิ์ได้</span></div>
       </div>
       <div class="stack-2">
         <div class="eyebrow">กรมธรรม์ที่ใช้</div>
-        <button class="option" aria-selected="true" aria-disabled="true" disabled><span class="opt-body"><span class="opt-title">MTL-778120</span><span class="opt-sub">แผนพนักงาน · เลือกจากลิงก์พันธมิตร</span></span><span class="opt-check"></span></button>
+        <button class="option" aria-selected="true" aria-disabled="true" disabled><span class="opt-body"><span class="opt-title">แผนสุขภาพพนักงาน MTL</span><span class="opt-sub">เลือกจากลิงก์พันธมิตร · ครอบคลุมค่าปรึกษา</span></span><span class="opt-check"></span></button>
       </div>
       <div class="card card--pad-sm stack-2">
         <div class="between"><span class="muted">ค่าปรึกษาแพทย์</span><strong>ครอบคลุม ฿ 350</strong></div>
@@ -2156,7 +2157,7 @@
     <!-- Client flow diagram (27 Jul): both the insurance and the self-pay branch
          converge on the "today's concern" question before the health snapshot.
          Insurance status changes who pays, not what the doctor needs to know. -->
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">ใช้สิทธิ์และดำเนินการต่อ</button><button class="btn btn--ghost btn--sm" data-partner-payment="self-pay" data-go="partner-concern">ไม่มีสิทธิ์ · ชำระเงินเอง</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">ใช้สิทธิ์นี้และดำเนินการต่อ</button><button class="btn btn--ghost btn--sm" data-partner-payment="self-pay" data-go="partner-concern">ไม่มีสิทธิ์ · ชำระเงินเอง</button></div>
   </section>
 
   <section class="screen" id="partner-intake">
@@ -3714,7 +3715,7 @@
       flowState.partnerPaymentChosen=true;
       flowState.partnerPaymentMethod=target==='partner-insurance' ? 'insurance' : (flowState.partnerPaymentMethod || 'self-pay');
       if(target==='partner-insurance'){
-        flowState.coverage=Object.assign({},flowState.coverage,{provider:'MTL Group',policyId:'MTL-778120'});
+        flowState.coverage=Object.assign({},flowState.coverage,{provider:'MTL Group',policyId:''});
       }
     }
     if(targetIndex>3){
@@ -4592,7 +4593,10 @@
     // profile setup (no order yet, just save the policy) or from checkout (an order is
     // being paid). Detect which one from where the click came from.
     const goInsurance = e.target.closest('[data-go="insurance"]');
-    if(goInsurance) insuranceEntry = goInsurance.closest('#patient-info') ? 'profile' : 'checkout';
+    if(goInsurance){
+      insuranceEntry = goInsurance.dataset.insuranceEntry || (goInsurance.closest('#patient-info') ? 'profile' : 'checkout');
+      if(insuranceEntry==='partner' && goInsurance.closest('.rail')) seedPartnerStage('partner-insurance');
+    }
     // Demo: force the "no doctor available" outcome, then run the match animation
     // so the flow shows match -> booking slot -> pay.
     const noMatch = e.target.closest('[data-demo-nomatch]');
@@ -4817,7 +4821,7 @@
       flowState.partnerConsultationBalanceDue=eligiblePartnerPolicy ? 0 : (paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null);
       flowState.partnerMedicineCredit=eligiblePartnerPolicy ? 1000 : 0;
       flowState.coverage=eligiblePartnerPolicy
-        ? {provider:'MTL Group',policyId:'MTL-778120',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000}
+        ? {provider:'MTL Group',policyId:'',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000}
         : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
       persistFlowState();
       show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern'));
@@ -5147,12 +5151,12 @@
         flowState.entryChannel='partner';
         flowState.partnerPaymentChosen=true;
         flowState.partnerPaymentMethod='insurance';
-        flowState.partnerConsultationBalanceDue=0;
-        flowState.partnerMedicineCredit=1000;
-        flowState.coverage={provider:'MTL Group',policyId:'',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000};
+        flowState.partnerConsultationBalanceDue=null;
+        flowState.partnerMedicineCredit=0;
+        flowState.coverage={provider:'MTL Group',policyId:'',consultationCredit:0,medicineCredit:0};
         persistFlowState();
-        showActionToast('ตรวจสอบสิทธิ์ประกันแล้ว','success');
-        show('partner-concern');
+        showActionToast('พบสิทธิ์ประกันที่ใช้ได้ 1 รายการ','success');
+        show('partner-insurance');
         return;
       }
       if(insuranceEntry === 'profile'){
