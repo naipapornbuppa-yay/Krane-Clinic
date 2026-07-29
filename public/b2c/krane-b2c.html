@@ -4056,6 +4056,9 @@
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
     }
+    // Adding an existing insurance policy is part of patient profile setup.
+    // It must open from Patient information before the separate identity step.
+    if(target==='insurance' && insuranceEntry==='profile') return target;
     if(REQUIRED_CARE_TARGETS.has(target) && !flowState.identityVerified && !flowState.returningIdentityValid){
       if(!flowState.draftReady) return 'concern';
       if(!flowState.accountCreated) return 'signup';
