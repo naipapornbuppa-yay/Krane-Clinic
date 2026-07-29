@@ -95,6 +95,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /class="partner-health-grid"[\s\S]*id="partner-dob" type="date"/);
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
+  assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
+  assert.match(components, /\.setting-row \.ic\{[^}]*border-radius:50%[^}]*border:0/);
+  assert.match(components, /\.notif \.ic\{[^}]*border-radius:50%[^}]*border:0/);
+  assert.match(components, /#profile \.screen__body\{background:var\(--color-bg\)\}/);
   assert.match(html, /function hasCurrentConsent\(source\)\{/);
   assert.match(html, /flowState\.consentsComplete && !hasCurrentConsent\('direct'\) && !hasCurrentConsent\('partner'\)/);
   assert.match(html, /function directClinicalStartTarget\(\)\{/);
