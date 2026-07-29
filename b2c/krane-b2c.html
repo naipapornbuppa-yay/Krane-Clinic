@@ -26,10 +26,10 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260729f">
-<link rel="stylesheet" href="custom-select.css?v=20260724b">
+<link rel="stylesheet" href="components.css?v=20260729g">
+<link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260716a" defer></script>
+<script src="custom-select.js?v=20260729a" defer></script>
 <script src="i18n.js?v=20260729c" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
@@ -502,7 +502,7 @@
       </div>
       <div class="field intake-dropdown-field">
         <label for="intake-duration">Symptom duration</label>
-        <select class="select" id="intake-duration" data-native-select data-intake-select data-intake-role="duration" required>
+        <select class="select" id="intake-duration" data-intake-select data-intake-role="duration" required>
           <option value="" selected disabled>Select duration</option>
           <option value="lt-1m">Less than 1 month</option>
           <option value="1-6m">1-6 months</option>
@@ -558,7 +558,7 @@
       </div>
       <div class="common-group field intake-dropdown-field">
         <label for="intake-treatment-result">What was the result?</label>
-        <select class="select" id="intake-treatment-result" data-native-select data-intake-select required>
+        <select class="select" id="intake-treatment-result" data-intake-select required>
           <option value="" selected disabled>Select result</option>
           <option value="helped">It helped</option>
           <option value="no-change">No clear change</option>
@@ -3193,7 +3193,7 @@
     const roleAttribute = role ? ` data-intake-role="${role}"` : '';
     return `<div class="field intake-dropdown-field">
       <label for="${id}">${label}</label>
-      <select class="select" id="${id}" data-native-select data-intake-select${roleAttribute} required>
+      <select class="select" id="${id}" data-intake-select${roleAttribute} required>
         <option value="" selected disabled>${placeholder}</option>
         ${options.map(([value,text]) => `<option value="${value}">${text}</option>`).join('')}
       </select>
@@ -3392,17 +3392,54 @@
   };
 
   const intakeBaseMarkup = {};
+  function intakeRequirementState(screenOrId){
+    const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
+    if(!screen) return {ready:true,message:'',target:null};
+    const thai = document.documentElement.lang === 'th';
+    const requiredSelects = [...screen.querySelectorAll('select[data-intake-select][required]')];
+    const missingSelect = requiredSelects.find(select => !select.value);
+    if(missingSelect){
+      const label = screen.querySelector(`label[for="${missingSelect.id}"]`)?.textContent.trim();
+      const isDuration = missingSelect.dataset.intakeRole === 'duration';
+      return {
+        ready:false,
+        message:isDuration
+          ? (thai ? 'กรุณาเลือกระยะเวลาที่มีอาการ' : 'Please select symptom duration')
+          : (thai
+            ? `กรุณาเลือกคำตอบ${label ? `สำหรับ “${label}”` : 'ที่จำเป็น'}`
+            : `Please select ${label || 'the required information'}`),
+        target:missingSelect
+      };
+    }
+    const optionGroups = [...screen.querySelectorAll('.stack-3')].filter(group => {
+      const choices = [...group.children].filter(child => child.matches('.option[data-multi],.option[data-select]'));
+      return choices.length > 0 && choices.length === group.children.length;
+    });
+    const missingGroup = optionGroups.find(group => !group.querySelector('.option[aria-selected="true"]'));
+    if(missingGroup){
+      const section = missingGroup.closest('.common-group')?.querySelector('.section-label')?.textContent.trim();
+      const message = screen.id === 'intake1'
+        ? (thai ? 'กรุณาเลือกอาการที่คุณกำลังพบอย่างน้อย 1 ข้อ' : 'Please select at least one symptom')
+        : (thai
+          ? `กรุณาเลือกคำตอบ${section ? `ในหัวข้อ “${section}”` : ''}อย่างน้อย 1 ข้อ`
+          : `Please select at least one answer${section ? ` for “${section}”` : ''}`);
+      return {ready:false,message,target:missingGroup.querySelector('.option')};
+    }
+    return {ready:true,message:'',target:null};
+  }
   function syncIntakeDropdownContinue(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     if(!screen) return;
-    const requiredSelects = [...screen.querySelectorAll('select[data-intake-select][required]')];
-    if(!requiredSelects.length) return;
-    const ready = requiredSelects.every(select => Boolean(select.value));
+    const state = intakeRequirementState(screen);
     const continueButton = screen.querySelector('.screen__footer .btn--primary');
     if(continueButton){
-      continueButton.disabled = !ready;
-      continueButton.setAttribute('aria-disabled', String(!ready));
+      continueButton.disabled = false;
+      continueButton.classList.toggle('is-disabled',!state.ready);
+      continueButton.setAttribute('aria-disabled',String(!state.ready));
+      if(state.message) continueButton.dataset.missingMessage = state.message;
+      else delete continueButton.dataset.missingMessage;
     }
+    return state;
   }
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
@@ -3417,6 +3454,7 @@
       if(!intakeBaseMarkup[id]) intakeBaseMarkup[id] = body.innerHTML;
       const template = (intakeTemplates[key] || {})[id];
       body.innerHTML = template !== undefined ? template : intakeBaseMarkup[id];
+      if(window.kraneEnhanceSelects) window.kraneEnhanceSelects(body);
       syncIntakeDropdownContinue(id);
     });
     renderedIntakeContext = key;
@@ -5114,6 +5152,17 @@
       // safety routing: if a red-flag condition (data-flag) is selected on this screen,
       // send the patient to the "not eligible / needs in-person care" screen instead.
       const scr = go.closest('.screen');
+      if(scr && INTAKE_DRAFT_SCREENS.includes(scr.id) && go.getAttribute('aria-disabled') === 'true'){
+        const state = syncIntakeDropdownContinue(scr);
+        showActionToast(state?.message || go.dataset.missingMessage || 'กรุณาตอบคำถามที่จำเป็นก่อนดำเนินการต่อ','warning');
+        if(state?.target){
+          const customTrigger = state.target.matches?.('select') && state.target.parentElement?.querySelector('.custom-select__trigger');
+          const focusTarget = customTrigger || state.target;
+          focusTarget.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'center'});
+          window.setTimeout(() => focusTarget.focus?.(),reduceMotion ? 0 : 220);
+        }
+        return;
+      }
       if(reviewEditContext && scr && scr.id === reviewEditContext.target){
         // Editing a field from Review is a short detour: save this screen and return.
         // Changing the whole service category is the exception because it changes
@@ -5198,6 +5247,7 @@
       const group = opt.parentElement;
       [...group.querySelectorAll('.option[data-select]')].forEach(o => o.setAttribute('aria-selected', o===opt));
       saveIntakeDraft();
+      syncIntakeDropdownContinue(opt.closest('.screen'));
     }
     // multi-select options (checkbox style): toggle independently, with "None of the above" mutual exclusion
     const multi = e.target.closest('.option[data-multi]');
@@ -5212,6 +5262,7 @@
         if(none) none.setAttribute('aria-selected','false');
       }
       saveIntakeDraft();
+      syncIntakeDropdownContinue(multi.closest('.screen'));
     }
     // segmented toggles (ID/passport, article filters): single-select within parent group
     const tog = e.target.closest('[data-toggle]');

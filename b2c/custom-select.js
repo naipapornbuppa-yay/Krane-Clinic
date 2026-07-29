@@ -35,6 +35,7 @@
     record.value.textContent=nativeOption?nativeOption.textContent:'';
     record.options.forEach(function(option,index){option.setAttribute('aria-selected',String(index===record.select.selectedIndex))});
     record.trigger.disabled=record.select.disabled;
+    record.root.classList.toggle('is-placeholder',!record.select.value);
   }
 
   function chooseOption(record,index){
@@ -93,6 +94,7 @@
       option.setAttribute('role','option');
       option.textContent=nativeOption.textContent;
       option.disabled=nativeOption.disabled;
+      option.hidden=nativeOption.disabled && !nativeOption.value;
       option.addEventListener('click',function(){chooseOption(record,index)});
       option.addEventListener('keydown',function(event){
         var enabled=record.options.filter(function(item){return !item.disabled});
@@ -126,8 +128,13 @@
     root.addEventListener('focusout',function(){window.setTimeout(function(){if(!root.contains(document.activeElement))closeSelect(record,false)},0)});
   }
 
+  function enhanceAll(root){
+    var scope=root&&root.querySelectorAll?root:document;
+    /* Skip selects the CMS enhancer already wrapped: both scripts load in the back
+       office, and without this guard every select gets two visible triggers. */
+    scope.querySelectorAll('select:not([data-native-select]):not([data-cms-select-ready])').forEach(enhance);
+  }
+  window.kraneEnhanceSelects=enhanceAll;
   document.addEventListener('click',function(event){enhanced.forEach(function(record){if(!record.root.contains(event.target))closeSelect(record,false)})});
-  document.addEventListener('DOMContentLoaded',function(){/* Skip selects the CMS enhancer already wrapped: both scripts load in the back
-     office, and without this guard every select gets two visible triggers. */
-    document.querySelectorAll('select:not([data-native-select]):not([data-cms-select-ready])').forEach(enhance)});
+  document.addEventListener('DOMContentLoaded',function(){enhanceAll(document)});
 })();
