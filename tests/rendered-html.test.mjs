@@ -538,6 +538,24 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct Asian UGC images");
 });
 
+test("doctor cards open matching responsive profiles instead of a placeholder template", async () => {
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const detail = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/detail-pages.css"), "utf8");
+  const legacy = await readFile(path.join(publicRoot, "doctor-detail.html"), "utf8");
+
+  for (const doctor of ["1", "2", "3", "4"]) {
+    assert.match(landing, new RegExp(`href="doctor-detail\\.html\\?doctor=${doctor}"`));
+    assert.match(detail, new RegExp(`"${doctor}": \\{`));
+  }
+  assert.match(detail, /new URLSearchParams\(location\.search\)\.get\("doctor"\)/);
+  assert.match(detail, /data-doctor-name/);
+  assert.match(detail, /data-doctor-specialty/);
+  assert.doesNotMatch(detail, /Doctor profile template|รอข้อมูลแพทย์จริงจากลูกค้า/);
+  assert.match(css, /@media\(max-width:520px\)\{[\s\S]*body\{padding:16px\}/);
+  assert.match(legacy, /location\.replace\("b2c\/doctor-detail\.html" \+ location\.search \+ location\.hash\)/);
+});
+
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
