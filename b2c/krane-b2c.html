@@ -1898,16 +1898,12 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Verify your code</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">Enter the code</h2><p class="muted">We sent a 6-digit code to your verified phone number. Enter it to confirm it's you.</p></div>
-      <div class="row" style="gap:var(--sp-2);justify-content:space-between">
-        <input class="input" inputmode="numeric" maxlength="1" value="4" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
-        <input class="input" inputmode="numeric" maxlength="1" value="2" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
-        <input class="input" inputmode="numeric" maxlength="1" value="9" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
-        <input class="input" inputmode="numeric" maxlength="1" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
-        <input class="input" inputmode="numeric" maxlength="1" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
-        <input class="input" inputmode="numeric" maxlength="1" style="text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);padding:0">
+      <div class="field">
+        <label class="sr-only" for="otp-code">รหัส OTP 6 หลัก</label>
+        <input class="input" id="otp-code" data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="กรอกรหัส 6 หลัก" aria-label="รหัส OTP 6 หลัก" style="width:100%;text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);letter-spacing:.28em">
       </div>
       <p class="hint center">Didn't get it? <a data-demo-action="ส่งรหัส OTP ใหม่แล้ว" style="color:var(--color-blue);text-decoration:underline;cursor:pointer">Resend code</a> · sent via SMS</p>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-auth-complete>ยืนยันรหัสและไปต่อ</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-auth-complete disabled>ยืนยันรหัสและไปต่อ</button></div>
   </section>
 
   <!-- Insurance · choose policy (>1) -->
@@ -3497,13 +3493,22 @@
     show(target,false);
   }
   function prepareFreshOtpChallenge(){
-    const inputs=[...document.querySelectorAll('#otp input[inputmode="numeric"][maxlength="1"]')];
-    inputs.forEach(input => { input.value=''; });
+    const input=document.querySelector('#otp [data-otp-code]');
+    const submit=document.querySelector('#otp [data-auth-complete]');
+    if(input) input.value='';
+    if(submit) submit.disabled=true;
     window.requestAnimationFrame(() => {
       if(!document.getElementById('otp')?.classList.contains('active')) return;
-      inputs[0]?.focus({preventScroll:true});
+      input?.focus({preventScroll:true});
     });
   }
+  document.addEventListener('input',event => {
+    const input=event.target.closest('[data-otp-code]');
+    if(!input) return;
+    input.value=input.value.replace(/\D/g,'').slice(0,6);
+    const submit=document.querySelector('#otp [data-auth-complete]');
+    if(submit) submit.disabled=input.value.length!==6;
+  });
   function partnerConsentChecks(){
     return [...document.querySelectorAll('[data-partner-consent]')];
   }
@@ -4594,6 +4599,12 @@
     }
     const authComplete = e.target.closest('[data-auth-complete]');
     if(authComplete){
+      const otpCode=document.querySelector('#otp [data-otp-code]');
+      if(!otpCode || !/^\d{6}$/.test(otpCode.value)){
+        showActionToast('กรุณากรอกรหัส OTP ให้ครบ 6 หลัก','warning');
+        otpCode?.focus();
+        return;
+      }
       if(flowState.partnerPhoneOtpPending){
         submitOnce('partner-phone-otp',authComplete,() => {
           flowState.partnerPhone=flowState.partnerPendingPhone || flowState.partnerPhone;
