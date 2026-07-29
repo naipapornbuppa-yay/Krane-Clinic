@@ -339,7 +339,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260729hero-trust-row" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260729-treatment-menu" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -4182,6 +4182,12 @@
     return target;
   }
   function show(id, push=true){
+    // The landing treatment dropdown replaces the old broad-category page.
+    // Legacy "new consultation" links now start the general intake directly.
+    if(id === 'concern'){
+      setSelectedCategory('general');
+      id = 'intake1';
+    }
     const requested=id;
     id=requiredRouteFor(id);
     if(id!==requested){

@@ -5,6 +5,11 @@
       announcementDoctors: "BOARD-CERTIFIED DOCTORS ONLINE IN MINUTES",
       announcementFree: "FIRST TELEMEDICINE VISIT FREE — BOOK NOW",
       navTreatments: "Treatments",
+      menuHair: "Hair loss & scalp",
+      menuSkin: "Skin & acne",
+      menuSexual: "Sexual health",
+      menuSleep: "Sleep & stress",
+      menuGeneral: "General consultation",
       navHow: "How it works",
       navGuarantee: "The Krane guarantee",
       navDoctors: "Our doctors",
@@ -117,6 +122,28 @@
   menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => closeMenu()));
   mobileQuery.addEventListener("change", (event) => {
     if (!event.matches) closeMenu();
+  });
+
+  const treatmentMenu = document.querySelector("[data-treatment-menu]");
+  const treatmentMenuTrigger = document.querySelector("[data-treatment-menu-trigger]");
+  function setTreatmentMenu(open) {
+    if (!treatmentMenu || !treatmentMenuTrigger) return;
+    treatmentMenu.classList.toggle("is-open", open);
+    treatmentMenuTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  treatmentMenuTrigger?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setTreatmentMenu(!treatmentMenu.classList.contains("is-open"));
+  });
+  treatmentMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setTreatmentMenu(false)));
+  document.addEventListener("click", (event) => {
+    if (treatmentMenu && !treatmentMenu.contains(event.target)) setTreatmentMenu(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && treatmentMenu?.classList.contains("is-open")) {
+      setTreatmentMenu(false);
+      treatmentMenuTrigger?.focus();
+    }
   });
 
   const languageSelects = [...document.querySelectorAll("[data-language]")];
