@@ -112,6 +112,14 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "summary"), /Continue as|Mali S\./, "summary actions must describe the task, not expose a demo patient name");
 });
 
+test("legacy patient URLs redirect to the canonical B2C routes", async () => {
+  const legacyPatient = await readFile(path.join(publicRoot, "krane-b2c.html"), "utf8");
+  const legacyLanding = await readFile(path.join(publicRoot, "krane-b2c-landing.html"), "utf8");
+  assert.match(legacyPatient, /location\.replace\("\/b2c\/krane-b2c\.html"/);
+  assert.match(legacyLanding, /location\.replace\("\/b2c\/krane-b2c-landing\.html"/);
+  assert.doesNotMatch(legacyPatient, /class="devicebar"/);
+});
+
 test("onboarding is an immersive bilingual photo sequence with a stable CTA progression", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
