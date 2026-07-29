@@ -322,8 +322,11 @@ test("post-consultation checkout carries the accepted order into delivery and pa
 
   assert.match(plan, /data-go="payment"/, "accepting the plan must go directly to payment");
   assert.doesNotMatch(plan, /data-go="address"|data-go="pharmacy-locate"/, "accepting the plan must not force an address or pharmacy-locate detour");
-  assert.match(payment, /data-go="address"[\s\S]*เปลี่ยนที่อยู่/, "payment must expose an explicit Change address action");
+  assert.match(payment, /data-go="address"[\s\S]*เลือกที่อยู่/, "payment must expose an explicit Choose address action");
+  assert.match(payment, /ยังไม่ได้เลือกที่อยู่จัดส่ง/, "checkout must begin with an empty delivery address");
+  assert.match(payment, /data-payment-go aria-disabled="true"[\s\S]*ต่อไป/, "checkout must gate the Next action until required fields are complete");
   assert.match(address, /data-address-save/, "the address form must have a dedicated save-and-return action");
+  assert.match(html, /function checkoutIsReady\(\)[\s\S]*addressConfirmed/, "checkout readiness must require an explicitly confirmed address");
   assert.match(html, /address:\{building:/, "the saved delivery address must live in persisted order state");
   assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*history\.pop\(\)[\s\S]*show\('payment',false\)/, "saving an address must return to the existing payment step without duplicating history");
 
@@ -346,7 +349,16 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(payment, /data-payment-note|โน้ตถึงไรเดอร์|note (?:for|to) (?:the )?rider/i);
   assert.doesNotMatch(payment, /data-payment-pdpa|\bPDPA\b|personal data protection|privacy policy|นโยบายความเป็นส่วนตัว/i);
   assert.match(payment, /data-payment-addons/);
-  assert.match(payment, /data-addon-item/);
+  assert.match(payment, /checkout-addon-rail/);
+  assert.ok((payment.match(/data-addon-item/g) || []).length >= 2, "optional products must form a horizontal card rail");
+  assert.doesNotMatch(payment, /data-delivery-value="[^"]+"[\s\S]{0,350}opt-check/, "delivery rows must not duplicate selection with checkbox controls");
+  assert.doesNotMatch(payment, /฿ 350 (?:ชำระแล้ว|อยู่ในสิทธิ์)/);
+  assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
+
+  const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
+  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('pharmacy-search'\)/, "Next must send the order to pharmacy review before payment");
+  assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*ไปชำระเงิน/, "payment can begin only after pharmacy acceptance");
+  assert.match(html, /closest\('\[data-pharmacy-accepted-pay\]'\)[\s\S]*show\('payment-gw'\)/, "accepted order must open the payment gateway");
 
   for (const outcome of [failure, success]) {
     assert.match(outcome, /data-payment-outcome-amount/);
