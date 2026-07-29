@@ -413,9 +413,12 @@ test("Figma landing keeps every client access route and responsive menu contract
   const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
   const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
 
-  for (const route of ["login", "concern", "partner-access", "articles", "consent-terms"]) {
+  for (const route of ["login", "partner-access", "articles", "consent-terms"]) {
     assert.match(html, new RegExp(`data-route="${route}"`), `landing must preserve ${route} access`);
   }
+  assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
+  assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
+  assert.match(html, /class="mobile-treatment-menu"/);
   for (const category of ["hair-skin", "sexual-health", "skin", "general", "sleep-stress"]) {
     assert.match(html, new RegExp(`data-category="${category}"`), `landing must preserve ${category} treatment route`);
   }
