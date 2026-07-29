@@ -35,21 +35,6 @@
 <style>
   /* prototype chrome only (not part of the product) */
   body{max-width:100%;background:var(--gradient-teal-soft);overflow-x:hidden}
-  body.qa-locked{overflow:hidden}
-  body.qa-locked>.proto,body.qa-locked>svg{visibility:hidden}
-  .qa-access{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:24px;background:#f4f6f8;color:#111b30;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-  .qa-access[hidden]{display:none}
-  .qa-access__card{width:min(100%,420px);padding:32px;border:1px solid #e1e8f0;border-radius:32px;background:#fff;box-shadow:0 24px 70px rgba(17,27,48,.12);transform:translateY(clamp(24px,4vh,48px))}
-  .qa-access__brand{display:block;width:min(100%,220px);height:auto;margin:0 0 34px}
-  .qa-access__eyebrow{margin:0 0 10px;color:#1973ff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-  .qa-access h1{margin:0;font-size:30px;line-height:1.15;letter-spacing:-.03em}
-  .qa-access__hint,.qa-access__error{margin:14px 0 24px;color:#5c6479;font-size:14px;line-height:1.55}
-  .qa-access__error{padding:12px 14px;border-radius:14px;background:#fff2f0;color:#9d2d28}
-  .qa-access label{display:block;margin-bottom:8px;font-size:13px;font-weight:700}
-  .qa-access input{width:100%;height:54px;padding:0 16px;border:1px solid #cbd5e1;border-radius:16px;background:#fff;color:#111b30;font:600 20px/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em}
-  .qa-access input:focus{outline:3px solid rgba(25,115,255,.2);border-color:#1973ff}
-  .qa-access button{width:100%;min-height:54px;margin-top:14px;border:0;border-radius:999px;background:#111b30;color:#fff;font:700 15px/1 Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer}
-  .qa-access footer{margin-top:24px;color:#8a94a6;font-size:11px;line-height:1.5;text-align:center}
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;overflow-x:hidden}
   .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
   .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) var(--sp-2) var(--sp-4);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
@@ -101,8 +86,6 @@
     .proto{width:100%;min-height:100dvh;height:100dvh;overflow:hidden}
     .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
     .stage .screen{width:100%;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none}
-    .qa-access{padding:12px}
-    .qa-access__card{padding:28px 22px;border-radius:28px;transform:translateY(clamp(20px,4vh,34px))}
   }
   /* ── Feature annotation strip (prototype chrome only, not product UI) ── */
   .feat-strip{width:100%;background:var(--color-accent-soft-2);border:1px solid var(--color-accent-soft);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;font-size:11px;line-height:1.4;font-family:var(--font-base)}
@@ -130,45 +113,7 @@
   .identity-upload.is-complete [data-identity-status]{color:var(--color-accent-ink);font-weight:var(--fw-semibold)}
 </style>
 </head>
-<body class="hide-feat qa-locked">
-<div class="qa-access" data-qa-access>
-  <main class="qa-access__card">
-    <img class="qa-access__brand" src="assets/krane-lockup-charcoal.svg?v=20260720" alt="Krane Clinic">
-    <p class="qa-access__eyebrow">Protected review</p>
-    <h1>Open the Krane QA app</h1>
-    <p class="qa-access__hint">Enter the review password to continue.</p>
-    <p class="qa-access__error" data-qa-access-error role="alert" hidden>The password is incorrect. Please try again.</p>
-    <form data-qa-access-form>
-      <label for="qa-review-password">Review password</label>
-      <input id="qa-review-password" name="password" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" required autofocus>
-      <button type="submit">Continue to Krane</button>
-    </form>
-    <footer>Prototype data only · Do not enter real patient information.</footer>
-  </main>
-</div>
-<script id="qa-access-script">
-  const qaAccess=document.querySelector('[data-qa-access]');
-  const qaAccessForm=document.querySelector('[data-qa-access-form]');
-  const qaAccessError=document.querySelector('[data-qa-access-error]');
-  const qaAccessInput=document.getElementById('qa-review-password');
-  let qaAccessGranted=false;
-  try{qaAccessGranted=sessionStorage.getItem('krane-qa-access')==='granted'}catch(error){}
-  function openQaApp(){
-    document.body.classList.remove('qa-locked');
-    qaAccess.hidden=true;
-  }
-  if(qaAccessGranted) openQaApp();
-  qaAccessForm.addEventListener('submit',event=>{
-    event.preventDefault();
-    if(qaAccessInput.value!=='234'){
-      qaAccessError.hidden=false;
-      qaAccessInput.select();
-      return;
-    }
-    try{sessionStorage.setItem('krane-qa-access','granted')}catch(error){}
-    openQaApp();
-  });
-</script>
+<body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <symbol id="logo-line" viewBox="0 0 32 32">
     <rect width="32" height="32" rx="8" fill="#06C755"></rect>

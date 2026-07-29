@@ -502,6 +502,8 @@ test("Figma landing keeps every client access route and responsive menu contract
 
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const directory = await readFile(path.join(publicRoot, "START-HERE.html"), "utf8");
   assert.match(worker, /QA_REVIEW_PASSWORD\?: string/);
   assert.match(worker, /QA_REVIEW_COOKIE_SECRET\?: string/);
   assert.match(worker, /return env\.QA_REVIEW_PASSWORD \|\| "234"/);
@@ -511,13 +513,22 @@ test("public QA review gate preserves deep links and uses a signed server cookie
   assert.match(worker, /action="\/qa-unlock"/);
   assert.match(worker, /status: 303/);
   assert.match(worker, /PUBLIC_REVIEW_ASSETS/);
-  assert.match(worker, /"\/b2c\/assets\/krane-lockup-charcoal\.svg"/);
-  assert.match(worker, /<img class="brand" src="\/b2c\/assets\/krane-lockup-charcoal\.svg\?v=20260728d" alt="Krane Clinic">/);
-  assert.match(worker, /transform:translateY\(clamp\(24px,4vh,48px\)\)/);
-  assert.match(worker, /body\{min-height:100%;min-height:100dvh/);
+  assert.match(worker, /"\/b2c\/assets\/landing-573\/latest\/hero-base\.png"/);
+  assert.match(worker, /<h1>ตัวอย่างงานออกแบบ<\/h1>/);
+  assert.match(worker, /placeholder="Access code"/);
+  assert.match(worker, /backdrop-filter:blur\(22px\)/);
+  assert.match(worker, /min-height:100%;min-height:100dvh/);
   assert.match(worker, /img-src 'self'/);
   assert.match(worker, /location: `\$\{url\.pathname\}\$\{url\.search\}\$\{url\.hash\}`/);
   assert.doesNotMatch(worker, /Response\.redirect\(url\.toString\(\), 307\)/);
+  assert.doesNotMatch(patient, /data-qa-access/);
+  assert.doesNotMatch(patient, /sessionStorage\.getItem\('krane-qa-access'\)/);
+  assert.match(directory, /href="\/b2c\/krane-b2c#landing"/);
+  assert.match(directory, /href="\/cms\/doctor"/);
+  assert.match(directory, /href="\/cms\/admin"/);
+  assert.match(directory, /แอปผู้รับบริการ/);
+  assert.match(directory, /พอร์ทัลแพทย์/);
+  assert.match(directory, /พอร์ทัลผู้ดูแล/);
 });
 
 test("master Mermaid separates consent, coverage, fulfilment exceptions, and continuity", async () => {

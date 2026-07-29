@@ -7,9 +7,10 @@ import { QA_ROUTE_ALIASES, qaAssetPath } from "../worker/routes.mjs";
 const root = path.resolve(import.meta.dirname, "..");
 
 test("client-facing clean routes resolve to canonical nested assets", () => {
-  assert.equal(qaAssetPath("/"), "/b2c/krane-b2c.html");
-  assert.equal(qaAssetPath("/qa/"), "/b2c/krane-b2c.html");
-  assert.equal(qaAssetPath("/START-HERE.html"), "/b2c/krane-b2c.html");
+  assert.equal(qaAssetPath("/"), "/START-HERE.html");
+  assert.equal(qaAssetPath("/qa/"), "/START-HERE.html");
+  assert.equal(qaAssetPath("/index.html"), "/START-HERE.html");
+  assert.equal(qaAssetPath("/START-HERE.html"), null);
   assert.equal(qaAssetPath("/b2c/landing"), "/b2c/krane-b2c-landing.html");
   assert.equal(qaAssetPath("/b2c/krane-b2c/"), "/b2c/krane-b2c.html");
   assert.equal(qaAssetPath("/cms/doctor"), "/cms/cms-doctor.html");
@@ -22,4 +23,5 @@ test("every route alias points to a packaged file", async () => {
   await Promise.all(Object.values(QA_ROUTE_ALIASES).map(async (assetPath) => {
     await access(path.join(root, "public", assetPath));
   }));
+  await access(path.join(root, "public", "START-HERE.html"));
 });

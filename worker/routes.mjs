@@ -1,8 +1,7 @@
 export const QA_ROUTE_ALIASES = Object.freeze({
-  "/": "/b2c/krane-b2c.html",
-  "/qa": "/b2c/krane-b2c.html",
-  "/index.html": "/b2c/krane-b2c.html",
-  "/START-HERE.html": "/b2c/krane-b2c.html",
+  "/": "/START-HERE.html",
+  "/qa": "/START-HERE.html",
+  "/index.html": "/START-HERE.html",
   "/b2c/landing": "/b2c/krane-b2c-landing.html",
   "/b2c/krane-b2c": "/b2c/krane-b2c.html",
   "/cms/doctor": "/cms/cms-doctor.html",
