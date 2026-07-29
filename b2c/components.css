@@ -373,6 +373,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-row__value--wrap{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
 .checkout-row__chevron{flex:none;color:var(--color-ink-3)}
 .checkout-row__tag{flex:none;padding:2px var(--sp-2);border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.checkout-row--empty{border-color:var(--color-line);background:var(--color-surface)}
+.checkout-row--empty .checkout-row__value{color:var(--color-ink-3);font-weight:var(--fw-regular)}
 
 /* Price breakdown: quiet rows, one emphasised total */
 .checkout-bill{padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface)}
@@ -382,7 +384,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-bill__rule{height:1px;margin-block:var(--sp-2);background:var(--color-line)}
 .checkout-bill__total{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-top:var(--sp-2)}
 .checkout-bill__total span{color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
-.checkout-bill__total strong{color:var(--color-ink);font-size:var(--fs-xl);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums}
+.checkout-bill__total strong{color:var(--color-ink);font-size:var(--fs-xl);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
 
 /* Grab-style itemised order summary on the checkout screen.
    One card, a light header, then a line per prescribed item. */
@@ -390,7 +392,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-order__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--color-line);background:var(--color-bg-soft)}
 .checkout-order__head .badge{flex:none;white-space:nowrap}
 .checkout-order__by{min-width:0}
-.checkout-order__by{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.checkout-order__by{min-width:0;display:flex;align-items:baseline;gap:6px;font-size:var(--fs-sm);font-weight:var(--fw-regular);color:var(--color-ink-2)}
+.checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__count{font-size:var(--fs-xs);color:var(--color-ink-3)}
 .checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
 .checkout-order__item+.checkout-order__item{border-top:1px solid var(--color-line)}
@@ -406,11 +409,25 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-pay{display:flex;align-items:center;gap:var(--sp-4)}
 .checkout-pay__amount{display:flex;flex-direction:column;gap:2px;flex:none}
 .checkout-pay__amount span{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
-.checkout-pay__amount strong{color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;line-height:1.1}
+.checkout-pay__amount strong{color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;line-height:1.1}
 .checkout-pay .btn{flex:1}
 @media(max-width:380px){.checkout-pay{flex-direction:column;align-items:stretch;gap:var(--sp-2)}.checkout-pay__amount{flex-direction:row;align-items:baseline;justify-content:space-between}}
 .checkout-addon__mark{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-bold);letter-spacing:-.02em}
 .checkout-addon[aria-selected="true"] .checkout-addon__mark{background:var(--color-surface)}
+.checkout-delivery-option{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left}
+.checkout-delivery-option[aria-checked="true"]{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.checkout-delivery-option .checkout-order__price{justify-self:end;margin-left:var(--sp-4)}
+.checkout-addon-rail{display:flex;gap:var(--sp-3);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;padding:2px var(--sp-4) var(--sp-2);margin-inline:calc(var(--sp-4) * -1);scrollbar-width:none}
+.checkout-addon-rail::-webkit-scrollbar{display:none}
+.checkout-addon-card{flex:0 0 min(78%,280px);min-height:170px;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.checkout-addon-card[aria-selected="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.checkout-addon-card .checkout-addon__mark{width:48px;height:48px;border-radius:50%;font-size:11px;font-weight:var(--fw-semibold)}
+.checkout-addon-card__copy{display:flex;flex-direction:column;gap:4px}
+.checkout-addon-card__copy strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.checkout-addon-card__copy span{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.checkout-addon-card__foot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-top:auto;font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.checkout-addon-card__foot em{padding:4px 10px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-xs);font-style:normal;font-weight:var(--fw-medium)}
+.checkout-addon-card[aria-selected="true"] .checkout-addon-card__foot em{background:var(--color-ink);color:var(--color-surface)}
 .photo-graphic.payment-state-graphic{min-height:160px}
 /* rows at the edge of a padded card: no dead air against the card's own padding */
 .card>.list-row:first-child,.card .stack-3>.list-row:first-child{padding-top:0;min-height:0}
