@@ -30,6 +30,7 @@ const PUBLIC_REVIEW_ASSETS = new Set([
   "/b2c/assets/landing-573/latest/hero-base.png",
   "/b2c/assets/krane-lockup-charcoal.svg",
   "/assets/krane-clinic-logo-charcoal.svg",
+  "/assets/krane-review-wordmark.svg",
 ]);
 
 function escapeHtml(value: string): string {
@@ -135,7 +136,7 @@ function unlockPage(nextPath: string, errorMessage = "", status = 200): Response
     body::before{content:"";position:fixed;z-index:-2;inset:-20px;background:url("/b2c/assets/landing-573/latest/hero-base.png?v=20260729k") 34% center/cover no-repeat;filter:grayscale(.82) blur(4px);opacity:.16;transform:scale(1.035)}
     body::after{content:"";position:fixed;z-index:-1;inset:0;background:radial-gradient(circle at 18% 12%,rgba(255,255,255,.82),transparent 42%),linear-gradient(145deg,rgba(224,233,230,.96),rgba(204,217,218,.96) 52%,rgba(186,202,201,.96))}
     main{width:min(100%,560px);padding:46px 48px 42px;border:1px solid rgba(255,255,255,.9);border-radius:32px;background:rgba(250,249,246,.94);box-shadow:0 24px 64px rgba(30,54,49,.15),inset 0 1px 0 rgba(255,255,255,.9);text-align:center;backdrop-filter:blur(18px) saturate(.9);-webkit-backdrop-filter:blur(18px) saturate(.9);animation:card-in .45s cubic-bezier(.22,1,.36,1) both}
-    .eyebrow{margin:0 0 18px;color:#42625a;font-size:13px;font-weight:650;letter-spacing:.17em}
+    .review-logo{display:block;width:164px;height:auto;margin:0 auto 24px}
     h1{margin:0;color:#17231f;font-size:clamp(34px,4vw,42px);font-weight:650;line-height:1.18;letter-spacing:-.02em}
     .subtitle{margin:16px 0 0;color:#697570;font-size:17px;font-weight:400;line-height:1.55}
     form{margin-top:28px}
@@ -151,13 +152,13 @@ function unlockPage(nextPath: string, errorMessage = "", status = 200): Response
     .error:not(.error--empty){display:inline-block;padding:8px 12px;border:1px solid #e3c6c3;border-radius:999px;background:#f8ecea}
     .error--empty{visibility:hidden}
     @keyframes card-in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
-    @media(max-width:560px){body{padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}body::before{background-position:28% center}main{padding:38px 22px 30px;border-radius:26px}.eyebrow{margin-bottom:14px}.subtitle{margin-top:14px;font-size:15px;line-height:1.55}form{margin-top:22px}.access-field{min-height:66px;padding:5px}input{height:54px;padding:0 12px;font-size:17px}button{width:54px;height:54px;font-size:27px}.error{margin-top:12px}}
+    @media(max-width:560px){body{padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}body::before{background-position:28% center}main{padding:38px 22px 30px;border-radius:26px}.review-logo{width:138px;margin-bottom:20px}.subtitle{margin-top:14px;font-size:15px;line-height:1.55}form{margin-top:22px}.access-field{min-height:66px;padding:5px}input{height:54px;padding:0 12px;font-size:17px}button{width:54px;height:54px;font-size:27px}.error{margin-top:12px}}
     @media(prefers-reduced-motion:reduce){main{animation:none}.access-field,button{transition:none}}
   </style>
 </head>
 <body>
   <main>
-    <p class="eyebrow">KRANE CLINIC</p>
+    <img class="review-logo" src="/assets/krane-review-wordmark.svg" alt="Krane">
     <h1>ตัวอย่างงานออกแบบ</h1>
     <p class="subtitle">Design preview · ใส่รหัสแล้วเลือกส่วนที่ต้องการดู</p>
     ${error}
