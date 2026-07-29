@@ -186,15 +186,17 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .transition-stage__top .ttl{flex:none}
 .transition-stage__close{position:absolute;right:14px;top:50%;width:40px;height:40px;display:grid;place-items:center;transform:translateY(-50%);border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:30px;font-weight:var(--fw-regular);line-height:1;cursor:pointer}
 .transition-stage{display:flex;min-height:0;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding-top:24px;padding-bottom:32px;text-align:center}
-.transition-stage__visual{position:relative;width:min(100%,320px);height:220px;display:grid;place-items:center;overflow:hidden;border-radius:var(--radius-lg);background:linear-gradient(150deg,var(--color-powder),var(--color-bg-soft));color:var(--color-ink)}
-.transition-stage__visual::before,.transition-stage__visual::after{content:"";position:absolute;width:120px;height:58px;border-radius:999px;background:rgba(255,255,255,.72)}
-.transition-stage__visual::before{left:-34px;top:35px;box-shadow:34px 18px 0 -4px rgba(255,255,255,.72)}
-.transition-stage__visual::after{right:-24px;top:44px;box-shadow:-30px 17px 0 -7px rgba(255,255,255,.72)}
-.transition-stage__symbol{position:relative;z-index:1;width:112px;height:112px;display:grid;place-items:center;border-radius:42% 58% 54% 46%;background:var(--color-surface);box-shadow:var(--shadow-md)}
-.transition-stage__symbol .ui-icon{width:48px;height:48px}
-.transition-stage__bubble{position:absolute;z-index:2;right:18px;top:72px;padding:9px 13px;border-radius:16px 16px 4px 16px;background:var(--color-surface-deep);color:var(--color-on-dark);font-size:13px;font-weight:var(--fw-semibold)}
-.transition-stage__visual--success .transition-stage__symbol{color:var(--color-success)}
-.transition-stage__meter{width:66px;height:66px;display:grid;place-items:center;border:4px solid var(--color-powder);border-radius:50%;background:var(--color-surface);color:var(--color-ink);box-shadow:var(--shadow-sm);font-size:13px;font-weight:var(--fw-semibold)}
+/* Krane transition graphic: a compact blue signal with gentle orbital motion.
+   It intentionally has no illustration panel or borrowed scene background. */
+.transition-stage__visual{position:relative;width:136px;height:136px;display:grid;place-items:center;overflow:visible;background:transparent;color:var(--color-accent)}
+.transition-stage__visual::before,.transition-stage__visual::after{content:"";position:absolute;inset:14px;border:1px solid color-mix(in srgb,var(--color-accent) 38%,transparent);border-radius:50%;animation:krane-orbit-pulse 2.4s var(--ease-inout) infinite}
+.transition-stage__visual::after{inset:0;border-style:dashed;opacity:.48;animation:krane-orbit-spin 8s linear infinite}
+.transition-stage__symbol{position:relative;z-index:1;width:72px;height:72px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:var(--color-on-dark);box-shadow:0 10px 30px color-mix(in srgb,var(--color-accent) 24%,transparent);animation:krane-signal-float 2.2s var(--ease-inout) infinite}
+.transition-stage__symbol::after{content:"";position:absolute;width:8px;height:8px;right:-14px;top:8px;border-radius:50%;background:var(--color-accent);box-shadow:-82px 72px 0 color-mix(in srgb,var(--color-accent) 58%,transparent);animation:krane-signal-blink 1.8s var(--ease-inout) infinite}
+.transition-stage__symbol .ui-icon{width:32px;height:32px}
+.transition-stage__bubble{position:absolute;z-index:2;right:-26px;top:8px;padding:7px 10px;border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-accent-ink);box-shadow:var(--shadow-sm);font-size:11px;font-weight:var(--fw-medium)}
+.transition-stage__visual--success .transition-stage__symbol{background:var(--color-accent);color:var(--color-on-dark)}
+.transition-stage__meter{min-width:66px;height:42px;padding:0 12px;display:grid;place-items:center;border:1px solid var(--color-line);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);box-shadow:none;font-size:13px;font-weight:var(--fw-semibold)}
 .transition-stage__meter>.ui-icon{width:24px;height:24px}
 .transition-stage__meter .avatar{width:48px;height:48px}
 .transition-stage__meter .brandloader{width:42px;height:42px;margin:0}
@@ -210,6 +212,25 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .transition-stage__steps strong{margin-left:5px;font-size:13px}
 .transition-stage .matchbar{width:min(100%,320px);height:4px;margin:-5px 0 0}
 .transition-stage>[data-ph-branch]{max-width:370px;margin:0}
+@keyframes krane-orbit-pulse{0%,100%{transform:scale(.9);opacity:.28}50%{transform:scale(1.08);opacity:.78}}
+@keyframes krane-orbit-spin{to{transform:rotate(360deg)}}
+@keyframes krane-signal-float{0%,100%{transform:translateY(2px)}50%{transform:translateY(-4px)}}
+@keyframes krane-signal-blink{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+@media(prefers-reduced-motion:reduce){.transition-stage__visual::before,.transition-stage__visual::after,.transition-stage__symbol,.transition-stage__symbol::after{animation:none}}
+
+/* Pharmacy acceptance is deliberately brief: state, total, essentials, action. */
+.pharmacy-accepted{display:flex;flex-direction:column;align-items:center;gap:22px;padding-top:34px;text-align:center}
+.pharmacy-accepted>.h1{max-width:420px;margin:0;font-size:clamp(28px,7vw,36px);line-height:1.2}
+.pharmacy-accepted__summary{width:100%;overflow:hidden;border:1px solid var(--color-line);border-radius:var(--radius-xl);background:var(--color-surface);text-align:left;box-shadow:var(--shadow-sm)}
+.pharmacy-accepted__total{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:20px;border-bottom:1px solid var(--color-line);background:var(--color-bg-soft)}
+.pharmacy-accepted__total span{color:var(--color-ink-2);font-size:var(--fs-sm)}
+.pharmacy-accepted__total strong{font-size:clamp(30px,8vw,40px);font-weight:var(--fw-semibold);line-height:1}
+.pharmacy-accepted__details{display:grid;margin:0;padding:6px 20px 10px}
+.pharmacy-accepted__details>div{display:grid;grid-template-columns:minmax(96px,.8fr) minmax(0,1.5fr);gap:16px;padding:13px 0;border-bottom:1px solid var(--color-line)}
+.pharmacy-accepted__details>div:last-child{border-bottom:0}
+.pharmacy-accepted__details dt{color:var(--color-ink-2)}
+.pharmacy-accepted__details dd{margin:0;color:var(--color-ink);font-weight:var(--fw-medium);text-align:right}
+@media(max-width:420px){.pharmacy-accepted{gap:18px;padding-top:24px}.pharmacy-accepted__total{padding:18px}.pharmacy-accepted__details{padding-inline:18px}.pharmacy-accepted__details>div{grid-template-columns:92px minmax(0,1fr);gap:12px}}
 
 /* Paid-order hand-off remains a short waiting state, not a process explainer. */
 #pharmacy-search .pharmacy-review-simple{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center}
