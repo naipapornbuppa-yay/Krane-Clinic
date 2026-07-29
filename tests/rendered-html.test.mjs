@@ -184,7 +184,7 @@ test("onboarding is an immersive bilingual photo sequence with a stable CTA prog
   assert.match(i18n, /"Private care, wherever you are\.":"ดูแลสุขภาพอย่างเป็นส่วนตัวได้ทุกที่"/);
 });
 
-test("intake keeps multi-select questions visible and compacts scalar answers into required dropdowns", async () => {
+test("intake keeps multi-select questions visible and uses compact required controls", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const i18n = await readFile(path.join(publicRoot, "b2c/i18n.js"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
@@ -201,11 +201,13 @@ test("intake keeps multi-select questions visible and compacts scalar answers in
   assert.doesNotMatch(screenFragment(html, "intake1"), /<p class="hint">/, "the fallback first intake screen must not include a redundant description");
   assert.equal((hairFirstQuestion.match(/data-multi/g) || []).length, 5, "hair locations must remain visible multi-select cards");
   assert.doesNotMatch(hairFirstQuestion, /data-select/, "hair duration must no longer render as a radio-card list");
-  assert.match(hairFirstQuestion, /intakeDropdown\(\{[\s\S]*?role:'duration'/);
+  assert.match(hairFirstQuestion, /intakeDurationControl\(\{label:'How long has this been happening\?'\}\)/);
+  assert.match(html, /function intakeDurationControl\(\{label,thai=false\}\)/);
+  assert.match(html, /data-intake-duration-step="-1"/);
+  assert.match(html, /data-intake-duration-unit="day"/);
+  assert.match(html, /input\[data-intake-role="duration"\]\[required\]/);
   assert.match(html, /function intakeDropdown\(\{id,label,placeholder,options,role=''\}\)/);
-  assert.match(html, /data-intake-select data-intake-role="duration" required/);
   assert.doesNotMatch(html, /data-native-select data-intake-select/);
-  assert.match(html, /<option value="" selected disabled>Select duration<\/option>/);
   assert.match(html, /function intakeRequirementState\(screenOrId\)/);
   assert.match(html, /function syncIntakeDropdownContinue\(screenOrId\)/);
   assert.match(html, /missingGroup = optionGroups\.find/);
@@ -214,6 +216,7 @@ test("intake keeps multi-select questions visible and compacts scalar answers in
   assert.match(html, /control\.selectedOptions\[0\]\?\.textContent\.trim\(\)/);
   assert.match(html, /const DRAFT_KEY = 'krane-p01-intake-draft-v2'/);
   assert.match(components, /\.intake-dropdown-field \.select\{font-size:16px\}/, "mobile intake selects must not trigger iOS input zoom");
+  assert.match(components, /\.intake-duration-control\{max-width:620px\}/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*?\.care-journey__name\{display:block;margin-top:2px;font-size:9\.5px;font-weight:var\(--fw-regular\);line-height:1\.12\}/);
   assert.match(components, /\.care-journey__step\.is-current \.care-journey__name\{font-weight:var\(--fw-medium\)\}/);
   for (const copy of [
