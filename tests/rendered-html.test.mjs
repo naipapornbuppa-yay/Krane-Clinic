@@ -359,6 +359,15 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('pharmacy-search'\)/, "Next must send the order to pharmacy review before payment");
   assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*ไปชำระเงิน/, "payment can begin only after pharmacy acceptance");
   assert.match(html, /closest\('\[data-pharmacy-accepted-pay\]'\)[\s\S]*show\('payment-gw'\)/, "accepted order must open the payment gateway");
+  assert.match(pharmacyAccepted, /transition-stage__visual--success/, "pharmacy acceptance should use the compact animated state signal");
+  assert.match(pharmacyAccepted, /pharmacy-accepted__summary/, "pharmacy acceptance needs a concise, scannable order summary");
+  assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ|ยอดที่ชำระแล้ว/, "pharmacy acceptance must not use a large state panel or imply payment already happened");
+  assert.doesNotMatch(screenFragment(html, "pharmacypending"), /photo-graphic/, "medicine preparation should share the compact transition signal");
+  assert.doesNotMatch(screenFragment(html, "refund"), /photo-graphic/, "refund confirmation should share the compact result signal");
+
+  const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  assert.match(css, /\.transition-stage__visual\{[^}]*width:136px[^}]*background:transparent/, "loading visuals must stay compact and panel-free");
+  assert.match(css, /@keyframes krane-orbit-pulse/, "loading visuals need a subtle Krane-owned motion treatment");
 
   for (const outcome of [failure, success]) {
     assert.match(outcome, /data-payment-outcome-amount/);
