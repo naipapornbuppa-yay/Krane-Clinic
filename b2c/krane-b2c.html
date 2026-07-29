@@ -2232,9 +2232,39 @@
           <div class="field grow"><label for="partner-weight">น้ำหนัก (กก.)</label><input class="input" id="partner-weight" inputmode="numeric" placeholder="เช่น 70"></div>
         </div>
         <div class="partner-clinical-grid">
-          <div class="field"><label for="partner-conditions">โรคประจำตัว</label><input class="input" id="partner-conditions" value="ไม่มี" autocomplete="off"></div>
-          <div class="field"><label for="partner-medications">ยาที่ใช้ประจำ</label><input class="input" id="partner-medications" value="ไม่มี" autocomplete="off"></div>
-          <div class="field"><label for="partner-allergies">ประวัติแพ้ยา</label><input class="input" id="partner-allergies" value="ไม่มี" autocomplete="off"></div>
+          <fieldset class="partner-history-field" data-partner-history="conditions">
+            <legend>โรคประจำตัว</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="โรคประจำตัว">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-partner-history-detail hidden>
+              <label class="sr-only" for="partner-conditions">ระบุโรคประจำตัว</label>
+              <input class="input" id="partner-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off">
+            </div>
+          </fieldset>
+          <fieldset class="partner-history-field" data-partner-history="medications">
+            <legend>ยาที่ใช้ประจำ</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="ยาที่ใช้ประจำ">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-partner-history-detail hidden>
+              <label class="sr-only" for="partner-medications">ระบุยาที่ใช้ประจำ</label>
+              <input class="input" id="partner-medications" placeholder="ระบุชื่อยา" autocomplete="off">
+            </div>
+          </fieldset>
+          <fieldset class="partner-history-field" data-partner-history="allergies">
+            <legend>ประวัติแพ้ยา</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-partner-history-detail hidden>
+              <label class="sr-only" for="partner-allergies">ระบุประวัติแพ้ยา</label>
+              <input class="input" id="partner-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off">
+            </div>
+          </fieldset>
         </div>
       </div>
     </div>
@@ -3697,15 +3727,38 @@
       complete.disabled=!(answers.urgent && answers.accurate && answers.remote);
     }
   }
+  function setPartnerHistoryChoice(group,hasDetails){
+    if(!group) return;
+    group.querySelectorAll('[data-partner-history-choice]').forEach(option => {
+      option.setAttribute('aria-checked',String(
+        option.dataset.partnerHistoryChoice===(hasDetails ? 'yes' : 'none')
+      ));
+    });
+    const detail=group.querySelector('[data-partner-history-detail]');
+    if(detail) detail.hidden=!hasDetails;
+  }
+  function syncPartnerHistoryFields(){
+    document.querySelectorAll('[data-partner-history]').forEach(group => {
+      const key=group.dataset.partnerHistory;
+      const value=flowState.partnerHealth[key] || 'ไม่มี';
+      const hasDetails=value!=='ไม่มี';
+      const input=group.querySelector('input');
+      if(input) input.value=hasDetails ? value : '';
+      setPartnerHistoryChoice(group,hasDetails);
+    });
+  }
+  function partnerHistoryValue(key){
+    const group=document.querySelector(`[data-partner-history="${key}"]`);
+    const selected=group?.querySelector('[data-partner-history-choice][aria-checked="true"]');
+    if(!group || selected?.dataset.partnerHistoryChoice!=='yes') return 'ไม่มี';
+    return group.querySelector('input')?.value.trim() || '';
+  }
   function restorePartnerFields(){
     const values={
       'partner-full-name':flowState.partnerName || 'Mali Suthida',
       'partner-phone':flowState.partnerPhone || '081-234-5678',
       'partner-concern-text':flowState.partnerConcern || '',
       'partner-concern-duration-value':flowState.partnerConcernDurationValue || 1,
-      'partner-conditions':flowState.partnerHealth.conditions || 'ไม่มี',
-      'partner-medications':flowState.partnerHealth.medications || 'ไม่มี',
-      'partner-allergies':flowState.partnerHealth.allergies || 'ไม่มี',
       'partner-lifestyle':flowState.partnerHealth.lifestyle || 'ไม่',
       'partner-sex':flowState.partnerHealth.sex || '',
       'partner-dob':flowState.partnerHealth.dob || '',
@@ -3736,6 +3789,7 @@
     document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(option => {
       option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
     });
+    syncPartnerHistoryFields();
     renderPartnerPhotos();
   }
   function partnerSexLabel(value){
@@ -4968,6 +5022,14 @@
       persistFlowState();
       return;
     }
+    const partnerHistoryChoice=e.target.closest('[data-partner-history-choice]');
+    if(partnerHistoryChoice){
+      const group=partnerHistoryChoice.closest('[data-partner-history]');
+      const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
+      setPartnerHistoryChoice(group,hasDetails);
+      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
+      return;
+    }
     const partnerConcernContinue=e.target.closest('[data-partner-concern-continue]');
     if(partnerConcernContinue){
       const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
@@ -4992,10 +5054,20 @@
     }
     const partnerHealthContinue=e.target.closest('[data-partner-health-continue]');
     if(partnerHealthContinue){
+      const incompleteHistory=[...document.querySelectorAll('[data-partner-history]')].find(group => {
+        const selected=group.querySelector('[data-partner-history-choice][aria-checked="true"]');
+        return selected?.dataset.partnerHistoryChoice==='yes' && !group.querySelector('input')?.value.trim();
+      });
+      if(incompleteHistory){
+        const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
+        showActionToast(`กรุณาระบุ${label}`,'warning');
+        incompleteHistory.querySelector('input')?.focus();
+        return;
+      }
       const health={
-        conditions:document.getElementById('partner-conditions')?.value.trim() || 'ไม่มี',
-        medications:document.getElementById('partner-medications')?.value.trim() || 'ไม่มี',
-        allergies:document.getElementById('partner-allergies')?.value.trim() || 'ไม่มี',
+        conditions:partnerHistoryValue('conditions'),
+        medications:partnerHistoryValue('medications'),
+        allergies:partnerHistoryValue('allergies'),
         lifestyle:document.getElementById('partner-lifestyle')?.value || 'ไม่',
         sex:document.getElementById('partner-sex')?.value || '',
         dob:document.getElementById('partner-dob')?.value || '',
