@@ -26,7 +26,7 @@
     "Sexual health":"สุขภาพเพศชาย","ED, performance concerns and related men's health questions.":"ปัญหาสมรรถภาพ และเรื่องสุขภาพเพศชายอื่น ๆ",
     "Sleep & stress":"การนอนและความเครียด","Sleep quality, stress, energy and daily functioning.":"คุณภาพการนอน ความเครียด พลังงาน และการใช้ชีวิตประจำวัน",
     "Everyday health":"สุขภาพทั่วไป","General symptoms, wellness checks and care navigation.":"อาการทั่วไป ตรวจสุขภาพ และคำแนะนำการดูแล",
-    "Choose a category":"เลือกหมวด","Choose a condition":"เลือกอาการ","What should the doctor review?":"อยากให้แพทย์ดูเรื่องอะไร?","Pick the closest match. You can still explain the details during intake.":"เลือกที่ใกล้เคียงที่สุด อธิบายรายละเอียดเพิ่มได้ตอนทำแบบสอบถาม",
+    "Choose a category":"เลือกหมวด","Choose a condition":"เลือกอาการ","What are you particularly concerned about?":"กังวลเรื่องใดเป็นพิเศษ","Pick the closest match. You can still explain the details during intake.":"เลือกที่ใกล้เคียงที่สุด อธิบายรายละเอียดเพิ่มได้ตอนทำแบบสอบถาม",
     "Hair loss":"ผมร่วง","Skin concern":"ปัญหาผิว","Erectile dysfunction":"ภาวะหย่อนสมรรถภาพ","Launch":"เปิดให้บริการ","Soon":"เร็ว ๆ นี้","General":"ทั่วไป",
     /* ---- intake ---- */
     "About your concern":"เกี่ยวกับอาการของคุณ","How long have you noticed hair loss?":"คุณสังเกตเห็นผมร่วงมานานแค่ไหน?","Pick the closest answer.":"เลือกคำตอบที่ใกล้เคียงที่สุด",
