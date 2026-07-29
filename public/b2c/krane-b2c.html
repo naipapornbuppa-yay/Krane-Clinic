@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260729k">
+<link rel="stylesheet" href="components.css?v=20260729l">
 <link rel="stylesheet" href="custom-select.css?v=20260729a">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
@@ -288,7 +288,7 @@
       <summary><span class="rail-step">09</span><span>Partner access</span></summary>
       <div class="rail-group__body">
         <a data-go="partner-access">Corporate entry <span class="rail-state">skips stage 1</span></a>
-        <a data-go="partner-consent">PDPA &amp; consents <span class="rail-state">straight to stage 2</span></a>
+        <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="partner-payment-choice">วิธีการชำระเงิน <span class="rail-state">self-pay vs insurance</span></a>
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">self-pay path</span></a>
@@ -1885,6 +1885,7 @@
           </div>
         </div>
       </div>
+    </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button></div>
   </section>
 
@@ -2059,19 +2060,6 @@
       <p class="hint">ข้ามขั้นตอนเลือกหัวข้อปรึกษา เพราะองค์กรกำหนดสิทธิ์ไว้ให้แล้ว</p>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-access-continue>เริ่มใช้สิทธิ์</button></div>
-  </section>
-
-  <section class="screen" id="partner-consent">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ความยินยอม</span></div>
-    <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">การให้ความยินยอม</h2><p class="muted">อ่านและยอมรับเงื่อนไขก่อนดำเนินการต่อ</p></div>
-      <div class="card card--pad-sm stack-3">
-        <label class="consent-agree"><span class="check"><input type="checkbox" data-partner-consent><span class="box"></span></span><span class="hint grow">ยินยอมตาม PDPA ให้เก็บและใช้ข้อมูลสุขภาพ</span></label>
-        <div class="divider"></div>
-        <label class="consent-agree"><span class="check"><input type="checkbox" data-partner-consent><span class="box"></span></span><span class="hint grow">ยอมรับบริการแพทย์ทางไกล</span></label>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-consent-continue disabled>ยอมรับและดำเนินการต่อ</button></div>
   </section>
 
   <section class="screen" id="partner-patient-info">
@@ -2703,14 +2691,19 @@
   const consentChecked = Object.assign({pdpa:false,telemedicine:false},flowState.consentChecked || {});
   const consentChecks = [...document.querySelectorAll('[data-consent-checkbox]')];
   const consentContinue = document.querySelector('[data-consent-continue]');
+  function consentIdentityVerified(){
+    return flowState.entryChannel === 'partner'
+      ? Boolean(flowState.partnerAccessComplete && flowState.partnerPhoneVerified)
+      : Boolean(flowState.otpVerified);
+  }
 
   function renderConsentReadState(type){
     const input = document.querySelector(`[data-consent-checkbox][data-consent-type="${type}"]`);
     const state = document.querySelector(`[data-consent-read-state="${type}"]`);
     const card = document.querySelector(`[data-consent-card="${type}"]`);
     if(input){
-      input.disabled = !consentRead[type] || !flowState.otpVerified;
-      input.checked = Boolean(flowState.otpVerified && consentRead[type] && consentChecked[type]);
+      input.disabled = !consentRead[type] || !consentIdentityVerified();
+      input.checked = Boolean(consentIdentityVerified() && consentRead[type] && consentChecked[type]);
     }
     if(card) card.classList.toggle('is-unread',!consentRead[type]);
     // Once read, the checkbox itself is the confirmation: an enabled, tappable control
@@ -2766,7 +2759,7 @@
   });
 
   function syncConsentContinue(){
-    if(consentContinue) consentContinue.disabled = !flowState.otpVerified || !consentChecks.every(input => !input.disabled && input.checked);
+    if(consentContinue) consentContinue.disabled = !consentIdentityVerified() || !consentChecks.every(input => !input.disabled && input.checked);
   }
   consentChecks.forEach(input => input.addEventListener('change',() => {
     consentChecked[input.dataset.consentType] = input.checked;
@@ -3583,15 +3576,6 @@
     const submit=document.querySelector('#otp [data-auth-complete]');
     if(submit) submit.disabled=input.value.length!==6;
   });
-  function partnerConsentChecks(){
-    return [...document.querySelectorAll('[data-partner-consent]')];
-  }
-  function syncPartnerConsentContinue(){
-    const checks=partnerConsentChecks();
-    if(flowState.partnerConsentComplete) checks.forEach(input => { input.checked=true; });
-    const button=document.querySelector('[data-partner-consent-continue]');
-    if(button) button.disabled=!checks.length || checks.some(input => !input.checked);
-  }
   function syncPartnerScreening(){
     document.querySelectorAll('[data-partner-screening-question]').forEach(group => {
       const value=flowState.partnerScreening[group.dataset.partnerScreeningQuestion] || '';
@@ -3673,7 +3657,7 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
-    const order=['partner-access','partner-consent','partner-patient-info','partner-payment-choice',
+    const order=['partner-access','consent-terms','partner-patient-info','partner-payment-choice',
       'partner-concern','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'];
     // Insurance is the covered branch after payment choice, not a second linear
     // step. Treat it as that checkpoint so its desktop QA shortcut opens directly.
@@ -3711,7 +3695,6 @@
       flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
     }
     persistFlowState();
-    syncPartnerConsentContinue();
     syncPartnerScreening();
     syncPartnerReview();
   }
@@ -3728,9 +3711,6 @@
     isAuthenticated=true;
     hasActiveCase=true;
   }
-  document.addEventListener('change',event => {
-    if(event.target.matches('[data-partner-consent]')) syncPartnerConsentContinue();
-  });
   // Unlock a verified phone field, then require a fresh OTP for the new number.
   (function initPhoneEdit(){
     document.addEventListener('click', function(e){
@@ -3840,11 +3820,10 @@
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     'insurance-policy':'intake-ins', 'reduce-order':'insurance-policy',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
-    // Partner access: its own chain, entered from the landing rather than from
-    // the concern picker. Stage 1 is skipped, so partner-consent comes straight
-    // after the entry screen and PDPA hands off directly to Stage 2.
-    'partner-access':'landing', 'partner-consent':'partner-access',
-    'partner-patient-info':'partner-consent', 'partner-payment-choice':'partner-patient-info',
+    // Partner access reuses the same consent screen as direct entry. Its only
+    // clinical difference is the additional nurse screening before handoff.
+    'partner-access':'landing',
+    'partner-patient-info':'consent-terms', 'partner-payment-choice':'partner-patient-info',
     'partner-concern':'partner-payment-choice', 'partner-insurance':'partner-payment-choice',
     'partner-intake':'partner-concern', 'partner-review':'partner-intake',
     'partner-nurse':'partner-review', 'partner-nurse-session':'partner-nurse',
@@ -3852,7 +3831,7 @@
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-access','partner-consent','partner-patient-info',
+  const PARTNER_SCREENS = ['partner-access','partner-patient-info',
     'partner-payment-choice','partner-concern','partner-insurance','partner-intake',
     'partner-review','partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
@@ -4111,10 +4090,11 @@
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
+    if(target==='consent-terms' && flowState.entryChannel==='partner' && !flowState.partnerAccessComplete) return 'partner-access';
     if(PARTNER_SCREENS.includes(target)){
       if(target!=='partner-access' && !flowState.partnerAccessComplete) return 'partner-access';
-      if(!['partner-access','partner-consent'].includes(target) && !flowState.partnerConsentComplete) return 'partner-consent';
-      if(!['partner-access','partner-consent','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
+      if(target!=='partner-access' && !flowState.partnerConsentComplete) return 'consent-terms';
+      if(!['partner-access','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
       if(['partner-concern','partner-insurance','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-payment-choice';
       if(['partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'partner-concern';
       if(['partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
@@ -4159,13 +4139,12 @@
     }
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
-    if(id==='partner-consent') syncPartnerConsentContinue();
     if(['partner-patient-info','partner-concern','partner-intake'].includes(id)) restorePartnerFields();
     if(['partner-review','partner-phr'].includes(id)) syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
-    if(PARTNER_SCREENS.includes(id)){
+    if(PARTNER_SCREENS.includes(id) || (id==='consent-terms' && flowState.entryChannel==='partner')){
       // Partner access runs its own sequence and skips stage 1, so the five-step
       // B2C care stepper would mis-number it. Keep it off until the flow rejoins
       // the shared clinical path at #booking.
@@ -4745,26 +4724,18 @@
     const partnerAccessContinue=e.target.closest('[data-partner-access-continue]');
     if(partnerAccessContinue){
       submitOnce('partner-access',partnerAccessContinue,() => {
+        flowState.entryChannel='partner';
         flowState.partnerAccessComplete=true;
+        if(!hasCurrentConsent('partner')){
+          Object.keys(consentRead).forEach(type => {
+            consentRead[type]=false;
+            consentChecked[type]=false;
+          });
+          flowState.consentRead=Object.assign({},consentRead);
+          flowState.consentChecked=Object.assign({},consentChecked);
+        }
         persistFlowState();
-        show('partner-consent');
-      });
-      return;
-    }
-    const partnerConsentContinue=e.target.closest('[data-partner-consent-continue]');
-    if(partnerConsentContinue){
-      const checks=partnerConsentChecks();
-      if(partnerConsentContinue.disabled || !checks.length || checks.some(input => !input.checked)){
-        showActionToast('กรุณายอมรับความยินยอมให้ครบทุกข้อ','warning');
-        return;
-      }
-      submitOnce('partner-consent',partnerConsentContinue,() => {
-        const acceptedAt=new Date().toISOString();
-        saveConsentRecords('partner',Object.entries(partnerConsentVersions).map(([type,version]) => ({type,version,acceptedAt})));
-        flowState.partnerConsentComplete=true;
-        persistFlowState();
-        showActionToast('บันทึกความยินยอมพร้อมเวลากำกับแล้ว','success');
-        show('partner-patient-info');
+        show('consent-terms');
       });
       return;
     }
@@ -4961,7 +4932,7 @@
     }
     const consentSubmit = e.target.closest('[data-consent-continue]');
     if(consentSubmit){
-      if(!flowState.otpVerified){
+      if(!consentIdentityVerified()){
         showActionToast('กรุณาเข้าสู่ระบบและยืนยันรหัส OTP ก่อนให้ความยินยอม','warning');
         return;
       }
@@ -4973,12 +4944,16 @@
           version:consentDocuments[input.dataset.consentType].version,
           acceptedAt
         }));
-        saveConsentRecords('direct',records);
-        flowState.consentsComplete=true;
+        const consentSource=flowState.entryChannel==='partner' ? 'partner' : 'direct';
+        saveConsentRecords(consentSource,records);
+        if(consentSource==='partner') flowState.partnerConsentComplete=true;
+        else flowState.consentsComplete=true;
         // Consent now sits before patient info / identity: send new patients on to
         // finish those steps, and only returning (already-verified) patients straight
         // to booking, since patient-info/identity were skipped for them earlier.
-        const consentNext = flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info';
+        const consentNext = consentSource==='partner'
+          ? 'partner-patient-info'
+          : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
         persistFlowState();
         showActionToast('บันทึกความยินยอมแล้ว','success');
@@ -5171,6 +5146,11 @@
       if(go.closest('.rail') && go.dataset.go === 'login') postAuthNext = 'profile';
       if(guardActiveCase(go.dataset.go)) return;
       if(go.closest('.rail')){
+        if(go.dataset.entryChannel==='partner'){
+          flowState.entryChannel='partner';
+          flowState.partnerAccessComplete=true;
+          persistFlowState();
+        }
         seedPartnerStage(go.dataset.go);
         seedClinicalDemoStage(go.dataset.go);
         history = seededHistory(go.dataset.go);
@@ -5708,7 +5688,6 @@
   renderConsultationCatalog();
   restoreIntakeDraft();
   restorePartnerFields();
-  syncPartnerConsentContinue();
   syncPartnerScreening();
   syncPartnerReview();
   const restoredPatientPhone=document.getElementById('patient-phone');

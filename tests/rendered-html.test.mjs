@@ -65,11 +65,13 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "partner-access", "partner-consent", "partner-patient-info", "partner-payment-choice",
+    "partner-access", "consent-terms", "partner-patient-info", "partner-payment-choice",
     "partner-concern", "partner-intake", "partner-review", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
-  assert.match(html, /data-partner-consent-continue disabled/);
+  assert.doesNotMatch(html, /id="partner-consent"|data-partner-consent/);
+  assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
+  assert.match(html, /const consentSource=flowState\.entryChannel==='partner' \? 'partner' : 'direct'/);
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.match(html, /data-partner-review-concern/);
   assert.match(html, /target==='partner-insurance' \? 4 : order\.indexOf\(target\)/);
@@ -116,7 +118,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const sharePreviewSource = await readFile(path.join(publicRoot, "b2c/assets/krane-qa-line-share.svg"), "utf8");
   assert.doesNotMatch(sharePreviewSource, /proud|naipaporn|chatgpt\.site/i);
   assert.match(sharePreviewSource, /demo\.patient@example\.com/);
-  assert.match(components, /#consent-terms \.consent-doc\{height:clamp\(320px,46dvh,440px\)/);
+  assert.match(components, /#consent-terms\{height:100%;min-height:0;max-height:100%;overflow:hidden\}/);
+  assert.match(components, /#consent-terms \.consent-doc\{height:auto;min-height:120px;max-height:none;flex:1 1 auto/);
   assert.match(components, /\.option\{[\s\S]*font:inherit;color:var\(--color-ink\)/);
   assert.match(html, /if\(location\.hash\) applyHash\(\);\s*else \{\s*history=\['landing'\];\s*show\('landing',false\);\s*\}/);
   assert.doesNotMatch(html, /กู้คืนแบบประเมินและขั้นตอนล่าสุดแล้ว/);
@@ -364,17 +367,29 @@ test("public login and legal routes bypass intake while consent acceptance still
     "flowState",
     "consentContinue",
     "consentChecks",
+    "consentIdentityVerified",
     `return function syncConsentContinue(){${syncConsentSource[1]}\n}`
-  )(state, consentButton, completedChecks);
+  )(state, consentButton, completedChecks, () => Boolean(
+    state.entryChannel === "partner"
+      ? state.partnerAccessComplete && state.partnerPhoneVerified
+      : state.otpVerified
+  ));
 
-  makeConsentSync({ otpVerified: false })();
+  makeConsentSync({ otpVerified: false, entryChannel: "direct" })();
   assert.equal(consentButton.disabled, true, "anonymous legal readers cannot accept consent");
-  makeConsentSync({ otpVerified: true })();
+  makeConsentSync({ otpVerified: true, entryChannel: "direct" })();
   assert.equal(consentButton.disabled, false, "verified patients can accept fully read consent");
+  makeConsentSync({
+    otpVerified: false,
+    entryChannel: "partner",
+    partnerAccessComplete: true,
+    partnerPhoneVerified: true
+  })();
+  assert.equal(consentButton.disabled, false, "verified partner patients use the same consent control");
 
   assert.match(html, /signup:'summary', login:'landing'/);
   assert.match(html, /'consent-terms':'landing'/);
-  assert.match(html, /const consentSubmit = e\.target\.closest\('\[data-consent-continue\]'\);[\s\S]*if\(!flowState\.otpVerified\)/);
+  assert.match(html, /const consentSubmit = e\.target\.closest\('\[data-consent-continue\]'\);[\s\S]*if\(!consentIdentityVerified\(\)\)/);
 });
 
 test("Figma landing keeps every client access route and responsive menu contract", async () => {
