@@ -85,6 +85,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /flowState\.phoneOtpPending/);
   assert.match(html, /data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6"/);
   assert.doesNotMatch(html, /maxlength="1"/);
+  assert.equal((html.match(/data-otp-cell/g) || []).length, 7);
+  assert.match(html, /function renderOtpCells\(input\)\{[\s\S]*cell\.textContent=value\[index\] \|\| ''/);
   assert.match(html, /function prepareFreshOtpChallenge\(\)\{[\s\S]*input\.value='';[\s\S]*input\?\.focus\(\{preventScroll:true\}\)/);
   assert.match(html, /input\.value=input\.value\.replace\(\/\\D\/g,''\)\.slice\(0,6\)/);
   assert.match(html, /if\(id === 'otp'\) prepareFreshOtpChallenge\(\)/);
