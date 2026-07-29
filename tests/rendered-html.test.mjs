@@ -82,7 +82,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
   assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-insurance'\)/);
   assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">เลือกกรมธรรม์/);
-  assert.match(html, /id="partner-insurance"[\s\S]*พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้[\s\S]*data-partner-payment="insurance" data-go="partner-concern"/);
+  assert.match(html, /id="partner-insurance"[\s\S]*data-partner-payment="insurance" data-go="partner-concern"/);
+  assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
   assert.doesNotMatch(html, /id="insurance-policy-number"|Policy number \(เลขกรมธรรม์\)|placeholder="Policy no\."/);
   assert.match(html, /id="partner-concern"[\s\S]*data-partner-duration-step="-1"[\s\S]*data-partner-duration-unit="วัน"[\s\S]*data-partner-relief-value="ยังไม่ได้ทำ"/);
   assert.doesNotMatch(html, /id="partner-concern-severity"/);
