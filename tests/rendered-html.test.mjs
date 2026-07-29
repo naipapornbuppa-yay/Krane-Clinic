@@ -87,8 +87,15 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(html, /id="partner-concern-severity"/);
   assert.match(components, /\.partner-duration-units button\[aria-selected="true"\]/);
   assert.match(html, /id="partner-intake"[\s\S]*partner-health-compact[\s\S]*partner-health-grid[\s\S]*partner-clinical-grid/);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="yes"/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail hidden/g) || []).length, 3);
+  assert.match(html, /function partnerHistoryValue\(key\)/);
+  assert.match(html, /showActionToast\(`กรุณาระบุ\$\{label\}`,'warning'\)/);
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /#partner-intake \.partner-health-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
