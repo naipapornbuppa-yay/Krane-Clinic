@@ -76,6 +76,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.match(html, /data-partner-review-concern/);
   assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
+  assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
   assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
@@ -96,6 +97,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /#partner-intake \.partner-health-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
+  assert.match(screenFragment(html, "partner-review"), /ยืนยันและจับคู่แพทย์/);
+  assert.doesNotMatch(screenFragment(html, "partner-review"), /ส่งให้พยาบาลคัดกรอง|ตรวจสอบข้อมูลก่อนส่งให้พยาบาล/);
+  assert.match(html, /data-partner-review-continue[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
@@ -698,7 +702,8 @@ test("master Mermaid separates consent, coverage, fulfilment exceptions, and con
   const flow = await readFile(path.join(root, "docs/KRANE_MASTER_E2E_FLOW.md"), "utf8");
   assert.match(flow, /flowchart LR/);
   assert.match(flow, /Return to details; keep prior consent/);
-  assert.match(flow, /Mandatory partner nurse screening/);
+  assert.match(flow, /Exception case.*Partner nurse screening/);
+  assert.doesNotMatch(flow, /Mandatory partner nurse screening/);
   assert.match(flow, /No, fully covered/);
   assert.match(flow, /Another eligible pharmacy available\?/);
   assert.match(flow, /refundDone\(\["Refund confirmed"\]\)/);

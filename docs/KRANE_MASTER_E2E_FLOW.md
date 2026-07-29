@@ -80,10 +80,11 @@ flowchart LR
     partnerCoverage --> partnerConcern
     partnerConcern --> partnerHealth["Prefilled health snapshot"]
     partnerHealth --> partnerReview["Review submitted information"]
-    partnerReview --> partnerNurse["Mandatory partner nurse screening"]
+    partnerReview --> doctorMatch["Doctor match"]
+    partnerReview -. "Exception case" .-> partnerNurse["Partner nurse screening"]
     partnerNurse --> partnerRemote{"Remote care appropriate?"}
     partnerRemote -->|"No"| inPerson["Urgent or in-person care guidance"]
-    partnerRemote -->|"Yes"| doctorMatch["Doctor match"]
+    partnerRemote -->|"Yes"| doctorMatch
 
     doctorMatch --> doctorAvailable{"Doctor available now?"}
     doctorAvailable -->|"No"| bookedSlot["Choose or confirm appointment slot"]

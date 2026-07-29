@@ -323,9 +323,12 @@
         <a data-go="partner-insurance">เลือกกรมธรรม์</a>
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
-        <a data-go="partner-review">ตรวจทานข้อมูล</a>
-        <a data-go="partner-nurse">พยาบาลคัดกรอง <span class="rail-state">partner only</span></a>
-        <a data-go="partner-nurse-session">วิดีโอคัดกรอง <span class="rail-state">→ joins doctor matching</span></a>
+        <details class="rail-page"><summary>ตรวจทานและส่งต่อแพทย์</summary><div class="rail-sub">
+          <a data-go="partner-review">Happy flow · ตรวจทานข้อมูล</a>
+        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
+          <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
+          <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
+        </div></details>
       </div>
     </details>
 
@@ -2132,7 +2135,7 @@
         <div class="between"><span class="muted">สิทธิ์ที่ได้รับ</span><strong>ปรึกษาแพทย์ออนไลน์</strong></div>
         <div class="between"><span class="muted">สถานะ</span><span class="badge badge--ok">ใช้ได้</span></div>
       </div>
-      <p class="hint">สิทธิ์นี้มีพยาบาลคัดกรองก่อนส่งต่อแพทย์ เพื่อให้คุณได้รับการดูแลที่เหมาะสม</p>
+      <p class="hint">หลังตรวจสอบสิทธิ์แล้ว คุณจะให้ความยินยอม PDPA และดำเนินการตามขั้นตอนผู้รับบริการมาตรฐาน</p>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-access-continue>ตรวจสอบสิทธิ์และเริ่ม</button></div>
   </section>
@@ -2296,7 +2299,7 @@
   <section class="screen" id="partner-review">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจทานข้อมูล</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">ตรวจทานก่อนส่ง</h2><p class="muted">ตรวจสอบข้อมูลก่อนส่งให้พยาบาล</p></div>
+      <div class="stack-2"><h2 class="h1">ตรวจทานก่อนส่ง</h2><p class="muted">ตรวจสอบข้อมูลก่อนส่งต่อเพื่อจับคู่แพทย์</p></div>
       <div class="card card--pad-sm stack-3">
         <div><strong>อาการที่ปรึกษา</strong><div class="hint" data-partner-review-concern>—</div></div>
         <div class="divider"></div>
@@ -2309,7 +2312,7 @@
         <div><strong>รูปภาพประกอบ</strong><div class="hint" data-partner-review-photos>ยังไม่ได้แนบรูป (ไม่บังคับ)</div><div class="up-thumbs" data-partner-review-photo-thumbs></div></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-review-continue>ส่งให้พยาบาลคัดกรอง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-review-continue>ยืนยันและจับคู่แพทย์</button></div>
   </section>
 
   <section class="screen" id="partner-nurse">
@@ -3888,10 +3891,11 @@
   }
   function seedPartnerStage(target){
     const order=['partner-access','consent-terms','partner-patient-info',
-      'partner-concern','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'];
+      'partner-concern','partner-intake','partner-review','booking'];
     // Insurance branches from the confirmation screen. Treat it as the same
     // checkpoint as today's concern when a QA shortcut opens it directly.
-    const targetIndex=target==='partner-insurance' ? 3 : order.indexOf(target);
+    let targetIndex=target==='partner-insurance' ? 3 : order.indexOf(target);
+    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0) flowState.partnerAccessComplete=true;
@@ -3920,7 +3924,7 @@
     }
     if(targetIndex>4) flowState.partnerHealthComplete=true;
     if(targetIndex>5) flowState.partnerReviewComplete=true;
-    if(targetIndex>7){
+    if(target==='partner-phr'){
       flowState.partnerNurseComplete=true;
       flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
     }
@@ -4051,8 +4055,8 @@
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     'insurance-policy':'intake-ins', 'reduce-order':'insurance-policy',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
-    // Partner access reuses the same consent screen as direct entry. Its only
-    // clinical difference is the additional nurse screening before handoff.
+    // Partner access reuses the same consent screen as direct entry. Nurse
+    // screening is a separate exception case, not the happy path.
     'partner-access':'landing',
     'partner-patient-info':'consent-terms',
     'partner-concern':'partner-patient-info', 'partner-insurance':'partner-patient-info',
@@ -5159,8 +5163,16 @@
     if(partnerReviewContinue){
       submitOnce('partner-review',partnerReviewContinue,() => {
         flowState.partnerReviewComplete=true;
+        flowState.draftReady=true;
+        flowState.accountCreated=true;
+        flowState.otpVerified=true;
+        flowState.consentsComplete=true;
+        flowState.patientInfoComplete=true;
+        flowState.identityVerified=true;
+        flowState.patientName=flowState.partnerName || 'Mali Suthida';
         persistFlowState();
-        show('partner-nurse');
+        showActionToast('ตรวจทานเรียบร้อย กำลังจับคู่แพทย์','success');
+        show('booking');
       });
       return;
     }
@@ -5210,11 +5222,9 @@
       });
       return;
     }
-    // Partner access hands off to the shared clinical path. The partner route
-    // satisfies the same prerequisites by a different means (the organisation
-    // vouches for identity, the nurse screening is mandatory), so mark the gates
-    // met before entering #booking or requiredRouteFor would bounce the user
-    // back into the B2C intake they deliberately skipped.
+    // Partner exception path: nurse screening is available as a separate demo
+    // case. The partner happy path now skips this and proceeds from review to
+    // matching directly.
     const partnerComplete = e.target.closest('[data-partner-complete]');
     if(partnerComplete){
       if(!flowState.partnerNurseComplete){
