@@ -112,6 +112,16 @@
   .identity-upload:focus-within{outline:3px solid var(--color-focus);outline-offset:3px}
   .identity-upload.is-complete{border:1px solid var(--color-accent)!important;background:var(--color-accent-soft-2)}
   .identity-upload.is-complete [data-identity-status]{color:var(--color-accent-ink);font-weight:var(--fw-semibold)}
+  .otp-entry{position:relative;width:100%}
+  .otp-entry__input{position:absolute;z-index:2;inset:0;width:100%;height:100%;margin:0;border:0;opacity:0;cursor:text}
+  .otp-entry__cells{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--sp-2);width:100%}
+  .otp-entry__cell{display:grid;place-items:center;min-width:0;height:64px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;transition:border-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+  .otp-entry__cell.is-filled{background:var(--color-bg-soft)}
+  .otp-entry:focus-within .otp-entry__cell.is-current{border-color:var(--color-blue);box-shadow:0 0 0 3px var(--color-focus)}
+  @media(max-width:420px){
+    .otp-entry__cells{gap:7px}
+    .otp-entry__cell{height:58px;border-radius:12px;font-size:24px}
+  }
 </style>
 </head>
 <body class="hide-feat">
@@ -1906,9 +1916,17 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Verify your code</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">Enter the code</h2><p class="muted">We sent a 6-digit code to your verified phone number. Enter it to confirm it's you.</p></div>
-      <div class="field">
+      <div class="otp-entry" data-otp-entry>
         <label class="sr-only" for="otp-code">รหัส OTP 6 หลัก</label>
-        <input class="input" id="otp-code" data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="กรอกรหัส 6 หลัก" aria-label="รหัส OTP 6 หลัก" style="width:100%;text-align:center;font-size:var(--fs-lg);font-weight:var(--fw-bold);letter-spacing:.28em">
+        <input class="otp-entry__input" id="otp-code" data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" aria-label="รหัส OTP 6 หลัก">
+        <div class="otp-entry__cells" aria-hidden="true">
+          <span class="otp-entry__cell is-current" data-otp-cell></span>
+          <span class="otp-entry__cell" data-otp-cell></span>
+          <span class="otp-entry__cell" data-otp-cell></span>
+          <span class="otp-entry__cell" data-otp-cell></span>
+          <span class="otp-entry__cell" data-otp-cell></span>
+          <span class="otp-entry__cell" data-otp-cell></span>
+        </div>
       </div>
       <p class="hint center">Didn't get it? <a data-demo-action="ส่งรหัส OTP ใหม่แล้ว" style="color:var(--color-blue);text-decoration:underline;cursor:pointer">Resend code</a> · sent via SMS</p>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-auth-complete disabled>ยืนยันรหัสและไปต่อ</button></div>
@@ -3542,16 +3560,27 @@
     const input=document.querySelector('#otp [data-otp-code]');
     const submit=document.querySelector('#otp [data-auth-complete]');
     if(input) input.value='';
+    renderOtpCells(input);
     if(submit) submit.disabled=true;
     window.requestAnimationFrame(() => {
       if(!document.getElementById('otp')?.classList.contains('active')) return;
       input?.focus({preventScroll:true});
     });
   }
+  function renderOtpCells(input){
+    const value=(input?.value || '').replace(/\D/g,'').slice(0,6);
+    const cells=[...document.querySelectorAll('#otp [data-otp-cell]')];
+    cells.forEach((cell,index) => {
+      cell.textContent=value[index] || '';
+      cell.classList.toggle('is-filled',index<value.length);
+      cell.classList.toggle('is-current',value.length<6 && index===value.length);
+    });
+  }
   document.addEventListener('input',event => {
     const input=event.target.closest('[data-otp-code]');
     if(!input) return;
     input.value=input.value.replace(/\D/g,'').slice(0,6);
+    renderOtpCells(input);
     const submit=document.querySelector('#otp [data-auth-complete]');
     if(submit) submit.disabled=input.value.length!==6;
   });
