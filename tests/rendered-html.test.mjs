@@ -175,11 +175,14 @@ test("intake keeps multi-select questions visible and compacts scalar answers in
   assert.doesNotMatch(hairFirstQuestion, /data-select/, "hair duration must no longer render as a radio-card list");
   assert.match(hairFirstQuestion, /intakeDropdown\(\{[\s\S]*?role:'duration'/);
   assert.match(html, /function intakeDropdown\(\{id,label,placeholder,options,role=''\}\)/);
-  assert.match(html, /data-native-select data-intake-select/);
+  assert.match(html, /data-intake-select data-intake-role="duration" required/);
+  assert.doesNotMatch(html, /data-native-select data-intake-select/);
   assert.match(html, /<option value="" selected disabled>Select duration<\/option>/);
+  assert.match(html, /function intakeRequirementState\(screenOrId\)/);
   assert.match(html, /function syncIntakeDropdownContinue\(screenOrId\)/);
-  assert.match(html, /requiredSelects\.every\(select => Boolean\(select\.value\)\)/);
-  assert.match(html, /continueButton\.disabled = !ready/);
+  assert.match(html, /missingGroup = optionGroups\.find/);
+  assert.match(html, /continueButton\.disabled = false/);
+  assert.match(html, /continueButton\.classList\.toggle\('is-disabled',!state\.ready\)/);
   assert.match(html, /control\.selectedOptions\[0\]\?\.textContent\.trim\(\)/);
   assert.match(html, /const DRAFT_KEY = 'krane-p01-intake-draft-v2'/);
   assert.match(components, /\.intake-dropdown-field \.select\{font-size:16px\}/, "mobile intake selects must not trigger iOS input zoom");
