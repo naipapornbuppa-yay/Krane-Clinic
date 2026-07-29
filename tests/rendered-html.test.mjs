@@ -527,9 +527,9 @@ test("public QA review gate preserves deep links and uses a signed server cookie
   assert.match(worker, /"\/b2c\/assets\/landing-573\/latest\/hero-base\.png"/);
   assert.match(worker, /<h1>ตัวอย่างงานออกแบบ<\/h1>/);
   assert.match(worker, /placeholder="Access code"/);
-  assert.match(worker, /width:min\(100%,560px\)/);
-  assert.match(worker, /background:#dfe7e4/);
-  assert.match(worker, /backdrop-filter:blur\(18px\)/);
+  assert.match(worker, /width:min\(100%,650px\)/);
+  assert.match(worker, /background:#d9dcde/);
+  assert.match(worker, /backdrop-filter:blur\(22px\)/);
   assert.match(worker, /min-height:100%;min-height:100dvh/);
   assert.match(worker, /img-src 'self'/);
   assert.match(worker, /location: `\$\{url\.pathname\}\$\{url\.search\}\$\{url\.hash\}`/);
