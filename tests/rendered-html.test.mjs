@@ -121,7 +121,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /flowState\.consentsComplete && !hasCurrentConsent\('direct'\) && !hasCurrentConsent\('partner'\)/);
   assert.match(html, /function directClinicalStartTarget\(\)\{/);
   assert.match(html, /DIRECT_NURSE_SCREENING_ENABLED \? 'nurse' : 'booking'/);
-  assert.match(html, /data-go="feedback">Rate this consultation/);
+  assert.match(html, /id="rx-writing"[\s\S]*data-go="plan">ดูแผนการรักษา \(เดโม\)[\s\S]*data-go="notifications">จัดการการแจ้งเตือน/);
   assert.match(html, /tracking:'confirm', feedback:'consult'/);
   assert.match(html, /noMatch\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('matching'\)/);
   assert.match(html, /noStock\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('pharmacy-search'\)/);
