@@ -1,0 +1,757 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Krane CMS · Admin Back Office</title>
+<!-- brand tokens are the single source of truth; back-office styles are token-driven semantic classes -->
+<link rel="stylesheet" href="design-tokens.css?v=20260721b">
+<link rel="stylesheet" href="cms.css?v=20260726a">
+<link rel="stylesheet" href="custom-select.css?v=20260721b">
+<script src="../krane-golden-fixture.js"></script>
+<script src="custom-select.js?v=20260716a" defer></script>
+</head>
+<body class="role-admin">
+
+<div class="cms">
+
+  <!-- scrim behind the mobile nav drawer -->
+  <div class="cms-scrim" data-nav-scrim=""></div>
+
+  <!-- ================= SIDEBAR (role-filtered nav · F07) ================= -->
+  <aside class="cms-rail">
+    <div class="cms-rail__brand"><img src="assets/krane-lockup-charcoal.svg?v=20260720" alt="Krane"><span class="cms-rail__role" data-role-label="">Admin</span></div>
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+
+    <div class="cms-rail__group admin-only">Operations</div>
+    <a class="cms-rail__link admin-only is-active" data-page="cases"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 5 4-12 2 7h6"></path></svg></span>Overview<span class="count">2</span></a>
+    <a class="cms-rail__link admin-only" data-page="fulfilment"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v8.5H3z"></path><path d="M14 10h3.5l3 3v2.5H14z"></path><circle cx="6.5" cy="17.5" r="1.6"></circle><circle cx="16.5" cy="17.5" r="1.6"></circle></svg></span>Fulfilment</a>
+
+    <div class="cms-rail__group admin-only">Manage</div>
+    <a class="cms-rail__link admin-only" data-page="users"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path><path d="M16 7.5a3 3 0 0 1 0 5M21 19a5 5 0 0 0-4-4.9"></path></svg></span>Users &amp; roles</a>
+    <a class="cms-rail__link admin-only" data-page="content"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span>Content (CMS)</a>
+    <a class="cms-rail__link admin-only" data-page="pricing"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>Pricing</a>
+    <a class="cms-rail__link admin-only" data-page="coupons"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z"></path><path d="M13 6v2M13 11v2M13 16v2"></path></svg></span>Promotions</a>
+    <a class="cms-rail__link admin-only" data-page="config"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"></path><circle cx="16" cy="8" r="2.3"></circle><circle cx="8" cy="16" r="2.3"></circle></svg></span>Channels</a>
+
+    <div class="cms-rail__watermark" aria-hidden="true"><img src="assets/krane-wordmark.svg?v=20260721b" alt=""></div>
+    <div class="cms-rail__foot">
+      <div class="lang" data-lang="">
+        <button class="lang__opt" data-lng="en">EN</button>
+        <button class="lang__opt is-active" data-lng="th">ไทย</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="cms-main">
+
+    <!-- ================= TOP BAR ================= -->
+    <header class="cms-top">
+      <button class="cms-nav-toggle" data-nav-toggle="" aria-label="Open menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+      <div class="cms-top__search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input placeholder="Search patients, orders, articles…" aria-label="Search patients, orders, and articles"></div>
+      <div class="cms-top__spacer"></div>
+      <!-- TH/EN toggle (F02 · back office). Real TH copy is generated with Typhoon (SCB). -->
+      <div class="lang" data-lang="">
+        <button class="lang__opt" data-lng="en">EN</button>
+        <button class="lang__opt is-active" data-lng="th">ไทย</button>
+      </div>
+      <div class="cms-top__user"><span class="avatar" data-user-avatar="">K</span><span data-user-name="">Admin · Krane Ops</span></div>
+    </header>
+
+    <!-- ================= PAGES ================= -->
+    <main class="cms-body">
+      
+
+      <!-- ===== ADMIN · OPERATIONS OVERVIEW (F27) ===== -->
+      <section class="page admin-only is-active" id="cases">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Operations overview</h1><div class="page-head__s">Wednesday, 24 June · clinical and order exceptions that need attention</div></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm">Export report</button></div>
+        </div>
+        <div class="ops-kpis">
+          <article class="ops-kpi ops-kpi--attention"><div class="ops-kpi__label">Needs attention</div><div class="ops-kpi__value" data-count="2">2</div><div class="ops-kpi__meta">Cases stalled over 30 minutes</div></article>
+          <article class="ops-kpi"><div class="ops-kpi__label">Open clinical cases</div><div class="ops-kpi__value" data-count="23">23</div><div class="ops-kpi__meta">Across 6 doctors</div></article>
+          <article class="ops-kpi"><div class="ops-kpi__label">Payments pending</div><div class="ops-kpi__value" data-count="5">5</div><div class="ops-kpi__meta">Oldest pending 41 minutes</div></article>
+          <article class="ops-kpi"><div class="ops-kpi__label">In fulfilment</div><div class="ops-kpi__value" data-count="11">11</div><div class="ops-kpi__meta">1 pharmacy delay</div></article>
+        </div>
+        <div class="chips admin-case-filters"><span class="chip is-active">All</span><span class="chip">Needs attention</span><span class="chip">Awaiting payment</span><span class="chip">In fulfilment</span><span class="chip">Delivered</span></div>
+        <div class="admin-overview-grid">
+          <section class="panel panel--flush">
+            <div class="panel__head"><div><h2 class="panel__title">Actions required</h2><div class="hint">Sorted by risk and time waiting</div></div><span class="badge badge--warn">2 need attention</span></div>
+            <table class="table">
+              <thead><tr><th>Case</th><th>Patient</th><th>Owner</th><th>Stage</th><th>Updated</th><th></th></tr></thead>
+              <tbody>
+                <tr data-status="attention" data-page="fulfilment" data-order-id="KR-10295" data-patient="Win T." data-owner="Fascino Ari" data-stage="Preparing" data-service="Hair loss refill" data-amount="฿1,160" data-payment="paid" data-issue="Stock confirmation is overdue. The branch has not replied for 32 minutes."><td class="strong">#KR-10295</td><td>Win T.</td><td>Fascino Ari</td><td><span class="badge badge--warn"><span class="dot"></span>Pharmacy delay</span></td><td>32 min ago</td><td><button class="btn btn--ghost btn--sm">Review</button></td></tr>
+                <tr data-status="awaiting-payment" data-page="fulfilment" data-order-id="KR-10284" data-patient="Korn P." data-owner="Dr. Pim" data-stage="Paid" data-service="General consultation" data-amount="฿350" data-payment="pending" data-issue="Payment has not been captured. No fulfilment request has been sent."><td class="strong">#KR-10284</td><td>Korn P.</td><td>Dr. Pim</td><td><span class="badge badge--warn"><span class="dot"></span>Awaiting payment</span></td><td>41 min ago</td><td><button class="btn btn--ghost btn--sm">Review</button></td></tr>
+                <tr data-status="in-fulfilment" data-page="fulfilment" data-order-id="KR-10293" data-patient="Mali S. (Demo)" data-owner="Fascino Ari" data-stage="Preparing" data-service="Hair loss treatment" data-amount="฿1,160" data-payment="paid" data-issue="ไม่มีปัญหาค้างอยู่ กำลังจัดยาตามกรอบเวลาให้บริการปกติ"><td class="strong">#KR-10293</td><td>Mali S. (Demo)</td><td>Fascino Ari</td><td><span class="badge badge--ok"><span class="dot"></span>Preparing</span></td><td>Just now</td><td><button class="btn btn--primary btn--sm">Open golden order</button></td></tr>
+                <tr data-status="in-fulfilment" data-page="fulfilment" data-order-id="KR-10288" data-patient="Somchai R." data-owner="Fascino Thong Lo" data-stage="Preparing" data-service="General medicine" data-amount="฿760" data-payment="paid" data-issue="Medicine is being prepared within the expected service window."><td class="strong">#KR-10288</td><td>Somchai R.</td><td>Fascino Thong Lo</td><td><span class="badge badge--ok"><span class="dot"></span>Preparing</span></td><td>18 min ago</td><td><button class="btn btn--ghost btn--sm">Open</button></td></tr>
+                <tr data-status="delivered" data-page="fulfilment" data-order-id="KR-10280" data-patient="Ton S." data-owner="Fascino Ari" data-stage="Delivered" data-service="Hair loss refill" data-amount="฿1,160" data-payment="paid" data-issue="Order delivered. No action is required."><td class="strong">#KR-10280</td><td>Ton S.</td><td>Fascino Ari</td><td><span class="badge badge--done"><span class="dot"></span>Delivered</span></td><td>1 h ago</td><td><button class="btn btn--ghost btn--sm">Open</button></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <aside class="panel admin-health">
+            <div><h2 class="panel__title">System health</h2><div class="hint">Live services supporting patient care</div></div>
+            <div class="health-row"><span>Payment gateway</span><span class="health-state health-state--ok"><i></i>Operational</span></div>
+            <div class="health-row"><span>Fascino POS</span><span class="health-state health-state--ok"><i></i>Operational</span></div>
+            <div class="health-row"><span>LINE notifications</span><span class="health-state health-state--ok"><i></i>Operational</span></div>
+            <div class="health-row"><span>Video service</span><span class="health-state health-state--watch"><i></i>Monitoring</span></div>
+            <div class="admin-health__foot"><span>Last synced 1 minute ago</span><button class="btn btn--ghost btn--sm" data-page="config">Manage channels</button></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== ADMIN · FULFILMENT STATUS (F28) ===== -->
+      <section class="page admin-only" id="fulfilment">
+        <div class="crumb" data-page="cases">‹ Back to cases</div>
+        <div class="page-head"><div><h1 class="page-head__t" data-fulfilment-title>Order #KR-10293 · Mali S. (Demo)</h1><div class="page-head__s" data-fulfilment-subtitle>Hair loss and scalp treatment · Fascino Ari · ฿1,160 paid</div></div>
+          <div class="page-actions"><button class="btn btn--danger btn--sm" data-refund-open>Refund</button><button class="btn btn--primary btn--sm" data-update-status="">Update status</button></div></div>
+        <div class="panel stack">
+          <div class="panel__title">Delivery status</div>
+          <div class="hstep">
+            <div class="hstep__s done" data-status-step="Paid">Paid</div>
+            <div class="hstep__s done" data-status-step="Pharmacy accepted">Pharmacy accepted</div>
+            <div class="hstep__s active" data-status-step="Preparing">Preparing</div>
+            <div class="hstep__s" data-status-step="Rider pickup">Rider pickup</div>
+            <div class="hstep__s" data-status-step="Out for delivery">Out for delivery</div>
+            <div class="hstep__s" data-status-step="Delivered">Delivered</div>
+          </div>
+          <div class="alertline alertline--warn" data-fulfilment-issue><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path></svg><span data-fulfilment-issue-copy>Stock confirmation is overdue. The branch has not replied for 32 minutes.</span></div>
+          <div class="grid-3">
+            <div class="kv"><span class="k">Assigned branch or owner</span><span class="strong" data-fulfilment-owner>Fascino Ari</span></div>
+            <div class="kv"><span class="k">Escalation</span><span class="strong" data-contact-state>Not contacted</span></div>
+            <div class="page-actions"><button class="btn btn--secondary btn--sm" type="button" data-contact-branch>Contact branch</button></div>
+          </div>
+          <div class="grid-3">
+            <div class="field"><label for="admin-manual-status">Manual status override</label><select class="select" id="admin-manual-status" data-status-select=""><option value="Paid">Paid</option><option value="Pharmacy accepted">Pharmacy accepted</option><option value="Preparing">Preparing</option><option value="Rider pickup">Rider pickup</option><option value="Out for delivery">Out for delivery</option><option value="Delivered">Delivered</option></select></div>
+            <div class="field"><label for="admin-fulfilment-branch">Branch</label><select class="select" id="admin-fulfilment-branch" data-fulfilment-branch><option>Fascino Ari</option><option>Fascino Thong Lo</option><option>Dr. Pim</option></select></div>
+            <div class="field"><label for="admin-patient-note">Note to patient</label><input class="input" id="admin-patient-note" placeholder="Optional message"></div>
+          </div>
+        </div>
+        <section class="panel stack" data-refund-panel hidden aria-hidden="true" style="margin-top:var(--sp-4)">
+          <div class="between"><div><div class="panel__title">Confirm refund</div><div class="hint">Return the captured payment to the patient and stop fulfilment for this order.</div></div><span class="badge badge--warn" data-refund-amount>฿1,160</span></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm" type="button" data-refund-cancel>Cancel</button><button class="btn btn--danger btn--sm" type="button" data-refund-confirm>Confirm refund</button></div>
+        </section>
+      </section>
+
+      <!-- ===== ADMIN · USER MANAGEMENT (F29) ===== -->
+      <section class="page admin-only" id="users">
+        <div class="page-head"><div><h1 class="page-head__t">Users</h1><div class="page-head__s">Patients, doctors and roles</div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-user-open="new">Add user</button></div></div>
+        <div class="chips" style="margin-bottom:var(--sp-4)"><span class="chip is-active">All</span><span class="chip">Doctors</span><span class="chip">Patients</span><span class="chip">Admins</span><span class="chip">Partners</span><span class="chip">Deactivated</span></div>
+        <div class="panel panel--flush">
+          <table class="table">
+            <thead><tr><th>User</th><th>Role</th><th>Specialty / service</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr data-status="doctors"><td><div class="cell-user"><span class="avatar">N</span><div><div class="strong">Dr. Narin Tanaka</div><div class="sub">narin@krane.co</div></div></div></td><td><span class="badge badge--ok">Doctor</span></td><td>Dermatology · Hair loss</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Dr. Narin Tanaka" data-user-contact="narin@krane.co" data-user-role="Doctor" data-user-service="Dermatology · Hair loss">Manage</button></td></tr>
+              <tr data-status="doctors"><td><div class="cell-user"><span class="avatar">A</span><div><div class="strong">Dr. Anong S.</div><div class="sub">anong@krane.co</div></div></div></td><td><span class="badge badge--ok">Doctor</span></td><td>Dermatology · Skin</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Dr. Anong S." data-user-contact="anong@krane.co" data-user-role="Doctor" data-user-service="Dermatology · Skin">Manage</button></td></tr>
+              <tr data-status="doctors"><td><div class="cell-user"><span class="avatar">M</span><div><div class="strong">MTL · Dr. Priya</div><div class="sub">partner · MTL channel</div></div></div></td><td><span class="badge badge--go">Partner doctor</span></td><td>Internal medicine</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="MTL · Dr. Priya" data-user-contact="priya@mtl.co.th" data-user-role="Doctor" data-user-service="Internal medicine · MTL">Manage</button></td></tr>
+              <tr data-status="admins"><td><div class="cell-user"><span class="avatar">K</span><div><div class="strong">Krane Ops Admin</div><div class="sub">ops@krane.co</div></div></div></td><td><span class="badge badge--warn">Admin</span></td><td>Operations · refunds · roles</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Krane Ops Admin" data-user-contact="ops@krane.co" data-user-role="Admin" data-user-service="Operations · refunds · roles">Manage</button></td></tr>
+              <tr data-status="partners"><td><div class="cell-user"><span class="avatar">F</span><div><div class="strong">Fascino Ari Operator</div><div class="sub">ari.ops@fascino.co.th</div></div></div></td><td><span class="badge badge--go">Partner operator</span></td><td>Fulfilment · Ari branch</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Fascino Ari Operator" data-user-contact="ari.ops@fascino.co.th" data-user-role="Partner operator" data-user-service="Fulfilment · Ari branch">Manage</button></td></tr>
+              <tr data-status="patients"><td><div class="cell-user"><span class="avatar">P</span><div><div class="strong">Mali S.</div><div class="sub">08x-xxx-2041</div></div></div></td><td><span class="badge badge--mute">Patient</span></td><td>-</td><td><span class="badge badge--done">Active</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Mali S." data-user-contact="08x-xxx-2041" data-user-role="Patient" data-user-service="-">Manage</button></td></tr>
+              <tr data-status="deactivated"><td><div class="cell-user"><span class="avatar">J</span><div><div class="strong">Jan D.</div><div class="sub">08x-xxx-1180</div></div></div></td><td><span class="badge badge--mute">Patient</span></td><td>-</td><td><span class="badge badge--mute">Deactivated</span></td><td><button class="btn btn--ghost btn--sm" data-user-open="edit" data-user-name="Jan D." data-user-contact="08x-xxx-1180" data-user-role="Patient" data-user-service="-" data-user-inactive="true">Manage</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <section class="panel stack" data-user-editor hidden aria-hidden="true" style="margin-top:var(--sp-4)">
+          <div class="between"><div><h2 class="panel__title" data-user-editor-title>Add user</h2><div class="hint">Create or update an account, role, access scope, and status.</div></div><button class="btn btn--ghost btn--sm" type="button" data-user-close>Close</button></div>
+          <div class="grid-2">
+            <div class="field"><label for="admin-user-name">Name</label><input class="input" id="admin-user-name" data-user-name-input autocomplete="name"></div>
+            <div class="field"><label for="admin-user-contact">Email or phone</label><input class="input" id="admin-user-contact" data-user-contact-input autocomplete="email"></div>
+            <div class="field"><label for="admin-user-role">Role</label><select class="select" id="admin-user-role" data-user-role-input><option value="Doctor">Doctor</option><option value="Admin">Admin</option><option value="Partner operator">Partner operator</option><option value="Patient">Patient</option></select></div>
+            <div class="field"><label for="admin-user-service">Specialty or service</label><input class="input" id="admin-user-service" data-user-service-input placeholder="For example Dermatology or Ari branch"></div>
+          </div>
+          <div class="label">Permissions</div>
+          <div class="chips" data-user-permissions><button class="chip is-active" type="button" data-permission="assigned-cases">Assigned cases</button><button class="chip" type="button" data-permission="clinical-records">Clinical records</button><button class="chip" type="button" data-permission="operations-refunds">Operations &amp; refunds</button><button class="chip" type="button" data-permission="users-roles">Users &amp; roles</button><button class="chip" type="button" data-permission="content-pricing">Content &amp; pricing</button></div>
+          <div class="between"><label class="switch"><input type="checkbox" data-user-active checked><span class="track"></span><span class="thumb"></span><span class="hint">Account active</span></label><div class="page-actions"><button class="btn btn--ghost btn--sm" type="button" data-user-close>Cancel</button><button class="btn btn--primary btn--sm" type="button" data-user-save>Save user</button></div></div>
+        </section>
+      </section>
+
+      <!-- ===== ADMIN · CONTENT / CMS (F30) ===== -->
+      <section class="page admin-only" id="content">
+        <div class="page-head"><div><h1 class="page-head__t">Content</h1><div class="page-head__s">Health articles · two-step publish (draft → approve → live)</div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm">New article</button></div></div>
+        <div class="editor">
+          <div class="panel panel--flush">
+            <table class="table">
+              <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Does finasteride really work?</td><td>Hair loss</td><td>Dr. A.</td><td><span class="badge badge--done">Published</span></td><td><button class="btn btn--ghost btn--sm">Edit</button></td></tr>
+                <tr><td class="strong">Minoxidil: what to expect</td><td>Hair loss</td><td>Dr. B.</td><td><span class="badge badge--warn" data-article-status-badge="">Pending approval</span></td><td><button class="btn btn--primary btn--sm" data-publish-article="">Approve</button></td></tr>
+                <tr><td class="strong">Healthy habits for your hair</td><td>Lifestyle</td><td>Krane team</td><td><span class="badge badge--mute">Draft</span></td><td><button class="btn btn--ghost btn--sm">Edit</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <aside class="panel stack">
+            <div class="panel__title">Review · Minoxidil: what to expect</div>
+            <div class="field"><label for="admin-article-status">Status</label><select class="select" id="admin-article-status" data-article-status-select=""><option value="Pending approval">Pending approval</option><option value="Published">Published</option><option value="Draft">Draft</option></select></div>
+            <div class="field"><label for="admin-doctor-attribution">Doctor attribution</label><input class="input" id="admin-doctor-attribution" value="Dr. B. · reviewed Jun 2026"></div>
+            <div class="hint">No medical content goes live without an explicit approval action.</div>
+            <button class="btn btn--primary btn--block" data-publish-article="">Approve &amp; publish</button>
+            <button class="btn btn--ghost btn--block">Send back to draft</button>
+          </aside>
+        </div>
+
+        <!-- Intake quiz management (F04): admin edits the quiz + per-condition re-intake rule -->
+        <div class="panel stack" style="margin-top:var(--sp-4)">
+          <div class="panel__title">Intake quiz · admin</div>
+          <div class="hint">Patients complete intake once before their first consultation. Edit the questionnaire, and choose per condition whether a fresh intake is required on every visit.</div>
+          <div class="row" style="gap:var(--sp-2)"><button class="btn btn--primary btn--sm">Edit quiz questions</button><button class="btn btn--ghost btn--sm">Preview</button></div>
+          <table class="table">
+            <thead><tr><th>Condition</th><th>Approved medicine list (channel)</th><th>New intake required</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Hair loss</td><td>Krane · Direct</td><td><select class="select"><option>Once (first visit)</option><option>Every visit</option></select></td></tr>
+              <tr><td class="strong">Sexual health</td><td>Krane · Direct</td><td><select class="select"><option>Every visit</option><option>Once (first visit)</option></select></td></tr>
+              <tr><td class="strong">Sleep &amp; stress</td><td>Partner · MTL</td><td><select class="select"><option>Once (first visit)</option><option>Every visit</option></select></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== ADMIN · PRICING (F17) ===== -->
+      <section class="page admin-only" id="pricing">
+        <div class="page-head"><div><h1 class="page-head__t">Pricing</h1><div class="page-head__s">Krane price per item (separate from Fascino base price)</div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm">Save changes</button></div></div>
+        <div class="panel panel--flush">
+          <table class="table">
+            <thead><tr><th>Item</th><th>Fascino base</th><th>Krane price</th><th>Margin</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Finasteride 1mg</td><td>฿ 420</td><td><input class="input" value="590" style="height:34px;width:110px"></td><td class="strong" style="color:var(--color-success)">+฿ 170</td><td><span class="badge badge--done">Active</span></td></tr>
+              <tr><td class="strong">Minoxidil 5% topical</td><td>฿ 300</td><td><input class="input" value="450" style="height:34px;width:110px"></td><td class="strong" style="color:var(--color-success)">+฿ 150</td><td><span class="badge badge--done">Active</span></td></tr>
+              <tr><td class="strong">Ketoconazole 2% shampoo</td><td>฿ 220</td><td><input class="input" value="320" style="height:34px;width:110px"></td><td class="strong" style="color:var(--color-success)">+฿ 100</td><td><span class="badge badge--done">Active</span></td></tr>
+              <tr><td class="strong">Melatonin 5mg</td><td>฿ 180</td><td><input class="input" value="260" style="height:34px;width:110px"></td><td class="strong" style="color:var(--color-success)">+฿ 80</td><td><span class="badge badge--mute">Draft</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== ADMIN · COUPONS & DISCOUNTS (F39 · client 14 Jun) =====
+           Admin creates fixed-amount or % codes (0 allowed), validity window, max uses,
+           once per account, per-vertical restriction. Codes redeem in BOTH checkouts. -->
+      <section class="page admin-only" id="coupons">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Coupons</h1><div class="page-head__s">Discount codes redeemable at both checkouts: consultation fee and medication payment</div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-scroll-coupon="">+ New coupon</button></div>
+        </div>
+        <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="kpi__n" data-count="4">4</div><div class="kpi__l">Active codes</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="128">128</div><div class="kpi__l">Redemptions this month</div></div>
+          <div class="kpi"><div class="kpi__n">฿ 18,540</div><div class="kpi__l">Discount given this month</div></div>
+        </div>
+        <div class="panel panel--flush" style="margin-bottom:var(--sp-5)">
+          <table class="table">
+            <thead><tr><th>Code</th><th>Type</th><th>Applies to</th><th>Vertical</th><th>Validity</th><th>Uses</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">WELCOME50</td><td>Fixed ฿ 50</td><td>Consultation fee</td><td>All</td><td>1 Jun to 30 Sep</td><td>96 / 500</td><td><span class="badge badge--done">Active</span></td></tr>
+              <tr><td class="strong">HAIR10</td><td>10%</td><td>Medication</td><td>Hair loss</td><td>1 Jul to 31 Jul</td><td>27 / 200</td><td><span class="badge badge--done">Active</span></td></tr>
+              <tr><td class="strong">PRESSTEST0</td><td>Fixed ฿ 0</td><td>Both checkouts</td><td>All</td><td>Internal QA</td><td>5 / 20</td><td><span class="badge badge--go">Test</span></td></tr>
+              <tr><td class="strong">COMEBACK100</td><td>Fixed ฿ 100</td><td>Medication</td><td>All</td><td>Starts 1 Aug</td><td>0 / 300</td><td><span class="badge badge--mute">Scheduled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel" data-coupon-form="">
+          <div class="panel__head"><span class="panel__title">Create a coupon</span></div>
+          <div class="cfg-row"><div><div class="cfg-t">Code &amp; value</div><div class="cfg-s">Fixed amount or percentage. Zero-value codes are allowed for QA.</div></div>
+            <div class="cfg-ctl"><input class="input" placeholder="CODE" style="height:38px;width:140px"><select class="select" style="height:38px;width:120px"><option>Fixed ฿</option><option>Percent %</option></select><input class="input" placeholder="Value" style="height:38px;width:90px"></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Applies to</div><div class="cfg-s">Redeemable at the consultation-fee checkout, the medication checkout, or both.</div></div>
+            <div class="cfg-ctl"><select class="select" style="height:38px;width:190px"><option>Both checkouts</option><option>Consultation fee</option><option>Medication</option></select></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Validity window &amp; max uses</div><div class="cfg-s">Multi-use codes are limited to once per account.</div></div>
+            <div class="cfg-ctl"><input class="input" value="1 Aug to 31 Aug" style="height:38px;width:160px"><input class="input" placeholder="Max uses" style="height:38px;width:100px"></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Restrict to a vertical</div><div class="cfg-s">Optional. Limit the code to one service type, e.g. hair loss.</div></div>
+            <div class="cfg-ctl"><select class="select" style="height:38px;width:190px"><option>All verticals</option><option>Hair loss</option><option>Skin care</option><option>Sleep &amp; stress</option></select></div></div>
+          <div class="cfg-row"><div class="cfg-ctl" style="margin-left:auto"><button class="btn btn--ghost btn--sm">Cancel</button><button class="btn btn--primary btn--sm" data-toast="Coupon saved">Save coupon</button></div></div>
+        </div>
+      </section>
+
+      <!-- ===== ADMIN · CHANNELS & CONFIG (F02/F04/F09/F11/F12/F19/F38 · client v3) =====
+           One master template, single codebase; features enabled/disabled via config per
+           partner channel. Payment-flow settings stay provisional pending the client discussion. -->
+      <section class="page admin-only" id="config">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Channels &amp; configuration</h1><div class="page-head__s">Turn features on or off for each partner channel. Every channel runs from the same setup, so one change rolls out everywhere.</div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-toast="Configuration saved">Save changes</button></div>
+        </div>
+        <div class="panel panel--flush" style="margin-bottom:var(--sp-5)">
+          <div class="panel__head"><span class="panel__title">Channels</span><span class="badge badge--mute">3 channels</span></div>
+          <table class="table">
+            <thead><tr><th>Channel</th><th>Auto-match</th><th>Patient picks doctor</th><th>Nurse pre-screen</th><th>Medicine list</th><th>Theme</th></tr></thead>
+            <tbody>
+              <tr><td><div class="cell-user"><span class="avatar">K</span><div><div class="strong">Krane direct</div><div class="sub">Fascino fulfilment</div></div></div></td><td><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td><td><span class="badge badge--done">Krane list</span></td><td><span class="badge badge--mute">Krane</span></td></tr>
+              <tr><td><div class="cell-user"><span class="avatar">M</span><div><div class="strong">MTL insurance</div><div class="sub">Sends patients to Krane</div></div></div></td><td><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></td><td><span class="badge badge--go">MTL eligible</span></td><td><span class="badge badge--go">MTL brand</span></td></tr>
+              <tr><td><div class="cell-user"><span class="avatar">G</span><div><div class="strong">Grab partner</div><div class="sub">Sends patients, also delivers</div></div></div></td><td><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></td><td><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td><td><span class="badge badge--go">Partner list</span></td><td><span class="badge badge--go">Grab brand</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel" style="margin-bottom:var(--sp-5)">
+          <div class="panel__head"><span class="panel__title">Intake quiz</span><button class="btn btn--ghost btn--sm" data-toast="Quiz editor is a build-phase feature">Edit quiz questions</button></div>
+          <div class="cfg-row"><div><div class="cfg-t">General consultation</div><div class="cfg-s">Fresh intake required every time. Fixed by clinical policy.</div></div><div class="cfg-ctl"><span class="badge badge--done">Always on</span></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Hair loss</div><div class="cfg-s">Intake once before the first consultation. Toggle to re-prompt on every visit.</div></div><div class="cfg-ctl"><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Skin care</div><div class="cfg-s">Intake once before the first consultation. Toggle to re-prompt on every visit.</div></div><div class="cfg-ctl"><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel__head"><span class="panel__title">Notifications &amp; timing</span><span class="badge badge--warn">Payment steps: waiting on client decision</span></div>
+          <div class="cfg-row"><div><div class="cfg-t">Channel priority</div><div class="cfg-s">Order-status and follow-up alerts. LINE first, then email.</div></div><div class="cfg-ctl"><span class="badge badge--done">1 · LINE</span><span class="badge badge--mute">2 · Email</span></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Appointment reminder</div><div class="cfg-s">Hours before the booked time.</div></div><div class="cfg-ctl"><select class="select" style="height:38px;width:110px"><option>1 hour</option><option selected="">2 hours</option><option>4 hours</option></select></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Consultation slot length</div><div class="cfg-s">The same booked window applies to chat, voice, and video consultations.</div></div><div class="cfg-ctl"><select class="select" data-slot-length style="height:38px;width:110px"><option value="10">10 min</option><option value="15" selected="">15 min</option></select></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">No-show escalation</div><div class="cfg-s">Re-alert via SMS, LINE and email if the patient has not entered the session.</div></div><div class="cfg-ctl"><select class="select" style="height:38px;width:110px"><option>15 min</option><option selected="">30 min</option><option>60 min</option></select></div></div>
+          <div class="cfg-row"><div><div class="cfg-t">Payment window (auto-cancel)</div><div class="cfg-s">Unpaid orders cancel automatically and the POS bill hold is released.</div></div><div class="cfg-ctl"><select class="select" style="height:38px;width:110px"><option selected="">30 min</option><option>45 min</option><option>60 min</option></select></div></div>
+        </div>
+      </section>
+
+      <!-- ===== ADMIN · SYSTEM MAP (Krane on top of AskMacy base) =====
+           Reference view from the AskMacy CMS audit (13 Jul 2026). Shows how each Krane
+           capability maps onto the AskMacy Fascino telepharmacy back office:
+           REUSE (consume as is) · EXTEND (build on a base) · BUILD NEW (no equivalent). -->
+      <section class="page admin-only" id="sysmap">
+        <div class="page-head">
+          <div><h1 class="page-head__t">System map</h1><div class="page-head__s">How Krane maps onto the AskMacy (Fascino) base system. Reference from the CMS audit.</div></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm">Open audit doc</button></div>
+        </div>
+        <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="kpi__n" data-count="7">7</div><div class="kpi__l">Reuse</div><div class="kpi__d kpi__d--up">AskMacy provides it</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="4">4</div><div class="kpi__l">Extend</div><div class="kpi__d">Build on a base</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="7">7</div><div class="kpi__l">Build new</div><div class="kpi__d kpi__d--warn">No equivalent</div></div>
+        </div>
+        <div class="chips" style="margin-bottom:var(--sp-4)"><span class="chip is-active">All</span><span class="chip">Reuse</span><span class="chip">Extend</span><span class="chip">Build new</span></div>
+        <div class="panel panel--flush" style="margin-bottom:var(--sp-5)">
+          <table class="table">
+            <thead><tr><th>Krane capability</th><th>Verdict</th><th>AskMacy anchor</th><th>Note</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Accounts / users</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Accounts module</td><td>Reuse the RBAC and account store as is.</td></tr>
+              <tr><td class="strong">Doctor roles &amp; permissions</td><td><span class="badge badge--warn"><span class="dot"></span>Extend</span></td><td>Accounts roles</td><td>No Doctor role today. Add Doctor + Partner-doctor roles and fields.</td></tr>
+              <tr><td class="strong">Auto-match &amp; on-call routing</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>Agent status (partial)</td><td>Agent Available/Offline exists, no matching engine.</td></tr>
+              <tr><td class="strong">Doctor schedule</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>None</td><td>No scheduling in AskMacy.</td></tr>
+              <tr><td class="strong">Patient queue</td><td><span class="badge badge--warn"><span class="dot"></span>Extend</span></td><td>Consultation records</td><td>Extend the consult record + status list into a doctor queue.</td></tr>
+              <tr><td class="strong">Intake quiz + pre-consult</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>None</td><td>No intake questionnaire in AskMacy.</td></tr>
+              <tr><td class="strong">Consultation room (video+chat)</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Consult + Conference Server</td><td>Reuse the video/chat infra; add doctor context.</td></tr>
+              <tr><td class="strong">Prescribe &amp; e-sign</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>Product master</td><td>Pharmacist counsels, doctor prescribing is new. Draws medicines from the product master.</td></tr>
+              <tr><td class="strong">Cases &amp; orders</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Order module</td><td>Krane cases are a filtered view over the order pipeline.</td></tr>
+              <tr><td class="strong">Fulfilment tracking</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Order process + Branches</td><td>Align Krane delivery steps to AskMacy Process states.</td></tr>
+              <tr><td class="strong">Products / Medicine catalogue</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Products + Stock</td><td>Curate a Krane approved-medicine subset.</td></tr>
+              <tr><td class="strong">Branches</td><td><span class="badge badge--done"><span class="dot"></span>Reuse</span></td><td>Branches module</td><td>Reuse for fulfilment routing.</td></tr>
+              <tr><td class="strong">Krane pricing (margin)</td><td><span class="badge badge--warn"><span class="dot"></span>Extend</span></td><td>Pricing module</td><td>Add a Krane price / margin layer on the base price.</td></tr>
+              <tr><td class="strong">Coupons</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>None seen</td><td>Redeemable at both checkouts.</td></tr>
+              <tr><td class="strong">Content CMS (articles)</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>None</td><td>Two-step publish, no equivalent in AskMacy.</td></tr>
+              <tr><td class="strong">Channels &amp; config</td><td><span class="badge badge--warn"><span class="dot"></span>Extend</span></td><td>Partner field on orders</td><td>Add a per-channel feature-toggle layer.</td></tr>
+              <tr><td class="strong">Consultation-fee checkout</td><td><span class="badge badge--go"><span class="dot"></span>Build new</span></td><td>Order (medication only)</td><td>Separate consult-fee charge and flow.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-2">
+          <div class="panel stack">
+            <div class="panel__title">Integration model (recommended)</div>
+            <div class="hint">Keep the Krane CMS as its own front-end and treat AskMacy as the backend of record for orders, products, branches and accounts, consumed through APIs. Preserve the Krane design system rather than embedding in the legacy admin theme.</div>
+            <div class="kv"><span class="k">System of record</span><span class="strong">AskMacy (Fascino)</span></div>
+            <div class="kv"><span class="k">Krane front-end</span><span class="strong">Separate, this CMS</span></div>
+            <div class="kv"><span class="k">Data boundary</span><span class="strong">Orders, products, branches, accounts</span></div>
+          </div>
+          <div class="panel stack">
+            <div class="panel__title">AskMacy base modules</div>
+            <div class="between"><span>Dashboard, Consultation, Order</span><span class="badge badge--done">live</span></div>
+            <div class="between"><span>Products, Stock, Pricing</span><span class="badge badge--done">live</span></div>
+            <div class="between"><span>Branches, Accounts (RBAC)</span><span class="badge badge--done">live</span></div>
+            <div class="between"><span>Settings (Conference Server), Reports</span><span class="badge badge--done">live</span></div>
+            <div class="hint">Audited on the dev environment. Figures are indicative dev data.</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ---- page (screen) switching ----
+  const pages = [...document.querySelectorAll('.page')];
+  const railLinks = [...document.querySelectorAll('.cms-rail__link')];
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let enterTimer, countTimers = [];
+  function go(id, pushHash=true){
+    if(!document.getElementById(id)) return;
+    // Reflect the page in the URL so a single screen can be linked in a review.
+    if(pushHash && location.hash.slice(1) !== id){
+      try{ history.replaceState(null,'','#'+id); }catch(error){}
+    }
+    pages.forEach(p => p.classList.toggle('is-active', p.id === id));
+    railLinks.forEach(a => a.classList.toggle('is-active', a.dataset.page === id));
+    document.querySelector('.cms-body').scrollTop = 0;
+    // motion parity with the patient app: staggered rise-in on every page visit
+    const pg = document.getElementById(id);
+    if(pg && !reduceMotion){
+      pg.classList.remove('is-entering');
+      void pg.offsetWidth;
+      pg.classList.add('is-entering');
+      clearTimeout(enterTimer);
+      enterTimer = setTimeout(() => pg.classList.remove('is-entering'), 1200);
+    }
+    countUp(pg);
+  }
+  // KPI count-up: numbers tick up when their page enters
+  function countUp(pg){
+    countTimers.forEach(clearInterval); countTimers = [];
+    if(!pg || reduceMotion) return;
+    pg.querySelectorAll('[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count, 10);
+      if(isNaN(target)) return;
+      const steps = 24; let i = 0;
+      const iv = setInterval(() => {
+        i++;
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - i/steps, 3))));
+        if(i >= steps){ el.textContent = String(target); clearInterval(iv); }
+      }, 26);
+      countTimers.push(iv);
+    });
+  }
+  countUp(document.querySelector('.page.is-active'));   // first paint: dashboard KPIs tick up
+  // ---- action toast (saved / created feedback) ----
+  const toastEl = document.createElement('div');
+  toastEl.className = 'cms-toast'; toastEl.setAttribute('role','status');
+  document.body.appendChild(toastEl);
+  let toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.remove('is-on');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 2200);
+  }
+  const fulfilmentTitle = document.querySelector('[data-fulfilment-title]');
+  const fulfilmentSubtitle = document.querySelector('[data-fulfilment-subtitle]');
+  const fulfilmentIssueCopy = document.querySelector('[data-fulfilment-issue-copy]');
+  const fulfilmentOwner = document.querySelector('[data-fulfilment-owner]');
+  const fulfilmentBranch = document.querySelector('[data-fulfilment-branch]');
+  const refundOpen = document.querySelector('[data-refund-open]');
+  const refundPanel = document.querySelector('[data-refund-panel]');
+  const refundAmount = document.querySelector('[data-refund-amount]');
+  const contactState = document.querySelector('[data-contact-state]');
+  let currentFulfilmentTarget = document.querySelector('[data-order-id="KR-10293"]');
+  function setRefundPanel(open){
+    if(!refundPanel) return;
+    refundPanel.hidden = !open;
+    refundPanel.setAttribute('aria-hidden', String(!open));
+    if(open) refundPanel.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'nearest'});
+  }
+  function loadFulfilment(target){
+    if(!target || !target.dataset.orderId) return;
+    currentFulfilmentTarget = target;
+    const isThai = !!document.querySelector('.lang__opt[data-lng="th"].is-active');
+    const servicesTH = {'Hair loss refill':'สั่งซ้ำผมร่วง','General consultation':'ปรึกษาทั่วไป','General medicine':'ยาทั่วไป','Hair loss treatment':'รักษาผมร่วง'};
+    const service = isThai ? (servicesTH[target.dataset.service] || target.dataset.service) : target.dataset.service;
+    const paymentLabel = target.dataset.payment === 'paid' ? (isThai ? 'ชำระแล้ว' : 'paid') : target.dataset.payment === 'refunded' ? (isThai ? 'คืนเงินแล้ว' : 'refunded') : (isThai ? 'ยังไม่ชำระ' : 'payment pending');
+    if(fulfilmentTitle) fulfilmentTitle.textContent = (isThai ? 'ออเดอร์ #' : 'Order #') + target.dataset.orderId + ' · ' + target.dataset.patient;
+    if(fulfilmentSubtitle) fulfilmentSubtitle.textContent = service + ' · ' + target.dataset.owner + ' · ' + target.dataset.amount + ' ' + paymentLabel;
+    if(fulfilmentIssueCopy) fulfilmentIssueCopy.textContent = target.dataset.issue || 'No active issue.';
+    if(fulfilmentOwner) fulfilmentOwner.textContent = target.dataset.owner;
+    if(fulfilmentBranch && [...fulfilmentBranch.options].some(option => option.value === target.dataset.owner)) fulfilmentBranch.value = target.dataset.owner;
+    if(statusSelect && [...statusSelect.options].some(option => option.value === target.dataset.stage)) statusSelect.value = target.dataset.stage;
+    const activeIndex = statusSteps.findIndex(step => step.dataset.statusStep === target.dataset.stage);
+    statusSteps.forEach((step,index) => {
+      step.classList.toggle('done', activeIndex >= 0 && index < activeIndex);
+      step.classList.toggle('active', index === activeIndex);
+    });
+    if(refundOpen){
+      const unavailable = target.dataset.payment !== 'paid' || target.dataset.stage === 'Delivered';
+      refundOpen.disabled = unavailable;
+      refundOpen.textContent = target.dataset.payment === 'refunded' ? 'Refunded' : target.dataset.payment !== 'paid' ? 'No payment captured' : target.dataset.stage === 'Delivered' ? 'Delivered' : 'Refund';
+    }
+    if(refundAmount) refundAmount.textContent = target.dataset.amount;
+    if(contactState) contactState.textContent = 'Not contacted';
+    setRefundPanel(false);
+    reapplyLangIfTH();
+  }
+  document.body.addEventListener('click', e => {
+    // reassign / escalate (F12): send the matched patient back to matching
+    const r = e.target.closest('[data-reassign]');
+    if(r){
+      const inc = document.querySelector('[data-incoming]'); if(inc) inc.style.display = 'none';
+      const note = document.querySelector('[data-reassigned]'); if(note) note.style.display = '';
+    }
+    const tt = e.target.closest('[data-toast]');
+    if(tt) toast(tt.dataset.toast);
+    const t = e.target.closest('[data-page]');
+    if(t){
+      if(t.dataset.orderId) loadFulfilment(t);
+      go(t.dataset.page);
+    }
+  });
+
+  // ---- mobile nav drawer (menu button + scrim) ----
+  const cmsEl = document.querySelector('.cms');
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navScrim = document.querySelector('[data-nav-scrim]');
+  if(navToggle) navToggle.addEventListener('click', () => cmsEl.classList.toggle('nav-open'));
+  if(navScrim) navScrim.addEventListener('click', () => cmsEl.classList.remove('nav-open'));
+  // tapping a nav link closes the drawer on mobile
+  railLinks.forEach(a => a.addEventListener('click', () => cmsEl.classList.remove('nav-open')));
+
+  // ---- filter chips: clicking filters the table in the same page ----
+  // Index-based (not text-based) so filtering also works when the UI is in Thai.
+  const CHIP_FILTERS = {
+    cases: ['all','attention','awaiting-payment','in-fulfilment','delivered'],
+    users: ['all','doctors','patients','admins','partners','deactivated']
+  };
+  const ROW_STATUS = {};
+  document.querySelectorAll('.chips:not([data-user-permissions])').forEach(group => {
+    const section = group.closest('.page'); if(!section) return;
+    const sid = section.id;
+    const chips = [...group.children].filter(c => c.classList.contains('chip'));
+    group.addEventListener('click', e => {
+      const chip = e.target.closest('.chip'); if(!chip) return;
+      chips.forEach(c => c.classList.toggle('is-active', c === chip));
+      const f = (CHIP_FILTERS[sid] || [])[chips.indexOf(chip)] || 'all';
+      const tbody = section.querySelector('.table tbody'); if(!tbody) return;
+      const rows = [...tbody.querySelectorAll('tr')].filter(r => !r.classList.contains('table-empty'));
+      let shown = 0;
+      rows.forEach((tr, i) => {
+        const status = tr.dataset.status || (ROW_STATUS[sid] || [])[i];
+        const ok = f === 'all' || status === f;
+        tr.style.display = ok ? '' : 'none'; if(ok) shown++;
+      });
+      let empty = tbody.querySelector('.table-empty');
+      if(shown === 0){
+        if(!empty){
+          empty = document.createElement('tr'); empty.className = 'table-empty';
+          const td = document.createElement('td'); td.setAttribute('colspan','99');
+          td.textContent = 'No items in this view.'; empty.appendChild(td); tbody.appendChild(empty);
+        }
+        empty.style.display = ''; reapplyLangIfTH();
+      } else if(empty){ empty.style.display = 'none'; }
+    });
+  });
+
+  // ---- top search: live-filter the table on the active page ----
+  const topSearch = document.querySelector('.cms-top__search input');
+  if(topSearch){
+    topSearch.addEventListener('input', () => {
+      const q = topSearch.value.trim().toLowerCase();
+      const tbody = document.querySelector('.page.is-active .table tbody'); if(!tbody) return;
+      tbody.querySelectorAll('tr').forEach(tr => {
+        if(tr.classList.contains('table-empty')) return;
+        tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+
+  // ---- walkthrough interactions for key admin actions ----
+  const statusSelect = document.querySelector('[data-status-select]');
+  const updateStatus = document.querySelector('[data-update-status]');
+  const statusSteps = [...document.querySelectorAll('[data-status-step]')];
+  if(statusSelect && updateStatus) updateStatus.addEventListener('click', () => {
+    const activeIndex = statusSteps.findIndex(step => step.dataset.statusStep === statusSelect.value);
+    statusSteps.forEach((step,index) => {
+      step.classList.toggle('done', index < activeIndex);
+      step.classList.toggle('active', index === activeIndex);
+    });
+    if(currentFulfilmentTarget){
+      currentFulfilmentTarget.dataset.stage = statusSelect.value;
+      const badge = currentFulfilmentTarget.children[3] && currentFulfilmentTarget.children[3].querySelector('.badge');
+      if(badge){
+        badge.textContent = statusSelect.value;
+        badge.className = statusSelect.value === 'Delivered' ? 'badge badge--done' : 'badge badge--ok';
+      }
+      const updated = currentFulfilmentTarget.children[4];
+      if(updated) updated.textContent = 'Just now';
+    }
+    toast('Status updated'); reapplyLangIfTH();
+  });
+
+  if(refundOpen) refundOpen.addEventListener('click', () => {
+    if(!refundOpen.disabled) setRefundPanel(true);
+  });
+  const refundCancel = document.querySelector('[data-refund-cancel]');
+  if(refundCancel) refundCancel.addEventListener('click', () => setRefundPanel(false));
+  const refundConfirm = document.querySelector('[data-refund-confirm]');
+  if(refundConfirm) refundConfirm.addEventListener('click', () => {
+    if(!currentFulfilmentTarget) return;
+    currentFulfilmentTarget.dataset.payment = 'refunded';
+    currentFulfilmentTarget.dataset.issue = 'Refund initiated. The patient will receive the funds through the original payment method.';
+    const badge = currentFulfilmentTarget.children[3] && currentFulfilmentTarget.children[3].querySelector('.badge');
+    if(badge){ badge.textContent = 'Refunded'; badge.className = 'badge badge--done'; }
+    const updated = currentFulfilmentTarget.children[4];
+    if(updated) updated.textContent = 'Just now';
+    loadFulfilment(currentFulfilmentTarget);
+    toast(document.documentElement.lang === 'th' ? 'เริ่มดำเนินการคืนเงินแล้ว' : 'Refund initiated');
+    reapplyLangIfTH();
+  });
+  const contactBranch = document.querySelector('[data-contact-branch]');
+  if(contactBranch) contactBranch.addEventListener('click', () => {
+    if(contactState) contactState.textContent = 'Contacted just now';
+    contactBranch.textContent = 'Contact again';
+    toast(document.documentElement.lang === 'th' ? 'บันทึกการติดต่อผู้รับผิดชอบแล้ว' : 'Owner contact logged');
+    reapplyLangIfTH();
+  });
+  document.addEventListener('click', event => {
+    if(event.target.closest('.lang__opt')) setTimeout(() => loadFulfilment(currentFulfilmentTarget),0);
+  });
+
+  const slotLength = document.querySelector('[data-slot-length]');
+  if(slotLength){
+    let savedSlot = null;
+    try { savedSlot = localStorage.getItem('krane-consult-slot-minutes'); } catch (error) {}
+    if(savedSlot === '10' || savedSlot === '15') slotLength.value = savedSlot;
+    slotLength.addEventListener('change', () => {
+      try { localStorage.setItem('krane-consult-slot-minutes', slotLength.value); } catch (error) {}
+      toast(document.documentElement.lang === 'th'
+        ? 'อัปเดตช่วงเวลาปรึกษาเป็น ' + slotLength.value + ' นาทีแล้ว'
+        : 'Consultation slot updated to ' + slotLength.value + ' minutes');
+      reapplyLangIfTH();
+    });
+  }
+
+  // ---- user and role management ----
+  const userEditor = document.querySelector('[data-user-editor]');
+  const userEditorTitle = document.querySelector('[data-user-editor-title]');
+  const userNameInput = document.querySelector('[data-user-name-input]');
+  const userContactInput = document.querySelector('[data-user-contact-input]');
+  const userRoleInput = document.querySelector('[data-user-role-input]');
+  const userServiceInput = document.querySelector('[data-user-service-input]');
+  const userActiveInput = document.querySelector('[data-user-active]');
+  const userPermissionInputs = [...document.querySelectorAll('[data-user-permissions] .chip')];
+  let editingUserButton = null;
+  const USER_ROLE_UI = {
+    Doctor: {status:'doctors',badge:'badge--ok'},
+    Admin: {status:'admins',badge:'badge--warn'},
+    'Partner operator': {status:'partners',badge:'badge--go'},
+    Patient: {status:'patients',badge:'badge--mute'}
+  };
+  function setUserEditor(open){
+    if(!userEditor) return;
+    userEditor.hidden = !open;
+    userEditor.setAttribute('aria-hidden', String(!open));
+    if(open){
+      userEditor.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'nearest'});
+      if(userNameInput) userNameInput.focus({preventScroll:true});
+    }
+  }
+  function openUserEditor(button){
+    editingUserButton = button.dataset.userOpen === 'edit' ? button : null;
+    if(userEditorTitle) userEditorTitle.textContent = editingUserButton ? 'Manage user' : 'Add user';
+    if(userNameInput) userNameInput.value = button.dataset.userName || '';
+    if(userContactInput) userContactInput.value = button.dataset.userContact || '';
+    if(userRoleInput) userRoleInput.value = button.dataset.userRole || 'Doctor';
+    if(userServiceInput) userServiceInput.value = button.dataset.userService || '';
+    if(userActiveInput) userActiveInput.checked = button.dataset.userInactive !== 'true';
+    const savedPermissions = (button.dataset.userPermissions || 'assigned-cases').split('|');
+    userPermissionInputs.forEach(chip => chip.classList.toggle('is-active', savedPermissions.includes(chip.dataset.permission)));
+    setUserEditor(true); reapplyLangIfTH();
+  }
+  document.body.addEventListener('click', event => {
+    const button = event.target.closest('[data-user-open]');
+    if(button) openUserEditor(button);
+  });
+  document.querySelectorAll('[data-user-close]').forEach(button => button.addEventListener('click', () => setUserEditor(false)));
+  function syncUserRow(row, button, values){
+    const roleUI = USER_ROLE_UI[values.role] || USER_ROLE_UI.Patient;
+    row.dataset.status = values.active ? roleUI.status : 'deactivated';
+    const avatar = row.querySelector('.cell-user .avatar');
+    const strong = row.querySelector('.cell-user .strong');
+    const sub = row.querySelector('.cell-user .sub');
+    const roleBadge = row.children[1] && row.children[1].querySelector('.badge');
+    const statusBadge = row.children[3] && row.children[3].querySelector('.badge');
+    if(avatar) avatar.textContent = values.name.trim().charAt(0).toUpperCase();
+    if(strong) strong.textContent = values.name;
+    if(sub) sub.textContent = values.contact;
+    if(roleBadge){ roleBadge.textContent = values.role; roleBadge.className = 'badge ' + roleUI.badge; }
+    if(row.children[2]) row.children[2].textContent = values.service || '-';
+    if(statusBadge){
+      statusBadge.textContent = values.active ? 'Active' : 'Deactivated';
+      statusBadge.className = values.active ? 'badge badge--done' : 'badge badge--mute';
+    }
+    button.dataset.userOpen = 'edit';
+    button.dataset.userName = values.name;
+    button.dataset.userContact = values.contact;
+    button.dataset.userRole = values.role;
+    button.dataset.userService = values.service || '-';
+    button.dataset.userPermissions = values.permissions.join('|');
+    if(values.active) delete button.dataset.userInactive;
+    else button.dataset.userInactive = 'true';
+  }
+  const userSave = document.querySelector('[data-user-save]');
+  if(userSave) userSave.addEventListener('click', () => {
+    const name = userNameInput ? userNameInput.value.trim() : '';
+    const contact = userContactInput ? userContactInput.value.trim() : '';
+    if(!name || !contact){ toast(document.documentElement.lang === 'th' ? 'กรอกชื่อและข้อมูลติดต่อให้ครบ' : 'Add a name and contact details'); return; }
+    const values = {
+      name,
+      contact,
+      role:userRoleInput ? userRoleInput.value : 'Patient',
+      service:userServiceInput ? userServiceInput.value.trim() : '',
+      active:!userActiveInput || userActiveInput.checked,
+      permissions:userPermissionInputs.filter(chip => chip.classList.contains('is-active')).map(chip => chip.dataset.permission)
+    };
+    if(editingUserButton){
+      const row = editingUserButton.closest('tr');
+      if(row) syncUserRow(row, editingUserButton, values);
+    } else {
+      const tbody = document.querySelector('#users .table tbody');
+      const sourceRow = tbody && tbody.querySelector('tr:not(.table-empty)');
+      if(tbody && sourceRow){
+        const row = sourceRow.cloneNode(true);
+        row.style.display = '';
+        const button = row.querySelector('[data-user-open]');
+        if(button){ syncUserRow(row, button, values); tbody.appendChild(row); }
+      }
+    }
+    toast(document.documentElement.lang === 'th' ? 'บันทึกบัญชีและสิทธิ์แล้ว' : 'Account and permissions saved');
+    setUserEditor(false); reapplyLangIfTH();
+  });
+  userPermissionInputs.forEach(chip => chip.addEventListener('click', () => chip.classList.toggle('is-active')));
+
+  const articleStatus = document.querySelector('[data-article-status-select]');
+  const articleBadge = document.querySelector('[data-article-status-badge]');
+  document.querySelectorAll('[data-publish-article]').forEach(button => button.addEventListener('click', () => {
+    if(articleStatus){ articleStatus.value = 'Published'; articleStatus.dispatchEvent(new Event('cms-sync')); }
+    if(articleBadge){ articleBadge.textContent = 'Published'; articleBadge.classList.remove('badge--warn'); articleBadge.classList.add('badge--done'); }
+    toast('Article published'); reapplyLangIfTH();
+  }));
+
+  const newCoupon = document.querySelector('[data-scroll-coupon]');
+  const couponForm = document.querySelector('[data-coupon-form]');
+  if(newCoupon && couponForm) newCoupon.addEventListener('click', () => {
+    couponForm.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'start'});
+    const codeInput = couponForm.querySelector('input[placeholder="CODE"]'); if(codeInput) codeInput.focus();
+  });
+
+  // ---- fallback: any action button with no wired behaviour still gives feedback ----
+  document.body.addEventListener('click', e => {
+    const btn = e.target.closest('button.btn, a.btn'); if(!btn) return;
+    if(btn.closest('[data-page]') || btn.hasAttribute('data-toast') || btn.hasAttribute('data-update-status') ||
+       btn.hasAttribute('data-publish-article') || btn.hasAttribute('data-scroll-coupon') ||
+       btn.hasAttribute('data-user-open') || btn.hasAttribute('data-user-close') || btn.hasAttribute('data-user-save') ||
+       btn.hasAttribute('data-refund-open') || btn.hasAttribute('data-refund-cancel') || btn.hasAttribute('data-refund-confirm') ||
+       btn.hasAttribute('data-contact-branch')) return;
+    const label = (btn.textContent || '').trim().replace(/\s+/g,' ');
+    if(label) toast(label);
+  });
+
+  // F02 TH/EN toggle (active-state + copy swap) is handled by i18n.js.
+  // After a role switch / schedule rebuild, re-apply TH if it's the active language.
+  function reapplyLangIfTH(){
+    const on = document.querySelector('.lang__opt[data-lng="th"].is-active');
+    if(on && window.kraneSetLang) window.kraneSetLang(true);
+  }
+</script>
+<script src="cms-select.js?v=20260715a"></script>
+<script src="cms-datetime.js?v=20260726a"></script>
+<script src="i18n.js?v=20260726a">
+  // Deep link support: open the page named in the URL, and follow back/forward.
+  // Runs after load so later init code cannot navigate away from the linked page.
+  function applyCmsHash(){ const id = location.hash.slice(1); if(id) go(id, false); }
+  window.addEventListener('hashchange', applyCmsHash);
+  window.addEventListener('load', applyCmsHash);
+  applyCmsHash();
+</script>
+
+<script src="../krane-golden-admin.js"></script>
+</body></html>

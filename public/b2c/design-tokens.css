@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Archivo:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Fraunces:ital,wght@1,400;1,500;1,600&display=swap');
+/* Brand display face from Direction 04 / "The Solution": LCT Ciburial (OFL).
+   Use the installed face when available. Archivo is the portable fallback. */
+@font-face{font-family:'LCT Ciburial';src:local('LCT Ciburial'),local('LCTCiburial'),local('LCT-Ciburial'),local('Ciburial'),local('LCT Ciburial Regular');font-weight:300 800;font-display:swap}
+/* ============================================================
+   KRANE CLINIC, DESIGN TOKENS (single source of truth)
+   ------------------------------------------------------------
+   Krane brand palette, source of truth: the "Krane Clinic Working" Figma file
+   (28 Jul). Near-black ink (#121824) on an #F4F6F8 canvas over #E2E8F0
+   hairlines, with a single blue accent (#1973FF) for links and emphasis.
+   b2c/design-tokens.css is the live source; cms and ui-inventory mirror its
+   colour values. One accent only: the near-black plate carries primary
+   actions, blue carries links, selection and tints, never both at once.
+   The earlier teal palette is preserved as --preset-teal-* for revert.
+   All values are CSS custom properties so the real brand (logo /
+   colors / type) can be swapped in later with NO structural changes.
+
+   >>> WHEN BRANDING ARRIVES <<<
+   Edit ONLY the values in :root below. Do not rename variables.
+   - Set --color-accent to the brand primary.
+   - Add @font-face and point --font-base at the brand font.
+   - Everything (screens + prototype) re-skins automatically.
+   ============================================================ */
+
+:root {
+  /* ---- Brand / accent ---- Client Teal & Navy palette, 26 Jul. ---- */
+  --color-brand-teal: #00B4B4;
+  --color-brand-teal-deep: #009090;
+  --color-brand-teal-mid: #66D4D4;
+  --color-brand-ice: #F0F2F5;
+  --color-brand-lavender: #F0F2F5;
+  --color-brand-slate: #4A5568;
+  --color-brand-slate-soft: #F0F2F5;
+  --color-brand-charcoal: #1B2A4A;
+  --color-brand-black: #101827;
+  --color-brand-slate-deep: #4A5568;
+  --color-brand-bone: #F0F2F5;
+  /* ---- Theme presets ----------------------------------------------------
+     Two complete, same-shape palettes. Each preset defines every accent role
+     the app needs; the "Active theme" block two groups down is the ONLY
+     place that reads from a preset, so switching themes means repointing
+     that one block at the other prefix. Nothing outside this file, and
+     nothing else in this file, should ever hardcode a preset's hex directly.
+
+     Every role below is WCAG 2.1 contrast-checked against the surface it
+     actually sits on (ratios noted inline; AA text = 4.5:1, AA large text
+     and graphical/UI objects = 3:1):
+       -vivid   the pure brand hue. Safe for large/bold text and graphics
+                (icons ≥24px, chart strokes, decorative glow) but NOT
+                guaranteed safe for small text or white-text-on-fill.
+       (base)   the accessible default. Meets 4.5:1 as small text on the
+                app's white/near-white surfaces AND as a fill with its
+                paired -on-accent text colour. This is what --color-accent
+                resolves to, so every existing call site is AA-safe with
+                no per-usage audit needed.
+       -hover    darker still, for pressed/hover states (always exceeds AA).
+       -soft / -soft-2   light background tints. Never carry text directly,
+                so they are not contrast-checked against white; dark ink
+                placed on top of them (e.g. --color-ink) passes trivially.
+     "Teal" is the client's original (26 Jul) brand pick, kept intact in
+     case they revert. "Blue" is the 28 Jul update from the "Krane Clinic
+     Working" Figma file (source hex #1973FF, kept as -vivid). */
+
+  --preset-teal-accent-vivid: #00B4B4;              /* 2.56:1 vs white -- large/graphic only */
+  --preset-teal-accent: #00B4B4;                    /* paired with navy on-accent below, not white; see on-accent note */
+  --preset-teal-accent-hover: #009090;
+  --preset-teal-accent-mark: #009090;
+  --preset-teal-accent-soft: #DDEDEC;
+  --preset-teal-accent-soft-2: #EEF5F4;
+  --preset-teal-accent-ink: #2F7777;                /* 5.9:1 vs white -- safe small text/icons */
+  --preset-teal-on-accent: #1B2A4A;                 /* navy-on-teal = 5.55:1 -- safe; teal itself is too light for white text */
+  --preset-teal-gradient: radial-gradient(circle at 84% 12%,rgba(102,212,212,.28),transparent 40%),radial-gradient(circle at 14% 88%,rgba(0,180,180,.24),transparent 44%),linear-gradient(145deg,#14213B 0%,#1B2A4A 60%,#26395D 100%);
+  --preset-teal-gradient-soft: radial-gradient(circle at 86% 4%,rgba(102,212,212,.20),transparent 36%),radial-gradient(circle at 8% 92%,rgba(0,180,180,.08),transparent 40%),linear-gradient(145deg,#FFFFFF 0%,#F6F8FA 58%,#F0F2F5 100%);
+  /* Deep marketing surfaces (landing hero, journey steps, feature bands).
+     White text sits on -deep/-mid/-2; -soft is a light gradient terminus that
+     only ever carries dark ink. Ratios vs white: deep 8.9, mid 6.2, 2 4.6. */
+  --preset-teal-surface-deep: #123B37;
+  --preset-teal-surface-mid: #1E514C;
+  --preset-teal-surface-2: #2B6C66;
+  --preset-teal-surface-soft: #D7EDF8;
+  --preset-teal-surface-muted: #638087;
+  --preset-teal-surface-ink: #235A55;
+  /* Translucent scrim stops layered over the deep surfaces. Alpha-bearing, so
+     they cannot be derived from the solid tokens above without color-mix. */
+  --preset-teal-surface-scrim-a: rgba(10,55,95,.2);
+  --preset-teal-surface-scrim-b: rgba(70,150,150,.2);
+  --preset-teal-surface-scrim-deep: rgba(18,51,48,.2);
+  --preset-teal-surface-scrim-light: rgba(223,240,248,.2);
+  /* Light accent for text/marks placed ON the deep surfaces (inverse of
+     -surface-ink, which is for accent text on light backgrounds). */
+  --preset-teal-surface-bright: #91CFC5;
+
+  /* Blue ramp taken straight from the "Krane Clinic Working" Figma file, not
+     guessed: #1973FF is the accent it uses for links and emphasis, #DBE4F2 and
+     #E1E8F0 its tints. -vivid is that exact hex; it measures 3.93:1 on the
+     --color-bg canvas, which clears AA only for large text, graphics and fills.
+     The default --accent is the same hue and saturation nudged down in
+     lightness until small text clears 4.5:1, so every existing call site stays
+     accessible without auditing each one. Use -vivid deliberately, not by
+     habit: headline-scale text, icons 24px and up, chart strokes, plate fills. */
+  --preset-blue-accent-vivid: #1973FF;              /* Figma source hex, 3.93:1 on canvas -- large/graphic only */
+  --preset-blue-accent: #0164FF;                    /* 4.54:1 on canvas, 4.92:1 on white -- safe for small text */
+  --preset-blue-accent-hover: #0054D6;              /* 5.98:1 on canvas */
+  --preset-blue-accent-mark: #0054D6;
+  --preset-blue-accent-soft: #DBE4F2;               /* from the Figma file */
+  --preset-blue-accent-soft-2: #E1E8F0;             /* from the Figma file */
+  --preset-blue-accent-ink: #0164FF;                /* same safe shade as accent */
+  --preset-blue-on-accent: #FFFFFF;                 /* white on --accent = 4.92:1; on -vivid it is 4.25:1, large text only */
+  --preset-blue-gradient: radial-gradient(circle at 84% 12%,rgba(25,115,255,.28),transparent 40%),radial-gradient(circle at 14% 88%,rgba(19,86,191,.24),transparent 44%),linear-gradient(145deg,#14213B 0%,#1B2A4A 60%,#26395D 100%);
+  --preset-blue-gradient-soft: radial-gradient(circle at 86% 4%,rgba(25,115,255,.18),transparent 36%),radial-gradient(circle at 8% 92%,rgba(19,86,191,.08),transparent 40%),linear-gradient(145deg,#FFFFFF 0%,#F6F8FA 58%,#F0F2F5 100%);
+  /* Deep surfaces, also lifted from the Figma file: #111B30 and #1A1F2E are the
+     dark plates it uses behind footers, privacy bands and the hero. White text
+     on them measures 17.2:1 and 16.4:1. -2 is the bright hero plate (the Figma
+     accent itself). -muted / -bright / -soft are light steps: they carry dark
+     ink, or sit as accent text ON the deep plates, never white-on-light. */
+  --preset-blue-surface-deep: #111B30;              /* Figma */
+  --preset-blue-surface-mid: #1A1F2E;               /* Figma */
+  --preset-blue-surface-2: #1973FF;                 /* the hero plate, Figma accent */
+  --preset-blue-surface-muted: #495366;             /* Figma secondary ink, doubles as a muted plate */
+  --preset-blue-surface-bright: #9DC4F0;            /* 9.5:1 on -surface-deep -- accent text on dark */
+  --preset-blue-surface-soft: #DBE4F2;              /* Figma */
+  --preset-blue-surface-ink: #0164FF;
+  --preset-blue-surface-scrim-a: rgba(12,53,111,.2);
+  --preset-blue-surface-scrim-b: rgba(30,115,231,.2);
+  --preset-blue-surface-scrim-deep: rgba(12,53,111,.2);
+  --preset-blue-surface-scrim-light: rgba(219,228,242,.2);
+
+  /* ---- Active theme: BLUE (28 Jul) ---- change only this block to revert. */
+  --color-accent: var(--preset-blue-accent);      /* links, selected emphasis and key signals */
+  --color-accent-vivid: var(--preset-blue-accent-vivid);  /* opt-in punchier hue for large-scale/graphic use only */
+  --color-accent-hover: var(--preset-blue-accent-hover); /* pressed / hover emphasis, STATE only */
+  --color-accent-mark: var(--preset-blue-accent-mark);  /* static deep mark: indicator dots, ticks, small icons.
+                                    Same value as the hover state today, deliberately a
+                                    separate token so changing hover never restyles a
+                                    static mark. Do not merge these two. */
+  --color-accent-soft: var(--preset-blue-accent-soft);   /* selected flat surface */
+  --color-accent-soft-2: var(--preset-blue-accent-soft-2);   /* quiet supporting surface */
+  --color-accent-ink: var(--preset-blue-accent-ink);   /* accessible accent text/icons on light */
+  --color-on-accent: var(--preset-blue-on-accent);   /* text/icons on the accent fill */
+  --color-on-dark: #FFFFFF;     /* text/icons on ink, gradient-teal, and status (warning/danger/success/info) surfaces */
+  --color-ink-strong: #121824;   /* highest-contrast CTAs/headings, Figma */
+  --gradient-teal: var(--preset-blue-gradient);
+  --gradient-teal-soft: var(--preset-blue-gradient-soft);
+  /* Deep marketing surfaces, consumed by the landing hero, journey steps and
+     feature bands. Role-named, not hue-named, so a theme swap carries them. */
+  --color-surface-deep: var(--preset-blue-surface-deep);
+  --color-surface-mid: var(--preset-blue-surface-mid);
+  --color-surface-2: var(--preset-blue-surface-2);
+  --color-surface-soft: var(--preset-blue-surface-soft);
+  --color-surface-muted: var(--preset-blue-surface-muted);
+  --color-surface-ink: var(--preset-blue-surface-ink);   /* eyebrow/label text in the deep-surface family */
+  --color-surface-scrim-a: var(--preset-blue-surface-scrim-a);
+  --color-surface-scrim-b: var(--preset-blue-surface-scrim-b);
+  --color-surface-scrim-deep: var(--preset-blue-surface-scrim-deep);
+  --color-surface-scrim-light: var(--preset-blue-surface-scrim-light);
+  --color-surface-bright: var(--preset-blue-surface-bright);   /* accent text/marks ON deep surfaces */
+
+  /* ---- Neutrals ---- Sourced from the "Krane Clinic Working" Figma file.
+     Its ink is a near-black with a slight cool cast (#121824), not the navy
+     this file used to carry, and its canvas is #F4F6F8 over a #E2E8F0 hairline.
+     Contrast on that canvas: ink 16.4:1, ink-2 7.2:1, ink-3 5.5:1 -- all AA. */
+  --color-ink: #121824;   /* primary text, Figma */
+  --color-ink-2: #495366;   /* secondary text, Figma */
+  --color-ink-3: #5C6479;   /* muted / hints, Figma */
+  --color-line: #E2E8F0;   /* standard hairline, Figma */
+  --color-line-strong: #CBD5E1;
+  --color-surface: #FFFFFF;   /* clinical card / sheet */
+  --color-bg: #F4F6F8;   /* app canvas, Figma */
+  --color-bg-2: #E8ECF1;   /* sunken sections / skeletons */
+  --color-bg-soft: rgba(244,246,248,.70);
+  --color-slate: #1B2A4A;
+  --color-slate-2: #495366;
+
+  /* ---- Ice blue (secondary accent, links, highlights) ---- */
+  --color-blue: #1B2A4A;   /* Figma navy, the quiet secondary next to the accent */
+  --color-blue-hover: #121824;
+  --color-blue-soft: #E1E8F0;   /* Figma */
+  --color-powder: #DBE4F2;   /* Figma */
+  --color-on-blue: #FFFFFF;
+  --color-schedule: #F4F6F8;
+  --color-schedule-hover: #E8ECF1;
+  --color-schedule-ink: #495366;
+
+  /* ---- Primary button ---- The Figma file keeps the primary CTA a near-black
+     plate rather than the accent, so the one blue on screen stays the link
+     colour. White on #121824 is 17.8:1. ---- */
+  --btn-primary-bg: #121824;
+  --btn-primary-bg-hover: #0F172A;
+  --btn-primary-ink: #FFFFFF;
+
+  /* ---- Semantic ---- */
+  --color-success: #2A6152;
+  --color-success-soft: #DCEAE5;
+  --color-warning: #85601C;
+  --color-warning-soft: #EFE5D2;
+  --color-status-blue-ink: #5D6773;
+  --color-danger: #93453A;
+  --color-danger-ink: #7A271A;
+  --color-danger-soft: #F1DCD7;
+  --color-info: #425F6C;
+  --color-info-soft: #E2EAEF;
+
+  /* ---- Third-party payment identities and illustration colours ---- */
+  --color-bank-kbank: #138f3e;
+  --color-bank-kbank-ink: #0c6b2e;
+  --color-bank-scb: #4e2a84;
+  --color-bank-bbl: #1ba5e1;
+  --color-bank-ktb: #00a0e3;
+  --color-promptpay: #0a3b82;
+  --color-pill-light: #f4f0e7;
+  --color-pill-mid: #e3ddd0;
+  --color-pill-dark: #2c3b54;
+
+  /* ---- Photo-led editorial and system-state graphics ---- */
+  --color-graphic-warm: #F2F1ED;
+  --color-graphic-cool: #E7EDF2;
+  --color-graphic-success: #DCEAE5;
+  --color-graphic-danger: #F1DCD7;
+  --graphic-noise-opacity:.14;
+  --graphic-photo-opacity:.92;
+  --graphic-shape-opacity:.72;
+  --graphic-photo-scale:  1.03;
+  --graphic-shape-size:   62%;
+  --graphic-shape-offset: -18%;
+  --graphic-shape-rotate: -14deg;
+  --graphic-state-height: 176px;
+  --graphic-article-ratio:4 / 3;
+  --graphic-article-thumb:112px;
+  --graphic-signal-size:  42px;
+
+  /* ---- CMS glass canvas ---- */
+  --color-cms-canvas: #F4F6F8;
+  --color-cms-canvas-deep: #E8ECF1;
+  --color-glass-surface: #FFFFFF;
+  --color-glass-strong: #FFFFFF;
+  --color-glass-border: #E2E8F0;
+  --color-glass-divider: #E2E8F0;
+
+  /* ---- Diagram node categories (used by sitemap doc; grey in lo-fi) ---- */
+  --node-entry:#6b6f7a; --node-auth:#6b6f7a; --node-intake:#6b6f7a; --node-consult:#6b6f7a;
+  --node-rx:#6b6f7a; --node-pay:#6b6f7a; --node-order:#6b6f7a; --node-account:#6b6f7a; --node-decision:#8b918e;
+
+  /* ---- Typography ---- Prompt unifies body and display for Thai (26 Jul client
+     update, replaces the former Anuphan/Sarabun pair). Web-hosted (see @import
+     above) so it renders identically on every machine. Sukhumvit Set / Thonburi
+     are macOS-only and sit behind it as local fallbacks: leading with them made
+     the browser and Figma disagree about the actual typeface. Do not reorder. */
+  --font-thai-base: "Prompt", "Sukhumvit Set", "Thonburi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", Roboto, Helvetica, Arial, sans-serif;
+  --font-thai-display: "Prompt", "Sukhumvit Set", "Thonburi", "Archivo", var(--font-thai-base);
+  --font-latin: "Poppins", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-base: var(--font-thai-base);
+  --font-display: var(--font-thai-display);
+  --font-serif: "Fraunces", Georgia, serif;  /* italic accent words (sparingly) */
+  --fs-xs:12px; --fs-sm:13px; --fs-base:15px; --fs-md:17px; --fs-lg:20px; --fs-xl:26px; --fs-2xl:32px; --fs-3xl:40px;
+  /* Web display sizes (landing/desktop only; the app stops at --fs-3xl).
+     These are the settled desktop values of the landing's clamp() ramps. */
+  --fs-4xl:58px;   /* .section-title at desktop */
+  --fs-5xl:82px;   /* .hero h1 at desktop */
+  --fs-6xl:86px;   /* .how .section-title at desktop */
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700;
+  --lh-tight:1.2; --lh-snug:1.35; --lh-base:1.5; --lh-body:var(--lh-base);
+  --tracking-tight:0;
+
+  /* ---- Spacing scale ---- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
+
+  /* ---- Web band rhythm ---- (DESIGN.md 0c; macro rhythm, landing/desktop only.
+     Settled desktop values of the fluid clamp() ramps.) */
+  --band-y:96px;                 /* vertical padding of a landing section */
+  --band-gap:48px;               /* gap between blocks inside a section */
+
+  /* ---- Radii ---- (DESIGN.md 0a; rounded, concentric, one shared system) */
+  --radius-xs:10px; --radius-sm:14px; --radius-md:18px; --radius-lg:24px; --radius-xl:28px; --radius-2xl:34px; --radius-pill:999px;
+  /* Web-only geometry (landing). The landing's old one-off 22px is banned by
+     DESIGN.md 0a, so those uses now snap to --radius-lg (24px). --radius-frame
+     is a genuine role (full-bleed hero/media) that sits above the app scale. */
+  --radius-frame:46px;           /* full-bleed hero / media frame */
+
+  /* ---- Elevation ---- (one light source, soft, cool-ink tint, ≤ .13 alpha) */
+  --shadow-sm: 0 1px 2px rgba(40,40,40,.04),0 4px 12px rgba(40,40,40,.04);
+  --shadow-md: 0 2px 4px rgba(40,40,40,.04),0 10px 26px rgba(40,40,40,.06);
+  --shadow-lg: 0 4px 10px rgba(40,40,40,.05),0 22px 52px rgba(40,40,40,.10);
+  --shadow-glass: 0 2px 4px rgba(40,40,40,.04),0 14px 34px rgba(40,40,40,.07);
+  --shadow-glass-cms: 0 1px 2px rgba(40,40,40,.04),0 8px 22px rgba(40,40,40,.05);
+  --shadow-chip:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -3px 6px rgba(14,18,26,.10),0 4px 10px rgba(14,18,26,.12);
+  --shadow-tile:0 6px 14px rgba(14,18,26,.24),inset 0 1px 0 rgba(255,255,255,.28);
+  --glass-bg: rgba(255,255,255,.86);   /* frosted floating bar */
+  --glass-border: rgba(40,40,40,.06);
+
+  /* ---- Motion ---- (one system for both apps. hims-style: soft, quick, upward.
+     Micro = state feedback (press, check). Base = component reveals. Page = screen
+     transitions. Slow = ambient loaders only. Every animation/transition must use
+     these; honour prefers-reduced-motion at the component level.) */
+  --dur-micro:140ms;
+  --dur-base:280ms;
+  --dur-page:480ms;
+  --dur-slow:900ms;
+  --dur-ambient:1800ms;
+  --ease-out:cubic-bezier(.16,1,.3,1);       /* decisive arrive (screen/content enter) */
+  --ease-inout:cubic-bezier(.65,0,.35,1);    /* move / morph */
+  --ease-spring:cubic-bezier(.34,1.45,.64,1);/* playful pop (checks, badges) */
+
+  --border-width:1px;
+  --focus-ring-size:2px;
+  --focus-ring-offset:2px;
+  --blur-sm:8px;
+  --rise:14px;                                /* standard content rise distance */
+
+  /* ---- Component tokens (so components stay token-driven) ---- */
+  --control-h-sm:40px;           /* compact buttons / tabs */
+  --control-h-icon:40px;         /* square icon buttons */
+  --control-h:48px;              /* primary buttons / inputs */
+  --control-h-lg:56px;           /* high-priority media controls */
+  --control-radius:var(--radius-sm);
+  --button-radius:var(--control-radius); /* actions share one rounded-rectangle geometry; pill is for statuses only */
+  --selection-size:22px;
+  --selection-border-width:1.5px;
+  --selection-radius:var(--radius-sm);
+  /* Shape carries the "how many can I pick?" signal: a rounded square is a
+     checkbox (choose any number), a full circle is a radio (choose exactly one). */
+  --selection-radius-check:6px;
+  --selection-radius-radio:var(--radius-pill);
+  --selection-check-w:6px;
+  --selection-check-h:11px;
+  --mobile-frame:393px;          /* iPhone 16 Pro width */
+  --form-frame:520px;            /* flow/form column on tablet */
+  --tablet-frame:768px;          /* tablet device width */
+  --desktop-frame:1120px;        /* desktop device width */
+  --container-max:1120px;        /* web layout max (landing/dashboard) */
+
+  /* ============================================================
+     LANDING (web) PALETTE
+     Relocated from krane-b2c-landing.html so the landing consumes the same
+     library as the app. The landing runs a warmer, more editorial palette
+     than the product UI (charcoal ink, bone/sage neutrals); its own accent
+     (--dls-teal and friends) was updated 28 Jul to the blue from the
+     "Krane Clinic Working" Figma file, replacing the earlier deep teal.
+     ============================================================ */
+  /* Ink, neutrals and glass. These were previously declared two or three times
+     each in this same :root, so only the last declaration ever applied and the
+     earlier ones were dead weight that made the palette look editable when it
+     was not. Each token is now declared exactly once, at its winning value. */
+  --ink:#2B2B2B;
+  --ink-2:#4F575A;
+  --muted:#6E7076;
+  --paper:#F6F9FC;
+  --mist:#ECEFF1;
+  --powder:#DDE1E7;
+  --powder-2:rgba(221,225,231,.52);
+  --blue:#1F6A96;
+  --line:rgba(24,29,29,.12);
+  --green:#5C6472;
+  --glass-surface:rgba(231,231,228,.76);
+  --glass-surface-soft:rgba(221,225,231,.58);
+  --glass-divider:rgba(43,43,43,.13);
+  --glass-muted-ink:rgba(43,43,43,.58);
+  --glass-disabled-surface:rgba(43,43,43,.035);
+  --glass-refraction:rgba(221,225,231,.58);
+  --brand-sage:#DDE1E7;
+  --brand-charcoal:#2B2B2B;
+  --brand-black:#000000;
+  --brand-brown:#5C6472;
+  --brand-bone:#E7E7E4;
+  --brand-slate-2:#C9CED7;
+  /* Landing accent. --dls-teal is used for small text (eyebrows, links) and as a
+     white-text button fill, so it must be the AA-safe shade, not the vivid Figma
+     hex. --dls-teal-vivid carries the pure brand blue for large headline spans
+     and graphics only. Names keep the historical "teal" prefix so the landing's
+     existing call sites do not all have to be rewritten. */
+  --dls-teal:var(--preset-blue-accent);
+  --dls-teal-vivid:var(--preset-blue-accent-vivid);
+  --dls-teal-deep:var(--preset-blue-accent-hover);
+  --dls-mint:#DBE4F2;
+  --dls-ice:#E2E8F0;
+  --dls-lavender:#DBE4F2;
+  --dls-canvas:#F3F5F6;
+  --dls-ink:#181D1D;
+  --dls-muted:#667074;
+  --landing-teal:#315F5B;
+  --figma-page:#F4F6F8;
+  --figma-lilac:#CECCE0;
+  /* Shared-name values the landing used to shadow. Kept under the lp- namespace
+     so the landing keeps its own look while --color-* stays app-canonical. */
+  --web-line-strong:rgba(24,29,29,.24);    /* landing strong hairline */
+  --web-on-dark:#F8FBFA;                   /* landing text on dark/teal surfaces */
+
+}
+
+html[lang="en"] {
+  --font-base: var(--font-latin);
+  --font-display: var(--font-latin);
+}
+
+/* Height of the inline consent reading box on the consent-terms screen. */
+:root{--consent-doc-h:220px}
+
+/* Brand loader ring. */
+:root{--loader-size:112px;--loader-track:2px}

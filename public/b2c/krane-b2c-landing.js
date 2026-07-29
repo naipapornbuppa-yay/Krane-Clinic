@@ -1,0 +1,620 @@
+(() => {
+  const translations = {
+    en: {
+      announcementVirtual: "VIRTUAL CONSULTATIONS AVAILABLE 24/7",
+      announcementDoctors: "BOARD-CERTIFIED DOCTORS ONLINE IN MINUTES",
+      announcementFree: "FIRST TELEMEDICINE VISIT FREE — BOOK NOW",
+      navTreatments: "Treatments",
+      navHow: "How it works",
+      navGuarantee: "The Krane guarantee",
+      navDoctors: "Our doctors",
+      login: "Log in",
+      chooseCare: "Choose your care",
+      healthArticles: "Health articles",
+      language: "Language",
+      partnerAccess: "Partner access",
+      online: "100% online",
+      certified: "Certified care",
+      discreet: "Free discreet delivery",
+      heroTitle: "Premium healthcare<br>designed by medical experts",
+      heroCta: "Start your free assessment (5 min)",
+      treatmentTitle: "Personalised treatment programs for your best health",
+      complianceTitle: "Certified & Compliant with Thailand's Healthcare Regulations",
+      hair: "Hair loss prevention",
+      sexual: "Sexual performance",
+      skin: "Skin & anti-ageing",
+      weight: "Weight management",
+      hormone: "Hormones & TRT",
+      mind: "Focus & mind",
+      licensedDoctors: "Licensed doctors",
+      howKicker: "Simple & safe",
+      howTitle: "The modern patient journey",
+      step1Title: "Consult online",
+      step1Body: "Complete a private five-minute health assessment covering your health profile and goals.",
+      step2Title: "A doctor reviews",
+      step2Body: "A certified doctor assesses your information, creates a specific prescription and answers your questions.",
+      step3Title: "Discreet delivery",
+      step3Body: "Your personalised treatment is prepared and delivered in premium unbranded packaging with free delivery.",
+      protocolKicker: "Our protocols",
+      protocolTitle: "Clinically proven<br>FDA approved",
+      protocolLead: "Every treatment plan is tailored by a licensed doctor and dispensed by an accredited partner pharmacy.",
+      benefit1Title: "100% licensed doctors",
+      benefit1Body: "Every consultation is led by a certified doctor dedicated to your health.",
+      benefit2Title: "Medical-grade encryption",
+      benefit2Body: "Your health records and conversations are securely encrypted and protected.",
+      benefit3Title: "Free, private delivery",
+      benefit3Body: "Delivered to your door in unbranded packaging with nothing to indicate what is inside.",
+      benefit4Title: "Ongoing medical support",
+      benefit4Body: "Access unlimited medical follow-ups and treatment-adjustment consultations.",
+      standardKicker: "Our standard",
+      guaranteeTitle: "A clinic built on<br> real clinical standards<br> and real privacy",
+      guaranteeLead: "We believe men deserve clinical excellence without compromise. No waiting rooms, generic prescriptions or awkward face-to-face appointments.",
+      ourGuarantee: "Our guarantee",
+      expertsKicker: "Expertise that leads",
+      expertsTitle: "World-class medical leadership",
+      reviewsTrust: "95% love their care experience",
+      reviewsMembers: "users",
+      reviewsQuote: "“Excellent care and service”",
+      closingTitle: "Consult a doctor today",
+      closingLead: "Complete a five-minute digital assessment and begin a direct medical conversation with a specialist.",
+      consultNow: "Consult a doctor",
+      footerIntro: "Premium clinical solutions for modern men, powered by medical science and personalised to support your health journey.",
+      footerDisclaimer: "*Disclaimer: Telemedicine services are provided by independent licensed clinics partnered with Krane Clinic. Prescriptions depend on a doctor's clinical assessment. This website is for information only and does not replace medical advice.",
+      services: "Services",
+      hairShort: "Hair loss",
+      sexualShort: "Sexual health",
+      weightShort: "Weight management",
+      trtLong: "TRT & longevity",
+      about: "About",
+      medicalAdvisors: "Medical advisors",
+      legal: "Legal & contact",
+      privacyPolicy: "Privacy policy",
+      terms: "Terms of service",
+      patientConsent: "Patient consent",
+      help: "Help centre",
+      rights: "All rights reserved",
+      privacy: "Privacy",
+      termsShort: "Terms"
+    }
+  };
+
+  const menu = document.querySelector("#mobile-menu");
+  const menuOpen = document.querySelector("[data-menu-open]");
+  const menuClose = document.querySelector("[data-menu-close]");
+  const mobileQuery = window.matchMedia("(max-width: 1100px)");
+
+  function menuIsOpen() {
+    return menu && (menu.open || menu.hasAttribute("open"));
+  }
+
+  function openMenu() {
+    if (!menu || menuIsOpen()) return;
+    document.body.classList.add("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "true");
+    if (typeof menu.showModal === "function") menu.showModal();
+    else menu.setAttribute("open", "");
+    requestAnimationFrame(() => menu.querySelector("nav a")?.focus());
+  }
+
+  function closeMenu({ restoreFocus = false } = {}) {
+    if (!menu || !menuIsOpen()) return;
+    if (typeof menu.close === "function") menu.close();
+    else menu.removeAttribute("open");
+    document.body.classList.remove("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "false");
+    if (restoreFocus) menuOpen?.focus();
+  }
+
+  menuOpen?.addEventListener("click", openMenu);
+  menuClose?.addEventListener("click", () => closeMenu({ restoreFocus: true }));
+  menu?.addEventListener("click", (event) => {
+    if (event.target === menu) closeMenu({ restoreFocus: true });
+  });
+  menu?.addEventListener("close", () => {
+    document.body.classList.remove("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "false");
+  });
+  menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => closeMenu()));
+  mobileQuery.addEventListener("change", (event) => {
+    if (!event.matches) closeMenu();
+  });
+
+  const languageSelects = [...document.querySelectorAll("[data-language]")];
+  const compliance = document.querySelector(".compliance");
+  const complianceToggle = document.querySelector("[data-compliance-toggle]");
+
+  function syncComplianceToggleLabel(language = document.documentElement.lang) {
+    if (!complianceToggle) return;
+    const paused = compliance?.classList.contains("is-paused");
+    const thai = language !== "en";
+    complianceToggle.setAttribute("aria-pressed", paused ? "true" : "false");
+    complianceToggle.setAttribute("aria-label", thai
+      ? (paused ? "เล่นการเลื่อนโลโก้ต่อ" : "หยุดการเลื่อนโลโก้ชั่วคราว")
+      : (paused ? "Resume logo marquee" : "Pause logo marquee"));
+  }
+
+  function setLanguage(language) {
+    const lang = language === "en" ? "en" : "th";
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      if (!element.dataset.th) element.dataset.th = element.innerHTML;
+      const translated = lang === "en" ? translations.en[element.dataset.i18n] : element.dataset.th;
+      if (translated != null) element.innerHTML = translated;
+    });
+    languageSelects.forEach((select) => { select.value = lang; });
+    menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
+    menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
+    document.querySelector("[data-members-label]")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "ผู้ใช้งาน 3,000 คน" : "3,000 users"
+    );
+    const memberCount = document.querySelector("[data-member-count]");
+    if (memberCount) {
+      memberCount.textContent = new Intl.NumberFormat(lang === "th" ? "th-TH" : "en-US")
+        .format(Number(memberCount.dataset.currentValue || 0));
+    }
+    syncComplianceToggleLabel(lang);
+    try { localStorage.setItem("krane_lang", lang); } catch (_) {}
+    document.dispatchEvent(new CustomEvent("krane:languagechange", { detail: { lang } }));
+  }
+
+  languageSelects.forEach((select) => select.addEventListener("change", () => {
+    setLanguage(select.value);
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ krane: "lang", th: select.value === "th" }, "*");
+      }
+    } catch (_) {}
+  }));
+
+  let initialLanguage = "th";
+  try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
+  setLanguage(initialLanguage);
+
+  complianceToggle?.addEventListener("click", () => {
+    compliance?.classList.toggle("is-paused");
+    syncComplianceToggleLabel();
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.data?.krane === "lang") setLanguage(event.data.th ? "th" : "en");
+  });
+
+  document.querySelectorAll("[data-route]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      try {
+        if (window.parent && window.parent !== window) {
+          event.preventDefault();
+          window.parent.postMessage({
+            krane: "nav",
+            to: link.dataset.route,
+            next: link.dataset.next || null,
+            category: link.dataset.category || null
+          }, "*");
+        }
+      } catch (_) {}
+    });
+  });
+
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const header = document.querySelector("[data-site-header]");
+  const revealGroups = [
+    [".treatments .treatment-pill", 55, "scale"],
+    [".compliance__group:first-child > div", 55, "scale"],
+    [".steps > li", 75, ""],
+    [".protocol__heading > *", 90, ""],
+    [".product-stage, .protocol .carousel-footer", 90, "scale"],
+    [".benefits > li", 55, ""],
+    [".guarantee__copy", 0, ""],
+    [".experts .section-heading, .expert-card, .experts .carousel-footer", 55, ""],
+    [".review-collage, .reviews__copy", 100, ""],
+    [".closing__copy, .footer__main, .footer__bottom", 85, ""]
+  ];
+  const revealItems = [];
+
+  revealGroups.forEach(([selector, stagger, kind]) => {
+    document.querySelectorAll(selector).forEach((element, index) => {
+      element.classList.add("reveal-item");
+      element.style.setProperty("--reveal-delay", `${Math.min(index * Number(stagger), 280)}ms`);
+      if (kind) element.dataset.revealKind = kind;
+      revealItems.push(element);
+    });
+  });
+
+  document.body.classList.add("motion-enabled");
+  requestAnimationFrame(() => document.body.classList.add("motion-loaded"));
+
+  if (reducedMotionQuery.matches || !("IntersectionObserver" in window)) {
+    revealItems.forEach((element) => element.classList.add("is-revealed"));
+  } else {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    revealItems.forEach((element) => revealObserver.observe(element));
+  }
+
+  const sectionLinks = [...document.querySelectorAll('.desktop-nav a[href^="#"]')];
+  if ("IntersectionObserver" in window && sectionLinks.length) {
+    const linkedSections = sectionLinks
+      .map((link) => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
+    const sectionObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      sectionLinks.forEach((link) => {
+        link.classList.toggle("is-current", link.getAttribute("href") === `#${visible.target.id}`);
+      });
+    }, { rootMargin: "-28% 0px -56% 0px", threshold: [0, 0.15, 0.35] });
+    linkedSections.forEach((section) => sectionObserver.observe(section));
+  }
+
+  const productImage = document.querySelector("[data-product-image]");
+  const productStage = document.querySelector("[data-product-slide]");
+  const productTags = [...document.querySelectorAll("[data-product-tag]")];
+  const productIndex = document.querySelector("[data-product-index]");
+  const productDots = [...document.querySelectorAll(".protocol .carousel-indicator i")];
+  const productSlides = [
+    {
+      id: "injectors",
+      src: "assets/landing-573/products/clinical-injectors-v2.png",
+      alt: {
+        th: "อุปกรณ์ยาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
+        en: "Injection devices that may be prescribed as part of a treatment plan"
+      },
+      tags: {
+        th: ["ปากกาฉีด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
+        en: ["Injection pen", "Dose control", "Prescription only"]
+      }
+    },
+    {
+      id: "hair",
+      src: "assets/landing-573/products/clinical-hair-v2.png",
+      alt: {
+        th: "อุปกรณ์ทาผลิตภัณฑ์สำหรับโปรโตคอลดูแลเส้นผม",
+        en: "Topical applicator for a hair-care treatment protocol"
+      },
+      tags: {
+        th: ["หัวทาหนังศีรษะ", "สูตรเฉพาะบุคคล", "ใช้ตามแผนแพทย์"],
+        en: ["Scalp applicator", "Personalized formula", "Doctor-guided use"]
+      }
+    },
+    {
+      id: "sexual",
+      src: "assets/landing-573/products/clinical-sexual-v2.png",
+      alt: {
+        th: "แผงยาเม็ดสำหรับโปรโตคอลดูแลสุขภาพทางเพศ",
+        en: "Blister-packed tablets for a sexual-health treatment protocol"
+      },
+      tags: {
+        th: ["ยาเม็ดรับประทาน", "แผงบรรจุแยกเม็ด", "ใช้ตามใบสั่งแพทย์"],
+        en: ["Oral tablets", "Individual blister pack", "Prescription only"]
+      }
+    }
+  ];
+  let activeProduct = 0;
+  let productSwapTimer = 0;
+  productSlides.forEach((slide) => {
+    const image = new Image();
+    image.src = slide.src;
+  });
+
+  function renderProductCopy() {
+    const slide = productSlides[activeProduct];
+    const lang = document.documentElement.lang === "en" ? "en" : "th";
+    if (productStage) productStage.dataset.productSlide = slide.id;
+    if (productImage) productImage.alt = slide.alt[lang];
+    productTags.forEach((tag, index) => {
+      tag.textContent = slide.tags[lang][index] || "";
+    });
+  }
+
+  function renderProduct() {
+    if (!productImage) return;
+    const slide = productSlides[activeProduct];
+    renderProductCopy();
+    window.clearTimeout(productSwapTimer);
+    productImage.style.opacity = "0";
+    productSwapTimer = window.setTimeout(() => {
+      productImage.src = slide.src;
+      productImage.style.opacity = "1";
+    }, 130);
+    if (productIndex) productIndex.textContent = String(activeProduct + 1).padStart(2, "0");
+    productDots.forEach((dot, index) => {
+      dot.style.background = index === activeProduct ? "#0f172a" : "#cbd5e1";
+    });
+  }
+
+  document.addEventListener("krane:languagechange", renderProductCopy);
+  renderProductCopy();
+
+  document.querySelectorAll("[data-product-direction]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeProduct = (activeProduct + Number(button.dataset.productDirection) + productSlides.length) % productSlides.length;
+      renderProduct();
+    });
+  });
+
+  const expertViewport = document.querySelector("[data-expert-viewport]");
+  const expertCards = [...document.querySelectorAll(".expert-card")];
+  const expertButtons = [...document.querySelectorAll("[data-expert-direction]")];
+  const expertIndex = document.querySelector("[data-expert-index]");
+  const expertDots = [...document.querySelectorAll(".experts .carousel-indicator i")];
+  let expertScrollFrame = 0;
+
+  function expertStep() {
+    if (!expertViewport || !expertCards.length) return 0;
+    const track = expertViewport.querySelector(".expert-track");
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    return expertCards[0].getBoundingClientRect().width + gap;
+  }
+
+  function syncExpertCarousel() {
+    expertScrollFrame = 0;
+    if (!expertViewport || !expertCards.length) return;
+    const step = expertStep() || 1;
+    const maxIndex = expertCards.length - 1;
+    const current = Math.max(0, Math.min(maxIndex, Math.round(expertViewport.scrollLeft / step)));
+    const maxScroll = Math.max(0, expertViewport.scrollWidth - expertViewport.clientWidth);
+    if (expertIndex) expertIndex.textContent = String(current + 1).padStart(2, "0");
+    expertDots.forEach((dot, index) => {
+      dot.style.background = index === current ? "#0f172a" : "#cbd5e1";
+    });
+    expertButtons.forEach((button) => {
+      const direction = Number(button.dataset.expertDirection);
+      button.disabled = direction < 0 ? expertViewport.scrollLeft <= 2 : expertViewport.scrollLeft >= maxScroll - 2;
+    });
+  }
+
+  expertButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!expertViewport) return;
+      const step = expertStep();
+      const current = Math.round(expertViewport.scrollLeft / (step || 1));
+      const next = Math.max(0, Math.min(expertCards.length - 1, current + Number(button.dataset.expertDirection)));
+      expertViewport.scrollTo({
+        left: next * step,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+      });
+    });
+  });
+  expertViewport?.addEventListener("scroll", () => {
+    if (!expertScrollFrame) expertScrollFrame = requestAnimationFrame(syncExpertCarousel);
+  }, { passive: true });
+  window.addEventListener("resize", syncExpertCarousel, { passive: true });
+  syncExpertCarousel();
+
+  const reviewDialog = document.querySelector("[data-review-dialog]");
+  const reviewDialogImage = document.querySelector("[data-review-dialog-image]");
+  const reviewDialogName = document.querySelector("[data-review-dialog-name]");
+  const reviewClose = document.querySelector("[data-review-close]");
+  let reviewReturnFocus = null;
+
+  function openReview(card) {
+    if (!reviewDialog || !reviewDialogImage || !reviewDialogName) return;
+    const sourceImage = card.querySelector("img");
+    const name = card.querySelector("figcaption")?.textContent?.trim() || "Krane member";
+    reviewReturnFocus = card;
+    reviewDialogImage.src = sourceImage?.currentSrc || sourceImage?.src || "";
+    reviewDialogImage.alt = `ภาพรีวิวจาก ${name}`;
+    reviewDialogName.textContent = name;
+    document.body.classList.add("review-open");
+    if (typeof reviewDialog.showModal === "function") reviewDialog.showModal();
+    else reviewDialog.setAttribute("open", "");
+    requestAnimationFrame(() => reviewClose?.focus());
+  }
+
+  document.querySelectorAll("[data-review-open]").forEach((card) => {
+    card.addEventListener("click", () => openReview(card));
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openReview(card);
+    });
+  });
+  reviewClose?.addEventListener("click", () => {
+    if (typeof reviewDialog?.close === "function") reviewDialog.close();
+    else reviewDialog?.removeAttribute("open");
+  });
+  reviewDialog?.addEventListener("click", (event) => {
+    if (event.target === reviewDialog && typeof reviewDialog.close === "function") reviewDialog.close();
+  });
+  reviewDialog?.addEventListener("close", () => {
+    document.body.classList.remove("review-open");
+    reviewReturnFocus?.focus();
+  });
+
+  const reviewCollage = document.querySelector(".review-collage");
+  const reviewColumns = reviewCollage
+    ? [...reviewCollage.querySelectorAll(":scope > .review-column")]
+    : [];
+  const originalReviewCards = reviewColumns.flatMap((column) => [
+    ...column.querySelectorAll(":scope > [data-review-open]")
+  ]);
+  let reviewAnimationFrame = 0;
+  let reviewAnimationVisible = true;
+  let reviewAnimationLastTime = 0;
+  let reviewInteractionPauseUntil = 0;
+  let reviewHorizontalLoopWidth = 0;
+
+  function createReviewClone(card, index, kind) {
+    const clone = card.cloneNode(true);
+    clone.classList.add("review-loop-clone", `review-loop-clone--${kind}`);
+    clone.removeAttribute("data-review-open");
+    clone.removeAttribute("role");
+    clone.removeAttribute("tabindex");
+    clone.removeAttribute("aria-label");
+    clone.setAttribute("aria-hidden", "true");
+    clone.dataset.reviewProxy = String(index);
+    return clone;
+  }
+
+  if (reviewCollage && originalReviewCards.length) {
+    const mobileSequence = document.createElement("div");
+    mobileSequence.className = "review-mobile-sequence";
+    mobileSequence.setAttribute("aria-hidden", "true");
+    originalReviewCards.forEach((card, index) => {
+      mobileSequence.append(createReviewClone(card, index, "mobile"));
+    });
+    reviewCollage.append(mobileSequence);
+
+    reviewCollage.addEventListener("click", (event) => {
+      const proxy = event.target.closest("[data-review-proxy]");
+      if (!proxy || !reviewCollage.contains(proxy)) return;
+      const original = originalReviewCards[Number(proxy.dataset.reviewProxy)];
+      if (original) openReview(original);
+    });
+
+    function measureReviewLoops() {
+      const firstOriginal = originalReviewCards[0];
+      const firstMobileClone = mobileSequence.querySelector(".review-loop-clone--mobile");
+      reviewHorizontalLoopWidth = firstOriginal && firstMobileClone
+        ? Math.max(0, firstMobileClone.offsetLeft - firstOriginal.offsetLeft)
+        : 0;
+      if (reviewHorizontalLoopWidth > 0 && reviewCollage.scrollLeft >= reviewHorizontalLoopWidth) {
+        reviewCollage.scrollLeft %= reviewHorizontalLoopWidth;
+      }
+    }
+
+    function syncReviewMotionPreference() {
+      const isStatic = reducedMotionQuery.matches;
+      reviewCollage.classList.toggle("is-static", isStatic);
+      reviewCollage.classList.toggle("is-auto-scrolling", !isStatic);
+      if (isStatic) {
+        reviewCollage.scrollLeft = 0;
+      }
+      requestAnimationFrame(measureReviewLoops);
+    }
+
+    function pauseReviewForInteraction() {
+      reviewInteractionPauseUntil = performance.now() + 2400;
+      reviewAnimationLastTime = 0;
+    }
+
+    function animateReviews(time) {
+      const elapsed = reviewAnimationLastTime ? Math.min(time - reviewAnimationLastTime, 48) : 0;
+      reviewAnimationLastTime = time;
+      const paused = reducedMotionQuery.matches
+        || !reviewAnimationVisible
+        || document.hidden
+        || reviewDialog?.open
+        || time < reviewInteractionPauseUntil
+        || reviewCollage.matches(":hover")
+        || reviewCollage.matches(":focus-within");
+
+      if (!paused && elapsed > 0) {
+        if (reviewHorizontalLoopWidth > 0) {
+          reviewCollage.scrollLeft += elapsed * 0.035;
+          if (reviewCollage.scrollLeft >= reviewHorizontalLoopWidth) {
+            reviewCollage.scrollLeft -= reviewHorizontalLoopWidth;
+          }
+        }
+      }
+
+      reviewAnimationFrame = requestAnimationFrame(animateReviews);
+    }
+
+    ["pointerdown", "touchstart", "wheel"].forEach((eventName) => {
+      reviewCollage.addEventListener(eventName, pauseReviewForInteraction, { passive: true });
+    });
+    window.addEventListener("resize", () => requestAnimationFrame(measureReviewLoops), { passive: true });
+    window.addEventListener("load", measureReviewLoops, { once: true });
+    reducedMotionQuery.addEventListener?.("change", syncReviewMotionPreference);
+    if ("ResizeObserver" in window) new ResizeObserver(measureReviewLoops).observe(reviewCollage);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => {
+        reviewAnimationVisible = entries.some((entry) => entry.isIntersecting);
+        reviewAnimationLastTime = 0;
+      }, { rootMargin: "20% 0px", threshold: 0.01 }).observe(reviewCollage);
+    }
+
+    syncReviewMotionPreference();
+    reviewAnimationFrame = requestAnimationFrame(animateReviews);
+  }
+
+  const memberCount = document.querySelector("[data-member-count]");
+  const memberCountTarget = Number(memberCount?.dataset.countTarget || 3000);
+  let memberCountStarted = false;
+
+  function renderMemberCount(value) {
+    if (!memberCount) return;
+    const rounded = Math.max(0, Math.min(memberCountTarget, Math.round(value)));
+    memberCount.dataset.currentValue = String(rounded);
+    memberCount.textContent = new Intl.NumberFormat(
+      document.documentElement.lang === "th" ? "th-TH" : "en-US"
+    ).format(rounded);
+  }
+
+  function startMemberCount() {
+    if (!memberCount || memberCountStarted) return;
+    memberCountStarted = true;
+    if (reducedMotionQuery.matches) {
+      renderMemberCount(memberCountTarget);
+      return;
+    }
+    const startedAt = performance.now();
+    const duration = 1400;
+    function tick(time) {
+      const progress = Math.min(1, (time - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      renderMemberCount(memberCountTarget * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if (memberCount) {
+    renderMemberCount(0);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        startMemberCount();
+        observer.disconnect();
+      }, { threshold: 0.35 }).observe(memberCount);
+    } else {
+      startMemberCount();
+    }
+  }
+
+  const hero = document.querySelector(".hero");
+  const closing = document.querySelector(".closing");
+  const mobileCta = document.querySelector("[data-mobile-cta]");
+  let scrollFrame = 0;
+
+  function updateMobileCta() {
+    scrollFrame = 0;
+    if (!mobileCta || !hero || !closing) return;
+    header?.classList.toggle("is-scrolled", window.scrollY > 24);
+    const allowParallax = !reducedMotionQuery.matches
+      && !window.matchMedia("(max-width: 700px)").matches
+      && !window.matchMedia("(pointer: coarse)").matches;
+    if (allowParallax) {
+      const heroRect = hero.getBoundingClientRect();
+      const parallax = Math.max(0, Math.min(22, -heroRect.top * 0.06));
+      hero.style.setProperty("--hero-parallax", `${parallax.toFixed(2)}px`);
+    } else {
+      hero.style.setProperty("--hero-parallax", "0px");
+    }
+    const mobile = window.matchMedia("(max-width: 700px)").matches;
+    const heroRect = hero.getBoundingClientRect();
+    const closingRect = closing.getBoundingClientRect();
+    mobileCta.classList.toggle("is-visible", mobile && heroRect.bottom < 90 && closingRect.top > window.innerHeight * 0.72);
+  }
+
+  function requestMobileCtaUpdate() {
+    if (!scrollFrame) scrollFrame = requestAnimationFrame(updateMobileCta);
+  }
+
+  window.addEventListener("scroll", requestMobileCtaUpdate, { passive: true });
+  window.addEventListener("resize", requestMobileCtaUpdate, { passive: true });
+  updateMobileCta();
+
+  if (window.lucide) {
+    window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
+  }
+})();
