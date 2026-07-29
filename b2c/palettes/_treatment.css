@@ -1,0 +1,113 @@
+/* ============================================================
+   KRANE LANDING, PALETTE TREATMENT LAYER
+   ------------------------------------------------------------
+   Structure only. Every colour value here comes from a variable
+   that a palette file (teal-a / teal-b / teal-c) defines.
+   Do not put a hex value in this file.
+
+   What it does, and why: the base landing hard-codes its hero,
+   nav, and section backgrounds as blue hex values, so a token
+   swap alone leaves the page looking unchanged. This layer
+   re-points those surfaces at palette variables, turns three
+   sections into solid colour bands, and adds a grain layer over
+   the gradient surfaces.
+
+   Load order: base landing CSS, then _treatment.css, then the
+   palette file. The palette file wins on values.
+   ============================================================ */
+
+/* ---- Canvas ---- */
+body{background:var(--canvas)}
+
+/* ---- Shared grain layer ----
+   One repeating noise tile over gradient surfaces. Sits above
+   the gradient, below the content, and never intercepts a
+   pointer event. ---- */
+.hero-noise{opacity:var(--noise-hero);mix-blend-mode:var(--noise-blend)}
+
+.experience::before,
+.final-cta::before,
+.journal::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:url("../assets/graphic-noise.svg") repeat;
+  opacity:var(--noise-band);
+  mix-blend-mode:var(--noise-blend);
+}
+
+.experience,.final-cta,.journal{position:relative;isolation:isolate}
+.experience>.wrap,.final-cta>.wrap,.journal>.wrap{position:relative;z-index:1}
+
+/* ---- Hero ---- */
+.hero{background:var(--hero-grad)}
+.hero::before{background:var(--hero-scrim)}
+.hero::after{
+  border-color:var(--hero-blob-line);
+  background:var(--hero-blob);
+  box-shadow:inset 0 0 90px var(--hero-blob-glow);
+}
+.hero h1 span{color:var(--hero-title-accent)}
+.hero-note .icon{color:var(--hero-icon)}
+
+/* ---- Navigation ---- */
+.site-nav{background:var(--nav-grad);border-color:var(--nav-line)}
+.site-nav.is-scrolled{background:var(--nav-grad-scrolled);border-color:var(--nav-line-scrolled)}
+
+/* ---- Service shell sitting over the hero ---- */
+.service-shell::before{background:var(--shell-sheen)}
+
+/* ---- Quiet tinted sections ---- */
+.trust-line{background:var(--tint-quiet)}
+.how{background:var(--tint-clean)}
+.faq{background:var(--tint-clean)}
+
+/* ---- Solid band: the experience section ----
+   A full solid colour block, not a tint. Text inverts. ---- */
+.experience{background:var(--band-grad);color:var(--band-ink)}
+.experience .section-title{color:var(--band-ink)}
+.experience .section-lead{color:var(--band-ink-2)}
+.experience .eyebrow{color:var(--band-eyebrow)}
+.experience .feature-list{border-top-color:var(--band-line)}
+.experience .feature-list li{border-bottom-color:var(--band-line)}
+.experience .feature-list b{color:var(--band-ink)}
+.experience .feature-list span{color:var(--band-ink-2)}
+.experience .feature-list .icon{background:var(--band-icon-bg);color:var(--band-icon-ink)}
+.experience .media-label{background:var(--band-icon-bg);color:var(--band-ink)}
+.experience-media{background:var(--band-media-bg)}
+
+/* ---- Gradient band: the journal section ---- */
+.journal{background:var(--journal-grad)}
+
+/* ---- Privacy band ---- */
+.privacy{background:var(--privacy-bg);color:var(--privacy-ink)}
+.privacy .privacy-bg{opacity:var(--privacy-photo-opacity)}
+.privacy::after{background:var(--privacy-scrim)}
+.privacy .eyebrow{color:var(--privacy-eyebrow)}
+.privacy .section-lead{color:var(--privacy-ink-2)}
+.privacy-points span{
+  border-color:var(--privacy-chip-line);
+  background:var(--privacy-chip-bg);
+  color:var(--privacy-ink);
+}
+
+/* ---- Final call to action: solid gradient plus grain ---- */
+.final-cta{background:var(--cta-grad);color:var(--cta-ink)}
+.final-cta .section-title{color:var(--cta-ink)}
+.final-cta .section-lead{color:var(--cta-ink-2)}
+.final-cta .button--dark{background:var(--cta-button-bg);color:var(--cta-button-ink)}
+.final-cta .button--dark:hover{background:var(--cta-button-bg-hover);color:var(--cta-button-ink)}
+
+/* ---- Filled controls that referenced --ink directly ---- */
+.button--dark{background:var(--brand-primary);color:var(--brand-on-primary)}
+.button--dark:hover{background:var(--brand-primary-hover)}
+.nav-cta.button--light{background:var(--brand-primary);color:var(--brand-on-primary)}
+.step-no{background:var(--brand-primary);color:var(--brand-on-primary)}
+
+/* ---- Reduced transparency and reduced motion users still get
+   the solid colour, just without the grain. ---- */
+@media (prefers-reduced-transparency:reduce){
+  .experience::before,.final-cta::before,.journal::before,.hero-noise{display:none}
+}

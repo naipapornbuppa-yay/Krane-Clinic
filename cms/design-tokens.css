@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Archivo:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Fraunces:ital,wght@1,400;1,500;1,600&display=swap');
+/* Brand display face from Direction 04 / "The Solution": LCT Ciburial (OFL).
+   Use the installed face when available. Archivo is the portable fallback. */
+@font-face{font-family:'LCT Ciburial';src:local('LCT Ciburial'),local('LCTCiburial'),local('LCT-Ciburial'),local('Ciburial'),local('LCT Ciburial Regular');font-weight:300 800;font-display:swap}
+/* ============================================================
+   KRANE CLINIC, DESIGN TOKENS (single source of truth)
+   ------------------------------------------------------------
+   Krane brand palette, source of truth: the "Krane Clinic Working" Figma file
+   (28 Jul). Near-black ink (#121824) on an #F4F6F8 canvas over #E2E8F0
+   hairlines, with a single blue accent (#1973FF) for links and emphasis.
+   b2c/design-tokens.css is the live source; cms and ui-inventory mirror its
+   colour values. One accent only: the near-black plate carries primary
+   actions, blue carries links, selection and tints, never both at once.
+   The earlier teal palette is preserved as --preset-teal-* for revert.
+   All values are CSS custom properties so the real brand (logo /
+   colors / type) can be swapped in later with NO structural changes.
+
+   >>> WHEN BRANDING ARRIVES <<<
+   Edit ONLY the values in :root below. Do not rename variables.
+   - Set --color-accent to the brand primary.
+   - Add @font-face and point --font-base at the brand font.
+   - Everything (screens + prototype) re-skins automatically.
+   ============================================================ */
+
+:root {
+  --color-brand-bone: #F0F2F5;
+  --color-brand-slate-deep: #4A5568;
+  --color-brand-black: #101827;
+  --color-brand-charcoal: #1B2A4A;
+  --color-brand-slate-soft: #F0F2F5;
+  --color-brand-slate: #4A5568;
+  /* Theme presets, synced from b2c (see that file for full WCAG rationale):
+     "teal" is the client's 26 Jul original, kept for revert. "blue" is the
+     28 Jul Figma ("Krane Clinic Working") update -- source hex #1973FF is
+     kept as -vivid (3.93:1 on the canvas, large/graphic only); the default
+     --preset-blue-accent is the same hue darkened to #0164FF (4.54:1 on the
+     canvas) so --color-accent stays AA as small text and as a white-text fill.
+     Only the Active theme block below feeds the app; revert by repointing it. */
+  --preset-teal-accent-vivid: #00B4B4;
+  --preset-teal-accent: #00B4B4;
+  --preset-teal-accent-hover: #009090;
+  --preset-teal-accent-mark: #009090;
+  --preset-teal-accent-soft: #DDEDEC;
+  --preset-teal-accent-soft-2: #EEF5F4;
+  --preset-teal-accent-ink: #2F7777;
+  --preset-teal-on-accent: #1B2A4A;
+
+  --preset-blue-accent-vivid: #1973FF;
+  --preset-blue-accent: #0164FF;
+  --preset-blue-accent-hover: #0054D6;
+  --preset-blue-accent-mark: #0054D6;
+  --preset-blue-accent-soft: #DBE4F2;
+  --preset-blue-accent-soft-2: #E1E8F0;
+  --preset-blue-accent-ink: #0164FF;
+  --preset-blue-on-accent: #FFFFFF;
+
+  /* ---- Active theme: BLUE (28 Jul) ---- */
+  --color-accent: var(--preset-blue-accent);   /* landing ink, primary actions */
+  --color-accent-vivid: var(--preset-blue-accent-vivid);  /* opt-in punchier hue, large-scale/graphic use only */
+  --color-accent-hover: var(--preset-blue-accent-hover);   /* pressed / hover emphasis */
+  --color-accent-mark: var(--preset-blue-accent-mark);  /* static deep mark: indicator dots, ticks, small icons.
+                                    Same value as the hover state today, deliberately a
+                                    separate token so changing hover never restyles a
+                                    static mark. Do not merge these two. Synced from b2c. */
+  --color-accent-soft: var(--preset-blue-accent-soft);   /* selected / tinted surface (quiet powder) */
+  --color-accent-soft-2: var(--preset-blue-accent-soft-2);   /* lighter tint */
+  --color-accent-ink: var(--preset-blue-accent-ink);   /* accent for text/icons on light */
+  --color-on-accent: var(--preset-blue-on-accent);   /* text/icons on the accent fill */
+  --color-on-dark: #FFFFFF;     /* text/icons on ink or gradient-teal surfaces */
+  --color-ink-strong: #121824;   /* black, for high-contrast CTAs/headings */
+
+  /* ---- Neutrals, black ink + warm clinical surfaces ---- */
+  --color-ink: #121824;   /* near-black text */
+  --color-ink-2: #495366;   /* secondary text */
+  --color-ink-3: #5C6479;   /* muted / hints (AA on all surfaces) */
+  --color-line: #E2E8F0;   /* hairline border / divider */
+  --color-line-strong: #CBD5E1;
+  --color-surface: #FFFFFF;   /* white card / sheet */
+  --color-bg: #F4F6F8;   /* app canvas, Figma */
+  --color-bg-2: #E8ECF1;   /* sunken sections / skeletons */
+  --color-bg-soft: rgba(244,246,248,.70);   /* very light inner panels */
+  /* dark panels match the landing hero rather than pure black. */
+  --color-slate: #1B2A4A;
+  --color-slate-2: #495366;
+
+  /* ---- Powder / deep blue (secondary accent, links, highlights) ---- */
+  --color-blue: #1B2A4A;   /* Figma navy, the quiet secondary next to the accent */
+  --color-blue-hover: #101827;
+  --color-blue-soft: #E1E8F0;   /* powder used only for small states */
+  --color-powder: #DBE4F2;   /* landing powder blue */
+  --color-on-blue: #FFFFFF;
+  --color-schedule: #F0F2F5;   /* appointment surface */
+  --color-schedule-hover: #E2E7ED;
+  --color-schedule-ink: #4A5568;
+
+  /* ---- Primary button: same dark command treatment as the landing. ---- */
+  --btn-primary-bg: #121824;
+  --btn-primary-bg-hover: #0F172A;
+  --btn-primary-ink: #FFFFFF;
+
+  /* ---- Semantic ---- */
+  --color-success: #2A6152;
+  --color-success-soft: #DCEAE5;
+  --color-warning: #85601C;
+  --color-warning-soft: #EFE5D2;
+  --color-status-blue-ink: #5D6773;
+  --color-danger: #93453A;
+  --color-danger-soft: #F1DCD7;
+  --color-info: #425F6C;
+  --color-info-soft: #E2EAEF;
+
+  /* ---- Third-party payment identities and illustration colours ---- */
+  --color-bank-kbank: #138f3e;
+  --color-bank-kbank-ink: #0c6b2e;
+  --color-bank-scb: #4e2a84;
+  --color-bank-bbl: #1ba5e1;
+  --color-bank-ktb: #00a0e3;
+  --color-promptpay: #0a3b82;
+  --color-pill-light: #f4f0e7;
+  --color-pill-mid: #e3ddd0;
+  --color-pill-dark: #2c3b54;
+
+  /* ---- Photo-led editorial and system-state graphics ---- */
+  --color-graphic-warm: #F2F1ED;
+  --color-graphic-cool: #E7EDF2;
+  --color-graphic-success: #DCEAE5;
+  --color-graphic-danger: #F1DCD7;
+  --graphic-noise-opacity:.14;
+  --graphic-photo-opacity:.92;
+  --graphic-shape-opacity:.72;
+  --graphic-photo-scale:  1.03;
+  --graphic-shape-size:   62%;
+  --graphic-shape-offset: -18%;
+  --graphic-shape-rotate: -14deg;
+  --graphic-state-height: 176px;
+  --graphic-article-ratio:4 / 3;
+  --graphic-article-thumb:112px;
+  --graphic-signal-size:  42px;
+
+  /* ---- CMS glass canvas ---- */
+  --color-cms-canvas: #F4F6F8;
+  --color-cms-canvas-deep: #E8ECF1;
+  --color-glass-surface: #FFFFFF;
+  --color-glass-strong: #FFFFFF;
+  --color-glass-border: #E2E8F0;
+  --color-glass-divider: #E2E8F0;
+
+  /* ---- Diagram node categories (used by sitemap doc; grey in lo-fi) ---- */
+  --node-entry:#6b6f7a; --node-auth:#6b6f7a; --node-intake:#6b6f7a; --node-consult:#6b6f7a;
+  --node-rx:#6b6f7a; --node-pay:#6b6f7a; --node-order:#6b6f7a; --node-account:#6b6f7a; --node-decision:#8b918e;
+
+  /* ---- Typography ---- Prompt unifies body and display for Thai (26 Jul client
+     update, replaces the former Anuphan/Sarabun pair). Web-hosted so it renders
+     identically everywhere. Sukhumvit Set / Thonburi are macOS-only local
+     fallbacks. Mirrored from b2c/design-tokens.css. Do not reorder. */
+  --font-thai-base: "Prompt", "Sukhumvit Set", "Thonburi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", Roboto, Helvetica, Arial, sans-serif;
+  --font-thai-display: "Prompt", "Sukhumvit Set", "Thonburi", "Archivo", var(--font-thai-base);
+  --font-latin: "Poppins", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-base: var(--font-thai-base);
+  --font-display: var(--font-thai-display);
+  --font-serif: "Fraunces", Georgia, serif;  /* italic accent words (sparingly) */
+  --fs-xs:12px; --fs-sm:13px; --fs-base:15px; --fs-md:17px; --fs-lg:20px; --fs-xl:26px; --fs-2xl:32px; --fs-3xl:40px;
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700;
+  --lh-tight:1.2; --lh-snug:1.35; --lh-base:1.5; --lh-body:var(--lh-base);
+  --tracking-tight:0;
+
+  /* ---- Spacing scale ---- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
+
+  /* ---- Radii ---- (DESIGN.md 0a; rounded, concentric, one shared system) */
+  --radius-xs:8px; --radius-sm:12px; --radius-md:16px; --radius-lg:20px; --radius-xl:24px; --radius-2xl:28px; --radius-pill:999px;
+
+  /* ---- Elevation ---- (one light source, soft, cool-ink tint, ≤ .13 alpha) */
+  --shadow-sm: 0 1px 2px rgba(40,40,40,.04),0 4px 12px rgba(40,40,40,.04);
+  --shadow-md: 0 2px 4px rgba(40,40,40,.04),0 10px 26px rgba(40,40,40,.06);
+  --shadow-lg: 0 4px 10px rgba(40,40,40,.05),0 22px 52px rgba(40,40,40,.10);
+  --shadow-glass: 0 2px 4px rgba(40,40,40,.04),0 14px 34px rgba(40,40,40,.07);
+  --shadow-glass-cms: 0 1px 2px rgba(40,40,40,.04),0 8px 22px rgba(40,40,40,.05);
+  --shadow-chip:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -3px 6px rgba(14,18,26,.10),0 4px 10px rgba(14,18,26,.12);
+  --shadow-tile:0 6px 14px rgba(14,18,26,.24),inset 0 1px 0 rgba(255,255,255,.28);
+  --glass-bg: rgba(255,255,255,.86);   /* frosted floating bar */
+  --glass-border: rgba(40,40,40,.06);
+
+  /* ---- Motion ---- (one system for both apps. hims-style: soft, quick, upward.
+     Micro = state feedback (press, check). Base = component reveals. Page = screen
+     transitions. Slow = ambient loaders only. Every animation/transition must use
+     these; honour prefers-reduced-motion at the component level.) */
+  --dur-micro:140ms;
+  --dur-base:280ms;
+  --dur-page:480ms;
+  --dur-slow:900ms;
+  --dur-ambient:1800ms;
+  --ease-out:cubic-bezier(.16,1,.3,1);       /* decisive arrive (screen/content enter) */
+  --ease-inout:cubic-bezier(.65,0,.35,1);    /* move / morph */
+  --ease-spring:cubic-bezier(.34,1.45,.64,1);/* playful pop (checks, badges) */
+
+  --border-width:1px;
+  --focus-ring-size:2px;
+  --focus-ring-offset:2px;
+  --blur-sm:8px;
+  --rise:14px;                                /* standard content rise distance */
+
+  /* ---- Component tokens (so components stay token-driven) ---- */
+  --control-h-sm:40px;           /* compact buttons / tabs */
+  --control-h-icon:40px;         /* square icon buttons */
+  --control-h:48px;              /* primary buttons / inputs */
+  --control-h-lg:56px;           /* high-priority media controls */
+  --control-radius:var(--radius-sm);
+  --button-radius:var(--control-radius); /* actions share one rounded-rectangle geometry; pill is for statuses only */
+  --selection-size:22px;
+  --selection-border-width:1.5px;
+  --selection-radius:var(--radius-sm);
+  --selection-check-w:6px;
+  --selection-check-h:11px;
+  --mobile-frame:393px;          /* iPhone 16 Pro width */
+  --form-frame:520px;            /* flow/form column on tablet */
+  --tablet-frame:768px;          /* tablet device width */
+  --desktop-frame:1120px;        /* desktop device width */
+  --container-max:1120px;        /* web layout max (landing/dashboard) */
+}
+
+html[lang="en"] {
+  --font-base: var(--font-latin);
+  --font-display: var(--font-latin);
+}

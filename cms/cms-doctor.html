@@ -1,0 +1,1457 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/Krane-Clinic/qa-access.js"></script>
+<title>Krane CMS · Doctor Back Office</title>
+<!-- brand tokens are the single source of truth; back-office styles are token-driven semantic classes -->
+<link rel="stylesheet" href="design-tokens.css?v=20260721b">
+<link rel="stylesheet" href="cms.css?v=20260726a">
+<link rel="stylesheet" href="custom-select.css?v=20260721b">
+<script src="../krane-golden-fixture.js"></script>
+<script src="custom-select.js?v=20260716a" defer></script>
+</head>
+<body class="role-doctor">
+
+<div class="cms">
+
+  <!-- scrim behind the mobile nav drawer -->
+  <div class="cms-scrim" data-nav-scrim=""></div>
+
+  <!-- ================= SIDEBAR (role-filtered nav · F07) ================= -->
+  <aside class="cms-rail">
+    <div class="cms-rail__brand"><img src="assets/krane-lockup-charcoal.svg?v=20260720" alt="Krane"><span class="cms-rail__role" data-role-label="">Doctor</span></div>
+
+    <div class="cms-rail__group">Today</div>
+    <a class="cms-rail__link is-active" data-page="dashboard"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"></path><circle cx="12" cy="12" r="3"></circle></svg></span>Today overview</a>
+    <a class="cms-rail__link" data-page="queue"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 14h8"></path></svg></span>Patient queue<span class="count">3</span></a>
+    <a class="cms-rail__link" data-page="followups"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6"></path><path d="M4 4v4.6h4.6M12 8v4l2.8 1.8"></path></svg></span>Follow-ups<span class="count">3</span></a>
+
+    <div class="cms-rail__group">My practice</div>
+    <a class="cms-rail__link" data-page="availability"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>ตั้งเวลาทำงาน</a>
+    <a class="cms-rail__link" data-page="schedule"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg></span>Calendar</a>
+    <a class="cms-rail__link" data-page="doctor-profile"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path></svg></span>My profile</a>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <div class="cms-rail__watermark" aria-hidden="true"><img src="assets/krane-wordmark.svg?v=20260721b" alt=""></div>
+    <div class="cms-rail__foot">
+      <div class="lang" data-lang="">
+        <button class="lang__opt" data-lng="en">EN</button>
+        <button class="lang__opt is-active" data-lng="th">ไทย</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="cms-main">
+
+    <!-- ================= TOP BAR ================= -->
+    <header class="cms-top">
+      <button class="cms-nav-toggle" data-nav-toggle="" aria-label="Open menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+      <div class="cms-top__search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input placeholder="Search patients, orders, articles…" aria-label="Search patients, orders, and articles"></div>
+      <div class="cms-top__spacer"></div>
+      <!-- TH/EN toggle (F02 · back office). Real TH copy is generated with Typhoon (SCB). -->
+      <div class="lang" data-lang="">
+        <button class="lang__opt" data-lng="en">EN</button>
+        <button class="lang__opt is-active" data-lng="th">ไทย</button>
+      </div>
+      <div class="cms-top__user"><span class="avatar" data-user-avatar="">N</span><span data-user-name="">Dr. Narin T.</span></div>
+    </header>
+
+    <!-- ================= PAGES ================= -->
+    <main class="cms-body">
+
+      <!-- ===== DOCTOR · ON-CALL DASHBOARD (F06/F09/F14/F24), the pre-match home =====
+           Auto-match (F09/F11): the doctor doesn't browse patients; the system assigns a
+           matched, already-paid patient and alerts the doctor, who reviews and admits (F14:
+           doctor joins first). This screen shows the on-call state before/at the moment of a match. -->
+      <section class="page is-active" id="dashboard">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Good morning, Dr. Narin</h1><div class="page-head__s">Wednesday, 24 June · your clinical day at a glance</div></div>
+          <div class="page-actions"><span class="oncall" data-oncall=""><span class="oncall__dot"></span><span data-oncall-text="">On call</span></span><button class="btn btn--ghost btn--sm" data-oncall-toggle="">Go offline</button></div>
+        </div>
+
+        <div data-doctor-online="">
+          <div class="doctor-kpis">
+            <article class="doctor-kpi doctor-kpi--attention">
+              <div class="doctor-kpi__label">Waiting now</div>
+              <div class="doctor-kpi__value" data-count="2">2</div>
+              <div class="doctor-kpi__meta">Longest wait 4 minutes</div>
+            </article>
+            <article class="doctor-kpi">
+              <div class="doctor-kpi__label">Patients today</div>
+              <div class="doctor-kpi__value" data-count="8">8</div>
+              <div class="doctor-kpi__meta">4 completed, 4 remaining</div>
+            </article>
+            <article class="doctor-kpi doctor-kpi--next">
+              <div class="doctor-kpi__label">Next patient</div>
+              <div class="doctor-kpi__value doctor-kpi__value--time">11:00</div>
+              <div class="doctor-kpi__meta">Mali S. · intake complete</div>
+            </article>
+            <article class="doctor-kpi doctor-kpi--followup">
+              <div class="doctor-kpi__label">Follow-ups due</div>
+              <div class="doctor-kpi__value" data-count="3">3</div>
+              <div class="doctor-kpi__meta">1 overdue, 2 due today</div>
+            </article>
+          </div>
+
+          <div class="doctor-work-grid">
+            <section class="panel doctor-day">
+              <div class="panel__head">
+                <div><h2 class="panel__title">Today’s patient schedule</h2><div class="hint">One active case at a time · tap a patient to review their case</div></div>
+                <button class="btn btn--ghost btn--sm" data-page="availability">ตั้งเวลาทำงาน</button>
+              </div>
+              <button class="doctor-case-row doctor-case-row--waiting" data-page="preconsult" data-patient="Mali S." data-patient-state="waiting">
+                <span class="doctor-case-row__time">11:00</span><span class="avatar">P</span>
+                <span class="doctor-case-row__patient"><b>Mali S.</b><small>Hair loss · intake complete · fee paid</small></span>
+                <span class="badge badge--warn">Waiting 4m</span>
+              </button>
+              <button class="doctor-case-row" data-page="preconsult" data-patient="Anan K." data-patient-state="waiting">
+                <span class="doctor-case-row__time">11:15</span><span class="avatar">A</span>
+                <span class="doctor-case-row__patient"><b>Anan K.</b><small>Hair loss · intake complete</small></span>
+                <span class="badge badge--warn">Waiting 1m</span>
+              </button>
+              <button class="doctor-case-row" data-page="preconsult" data-patient="Korn P." data-patient-state="upcoming">
+                <span class="doctor-case-row__time">12:00</span><span class="avatar">K</span>
+                <span class="doctor-case-row__patient"><b>Korn P.</b><small>General consultation · intake pending</small></span>
+                <span class="badge badge--go">Upcoming</span>
+              </button>
+              <button class="doctor-case-row" data-page="preconsult" data-patient="Mina L." data-patient-state="upcoming">
+                <span class="doctor-case-row__time">14:00</span><span class="avatar">M</span>
+                <span class="doctor-case-row__patient"><b>Mina L.</b><small>Skin concern · intake complete</small></span>
+                <span class="badge badge--go">Upcoming</span>
+              </button>
+              <a class="doctor-day__more" data-page="queue">View full patient queue ›</a>
+            </section>
+
+            <aside class="panel doctor-tasks">
+              <div class="panel__head"><div><h2 class="panel__title">Follow-up cases</h2><div class="hint">Patients due for clinical review</div></div><span class="badge badge--warn">3 due</span></div>
+              <button class="doctor-task" data-page="followups"><span class="doctor-task__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6"></path><path d="M4 4v4.6h4.6M12 8v4l2.8 1.8"></path></svg></span><span><b>Win T. · overdue</b><small>Treatment response · due yesterday</small></span><span aria-hidden="true">›</span></button>
+              <button class="doctor-task" data-page="followups"><span class="doctor-task__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span><b>Korn P. · due today</b><small>30-day check-in · last visit 24 May</small></span><span aria-hidden="true">›</span></button>
+              <button class="doctor-task" data-page="followups"><span class="doctor-task__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span><b>Ton S. · due today</b><small>Review symptoms · last visit 10 Jun</small></span><span aria-hidden="true">›</span></button>
+              <a class="doctor-day__more" data-page="followups">View all follow-ups ›</a>
+            </aside>
+          </div>
+        </div>
+
+        <section class="offline-state" data-doctor-offline="" hidden aria-live="polite">
+          <div class="offline-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2v8"></path><path d="M6.3 5.7a8 8 0 1 0 11.4 0"></path></svg></div>
+          <h2>You’re offline</h2>
+          <p>You won’t receive new patient assignments while you’re offline.</p>
+          <button class="btn btn--primary" data-go-online="">Go on call</button>
+          <small>Your schedule is saved. Go on call when you’re ready to see patients.</small>
+        </section>
+
+      </section>
+
+      <!-- ===== DOCTOR · EMPTY / FIRST-RUN (no availability set) ===== -->
+      <section class="page" id="doctor-empty">
+        <div class="page-head">
+          <div><h1 class="page-head__t">On call</h1><div class="page-head__s">First-day setup</div></div>
+          <div class="page-actions"><span class="oncall is-off"><span class="oncall__dot"></span>Offline</span></div>
+        </div>
+        <div class="panel empty-state">
+          <div class="empty-state__art"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg></div>
+          <h2>Patients can't be matched to you yet</h2>
+          <p class="muted">Set your weekly availability so Krane can route patients to you during your on-call hours. Matching only assigns patients to available, on-call doctors.</p>
+          <button class="btn btn--primary" data-page="availability">ตั้งเวลาทำงาน</button>
+          <div class="hint">Once you're available and on call, matched patients appear here automatically, no need to browse or pick.</div>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · PATIENT QUEUE (F24) ===== -->
+      <section class="page" id="queue">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Today's queue</h1><div class="page-head__s">Wed 24 Jun · 6 patients · 2 waiting now</div></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm">Today ▾</button><button class="btn btn--ghost btn--sm">Refresh</button></div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi__n" data-count="2">2</div><div class="kpi__l">Waiting now</div><div class="kpi__d kpi__d--warn">Longest wait 4 min</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="1">1</div><div class="kpi__l">In consultation</div><div class="kpi__d">Dr. Narin</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="3">3</div><div class="kpi__l">Follow-ups due</div><div class="kpi__d kpi__d--warn">1 overdue</div></div>
+          <div class="kpi"><div class="kpi__n">8m</div><div class="kpi__l">Avg consult time</div><div class="kpi__d">last 7 days</div></div>
+        </div>
+        <div class="chips" style="margin-bottom:var(--sp-4)"><span class="chip is-active">All</span><span class="chip">Waiting</span><span class="chip">In progress</span><span class="chip">Plan pending</span><span class="chip">Done</span></div>
+        <div class="panel panel--flush">
+          <table class="table">
+            <thead><tr><th>Time</th><th>Patient</th><th>Concern</th><th>Intake</th><th>Wait</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr data-page="preconsult" data-patient="Mali S." data-patient-state="waiting"><td class="strong">11:00</td><td><div class="cell-user"><span class="avatar">P</span><div><div class="strong">Mali S.</div><div class="sub">34 · male</div></div></div></td><td>Hair loss</td><td><span class="badge badge--done"><span class="dot"></span>Submitted</span></td><td class="strong">4 min</td><td><span class="badge badge--warn"><span class="dot"></span>Waiting</span></td><td><button class="btn btn--primary btn--sm">Open</button></td></tr>
+              <tr data-page="preconsult" data-patient="Anan K." data-patient-state="waiting"><td class="strong">11:15</td><td><div class="cell-user"><span class="avatar">A</span><div><div class="strong">Anan K.</div><div class="sub">41 · male</div></div></div></td><td>Hair loss</td><td><span class="badge badge--done"><span class="dot"></span>Submitted</span></td><td class="strong">1 min</td><td><span class="badge badge--warn"><span class="dot"></span>Waiting</span></td><td><button class="btn btn--primary btn--sm">Open</button></td></tr>
+              <tr data-page="consult" data-patient="Somchai R." data-patient-state="in-consult"><td class="strong">10:45</td><td><div class="cell-user"><span class="avatar">S</span><div><div class="strong">Somchai R.</div><div class="sub">38 · male</div></div></div></td><td>Sleep &amp; stress</td><td><span class="badge badge--done"><span class="dot"></span>Submitted</span></td><td class="strong">-</td><td><span class="badge badge--go"><span class="dot"></span>In consult</span></td><td><button class="btn btn--ghost btn--sm">Resume</button></td></tr>
+              <tr data-page="prescribe" data-patient="Win T." data-patient-state="plan-pending"><td class="strong">10:20</td><td><div class="cell-user"><span class="avatar">W</span><div><div class="strong">Win T.</div><div class="sub">29 · male</div></div></div></td><td>Hair loss</td><td><span class="badge badge--done"><span class="dot"></span>Submitted</span></td><td class="strong">-</td><td><span class="badge badge--ok"><span class="dot"></span>Plan pending</span></td><td><button class="btn btn--ghost btn--sm">Prescribe</button></td></tr>
+              <tr data-page="preconsult" data-patient="Korn P." data-patient-state="upcoming"><td class="strong">12:00</td><td><div class="cell-user"><span class="avatar">K</span><div><div class="strong">Korn P.</div><div class="sub">45 · male</div></div></div></td><td>General consultation</td><td><span class="badge badge--mute"><span class="dot"></span>Not yet</span></td><td class="strong">-</td><td><span class="badge badge--mute"><span class="dot"></span>Upcoming</span></td><td><button class="btn btn--ghost btn--sm">View</button></td></tr>
+              <tr data-page="preconsult" data-patient="Ton S." data-patient-state="completed"><td class="strong">09:30</td><td><div class="cell-user"><span class="avatar">T</span><div><div class="strong">Ton S.</div><div class="sub">36 · male</div></div></div></td><td>Hair loss</td><td><span class="badge badge--done"><span class="dot"></span>Submitted</span></td><td class="strong">-</td><td><span class="badge badge--done"><span class="dot"></span>Completed</span></td><td><button class="btn btn--ghost btn--sm">Summary</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · FOLLOW-UP CASES ===== -->
+      <section class="page" id="followups">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Follow-up cases</h1><div class="page-head__s">3 due · 1 overdue · 2 due today</div></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm">This week ▾</button><button class="btn btn--ghost btn--sm">Refresh</button></div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi__n" data-count="1">1</div><div class="kpi__l">Overdue</div><div class="kpi__d kpi__d--warn">Review first</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="2">2</div><div class="kpi__l">Due today</div><div class="kpi__d">Clinical review needed</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="4">4</div><div class="kpi__l">Upcoming this week</div><div class="kpi__d">Next 7 days</div></div>
+          <div class="kpi"><div class="kpi__n" data-count="6">6</div><div class="kpi__l">Completed this week</div><div class="kpi__d kpi__d--up">Up to date</div></div>
+        </div>
+        <div class="chips" style="margin-bottom:var(--sp-4)"><span class="chip is-active">All</span><span class="chip">Overdue</span><span class="chip">Due today</span><span class="chip">Upcoming</span><span class="chip">Completed</span></div>
+        <div class="panel panel--flush">
+          <table class="table">
+            <thead><tr><th>Patient</th><th>Follow-up reason</th><th>Last consultation</th><th>Due date</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr data-status="overdue" data-page="preconsult" data-patient="Win T." data-patient-state="followup"><td><div class="cell-user"><span class="avatar">W</span><div><div class="strong">Win T.</div><div class="sub">#PT-1986</div></div></div></td><td>Treatment response</td><td>24 May 2026</td><td class="strong">23 Jun</td><td><span class="badge badge--danger"><span class="dot"></span>Overdue 1 day</span></td><td><button class="btn btn--primary btn--sm" data-page="preconsult">Review</button></td></tr>
+              <tr data-status="today" data-page="preconsult" data-patient="Korn P." data-patient-state="followup"><td><div class="cell-user"><span class="avatar">K</span><div><div class="strong">Korn P.</div><div class="sub">#PT-2014</div></div></div></td><td>30-day check-in</td><td>24 May 2026</td><td class="strong">Today, 24 Jun</td><td><span class="badge badge--warn"><span class="dot"></span>Due today</span></td><td><button class="btn btn--ghost btn--sm" data-page="preconsult">Open</button></td></tr>
+              <tr data-status="today" data-page="preconsult" data-patient="Ton S." data-patient-state="followup"><td><div class="cell-user"><span class="avatar">T</span><div><div class="strong">Ton S.</div><div class="sub">#PT-2027</div></div></div></td><td>Review symptoms</td><td>10 Jun 2026</td><td class="strong">Today, 24 Jun</td><td><span class="badge badge--warn"><span class="dot"></span>Due today</span></td><td><button class="btn btn--ghost btn--sm" data-page="preconsult">Open</button></td></tr>
+              <tr data-status="upcoming" data-page="preconsult" data-patient="Mina L." data-patient-state="upcoming"><td><div class="cell-user"><span class="avatar">M</span><div><div class="strong">Mina L.</div><div class="sub">#PT-2032</div></div></div></td><td>Skin treatment response</td><td>12 Jun 2026</td><td class="strong">26 Jun</td><td><span class="badge badge--mute"><span class="dot"></span>Upcoming</span></td><td><button class="btn btn--ghost btn--sm" data-page="preconsult">View</button></td></tr>
+              <tr data-status="completed" data-page="preconsult" data-patient="Anan K." data-patient-state="completed"><td><div class="cell-user"><span class="avatar">A</span><div><div class="strong">Anan K.</div><div class="sub">#PT-1971</div></div></div></td><td>Hair-loss progress</td><td>22 May 2026</td><td class="strong">22 Jun</td><td><span class="badge badge--done"><span class="dot"></span>Completed</span></td><td><button class="btn btn--ghost btn--sm" data-page="preconsult">Summary</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · PRE-CONSULTATION VIEW (F24) ===== -->
+      <section class="page" id="preconsult">
+        <div class="crumb" data-page="dashboard">‹ Back to on call</div>
+        <div class="page-head">
+          <div><h1 class="page-head__t" data-selected-patient-name>Mali S.</h1><div class="page-head__s" data-selected-patient-summary>34 · male · Hair loss · matched 11:00 · patient ID #PT-2041</div></div>
+          <div class="page-actions"><button class="btn btn--ghost" data-reassign="" data-page="dashboard">Reassign</button></div>
+        </div>
+        <div class="admit-banner" role="status" aria-live="polite">
+          <span class="admit-banner__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"></path></svg></span>
+          <span class="admit-banner__copy"><span class="admit-banner__title-row"><strong data-selected-banner-title>Patient ready to enter</strong><span class="badge badge--warn" data-selected-banner-status>Waiting for you</span></span><span data-selected-banner-body>Join first. Krane opens the consultation room for the patient automatically after you enter.</span></span>
+          <button class="btn btn--primary" data-page="consult" data-selected-patient-action>Join consultation</button>
+        </div>
+        <div class="grid-2">
+          <div class="panel stack">
+            <div class="panel__title">Intake answers</div>
+            <div class="kv"><span class="k">Concern</span><span class="strong" data-selected-concern>Hair loss</span></div>
+            <div class="kv"><span class="k">Current symptoms</span><span class="strong">Hair thinning or shedding</span></div>
+            <div class="kv"><span class="k">Duration / severity</span><span class="strong">6 months to 2 years · moderate</span></div>
+            <div class="kv"><span class="k">Medical conditions</span><span class="strong">None reported</span></div>
+            <div class="kv"><span class="k">Medication (3 mo)</span><span class="strong">None</span></div>
+            <div class="kv"><span class="k">Previous treatment</span><span class="strong">None</span></div>
+            <div class="kv"><span class="k">Photos</span><span class="strong">1 uploaded</span></div>
+          </div>
+          <div class="stack">
+            <div class="panel stack">
+              <div class="panel__title">Safety &amp; allergies</div>
+              <div class="alertline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg>No drug allergies declared · cleared for online care</div>
+              <div class="kv"><span class="k">PDPA consent</span><span class="badge badge--done">Given · 24 Jun 10:58</span></div>
+            </div>
+            <div class="panel panel--flush">
+              <div class="panel__head"><div class="panel__title">Consultation history</div><span class="hint">2 visits</span></div>
+              <button type="button" class="history-row" data-page="record" data-record="r2">
+                <span class="history-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5M9 13h6M9 17h4"></path></svg></span>
+                <span class="history-row__body"><b>Follow-up consultation</b><small>8 May 2026 · Dr. Narin Tanaka · Hair loss</small></span>
+                <span class="badge badge--done">Prescription issued</span>
+              </button>
+              <button type="button" class="history-row" data-page="record" data-record="r1">
+                <span class="history-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5M9 13h6M9 17h4"></path></svg></span>
+                <span class="history-row__body"><b>First consultation</b><small>2 Apr 2026 · Dr. Anong · Hair loss</small></span>
+                <span class="badge badge--mute">No prescription</span>
+              </button>
+              <div class="history-foot"><span class="hint">Open a visit to read the clinical notes and what was prescribed.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · CONSULTATION RECORD (F24) =====
+           Read-only view of one past visit. Opened from the consultation history on
+           the pre-consult screen. Notes are the reason this screen exists, so they
+           lead the main column. Nothing here is editable: a past visit is a record. -->
+      <section class="page" id="record">
+        <div class="crumb" data-page="preconsult" data-record-crumb>‹ Back to patient profile</div>
+        <div class="page-head">
+          <div><h1 class="page-head__t" data-record-title>Consultation record</h1><div class="page-head__s" data-record-sub></div></div>
+          <div class="page-actions"><span class="badge badge--mute" data-record-badge>No prescription</span></div>
+        </div>
+        <div class="record-grid">
+          <div class="stack">
+            <div class="panel stack">
+              <div class="panel__title">Clinical notes</div>
+              <div class="stack" data-record-notes></div>
+              <div class="hint">Internal notes are shared across the Krane clinical team and are never shown to the patient.</div>
+            </div>
+            <!-- The photos are clinical evidence, not decoration: the doctor compares
+                 them against the current visit, so they sit in the main column at a
+                 size you can actually read, and open full size on click. -->
+            <div class="panel stack">
+              <div class="panel__head panel__head--bare"><div class="panel__title">Photos from the patient</div><span class="hint" data-record-photo-count></span></div>
+              <div class="record-photos" data-record-photos></div>
+            </div>
+            <div class="panel stack">
+              <div class="panel__title">Medicine prescribed</div>
+              <div class="stack" data-record-rx></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="panel stack">
+              <div class="panel__title">Visit summary</div>
+              <div class="stack" data-record-summary></div>
+            </div>
+            <div class="panel stack">
+              <div class="panel__title">Intake answers at the time</div>
+              <div class="stack" data-record-intake></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · CONSULTATION (F14) ===== -->
+      <section class="page" id="consult">
+        <div class="crumb" data-page="preconsult" data-selected-patient-crumb>‹ Mali S. · pre-consult</div>
+        <div class="page-head">
+          <div><h1 class="page-head__t" data-selected-consult-title>Consultation · Mali S.</h1><div class="page-head__s">In room · consultation fee paid (฿350)</div></div>
+          <div class="page-actions"><span class="consult-slot" data-consult-slot><span>Time left</span><strong data-consult-remaining>11:46</strong></span><button class="btn btn--primary" data-page="prescribe">Prescribe treatment</button></div>
+        </div>
+        <div class="consult">
+          <div class="stack">
+            <!-- The room opens in video. It drops to voice and chat only when the
+                 doctor or the patient turns a camera off, and either side can turn
+                 video back on straight away without asking permission. -->
+            <!-- Zoom Meeting SDK, embedded in the portal. Krane owns the frame and the
+                 clinical context around it, Zoom owns everything inside the black area,
+                 so the controls use Zoom's own labels rather than invented ones. -->
+            <div class="room" data-room data-room-mode="video">
+              <div class="room__bar">
+                <span class="room__provider">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10.5 21 7v10l-6-3.5"></path><rect x="3" y="6" width="12" height="12" rx="3"></rect></svg>
+                  Zoom
+                </span>
+                <span class="room__meta">Meeting ID 872 4410 9930</span>
+                <span class="room__meta room__meta--secure">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                  Encrypted
+                </span>
+                <span class="room__rec"><i></i>Recording</span>
+                <span class="room__timer" data-room-timer>02:14</span>
+              </div>
+              <div class="room__stage">
+                <!-- prototype chrome: the patient's tile stands in for their own camera
+                     control, so the camera-off state is still demonstrable without a
+                     labelled button sitting next to Zoom's real ones -->
+                <div class="room__tile room__tile--remote" data-tile-remote data-room-patient-cam title="ตัวอย่าง: แตะเพื่อจำลองว่าคนไข้ปิดวิดีโอ">
+                  <img class="room__video" src="assets/room/room-patient.jpg" alt="" onerror="this.style.display='none'">
+                  <div class="room__tile-off">
+                    <span class="room__avatar" data-room-initial>P</span>
+                    <span class="room__tile-off-text">Camera off</span>
+                  </div>
+                  <span class="room__label" data-room-name>Mali S.</span>
+                </div>
+                <div class="room__tile room__tile--self" data-tile-self>
+                  <img class="room__video" src="assets/room/room-doctor.jpg" alt="" onerror="this.style.display='none'">
+                  <div class="room__tile-off">
+                    <span class="room__avatar">N</span>
+                  </div>
+                  <span class="room__label">You</span>
+                </div>
+              </div>
+              <div class="room__controls">
+                <button type="button" class="room__ctl" data-room-mic aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+                  <span data-room-mic-label>Mute</span>
+                </button>
+                <button type="button" class="room__ctl" data-room-cam aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10.5 21 7v10l-6-3.5"></path><rect x="3" y="6" width="12" height="12" rx="3"></rect></svg>
+                  <span data-room-cam-label>Stop Video</span>
+                </button>
+                <!-- Secondary controls stay icon-only, the way Zoom's own toolbar
+                     collapses when the window is narrow. Thai labels are longer than
+                     the English ones and would push Leave out of reach. -->
+                <button type="button" class="room__ctl room__ctl--icon" data-toast="Participants (2)" aria-label="Participants" title="Participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 19a6 6 0 0 1 12 0M16 5.5a3.2 3.2 0 0 1 0 6M18 19a5.5 5.5 0 0 0-2-4"></path></svg>
+                  <i class="room__count">2</i>
+                </button>
+                <button type="button" class="room__ctl room__ctl--icon" data-toast="Chat is open below the call" aria-label="Chat" title="Chat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 19 16h-7l-4 3v-3H5a1.5 1.5 0 0 1-1.5-1.5v-8A1.5 1.5 0 0 1 5 5Z"></path></svg>
+                </button>
+                <button type="button" class="room__ctl room__ctl--icon" data-toast="Screen sharing is off for clinical sessions" aria-label="Share Screen" title="Share Screen">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path></svg>
+                </button>
+                <button type="button" class="room__ctl room__ctl--leave" data-room-end>Leave</button>
+              </div>
+              <div class="room__notice" data-room-notice hidden>
+                <span data-room-notice-body>Video is off. The consultation continues on voice and chat.</span>
+                <button class="btn btn--secondary btn--sm" data-room-video-on>Start my video</button>
+              </div>
+            </div>
+          <div class="chat">
+            <div class="chat__head">แชทระหว่างการปรึกษา<span class="hint">คนไข้เห็นข้อความนี้</span></div>
+            <div class="chat__thread">
+              <div class="bubble bubble--in" data-selected-patient-message-one>Hi doctor, I've been noticing more shedding at the crown.</div>
+              <div class="bubble bubble--out" data-selected-doctor-message>Thanks Mali. I've reviewed your intake and photo. Any family history of hair loss?</div>
+              <div class="bubble bubble--in" data-selected-patient-message-two>Yes, my father had a receding hairline.</div>
+              <div class="bubble bubble--out" data-selected-doctor-message-two>Understood. I'll prepare a treatment plan for you now.</div>
+            </div>
+            <div class="composer"><input class="input" data-selected-message placeholder="Message Mali…" aria-label="Message patient"><button class="btn btn--primary">Send</button></div>
+            </div>
+          </div>
+          <aside class="ctx">
+            <div class="ctx__sec"><div class="label">Patient</div><div class="strong" data-selected-context-primary>Mali S. · 34 · male</div><div class="hint" data-selected-context-secondary>Hair loss · ID #PT-2041</div></div>
+            <div class="ctx__sec"><div class="alertline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg>No known allergies</div></div>
+            <div class="ctx__sec"><div class="label">Intake</div><div class="kv"><span class="k">Duration</span><span>6mo-2y</span></div><div class="kv"><span class="k">Conditions</span><span>None</span></div><div class="kv"><span class="k">Meds</span><span>None</span></div><a class="crumb" data-page="preconsult" style="margin:6px 0 0">View full intake ›</a></div>
+            <div class="ctx__sec"><div class="label">Internal notes <span class="hint">(not shown to patient)</span></div><textarea class="textarea" placeholder="Private clinical notes…">Family hx of AGA. Suitable for finasteride + minoxidil. No contraindications.</textarea></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · PRESCRIBE & SEND PLAN (F15) ===== -->
+      <section class="page" id="prescribe">
+        <div class="crumb" data-page="consult">‹ Back to consultation</div>
+        <div class="page-head">
+          <div><h1 class="page-head__t" data-selected-prescribe-title>Prescribe treatment · Mali S.</h1><div class="page-head__s">Approved medicines only · auto-signed on send</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel stack">
+            <div class="panel__title">Approved medicines (hair loss)</div>
+            <input class="input" placeholder="Search the approved medicine list…">
+            <div class="sku"><span class="sku__thumb"></span><div><div class="strong">Finasteride 1mg</div><div class="hint">Tablet · slows hair loss</div></div><span class="sku__price">฿ 590</span></div>
+            <div class="sku"><span class="sku__thumb"></span><div><div class="strong">Minoxidil 5% topical</div><div class="hint">Apply twice daily · regrowth</div></div><span class="sku__price">฿ 450</span></div>
+            <div class="sku"><span class="sku__thumb"></span><div><div class="strong">Ketoconazole 2% shampoo</div><div class="hint">Scalp health</div></div><span class="sku__price">฿ 320</span></div>
+            <div class="hint">Only approved medicines can be selected, to prevent wrong-item errors.</div>
+          </div>
+          <div class="panel stack">
+            <div class="panel__title">Treatment plan</div>
+            <div class="rx-item"><span class="sku__thumb"></span><div class="grow"><div class="strong">Finasteride 1mg</div><div class="field" style="margin-top:6px"><input class="input" value="วันละ 1 เม็ด"></div><div class="field" style="margin-top:6px"><textarea class="textarea" style="min-height:60px">Slows the hormone linked to male-pattern hair loss. Take with or without food.</textarea></div></div><span class="strong">฿ 590</span></div>
+            <div class="rx-item"><span class="sku__thumb"></span><div class="grow"><div class="strong">Minoxidil 5% topical</div><div class="field" style="margin-top:6px"><input class="input" value="ทา 1 มล. วันละ 2 ครั้ง"></div></div><span class="strong">฿ 450</span></div>
+            <div class="between"><div><div class="label">Follow-up</div><input class="input" data-golden-follow-up value="26 ส.ค. 2026" style="width:160px"></div><div><div class="label">Refills allowed</div><input class="input" value="3" style="width:80px"></div></div>
+            <div class="between"><span class="muted">Total medicine</span><span class="kpi__n" style="font-size:var(--fs-xl)">฿ 1,040</span></div>
+            <div class="hint">Signed with your uploaded signature on send. Patient reviews &amp; pays before Fascino dispatch.</div>
+            <button class="btn btn--primary btn--block">Send plan to patient</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · PATIENT CALENDAR (F10/F24) ===== -->
+      <section class="page" id="schedule">
+        <div class="page-head">
+          <div><h1 class="page-head__t">Patient calendar</h1><div class="page-head__s">Review scheduled cases by month or by day, similar to your everyday calendar.</div></div>
+        </div>
+        <div class="calendar-stats">
+          <div><b>8</b><span>patients today</span></div>
+          <div><b>34</b><span>patients this month</span></div>
+          <div><b>2</b><span>waiting now</span></div>
+          <div><b>09:00 to 18:00</b><span>today’s availability</span></div>
+        </div>
+        <div class="panel calendar-panel">
+          <div class="cal-toolbar">
+            <button class="btn btn--ghost btn--sm" data-calendar-today="">Today</button>
+            <div class="cal-toolbar__nav"><button class="weeknav__btn" data-calendar-shift="-1" aria-label="Previous period">‹</button><button class="weeknav__btn" data-calendar-shift="1" aria-label="Next period">›</button></div>
+            <strong class="cal-toolbar__title" data-calendar-range="">June 2026</strong>
+            <select class="select cal-view" data-calendar-view-select="" aria-label="Calendar view"><option value="month" selected>Month</option><option value="day">Day</option></select><button class="btn btn--primary btn--sm cal-add" data-shift-open><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>เพิ่มตารางงาน</button>
+          </div>
+          <div class="calendar-scroll" data-cal-view="month"><div class="doctor-cal-month" data-month-calendar=""></div></div>
+          <div class="calendar-scroll" data-cal-view="day" hidden><div class="doctor-cal-day" data-day-calendar=""></div></div>
+          <div class="cal-legend">
+            <span><i class="cal-legend__swatch cal-legend__swatch--upcoming"></i>Upcoming</span>
+            <span><i class="cal-legend__swatch cal-legend__swatch--waiting"></i>Waiting</span>
+            <span><i class="cal-legend__swatch cal-legend__swatch--done"></i>Completed</span>
+            <span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--work"></i>วันทำงาน</span><span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--off"></i>วันหยุด</span><small>โหมดเคสผู้ป่วย แตะเคสเพื่อเปิดข้อมูล โหมดตารางงาน แตะวันที่เพื่อกำหนดว่าทำงานหรือหยุด</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR, AVAILABILITY SETUP (client: flow หมอลงตารางงาน) ===== -->
+      <section class="page" id="availability">
+        <div class="page-head">
+          <div><h1 class="page-head__t">ตั้งเวลาทำงาน</h1><div class="page-head__s">ระบบจะจับคู่ผู้ป่วยให้คุณเฉพาะในช่วงเวลาที่เปิดไว้และเมื่อคุณเปิดสถานะพร้อมรับเคส</div></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm" data-page="schedule">ดูปฏิทิน</button></div>
+        </div>
+
+        <div class="panel panel--flush">
+          <div class="panel__head"><h2 class="panel__title">เวลาทำงานประจำสัปดาห์</h2><div class="hint">ใช้ซ้ำทุกสัปดาห์จนกว่าจะแก้ไข</div></div>
+          <div class="panel__body"><div class="avail-list">
+            <div class="avail-row" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" checked data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>จันทร์</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="09:00" aria-label="เวลาเริ่ม จันทร์">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="17:00" aria-label="เวลาสิ้นสุด จันทร์">
+              </div>
+              <span class="avail-row__note" data-avail-note></span>
+            </div>
+            <div class="avail-row" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" checked data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>อังคาร</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="09:00" aria-label="เวลาเริ่ม อังคาร">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="17:00" aria-label="เวลาสิ้นสุด อังคาร">
+              </div>
+              <span class="avail-row__note" data-avail-note></span>
+            </div>
+            <div class="avail-row" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" checked data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>พุธ</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="09:00" aria-label="เวลาเริ่ม พุธ">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="17:00" aria-label="เวลาสิ้นสุด พุธ">
+              </div>
+              <span class="avail-row__note" data-avail-note></span>
+            </div>
+            <div class="avail-row" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" checked data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>พฤหัสบดี</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="09:00" aria-label="เวลาเริ่ม พฤหัสบดี">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="17:00" aria-label="เวลาสิ้นสุด พฤหัสบดี">
+              </div>
+              <span class="avail-row__note" data-avail-note></span>
+            </div>
+            <div class="avail-row" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" checked data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>ศุกร์</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="09:00" aria-label="เวลาเริ่ม ศุกร์">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="15:00" aria-label="เวลาสิ้นสุด ศุกร์">
+              </div>
+              <span class="avail-row__note" data-avail-note></span>
+            </div>
+            <div class="avail-row is-off" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>เสาร์</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="10:00" aria-label="เวลาเริ่ม เสาร์">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="14:00" aria-label="เวลาสิ้นสุด เสาร์">
+              </div>
+              <span class="avail-row__note" data-avail-note>ไม่รับเคส</span>
+            </div>
+            <div class="avail-row is-off" data-avail-row>
+              <label class="avail-row__day">
+                <span class="switch"><input type="checkbox" data-avail-toggle><span class="track"></span><span class="thumb"></span></span>
+                <b>อาทิตย์</b>
+              </label>
+              <div class="avail-row__times">
+                <input class="input" type="time" value="10:00" aria-label="เวลาเริ่ม อาทิตย์">
+                <span class="avail-row__to">ถึง</span>
+                <input class="input" type="time" value="14:00" aria-label="เวลาสิ้นสุด อาทิตย์">
+              </div>
+              <span class="avail-row__note" data-avail-note>ไม่รับเคส</span>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel panel--flush">
+            <div class="panel__head"><h2 class="panel__title">รูปแบบการนัด</h2></div>
+            <div class="panel__body"><div class="stack">
+              <div class="field">
+                <label for="avail-slot">ความยาวต่อเคส</label>
+                <select class="select" id="avail-slot">
+                  <option>15 นาที</option><option selected>20 นาที</option><option>30 นาที</option><option>45 นาที</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="avail-buffer">เวลาพักระหว่างเคส</label>
+                <select class="select" id="avail-buffer">
+                  <option>ไม่มี</option><option selected>5 นาที</option><option>10 นาที</option><option>15 นาที</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="avail-break">พักกลางวัน</label>
+                <div class="avail-row__times">
+                  <input class="input" type="time" id="avail-break" value="12:00" aria-label="เริ่มพักกลางวัน">
+                  <span class="avail-row__to">ถึง</span>
+                  <input class="input" type="time" value="13:00" aria-label="สิ้นสุดพักกลางวัน">
+                </div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="panel panel--flush">
+            <div class="panel__head"><h2 class="panel__title">วันที่ยกเว้น</h2><div class="hint">วันลาหรือวันที่เวลาต่างจากปกติ</div></div>
+            <div class="panel__body"><div class="stack">
+              <div class="avail-exception">
+                <div><b>27 กรกฎาคม 2569</b><span class="hint">ลาทั้งวัน ไม่รับเคส</span></div>
+                <button class="btn btn--ghost btn--sm" data-avail-remove>ลบ</button>
+              </div>
+              <div class="avail-exception">
+                <div><b>2 สิงหาคม 2569</b><span class="hint">เปิดเพิ่ม 18:00 ถึง 20:00</span></div>
+                <button class="btn btn--ghost btn--sm" data-avail-remove>ลบ</button>
+              </div>
+              <button class="btn btn--secondary btn--sm" data-avail-add-exception>เพิ่มวันที่ยกเว้น</button>
+            </div></div>
+          </div>
+        </div>
+
+        <div class="panel panel--flush">
+          <div class="panel__head"><h2 class="panel__title">รอการยืนยันจากลูกค้า</h2></div>
+          <div class="panel__body"><ul class="avail-open">
+            <li>ต้องให้แอดมินอนุมัติก่อนเวลาใหม่มีผลหรือไม่</li>
+            <li>ผู้ป่วยจองล่วงหน้าได้ไกลสุดกี่สัปดาห์</li>
+            <li>ถ้าลดเวลาแล้วมีเคสจองไว้แล้วในช่วงนั้น ระบบควรทำอย่างไร</li>
+          </ul></div>
+        </div>
+
+        <div class="page-actions page-actions--sticky">
+          <span class="hint" data-avail-status>ยังไม่ได้บันทึกการแก้ไข</span>
+          <button class="btn btn--primary" data-avail-save>บันทึกเวลาทำงาน</button>
+        </div>
+      </section>
+
+
+      <!-- ===== DOCTOR · PROFILE (F06) ===== -->
+      <section class="page" id="doctor-profile">
+        <div class="page-head"><div><h1 class="page-head__t">My profile</h1><div class="page-head__s">Most fields are admin-managed. You manage your signature here.</div></div></div>
+        <div class="grid-2">
+          <div class="panel stack">
+            <div class="panel__title">Details <span class="badge badge--mute">Admin-managed</span></div>
+            <div class="field"><label for="doctor-profile-name">Name</label><input class="input" id="doctor-profile-name" value="Dr. Narin Tanaka" disabled=""></div>
+            <div class="row"><div class="field grow"><label for="doctor-profile-licence">Licence no.</label><input class="input" id="doctor-profile-licence" value="12345" disabled=""></div><div class="field grow"><label for="doctor-profile-specialty">Specialty</label><input class="input" id="doctor-profile-specialty" value="ผิวหนัง" disabled=""></div></div>
+            <div class="field"><label for="doctor-profile-languages">Languages</label><input class="input" id="doctor-profile-languages" value="ไทย, อังกฤษ" disabled=""></div>
+            <div class="field"><label for="doctor-profile-consult-types">Consultation types</label><input class="input" id="doctor-profile-consult-types" value="แชท, วิดีโอ, เสียง" disabled=""></div>
+          </div>
+          <div class="panel stack">
+            <div class="panel__title">Signature</div>
+            <div class="signature-preview"><img src="assets/doctor-signature.png?v=20260715e" alt="Current signature of Dr. Narin Tanaka" data-signature-preview=""><span class="badge badge--done">Signature on file ✓</span></div>
+            <div class="hint">Used automatically on prescriptions you send.</div>
+            <input type="file" accept="image/png,image/jpeg" data-signature-input="" hidden>
+            <button class="btn btn--ghost" data-signature-upload="">Upload new signature</button>
+          </div>
+        </div>
+      </section>
+      
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ---- page (screen) switching ----
+  const pages = [...document.querySelectorAll('.page')];
+  const railLinks = [...document.querySelectorAll('.cms-rail__link')];
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let enterTimer, countTimers = [];
+  function go(id, pushHash=true){
+    if(!document.getElementById(id)) return;
+    // Reflect the page in the URL so a single screen can be linked in a review.
+    if(pushHash && location.hash.slice(1) !== id){
+      try{ history.replaceState(null,'','#'+id); }catch(error){}
+    }
+    pages.forEach(p => p.classList.toggle('is-active', p.id === id));
+    railLinks.forEach(a => a.classList.toggle('is-active', a.dataset.page === id));
+    document.querySelector('.cms-body').scrollTop = 0;
+    // motion parity with the patient app: staggered rise-in on every page visit
+    const pg = document.getElementById(id);
+    if(pg && !reduceMotion){
+      pg.classList.remove('is-entering');
+      void pg.offsetWidth;
+      pg.classList.add('is-entering');
+      clearTimeout(enterTimer);
+      enterTimer = setTimeout(() => pg.classList.remove('is-entering'), 1200);
+    }
+    countUp(pg);
+  }
+  // KPI count-up: numbers tick up when their page enters
+  function countUp(pg){
+    countTimers.forEach(clearInterval); countTimers = [];
+    if(!pg || reduceMotion) return;
+    pg.querySelectorAll('[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count, 10);
+      if(isNaN(target)) return;
+      const steps = 24; let i = 0;
+      const iv = setInterval(() => {
+        i++;
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - i/steps, 3))));
+        if(i >= steps){ el.textContent = String(target); clearInterval(iv); }
+      }, 26);
+      countTimers.push(iv);
+    });
+  }
+  countUp(document.querySelector('.page.is-active'));   // first paint: dashboard KPIs tick up
+  // ---- action toast (saved / created feedback) ----
+  const toastEl = document.createElement('div');
+  toastEl.className = 'cms-toast'; toastEl.setAttribute('role','status');
+  document.body.appendChild(toastEl);
+  let toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.remove('is-on');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 2200);
+  }
+  const PATIENTS = {
+    'Mali S.': {age:34,sex:'male',concern:'Hair loss',time:'11:00',id:'#PT-2041'},
+    'Anan K.': {age:41,sex:'male',concern:'Hair loss',time:'11:15',id:'#PT-1971'},
+    'Korn P.': {age:45,sex:'male',concern:'General consultation',time:'12:00',id:'#PT-2014'},
+    'Mina L.': {age:32,sex:'female',concern:'Skin concern',time:'14:00',id:'#PT-2032'},
+    'Somchai R.': {age:38,sex:'male',concern:'Sleep & stress',time:'10:45',id:'#PT-2021'},
+    'Win T.': {age:29,sex:'male',concern:'Hair loss',time:'10:20',id:'#PT-1986'},
+    'Ton S.': {age:36,sex:'male',concern:'Hair loss',time:'09:30',id:'#PT-2027'},
+    'Pim R.': {age:40,sex:'female',concern:'General consultation',time:'16:00',id:'#PT-2051'}
+  };
+  const selectedName = document.querySelector('[data-selected-patient-name]');
+  const selectedSummary = document.querySelector('[data-selected-patient-summary]');
+  const selectedConcern = document.querySelector('[data-selected-concern]');
+  const selectedBannerTitle = document.querySelector('[data-selected-banner-title]');
+  const selectedBannerStatus = document.querySelector('[data-selected-banner-status]');
+  const selectedBannerBody = document.querySelector('[data-selected-banner-body]');
+  const selectedAction = document.querySelector('[data-selected-patient-action]');
+  const selectedCrumb = document.querySelector('[data-selected-patient-crumb]');
+  const selectedConsultTitle = document.querySelector('[data-selected-consult-title]');
+  const selectedDoctorMessage = document.querySelector('[data-selected-doctor-message]');
+  const selectedPatientMessageOne = document.querySelector('[data-selected-patient-message-one]');
+  const selectedPatientMessageTwo = document.querySelector('[data-selected-patient-message-two]');
+  const selectedDoctorMessageTwo = document.querySelector('[data-selected-doctor-message-two]');
+  const selectedMessage = document.querySelector('[data-selected-message]');
+  const selectedContextPrimary = document.querySelector('[data-selected-context-primary]');
+  const selectedContextSecondary = document.querySelector('[data-selected-context-secondary]');
+  const selectedPrescribeTitle = document.querySelector('[data-selected-prescribe-title]');
+  let currentPatientSelection = {name:'Mali S.',state:'waiting'};
+  function loadSelectedPatient(target){
+    if(!target || !target.dataset.patient) return;
+    const name = target.dataset.patient;
+    const patient = PATIENTS[name] || PATIENTS['Mali S.'];
+    const state = target.dataset.patientState === 'done' ? 'completed' : target.dataset.patientState || 'waiting';
+    const firstName = name.split(' ')[0].replace('.','');
+    const isThai = !!document.querySelector('.lang__opt[data-lng="th"].is-active');
+    const sex = isThai ? (patient.sex === 'female' ? 'หญิง' : 'ชาย') : patient.sex;
+    const concernTH = {'Hair loss':'ผมร่วง','General consultation':'ปรึกษาทั่วไป','Skin concern':'ปัญหาผิว','Sleep & stress':'การนอนและความเครียด'};
+    const concern = isThai ? (concernTH[patient.concern] || patient.concern) : patient.concern;
+    const stateUI = {
+      waiting: isThai ? ['ผู้ป่วยพร้อมเข้าห้อง','กำลังรอคุณ','กรุณาเข้าห้องก่อน ระบบจะเปิดห้องให้ผู้ป่วยเข้าอัตโนมัติหลังจากคุณเข้าห้องแล้ว','เข้าห้องปรึกษา','consult',false] : ['Patient ready to enter','Waiting for you','Join first. Krane opens the consultation room for the patient automatically after you enter.','Join consultation','consult',false],
+      followup: isThai ? ['ถึงกำหนดติดตามผล','ต้องประเมินอาการ','ทบทวนผลการรักษาและข้อมูลจากการปรึกษาครั้งก่อนก่อนเริ่มติดตามผล','เริ่มติดตามผล','consult',false] : ['Follow-up review due','Clinical review needed','Review the treatment response and previous consultation before starting the follow-up.','Start follow-up','consult',false],
+      'in-consult': isThai ? ['กำลังปรึกษาอยู่','อยู่ในห้อง','ผู้ป่วยอยู่ในห้องปรึกษาแล้ว กลับไปสนทนาต่อได้ทันที','กลับเข้าห้องปรึกษา','consult',false] : ['Consultation in progress','In room','The patient is already in the consultation room. Resume the conversation.','Resume consultation','consult',false],
+      'plan-pending': isThai ? ['พบผู้ป่วยเสร็จแล้ว','รอแผนการรักษา','ข้อมูลการปรึกษาพร้อมแล้ว จัดทำและส่งแผนการรักษาให้ผู้ป่วย','จัดทำแผนการรักษา','prescribe',false] : ['Consultation completed','Plan pending','The consultation is complete. Prepare and send the treatment plan.','Prepare treatment plan','prescribe',false],
+      upcoming: isThai ? ['ยังไม่ถึงเวลานัด','กำลังจะมาถึง','ตรวจแบบสอบถามไว้ก่อนได้ ระบบจะเปิดปุ่มเข้าห้องเมื่อถึงเวลานัด','นัดเวลา ' + patient.time,'preconsult',true] : ['Appointment not started','Upcoming','Review the intake now. Joining becomes available at the appointment time.','Scheduled ' + patient.time,'preconsult',true],
+      completed: isThai ? ['พบผู้ป่วยเสร็จแล้ว','เสร็จสิ้น','สรุปการปรึกษาและแผนการรักษาถูกบันทึกไว้ในประวัติผู้ป่วย','บันทึกสรุปแล้ว','preconsult',true] : ['Visit completed','Completed','The consultation summary and care plan are saved in the patient history.','Summary saved','preconsult',true]
+    }[state];
+    currentPatientSelection = {name,state};
+    if(selectedName) selectedName.textContent = name;
+    if(selectedSummary) selectedSummary.textContent = patient.age + ' · ' + sex + ' · ' + concern + ' · ' + (isThai ? 'นัด ' : 'matched ') + patient.time + ' · ' + (isThai ? 'รหัสผู้ป่วย ' : 'patient ID ') + patient.id;
+    if(selectedConcern) selectedConcern.textContent = concern;
+    if(selectedBannerTitle) selectedBannerTitle.textContent = stateUI[0];
+    if(selectedBannerStatus){
+      selectedBannerStatus.textContent = stateUI[1];
+      selectedBannerStatus.className = state === 'completed' ? 'badge badge--done' : state === 'in-consult' ? 'badge badge--go' : 'badge badge--warn';
+    }
+    if(selectedBannerBody) selectedBannerBody.textContent = stateUI[2];
+    if(selectedAction){ selectedAction.textContent = stateUI[3]; selectedAction.dataset.page = stateUI[4]; selectedAction.disabled = stateUI[5]; }
+    if(selectedCrumb) selectedCrumb.textContent = '‹ ' + name + ' · ' + (isThai ? 'ก่อนเริ่มปรึกษา' : 'pre-consult');
+    if(selectedConsultTitle) selectedConsultTitle.textContent = (isThai ? 'การปรึกษา · ' : 'Consultation · ') + name;
+    const roomName = document.querySelector('[data-room-name]');
+    const roomInitial = document.querySelector('[data-room-initial]');
+    if(roomName) roomName.textContent = name;
+    if(roomInitial) roomInitial.textContent = name.charAt(0);
+    const doctorPrompt = patient.concern === 'Sleep & stress'
+      ? (isThai ? 'ขอบคุณ ' + firstName + ' ผมดูแบบสอบถามแล้ว ปกติเข้านอนและตื่นประมาณกี่โมงครับ' : 'Thanks ' + firstName + '. I reviewed your intake. What time do you usually go to bed and wake up?')
+      : patient.concern === 'Skin concern'
+        ? (isThai ? 'ขอบคุณ ' + firstName + ' ผมดูข้อมูลและรูปแล้ว ผื่นเริ่มขึ้นตั้งแต่เมื่อไรครับ' : 'Thanks ' + firstName + '. I reviewed your intake and photo. When did the rash first appear?')
+        : patient.concern === 'General consultation'
+          ? (isThai ? 'ขอบคุณ ' + firstName + ' ผมดูแบบสอบถามแล้ว มีไข้ อาเจียน หรืออาการทางระบบประสาทร่วมด้วยไหมครับ' : 'Thanks ' + firstName + '. I reviewed your intake. Have you had fever, vomiting, or any neurological symptoms?')
+          : (isThai ? 'ขอบคุณ ' + firstName + ' ผมดูแบบสอบถามและรูปแล้ว ขอถามประวัติครอบครัวเพิ่มเติมสักเล็กน้อย' : 'Thanks ' + firstName + ". I've reviewed your intake and photo. I have one follow-up question about your family history.");
+    if(selectedDoctorMessage) selectedDoctorMessage.textContent = doctorPrompt;
+    const chatCopy = patient.concern === 'Sleep & stress'
+      ? (isThai
+          ? ['ช่วงนี้ตื่นกลางดึกบ่อยและรู้สึกเหนื่อยระหว่างวัน','เป็นเกือบทุกคืนมาประมาณหนึ่งเดือนแล้ว','รับทราบครับ ผมจะทบทวนรูปแบบการนอนและสิ่งที่อาจกระตุ้นอาการกับคุณ']
+          : ["I've been waking during the night and feel tired during the day.","It happens most nights and has been going on for about a month.","Understood. Let's review your sleep pattern and possible triggers together."])
+      : patient.concern === 'Skin concern'
+        ? (isThai
+            ? ['ผื่นแดงขึ้นซ้ำบริเวณเดิมและคันมากขึ้น','เริ่มเป็นเมื่อสองสัปดาห์ก่อน ยังไม่ได้ใช้ยารักษา','รับทราบครับ ผมจะดูอาการและประวัติสิ่งที่สัมผัสก่อนวางแผนดูแล']
+            : ["The same red patch keeps returning and has become itchier.","It started two weeks ago and I have not used any treatment yet.","Understood. I'll review the symptoms and possible contact triggers before planning care."])
+        : patient.concern === 'General consultation'
+          ? (isThai
+              ? ['อยากปรึกษาเรื่องอาการปวดศีรษะที่เป็นบ่อยขึ้นช่วงนี้','มักเป็นช่วงบ่ายและดีขึ้นหลังพัก','รับทราบครับ ผมจะถามอาการร่วมและประวัติเพิ่มเติมเพื่อประเมินให้ปลอดภัย']
+              : ["I'd like advice about headaches that have become more frequent.","They usually happen in the afternoon and improve after I rest.","Understood. I'll ask about related symptoms and your history so we can assess this safely."])
+          : (isThai
+              ? ['ช่วงนี้สังเกตว่าผมบริเวณกลางศีรษะร่วงมากขึ้น','คุณพ่อมีแนวผมร่นเหมือนกันครับ','รับทราบครับ ผมจะจัดทำแผนการรักษาให้คุณต่อไป']
+              : ["I've been noticing more shedding at the crown.","Yes, my father had a receding hairline.","Understood. I'll prepare a treatment plan for you now."]);
+    if(selectedPatientMessageOne) selectedPatientMessageOne.textContent = chatCopy[0];
+    if(selectedPatientMessageTwo) selectedPatientMessageTwo.textContent = chatCopy[1];
+    if(selectedDoctorMessageTwo) selectedDoctorMessageTwo.textContent = chatCopy[2];
+    if(selectedMessage) selectedMessage.placeholder = (isThai ? 'ส่งข้อความถึง ' : 'Message ') + firstName + (isThai ? '' : '…');
+    if(selectedContextPrimary) selectedContextPrimary.textContent = name + ' · ' + patient.age + ' · ' + sex;
+    if(selectedContextSecondary) selectedContextSecondary.textContent = concern + ' · ID ' + patient.id;
+    if(selectedPrescribeTitle) selectedPrescribeTitle.textContent = (isThai ? 'จัดทำแผนการรักษา · ' : 'Prescribe treatment · ') + name;
+  }
+  document.body.addEventListener('click', e => {
+    // reassign / escalate (F12): send the matched patient back to matching
+    const r = e.target.closest('[data-reassign]');
+    if(r){
+      const inc = document.querySelector('[data-incoming]'); if(inc) inc.style.display = 'none';
+      const note = document.querySelector('[data-reassigned]'); if(note) note.style.display = '';
+    }
+    const tt = e.target.closest('[data-toast]');
+    if(tt) toast(tt.dataset.toast);
+    const patientTarget = e.target.closest('[data-patient]');
+    if(patientTarget) loadSelectedPatient(patientTarget);
+    const t = e.target.closest('[data-page]');
+    if(t){ go(t.dataset.page); }
+  });
+
+  // ---- mobile nav drawer (menu button + scrim) ----
+  const cmsEl = document.querySelector('.cms');
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navScrim = document.querySelector('[data-nav-scrim]');
+  if(navToggle) navToggle.addEventListener('click', () => cmsEl.classList.toggle('nav-open'));
+  if(navScrim) navScrim.addEventListener('click', () => cmsEl.classList.remove('nav-open'));
+  // tapping a nav link closes the drawer on mobile
+  railLinks.forEach(a => a.addEventListener('click', () => cmsEl.classList.remove('nav-open')));
+
+  // ---- filter chips: clicking filters the table in the same page ----
+  // Index-based (not text-based) so filtering also works when the UI is in Thai.
+  const CHIP_FILTERS = {
+    queue: ['all','waiting','in-progress','plan-pending','done'],
+    followups: ['all','overdue','today','upcoming','completed'],
+    cases: ['all','consult-in-progress','plan-sent','awaiting-payment','dispatched','delivered'],
+    users: ['all','doctors','patients','admins','deactivated']
+  };
+  const ROW_STATUS = {
+    queue: ['waiting','waiting','in-progress','plan-pending','upcoming','done'],
+    cases: ['dispatched','dispatched','dispatched','awaiting-payment','delivered'],
+    users: ['doctors','doctors','doctors','patients','deactivated']
+  };
+  document.querySelectorAll('.chips').forEach(group => {
+    const section = group.closest('.page'); if(!section) return;
+    const sid = section.id;
+    const chips = [...group.children].filter(c => c.classList.contains('chip'));
+    group.addEventListener('click', e => {
+      const chip = e.target.closest('.chip'); if(!chip) return;
+      chips.forEach(c => c.classList.toggle('is-active', c === chip));
+      const f = (CHIP_FILTERS[sid] || [])[chips.indexOf(chip)] || 'all';
+      const tbody = section.querySelector('.table tbody'); if(!tbody) return;
+      const rows = [...tbody.querySelectorAll('tr')].filter(r => !r.classList.contains('table-empty'));
+      let shown = 0;
+      rows.forEach((tr, i) => {
+        const status = tr.dataset.status || (ROW_STATUS[sid] || [])[i];
+        const ok = f === 'all' || status === f;
+        tr.style.display = ok ? '' : 'none'; if(ok) shown++;
+      });
+      let empty = tbody.querySelector('.table-empty');
+      if(shown === 0){
+        if(!empty){
+          empty = document.createElement('tr'); empty.className = 'table-empty';
+          const td = document.createElement('td'); td.setAttribute('colspan','99');
+          td.textContent = 'No items in this view.'; empty.appendChild(td); tbody.appendChild(empty);
+        }
+        empty.style.display = ''; reapplyLangIfTH();
+      } else if(empty){ empty.style.display = 'none'; }
+    });
+  });
+
+  // ---- top search: live-filter the table on the active page ----
+  const topSearch = document.querySelector('.cms-top__search input');
+  if(topSearch){
+    topSearch.addEventListener('input', () => {
+      const q = topSearch.value.trim().toLowerCase();
+      const tbody = document.querySelector('.page.is-active .table tbody'); if(!tbody) return;
+      tbody.querySelectorAll('tr').forEach(tr => {
+        if(tr.classList.contains('table-empty')) return;
+        tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+
+  // ---- fallback: any action button with no wired behaviour still gives feedback ----
+  document.body.addEventListener('click', e => {
+    const btn = e.target.closest('button.btn, a.btn'); if(!btn) return;
+    if(btn.hasAttribute('data-page') || btn.hasAttribute('data-toast') ||
+       btn.hasAttribute('data-reassign') || btn.hasAttribute('data-oncall-toggle') ||
+       btn.hasAttribute('data-go-online') || btn.hasAttribute('data-calendar-today') ||
+       btn.hasAttribute('data-signature-upload')) return;
+    const label = (btn.textContent || '').trim().replace(/\s+/g,' ');
+    if(label) toast(label);
+  });
+
+  // F02 TH/EN toggle (active-state + copy swap) is handled by i18n.js.
+  // After a role switch / schedule rebuild, re-apply TH if it's the active language.
+  function reapplyLangIfTH(){
+    const on = document.querySelector('.lang__opt[data-lng="th"].is-active');
+    if(on && window.kraneSetLang) window.kraneSetLang(true);
+  }
+
+  // ---- on-call toggle (matching only routes to available doctors) ----
+  const ocToggle = document.querySelector('[data-oncall-toggle]');
+  const goOnline = document.querySelector('[data-go-online]');
+  const doctorOnline = document.querySelector('[data-doctor-online]');
+  const doctorOffline = document.querySelector('[data-doctor-offline]');
+  let isDoctorOnCall = true;
+  function setOnCall(on){
+    isDoctorOnCall = on;
+    const pill = document.querySelector('[data-oncall]');
+    const txt = document.querySelector('[data-oncall-text]');
+    if(pill) pill.classList.toggle('is-off', !on);
+    if(txt) txt.textContent = on ? 'On call' : 'Offline';
+    if(ocToggle) ocToggle.textContent = on ? 'Go offline' : 'Go on call';
+    if(doctorOnline) doctorOnline.hidden = !on;
+    if(doctorOffline) doctorOffline.hidden = on;
+    reapplyLangIfTH();
+  }
+  if(ocToggle) ocToggle.addEventListener('click', () => setOnCall(!isDoctorOnCall));
+  if(goOnline) goOnline.addEventListener('click', () => setOnCall(true));
+
+  // ---- incoming countdown (mm:ss) ----
+  const cd = document.querySelector('[data-countdown]');
+  if(cd){
+    let s = 105; // 01:45
+    setInterval(() => {
+      if(s <= 0) return;
+      s--;
+      const m = String(Math.floor(s/60)).padStart(2,'0'), sec = String(s%60).padStart(2,'0');
+      cd.textContent = m + ':' + sec;
+    }, 1000);
+  }
+
+  // Consultation duration follows the Admin-configured slot and stays visible for chat,
+  // voice, and video so the doctor can close the case within the booked window.
+  const consultRemaining = document.querySelector('[data-consult-remaining]');
+  const consultSlot = document.querySelector('[data-consult-slot]');
+  if(consultRemaining && consultSlot){
+    let configured = 15;
+    try { configured = parseInt(localStorage.getItem('krane-consult-slot-minutes'),10); } catch (error) {}
+    const slotSeconds = (configured === 10 || configured === 15 ? configured : 15) * 60;
+    let elapsedSeconds = 194;
+    const renderConsultTime = () => {
+      const remaining = Math.max(0, slotSeconds - elapsedSeconds);
+      const minutes = String(Math.floor(remaining/60)).padStart(2,'0');
+      const seconds = String(remaining%60).padStart(2,'0');
+      consultRemaining.textContent = minutes + ':' + seconds;
+      consultSlot.classList.toggle('is-warning', remaining <= 120);
+    };
+    renderConsultTime();
+    setInterval(() => { if(elapsedSeconds < slotSeconds) elapsedSeconds++; renderConsultTime(); }, 1000);
+  }
+
+  // Role comes from the account at login. This combined file is superseded by
+  // cms-doctor.html and cms-admin.html; no in-app role switch.
+
+  // ---- patient calendar: month and day views ----
+  const monthCalendar = document.querySelector('[data-month-calendar]');
+  const dayCalendar = document.querySelector('[data-day-calendar]');
+  const rangeLabel = document.querySelector('[data-calendar-range]');
+  const calendarViewSelect = document.querySelector('[data-calendar-view-select]');
+  const calendarToday = new Date(2026,5,24,12,0,0);
+  let calendarCursor = new Date(calendarToday);
+  let currentCalendarMode = 'month';
+  const calendarEvents = {
+    3:[['09:30','Ton S.','upcoming']],
+    8:[['14:00','Mina L.','upcoming']],
+    12:[['10:30','Anan K.','done']],
+    18:[['15:00','Korn P.','upcoming']],
+    24:[['09:00','Ton S.','done'],['11:00','Mali S.','waiting'],['11:15','Anan K.','waiting'],['12:00','Korn P.','upcoming'],['14:00','Mina L.','upcoming']],
+    26:[['13:30','Win T.','done']],
+    30:[['16:00','Pim R.','upcoming']]
+  };
+  function calendarEventMarkup(event, extraClass){
+    const statusClass = event[2] === 'waiting' ? ' cal-event--waiting' : event[2] === 'done' ? ' cal-event--done' : '';
+    return '<button type="button" class="cal-event'+statusClass+(extraClass || '')+'" data-page="preconsult" data-patient="'+event[1]+'" data-patient-state="'+event[2]+'">'+event[0]+' · '+event[1]+'</button>';
+  }
+  function sameCalendarDay(a,b){
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+  function dateKey(date){
+    return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+  }
+  function eventsForDate(date){
+    return date.getFullYear() === 2026 && date.getMonth() === 5 ? (calendarEvents[date.getDate()] || []) : [];
+  }
+  function formatCalendarRange(){
+    if(!rangeLabel) return;
+    const th = document.body.classList.contains('lang-th');
+    const locale = th ? 'th-TH-u-ca-buddhist' : 'en-GB';
+    const options = currentCalendarMode === 'month' ? {month:'long',year:'numeric'} : {weekday:'long',day:'numeric',month:'long',year:'numeric'};
+    rangeLabel.textContent = new Intl.DateTimeFormat(locale,options).format(calendarCursor);
+  }
+
+  // ---- Doctor shift planning: add button plus a modal -----------------------
+  // Working days come from the weekly pattern; entries made here are per-date
+  // overrides so a single day can change without touching the pattern.
+  const weeklyDefault = { 0:null, 1:'09:00-17:00', 2:'09:00-17:00', 3:'09:00-17:00', 4:'09:00-17:00', 5:'09:00-15:00', 6:null };
+  const shiftOverrides = { '2026-07-27':null, '2026-08-02':'18:00-20:00' };
+  let shiftKind = 'work';
+
+  function shiftForDate(date){
+    const key = dateKey(date);
+    return Object.prototype.hasOwnProperty.call(shiftOverrides, key)
+      ? shiftOverrides[key]
+      : weeklyDefault[date.getDay()];
+  }
+  function shiftMarkup(date){
+    const hours = shiftForDate(date);
+    const custom = Object.prototype.hasOwnProperty.call(shiftOverrides, dateKey(date)) ? ' is-custom' : '';
+    return hours
+      ? '<span class="shift-chip' + custom + '">' + hours + '</span>'
+      : '<span class="shift-chip shift-chip--off' + custom + '">หยุด</span>';
+  }
+  // The dialog markup sits after this script, so it is looked up on demand. Caching
+  // the node at parse time returned null and silently disabled the whole modal.
+  function shiftModalEl(){ return document.querySelector('[data-shift-modal]'); }
+  function openShiftModal(key){
+    const shiftModal = shiftModalEl();
+    if(!shiftModal) return;
+    const dateInput = shiftModal.querySelector('#shift-date');
+    if(key){
+      dateInput.value = key;
+      // The rounded picker relabels its trigger on change, and setting .value in
+      // script does not fire one.
+      dateInput.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+    shiftModal.hidden = false;
+    document.body.classList.add('modal-open');
+    const dateTrigger = shiftModal.querySelector('.cms-picker__trigger');
+    (dateTrigger || dateInput).focus();
+  }
+  function closeShiftModal(){
+    const shiftModal = shiftModalEl();
+    if(!shiftModal) return;
+    shiftModal.hidden = true;
+    document.body.classList.remove('modal-open');
+  }
+  document.addEventListener('click', e => {
+    const shiftModal = shiftModalEl();
+    if(!shiftModal) return;
+    if(e.target.closest('[data-shift-open]')){ openShiftModal(null); return; }
+    if(e.target.closest('[data-shift-cancel]')){ closeShiftModal(); return; }
+    const kind = e.target.closest('[data-shift-kind]');
+    if(kind){
+      shiftKind = kind.dataset.shiftKind;
+      shiftModal.querySelectorAll('[data-shift-kind]').forEach(b => b.classList.toggle('is-active', b === kind));
+      shiftModal.querySelector('[data-shift-hours]').hidden = shiftKind === 'off';
+      return;
+    }
+    if(e.target.closest('[data-shift-save]')){
+      const key = shiftModal.querySelector('#shift-date').value;
+      const from = shiftModal.querySelector('#shift-from').value;
+      const to = shiftModal.querySelector('#shift-to').value;
+      shiftOverrides[key] = shiftKind === 'off' ? null : (from + '-' + to);
+      closeShiftModal();
+      renderMonthCalendar();
+      toast(shiftKind === 'off' ? 'บันทึกวันหยุดแล้ว' : 'บันทึกตารางงานแล้ว');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    const shiftModal = shiftModalEl();
+    if(e.key === 'Escape' && shiftModal && !shiftModal.hidden) closeShiftModal();
+  });
+
+  function renderMonthCalendar(){
+    if(!monthCalendar) return;
+    const weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    monthCalendar.innerHTML = weekdays.map(day => '<div class="month-head">'+day+'</div>').join('');
+    const first = new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1,12,0,0);
+    const mondayOffset = (first.getDay()+6)%7;
+    for(let index=0;index<42;index++){
+      const cellDate = new Date(first); cellDate.setDate(1-mondayOffset+index);
+      const day = cellDate.getDate();
+      const inMonth = cellDate.getMonth() === calendarCursor.getMonth();
+      const events = eventsForDate(cellDate);
+      const cell = document.createElement('div');
+      cell.className = 'month-day' + (inMonth ? '' : ' is-out') + (sameCalendarDay(cellDate,calendarToday) ? ' is-today' : '');
+      if(inMonth && shiftForDate(cellDate) === null) cell.className += ' is-off';
+      cell.innerHTML = '<button type="button" class="month-day__number" data-calendar-day="'+dateKey(cellDate)+'" aria-label="Open day view">'+day+'</button>'
+        + (inMonth ? shiftMarkup(cellDate) : '')
+        + events.slice(0,2).map(event => calendarEventMarkup(event,'')).join('')
+        + (events.length > 2 ? '<span class="cal-more">+'+(events.length-2)+' more</span>' : '');
+      monthCalendar.appendChild(cell);
+    }
+  }
+  function renderDayCalendar(){
+    if(!dayCalendar) return;
+    const prototypeSlots = [
+      ['09:00',['09:00','Ton S.','done'],'Completed · summary available'],
+      ['10:00',null,''],
+      ['11:00',['11:00','Mali S.','waiting'],'Patient waiting · intake complete'],
+      ['12:00',['12:00','Korn P.','upcoming'],'Upcoming · review intake'],
+      ['13:00',null,''],
+      ['14:00',['14:00','Mina L.','upcoming'],'Upcoming · review intake'],
+      ['15:00',null,''],
+      ['16:00',null,''],
+      ['17:00',['17:00','Anan K.','upcoming'],'Upcoming · review intake']
+    ];
+    const emptySlots = prototypeSlots.map(slot => [slot[0],null,'']);
+    const slots = sameCalendarDay(calendarCursor,calendarToday) ? prototypeSlots : emptySlots;
+    dayCalendar.innerHTML = slots.map(slot => {
+      if(!slot[1]) return '<div class="day-time">'+slot[0]+'</div><div class="day-lane"></div>';
+      const status = slot[1][2];
+      const cls = status === 'waiting' ? ' day-event--waiting' : status === 'done' ? ' day-event--done' : '';
+      return '<div class="day-time">'+slot[0]+'</div><div class="day-lane"><button type="button" class="day-event'+cls+'" data-page="preconsult" data-patient="'+slot[1][1]+'" data-patient-state="'+status+'"><span><b>'+slot[1][1]+'</b><small>'+slot[2]+'</small></span><b>'+slot[1][0]+'</b></button></div>';
+    }).join('');
+  }
+  function renderCalendar(){
+    renderMonthCalendar(); renderDayCalendar(); formatCalendarRange(); reapplyLangIfTH();
+  }
+  function setCalendarMode(mode){
+    currentCalendarMode = mode;
+    document.querySelectorAll('[data-cal-view]').forEach(view => { view.hidden = view.dataset.calView !== mode; });
+    if(calendarViewSelect){ calendarViewSelect.value = mode; calendarViewSelect.dispatchEvent(new Event('cms-sync')); }
+    renderCalendar();
+  }
+  if(calendarViewSelect) calendarViewSelect.addEventListener('change', () => setCalendarMode(calendarViewSelect.value));
+  document.querySelectorAll('[data-calendar-shift]').forEach(button => button.addEventListener('click', () => {
+    const delta = Number(button.dataset.calendarShift);
+    if(currentCalendarMode === 'month') calendarCursor.setMonth(calendarCursor.getMonth()+delta);
+    else calendarCursor.setDate(calendarCursor.getDate()+delta);
+    renderCalendar();
+  }));
+  const todayButton = document.querySelector('[data-calendar-today]');
+  if(todayButton) todayButton.addEventListener('click', () => { calendarCursor = new Date(calendarToday); renderCalendar(); });
+  document.addEventListener('click', event => {
+    const dayButton = event.target.closest('[data-calendar-day]');
+    if(dayButton && event.shiftKey){ openShiftModal(dayButton.dataset.calendarDay); return; }
+    // In shift mode the day number sets working hours instead of opening the day view.
+
+    if(dayButton){ calendarCursor = new Date(dayButton.dataset.calendarDay+'T12:00:00'); setCalendarMode('day'); }
+    if(event.target.closest('.lang__opt')) setTimeout(() => {
+      renderCalendar();
+      loadSelectedPatient({dataset:{patient:currentPatientSelection.name,patientState:currentPatientSelection.state}});
+    },0);
+  });
+
+  // ---- signature upload preview ----
+  const signatureUpload = document.querySelector('[data-signature-upload]');
+  const signatureInput = document.querySelector('[data-signature-input]');
+  const signaturePreview = document.querySelector('[data-signature-preview]');
+  if(signatureUpload && signatureInput) signatureUpload.addEventListener('click', () => signatureInput.click());
+  if(signatureInput && signaturePreview) signatureInput.addEventListener('change', () => {
+    const file = signatureInput.files && signatureInput.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => { signaturePreview.src = reader.result; toast('Signature preview updated'); reapplyLangIfTH(); });
+    reader.readAsDataURL(file);
+  });
+  renderCalendar();
+
+  // ---- consultation room: video first (F13/F14) ------------------------------
+  // The room starts in video for both people. Either camera going off drops the
+  // room to voice and chat, names who turned it off, and offers an immediate way
+  // back. Nothing here asks the other person for permission.
+  const room = document.querySelector('[data-room]');
+  if(room){
+    const roomNotice = room.querySelector('[data-room-notice]');
+    const roomNoticeBody = room.querySelector('[data-room-notice-body]');
+    const camButton = room.querySelector('[data-room-cam]');
+    const camLabel = room.querySelector('[data-room-cam-label]');
+    const micButton = room.querySelector('[data-room-mic]');
+    const micLabel = room.querySelector('[data-room-mic-label]');
+    const videoOnButton = room.querySelector('[data-room-video-on]');
+    let doctorCamOn = true, patientCamOn = true;
+
+    function isThaiNow(){ return !!document.querySelector('.lang__opt[data-lng="th"].is-active'); }
+    function roomCopy(){
+      const isThai = isThaiNow();
+      const patient = currentPatientSelection.name;
+      // Zoom shows a camera-off participant as an avatar tile, so the tiles carry
+      // the state and Krane only adds the plain-language line underneath.
+      room.classList.toggle('is-self-off', !doctorCamOn);
+      room.classList.toggle('is-remote-off', !patientCamOn);
+      if(doctorCamOn && patientCamOn){
+        room.dataset.roomMode = 'video';
+        roomNotice.hidden = true;
+      } else {
+        room.dataset.roomMode = 'voice';
+        roomNotice.hidden = false;
+        const who = !doctorCamOn
+          ? (isThai ? 'คุณปิดกล้อง' : 'You stopped your video')
+          : (isThai ? patient + ' ปิดกล้อง' : patient + ' stopped their video');
+        roomNoticeBody.textContent = who + (isThai
+          ? ' การปรึกษายังดำเนินต่อด้วยเสียงและแชท'
+          : '. The consultation continues on voice and chat.');
+        videoOnButton.hidden = doctorCamOn;
+      }
+      if(camLabel) camLabel.textContent = doctorCamOn
+        ? (isThai ? 'ปิดวิดีโอ' : 'Stop Video')
+        : (isThai ? 'เปิดวิดีโอ' : 'Start Video');
+      if(camButton) camButton.setAttribute('aria-pressed', String(!doctorCamOn));
+    }
+    room.addEventListener('click', event => {
+      const isThai = isThaiNow();
+      if(event.target.closest('[data-room-mic]')){
+        const muted = micButton.getAttribute('aria-pressed') === 'true';
+        micButton.setAttribute('aria-pressed', String(!muted));
+        micLabel.textContent = muted ? (isThai ? 'ปิดไมค์' : 'Mute') : (isThai ? 'เปิดไมค์' : 'Unmute');
+        return;
+      }
+      if(event.target.closest('[data-room-cam]')){ doctorCamOn = !doctorCamOn; roomCopy(); return; }
+      if(event.target.closest('[data-room-video-on]')){ doctorCamOn = true; roomCopy(); return; }
+      if(event.target.closest('[data-room-patient-cam]')){ patientCamOn = !patientCamOn; roomCopy(); return; }
+      if(event.target.closest('[data-room-end]')){
+        room.dataset.roomMode = 'ended';
+        roomNotice.hidden = false;
+        roomNoticeBody.textContent = isThai
+          ? 'ออกจากห้องประชุมแล้ว ห้องแชทยังเปิดอยู่จนกว่าคุณจะส่งแผนการรักษา'
+          : 'You left the meeting. Chat stays open until you send the treatment plan.';
+        videoOnButton.hidden = true;
+        toast(isThai ? 'ออกจากห้องประชุมแล้ว' : 'You left the meeting');
+      }
+    });
+    roomCopy();
+  }
+
+  // ---- consultation record (F24) --------------------------------------------
+  // A past visit is read-only. The doctor opens it to remember what was decided
+  // and why, so the notes lead and every note carries its author and time. Notes
+  // from other Krane doctors are visible, attributed, and clearly internal.
+  const RECORDS = {
+    r1: {
+      title: 'First consultation',
+      date: '2 Apr 2026', dateTH: '2 เม.ย. 2026',
+      doctor: 'Dr. Anong', doctorTH: 'คุณหมออนงค์',
+      concern: 'Hair loss',
+      duration: '18 min',
+      followUp: 'Photos in 4 weeks',
+      badge: ['No prescription','badge badge--mute'],
+      notes: [
+        ['Dr. Anong','2 Apr 2026 · 11:24','Norwood II with early frontal recession. Family history on the maternal side. Discussed finasteride and topical minoxidil, including the side effect profile. Patient prefers to think it over before starting medicine. Asked for follow-up photos in 4 weeks.']
+      ],
+      rx: null,
+      rxNote: 'No medicine was prescribed in this visit.',
+      photos: [
+        ['assets/intake/hair-angle-front.jpg','Front hairline','2 Apr 2026 · 10:41'],
+        ['assets/intake/hair-angle-crown.jpg','Crown','2 Apr 2026 · 10:42']
+      ],
+      intake: [
+        ['Concern','Hair loss'],
+        ['Duration','6 months to 2 years'],
+        ['Current symptoms','Hair thinning or shedding'],
+        ['Medical conditions','None reported'],
+        ['Medication (3 mo)','None'],
+        ['Previous treatment','None']
+      ]
+    },
+    r2: {
+      title: 'Follow-up consultation',
+      date: '8 May 2026', dateTH: '8 พ.ค. 2026',
+      doctor: 'Dr. Narin Tanaka', doctorTH: 'คุณหมอนรินทร์ ทานากะ',
+      concern: 'Hair loss',
+      duration: '22 min',
+      followUp: '12 Sep 2026',
+      badge: ['Prescription issued','badge badge--done'],
+      notes: [
+        ['Dr. Narin Tanaka','8 May 2026 · 14:06','Comparison photos show continued frontal thinning since April. No contraindications and no drug allergies. Started finasteride 1mg daily with topical minoxidil 5% twice daily. Explained that visible change takes about 3 months. Review at 12 weeks.'],
+        ['Dr. Anong','8 May 2026 · 09:15','Handover note: patient returned after the April visit and is ready to start treatment. Baseline photos are in the record.']
+      ],
+      rx: [
+        ['Finasteride 1mg','1 tablet daily','฿ 590'],
+        ['Minoxidil 5% topical','Apply 1ml twice daily','฿ 450']
+      ],
+      rxNote: 'Refills allowed 3 · dispatched by Fascino Ari · delivered 12 May 2026',
+      photos: [
+        ['assets/intake/hair-angle-front.jpg','Front hairline','8 May 2026 · 13:52'],
+        ['assets/intake/hair-angle-crown.jpg','Crown','8 May 2026 · 13:53'],
+        ['assets/intake/hair-angle-back.jpg','Back of the head','8 May 2026 · 13:54']
+      ],
+      intake: [
+        ['Concern','Hair loss'],
+        ['Duration','6 months to 2 years'],
+        ['Current symptoms','Hair thinning or shedding'],
+        ['Medical conditions','None reported'],
+        ['Medication (3 mo)','None'],
+        ['Previous treatment','None']
+      ]
+    }
+  };
+  const recordTitle = document.querySelector('[data-record-title]');
+  const recordSub = document.querySelector('[data-record-sub]');
+  const recordBadge = document.querySelector('[data-record-badge]');
+  const recordNotes = document.querySelector('[data-record-notes]');
+  const recordRx = document.querySelector('[data-record-rx]');
+  const recordSummary = document.querySelector('[data-record-summary]');
+  const recordIntake = document.querySelector('[data-record-intake]');
+  const recordCrumb = document.querySelector('[data-record-crumb]');
+  const recordPhotos = document.querySelector('[data-record-photos]');
+  const recordPhotoCount = document.querySelector('[data-record-photo-count]');
+
+  function kvRow(key, value){
+    return '<div class="kv"><span class="k">' + key + '</span><span class="strong">' + value + '</span></div>';
+  }
+  function renderRecord(id){
+    const record = RECORDS[id]; if(!record || !recordNotes) return;
+    const patient = currentPatientSelection.name;
+    // Composed strings can't be matched by the EN->TH dictionary, so they are
+    // assembled per language the same way the pre-consult header is.
+    const isThai = !!document.querySelector('.lang__opt[data-lng="th"].is-active');
+    if(recordTitle) recordTitle.textContent = record.title;
+    if(recordSub) recordSub.textContent = patient + ' · ' + (isThai ? record.dateTH : record.date) + ' · ' + (isThai ? record.doctorTH : record.doctor);
+    if(recordCrumb) recordCrumb.textContent = '‹ ' + patient + ' · ' + (isThai ? 'ก่อนเริ่มปรึกษา' : 'pre-consult');
+    if(recordBadge){ recordBadge.textContent = record.badge[0]; recordBadge.className = record.badge[1]; }
+    recordNotes.innerHTML = record.notes.map(note =>
+      '<div class="note-entry"><div class="note-entry__head"><b>' + note[0] + '</b><span class="hint">' + note[1] + '</span></div>'
+      + '<p class="note-entry__body">' + note[2] + '</p></div>').join('');
+    if(recordRx){
+      recordRx.innerHTML = record.rx
+        ? record.rx.map(item => '<div class="record-rx"><span class="sku__thumb"></span>'
+            + '<span class="record-rx__body"><b>' + item[0] + '</b><small>' + item[1] + '</small></span>'
+            + '<span class="strong">' + item[2] + '</span></div>').join('')
+          + '<div class="hint">' + record.rxNote + '</div>'
+        : '<div class="record-empty">' + record.rxNote + '</div>';
+    }
+    if(recordSummary){
+      recordSummary.innerHTML = kvRow('Date', record.date) + kvRow('Doctor', record.doctor)
+        + kvRow('Concern', record.concern) + kvRow('Consultation length', record.duration)
+        + kvRow('Follow-up set', record.followUp);
+    }
+    if(recordPhotos){
+      recordPhotos.innerHTML = record.photos.map(photo =>
+        '<button type="button" class="record-photo" data-photo-open="' + photo[0] + '" data-photo-label="' + photo[1] + '">'
+        + '<img src="' + photo[0] + '" alt="' + photo[1] + ', uploaded by the patient" loading="lazy"'
+        + ' onerror="this.closest(\'.record-photo\').classList.add(\'is-missing\')">'
+        + '<span class="record-photo__cap"><b>' + photo[1] + '</b><small>' + photo[2] + '</small></span></button>').join('');
+    }
+    if(recordPhotoCount) recordPhotoCount.textContent = record.photos.length + (isThai ? ' รูป' : record.photos.length === 1 ? ' photo' : ' photos');
+    if(recordIntake) recordIntake.innerHTML = record.intake.map(row => kvRow(row[0], row[1])).join('');
+    reapplyLangIfTH();
+  }
+  document.addEventListener('click', event => {
+    const row = event.target.closest('[data-record]');
+    if(row) renderRecord(row.dataset.record);
+  });
+  renderRecord('r2');
+
+  // ---- photo viewer: hairline detail is hard to judge at thumbnail size ----
+  // The dialog markup sits after this script, so look it up on demand rather than
+  // at parse time, when it does not exist yet.
+  function photoViewerEl(){ return document.querySelector('[data-photo-viewer]'); }
+  function closePhotoViewer(){
+    const viewer = photoViewerEl(); if(!viewer) return;
+    viewer.hidden = true; document.body.classList.remove('modal-open');
+  }
+  document.addEventListener('click', event => {
+    const viewer = photoViewerEl(); if(!viewer) return;
+    const opener = event.target.closest('[data-photo-open]');
+    if(opener){
+      const image = viewer.querySelector('[data-photo-viewer-img]');
+      const label = viewer.querySelector('[data-photo-viewer-label]');
+      image.src = opener.dataset.photoOpen;
+      image.alt = opener.dataset.photoLabel + ', uploaded by the patient';
+      label.textContent = opener.dataset.photoLabel;
+      viewer.hidden = false;
+      document.body.classList.add('modal-open');
+      viewer.querySelector('[data-photo-viewer-close]').focus();
+      return;
+    }
+    if(event.target.closest('[data-photo-viewer-close]') || event.target.closest('[data-photo-viewer-scrim]')) closePhotoViewer();
+  });
+  document.addEventListener('keydown', event => {
+    const viewer = photoViewerEl();
+    if(event.key === 'Escape' && viewer && !viewer.hidden) closePhotoViewer();
+  });
+</script>
+<script src="cms-select.js?v=20260715a"></script>
+<script src="cms-datetime.js?v=20260726a"></script>
+<script src="i18n.js?v=20260726a"></script>
+
+
+<script>
+/* Availability setup: rows switch off, edits mark the page dirty, save confirms.
+   Deliberately local only. Whether a change needs admin approval is still an open
+   question with the client, so nothing here claims the schedule is live. */
+(function(){
+  var page = document.getElementById('availability');
+  if(!page) return;
+  var status = page.querySelector('[data-avail-status]');
+  function dirty(){ if(status) status.textContent = 'มีการแก้ไขที่ยังไม่ได้บันทึก'; }
+  page.querySelectorAll('[data-avail-toggle]').forEach(function(input){
+    input.addEventListener('change', function(){
+      var row = input.closest('[data-avail-row]');
+      row.classList.toggle('is-off', !input.checked);
+      var note = row.querySelector('[data-avail-note]');
+      if(note) note.textContent = input.checked ? '' : 'ไม่รับเคส';
+      dirty();
+    });
+  });
+  page.addEventListener('input', function(e){ if(e.target.matches('input,select')) dirty(); });
+  page.querySelectorAll('[data-avail-remove]').forEach(function(button){
+    button.addEventListener('click', function(){ button.closest('.avail-exception').remove(); dirty(); });
+  });
+  var save = page.querySelector('[data-avail-save]');
+  if(save) save.addEventListener('click', function(){
+    if(status) status.textContent = 'บันทึกแล้ว ' + new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  });
+})();
+
+  // Deep link support: open the page named in the URL, and follow back/forward.
+  // Runs after load so later init code cannot navigate away from the linked page.
+  function applyCmsHash(){ const id = location.hash.slice(1); if(id) go(id, false); }
+  window.addEventListener('hashchange', applyCmsHash);
+  window.addEventListener('load', applyCmsHash);
+  applyCmsHash();
+</script>
+
+<!-- Full-size patient photo. Reuses the CMS modal shell so the back office keeps
+     one overlay pattern. -->
+<div class="cms-modal" data-photo-viewer hidden>
+  <button class="cms-modal__scrim" type="button" data-photo-viewer-scrim aria-label="ปิด"></button>
+  <div class="cms-modal__dialog cms-modal__dialog--wide" role="dialog" aria-modal="true" aria-labelledby="photo-viewer-title">
+    <div class="cms-modal__head">
+      <h2 id="photo-viewer-title" data-photo-viewer-label>Front hairline</h2>
+      <button class="cms-modal__close" type="button" data-photo-viewer-close aria-label="ปิด">×</button>
+    </div>
+    <div class="photo-viewer__body"><img data-photo-viewer-img src="" alt=""></div>
+  </div>
+</div>
+
+<div class="cms-modal" data-shift-modal hidden>
+  <button class="cms-modal__scrim" type="button" data-shift-cancel aria-label="ปิด"></button>
+  <div class="cms-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="shift-modal-title">
+    <div class="cms-modal__head">
+      <h2 id="shift-modal-title">เพิ่มตารางงาน</h2>
+      <button class="cms-modal__close" type="button" data-shift-cancel aria-label="ปิด">×</button>
+    </div>
+    <div class="cms-modal__body">
+      <div class="field">
+        <label for="shift-date">วันที่</label>
+        <input class="input" type="date" id="shift-date" value="2026-06-24">
+      </div>
+      <div class="field">
+        <label>ประเภท</label>
+        <div class="shift-kind" role="radiogroup" aria-label="ประเภท">
+          <button type="button" class="shift-kind__btn is-active" data-shift-kind="work">วันทำงาน</button>
+          <button type="button" class="shift-kind__btn" data-shift-kind="off">วันหยุด</button>
+        </div>
+      </div>
+      <div class="field" data-shift-hours>
+        <label for="shift-from">เวลา</label>
+        <div class="shift-modal__times">
+          <input class="input" type="time" id="shift-from" value="09:00">
+          <span class="avail-row__to">ถึง</span>
+          <input class="input" type="time" id="shift-to" value="17:00">
+        </div>
+      </div>
+      <div class="field">
+        <label for="shift-repeat">ทำซ้ำ</label>
+        <select class="select" id="shift-repeat">
+          <option value="none">ไม่ทำซ้ำ</option>
+          <option value="weekly">ทุกสัปดาห์</option>
+          <option value="weekday">ทุกวันจันทร์ถึงศุกร์</option>
+        </select>
+      </div>
+    </div>
+    <div class="cms-modal__foot">
+      <button class="btn btn--ghost btn--sm" type="button" data-shift-cancel>ยกเลิก</button>
+      <button class="btn btn--primary btn--sm" type="button" data-shift-save>บันทึก</button>
+    </div>
+  </div>
+</div>
+<script src="../krane-golden-doctor.js"></script>
+</body></html>

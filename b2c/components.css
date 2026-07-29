@@ -1,0 +1,1301 @@
+/* ============================================================
+   KRANE CLINIC, UI COMPONENTS (reusable, token-driven)
+   ------------------------------------------------------------
+   Every class here pulls from design-tokens.css via var().
+   Edit a component once -> every screen updates.
+   Do NOT hard-code colors/sizes here; add a token instead.
+   ============================================================ */
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-base); color:var(--color-ink);
+  background:var(--gradient-teal-soft); background-attachment:fixed;
+  font-size:var(--fs-base); line-height:var(--lh-base);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);font-family:var(--font-display)}
+p{margin:0}
+button{font:inherit;color:inherit}
+img{max-width:100%}
+
+/* ---------- Layout helpers ---------- */
+.stack{display:flex;flex-direction:column}
+.stack-2>*+*{margin-top:var(--sp-2)}
+.stack-3>*+*{margin-top:var(--sp-3)}
+.stack-4>*+*{margin-top:var(--sp-4)}
+.stack-5>*+*{margin-top:var(--sp-5)}
+.row{display:flex;align-items:center;gap:var(--sp-3)}
+.row>*,.between>*{min-width:0}
+.between{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.between[hidden]{display:none}
+.grow{flex:1}
+.center{text-align:center}
+.muted{color:var(--color-ink-2)}
+.hint{color:var(--color-ink-3);font-size:var(--fs-sm)}
+.hint[hidden]{display:none}
+
+/* ---------- Typography components ---------- */
+.eyebrow{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.14em;text-transform:uppercase;color:var(--color-ink-3)}
+.display{font-family:var(--font-display);font-size:var(--fs-2xl);font-weight:var(--fw-semibold);letter-spacing:0;line-height:1.08}
+.h1{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:var(--fw-bold);letter-spacing:0}
+.h2{font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-bold)}
+.lead{font-size:var(--fs-md);color:var(--color-ink-2)}
+/* Fraunces italic accent word (e.g. "men's health, <span class=acc>quietly</span> handled") */
+.acc{font-family:var(--font-serif);font-style:italic;font-weight:var(--fw-medium);color:var(--color-ink-2);text-transform:none}
+
+/* ---------- Button ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  height:var(--control-h);padding:0 var(--sp-5);border-radius:var(--button-radius);
+  font-size:var(--fs-base);font-weight:var(--fw-semibold);cursor:pointer;border:1px solid transparent;
+  width:100%;transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out);
+}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn[hidden]{display:none}
+.btn--primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink);box-shadow:var(--shadow-sm)}
+.btn--primary:hover{background:var(--btn-primary-bg-hover);box-shadow:var(--shadow-md)}
+.btn--secondary{background:var(--color-surface);color:var(--color-ink);border-color:var(--color-line-strong)}
+.btn--secondary:hover{background:var(--color-bg-2)}
+.btn--ghost{background:transparent;color:var(--color-ink-2);width:auto;padding:0 var(--sp-3)}
+.btn--danger{background:transparent;color:var(--color-danger);border-color:color-mix(in srgb,var(--color-danger) 40%,transparent)}
+.btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-surface))}
+.btn--sm{height:var(--control-h-sm);padding:0 var(--sp-4);font-size:var(--fs-sm);width:auto}
+.social-btn{gap:12px}
+.brand-icon{width:22px;height:22px;display:block;flex:none}
+
+/* ---------- UI icon system (Krane rounded line set, local/offline) ---------- */
+.krane-icon-sprite{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.ui-icon{display:block;width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.ui-icon--xs{width:14px;height:14px}.ui-icon--sm{width:17px;height:17px}.ui-icon--md{width:22px;height:22px}.ui-icon--lg{width:28px;height:28px}
+.screen__top .back{font-size:0;padding:0;width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon)}
+.screen__top .back .ui-icon{width:20px;height:20px}
+.chev{display:inline-grid;place-items:center;line-height:1}
+.alert .a-ic .ui-icon{width:15px;height:15px;stroke-width:2}
+.kv-edit .ui-icon{width:15px;height:15px}
+.up-thumb .x .ui-icon{width:11px;height:11px;stroke-width:2.25}
+/* onboarding line-art illustration tile */
+.illus{height:240px;border-radius:var(--radius-lg);background:linear-gradient(160deg,var(--color-bg-2),var(--color-surface));border:1px solid var(--color-line);display:grid;place-items:center;color:var(--color-ink-2)}
+.illus svg{width:108px;height:108px}
+/* segmented toggle (ID/passport, article filters), selected = filled accent */
+[data-toggle]{cursor:pointer}
+[data-toggle][aria-selected="true"]{background:var(--color-accent);color:var(--color-on-accent);border-color:var(--color-accent)}
+/* independent press toggle (call controls) */
+[data-press][aria-pressed="true"]{background:var(--color-accent);color:var(--color-on-accent)}
+
+/* ---------- Inputs ---------- */
+.field{display:block;min-width:0;max-width:100%}
+.field>label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:var(--sp-2)}
+.input,.select,.textarea{
+  width:100%;min-width:0;max-width:100%;height:var(--control-h);padding:0 var(--sp-4);
+  border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink);font-size:var(--fs-base);
+}
+.textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
+.input::placeholder{color:var(--color-ink-3)}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.intake-dropdown-field .select{font-size:16px}
+.intake-dropdown-field .select:invalid{color:var(--color-ink-3)}
+.intake-dropdown-field .select option{color:var(--color-ink)}
+
+/* Social sign-in returns to Krane for profile completion before the care flow continues. */
+.auth-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+@media(max-width:36rem){.auth-name-grid{grid-template-columns:1fr}}
+
+/* ---------- Card ---------- */
+.card{background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-sm)}
+.card--flat{box-shadow:none}
+.card--filled{background:var(--color-bg-soft);border-color:transparent}
+.card--pad-sm{padding:var(--sp-4)}
+
+/* ---------- Selectable option (intake / concern / delivery) ---------- */
+.option{
+  display:flex;align-items:center;gap:var(--sp-4);width:100%;text-align:left;cursor:pointer;
+  background:var(--color-bg-soft);border:1px solid transparent;border-radius:var(--radius-md);
+  padding:var(--sp-4);box-shadow:none;min-height:68px;font:inherit;color:var(--color-ink);
+  transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
+}
+/* inline option chips (e.g. time slots) opt out of the uniform list height */
+.option[style*="width:auto"]{min-height:0}
+.option:hover{border-color:transparent;background:var(--color-bg-2);transform:translateY(-1px);box-shadow:none}
+.option:active{transform:scale(.985)}
+/* selected: sleek single hairline in the brand colour + a faint tint (no double ring, no bulk) */
+.option[aria-selected="true"]{border-color:transparent;background:var(--color-accent-soft)}
+/* focus: clean brand ring (replaces the browser's default orange outline) */
+.option:focus{outline:none}
+.option:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.option:disabled,.option[aria-disabled="true"]{cursor:not-allowed;opacity:.62;background:var(--color-bg-2);box-shadow:none;transform:none}
+.option:disabled:hover,.option[aria-disabled="true"]:hover{border-color:transparent;transform:none;box-shadow:none}
+/* text column, title stacked over subtitle (was colliding inline) */
+.option .opt-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.option .opt-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:var(--color-bg-2);border:1px solid var(--color-line);display:grid;place-items:center;flex:none;color:var(--color-ink-2)}
+/* keep the icon visible on the selected card (tint == bg-2 would hide it) */
+.option[aria-selected="true"] .opt-icon{background:var(--color-surface);border-color:var(--color-line-strong)}
+.option .opt-title{display:block;font-weight:var(--fw-semibold);line-height:var(--lh-tight)}
+.option .opt-sub{display:block;font-size:var(--fs-sm);color:var(--color-ink-2);line-height:var(--lh-tight)}
+/* Single-select reads as a round radio; multi-select as a rounded-square checkbox
+   (see --selection-radius-* in design-tokens.css). The shape is the affordance:
+   patients should never have to guess whether they may pick more than one. */
+.option[data-select] .opt-check{display:grid;border-radius:var(--selection-radius-radio)}
+.option .opt-check{margin-left:auto;width:var(--selection-size);height:var(--selection-size);border-radius:var(--selection-radius);border:var(--selection-border-width) solid var(--color-line-strong);flex:none;display:grid;place-items:center;background:var(--color-surface);transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+.option[aria-selected="true"] .opt-check{background:var(--color-accent);border-color:var(--color-accent);animation:check-pop var(--dur-base) var(--ease-spring)}
+.option[aria-selected="true"] .opt-check::after{content:"";width:66%;height:66%;background:var(--color-on-accent);-webkit-mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+/* disabled / coming-soon: intentionally inactive, not broken */
+.option--soon{cursor:default;opacity:.6;background:var(--color-bg);border-style:dashed;box-shadow:none}
+.option--soon:hover{border-color:var(--color-line-strong);transform:none;box-shadow:none}
+.option .opt-soon{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-3);background:var(--color-bg-2);border:1px solid var(--color-line-strong);padding:3px 9px;border-radius:var(--radius-pill);flex:none}
+.common-group{display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+.common-group:first-of-type{padding-top:0;border-top:0}
+
+/* ---------- Badge / pill ---------- */
+/* One consistent badge: soft-filled pill, no borders/outlines. Tints stay in-palette. */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:4px 10px;border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2)}
+.badge--line{background:var(--color-bg-2);border:0;color:var(--color-ink-2)}
+.badge--warn{background:var(--color-blue-soft);color:var(--color-status-blue-ink)}
+
+/* brand-tinted avatar / thumb (icon circles) + colourful badge */
+.avatar svg{width:54%;height:54%}
+/* flat, clear, round icon tiles, no 3D gloss, no gradient, no heavy shadow */
+.avatar.avatar--brand,.thumb.thumb--brand{position:relative;overflow:hidden;display:grid;place-items:center;
+  border-radius:var(--radius-pill);color:var(--color-accent-ink);font-weight:var(--fw-semibold);
+  background:var(--color-accent-soft);border:1px solid color-mix(in srgb,var(--color-accent) 12%,transparent);
+  box-shadow:none}
+.avatar.avatar--brand::before,.thumb.thumb--brand::before{display:none}
+.avatar.avatar--brand svg,.thumb.thumb--brand svg{position:relative;width:54%;height:54%}
+.badge--ok{background:var(--color-accent-soft);color:var(--color-accent-ink)}
+
+
+/* ---------- Progress bar ---------- */
+.progress{height:4px;background:var(--color-bg-2);border-radius:var(--radius-pill);overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--color-accent);border-radius:inherit;transition:width var(--dur-page) var(--ease-out)}
+
+/* ---------- Five-stage care journey ---------- */
+/* ---------- Photo angle guide (hair loss intake) ----------
+   Fictional AI-generated reference photography demonstrates framing without
+   exposing any real patient's identity or health data. */
+.photo-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2);margin:0;padding:0;list-style:none}
+.photo-guide__item{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);padding:var(--sp-3) var(--sp-2);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface);text-align:center}
+/* Four consistent reference angles. If an asset is unavailable, the tile
+   falls back to a neutral photo slot with a camera glyph (.is-empty). */
+.photo-guide__figure{width:100%;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:var(--color-bg-2);color:var(--color-ink-3)}
+.photo-guide__img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-guide__figure.is-empty{position:relative}
+.photo-guide__figure.is-empty .photo-guide__img{display:none}
+.photo-guide__figure.is-empty::after{content:"";position:absolute;inset:0;background:no-repeat center/22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236E7076' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E")}
+.photo-guide__label{color:var(--color-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1.3}
+@media(max-width:420px){
+  .photo-guide{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Care journey: the whole service stays visible, from first question to medicine
+   arriving at home, so the patient can always see when they meet the doctor and
+   what is left. Short labels keep all five steps on one line in a phone frame. */
+.care-journey{padding:var(--sp-3) var(--sp-3);border-bottom:1px solid var(--color-line);background:var(--color-surface)}
+.care-journey[hidden]{display:none}
+.care-journey__current{display:none}
+.care-journey__steps{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none}
+.care-journey__step{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);min-width:0}
+/* connector runs behind the dots, between neighbours only */
+.care-journey__step::before{content:"";position:absolute;top:11px;right:50%;left:-50%;height:2px;background:var(--color-line)}
+.care-journey__step:first-child::before{display:none}
+.care-journey__step.is-done::before,.care-journey__step.is-current::before{background:var(--color-accent)}
+.care-journey__dot{position:relative;z-index:1;width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;box-shadow:none}
+.care-journey__dot svg{width:12px;height:12px}
+/* Reusable numbered/check step marker, same visual language as .care-journey__dot,
+   for step lists inside cards (pharmacy search, doctor matching) so the checkmark
+   style is consistent with the 5-step stagebar shown on the same screen. */
+.step-dot{width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:var(--radius-pill);
+  background:var(--color-bg-2);color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
+.step-dot svg{width:12px;height:12px}
+.step-dot.is-done{background:var(--color-accent);color:var(--color-on-accent)}
+.care-journey__name{width:100%;color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:normal}
+.care-journey__step.is-done .care-journey__dot{background:var(--color-accent);color:var(--color-on-accent)}
+.care-journey__step.is-done .care-journey__name{color:var(--color-ink-2)}
+.care-journey__step.is-current .care-journey__dot{background:var(--color-accent);color:var(--color-on-accent)}
+.care-journey__step.is-current .care-journey__name{color:var(--color-ink);font-weight:var(--fw-semibold)}
+@media(max-width:360px){
+  .care-journey{padding-inline:var(--sp-2)}
+  .care-journey__name{font-size:10px}
+}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- Divider / list row ---------- */
+.divider{height:1px;background:var(--color-line);margin:var(--sp-4) 0}
+/* Row rhythm rule: every divided row type (list-row, setting-row, notif) shares the
+   same vertical padding step (sp-4) so stacked lists read with one consistent beat. */
+.list-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) 0;min-height:56px}
+.list-row+.list-row{border-top:1px solid var(--color-line)}
+
+/* ---------- Checkout rows (Grab reference, client 20 Jul) ----------
+   A tappable row that states one decision: what you pay with, which promo
+   applies. The chevron is the only affordance, no coloured edges. */
+.checkout-row{width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:64px;padding:var(--sp-3) var(--sp-4);border:1px solid transparent;border-radius:var(--radius-lg);background:var(--color-bg-soft);color:var(--color-ink);text-align:left;cursor:pointer;transition:background var(--dur-base) var(--ease-out)}
+.checkout-row[hidden]{display:none}
+.checkout-row:hover{border-color:transparent;background:var(--color-bg-2)}
+.checkout-row+.checkout-row{margin-top:var(--sp-2)}
+.checkout-row__icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink-2)}
+.checkout-row__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.checkout-row__label{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
+.checkout-row__value{color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.checkout-row__value--wrap{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
+.checkout-row__chevron{flex:none;color:var(--color-ink-3)}
+.checkout-row__tag{flex:none;padding:2px var(--sp-2);border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+
+/* Price breakdown: quiet rows, one emphasised total */
+.checkout-bill{padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface)}
+.checkout-bill__row{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-block:var(--sp-2);color:var(--color-ink-2);font-size:var(--fs-sm)}
+.checkout-bill__row strong{color:var(--color-ink);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
+.checkout-bill__row--credit strong{color:var(--color-success)}
+.checkout-bill__rule{height:1px;margin-block:var(--sp-2);background:var(--color-line)}
+.checkout-bill__total{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-top:var(--sp-2)}
+.checkout-bill__total span{color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.checkout-bill__total strong{color:var(--color-ink);font-size:var(--fs-xl);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums}
+
+/* Grab-style itemised order summary on the checkout screen.
+   One card, a light header, then a line per prescribed item. */
+.checkout-order{border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);overflow:hidden}
+.checkout-order__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--color-line);background:var(--color-bg-soft)}
+.checkout-order__head .badge{flex:none;white-space:nowrap}
+.checkout-order__by{min-width:0}
+.checkout-order__by{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.checkout-order__count{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
+.checkout-order__item+.checkout-order__item{border-top:1px solid var(--color-line)}
+.checkout-order__thumb{width:44px;height:44px;flex:none;border-radius:var(--radius-md);background:var(--color-bg-2);display:grid;place-items:center;overflow:hidden}
+.checkout-order__thumb img{width:88%;height:88%;object-fit:contain;display:block}
+.checkout-order__qty{flex:none;min-width:26px;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2);font-variant-numeric:tabular-nums}
+.checkout-order__body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.checkout-order__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.checkout-order__note{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.4}
+.checkout-order__price{flex:none;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Footer pays: amount sits beside the action, as in the Grab reference */
+.checkout-pay{display:flex;align-items:center;gap:var(--sp-4)}
+.checkout-pay__amount{display:flex;flex-direction:column;gap:2px;flex:none}
+.checkout-pay__amount span{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
+.checkout-pay__amount strong{color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;line-height:1.1}
+.checkout-pay .btn{flex:1}
+@media(max-width:380px){.checkout-pay{flex-direction:column;align-items:stretch;gap:var(--sp-2)}.checkout-pay__amount{flex-direction:row;align-items:baseline;justify-content:space-between}}
+.checkout-addon__mark{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-bold);letter-spacing:-.02em}
+.checkout-addon[aria-selected="true"] .checkout-addon__mark{background:var(--color-surface)}
+.photo-graphic.payment-state-graphic{min-height:160px}
+/* rows at the edge of a padded card: no dead air against the card's own padding */
+.card>.list-row:first-child,.card .stack-3>.list-row:first-child{padding-top:0;min-height:0}
+.card>.list-row:last-child,.card .stack-3>.list-row:last-child{padding-bottom:0;min-height:0}
+
+/* ---------- Plan / price rows ---------- */
+.plan-item{display:flex;gap:var(--sp-3);padding:var(--sp-4) 0;border-bottom:1px solid var(--color-line)}
+.plan-item .thumb{width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-bg-2);flex:none;display:grid;place-items:center;overflow:hidden}
+.plan-item .thumb img{width:88%;height:88%;object-fit:contain;display:block}
+.price{flex:none;font-weight:var(--fw-semibold);white-space:nowrap;font-variant-numeric:tabular-nums}
+.plan-item .price{margin-left:auto}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;padding-top:var(--sp-4)}
+.total-row .amt{font-size:var(--fs-lg);font-weight:var(--fw-bold)}
+
+/* ---------- Skeleton block (placeholder imagery/avatars in lo-fi) ---------- */
+.skeleton{background:var(--color-bg-2);border-radius:var(--radius-md)}
+.avatar{width:44px;height:44px;border-radius:var(--radius-pill);background:var(--color-bg-2);flex:none;display:grid;place-items:center;color:var(--color-ink-3);font-weight:var(--fw-semibold)}
+
+/* ---------- Chat bubbles ---------- */
+/* the thread is a flex column so each bubble can sit left (doctor) or right (you) */
+.chat-body{display:flex;flex-direction:column;gap:var(--sp-3)}
+.chat-body .alert{align-self:stretch}
+.chat-body .bubble{margin-top:4px}
+.chat-body .bubble--lbl{margin-top:20px}
+.chat-body .bubble--out + .bubble--in,.chat-body .bubble--in + .bubble--out{margin-top:8px}
+/* Chat screens keep a real device height so the thread scrolls internally instead
+   of growing the whole card: the composer and this FAB then stay pinned in view. */
+.screen:has(.chat-body){height:852px;max-height:852px}
+/* Floating call button: sticks to the bottom of the scrolling thread, always
+   visible above the composer, instead of a header link that scrolls out of view. */
+.chat-fab{align-self:flex-end;position:sticky;bottom:var(--sp-3);width:52px;height:52px;border-radius:var(--radius-pill);border:0;background:var(--color-accent);color:var(--color-on-accent);display:grid;place-items:center;box-shadow:var(--shadow-lg);cursor:pointer;flex:none;z-index:2}
+.chat-fab:hover{background:var(--color-accent-hover)}
+.chat-fab:active{transform:scale(.96)}
+.bubble{max-width:80%;line-height:1.45;box-shadow:var(--shadow-sm);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);font-size:var(--fs-base);position:relative}
+/* doctor = white bubble, bordered, left */
+.bubble--in{background:var(--color-surface);color:var(--color-ink);border:1px solid var(--color-line-strong);border-bottom-left-radius:var(--radius-xs);align-self:flex-start}
+/* you = navy bubble, right */
+.bubble--out{background:var(--color-accent);color:var(--color-on-accent);border-bottom-right-radius:var(--radius-xs);align-self:flex-end}
+/* tiny sender label above the first bubble of a run */
+.bubble--lbl::before{content:attr(data-from);position:absolute;top:-16px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-3);letter-spacing:.02em}
+.bubble--in.bubble--lbl::before{left:4px}
+.bubble--out.bubble--lbl::before{right:4px}
+
+/* ---------- Review-answers rows: inline edit (pencil) per field ---------- */
+.kv-val{display:flex;width:100%;align-items:center;gap:var(--sp-2);min-width:0}
+.kv-edit{margin-left:auto;appearance:none;border:0;background:transparent;color:var(--color-ink-3);cursor:pointer;
+  display:inline-grid;place-items:center;width:30px;height:30px;border-radius:var(--radius-pill);flex:none;transition:background .15s,color .15s}
+.kv-edit:hover{background:var(--color-bg-2);color:var(--color-accent)}
+.kv-edit:focus-visible{outline:2px solid var(--color-accent);outline-offset:1px}
+
+/* ---------- Status timeline ---------- */
+/* Geometry: the dot column is 20px wide inside a 32px gutter, leaving a clear 11px
+   gap between dot and label (the old 24px gutter left only 3px; text hugged the dot). */
+.timeline{position:relative;padding-left:var(--sp-6)}
+.timeline .step{position:relative;padding-bottom:var(--sp-5)}
+.timeline .step:last-child{padding-bottom:0}
+.timeline .step .hint{margin-top:2px}
+/* connector runs dot-to-dot only (no tail above first / below last) */
+.timeline .step:not(:last-child)::after{content:"";position:absolute;left:calc(-1*var(--sp-6) + 10px);top:23px;bottom:2px;width:2px;background:var(--color-line)}
+.timeline .step.done:not(:last-child)::after{background:var(--color-accent)}
+.timeline .step::before{content:"";position:absolute;left:calc(-1*var(--sp-6) + 1px);top:1px;width:16px;height:16px;border-radius:var(--radius-pill);background:var(--color-surface);border:2px solid var(--color-line-strong)}
+/* done = filled navy with a white check */
+.timeline .step.done::before{background:var(--color-accent);border-color:var(--color-accent);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7'/></svg>");background-size:10px;background-position:center;background-repeat:no-repeat}
+/* active = navy ring with a filled centre + soft halo */
+.timeline .step.active::before{border-color:var(--color-accent);background:radial-gradient(circle, var(--color-accent) 0 3px, var(--color-surface) 3.5px);box-shadow:0 0 0 3px var(--color-accent-soft)}
+
+/* ---------- Educational interstitial (hims-style: big editorial copy + highlighted terms) ---------- */
+.edu-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--sp-5);padding-block:var(--sp-6)}
+.edu-text{font-size:clamp(21px,5.6vw,27px);line-height:1.34;font-weight:var(--fw-medium);color:var(--color-ink);letter-spacing:0}
+.hl{background:var(--color-accent-soft);border-radius:var(--radius-xs);padding:1px 7px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.edu-eyebrow{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-accent-ink)}
+
+/* ---------- Branded loader (dotted ring + serif mark) ---------- */
+/* Brand loader: the Krane K mark inside one quiet ring.
+   Previously three animated layers (two ripples plus an orbiting dot) competed for
+   attention. One rotating arc on a hairline track reads calmer and states the same
+   thing: something is working. */
+.brandloader{position:relative;width:var(--loader-size);height:var(--loader-size);
+  margin:var(--sp-6) auto var(--sp-3);display:grid;place-items:center}
+.brandloader::after{content:"";position:absolute;inset:0;border-radius:var(--radius-pill);
+  border:var(--loader-track) solid var(--color-line);border-top-color:var(--color-accent);
+  animation:spin 1.1s linear infinite}
+.brandloader .bl-mark{position:relative;z-index:1;display:block;width:44%;color:var(--color-accent)}
+.brandloader .bl-mark svg{display:block;width:100%;height:auto;fill:currentColor}
+@media(prefers-reduced-motion:reduce){.brandloader::after{animation:none}}
+
+/* placeholder loader (simple ring), final loader TBD */
+.loader-ring{width:54px;height:54px;border-radius:var(--radius-pill);border:3px solid var(--color-line);border-top-color:var(--color-accent);animation:spin 1s linear infinite;margin:var(--sp-6) auto var(--sp-3)}
+@media(prefers-reduced-motion:reduce){.loader-ring{animation:none}}
+
+/* glossy capsule loader (preparing medicine / matching) */
+.pillloader{position:relative;width:128px;height:140px;margin:var(--sp-6) auto var(--sp-3);display:grid;place-items:center}
+.pillloader .pill-bob{animation:pill-bounce 1.3s ease-in-out infinite}
+.pillloader .pill{position:relative;width:42px;height:108px;border-radius:var(--radius-pill);overflow:hidden;animation:pill-tilt 3s ease-in-out infinite;
+  box-shadow:0 12px 20px rgba(22,34,31,.16),inset 0 0 0 1px rgba(255,255,255,.22)}
+.pillloader .pill-cap{position:absolute;left:0;right:0;height:50%}
+.pillloader .pill-cap--top{top:0;background:linear-gradient(160deg,var(--color-pill-light),var(--color-pill-mid))}
+.pillloader .pill-cap--bot{bottom:0;background:linear-gradient(160deg,var(--color-pill-dark),var(--color-accent))}
+.pillloader .pill::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;transform:translateY(-1px);background:rgba(255,255,255,.16)}
+.pillloader .pill-gloss{position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,rgba(255,255,255,.6) 50%,transparent 64%);animation:pill-sheen 2.2s ease-in-out infinite}
+.pillloader .pill-shadow{position:absolute;bottom:10px;width:54px;height:11px;border-radius:var(--radius-pill);background:rgba(22,34,31,.2);filter:blur(3px);animation:pill-shadow 1.3s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.pillloader .pill-bob,.pillloader .pill,.pillloader .pill-gloss,.pillloader .pill-shadow{animation:none}}
+
+/* ---------- Waiting / processing state ---------- */
+.spinner{width:48px;height:48px;border-radius:var(--radius-pill);border:3px solid var(--color-line-strong);border-top-color:var(--color-accent);animation:spin .85s linear infinite}
+
+/* ---------- Photo-led editorial and system-state art ---------- */
+.photo-graphic{position:relative;isolation:isolate;width:100%;min-height:var(--graphic-state-height);overflow:hidden;border:0;border-radius:var(--radius-xl);background:var(--color-accent-soft-2);box-shadow:none;display:grid;place-items:center}
+.photo-graphic__photo{display:none}
+.photo-graphic::before{content:"";position:absolute;width:88px;height:88px;border-radius:var(--radius-pill);background:var(--color-surface);opacity:.72;animation:icon-state-breathe var(--dur-ambient) var(--ease-inout) infinite}
+.photo-graphic::after{content:none}
+.photo-graphic--warm{background:var(--color-graphic-warm)}
+.photo-graphic--warm::after{background:var(--color-graphic-warm)}
+.photo-graphic--success{background:var(--color-graphic-success)}
+.photo-graphic--success::after{background:var(--color-success)}
+.photo-graphic--danger{background:var(--color-graphic-danger)}
+.photo-graphic--danger::after{background:var(--color-danger)}
+.photo-graphic--article{min-height:0;aspect-ratio:var(--graphic-article-ratio);border:0;border-radius:0;box-shadow:none}
+.photo-graphic__signal{position:relative;z-index:3;width:64px;height:64px;display:grid;place-items:center;border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-accent-ink);box-shadow:none}
+.photo-graphic__signal .ui-icon{width:32px;height:32px}
+.photo-graphic--article .photo-graphic__signal{width:48px;height:48px}
+/* Order-confirmation K mark: no background panel, brand colour only. */
+.confirm-mark{display:block;width:88px;margin:var(--sp-4) auto;color:var(--color-accent)}
+.confirm-mark svg{display:block;width:100%;height:auto;fill:currentColor}
+.photo-graphic--article .photo-graphic__signal .ui-icon{width:24px;height:24px}
+.photo-graphic--success .photo-graphic__signal{background:var(--color-success);color:var(--color-on-dark)}
+.photo-graphic--danger .photo-graphic__signal{background:var(--color-danger);color:var(--color-on-dark)}
+.photo-graphic--loading .photo-graphic__signal::after{content:"";position:absolute;inset:calc(-1 * var(--sp-2));border:1px solid var(--color-accent);border-radius:var(--radius-pill);animation:graphic-pulse var(--dur-ambient) var(--ease-out) infinite}
+.photo-graphic--loading .photo-graphic__signal .ui-icon{animation:icon-state-float var(--dur-slow) var(--ease-inout) infinite alternate}
+.photo-graphic--success .photo-graphic__signal .ui-icon{animation:check-pop var(--dur-base) var(--ease-out) both}
+.photo-graphic--danger .photo-graphic__signal .ui-icon{animation:icon-state-nudge var(--dur-page) var(--ease-inout) both}
+@keyframes icon-state-breathe{0%,100%{transform:scale(.94);opacity:.58}50%{transform:scale(1.06);opacity:.82}}
+@keyframes icon-state-float{from{transform:translateY(2px)}to{transform:translateY(-3px)}}
+@keyframes icon-state-nudge{0%,100%{transform:none}35%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
+@keyframes graphic-pulse{0%{transform:scale(.78);opacity:.72}100%{transform:scale(1.34);opacity:0}}
+
+.article-feed{display:flex;flex-direction:column;gap:var(--sp-3)}
+.article-teaser{appearance:none;width:100%;display:grid;grid-template-columns:1fr;overflow:hidden;padding:0;border:1px solid var(--color-line);border-radius:var(--radius-xl);background:var(--color-surface);color:var(--color-ink);text-align:left;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.article-teaser:hover{transform:translateY(calc(-1 * var(--border-width)));border-color:var(--color-line-strong);box-shadow:var(--shadow-md)}
+.article-teaser:focus-visible{outline:var(--focus-ring-size) solid var(--color-accent);outline-offset:var(--focus-ring-offset)}
+.article-teaser__body{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4)}
+.article-teaser__meta{color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.article-teaser__title{font-size:var(--fs-md);font-weight:var(--fw-semibold);line-height:var(--lh-snug)}
+.article-teaser__summary{color:var(--color-ink-3);font-size:var(--fs-sm);line-height:var(--lh-body)}
+.article-teaser__action{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:auto;color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.article-teaser--compact{grid-template-columns:var(--graphic-article-thumb) minmax(0,1fr)}
+.article-teaser--compact .photo-graphic{height:100%;min-height:var(--graphic-article-thumb);aspect-ratio:auto}
+.article-teaser--compact .article-teaser__body{padding:var(--sp-3)}
+.article-hero{display:flex;flex-direction:column;gap:var(--sp-3)}
+
+@media(prefers-reduced-motion:reduce){.photo-graphic::before,.photo-graphic__signal .ui-icon,.photo-graphic--loading .photo-graphic__signal::after,.entry-visual::before,.entry-visual__icon{animation:none;opacity:.7}.article-teaser{transition:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pill-bounce{0%,100%{transform:translateY(-11px)}50%{transform:translateY(8px)}}
+@keyframes pill-tilt{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes pill-sheen{0%{transform:translateX(-75%)}55%,100%{transform:translateX(75%)}}
+@keyframes pill-shadow{0%,100%{transform:scale(.72);opacity:.14}50%{transform:scale(1.02);opacity:.26}}
+
+/* ---------- Waiting-room pulse (being admitted to the consultation room) ---------- */
+.waitpulse{position:relative;width:140px;height:140px;margin:var(--sp-5) auto var(--sp-2);display:grid;place-items:center}
+.waitpulse .wp-ring{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:var(--radius-pill);background:var(--color-accent-soft);animation:wp 2.4s var(--ease,ease-out) infinite}
+.waitpulse .wp-ring--2{animation-delay:1.2s}
+@keyframes wp{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
+.waitpulse .avatar{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){.waitpulse .wp-ring{animation:none;opacity:.4}}
+
+/* ============================================================
+   MOBILE APP FRAME + NAV (prototype chrome)
+   ============================================================ */
+.screen{
+  width:100%;max-width:var(--mobile-frame);min-width:0;min-height:760px;margin:0 auto;
+  background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--radius-2xl);
+  box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;position:relative;
+  container-type:inline-size;container-name:screen;   /* enables @container layout below */
+}
+
+/* Desktop review adapts automatically: web screens use the available stage,
+   while clinical forms remain a focused, phone-width column. */
+@media(min-width:781px){
+  .stage .screen--web{max-width:min(var(--desktop-frame),100%)}
+  .stage .screen:not(.screen--web){max-width:var(--form-frame)}
+}
+
+/* roomier padding for true web layouts once the frame is wide */
+@container screen (min-width:720px){
+  .screen--web .screen__body{padding:var(--sp-6) var(--sp-7)}
+  .screen--web .screen__top,.screen--web .screen__footer{padding-left:var(--sp-7);padding-right:var(--sp-7)}
+  /* CTA shouldn't span the whole desktop width, contain + right-align it */
+  .screen--web .screen__footer{display:flex;justify-content:flex-end;gap:var(--sp-3)}
+  .screen--web .screen__footer .btn{width:auto;min-width:220px}
+}
+
+/* Reusable web layout helpers (1-col -> multi-col as the frame widens) */
+.web-hero{display:grid;gap:var(--sp-5)}
+.web-cols-2{display:grid;gap:var(--sp-4)}
+@container screen (min-width:720px){
+  .web-cols-2{grid-template-columns:1fr 1fr;gap:var(--sp-5);align-items:start}
+  .web-span-2{grid-column:1 / -1}
+}
+@container screen (min-width:880px){
+  .web-hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:var(--sp-7)}
+}
+
+.screen__top{
+  display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4);
+  position:relative;width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);min-height:56px;flex:none;
+  background:color-mix(in srgb,var(--color-surface) 88%,transparent);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+}
+.screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line);background:var(--color-surface);cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
+.screen__top .back .bk-lbl{display:none}
+.screen__top .ttl{min-width:0;font-weight:var(--fw-semibold);font-size:var(--fs-base);overflow-wrap:anywhere}
+.screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* Per-question progress lifted out of the top bar to sit under the main
+   care stepper on questionnaire screens. Same row layout the top bar used. */
+.screen__subprogress{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);flex:none}
+.screen__subprogress .hint{flex:none;white-space:nowrap}
+/* min-height:0 overrides the flex default of "at least as tall as my content",
+   which otherwise stops this from shrinking/scrolling inside a height-bound
+   .screen (see .screen:has(.chat-body)) and pushes the footer off-frame instead. */
+.screen__body{width:100%;min-width:0;max-width:100%;min-height:0;flex:1;overflow-x:hidden;overflow-y:auto;padding:var(--sp-5) var(--sp-4)}
+.screen__body>*{min-width:0;max-width:100%}
+.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.screen__footer>.btn:not(.btn--ghost):not(.btn--sm){width:100%;align-self:stretch}
+.screen__body>.screen__footer{width:calc(100% + (var(--sp-4) * 2));max-width:none;margin-left:calc(var(--sp-4) * -1)}
+.screen__footer.stack-2{text-align:center}
+.screen__footer.stack-2>.btn--ghost{margin-left:auto;margin-right:auto;text-align:center}
+.screen__footer.stack-2>.hint{max-width:34ch;margin-left:auto;margin-right:auto}
+
+.action-toast{position:absolute;left:50%;bottom:88px;z-index:20;transform:translate(-50%,12px);max-width:calc(100% - 32px);display:flex;align-items:center;gap:var(--sp-2);padding:10px 14px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-size:var(--fs-sm);font-weight:var(--fw-medium);text-align:left;opacity:0;pointer-events:none;transition:opacity var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out);box-shadow:var(--shadow-md)}
+.action-toast.is-visible{opacity:1;transform:translate(-50%,0)}
+.action-toast__icon{width:24px;height:24px;display:grid;place-items:center;flex:none;border-radius:var(--radius-xs);background:rgba(255,255,255,.14);color:inherit}
+.action-toast__icon .ui-icon{width:15px;height:15px;stroke-width:2}
+.action-toast--info{background:var(--btn-primary-bg);color:var(--btn-primary-ink)}
+.action-toast--success{background:var(--btn-primary-bg);color:var(--btn-primary-ink)}
+.action-toast--warning{background:var(--color-warning-soft);border-color:color-mix(in srgb,var(--color-warning) 24%,transparent);color:var(--color-ink-strong)}
+.action-toast--danger{background:var(--color-danger-soft);border-color:color-mix(in srgb,var(--color-danger) 24%,transparent);color:var(--color-ink-strong)}
+.action-toast--success .action-toast__icon{background:color-mix(in srgb,var(--color-accent) 22%,rgba(255,255,255,.12));color:var(--color-brand-teal-mid)}
+.action-toast--info .action-toast__icon{background:rgba(255,255,255,.14);color:var(--color-powder)}
+.action-toast--warning .action-toast__icon{background:rgba(133,96,28,.12);color:var(--color-warning)}
+.action-toast--danger .action-toast__icon{background:rgba(147,69,58,.12);color:var(--color-danger)}
+
+/* bottom nav (Profile / Activities / Notifications / Settings) */
+.bottomnav{position:absolute;left:var(--sp-4);right:var(--sp-4);bottom:var(--sp-4);z-index:5;
+  display:flex;gap:4px;padding:4px;border-radius:var(--radius-lg);overflow:hidden;
+  background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.74);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  box-shadow:0 12px 30px rgba(17,19,24,.12)}
+.screen:has(.bottomnav) .screen__body{padding-bottom:104px}
+.bottomnav a{flex:1;min-width:0;text-align:center;padding:8px 4px 7px;border-radius:var(--radius-sm);color:var(--color-ink-3);font-size:11px;text-decoration:none;font-weight:var(--fw-medium);display:flex;flex-direction:column;align-items:center;gap:3px}
+.bottomnav a .ic{width:24px;height:24px;display:grid;place-items:center}
+.bottomnav a svg{width:21px;height:21px}
+.bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
+/* Active state fills the complete tab, rather than a small pill behind the icon. */
+.bottomnav a{transition:color var(--dur-micro) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.bottomnav a[aria-current="page"]{background:var(--color-blue-soft);color:var(--color-blue);font-weight:var(--fw-semibold)}
+/* motion: the active icon pops with a spring each time you land on the tab */
+.screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:check-pop var(--dur-base) var(--ease-spring)}
+@media(prefers-reduced-motion:reduce){
+  .bottomnav a{transition:none}
+  .screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:none}
+}
+
+
+/* legacy text fallback; product screens use the official vector logo */
+.brandmark{width:32px;height:32px;border-radius:var(--radius-md);background:var(--color-accent);color:var(--color-on-accent);display:grid;place-items:center;font-weight:var(--fw-bold)}
+.brandwordmark{font-family:var(--font-display);font-weight:var(--fw-bold);letter-spacing:var(--tracking-tight);text-transform:lowercase;font-size:var(--fs-lg);line-height:1}
+
+/* ============================================================
+   ADDED COMPONENTS, consult call, rating, settings, alerts
+   (still 100% token-driven; re-skin via design-tokens.css)
+   ============================================================ */
+
+/* ---------- Live call (video / voice) ---------- */
+/* full-bleed dark stage; screen__body gets .callstage modifier */
+.callstage{background-image:url("assets/graphic-noise.svg"),var(--gradient-teal);background-size:180px 180px,cover;background-blend-mode:soft-light,normal;color:var(--color-on-dark);padding:0;position:relative;display:flex;flex-direction:column}
+.callstage .call-remote{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-3);text-align:center;padding:var(--sp-6) var(--sp-4)}
+.callstage .call-avatar{width:104px;height:104px;border-radius:var(--radius-pill);background:var(--color-ink-2);display:grid;place-items:center;color:var(--color-on-dark);font-size:32px;font-weight:var(--fw-semibold)}
+.callstage .call-name{font-size:var(--fs-lg);font-weight:var(--fw-semibold)}
+.callstage .call-status{font-size:var(--fs-sm);color:var(--color-line-strong);opacity:.85}
+/* picture-in-picture self tile (video only) */
+.call-self{position:absolute;top:var(--sp-4);right:var(--sp-4);width:84px;height:116px;border-radius:var(--radius-md);background:var(--color-ink);border:1px solid var(--color-ink-2);display:grid;place-items:center;color:var(--color-ink-3);font-size:var(--fs-xs)}
+.call-self[hidden]{display:none}
+/* control dock */
+.call-controls{display:flex;justify-content:center;gap:var(--sp-4);padding:var(--sp-5) var(--sp-4) var(--sp-6)}
+.call-btn{width:var(--control-h-lg);height:var(--control-h-lg);border-radius:var(--radius-pill);border:1px solid var(--color-ink-2);background:rgba(255,255,255,.10);color:var(--color-on-dark);display:grid;place-items:center;cursor:pointer;font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.call-btn:hover{background:rgba(255,255,255,.18)}
+.call-btn--end{background:var(--color-danger);border-color:var(--color-danger)}
+.call-btn--end:hover{background:var(--color-danger);filter:brightness(1.1)}
+.call-btn .lbl{display:none}
+/* Floating chat entry during a live call. Deliberately NOT a .call-btn: the
+   control row is call hardware, this leaves the call running and opens chat
+   (the chat screen then shows .callbar to come back). */
+.call-fab{position:absolute;right:var(--sp-4);bottom:calc(var(--control-h-lg) + var(--sp-8));z-index:2;
+  width:var(--control-h);height:var(--control-h);display:grid;place-items:center;
+  border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.16);
+  color:var(--color-on-dark);cursor:pointer;
+  -webkit-backdrop-filter:blur(var(--blur-sm));backdrop-filter:blur(var(--blur-sm));box-shadow:var(--shadow-md);
+  transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.call-fab:hover{background:rgba(255,255,255,.26);transform:translateY(-1px)}
+.call-fab[hidden]{display:none}
+
+/* ---------- Rating (stars) ---------- */
+.rating-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) 0}
+.rating-row+.rating-row{border-top:1px solid var(--color-line)}
+.rating{display:inline-flex;gap:var(--sp-1)}
+.star{width:30px;height:30px;border:0;background:transparent;cursor:pointer;color:var(--color-line-strong);font-size:24px;line-height:1;padding:0}
+.star.on{color:var(--color-accent)}
+
+/* ---------- Toggle switch ---------- */
+.switch{position:relative;width:44px;height:26px;flex:none;display:inline-block}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.switch .track{position:absolute;inset:0;background:var(--color-line-strong);border-radius:var(--radius-pill);transition:background var(--dur-micro) var(--ease-out)}
+.switch .thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:var(--radius-pill);background:var(--color-surface);transition:transform var(--dur-base) var(--ease-spring);box-shadow:var(--shadow-sm)}
+.switch input:checked+.track{background:var(--color-accent)}
+.switch input:checked+.track+.thumb{transform:translateX(18px)}
+.switch input:disabled{cursor:not-allowed}
+.switch:has(input:disabled){opacity:.5}
+
+/* ---------- Checkbox (consent / opt-in), matches accent, no native blue ---------- */
+.check{position:relative;width:var(--selection-size);height:var(--selection-size);flex:none;display:inline-grid;place-items:center}
+.check input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.check .box{width:var(--selection-size);height:var(--selection-size);border-radius:var(--selection-radius);border:var(--selection-border-width) solid var(--color-line-strong);background:var(--color-surface);display:grid;place-items:center;transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+.check input:checked+.box{background:var(--color-accent);border-color:var(--color-accent)}
+/* Checkmark uses the Lucide "check" glyph as a mask, so it is crisp and
+   optically centered instead of the hand-rotated CSS border (which read skewed). */
+.check input:checked+.box::after{content:"";width:66%;height:66%;background:var(--color-on-accent);-webkit-mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+.check input:focus-visible+.box{outline:2px solid var(--color-accent);outline-offset:2px}
+.check input:disabled{cursor:not-allowed}
+.check input:disabled+.box{background:var(--color-bg-2);border-color:var(--color-line);opacity:.72}
+.check input:disabled:checked+.box{background:var(--color-ink-3);border-color:var(--color-ink-3)}
+
+/* ---------- Radio (single choice within a visible set) ---------- */
+.radio{position:relative;width:var(--selection-size);height:var(--selection-size);flex:none;display:inline-grid;place-items:center}
+.radio input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.radio .dot{width:var(--selection-size);height:var(--selection-size);border-radius:var(--radius-pill);border:var(--selection-border-width) solid var(--color-line-strong);background:var(--color-surface);display:grid;place-items:center;transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
+.radio input:checked+.dot{border-color:var(--color-accent)}
+.radio input:checked+.dot::after{content:"";width:10px;height:10px;border-radius:var(--radius-pill);background:var(--color-accent);animation:check-pop var(--dur-base) var(--ease-spring)}
+.radio input:focus-visible+.dot{outline:2px solid var(--color-accent);outline-offset:2px}
+.radio input:disabled{cursor:not-allowed}
+.radio input:disabled+.dot{background:var(--color-bg-2);border-color:var(--color-line);opacity:.72}
+.radio input:disabled:checked+.dot::after{background:var(--color-ink-3)}
+
+/* ---------- Currency (keeps ฿ from touching the figure) ---------- */
+.thb::after{content:"\2009"}
+
+/* ---------- Settings / nav list rows ---------- */
+.setting-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) 0;cursor:pointer}
+.setting-row+.setting-row{border-top:1px solid var(--color-line)}
+.setting-row .ic{position:relative;overflow:hidden;width:38px;height:38px;border-radius:var(--radius-sm);flex:none;display:grid;place-items:center;color:var(--color-accent-ink);background:var(--color-accent-soft);border:1px solid color-mix(in srgb,var(--color-accent) 12%,transparent);box-shadow:none}
+.setting-row .ic::before{display:none}
+.setting-row .ic svg{position:relative}
+.setting-row .ic svg{width:19px;height:19px}
+.setting-row .grow{min-width:0}
+.setting-row .chev{color:var(--color-ink-3);margin-left:auto}
+.section-label{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.08em;text-transform:uppercase;color:var(--color-ink-3);margin-bottom:var(--sp-1)}
+
+/* ---------- Notification row ---------- */
+.notif{display:flex;gap:var(--sp-3);padding:var(--sp-4) 0;cursor:pointer}
+.notif+.notif{border-top:1px solid var(--color-line)}
+.notif .ic{position:relative;overflow:hidden;width:40px;height:40px;border-radius:var(--radius-sm);flex:none;display:grid;place-items:center;color:var(--color-accent-ink);background:var(--color-accent-soft);border:1px solid color-mix(in srgb,var(--color-accent) 12%,transparent);box-shadow:none}
+.notif .ic::before{display:none}
+.notif .ic svg{position:relative}
+.notif .ic svg{width:20px;height:20px}
+.notif .grow{min-width:0}
+.notif .n-time{font-size:var(--fs-xs);color:var(--color-ink-3);white-space:nowrap}
+.notif--unread .ic{box-shadow:0 0 0 3px var(--color-accent-soft)}
+.notif--unread .n-title{font-weight:var(--fw-semibold)}
+.dot{width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-accent);flex:none}
+
+/* ---------- Order cards (multiple active / past / needs action) ---------- */
+/* Status lives in the badge + status row, NOT a coloured left bar (see DESIGN.md anti-patterns). */
+.order-card{display:flex;flex-direction:column;gap:var(--sp-3);cursor:pointer}
+.order-card:hover{border-color:var(--color-line-strong);box-shadow:var(--shadow-md)}
+.order-card .order-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+.order-card .order-id{font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--color-ink-3);font-weight:var(--fw-semibold)}
+.order-card .order-title{font-weight:var(--fw-semibold);line-height:var(--lh-tight)}
+.order-card .order-meta{display:flex;flex-wrap:wrap;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--color-ink-3)}
+.order-card .order-status{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--color-ink-2)}
+.order-card .status-dot{width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-accent);flex:none}
+.order-card--action .status-dot{background:var(--color-warning)}
+.order-card--past{box-shadow:none}
+.order-card--past .status-dot{background:var(--color-line-strong)}
+
+/* Active-treatment actions: one clear next step, then equal secondary paths. */
+.treatment-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-2)}
+.treatment-actions__primary{grid-column:1 / -1}
+.treatment-actions .btn{width:100%;min-width:0;padding-inline:var(--sp-3)}
+
+/* ---------- Alert / inline banner (edge states) ---------- */
+.alert{display:flex;gap:var(--sp-3);padding:var(--sp-4);border-radius:var(--radius-md);border:1px solid transparent;background:var(--color-bg-2)}
+.alert[hidden]{display:none}
+.alert .a-ic{width:28px;height:28px;border-radius:var(--radius-pill);flex:none;display:grid;place-items:center;color:var(--color-on-dark);font-weight:var(--fw-bold);font-size:var(--fs-sm)}
+.alert:not(.alert--danger):not(.alert--warning):not(.alert--success) .a-ic{background:var(--color-info)}
+.alert--danger{border-color:var(--color-danger);background:color-mix(in srgb,var(--color-danger) 8%,var(--color-surface))}
+.alert--danger .a-ic{background:var(--color-danger)}
+.alert--warning{border-color:transparent;background:color-mix(in srgb,var(--color-warning) 10%,var(--color-surface))}
+.alert--warning .a-ic{background:var(--color-warning)}
+.alert--success{border-color:var(--color-success);background:color-mix(in srgb,var(--color-success) 9%,var(--color-surface))}
+.alert--success .a-ic{background:var(--color-success)}
+.alert .a-title{font-weight:var(--fw-semibold)}
+
+/* ---------- Modal / continuity guard ---------- */
+.modal-layer{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:var(--sp-5)}
+.modal-layer[hidden]{display:none}
+.modal-layer__scrim{position:absolute;inset:0;padding:0;border:0;background:rgba(7,33,31,.58);cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:fade-in var(--dur-base) var(--ease-out) both}
+.modal-dialog{position:relative;width:min(440px,100%);padding:var(--sp-6);border:1px solid var(--color-glass-border);border-radius:var(--radius-xl);background:var(--color-glass-strong);box-shadow:var(--shadow-lg);animation:modal-in var(--dur-page) var(--ease-out) both}
+.modal-dialog__icon{width:48px;height:48px;display:grid;place-items:center;margin-bottom:var(--sp-4);border-radius:var(--radius-md);background:var(--color-info-soft);color:var(--color-info)}
+.modal-dialog__icon .ui-icon{width:24px;height:24px}
+.modal-dialog h2{margin:0;font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-semibold);line-height:1.3}
+.modal-dialog p{margin:var(--sp-3) 0 0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.65}
+.modal-dialog__case{margin-top:var(--sp-4);padding:var(--sp-3);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-bg-soft)}
+.modal-dialog__case strong,.modal-dialog__case span{display:block}
+.modal-dialog__case span{margin-top:2px;color:var(--color-ink-3);font-size:var(--fs-xs)}
+.modal-dialog__actions{display:flex;justify-content:flex-end;gap:var(--sp-2);margin-top:var(--sp-5)}
+.modal-dialog__actions .btn{width:auto}
+body.modal-open{overflow:hidden}
+@keyframes modal-in{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.payment-method-dialog{width:min(440px,100%)}
+.payment-method-list{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-5)}
+.payment-method-option{min-height:var(--control-h-lg)}
+.payment-method-option .opt-icon{background:var(--color-surface);border:0}
+.payment-method-option[aria-selected="true"] .opt-check{display:grid}
+@media(max-width:36rem){
+  .modal-layer{align-items:end;padding:0}
+  .payment-method-dialog{width:100%;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:var(--sp-5)}
+  .payment-method-dialog .modal-dialog__actions{display:grid;grid-template-columns:1fr 1fr}
+  .payment-method-dialog .modal-dialog__actions .btn{width:100%}
+}
+
+/* PDPA review: concise consent stays in the care form; the full notice is read here. */
+.consent-review{border-color:color-mix(in srgb,var(--color-accent) 26%,var(--color-line));background:color-mix(in srgb,var(--color-accent) 5%,var(--color-surface))}
+.consent-review__head{align-items:flex-start}
+.consent-review__head .a-ic{flex:0 0 auto}
+.consent-review__read{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-accent-strong);font:inherit;font-weight:var(--fw-semibold);text-align:left;cursor:pointer}
+.consent-review__read:hover{border-color:var(--color-accent)}
+.consent-review__check{align-items:flex-start;padding-top:var(--sp-2)}
+.consent-review__check{cursor:pointer}
+.consent-review__check.is-locked{opacity:.78}
+.consent-review__check .hint{display:block;margin-top:4px}
+.pdpa-dialog{width:min(620px,100%);max-height:min(820px,calc(100dvh - 40px));display:flex;flex-direction:column;padding:0;overflow:hidden}
+.pdpa-dialog__header{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-5) var(--sp-5) var(--sp-4)}
+.pdpa-dialog__header .modal-dialog__icon{flex:0 0 auto;margin:0}
+.pdpa-dialog__header p{margin-top:4px}
+.pdpa-dialog__scroll{min-height:220px;max-height:460px;overflow-y:auto;padding:var(--sp-4) var(--sp-5);border-block:1px solid var(--color-line);background:var(--color-bg-soft);scrollbar-gutter:stable}
+.pdpa-dialog__scroll:focus-visible{outline:3px solid color-mix(in srgb,var(--color-accent) 30%,transparent);outline-offset:-3px}
+.pdpa-dialog__scroll section+section{margin-top:var(--sp-5)}
+.pdpa-dialog__scroll h3{margin:0;font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.pdpa-dialog__scroll p{margin-top:var(--sp-2)}
+.pdpa-dialog__end{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin-top:var(--sp-6);padding:var(--sp-4);border-radius:var(--radius-md);background:var(--color-success-soft);color:var(--color-success);font-weight:var(--fw-semibold)}
+.pdpa-dialog__status{margin:0!important;padding:var(--sp-3) var(--sp-5) 0;font-size:var(--fs-xs)!important}
+.pdpa-dialog .modal-dialog__actions{padding:0 var(--sp-5) var(--sp-5)}
+@media(max-width:640px){
+  .modal-layer{align-items:end;padding:0}
+  .pdpa-dialog{width:100%;max-height:92dvh;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
+  .pdpa-dialog__header{padding:var(--sp-4)}
+  .pdpa-dialog__scroll{max-height:52dvh;padding:var(--sp-4)}
+  .pdpa-dialog__status{padding-inline:var(--sp-4)}
+  .pdpa-dialog .modal-dialog__actions{display:grid;grid-template-columns:1fr;padding:0 var(--sp-4) var(--sp-4)}
+  .pdpa-dialog .modal-dialog__actions .btn{width:100%}
+}
+
+/* ---------- Onboarding pagination dots ---------- */
+.dots{display:flex;gap:var(--sp-2);justify-content:center}
+.dots .d{width:7px;height:7px;border-radius:var(--radius-pill);background:var(--color-line-strong);transition:width .2s,background .2s}
+.dots .d.on{width:22px;background:var(--color-accent)}
+
+/* ---------- Empty state ---------- */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3);padding:var(--sp-7) var(--sp-4)}
+.empty .e-art{width:72px;height:72px;border-radius:var(--radius-lg);background:var(--gradient-teal-soft);border:1px solid var(--color-line);box-shadow:var(--shadow-sm);display:grid;place-items:center;color:var(--color-accent);font-size:28px}
+
+/* ---------- Map picker (Grab-style address: drop a pin) ---------- */
+.map{position:relative;width:100%;height:172px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--color-line);
+  background:
+    repeating-linear-gradient(0deg,transparent 0 23px,color-mix(in srgb,var(--color-ink-3) 12%,transparent) 23px 24px),
+    repeating-linear-gradient(90deg,transparent 0 23px,color-mix(in srgb,var(--color-ink-3) 12%,transparent) 23px 24px),
+    radial-gradient(120% 90% at 30% 20%,var(--color-accent-soft-2),var(--color-bg-2));
+}
+.map .road{position:absolute;background:var(--color-surface);box-shadow:0 0 0 1px var(--color-line)}
+.map .road--h{left:0;right:0;height:14px;top:54%}
+.map .road--v{top:0;bottom:0;width:14px;left:38%}
+.map .map-frame{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:0;display:block}
+.map .map-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);z-index:2;color:var(--color-accent);filter:drop-shadow(0 4px 4px rgba(22,34,31,.28));pointer-events:none}
+.map .map-dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:var(--radius-pill);background:var(--color-accent);opacity:.18;z-index:1;pointer-events:none}
+.map--lg{height:210px}
+.map .map-cta{position:absolute;left:50%;transform:translateX(-50%);bottom:var(--sp-3);z-index:3;display:inline-flex;align-items:center;gap:6px;
+  background:var(--color-surface);border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);
+  padding:9px 16px;font-family:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);box-shadow:var(--shadow-md);cursor:pointer;white-space:nowrap}
+
+/* ---------- Map as a text-link toggle (collapsed by default; opens to drag/pin) ---------- */
+.map-toggle{display:block}
+.map-toggle>summary{list-style:none;display:flex;width:fit-content;margin-inline:auto;align-items:center;justify-content:center;gap:7px;cursor:pointer;color:var(--color-accent-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold);padding:4px 8px;outline:none}
+.map-toggle>summary:focus{outline:none}
+.map-toggle>summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:var(--radius-sm)}
+.map-toggle>summary::-webkit-details-marker{display:none}
+.map-toggle>summary .chev{font-size:11px;transition:transform .2s}
+.map-toggle[open]>summary .chev{transform:rotate(180deg)}
+.map-toggle .map{margin-top:var(--sp-3)}
+/* text links always centre on the page */
+.textlink{display:flex;width:fit-content;margin-inline:auto;align-items:center;justify-content:center;gap:6px;color:var(--color-accent-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;text-decoration:none;background:none;border:0;padding:4px 0}
+
+/* summary key/value: stack label over value (clean on mobile, no cramping) */
+.kv-list>*+*{margin-top:0}
+.kv-list .between{flex-direction:column;align-items:flex-start;gap:2px}
+.kv-list .between{padding:var(--sp-1) 0}
+.kv-list .between>strong{text-align:left}
+.kv-list .divider{width:100%;flex:none;display:block}
+.summary-photo-thumb{width:40px;height:40px;flex:none;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;border:1px solid var(--color-line);background:var(--color-bg-2)}
+.summary-photo-thumb[hidden]{display:none}
+.summary-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- Address autocomplete suggestions ---------- */
+.autocomplete{border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.ac-item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);cursor:pointer;border-bottom:1px solid var(--color-line)}
+.ac-item:last-child{border-bottom:0}
+.ac-item:hover,.ac-item[aria-selected="true"]{background:var(--color-accent-soft-2)}
+.ac-item .ac-ic{flex:none;color:var(--color-accent-ink);margin-top:1px}
+.ac-item .ac-name{font-weight:var(--fw-semibold);font-size:var(--fs-sm)}
+.ac-item .ac-sub{font-size:var(--fs-xs);color:var(--color-ink-3)}
+
+/* ---------- Hosted payment gateway chrome (third-party look, e.g. KBank) ---------- */
+.gateway{border:1px solid var(--color-line-strong);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.gw-head{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4);background:var(--color-bank-kbank-ink);color:var(--color-on-dark)}
+.gw-logo{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--color-on-dark);color:var(--color-bank-kbank-ink);display:grid;place-items:center;overflow:hidden;font-weight:var(--fw-bold);font-size:var(--fs-sm);flex:none;letter-spacing:.02em}
+.gw-logo img{width:100%;height:100%;object-fit:cover}
+.gw-head .gw-t{font-weight:var(--fw-semibold);font-size:var(--fs-sm);line-height:1.2}
+.gw-head .gw-s{font-size:var(--fs-xs);opacity:.8}
+.gw-head .gw-lock{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-xs);opacity:.9}
+.gw-body{padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-4)}
+.gw-tabs{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.gw-tab{flex:1;min-width:90px;min-height:var(--control-h-sm);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;background:var(--color-surface);color:var(--color-ink-2)}
+.gw-tab[aria-selected="true"],.gw-tab.is-active{border-color:var(--color-bank-kbank);background:color-mix(in srgb,var(--color-bank-kbank) 10%,var(--color-surface));color:var(--color-bank-kbank-ink)}
+.gw-foot{padding:var(--sp-3) var(--sp-4);background:var(--color-bg-2);font-size:var(--fs-xs);color:var(--color-ink-3);display:flex;align-items:center;gap:6px}
+.gw-pane{display:flex;flex-direction:column;gap:var(--sp-4)}
+.gw-pane[hidden]{display:none}
+/* QR / PromptPay pane */
+.gw-qr{align-items:center;text-align:center}
+.qr-card{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-4);border:1px solid var(--color-line-strong);border-radius:var(--radius-md);background:var(--color-surface);width:100%}
+.qr-promptpay{font-weight:var(--fw-bold);letter-spacing:.04em;color:var(--color-promptpay);font-size:var(--fs-sm);text-transform:uppercase}
+.qr-img{width:188px;height:188px;display:block}
+.qr-amt{font-weight:var(--fw-bold);font-size:var(--fs-lg);color:var(--color-ink)}
+.qr-hint{font-size:var(--fs-xs);color:var(--color-ink-3)}
+/* mobile-banking pane */
+.bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.bank-opt{min-height:var(--control-h);display:flex;align-items:center;gap:var(--sp-2);padding:0 12px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-surface);font-weight:var(--fw-medium);font-size:var(--fs-sm);cursor:pointer;color:var(--color-ink)}
+.bank-opt:hover{border-color:var(--color-accent)}
+.bank-opt.is-selected{border-color:var(--color-blue);background:var(--color-blue-soft);color:var(--color-blue)}
+/* Real bank marks, supplied by the client. Square frame with a hairline border since
+   each logo brings its own background colour; the image is never cropped or recoloured. */
+.bank-dot{width:22px;height:22px;border-radius:var(--radius-xs);flex:none;display:grid;place-items:center;
+  overflow:hidden;border:1px solid var(--color-line);background:var(--color-surface)}
+.bank-dot img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- Entry / onboarding ----------
+   The onboarding is a full-frame photographic story. Product controls sit in
+   stable glass surfaces above it, while the short copy remains in the lower
+   third and never competes with the subject. */
+.screen--onboard{isolation:isolate;background:var(--color-brand-charcoal);color:#fff}
+.screen--onboard .screen__top{
+  position:absolute;
+  z-index:4;
+  top:max(12px,env(safe-area-inset-top));
+  left:12px;
+  right:12px;
+  width:auto;
+  min-height:60px;
+  padding:8px 10px;
+  gap:8px;
+  border:1px solid rgba(255,255,255,.62);
+  border-radius:18px;
+  background:rgba(255,255,255,.91);
+  color:var(--color-ink);
+  box-shadow:0 12px 34px rgba(12,24,45,.14);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+}
+.screen--onboard .screen__top .back{
+  width:40px;
+  min-width:40px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:rgba(18,24,36,.05);
+}
+.screen--onboard .screen__top .back:hover{background:rgba(18,24,36,.1)}
+.screen--onboard .brand-logo{display:block;width:112px;max-width:31%;height:auto;flex:none}
+.screen--onboard .onboard-skip{min-width:42px;min-height:40px;padding:0 8px;color:var(--color-ink);white-space:nowrap}
+.onboard-language{display:inline-flex;align-items:center;flex:none}
+.onboard-language select{
+  min-width:54px;
+  height:44px;
+  padding:0 24px 0 8px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:var(--color-ink);
+  font:var(--fw-semibold) 13px/1 var(--font-base);
+  cursor:pointer;
+}
+.onboard-language select:hover{background:var(--color-bg-2)}
+.onboard-language select:focus-visible{outline:3px solid var(--color-focus);outline-offset:1px}
+.screen--onboard .entry-body{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  flex:1;
+  min-height:0;
+  padding:0;
+  overflow:hidden;
+}
+.entry-media{position:absolute;z-index:-2;inset:0;margin:0;background:var(--color-brand-charcoal);overflow:hidden}
+.entry-media img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scale(1.025);
+  animation:onboard-photo-enter 1.1s var(--ease-out) both;
+}
+.entry-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(9,19,37,.14) 0%,rgba(9,19,37,0) 30%),
+    linear-gradient(180deg,rgba(7,17,33,0) 38%,rgba(7,17,33,.4) 62%,rgba(7,17,33,.94) 100%);
+}
+.entry-media--consult img{object-position:52% 50%}
+.entry-media--personal img{object-position:50% 32%}
+.entry-media--home img{object-position:50% 38%}
+.entry-copy{
+  position:relative;
+  z-index:1;
+  width:100%;
+  margin-top:auto;
+  padding:118px 24px 154px;
+  color:#fff;
+}
+.hero-title{
+  max-width:13ch;
+  margin-top:14px;
+  color:#fff;
+  font-family:var(--font-display);
+  font-size:clamp(34px,9.5cqi,42px);
+  font-weight:var(--fw-semibold);
+  line-height:1.08;
+  letter-spacing:-.025em;
+  text-wrap:balance;
+  text-shadow:0 2px 22px rgba(5,14,28,.28);
+}
+.entry-sub{
+  max-width:31ch;
+  margin-top:12px;
+  color:rgba(255,255,255,.84);
+  font-size:clamp(16px,4.2cqi,18px);
+  font-weight:var(--fw-medium);
+  line-height:1.45;
+  text-wrap:pretty;
+  text-shadow:0 1px 18px rgba(5,14,28,.24);
+}
+.entry-index{
+  position:static;
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:0 10px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:var(--radius-pill);
+  background:rgba(9,19,37,.24);
+  color:#fff;
+  font-size:12px;
+  font-weight:var(--fw-semibold);
+  letter-spacing:.06em;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+.screen--onboard .screen__footer{
+  position:absolute;
+  z-index:4;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  padding:10px 20px max(18px,env(safe-area-inset-bottom));
+  border:0;
+  background:linear-gradient(180deg,rgba(7,17,33,0),rgba(7,17,33,.72) 34%,rgba(7,17,33,.92));
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}
+.screen--onboard .dots .d{background:rgba(255,255,255,.34)}
+.screen--onboard .dots .d.on{background:#fff}
+.btn--onboard{
+  width:100%;
+  min-height:56px;
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:var(--radius-pill);
+  background:#fff;
+  color:var(--color-ink-strong);
+  box-shadow:0 14px 34px rgba(5,14,28,.22);
+}
+.btn--onboard:hover{background:var(--color-bg-2);box-shadow:0 16px 38px rgba(5,14,28,.3)}
+.btn--onboard:active{transform:translateY(1px)}
+@keyframes onboard-photo-enter{from{opacity:.75;transform:scale(1.075)}to{opacity:1;transform:scale(1.025)}}
+@container screen (max-width:360px){
+  .screen--onboard .brand-logo{width:94px}
+  .screen--onboard .screen__top{left:8px;right:8px}
+  .screen--onboard .screen__top .back{width:36px;min-width:36px;height:36px}
+  .onboard-language select{min-width:50px;padding-left:6px;padding-right:20px}
+  .screen--onboard .onboard-skip{padding-inline:5px}
+  .entry-copy{padding-left:20px;padding-right:20px}
+}
+@media(max-height:650px){
+  .entry-copy{padding-bottom:132px}
+  .hero-title{font-size:32px}
+  .entry-sub{font-size:15px;line-height:1.38}
+  .screen--onboard .screen__footer{padding-bottom:max(10px,env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.entry-media img{animation:none;transform:none}}
+.wordmark--logo{font-family:var(--font-serif);font-weight:var(--fw-medium);font-size:var(--fs-xl);text-transform:lowercase;letter-spacing:0;color:inherit}
+/* cream/white pill on a dark screen (reference: "Get started") */
+.btn--invert{background:var(--color-surface);color:var(--color-ink)}
+.btn--invert:hover{background:var(--color-bg-2)}
+/* dark screen variant, near-black bg, cream text */
+.screen--dark{background-image:url("assets/graphic-noise.svg"),var(--gradient-teal);background-size:180px 180px,cover;background-blend-mode:soft-light,normal;color:var(--color-on-dark)}
+.screen--dark .hero-title{color:var(--color-on-dark)}
+.screen--dark .entry-sub,.screen--dark .eyebrow,.screen--dark .lead,.screen--dark .muted,.screen--dark .hint{color:rgba(255,255,255,.66)}
+.screen--dark .screen__top,.screen--dark .screen__footer{background:transparent;border-color:rgba(255,255,255,.12)}
+.screen--dark .btn--ghost{color:rgba(255,255,255,.72)}
+.screen--dark .dots .d{background:rgba(255,255,255,.32)}
+.screen--dark .dots .d.on{background:var(--color-on-dark)}
+
+/* ---------- Quick actions row (profile, one row, nav-bar style) ---------- */
+.quick-row{display:flex;gap:var(--sp-2)}
+.quick-row a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center;text-decoration:none;color:var(--color-ink);cursor:pointer;padding:var(--sp-2) 2px}
+.quick-row a .qic{width:46px;height:46px;border-radius:var(--radius-md);background:var(--color-accent-soft);color:var(--color-accent-ink);border:1px solid color-mix(in srgb,var(--color-accent) 12%,transparent);display:grid;place-items:center}
+.quick-row a .qic svg{width:21px;height:21px}
+.quick-row a .qlbl{font-size:var(--fs-xs);font-weight:var(--fw-medium);line-height:1.2}
+.quick-row a:hover .qic{background:var(--color-accent-soft-2);box-shadow:0 0 0 1px var(--color-accent-soft)}
+
+/* ---------- Choice cards (category / condition picker, tap to go, no radio) ---------- */
+.choice-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-2);grid-auto-rows:auto}
+/* category selection is a compact mobile list: one decision per row, no card wall */
+.choice-grid .choice-card{min-height:82px;flex-direction:row;align-items:center;gap:var(--sp-3);border-radius:var(--radius-lg);padding:var(--sp-3) var(--sp-4);box-shadow:none}
+.choice-list .choice-card{
+  min-height:68px;
+  padding:var(--sp-4);
+  background:var(--color-bg-soft);
+  border-color:transparent;
+  border-radius:var(--radius-md);
+  box-shadow:none
+}
+.choice-list .choice-card:hover{
+  background:var(--color-bg-2);
+  border-color:transparent;
+  box-shadow:none;
+  transform:translateY(-1px)
+}
+.choice-card{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);width:100%;min-width:0;overflow:hidden;text-align:left;cursor:pointer;
+  background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--radius-lg);
+  padding:var(--sp-4);box-shadow:var(--shadow-sm);
+  transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.choice-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--color-line-strong)}
+.choice-card:focus{outline:none}
+.choice-card:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.choice-card .cc-icon{width:46px;height:46px;border-radius:var(--radius-md);flex:none;display:grid;place-items:center;
+  background:var(--color-accent-soft);color:var(--color-accent-ink);border:1px solid color-mix(in srgb,var(--color-accent) 12%,transparent)}
+.choice-card .cc-icon .ui-icon{width:23px;height:23px}
+.choice-card .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.choice-card .cc-title{min-width:0;font-weight:var(--fw-semibold);line-height:var(--lh-tight);overflow-wrap:anywhere}
+.choice-card .cc-title-row{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.choice-card .cc-sub{min-width:0;font-size:var(--fs-sm);color:var(--color-ink-2);line-height:1.4;overflow-wrap:anywhere}
+.choice-card .cc-chev{display:grid;place-items:center;width:20px;height:20px;flex:none;margin-left:auto;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.choice-card .cc-chev .ui-icon{width:19px;height:19px}
+.choice-card:hover .cc-chev{transform:translateX(3px);color:var(--color-accent)}
+.choice-card:active{transform:scale(.985)}
+.choice-card .cc-soon{position:static;margin-left:auto;font-size:10px;font-weight:var(--fw-semibold);letter-spacing:.02em;color:var(--color-ink-3)}
+/* coming-soon card: inactive but legible */
+.choice-card--soon{cursor:default;opacity:1;background:var(--color-bg-soft);box-shadow:none}
+.choice-card--soon:hover{transform:none;box-shadow:none;border-color:var(--color-line)}
+.choice-card--soon .cc-title,.choice-card--soon .cc-sub{color:var(--color-ink-3)}
+.choice-card--soon .cc-icon{background:var(--color-bg-2);color:var(--color-ink-3)}
+.choice-card--soon .cc-chev{color:var(--color-ink-3);opacity:.55}
+/* full-width card (e.g. General consultation at the bottom), spans the grid, row layout */
+/* Full-width row only. General consultation is one option among the others, not a
+   permanently selected state, so it carries no accent tint (that is reserved for
+   aria-selected/hover, same as every other card). */
+.choice-card--wide{grid-column:1 / -1;flex-direction:row;align-items:center;gap:var(--sp-3)}
+.choice-card--wide .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* condition list: single column of full-width cards */
+.choice-list{display:flex;flex-direction:column;gap:var(--sp-3)}
+.choice-list .choice-card{flex-direction:row;align-items:center;gap:var(--sp-4)}
+.choice-list .choice-card .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+
+/* ---------- Multi-select option (checkbox-style: square tick, independent toggle) ---------- */
+.option[data-multi] .opt-check{display:grid;border-radius:var(--selection-radius-check)}
+
+/* ---------- Photo / file upload (intake, affected area, optional) ---------- */
+.upload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
+  width:100%;padding:var(--sp-6) var(--sp-4);text-align:center;cursor:pointer;
+  border:1.5px dashed var(--color-line-strong);border-radius:var(--radius-md);
+  background:var(--color-bg-2);color:var(--color-ink-2);transition:border-color .18s,background .18s}
+.upload:hover{border-color:var(--color-accent);background:var(--color-accent-soft-2)}
+.upload .up-ic{width:44px;height:44px;border-radius:var(--radius-pill);display:grid;place-items:center;background:var(--color-surface);border:1px solid var(--color-line);color:var(--color-accent-ink)}
+.upload .up-title{font-weight:var(--fw-semibold);color:var(--color-ink)}
+.upload .up-sub{font-size:var(--fs-sm);color:var(--color-ink-3)}
+/* thumbnails of added photos */
+.up-thumbs{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.up-thumb{position:relative;margin:0;width:72px;height:72px;border-radius:var(--radius-sm);background:var(--color-bg-2);border:1px solid var(--color-line);display:grid;place-items:center;color:var(--color-ink-3);overflow:hidden}
+.up-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.up-thumb .x{position:absolute;top:3px;right:3px;width:18px;height:18px;padding:0;border:0;cursor:pointer;border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-on-dark);font-size:12px;display:grid;place-items:center;line-height:1}
+.up-thumb .x:hover{background:var(--color-ink-strong)}
+.up-empty{width:100%;margin:0;padding:var(--sp-2) 0;text-align:center}
+
+/* ============================================================
+   MOTION SYSTEM (hims-style: soft, quick, upward)
+   Every screen change animates: content rises in with a gentle
+   stagger, the footer CTA follows last. Applied by show() adding
+   .is-entering to the incoming screen for one pass. All values
+   come from the motion tokens in design-tokens.css.
+   ============================================================ */
+@keyframes rise-in{from{opacity:0;transform:translateY(var(--rise))}to{opacity:1;transform:none}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes check-pop{0%{transform:scale(.4)}55%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes ready-pop{0%{transform:scale(.92)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes draw-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* screen enter: top fades, body children stagger up, footer arrives last */
+.screen.is-entering .screen__top{animation:fade-in var(--dur-base) var(--ease-out) both}
+.screen.is-entering .screen__body>*{animation:rise-in var(--dur-page) var(--ease-out) both}
+.screen.is-entering .screen__body>*:nth-child(1){animation-delay:30ms}
+.screen.is-entering .screen__body>*:nth-child(2){animation-delay:70ms}
+.screen.is-entering .screen__body>*:nth-child(3){animation-delay:110ms}
+.screen.is-entering .screen__body>*:nth-child(4){animation-delay:150ms}
+.screen.is-entering .screen__body>*:nth-child(5){animation-delay:190ms}
+.screen.is-entering .screen__body>*:nth-child(6){animation-delay:230ms}
+.screen.is-entering .screen__body>*:nth-child(7){animation-delay:270ms}
+.screen.is-entering .screen__body>*:nth-child(n+8){animation-delay:300ms}
+.screen.is-entering .screen__footer{animation:rise-in var(--dur-page) var(--ease-out) both;animation-delay:220ms}
+/* call stage screens manage their own presence; skip the stagger */
+.screen.is-entering .callstage,.screen.is-entering .callstage>*{animation:fade-in var(--dur-base) var(--ease-out) both}
+
+/* ---------- Typing indicator (doctor is typing, consult room) ---------- */
+.typing{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;
+  background:var(--color-surface);border:1px solid var(--color-line-strong);
+  border-radius:var(--radius-lg);border-bottom-left-radius:var(--radius-xs);
+  padding:var(--sp-3) var(--sp-4);box-shadow:var(--shadow-sm);min-height:20px}
+.typing .t-dot{width:6px;height:6px;border-radius:var(--radius-pill);background:var(--color-ink-3);animation:typing-bob 1.2s var(--ease-inout) infinite}
+.typing .t-dot:nth-child(2){animation-delay:.15s}
+.typing .t-dot:nth-child(3){animation-delay:.3s}
+@keyframes typing-bob{0%,60%,100%{transform:none;opacity:.45}30%{transform:translateY(-4px);opacity:1}}
+
+/* ---------- Determinate matching bar (finding your doctor) ---------- */
+.matchbar{height:6px;border-radius:var(--radius-pill);background:var(--color-bg-2);overflow:hidden;width:100%}
+.matchbar>span{display:block;height:100%;width:0;background:var(--color-accent);border-radius:inherit}
+.matching-live .matchbar>span{animation:match-fill 3.2s var(--ease-inout) forwards}
+@keyframes match-fill{0%{width:0}55%{width:68%}85%{width:88%}100%{width:100%}}
+
+/* ---------- Stage handover (clinical step done -> pharmacy step) ---------- */
+.stagebar{display:flex;align-items:center;gap:var(--sp-2);width:100%}
+.stage-node{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);flex:none;width:96px;text-align:center}
+.stage-node .sn-dot{width:44px;height:44px;border-radius:var(--radius-pill);display:grid;place-items:center;
+  background:var(--color-bg-2);border:0;color:var(--color-ink-3);font-weight:var(--fw-semibold)}
+.stage-node .sn-dot svg{width:22px;height:22px}
+.stage-node.done .sn-dot{background:var(--color-accent);color:var(--color-on-accent)}
+.stage-node.next .sn-dot{background:var(--color-accent-soft);color:var(--color-accent-ink);box-shadow:none}
+.stage-node .sn-lbl{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-2);line-height:1.3}
+.stage-node .sn-sub{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.3}
+.stage-link{flex:1;height:2px;background:var(--color-line);border-radius:var(--radius-pill);position:relative;overflow:hidden;align-self:start;margin-top:21px}
+.stage-link>span{position:absolute;inset:0;background:var(--color-accent);transform:scaleX(0);transform-origin:left}
+.screen.is-entering .stage-link>span{animation:draw-x var(--dur-slow) var(--ease-inout) .45s forwards}
+.screen:not(.is-entering) .stage-link>span{transform:scaleX(1)}
+
+/* ---------- Waiting room: locked CTA until the doctor admits ---------- */
+.btn.is-locked{opacity:.5;pointer-events:none}
+.is-ready-pop{animation:ready-pop var(--dur-base) var(--ease-spring)}
+
+/* ---------- Reduce-only quantity stepper (treatment plan, F16) ---------- */
+.qty{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2)}
+.qty-btn{width:28px;height:28px;border-radius:var(--radius-pill);border:1px solid var(--color-line-strong);
+  background:var(--color-surface);color:var(--color-ink);font-size:15px;line-height:1;cursor:pointer;
+  display:grid;place-items:center;transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.qty-btn:hover:not(:disabled){background:var(--color-bg-2)}
+.qty-btn:active:not(:disabled){transform:scale(.92)}
+.qty-btn:disabled{opacity:.35;cursor:not-allowed}
+.qty-n{min-width:18px;text-align:center;font-weight:var(--fw-semibold);font-size:var(--fs-sm)}
+
+/* ---------- Insurer logo tile (choose-policy; monogram until brand assets arrive) ---------- */
+.ins-logo{width:44px;height:44px;border-radius:var(--radius-sm);flex:none;display:grid;place-items:center;
+  background:var(--color-surface);border:1px solid var(--color-line-strong);
+  font-size:11px;font-weight:var(--fw-bold);letter-spacing:.03em;color:var(--color-ink)}
+.option[aria-selected="true"] .ins-logo{border-color:var(--color-line-strong);background:var(--color-surface)}
+
+/* ---------- In-chat call bar: the call continues while the patient chats (F13) ---------- */
+.callbar[hidden]{display:none}
+.callbar{display:flex;align-items:center;gap:var(--sp-3);width:100%;padding:var(--sp-3) var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-accent-soft);
+  cursor:pointer;font-size:var(--fs-sm);color:var(--color-ink);
+  transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.callbar:hover{background:var(--color-accent-soft-2);transform:translateY(-1px)}
+.callbar strong{color:var(--color-blue);white-space:nowrap}
+.callbar .cb-dot{width:9px;height:9px;border-radius:var(--radius-pill);background:var(--color-success);flex:none;animation:cb-pulse 1.6s ease-out infinite}
+@keyframes cb-pulse{0%{box-shadow:0 0 0 0 rgba(47,122,88,.4)}100%{box-shadow:0 0 0 9px rgba(47,122,88,0)}}
+/* helper line under the call controls (dark call stage) */
+.call-hint{text-align:center;font-size:var(--fs-xs);color:rgba(255,255,255,.62);margin:var(--sp-2) 0 var(--sp-4)}
+/* Voice is a fallback, so the room says plainly who turned video off and that the
+   consultation is still running. */
+.call-note{max-width:34ch;margin-top:var(--sp-2);text-align:center;font-size:var(--fs-sm);color:rgba(255,255,255,.74);line-height:var(--lh-snug)}
+@media(prefers-reduced-motion:reduce){.callbar .cb-dot{animation:none}}
+
+/* ---------- Reveal helper (elements shown later by JS, e.g. plan card) ---------- */
+.reveal-in{animation:rise-in var(--dur-page) var(--ease-out) both}
+[data-wait-hidden]{display:none}
+
+/* ---------- Reduced motion: keep everything readable, remove movement ---------- */
+@media(prefers-reduced-motion:reduce){
+  .screen.is-entering .screen__top,
+  .screen.is-entering .screen__body>*,
+  .screen.is-entering .screen__footer,
+  .screen.is-entering .callstage,.screen.is-entering .callstage>*,
+  .option[aria-selected="true"] .opt-check,
+  .typing .t-dot,.matching-live .matchbar>span,.modal-layer__scrim,.modal-dialog,
+  .screen.is-entering .stage-link>span,.is-ready-pop,.reveal-in{animation:none}
+  .matchbar>span{width:100%}
+  .stage-link>span{transform:scaleX(1)}
+  .btn,.option,.choice-card,.choice-card .cc-chev{transition:none}
+}
+
+/* Thai letter-spacing fix: Thai never takes tracking. body.lang-th is set by i18n.js. */
+body.lang-th *{letter-spacing:normal}
+
+
+/* Tags read at a glance (matching the back office). */
+.badge--line{background:var(--color-bg-2);color:var(--color-ink-2)}
+.badge--ok{background:var(--color-accent-soft);color:var(--color-ink)}
+.badge--warn{background:var(--color-warning-soft);color:var(--color-warning)}
+
+/* ---------- Checkout structure (payment screen) ---------- */
+/* Section label with a trailing link or hint, so a section can carry a secondary
+   action without a second row. */
+.checkout-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)}
+.checkout-head .section-label{margin-bottom:0}
+.checkout-head__link{border:0;background:none;padding:0;cursor:pointer;color:var(--color-accent);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.checkout-head__link:hover{color:var(--color-accent-hover)}
+.checkout-head__link:focus-visible{outline:var(--focus-ring-size) solid var(--color-accent);
+  outline-offset:var(--focus-ring-offset);border-radius:var(--radius-xs)}
+
+/* Cost breakdown inside the order card, so items and their cost read as one object. */
+.checkout-order__bill{padding:var(--sp-2) var(--sp-4) var(--sp-3);
+  border-top:1px solid var(--color-line);background:var(--color-bg-soft)}
+
+/* Delivery-fee quote time under the screen header. */
+.checkout-calc{flex:none;width:100%;padding:var(--sp-2) var(--sp-4);
+  border-bottom:1px solid var(--color-line);background:var(--color-bg-soft);
+  color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
+
+/* Savings line in the sticky pay bar. Stated plainly, never as a celebration. */
+.checkout-pay__save{color:var(--color-success);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.checkout-pay__save s{color:var(--color-ink-3);font-weight:var(--fw-regular)}
+
+/* The delivery option card carries a price beside the selection check. */
+.option .checkout-order__price{margin-left:auto}
+
+/* [hidden] loses to the class rule above, so the insurance credit row stayed visible
+   with a total that did not account for it. Restore the attribute's intent. */
+.checkout-bill__row[hidden]{display:none}
+
+/* ---------- Inline consent documents (consent-terms screen) ---------- */
+/* The document is read in place. Uniform 1px border on all four sides, no coloured
+   edge, and the locked state is carried by the note plus the disabled control. */
+.consent-doc{max-height:var(--consent-doc-h);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);
+  background:var(--color-bg-soft);color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.55}
+.consent-doc:focus-visible{outline:var(--focus-ring-size) solid var(--color-accent);
+  outline-offset:var(--focus-ring-offset)}
+.consent-doc section+section{margin-top:var(--sp-3)}
+.consent-doc h3{margin:0 0 var(--sp-1);font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.consent-doc p{margin:0}
+.consent-doc__end{margin-top:var(--sp-4);padding-top:var(--sp-3);border-top:1px solid var(--color-line);
+  color:var(--color-ink-3);font-size:var(--fs-xs);text-align:center}
+/* Section label between the two documents inside the single merged consent scroll box. */
+.consent-doc__section-head{margin-bottom:var(--sp-3)}
+.consent-doc__section-head strong{display:block;font-size:var(--fs-sm)}
+.consent-doc__divider{margin:var(--sp-4) 0;border:0;border-top:1px solid var(--color-line)}
+
+.consent-agree{display:flex;align-items:flex-start;gap:var(--sp-3);cursor:pointer}
+.consent-agree .check{margin-top:var(--sp-1);flex:none}
+/* Locked until the document has been read to the end. */
+.is-unread .consent-agree{cursor:not-allowed;opacity:.55}
+.consent-note{color:var(--color-ink-3)}
+.is-unread .consent-note{color:var(--color-warning);font-weight:var(--fw-medium)}
+
+/* True phone viewport: the product shell fills the visible app area while only
+   the content region scrolls. The primary action and bottom navigation therefore
+   keep one stable baseline across short and long screens. */
+@media(max-width:780px){
+  :root{--fs-base:16px;--fs-sm:14px;--fs-xs:13px}
+  .screen__top{min-height:56px;padding:8px 16px}
+  .screen__body{padding:16px}
+  .screen__footer{padding:12px 16px max(12px,env(safe-area-inset-bottom))}
+  .screen__body>.screen__footer{width:calc(100% + 32px);margin-left:-16px}
+
+  .care-journey{display:block;padding:8px 10px 7px}
+  .care-journey__current{display:none}
+  .care-journey__steps{width:100%}
+  .care-journey__name{display:block;margin-top:2px;font-size:9.5px;font-weight:var(--fw-regular);line-height:1.12}
+  .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-medium)}
+  .care-journey__step::before{top:9px}
+  .care-journey__dot{width:18px;height:18px;font-size:11px}
+  .care-journey__dot svg{width:10px;height:10px}
+  .screen__subprogress{padding:7px 16px}
+
+  #consent-terms .screen__body{padding-top:14px}
+  #consent-terms .card{padding:12px}
+  #consent-terms .consent-doc{height:clamp(320px,46dvh,440px);max-height:none}
+
+  .bottomnav{left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom))}
+  .screen:has(.bottomnav) .screen__body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .bottomnav a{font-size:12px}
+  .photo-graphic.payment-state-graphic{min-height:132px}
+  #payment .checkout-order__note,#payment .checkout-row__label,#payment .checkout-calc{font-size:13px}
+}

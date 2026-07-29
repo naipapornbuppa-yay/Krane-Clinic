@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Krane UI Component Inventory</title>
+  <link rel="stylesheet" href="design-tokens.css?v=20260719a">
+  <link rel="stylesheet" href="components.css?v=20260719a">
+  <link rel="stylesheet" href="cms.css?v=20260715p">
+  <link rel="stylesheet" href="ui-components.css?v=20260719a">
+  <link rel="stylesheet" href="custom-select.css?v=20260716a">
+  <script src="custom-select.js?v=20260716a" defer></script>
+</head>
+<body class="inventory-body">
+  <svg class="inventory-sprite" aria-hidden="true">
+    <symbol id="fi-arrow-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></symbol>
+    <symbol id="fi-arrow-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></symbol>
+    <symbol id="fi-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></symbol>
+    <symbol id="fi-bell" viewBox="0 0 24 24"><path d="M10.3 21h3.4"></path><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path></symbol>
+    <symbol id="fi-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.6 2.6L16.5 9"></path></symbol>
+    <symbol id="fi-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></symbol>
+    <symbol id="fi-edit-2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path></symbol>
+    <symbol id="fi-hair" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"></circle><circle cx="6" cy="17" r="2.5"></circle><path d="m8 8.5 11 7.5"></path><path d="m8 15.5 11-7.5"></path></symbol>
+    <symbol id="fi-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></symbol>
+    <symbol id="fi-inbox" viewBox="0 0 24 24"><path d="M4 5h16l2 8v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6Z"></path><path d="M2 13h5l2 3h6l2-3h5"></path></symbol>
+    <symbol id="fi-loader" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-5.3-8.2"></path></symbol>
+    <symbol id="fi-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></symbol>
+    <symbol id="fi-triangle-alert" viewBox="0 0 24 24"><path d="M10.3 3.8 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.8a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></symbol>
+    <symbol id="fi-circle-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6"></path><path d="m15 9-6 6"></path></symbol>
+    <symbol id="fi-menu" viewBox="0 0 24 24"><path d="M5 8h14"></path><path d="M5 16h14"></path></symbol>
+    <symbol id="fi-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"></path><path d="M4 17v-5h5"></path><path d="M6.1 9a7 7 0 0 1 11.4-2.6L20 9"></path><path d="m4 15 2.5 2.6A7 7 0 0 0 17.9 15"></path></symbol>
+    <symbol id="fi-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></symbol>
+    <symbol id="fi-filter-x" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v5l-4 2v-7Z"></path><path d="m16 16 5 5"></path><path d="m21 16-5 5"></path></symbol>
+    <symbol id="fi-skin" viewBox="0 0 24 24"><path d="M12 3.5c3.3 4 5.5 6.6 5.5 10A5.5 5.5 0 0 1 6.5 13.5c0-3.4 2.2-6 5.5-10Z"></path></symbol>
+    <symbol id="fi-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></symbol>
+    <symbol id="fi-wifi-off" viewBox="0 0 24 24"><path d="m2 2 20 20"></path><path d="M8.5 8.5A13.7 13.7 0 0 1 21 9"></path><path d="M5 12.5a10 10 0 0 1 5.3-2.3"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><path d="M12 20h.01"></path><path d="M3 9a14 14 0 0 1 2.2-1.3"></path></symbol>
+    <symbol id="fi-x" viewBox="0 0 24 24"><path d="m6 6 12 12"></path><path d="M18 6 6 18"></path></symbol>
+  </svg>
+  <div class="inventory-shell">
+    <aside class="inventory-rail" aria-label="Component sections">
+      <div class="inventory-brand">
+        <img src="assets/krane-logo-16jul.svg?v=20260715a" alt="Krane">
+        <span>UI v1</span>
+      </div>
+      <p class="inventory-rail__intro">ระบบเดียวสำหรับ Landing, Patient, Doctor และ Admin พร้อมชื่อ class และ token สำหรับส่งต่อ developer</p>
+      <nav class="inventory-nav">
+        <a href="#overview" class="is-active"><span class="inventory-nav__index">00</span>Overview</a>
+        <a href="#color"><span class="inventory-nav__index">01</span>Color</a>
+        <a href="#type"><span class="inventory-nav__index">02</span>Typography</a>
+        <a href="#spacing"><span class="inventory-nav__index">03</span>Spacing</a>
+        <a href="#actions"><span class="inventory-nav__index">04</span>Actions</a>
+        <a href="#icons"><span class="inventory-nav__index">04B</span>Icons</a>
+        <a href="#forms"><span class="inventory-nav__index">05</span>Forms</a>
+        <a href="#choices"><span class="inventory-nav__index">06</span>Choices</a>
+        <a href="#navigation"><span class="inventory-nav__index">07</span>Navigation</a>
+        <a href="#status"><span class="inventory-nav__index">08</span>Status</a>
+        <a href="#surfaces"><span class="inventory-nav__index">09</span>Surfaces</a>
+        <a href="#data"><span class="inventory-nav__index">10</span>Data</a>
+        <a href="#calendar"><span class="inventory-nav__index">11</span>Calendar</a>
+        <a href="#feedback"><span class="inventory-nav__index">12</span>Feedback</a>
+        <a href="#motion"><span class="inventory-nav__index">13</span>Motion</a>
+      </nav>
+    </aside>
+
+    <main class="inventory-main">
+      <header class="inventory-hero" id="overview">
+        <div>
+          <span class="eyebrow">Krane product system</span>
+          <h1>UI Component Inventory</h1>
+          <p>หน้าตรวจระบบและส่งต่อ developer ตัวอย่างทุกชิ้นใช้ token และ component ที่อยู่ใน prototype จริง โดยแยก state ที่ผู้ใช้ต้องเห็นชัดเจน</p>
+          <nav class="inventory-product-links" aria-label="Open product prototypes">
+            <a href="krane-b2c-landing.html">Landing</a>
+            <a href="krane-b2c.html">Patient</a>
+            <a href="cms-doctor.html">Doctor CMS</a>
+            <a href="cms-admin.html">Admin CMS</a>
+          </nav>
+        </div>
+        <div class="inventory-meta" aria-label="Inventory metadata">
+          <div><span>Source</span><b>Shared CSS</b></div>
+          <div><span>Import order</span><b>Tokens, components, surface CSS</b></div>
+          <div><span>Default locale</span><b>TH</b></div>
+          <div><span>Contrast target</span><b>WCAG AA</b></div>
+          <div><span>Updated</span><b>15 Jul 2026</b></div>
+        </div>
+      </header>
+
+      <section class="inventory-section" id="color">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Foundation 01</span><h2>Color</h2></div>
+          <p>Black carries command and structure. Powder blue carries selection, focus, schedule, and calm clinical context. Semantic colours are reserved for status.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen__head"><div><h3>Core and semantic tokens</h3><p>Use token names, never copy rendered hex values.</p></div><code class="specimen__class">:root</code></div>
+          <div class="specimen__preview">
+            <div class="token-grid">
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-ink)"></div><div class="color-token__label"><b>Ink</b><code>--color-ink</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-blue)"></div><div class="color-token__label"><b>Blue</b><code>--color-blue</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-powder)"></div><div class="color-token__label"><b>Powder</b><code>--color-powder</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-surface)"></div><div class="color-token__label"><b>Surface</b><code>--color-surface</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-success)"></div><div class="color-token__label"><b>Success</b><code>--color-success</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-warning)"></div><div class="color-token__label"><b>Warning</b><code>--color-warning</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-danger)"></div><div class="color-token__label"><b>Danger</b><code>--color-danger</code></div></div>
+              <div class="color-token"><div class="color-token__swatch" style="--swatch:var(--color-info)"></div><div class="color-token__label"><b>Info</b><code>--color-info</code></div></div>
+            </div>
+          </div>
+          <div class="specimen__tokens"><code>design-tokens.css</code><code>WCAG AA</code><code>semantic only</code></div>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="type">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Foundation 02</span><h2>Typography</h2></div>
+          <p>Thai uses Sukhumvit Set with Sarabun and Anuphan fallback. English uses Poppins to stay compatible with the rounded Krane wordmark.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Thai type scale</h3><p>Product copy and clinical data</p></div><code class="specimen__class">--font-display</code></div>
+            <div class="specimen__preview type-stack">
+              <div class="type-sample"><div class="type-sample__meta">Display<br><code>--fs-3xl</code></div><div class="type-sample__display">ดูแลสุขภาพได้อย่างสบายใจ</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Title<br><code>--fs-xl</code></div><div class="type-sample__title">เลือกการดูแลที่เหมาะกับคุณ</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Body<br><code>--fs-base</code></div><div class="type-sample__body">แพทย์จะประเมินข้อมูลและอธิบายแผนการดูแลก่อนเริ่มการรักษา</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Small<br><code>--fs-sm</code></div><div class="type-sample__small">ข้อมูลสุขภาพถูกเก็บเป็นความลับตาม PDPA</div></div>
+            </div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>English type scale</h3><p>Names, medicine, and English locale</p></div><code class="specimen__class">--font-latin</code></div>
+            <div class="specimen__preview type-stack" lang="en">
+              <div class="type-sample"><div class="type-sample__meta">Display<br><code>--fs-3xl</code></div><div class="type-sample__display">Care that fits your life</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Title<br><code>--fs-xl</code></div><div class="type-sample__title">Choose your care</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Body<br><code>--fs-base</code></div><div class="type-sample__body">Your doctor reviews your answers before the consultation begins.</div></div>
+              <div class="type-sample"><div class="type-sample__meta">Small<br><code>--fs-sm</code></div><div class="type-sample__small">Private and secure by design</div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="spacing">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Foundation 03</span><h2>Spacing and radius</h2></div>
+          <p>All layouts use the shared 4-point spacing scale and one concentric radius family.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Spacing scale</h3><p>Use the next named step before creating a new value.</p></div><code class="specimen__class">--sp-1 to --sp-8</code></div>
+            <div class="specimen__preview spacing-stack">
+              <div class="spacing-token"><code>--sp-1</code><span class="spacing-token__bar" style="--space:var(--sp-1)"></span></div>
+              <div class="spacing-token"><code>--sp-2</code><span class="spacing-token__bar" style="--space:var(--sp-2)"></span></div>
+              <div class="spacing-token"><code>--sp-3</code><span class="spacing-token__bar" style="--space:var(--sp-3)"></span></div>
+              <div class="spacing-token"><code>--sp-4</code><span class="spacing-token__bar" style="--space:var(--sp-4)"></span></div>
+              <div class="spacing-token"><code>--sp-5</code><span class="spacing-token__bar" style="--space:var(--sp-5)"></span></div>
+              <div class="spacing-token"><code>--sp-6</code><span class="spacing-token__bar" style="--space:var(--sp-6)"></span></div>
+              <div class="spacing-token"><code>--sp-7</code><span class="spacing-token__bar" style="--space:var(--sp-7)"></span></div>
+              <div class="spacing-token"><code>--sp-8</code><span class="spacing-token__bar" style="--space:var(--sp-8)"></span></div>
+            </div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Radius family</h3><p>Inner geometry must never be rounder than its container.</p></div><code class="specimen__class">--radius-*</code></div>
+            <div class="specimen__preview radius-grid">
+              <div class="radius-token" style="--radius:var(--radius-xs)"><code>xs</code></div>
+              <div class="radius-token" style="--radius:var(--radius-sm)"><code>sm</code></div>
+              <div class="radius-token" style="--radius:var(--radius-md)"><code>md</code></div>
+              <div class="radius-token" style="--radius:var(--radius-lg)"><code>lg</code></div>
+              <div class="radius-token" style="--radius:var(--radius-xl)"><code>xl</code></div>
+              <div class="radius-token" style="--radius:var(--radius-2xl)"><code>2xl</code></div>
+              <div class="radius-token" style="--radius:var(--radius-pill)"><code>pill</code></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="actions">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 04</span><h2>Actions</h2></div>
+          <p>One dark primary action per decision area. Secondary, ghost, danger, icon, loading, and disabled states stay visibly distinct.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Button hierarchy</h3><p>Patient and CMS share the same command colour and control radius. Pill geometry is reserved for statuses.</p></div><code class="specimen__class">.btn</code></div>
+            <div class="specimen__preview">
+              <div class="sample-row">
+                <button class="btn btn--primary" type="button">เริ่มปรึกษา</button>
+                <button class="btn btn--secondary" type="button">ดูรายละเอียด</button>
+                <button class="btn btn--ghost" type="button">ยกเลิก</button>
+              </div>
+              <div class="sample-row">
+                <button class="btn btn--danger" type="button">ยกเลิกคำสั่งซื้อ</button>
+                <button class="btn btn--primary" type="button"><span class="button-spinner" aria-hidden="true"></span>กำลังบันทึก</button>
+                <button class="btn btn--primary" type="button" disabled>ดำเนินการต่อ</button>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>.btn--primary</code><code>.btn--secondary</code><code>.btn--ghost</code><code>.btn--danger</code><code>:disabled</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Icon actions</h3><p>Rounded line icons, consistent stroke and touch target.</p></div><code class="specimen__class">.ui-icon</code></div>
+            <div class="specimen__preview">
+              <div class="sample-row">
+                <button class="icon-button" type="button" aria-label="ย้อนกลับ"><svg class="ui-icon"><use href="#fi-arrow-left"></use></svg></button>
+                <button class="icon-button" type="button" aria-label="การแจ้งเตือน"><svg class="ui-icon"><use href="#fi-bell"></use></svg></button>
+                <button class="icon-button" type="button" aria-label="แก้ไข"><svg class="ui-icon"><use href="#fi-edit-2"></use></svg></button>
+                <button class="btn btn--primary" type="button">ไปต่อ <svg class="ui-icon ui-icon--sm"><use href="#fi-arrow-right"></use></svg></button>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>--control-h-icon</code><code>stroke 1.85</code><code>aria-label required</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Header controls</h3><p>Text and icon-only controls share one base, interaction states, border, radius, and height.</p></div><code class="specimen__class">.nav-control</code></div>
+            <div class="specimen__preview specimen__preview--dark">
+              <div class="sample-row">
+                <a class="nav-control nav-control--text" href="#actions"><svg class="ui-icon"><use href="#fi-user"></use></svg><span>เข้าสู่ระบบ</span></a>
+                <button class="nav-control nav-control--icon" type="button" aria-label="เปิดเมนู"><svg class="ui-icon"><use href="#fi-menu"></use></svg></button>
+                <button class="nav-control nav-control--icon" type="button" aria-expanded="true" aria-label="ปิดเมนู"><svg class="ui-icon"><use href="#fi-x"></use></svg></button>
+                <button class="nav-control nav-control--text" type="button" disabled>ไม่พร้อมใช้งาน</button>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>.nav-control--text</code><code>.nav-control--icon</code><code>:hover</code><code>:focus-visible</code><code>:active</code><code>[aria-expanded=true]</code><code>:disabled</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="icons">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Foundation 04B</span><h2>Icon library</h2></div>
+          <p>Krane uses one rounded outline family across Landing, Patient, Doctor, and Admin. Do not mix emoji, filled symbols, or icons from another family.</p>
+        </div>
+        <article class="specimen">
+          <div class="specimen__head icon-library-head">
+            <div><h3>Lucide 0.577.0</h3><p>The project keeps a local browser bundle. Icon names below are verified against that exact file.</p></div>
+            <div class="icon-library-links" aria-label="Icon library resources">
+              <a class="btn btn--secondary btn--sm" href="https://lucide.dev/icons/" target="_blank" rel="noopener">Browse all icons <svg class="ui-icon ui-icon--sm"><use href="#fi-arrow-right"></use></svg></a>
+              <a class="btn btn--ghost btn--sm" href="https://lucide.dev/guide/lucide" target="_blank" rel="noopener">Vanilla guide</a>
+              <a class="btn btn--ghost btn--sm" href="https://lucide.dev/license" target="_blank" rel="noopener">ISC license</a>
+              <a class="btn btn--ghost btn--sm" href="assets/lucide.min.js?v=0.577.0">Local bundle</a>
+            </div>
+          </div>
+          <div class="specimen__preview icon-library-preview">
+            <div class="icon-library-meta">
+              <div><span>Family</span><b>Lucide outline</b></div><div><span>Stroke</span><b>1.8px rounded</b></div><div><span>Sizes</span><b>16 / 20 / 24px</b></div><div><span>Touch target</span><b>44px minimum</b></div>
+            </div>
+            <div class="icon-library-group"><h4>Navigation and discovery</h4><div class="icon-grid icon-grid--library">
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="house" aria-label="Copy house icon markup"><i data-lucide="house" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>house</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="arrow-left" aria-label="Copy arrow-left icon markup"><i data-lucide="arrow-left" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>arrow-left</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="arrow-right" aria-label="Copy arrow-right icon markup"><i data-lucide="arrow-right" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>arrow-right</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="chevron-down" aria-label="Copy chevron-down icon markup"><i data-lucide="chevron-down" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>chevron-down</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="menu" aria-label="Copy menu icon markup"><i data-lucide="menu" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>menu</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="search" aria-label="Copy search icon markup"><i data-lucide="search" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>search</code><span>Copy</span></button>
+            </div></div>
+            <div class="icon-library-group"><h4>People, schedule, and consultation</h4><div class="icon-grid icon-grid--library">
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="user-round" aria-label="Copy user-round icon markup"><i data-lucide="user-round" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>user-round</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="users-round" aria-label="Copy users-round icon markup"><i data-lucide="users-round" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>users-round</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="calendar-days" aria-label="Copy calendar-days icon markup"><i data-lucide="calendar-days" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>calendar-days</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="clipboard-list" aria-label="Copy clipboard-list icon markup"><i data-lucide="clipboard-list" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>clipboard-list</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="message-square" aria-label="Copy message-square icon markup"><i data-lucide="message-square" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>message-square</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="video" aria-label="Copy video icon markup"><i data-lucide="video" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>video</code><span>Copy</span></button>
+            </div></div>
+            <div class="icon-library-group"><h4>Care, payment, and delivery</h4><div class="icon-grid icon-grid--library">
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="activity" aria-label="Copy activity icon markup"><i data-lucide="activity" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>activity</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="pill" aria-label="Copy pill icon markup"><i data-lucide="pill" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>pill</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="shield-check" aria-label="Copy shield-check icon markup"><i data-lucide="shield-check" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>shield-check</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="credit-card" aria-label="Copy credit-card icon markup"><i data-lucide="credit-card" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>credit-card</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="package" aria-label="Copy package icon markup"><i data-lucide="package" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>package</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="truck" aria-label="Copy truck icon markup"><i data-lucide="truck" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>truck</code><span>Copy</span></button>
+            </div></div>
+            <div class="icon-library-group"><h4>Status and feedback</h4><div class="icon-grid icon-grid--library">
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="info" aria-label="Copy info icon markup"><i data-lucide="info" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>info</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="circle-check" aria-label="Copy circle-check icon markup"><i data-lucide="circle-check" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>circle-check</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="triangle-alert" aria-label="Copy triangle-alert icon markup"><i data-lucide="triangle-alert" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>triangle-alert</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="circle-x" aria-label="Copy circle-x icon markup"><i data-lucide="circle-x" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>circle-x</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="bell" aria-label="Copy bell icon markup"><i data-lucide="bell" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>bell</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="clock-3" aria-label="Copy clock-3 icon markup"><i data-lucide="clock-3" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>clock-3</code><span>Copy</span></button>
+            </div></div>
+            <div class="icon-library-group"><h4>Editing and file actions</h4><div class="icon-grid icon-grid--library">
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="pencil" aria-label="Copy pencil icon markup"><i data-lucide="pencil" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>pencil</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="upload" aria-label="Copy upload icon markup"><i data-lucide="upload" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>upload</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="download" aria-label="Copy download icon markup"><i data-lucide="download" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>download</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="trash-2" aria-label="Copy trash-2 icon markup"><i data-lucide="trash-2" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>trash-2</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="plus" aria-label="Copy plus icon markup"><i data-lucide="plus" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>plus</code><span>Copy</span></button>
+              <button class="icon-token icon-token--copy" type="button" data-copy-icon="external-link" aria-label="Copy external-link icon markup"><i data-lucide="external-link" class="ui-icon ui-icon--md" aria-hidden="true"></i><code>external-link</code><span>Copy</span></button>
+            </div></div>
+            <div class="icon-code-grid">
+              <div class="code-sample"><div class="code-sample__head"><b>HTML markup</b><button class="btn btn--secondary btn--sm" type="button" data-copy-code="icon-markup">Copy code</button></div><pre><code id="icon-markup">&lt;i data-lucide=&quot;user-round&quot; class=&quot;ui-icon ui-icon--md&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;</code></pre></div>
+              <div class="code-sample"><div class="code-sample__head"><b>Initialize once</b><button class="btn btn--secondary btn--sm" type="button" data-copy-code="icon-init">Copy code</button></div><pre><code id="icon-init">lucide.createIcons({
+  icons: lucide.icons,
+  attrs: { 'stroke-width': '1.8', 'aria-hidden': 'true' }
+});</code></pre></div>
+            </div>
+          </div>
+          <div class="specimen__tokens"><code>assets/lucide.min.js?v=0.577.0</code><code>.ui-icon--sm / md / lg</code><code>decorative: aria-hidden</code><code>icon-only button: aria-label</code><code>do not mix libraries</code></div>
+        </article>
+      </section>
+
+      <section class="inventory-section" id="forms">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 05</span><h2>Forms</h2></div>
+          <p>Every control has a visible label and a programmatic association. Error copy explains what to do next.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Text controls</h3><p>Default, error, select, textarea, and disabled.</p></div><code class="specimen__class">.field</code></div>
+            <div class="specimen__preview sample-column">
+              <div class="field"><label for="patient-name">ชื่อผู้ป่วย</label><input class="input" id="patient-name" value="Mali S."></div>
+              <div class="field control-error"><label for="phone">เบอร์โทรศัพท์</label><input class="input" id="phone" value="081" aria-describedby="phone-error"><small class="control-message" id="phone-error">กรอกหมายเลขโทรศัพท์ 10 หลัก</small></div>
+              <div class="field"><label for="care-type">ประเภทการดูแล</label><select class="select" id="care-type"><option>ผมร่วงและหนังศีรษะ</option><option>ปรึกษาสุขภาพทั่วไป</option></select></div>
+              <div class="field"><label for="clinical-note">บันทึกทางการแพทย์</label><textarea class="textarea" id="clinical-note">ติดตามอาการหลังเริ่มยา 30 วัน</textarea></div>
+              <div class="field"><label for="locked-field">ข้อมูลที่ยืนยันแล้ว</label><input class="input" id="locked-field" value="KR-10293" disabled></div>
+            </div>
+            <div class="specimen__tokens"><code>.input</code><code>.custom-select</code><code>.textarea</code><code>role=combobox</code><code>role=listbox</code><code>aria-expanded</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Selection controls</h3><p>One shared geometry for every check state, with the control chosen by behavior.</p></div><code class="specimen__class">.check / .radio / .switch</code></div>
+            <div class="specimen__preview sample-column">
+              <label class="selection-row"><span class="check"><input type="checkbox" checked><span class="box"></span></span><span>ยินยอมให้แพทย์ประเมินข้อมูลสุขภาพ</span></label>
+              <label class="selection-row"><span class="check"><input type="checkbox"><span class="box"></span></span><span>รับการแจ้งเตือนผ่าน LINE</span></label>
+              <label class="selection-row is-disabled"><span class="check"><input type="checkbox" disabled><span class="box"></span></span><span>ตัวเลือกที่ยังไม่เปิดใช้งาน</span></label>
+              <label class="selection-row"><span class="radio"><input type="radio" name="delivery" checked><span class="dot"></span></span><span>จัดส่งมาตรฐาน</span></label>
+              <label class="selection-row"><span class="radio"><input type="radio" name="delivery"><span class="dot"></span></span><span>รับยาที่ร้าน</span></label>
+              <label class="selection-row selection-row--switch"><span class="switch"><input type="checkbox" checked aria-label="พร้อมรับเคส"><span class="track"></span><span class="thumb"></span></span><span>พร้อมรับเคส</span></label>
+              <label class="selection-row selection-row--switch is-disabled"><span class="switch"><input type="checkbox" disabled aria-label="การตั้งค่าที่ปิดใช้งาน"><span class="track"></span><span class="thumb"></span></span><span>การตั้งค่าที่ปิดใช้งาน</span></label>
+            </div>
+            <div class="specimen__tokens"><code>unchecked / checked / focus / disabled</code><code>checkbox: independent or multi-select</code><code>radio: one of a visible set</code><code>switch: immediate setting</code><code>--selection-size</code><code>--selection-radius</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="choices">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 06</span><h2>Choice cards</h2></div>
+          <p>Use card choices for care categories and intake answers. Every service tile keeps the same arrow structure, including upcoming services.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Service choice</h3><p>Active and upcoming keep identical anatomy.</p></div><code class="specimen__class">.choice-card</code></div>
+            <div class="specimen__preview sample-column">
+              <button class="choice-card" type="button">
+                <span class="cc-icon"><svg class="ui-icon"><use href="#fi-hair"></use></svg></span>
+                <span class="cc-body"><span class="cc-title">ผมร่วงและหนังศีรษะ</span><span class="cc-sub">ผมบาง ผมร่วง และปัญหาหนังศีรษะ</span></span>
+                <span class="cc-chev"><svg class="ui-icon"><use href="#fi-arrow-right"></use></svg></span>
+              </button>
+              <button class="choice-card choice-card--soon" type="button" aria-disabled="true" disabled>
+                <span class="cc-icon"><svg class="ui-icon"><use href="#fi-skin"></use></svg></span>
+                <span class="cc-body"><span class="cc-title-row"><span class="cc-title">ผิวและสิว</span><span class="cc-soon">เปิดเร็ว ๆ นี้</span></span><span class="cc-sub">สิว การระคายเคือง และปัญหาผิว</span></span>
+                <span class="cc-chev"><svg class="ui-icon"><use href="#fi-arrow-right"></use></svg></span>
+              </button>
+            </div>
+            <div class="specimen__tokens"><code>.cc-icon</code><code>.cc-body</code><code>.cc-chev</code><code>.choice-card--soon</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Intake option</h3><p>Single and multi-select states.</p></div><code class="specimen__class">.option</code></div>
+            <div class="specimen__preview sample-column">
+              <button class="option" type="button" data-select aria-selected="false"><span class="opt-icon"><svg class="ui-icon"><use href="#fi-clock"></use></svg></span><span class="opt-body"><span class="opt-title">น้อยกว่า 3 เดือน</span><span class="opt-sub">เริ่มมีอาการไม่นาน</span></span><span class="opt-check"></span></button>
+              <button class="option" type="button" data-select aria-selected="true"><span class="opt-icon"><svg class="ui-icon"><use href="#fi-clock"></use></svg></span><span class="opt-body"><span class="opt-title">3 ถึง 12 เดือน</span><span class="opt-sub">เลือกอยู่</span></span><span class="opt-check"></span></button>
+              <button class="option" type="button" data-multi aria-selected="true"><span class="opt-body"><span class="opt-title">อาการคัน</span></span><span class="opt-check"></span></button>
+            </div>
+            <div class="specimen__tokens"><code>aria-selected</code><code>data-select</code><code>data-multi</code><code>:focus-visible</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="navigation">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 07</span><h2>Navigation</h2></div>
+          <p>Navigation must expose location, not just destination. Active state uses fill and contrast rather than coloured edge stripes.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Tabs and filters</h3><p>Segmented decisions and data filters.</p></div><code class="specimen__class">.chips / .chip</code></div>
+            <div class="specimen__preview">
+              <div class="chips" role="tablist" aria-label="Case filters">
+                <button class="chip is-active" type="button" role="tab" aria-selected="true">ทั้งหมด</button>
+                <button class="chip" type="button" role="tab" aria-selected="false">กำลังรอ</button>
+                <button class="chip" type="button" role="tab" aria-selected="false">ติดตามอาการ</button>
+                <button class="chip" type="button" role="tab" aria-selected="false">เสร็จแล้ว</button>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>.chip.is-active</code><code>role=tab</code><code>aria-selected</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Breadcrumb and pagination</h3><p>Return path and current position stay explicit.</p></div><code class="specimen__class">.crumb</code></div>
+            <div class="specimen__preview sample-column">
+              <button class="crumb" type="button"><svg class="ui-icon ui-icon--sm"><use href="#fi-arrow-left"></use></svg> กลับไปคิวผู้ป่วย</button>
+              <div class="sample-row"><button class="icon-button" type="button" aria-label="หน้าก่อนหน้า"><svg class="ui-icon"><use href="#fi-arrow-left"></use></svg></button><span class="badge badge--line">หน้า 2 จาก 8</span><button class="icon-button" type="button" aria-label="หน้าถัดไป"><svg class="ui-icon"><use href="#fi-chevron-right"></use></svg></button></div>
+            </div>
+            <div class="specimen__tokens"><code>back label required</code><code>current page visible</code></div>
+          </article>
+        </div>
+        <article class="specimen specimen--full">
+          <div class="specimen__head"><div><h3>Patient care journey</h3><p>Five stable stages remain visible while individual intake questions change.</p></div><code class="specimen__class">.care-journey</code></div>
+          <div class="specimen__preview">
+            <nav class="care-journey" aria-label="ขั้นตอนการรับบริการ">
+              <span class="care-journey__step is-done"><span class="care-journey__number">01</span><span>ข้อมูลผู้รับบริการ</span></span>
+              <span class="care-journey__step is-current"><span class="care-journey__number">02</span><span>หัวข้อปรึกษา</span></span>
+              <span class="care-journey__step"><span class="care-journey__number">03</span><span>ชำระเงิน</span></span>
+              <span class="care-journey__step"><span class="care-journey__number">04</span><span>ปรึกษาแพทย์</span></span>
+              <span class="care-journey__step"><span class="care-journey__number">05</span><span>เสร็จสิ้น</span></span>
+            </nav>
+          </div>
+          <div class="specimen__tokens"><code>.is-done</code><code>.is-current</code><code>aria-label</code><code>scrollable on mobile</code></div>
+        </article>
+      </section>
+
+      <section class="inventory-section" id="status">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 08</span><h2>Status</h2></div>
+          <p>Status combines copy, colour, and optional icon or dot. Colour never carries meaning alone.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Badges</h3><p>Compact state inside tables, cards, and headers.</p></div><code class="specimen__class">.badge</code></div>
+            <div class="specimen__preview">
+              <div class="sample-row">
+                <span class="badge badge--ok"><span class="dot"></span>พร้อมรับเคส</span>
+                <span class="badge badge--go"><span class="dot"></span>กำลังจะมาถึง</span>
+                <span class="badge badge--warn"><span class="dot"></span>ต้องตรวจสอบ</span>
+                <span class="badge badge--danger"><span class="dot"></span>เลยกำหนด</span>
+                <span class="badge badge--done"><span class="dot"></span>เสร็จแล้ว</span>
+                <span class="badge badge--mute"><span class="dot"></span>ออฟไลน์</span>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>.badge--ok</code><code>.badge--warn</code><code>.badge--danger</code><code>.badge--done</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>System status</h3><p>Operational state with readable text.</p></div><code class="specimen__class">.health-state</code></div>
+            <div class="specimen__preview status-stack">
+              <div class="status-line" style="--status-color:var(--color-success)"><b>ระบบชำระเงินทำงานปกติ</b></div>
+              <div class="status-line" style="--status-color:var(--color-warning)"><b>ระบบวิดีโอกำลังเฝ้าระวัง</b></div>
+              <div class="status-line" style="--status-color:var(--color-danger)"><b>การจัดส่งต้องดำเนินการ</b></div>
+              <div class="progress" aria-label="Consultation progress"><span style="width:64%"></span></div>
+            </div>
+            <div class="specimen__tokens"><code>success</code><code>warning</code><code>danger</code><code>.progress</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="surfaces">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 09</span><h2>Cards and glass</h2></div>
+          <p>Glass is a material layer over meaningful background colour. Text remains on a sufficiently opaque surface.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Product card</h3><p>Flat and elevated variants use one light source.</p></div><code class="specimen__class">.card</code></div>
+            <div class="specimen__preview sample-column">
+              <div class="card"><div class="between"><div><h3 class="h2">นัดหมายถัดไป</h3><p class="muted">วันนี้ 11:00 กับ Dr. Narin</p></div><span class="badge badge--go">พร้อม</span></div></div>
+              <div class="card card--flat"><h3 class="h2">ข้อมูลประกอบ</h3><p class="muted">ใช้เมื่อไม่ต้องการยกระดับจากพื้นหลัง</p></div>
+            </div>
+            <div class="specimen__tokens"><code>.card</code><code>.card--flat</code><code>--shadow-sm</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>CMS glass panel</h3><p>Readable glass over the powder canvas.</p></div><code class="specimen__class">.panel</code></div>
+            <div class="specimen__preview specimen__preview--canvas">
+              <div class="glass-demo"><div class="panel"><span class="eyebrow">Follow-up</span><h3 class="h2">3 เคสต้องติดตามวันนี้</h3><p class="muted">Win T. เลยกำหนดแล้ว 1 วัน</p></div></div>
+            </div>
+            <div class="specimen__tokens"><code>--color-glass-surface</code><code>--shadow-glass-cms</code><code>backdrop-filter</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="data">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 10</span><h2>Data display</h2></div>
+          <p>Operations components prioritise exact state, owner, time, and next action over decorative analytics.</p>
+        </div>
+        <div class="inventory-grid inventory-grid--wide">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>KPI cards</h3><p>Doctor and Admin use clinically or operationally meaningful counts.</p></div><code class="specimen__class">.kpis / .kpi</code></div>
+            <div class="specimen__preview">
+              <div class="kpis">
+                <div class="kpi"><div class="kpi__n">8</div><div class="kpi__l">ผู้ป่วยวันนี้</div><div class="kpi__d">เสร็จแล้ว 4 เหลือ 4</div></div>
+                <div class="kpi"><div class="kpi__n">2</div><div class="kpi__l">กำลังรอ</div><div class="kpi__d kpi__d--warn">รอนานสุด 4 นาที</div></div>
+                <div class="kpi"><div class="kpi__n">3</div><div class="kpi__l">ติดตามวันนี้</div><div class="kpi__d">เลยกำหนด 1 เคส</div></div>
+                <div class="kpi"><div class="kpi__n">11:00</div><div class="kpi__l">ผู้ป่วยรายถัดไป</div><div class="kpi__d kpi__d--up">Mali S. พร้อมแล้ว</div></div>
+              </div>
+            </div>
+            <div class="specimen__tokens"><code>.kpi__n</code><code>.kpi__l</code><code>.kpi__d</code><code>fixture-led counts</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Operational table</h3><p>Row click must preserve the selected entity.</p></div><code class="specimen__class">.table</code></div>
+            <div class="specimen__preview inventory-table-wrap">
+              <table class="table">
+                <thead><tr><th>เคส</th><th>ผู้ป่วย</th><th>ผู้รับผิดชอบ</th><th>ขั้นตอน</th><th>อัปเดต</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">#KR-10293</td><td>Mali S.</td><td>Fascino Ari</td><td><span class="badge badge--go"><span class="dot"></span>กำลังจัดส่ง</span></td><td>20 นาทีที่แล้ว</td><td><button class="btn btn--ghost btn--sm" type="button">เปิด</button></td></tr>
+                  <tr><td class="strong">#KR-10295</td><td>Win T.</td><td>Fascino Ari</td><td><span class="badge badge--warn"><span class="dot"></span>ร้านยาล่าช้า</span></td><td>32 นาทีที่แล้ว</td><td><button class="btn btn--ghost btn--sm" type="button">ตรวจสอบ</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="specimen__tokens"><code>sticky header</code><code>semantic status</code><code>selected row context</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="calendar">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 11</span><h2>Calendar</h2></div>
+          <p>Google Calendar-like behavior: Today, previous and next navigation, month or day selector, familiar event blocks, and a clear current date.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen__head"><div><h3>Event states</h3><p>Default, waiting, and completed remain readable without saturated blocks.</p></div><code class="specimen__class">.cal-event</code></div>
+          <div class="specimen__preview calendar-sample">
+            <div class="calendar-day"><strong>3 ก.ค.</strong><button class="cal-event" type="button">09:30 Mali S.</button><button class="cal-event cal-event--waiting" type="button">11:15 Anan K.</button></div>
+            <div class="calendar-day"><strong>4 ก.ค.</strong><button class="cal-event cal-event--done" type="button">10:00 Win T.</button></div>
+            <div class="calendar-day"><strong>5 ก.ค.</strong><p class="hint">ไม่มีนัดหมาย</p></div>
+          </div>
+          <div class="specimen__tokens"><code>.cal-event</code><code>.cal-event--waiting</code><code>.cal-event--done</code><code>month / day</code></div>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="feedback">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Component 12</span><h2>Feedback and system states</h2></div>
+          <p>No action fails silently. Use an inline alert, toast, modal, loading state, or empty state that explains what happened and what comes next.</p>
+        </div>
+        <div class="inventory-grid">
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Inline alerts</h3><p>Contextual feedback close to the affected task.</p></div><code class="specimen__class">.alert</code></div>
+            <div class="specimen__preview sample-column">
+              <div class="alert"><span class="a-ic"><svg class="ui-icon ui-icon--sm"><use href="#fi-info"></use></svg></span><div><div class="a-title">ข้อมูลประกอบ</div><p class="hint">แพทย์จะตรวจคำตอบก่อนเริ่มการปรึกษา</p></div></div>
+              <div class="alert alert--warning"><span class="a-ic"><svg class="ui-icon ui-icon--sm"><use href="#fi-triangle-alert"></use></svg></span><div><div class="a-title">ต้องตรวจสอบ</div><p class="hint">ร้านยายังไม่ยืนยันสต็อกภายในเวลาที่กำหนด</p></div></div>
+              <div class="alert alert--success"><span class="a-ic"><svg class="ui-icon ui-icon--sm"><use href="#fi-check-circle"></use></svg></span><div><div class="a-title">บันทึกแล้ว</div><p class="hint">ส่งแผนการดูแลให้ผู้ป่วยเรียบร้อย</p></div></div>
+              <div class="alert alert--danger"><span class="a-ic"><svg class="ui-icon ui-icon--sm"><use href="#fi-circle-x"></use></svg></span><div><div class="a-title">ทำรายการไม่สำเร็จ</div><p class="hint">ยังไม่มีการตัดเงิน กรุณาตรวจสอบข้อมูลแล้วลองอีกครั้ง</p></div></div>
+            </div>
+            <div class="specimen__tokens"><code>.alert</code><code>.alert--warning</code><code>.alert--success</code><code>.alert--danger</code><code>icon + actionable copy</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Toast and modal</h3><p>Toast confirms low-risk work. Modal protects continuity, money, and destructive actions.</p></div><code class="specimen__class">toast / modal</code></div>
+            <div class="specimen__preview sample-column">
+              <div class="toast-grid">
+                <div class="toast-sample toast-sample--info"><span class="toast-sample__icon"><svg class="ui-icon"><use href="#fi-info"></use></svg></span><div><b>มีข้อมูลใหม่</b><p class="hint">แพทย์ส่งข้อความถึงคุณ</p></div></div>
+                <div class="toast-sample toast-sample--success"><span class="toast-sample__icon"><svg class="ui-icon"><use href="#fi-check-circle"></use></svg></span><div><b>บันทึกแล้ว</b><p class="hint">อัปเดตเมื่อสักครู่</p></div></div>
+                <div class="toast-sample toast-sample--warning"><span class="toast-sample__icon"><svg class="ui-icon"><use href="#fi-triangle-alert"></use></svg></span><div><b>ต้องตรวจสอบ</b><p class="hint">ข้อมูลบางส่วนยังไม่ครบ</p></div></div>
+                <div class="toast-sample toast-sample--danger"><span class="toast-sample__icon"><svg class="ui-icon"><use href="#fi-circle-x"></use></svg></span><div><b>ไม่สำเร็จ</b><p class="hint">กรุณาลองใหม่อีกครั้ง</p></div></div>
+              </div>
+              <div class="modal-sample modal-sample--continuity"><div class="modal-sample__icon"><svg class="ui-icon ui-icon--md"><use href="#fi-clock"></use></svg></div><h3 class="h2">คุณยังมีเคสที่กำลังดำเนินการ</h3><p class="muted">เคส #KR-10293 กำลังรอแผนการรักษาจากแพทย์ กรุณากลับไปดำเนินการเคสเดิมก่อนเริ่มเรื่องใหม่</p><div class="modal-sample__actions"><button class="btn btn--ghost btn--sm" type="button">อยู่หน้าเดิม</button><button class="btn btn--primary btn--sm" type="button">ดูเคสเดิม</button></div></div>
+              <div class="modal-sample"><div class="modal-sample__icon"><i data-lucide="shield-check" class="ui-icon ui-icon--md" aria-hidden="true"></i></div><h3 class="h2">ยืนยันการใช้ข้อมูลก่อนเริ่มปรึกษา</h3><p class="muted">สรุปข้อมูลที่จะส่งให้แพทย์ วัตถุประสงค์ สิทธิ์ของผู้รับบริการ และบันทึกเวลาให้ความยินยอม</p><label class="row" style="margin-top:var(--sp-4);align-items:flex-start"><span class="check"><input type="checkbox"><span class="box"></span></span><span class="hint">ฉันยินยอมให้ใช้ข้อมูลสุขภาพเพื่อการปรึกษาครั้งนี้</span></label><div class="modal-sample__actions"><button class="btn btn--ghost btn--sm" type="button">กลับไปตรวจข้อมูล</button><button class="btn btn--primary btn--sm" type="button">ยืนยันและส่งให้แพทย์</button></div></div>
+              <div class="modal-sample"><h3 class="h2">ยืนยันการยกเลิก?</h3><p class="muted">ผู้ป่วยจะได้รับเงินคืนและการแจ้งเตือนทันที</p><div class="modal-sample__actions"><button class="btn btn--ghost btn--sm" type="button">กลับ</button><button class="btn btn--danger btn--sm" type="button">ยืนยันยกเลิก</button></div></div>
+            </div>
+            <div class="specimen__tokens"><code>info / success / warning / danger</code><code>continuity guard</code><code>destructive guard</code><code>focus trap + return</code></div>
+          </article>
+          <article class="specimen">
+            <div class="specimen__head"><div><h3>Loading and skeleton</h3><p>Preserve layout while the system works.</p></div><code class="specimen__class">.skeleton</code></div>
+            <div class="specimen__preview skeleton-stack"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+            <div class="specimen__tokens"><code>--dur-slow</code><code>prefers-reduced-motion</code><code>no layout shift</code></div>
+          </article>
+          <article class="specimen specimen--full">
+            <div class="specimen__head"><div><h3>Empty, loading, offline, and failure states</h3><p>Use the state that matches the cause. High-emotion outcomes may pair real photography with one rounded graphic layer and restrained grain; the message and safest next action stay explicit.</p></div><code class="specimen__class">.empty-state + .photo-graphic</code></div>
+            <div class="specimen__preview state-case-grid">
+              <section class="state-case" data-state="empty-initial">
+                <span class="state-case__usage">Empty, first use</span>
+                <div class="empty-state empty-state--compact"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-inbox"></use></svg></div><h3>ยังไม่มีเคสวันนี้</h3><p class="muted">เคสใหม่จะแสดงที่นี่เมื่อผู้ป่วยเข้าคิว</p><button class="btn btn--secondary btn--sm" type="button">ดูตารางวันนี้</button></div>
+              </section>
+              <section class="state-case" data-state="empty-complete">
+                <span class="state-case__usage">Empty, completed</span>
+                <div class="empty-state empty-state--compact empty-state--success"><div class="photo-graphic photo-graphic--success" role="img" aria-label="Completed"><img class="photo-graphic__photo" src="assets/editorial/clarity_closing.png" alt=""><span class="photo-graphic__signal"><svg class="ui-icon"><use href="#fi-check-circle"></use></svg></span></div><h3>จัดการครบแล้ว</h3><p class="muted">ไม่มีรายการที่ต้องดำเนินการต่อในขณะนี้</p><button class="btn btn--ghost btn--sm" type="button">ดูรายการทั้งหมด</button></div>
+              </section>
+              <section class="state-case" data-state="empty-search">
+                <span class="state-case__usage">No search results</span>
+                <div class="empty-state empty-state--compact"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-search"></use></svg></div><h3>ไม่พบ “Mali S.”</h3><p class="muted">ลองตรวจการสะกดหรือค้นหาด้วยเลขเคส</p><button class="btn btn--secondary btn--sm" type="button">ล้างคำค้นหา</button></div>
+              </section>
+              <section class="state-case" data-state="empty-filter">
+                <span class="state-case__usage">No filtered results</span>
+                <div class="empty-state empty-state--compact"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-filter-x"></use></svg></div><h3>ไม่มีรายการตามตัวกรอง</h3><p class="muted">ข้อมูลยังอยู่ครบ แต่ไม่ตรงกับตัวกรองที่เลือก</p><button class="btn btn--secondary btn--sm" type="button">ล้างตัวกรอง</button></div>
+              </section>
+              <section class="state-case" data-state="loading">
+                <span class="state-case__usage">Loading</span>
+                <div class="empty-state empty-state--compact empty-state--loading" aria-live="polite" aria-busy="true"><div class="photo-graphic photo-graphic--loading photo-graphic--warm"><img class="photo-graphic__photo" src="assets/editorial/model_arms.png" alt=""><span class="photo-graphic__signal"><svg class="ui-icon"><use href="#fi-loader"></use></svg></span></div><h3>กำลังโหลดข้อมูล</h3><p class="muted">รอสักครู่ ไม่ต้องกดซ้ำ</p><div class="state-case__progress" aria-hidden="true"><span></span><span></span><span></span></div></div>
+              </section>
+              <section class="state-case" data-state="offline">
+                <span class="state-case__usage">Offline by choice</span>
+                <div class="empty-state empty-state--compact empty-state--warning"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-clock"></use></svg></div><h3>คุณออฟไลน์อยู่</h3><p class="muted">จะไม่มีเคสใหม่เข้ามาจนกว่าจะพร้อมรับเคส</p><button class="btn btn--primary btn--sm" type="button">กลับมาพร้อมรับเคส</button></div>
+              </section>
+              <section class="state-case" data-state="network-offline">
+                <span class="state-case__usage">Network offline</span>
+                <div class="empty-state empty-state--compact empty-state--warning"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-wifi-off"></use></svg></div><h3>ไม่มีการเชื่อมต่ออินเทอร์เน็ต</h3><p class="muted">ข้อมูลที่บันทึกแล้วจะไม่หาย ตรวจสอบเครือข่ายแล้วลองใหม่</p><button class="btn btn--secondary btn--sm" type="button"><svg class="ui-icon ui-icon--sm" aria-hidden="true"><use href="#fi-refresh"></use></svg>ลองอีกครั้ง</button></div>
+              </section>
+              <section class="state-case" data-state="reconnecting">
+                <span class="state-case__usage">Reconnecting</span>
+                <div class="empty-state empty-state--compact empty-state--warning" aria-live="polite" aria-busy="true"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-refresh"></use></svg></div><h3>กำลังเชื่อมต่อใหม่</h3><p class="muted">รอสักครู่ ระบบจะกลับมาทำงานต่อโดยอัตโนมัติ</p><div class="state-case__progress" aria-hidden="true"><span></span><span></span><span></span></div></div>
+              </section>
+              <section class="state-case" data-state="error">
+                <span class="state-case__usage">Request failed</span>
+                <div class="empty-state empty-state--compact empty-state--danger"><div class="photo-graphic photo-graphic--danger" role="img" aria-label="Request failed"><img class="photo-graphic__photo" src="assets/editorial/safe_group_overlay.png" alt=""><span class="photo-graphic__signal"><svg class="ui-icon"><use href="#fi-triangle-alert"></use></svg></span></div><h3>โหลดข้อมูลไม่สำเร็จ</h3><p class="muted">ระบบยังไม่เปลี่ยนข้อมูลของคุณ กรุณาลองใหม่</p><button class="btn btn--primary btn--sm" type="button">ลองโหลดอีกครั้ง</button></div>
+              </section>
+              <section class="state-case" data-state="permission">
+                <span class="state-case__usage">Permission restricted</span>
+                <div class="empty-state empty-state--compact empty-state--locked"><div class="empty-state__art"><svg class="ui-icon ui-icon--lg"><use href="#fi-lock"></use></svg></div><h3>คุณไม่มีสิทธิ์ดูหน้านี้</h3><p class="muted">ติดต่อผู้ดูแลระบบหากต้องใช้ข้อมูลส่วนนี้ในการทำงาน</p><button class="btn btn--secondary btn--sm" type="button">กลับหน้าหลัก</button></div>
+              </section>
+            </div>
+            <div class="state-case-legend" aria-label="State selection rules"><div><b>Empty</b><span>ไม่มีข้อมูลจริงและโหลดสำเร็จ</span></div><div><b>Loading</b><span>กำลังรอผลและยังสรุปไม่ได้ว่าไม่มีข้อมูล</span></div><div><b>Offline</b><span>แยกผู้ใช้เลือกออฟไลน์ออกจากเครือข่ายขาด</span></div><div><b>Error</b><span>บอกผลกระทบและให้ retry ที่ปลอดภัย</span></div></div>
+            <div class="specimen__tokens"><code>empty-initial / complete</code><code>search / filter</code><code>loading</code><code>offline-choice / network / reconnecting</code><code>error / permission</code><code>.photo-graphic--success / loading / danger</code><code>state + reason + action</code><code>aria-live / aria-busy</code></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="inventory-section" id="motion">
+        <div class="inventory-section__head">
+          <div><span class="eyebrow">Foundation 13</span><h2>Motion</h2></div>
+          <p>Motion supports hierarchy and state change. It never delays a clinical or operational task and always respects reduced motion.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen__head"><div><h3>Duration and easing</h3><p>Use the named level that matches the size of the change.</p></div><code class="specimen__class">--dur-* / --ease-*</code></div>
+          <div class="specimen__preview motion-grid">
+            <div class="motion-token"><b>Micro</b><code>--dur-micro</code><p class="hint">press, toggle, focus</p></div>
+            <div class="motion-token"><b>Base</b><code>--dur-base</code><p class="hint">card and component reveal</p></div>
+            <div class="motion-token"><b>Page</b><code>--dur-page</code><p class="hint">screen transition</p></div>
+            <div class="motion-token"><b>Slow</b><code>--dur-slow</code><p class="hint">ambient loading only</p></div>
+          </div>
+          <div class="specimen__tokens"><code>--ease-out</code><code>--ease-inout</code><code>--ease-spring</code><code>prefers-reduced-motion</code></div>
+        </div>
+        <div class="inventory-note"><svg class="ui-icon"><use href="#fi-info"></use></svg><span>Developer rule: extend a shared token or component before adding a page-specific value. Every visible action must produce navigation, a state update, or explicit feedback.</span></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="action-toast" id="inventory-feedback" role="status" aria-live="polite"></div>
+  <script src="assets/lucide.min.js?v=0.577.0"></script>
+  <script src="b2c-icons.js?v=20260715d"></script>
+  <script>
+    (function () {
+      var toast = document.getElementById('inventory-feedback');
+      var toastTimer;
+
+      function showFeedback(text,type) {
+        if (!toast) return;
+        var kind = type || 'success';
+        var icons = {info:'fi-info',success:'fi-check-circle',warning:'fi-triangle-alert',danger:'fi-circle-x'};
+        toast.className = 'action-toast action-toast--' + kind;
+        toast.innerHTML = '<span class="action-toast__icon"><svg class="ui-icon ui-icon--sm"><use href="#'+(icons[kind]||icons.info)+'"></use></svg></span><span></span>';
+        toast.lastElementChild.textContent = text;
+        toast.classList.add('is-visible');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function () { toast.classList.remove('is-visible'); }, 2200);
+      }
+
+      function legacyCopy(text) {
+        var field = document.createElement('textarea');
+        field.value = text;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        var copied = document.execCommand('copy');
+        field.remove();
+        return copied;
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+        }
+        return Promise.resolve(legacyCopy(text));
+      }
+
+      document.querySelectorAll('[data-copy-icon]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var name = button.getAttribute('data-copy-icon');
+          var markup = '<i data-lucide="' + name + '" class="ui-icon ui-icon--md" aria-hidden="true"></i>';
+          copyText(markup).then(function () { showFeedback('คัดลอก ' + name + ' markup แล้ว', 'info'); });
+        });
+      });
+
+      document.querySelectorAll('[data-copy-code]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var source = document.getElementById(button.getAttribute('data-copy-code'));
+          if (!source) return;
+          copyText(source.textContent).then(function () { showFeedback('คัดลอก code แล้ว', 'info'); });
+        });
+      });
+
+      document.querySelectorAll('.option').forEach(function (option) {
+        option.addEventListener('click', function () {
+          if (option.hasAttribute('data-select')) {
+            option.closest('.sample-column').querySelectorAll('[data-select]').forEach(function (item) { item.setAttribute('aria-selected', 'false'); });
+          }
+          option.setAttribute('aria-selected', option.getAttribute('aria-selected') === 'true' ? 'false' : 'true');
+          showFeedback('อัปเดต selection state แล้ว');
+        });
+      });
+
+      document.querySelectorAll('[role="switch"]').forEach(function (control) {
+        control.addEventListener('click', function () {
+          var next = control.getAttribute('aria-checked') !== 'true';
+          control.setAttribute('aria-checked', String(next));
+          showFeedback(next ? 'พร้อมรับเคส' : 'ออฟไลน์');
+        });
+      });
+
+      document.querySelectorAll('[role="tab"]').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tab.parentElement.querySelectorAll('[role="tab"]').forEach(function (item) {
+            item.classList.remove('is-active');
+            item.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+          showFeedback('แสดงตัวกรอง ' + tab.textContent.trim());
+        });
+      });
+
+      document.querySelectorAll('.specimen button:not([disabled]):not(.option):not([role="switch"]):not([role="tab"]):not([data-copy-icon]):not([data-copy-code])').forEach(function (button) {
+        button.addEventListener('click', function () { showFeedback('Component preview: ' + (button.textContent.trim() || button.getAttribute('aria-label'))); });
+      });
+
+      var links = Array.from(document.querySelectorAll('.inventory-nav a'));
+      var sections = links.map(function (link) { return document.querySelector(link.getAttribute('href')); }).filter(Boolean);
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          links.forEach(function (link) { link.classList.toggle('is-active', link.getAttribute('href') === '#' + entry.target.id); });
+        });
+      }, { rootMargin: '-20% 0% -70% 0%' });
+      sections.forEach(function (section) { observer.observe(section); });
+    })();
+  </script>
+</body>
+</html>

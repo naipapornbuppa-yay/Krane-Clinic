@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Krane Clinic. การดูแลสุขภาพระดับพรีเมียม ออกแบบมาเพื่อผู้ชาย ปรึกษาแพทย์ออนไลน์ รับแผนการรักษาเฉพาะบุคคล จัดส่งถึงบ้านอย่างเป็นส่วนตัว">
+<title>Krane Clinic | การดูแลสุขภาพระดับพรีเมียม ออกแบบมาเพื่อผู้ชาย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   KRANE CLINIC LANDING, v2
+   Built from Figma node 259:2713 (Krane Clinic DLS).
+   Every value below traces to that frame. Deviations are marked
+   with a "FIGMA FIX" comment and explained in the handoff notes.
+   ============================================================ */
+
+:root{
+  /* ---- Brand ---- */
+  --color-teal:            #0F6B5E;   /* client brand teal, from the clinician role labels in Figma */
+  --color-teal-deep:       #0A4F45;
+  --color-teal-soft:       #E4F0EE;
+
+  /* ---- Ink and surfaces ---- */
+  --color-ink:             #121824;   /* headings, primary text */
+  --color-ink-2:           #334054;
+  --color-ink-3:           #444B5A;   /* nav links */
+  --color-muted:           #5C6479;   /* body, eyebrows, secondary */
+  --color-muted-2:         #7F8D9E;   /* footer text */
+  --color-canvas:          #F4F6F8;
+  --color-surface:         #FFFFFF;
+  --color-line:            #E2E5EB;
+  --color-line-soft:       #E8E8E8;
+  --color-line-dark:       #1E2736;
+  --color-bar:             #3D3D3D;
+
+  /* ---- Gradients ---- */
+  --grad-hero:  linear-gradient(228.73deg, #CBE0FF 0%, #D6E0D1 100%);
+  --grad-cta:   linear-gradient(225deg,    #CBE0FF 0%, #D6E0D1 100%);
+  --grad-step:  linear-gradient(228.73deg, #8FACD7 0%, #B0B1A6 100%);
+
+  /* ---- Signals ---- */
+  --color-star:            #FFC700;
+  --color-dot-active:      #21598F;
+  --color-dot-idle:        #CCD4DE;
+  --color-icon-bg:         #E8EDF2;
+
+  /* ---- Buttons ----
+     Figma ships dark buttons. The client wants teal as the main
+     brand colour, so the CTA fill is a single token: flip
+     --btn-primary-bg to var(--color-teal) and every primary
+     action on the page turns teal. Nothing else changes. ---- */
+  --btn-primary-bg:        #121824;
+  --btn-primary-bg-hover:  #0A1628;
+  --btn-primary-ink:       #FFFFFF;
+  --btn-hero-bg:           #0A1628;
+
+  /* ---- Radius ---- */
+  --radius-pill:           99px;
+  --radius-sm:             6px;
+  --radius-card:           24px;
+  --radius-card-sm:        20px;
+  --radius-nav:            40px;
+  --radius-panel:          40px;
+  --radius-hero:           56px;
+  --radius-section:        64px;
+
+  /* ---- Spacing, 4pt base ---- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+  --sp-6:24px; --sp-8:32px; --sp-10:40px; --sp-12:50px; --sp-15:60px;
+  --sp-20:80px; --sp-25:100px; --sp-30:120px;
+
+  /* ---- Type ---- */
+  --font-display:"Poppins","Prompt",sans-serif;
+  --font-body:"Prompt","Sarabun","Sukhumvit Set",sans-serif;
+  --font-mono-ui:"Inter",sans-serif;
+
+  --fs-hero:      clamp(34px, 4.4vw, 60px);
+  --fs-h2:        clamp(30px, 3.2vw, 44px);
+  --fs-h2-lg:     clamp(32px, 3.8vw, 52px);
+  --fs-h2-cta:    clamp(32px, 4vw, 56px);
+  --fs-h3:        clamp(22px, 2vw, 28px);
+
+  /* ---- Layout ---- */
+  --page-edge:    clamp(16px, 2.4vw, 32px);
+  --section-pad:  clamp(56px, 7vw, 100px);
+  --shell:        1216px;
+  --control-h:    47px;
+
+  /* ---- Motion ---- */
+  --dur:220ms;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--color-canvas);
+  color:var(--color-ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+h1,h2,h3,p,ul{margin:0}
+ul{padding:0;list-style:none}
+
+/* Visible focus for every interactive element. Not in the Figma,
+   required for an accessible build. */
+a:focus-visible,button:focus-visible{
+  outline:2px solid var(--color-teal);
+  outline-offset:3px;
+  border-radius:var(--sp-1);
+}
+
+.skip-link{
+  position:absolute;left:var(--sp-4);top:-60px;z-index:100;
+  padding:var(--sp-3) var(--sp-5);border-radius:var(--radius-pill);
+  background:var(--color-ink);color:#fff;font-size:14px;font-weight:600;
+  transition:top var(--dur) var(--ease);
+}
+.skip-link:focus{top:var(--sp-4)}
+
+.shell{width:min(var(--shell),100%);margin-inline:auto}
+
+.page{
+  display:flex;flex-direction:column;align-items:center;
+  gap:var(--sp-8);
+  padding:0 var(--page-edge) var(--sp-8);
+}
+
+/* ---------- Eyebrow and section headings ---------- */
+.eyebrow{
+  margin:0;
+  font-size:14px;font-weight:600;line-height:1.5;
+  text-transform:uppercase;letter-spacing:.04em;
+  color:var(--color-muted);
+}
+.section-title{
+  font-size:var(--fs-h2);font-weight:400;line-height:1.1;
+  color:var(--color-ink);text-wrap:balance;
+}
+.section-lead{
+  font-size:16px;line-height:1.5;color:var(--color-muted);
+}
+.section-head{display:flex;flex-direction:column;align-items:center;gap:var(--sp-3);text-align:center}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:var(--control-h);padding:var(--sp-3) var(--sp-6);
+  border-radius:var(--radius-pill);
+  font-size:15px;font-weight:500;line-height:1.5;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.btn:active{transform:translateY(1px)}
+.btn--primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink)}
+.btn--primary:hover{background:var(--btn-primary-bg-hover)}
+.btn--outline{
+  border:1px solid var(--color-ink);color:var(--color-ink);background:transparent;
+}
+.btn--outline:hover{background:var(--color-ink);color:#fff}
+.btn--hero{background:var(--btn-hero-bg);color:#fff;font-family:var(--font-mono-ui);font-weight:600;padding:14px 28px}
+.btn--hero:hover{background:#050E1B}
+.btn--hero-ghost{
+  background:var(--color-surface);border:1px solid var(--btn-hero-bg);color:var(--btn-hero-bg);
+  font-family:var(--font-mono-ui);font-weight:600;padding:14px 28px;
+}
+.btn--hero-ghost:hover{background:var(--btn-hero-bg);color:#fff}
+
+/* ---------- Announcement bar ---------- */
+.announce{
+  width:100vw;margin-left:calc(50% - 50vw);
+  height:32px;overflow:hidden;background:var(--color-bar);
+  display:flex;align-items:center;
+}
+.announce__track{display:flex;align-items:center;width:max-content;animation:ticker 44s linear infinite}
+.announce__group{display:flex;align-items:center;gap:var(--sp-4);padding-inline:var(--sp-6)}
+.announce__item{
+  font-family:var(--font-mono-ui);font-size:12px;font-weight:500;line-height:15px;
+  text-transform:uppercase;letter-spacing:.02em;color:#fff;white-space:nowrap;
+}
+.announce__sep{font-family:var(--font-mono-ui);font-size:10px;color:#fff;opacity:.5}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
+@media (prefers-reduced-motion:reduce){
+  .announce__track{animation:none}
+}
+
+/* ---------- Navigation ---------- */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);
+  width:100%;min-height:73px;padding:var(--sp-4) var(--sp-5);
+  background:var(--color-surface);
+  border-bottom:1px solid var(--color-line-soft);
+  border-radius:var(--radius-nav);
+  box-shadow:0 2px 16px rgba(0,0,0,.08);
+}
+.nav__logo{display:flex;align-items:center;gap:var(--sp-2);font-family:var(--font-display);font-weight:600;font-size:22px;letter-spacing:-.01em}
+.nav__logo span{
+  padding-left:var(--sp-2);border-left:1px solid var(--color-line);
+  font-family:var(--font-body);font-size:13px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--color-muted);
+}
+.nav__links{display:flex;align-items:center;gap:36px}
+.nav__links a{font-size:14px;font-weight:600;color:var(--color-ink-3);transition:color var(--dur) var(--ease)}
+.nav__links a:hover{color:var(--color-teal)}
+.nav__right{display:flex;align-items:center;gap:14px}
+.nav__lang{
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:32px;padding:var(--sp-1) var(--sp-2);
+  border:1px solid #D9D9D9;border-radius:var(--radius-sm);
+  font-family:var(--font-mono-ui);font-size:14px;font-weight:500;color:#1A1A1A;
+}
+.nav__lang svg{width:10px;height:10px;color:#666}
+.nav__login{font-size:14px;font-weight:600;color:var(--color-ink-3)}
+.nav__login:hover{color:var(--color-teal)}
+.nav__cta{min-height:41px;padding:var(--sp-3) var(--sp-5);font-family:"Inter",sans-serif;font-size:13px;font-weight:600}
+
+/* ---------- Hero ---------- */
+.hero{
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;padding:var(--sp-8);
+  background:var(--grad-hero);
+  border-radius:var(--radius-hero);
+}
+.hero__inner{
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-6);
+  width:100%;padding-inline:clamp(var(--sp-4),6vw,var(--sp-20));
+  text-align:center;
+}
+/* FIGMA FIX: the trust row and lead are rgba(255,255,255,.85) and
+   .8 in Figma, sitting on a pale gradient. That fails contrast and
+   is unreadable in the rendered frame. Both use ink here. */
+.hero__trust{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3) 28px}
+.hero__trust li{display:flex;align-items:center;gap:7px;font-family:var(--font-mono-ui);font-size:13px;font-weight:500;color:var(--color-ink-2)}
+.hero__trust svg{width:14px;height:14px;flex:none;color:var(--color-teal)}
+.hero h1{
+  font-family:var(--font-display);font-size:var(--fs-hero);
+  font-weight:600;line-height:1.2;color:#000;text-wrap:balance;
+}
+.hero__lead{
+  max-width:964px;
+  font-family:var(--font-mono-ui);font-size:18px;line-height:1.6;
+  color:var(--color-ink-2);
+}
+.hero__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-4)}
+
+/* ---------- Treatment grid ---------- */
+.treatments{width:100%;padding-bottom:var(--section-pad)}
+.treatments__title{
+  font-family:var(--font-body);font-size:clamp(22px,2.2vw,28px);
+  font-weight:700;line-height:1.5;color:var(--color-ink);
+}
+.pill-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:var(--sp-5);margin-top:var(--sp-8);
+}
+.pill{
+  display:flex;align-items:center;gap:var(--sp-5);
+  min-height:88px;padding:var(--sp-3) var(--sp-6) var(--sp-3) var(--sp-3);
+  background:var(--color-surface);
+  border:1px solid var(--color-line);
+  border-radius:var(--radius-pill);
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.pill:hover{border-color:var(--color-teal);box-shadow:0 8px 24px rgba(15,107,94,.10);transform:translateY(-2px)}
+.pill__img{width:64px;height:64px;flex:none;border-radius:50%;object-fit:cover;background:var(--color-icon-bg)}
+.pill__label{
+  flex:1;font-family:var(--font-mono-ui);font-size:18px;font-weight:500;
+  line-height:1.25;color:var(--color-ink);
+}
+.pill__arrow{
+  display:grid;place-items:center;width:36px;height:36px;flex:none;
+  border-radius:50%;background:var(--color-canvas);
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.pill__arrow svg{width:14px;height:14px}
+.pill:hover .pill__arrow{background:var(--color-teal);color:#fff}
+
+/* ---------- Product spotlight ---------- */
+.spotlight{
+  width:100%;padding:var(--section-pad) clamp(var(--sp-6),5vw,var(--sp-20));
+  background:var(--color-surface);border-radius:var(--radius-section);
+}
+.spotlight__head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:var(--sp-10);margin-bottom:var(--sp-12);
+}
+.spotlight__head .section-title{max-width:600px}
+.spotlight__head .section-lead{max-width:400px;flex:none}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-6)}
+.product{
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-card);overflow:hidden;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.product:hover{border-color:#C9D0DA;box-shadow:0 12px 32px rgba(18,24,36,.08)}
+.product__img{width:100%;height:260px;object-fit:cover;background:var(--color-canvas)}
+.product__body{display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6)}
+.product__cat{
+  font-size:13px;font-weight:600;line-height:1.5;
+  text-transform:uppercase;letter-spacing:.04em;color:var(--color-muted);
+}
+.product__name{font-size:var(--fs-h3);font-weight:400;line-height:1.5;color:var(--color-ink)}
+.product__points{display:flex;flex-direction:column;gap:10px}
+.product__points li{display:flex;align-items:flex-start;gap:var(--sp-2);font-size:14px;line-height:1.5;color:var(--color-muted)}
+.product__points svg{width:14px;height:14px;flex:none;margin-top:4px;color:var(--color-teal)}
+.product__footer{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);
+  padding:var(--sp-6);border-top:1px solid var(--color-line);
+}
+.product__price small{display:block;font-size:13px;line-height:1.5;color:var(--color-muted)}
+.product__price strong{display:block;font-size:18px;font-weight:600;line-height:1.5;color:var(--color-ink)}
+
+/* ---------- How it works ---------- */
+.how{width:100%;padding:var(--section-pad) 0}
+.steps{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:var(--sp-6);margin-top:var(--sp-15);
+}
+.step{
+  display:flex;flex-direction:column;gap:var(--sp-5);
+  padding:var(--sp-8);
+  background:var(--grad-step);border-radius:var(--radius-hero);
+  color:#fff;
+}
+.step__no{
+  display:grid;place-items:center;width:40px;height:40px;
+  border-radius:50%;background:var(--color-ink);
+  font-size:16px;font-weight:600;color:#fff;
+}
+.step__title{font-size:var(--fs-h3);font-weight:400;line-height:1.5;color:#fff}
+.step__text{font-size:15px;line-height:1.5;color:#fff}
+
+/* ---------- Why Krane ---------- */
+.why{
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  gap:var(--sp-20);width:100%;
+  padding:var(--sp-20) clamp(var(--sp-6),5vw,var(--sp-20));
+  background:var(--color-surface);border-radius:var(--radius-section);
+}
+.why__copy{display:flex;flex-direction:column;gap:var(--sp-8)}
+.why__copy .section-title{font-size:var(--fs-h2-lg);font-weight:600}
+.why__intro{display:flex;flex-direction:column;gap:var(--sp-4)}
+.why__lead{font-size:16px;line-height:1.6;color:var(--color-muted)}
+.why__list{
+  display:flex;flex-direction:column;
+  background:var(--color-surface);
+  border:1px solid var(--color-line);border-radius:var(--radius-panel);
+  overflow:hidden;
+}
+.benefit{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-6);border-bottom:1px solid var(--color-line)}
+.benefit:last-child{border-bottom:0}
+.benefit__icon{
+  display:grid;place-items:center;width:48px;height:48px;flex:none;
+  border-radius:50%;background:var(--color-icon-bg);color:var(--color-teal);
+}
+.benefit__icon svg{width:20px;height:20px}
+.benefit__body{display:flex;flex-direction:column;gap:6px}
+.benefit__title{font-size:18px;font-weight:500;line-height:1.5;color:var(--color-ink)}
+.benefit__text{font-size:14px;line-height:1.5;color:var(--color-muted)}
+
+/* ---------- Clinical team carousel ---------- */
+.team{width:100%;padding:var(--section-pad) 0}
+.carousel{display:flex;flex-direction:column;align-items:center;gap:var(--sp-8);margin-top:var(--sp-15)}
+.carousel__row{display:flex;align-items:center;gap:var(--sp-6);width:100%}
+.carousel__btn{
+  display:grid;place-items:center;width:48px;height:48px;flex:none;
+  background:var(--color-surface);border:1.5px solid var(--color-line);
+  border-radius:50%;color:var(--color-ink-2);
+  transition:border-color var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.carousel__btn:hover{border-color:var(--color-teal);color:var(--color-teal)}
+.carousel__btn svg{width:14px;height:20px}
+.carousel__viewport{flex:1;overflow:hidden}
+.carousel__track{display:flex;gap:var(--sp-10);transition:transform 420ms var(--ease)}
+.clinician{
+  display:flex;align-items:center;gap:var(--sp-8);flex:none;
+  width:516px;max-width:100%;padding:var(--sp-8);
+  background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-card);
+}
+.clinician__photo{width:140px;height:180px;flex:none;border-radius:16px;object-fit:cover;background:var(--color-canvas)}
+.clinician__body{display:flex;flex-direction:column;gap:var(--sp-4);min-width:0}
+.clinician__name{font-family:var(--font-mono-ui);font-size:24px;font-weight:700;line-height:1.2;color:var(--color-ink)}
+.clinician__role{
+  margin-top:6px;
+  font-family:var(--font-mono-ui);font-size:13px;font-weight:700;line-height:1.25;
+  text-transform:uppercase;letter-spacing:.02em;color:var(--color-teal);
+}
+.clinician__meta{display:flex;flex-direction:column;gap:var(--sp-1)}
+.clinician__meta p{font-family:var(--font-mono-ui);font-size:14px;line-height:1.25;color:var(--color-muted)}
+.carousel__dots{display:flex;justify-content:center;gap:var(--sp-2)}
+.carousel__dots button{width:10px;height:10px;border-radius:50%;background:var(--color-dot-idle);transition:background var(--dur) var(--ease)}
+.carousel__dots button[aria-current="true"]{background:var(--color-dot-active)}
+
+/* ---------- Testimonials ---------- */
+.reviews{
+  width:100%;padding:var(--section-pad) clamp(var(--sp-6),5vw,var(--sp-20));
+  background:var(--color-surface);border-radius:var(--radius-section);
+}
+.review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-6);margin-top:var(--sp-12)}
+.review{
+  display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-8);
+  background:var(--color-canvas);border:1px solid var(--color-line);
+  border-radius:var(--radius-card-sm);
+}
+.review__stars{display:flex;gap:var(--sp-1);color:var(--color-star)}
+.review__stars svg{width:16px;height:16px}
+.review__quote{font-size:16px;line-height:1.5;color:var(--color-ink)}
+.review__who{margin-top:auto}
+.review__who b{display:block;font-size:14px;font-weight:600;line-height:1.5;color:var(--color-ink)}
+.review__who span{display:block;font-size:12px;line-height:1.5;color:var(--color-muted)}
+
+/* ---------- Final CTA and footer ---------- */
+.tail{width:100%;border-radius:var(--radius-section);overflow:hidden}
+.final-cta{
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-8);
+  padding:var(--sp-30) clamp(var(--sp-6),5vw,var(--sp-20));
+  background:var(--grad-cta);text-align:center;
+}
+.final-cta h2{font-size:var(--fs-h2-cta);font-weight:400;line-height:1.1;color:var(--color-ink);text-wrap:balance}
+.final-cta p{max-width:720px;font-size:16px;line-height:1.5;color:var(--color-muted)}
+
+.site-footer{
+  display:flex;flex-direction:column;gap:var(--sp-15);
+  padding:var(--sp-20) clamp(var(--sp-6),5vw,var(--sp-20)) var(--sp-15);
+  background:var(--color-ink);color:var(--color-muted-2);
+}
+.footer__top{display:flex;justify-content:space-between;gap:var(--sp-20);flex-wrap:wrap}
+.footer__brand{display:flex;flex-direction:column;gap:var(--sp-5);max-width:320px}
+.footer__logo{display:flex;align-items:center;gap:var(--sp-2)}
+.footer__logo b{font-family:var(--font-display);font-size:28px;font-weight:400;color:#fff}
+.footer__logo span{
+  padding-left:var(--sp-2);border-left:1px solid #323C4F;
+  font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;
+}
+.footer__cols{display:flex;gap:var(--sp-20);flex-wrap:wrap}
+.footer__col{display:flex;flex-direction:column;gap:var(--sp-4)}
+.footer__col h3{font-size:14px;font-weight:600;line-height:1.5;color:#fff}
+.footer__col a{font-size:14px;line-height:1.5;transition:color var(--dur) var(--ease)}
+.footer__col a:hover{color:#fff}
+.footer__bottom{
+  display:flex;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap;
+  padding-top:var(--sp-8);border-top:1px solid var(--color-line-dark);
+  font-size:13px;
+}
+.footer__bottom nav{display:flex;gap:var(--sp-4);flex-wrap:wrap}
+.footer__bottom a:hover{color:#fff}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .nav__links{display:none}
+  .pill-grid,.product-grid,.steps,.review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .why{grid-template-columns:1fr;gap:var(--sp-10)}
+  .spotlight__head{flex-direction:column;align-items:flex-start;gap:var(--sp-5)}
+  .spotlight__head .section-lead{max-width:none}
+}
+@media (max-width:720px){
+  :root{--radius-hero:36px;--radius-section:36px;--radius-nav:28px}
+  .pill-grid,.product-grid,.steps,.review-grid{grid-template-columns:1fr}
+  .hero{padding:var(--sp-5)}
+  .hero__actions .btn{width:100%}
+  .clinician{flex-direction:column;align-items:flex-start;width:min(88vw,420px)}
+  .clinician__photo{width:100%;height:220px}
+  .carousel__btn{display:none}
+  .footer__top,.footer__cols{gap:var(--sp-10)}
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+
+<!-- ============ Announcement bar ============ -->
+<div class="announce" role="complementary" aria-label="ประกาศจากคลินิก">
+  <div class="announce__track">
+    <div class="announce__group">
+      <span class="announce__item">Virtual consultations available 24/7</span>
+      <span class="announce__sep" aria-hidden="true">&#10022;</span>
+      <span class="announce__item">Board-certified doctors online in minutes</span>
+      <span class="announce__sep" aria-hidden="true">&#10022;</span>
+      <!-- Em dash removed per project copy rules. -->
+      <span class="announce__item">First telemedicine visit free. Book now</span>
+      <span class="announce__sep" aria-hidden="true">&#10022;</span>
+    </div>
+    <div class="announce__group" aria-hidden="true">
+      <span class="announce__item">Virtual consultations available 24/7</span>
+      <span class="announce__sep">&#10022;</span>
+      <span class="announce__item">Board-certified doctors online in minutes</span>
+      <span class="announce__sep">&#10022;</span>
+      <span class="announce__item">First telemedicine visit free. Book now</span>
+      <span class="announce__sep">&#10022;</span>
+    </div>
+    <div class="announce__group" aria-hidden="true">
+      <span class="announce__item">Virtual consultations available 24/7</span>
+      <span class="announce__sep">&#10022;</span>
+      <span class="announce__item">Board-certified doctors online in minutes</span>
+      <span class="announce__sep">&#10022;</span>
+      <span class="announce__item">First telemedicine visit free. Book now</span>
+      <span class="announce__sep">&#10022;</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ============ Navigation ============ -->
+  <header class="nav">
+    <a class="nav__logo" href="#main">krane <span>clinic</span></a>
+
+    <nav class="nav__links" aria-label="เมนูหลัก">
+      <a href="#treatments">การรักษา</a>
+      <a href="#how">วิธีการทำงาน</a>
+      <a href="#why">การรับประกัน Krane</a>
+      <a href="#team">แพทย์ของเรา</a>
+    </nav>
+
+    <div class="nav__right">
+      <button class="nav__lang" type="button" aria-label="เปลี่ยนภาษา ปัจจุบันคือภาษาไทย">
+        TH
+        <svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 3l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a class="nav__login" href="#login">เข้าสู่ระบบ</a>
+      <a class="btn btn--primary nav__cta" href="#start">เริ่มต้นใช้งาน</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ Hero ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__inner">
+        <ul class="hero__trust">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            ออนไลน์ 100%
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+            ได้รับการรับรอง
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            จัดส่งฟรีแบบปกปิด
+          </li>
+        </ul>
+
+        <h1 id="hero-title">การดูแลสุขภาพระดับพรีเมียม ออกแบบมาเพื่อผู้ชาย</h1>
+
+        <p class="hero__lead">การรักษาที่ผ่านการพิสูจน์ทางคลินิก สั่งจ่ายโดยแพทย์ สำหรับปัญหาผมร่วง สมรรถภาพทางเพศ และผิวพรรณ จัดส่งถึงหน้าบ้านอย่างปกปิด</p>
+
+        <div class="hero__actions">
+          <a class="btn btn--hero" href="#start">เริ่มประเมินสุขภาพฟรี (5 นาที)</a>
+          <a class="btn btn--hero-ghost" href="#treatments">ดูรายละเอียดการรักษา</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Treatment grid ============ -->
+    <section class="treatments shell" id="treatments" aria-labelledby="treatments-title">
+      <h2 class="treatments__title" id="treatments-title">ทางเลือกการรักษาที่ตรงจุด เพื่อสุขภาพที่ดีที่สุดของคุณ</h2>
+
+      <div class="pill-grid">
+        <a class="pill" href="#hair">
+          <img class="pill__img" src="assets/landing/cat-hair.jpg" alt="">
+          <span class="pill__label">ป้องกันผมร่วง</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+        <a class="pill" href="#ed">
+          <img class="pill__img" src="assets/landing/cat-performance.jpg" alt="">
+          <span class="pill__label">สมรรถภาพทางเพศ</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+        <a class="pill" href="#skin">
+          <img class="pill__img" src="assets/landing/cat-skin.jpg" alt="">
+          <span class="pill__label">ผิวพรรณและชะลอวัย</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+        <a class="pill" href="#weight">
+          <img class="pill__img" src="assets/landing/cat-weight.jpg" alt="">
+          <span class="pill__label">จัดการน้ำหนัก</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+        <a class="pill" href="#trt">
+          <img class="pill__img" src="assets/landing/cat-hormonal.jpg" alt="">
+          <span class="pill__label">ฮอร์โมนและ TRT</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+        <a class="pill" href="#focus">
+          <img class="pill__img" src="assets/landing/cat-focus.jpg" alt="">
+          <span class="pill__label">โฟกัสและพลังประจำวัน</span>
+          <span class="pill__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ Product spotlight ============ -->
+    <section class="spotlight" aria-labelledby="spotlight-title">
+      <div class="shell">
+        <div class="spotlight__head">
+          <div>
+            <p class="eyebrow">โปรโตคอลของเรา</p>
+            <h2 class="section-title" id="spotlight-title">พิสูจน์แล้วทางคลินิก ผ่านการรับรอง FDA</h2>
+          </div>
+          <p class="section-lead">แผนการรักษาแต่ละแผนถูกปรับแต่งโดยแพทย์ที่มีใบอนุญาต และจ่ายยาจากร้านเภสัชกรพันธมิตรที่ได้รับการรับรอง</p>
+        </div>
+
+        <div class="product-grid">
+          <article class="product">
+            <div>
+              <img class="product__img" src="assets/landing/product-hair.jpg" alt="ขวดปั๊มแก้วสีอำพันสำหรับดูแลเส้นผม">
+              <div class="product__body">
+                <div>
+                  <p class="product__cat">สุขภาพเส้นผม</p>
+                  <h3 class="product__name">แพ็คเกจฟื้นฟูผมครบวงจร</h3>
+                </div>
+                <ul class="product__points">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>ไฟนาสเตอไรด์ + มินอกซิดิลทาเฉพาะที่</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>หยุดผมร่วงและฟื้นฟูรูขุมขน</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>ติดตามผลกับแพทย์ออนไลน์ฟรี</li>
+                </ul>
+              </div>
+            </div>
+            <div class="product__footer">
+              <p class="product__price"><small>เริ่มต้นที่</small><strong>฿990/เดือน</strong></p>
+              <a class="btn btn--primary" href="#start">ปรึกษาฟรี</a>
+            </div>
+          </article>
+
+          <article class="product">
+            <div>
+              <img class="product__img" src="assets/landing/product-performance.jpg" alt="กล่องยาสีเข้มระดับพรีเมียมสำหรับโปรโตคอลสมรรถภาพ">
+              <div class="product__body">
+                <div>
+                  <p class="product__cat">สมรรถภาพ</p>
+                  <h3 class="product__name">โปรโตคอลออนดีมานด์</h3>
+                </div>
+                <ul class="product__points">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>ซิลเดนาฟิลหรือทาดาลาฟิลตามใบสั่งแพทย์</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>ออกฤทธิ์เร็ว ปรับขนาดยาเฉพาะบุคคล</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>บรรจุในซองกระเป๋าสตางค์ไม่มีตราสินค้า</li>
+                </ul>
+              </div>
+            </div>
+            <div class="product__footer">
+              <p class="product__price"><small>เริ่มต้นที่</small><strong>฿150/โดส</strong></p>
+              <a class="btn btn--primary" href="#start">ปรึกษาฟรี</a>
+            </div>
+          </article>
+
+          <article class="product">
+            <div>
+              <img class="product__img" src="assets/landing/product-vitality.jpg" alt="ขวดแก้วฝ้าบรรจุอาหารเสริมสำหรับใช้ประจำวัน">
+              <div class="product__body">
+                <div>
+                  <p class="product__cat">ความยืนยาว &amp; โฟกัส</p>
+                  <h3 class="product__name">สูตรพลังชีวิตประจำวัน</h3>
+                </div>
+                <ul class="product__points">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>สารอาหารหลายชนิดที่ปรับแต่งเฉพาะบุคคล</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>สนับสนุน ATP ระดับเซลล์และสุขภาพหัวใจ</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>แพทย์เป็นผู้กำหนดสูตร</li>
+                </ul>
+              </div>
+            </div>
+            <div class="product__footer">
+              <p class="product__price"><small>เริ่มต้นที่</small><strong>฿1,290/เดือน</strong></p>
+              <a class="btn btn--primary" href="#start">ปรึกษาฟรี</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ How it works ============ -->
+    <section class="how" id="how" aria-labelledby="how-title">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">ง่าย &amp; ปลอดภัย</p>
+          <h2 class="section-title" id="how-title" style="font-weight:600">เส้นทางผู้ป่วยยุคใหม่</h2>
+        </div>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__no">01</span>
+            <div>
+              <h3 class="step__title">ปรึกษาออนไลน์</h3>
+              <p class="step__text">กรอกแบบประเมินสุขภาพส่วนตัว 5 นาที ระบุโปรไฟล์สุขภาพและเป้าหมายด้านสุขภาพของคุณ</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step__no">02</span>
+            <div>
+              <h3 class="step__title">แพทย์ตรวจสอบ</h3>
+              <p class="step__text">แพทย์ที่ได้รับใบรับรองจะประเมินข้อมูลของคุณ กำหนดใบสั่งยาเฉพาะ และตอบคำถาม</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step__no">03</span>
+            <div>
+              <h3 class="step__title">จัดส่งอย่างเป็นส่วนตัว</h3>
+              <p class="step__text">การรักษาเฉพาะบุคคลของคุณจะถูกรวบรวมและจัดส่งภายในวันรุ่งขึ้นในกล่องพรีเมียมไม่มีตราสินค้า พร้อมจัดส่งฟรี</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ Why Krane ============ -->
+    <section class="why" id="why" aria-labelledby="why-title">
+      <div class="why__copy">
+        <div class="why__intro">
+          <p class="eyebrow">มาตรฐานของเรา</p>
+          <h2 class="section-title" id="why-title">คลินิกที่สร้างขึ้นบนมาตรฐานทางคลินิกและความเป็นส่วนตัวอย่างแท้จริง</h2>
+        </div>
+        <p class="why__lead">เราเชื่อว่าผู้ชายสมควรได้รับความเป็นเลิศทางคลินิกโดยไม่มีข้อประนีประนอม ไม่มีห้องรอ ไม่มีใบสั่งยาทั่วไป ไม่มีความอึดอัดจากการพบแพทย์แบบตัวต่อตัว</p>
+        <a class="btn btn--outline" href="#guarantee" style="align-self:flex-start">การรับประกันของเรา</a>
+      </div>
+
+      <ul class="why__list">
+        <li class="benefit">
+          <span class="benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
+          <div class="benefit__body">
+            <h3 class="benefit__title">แพทย์ที่มีใบอนุญาต 100%</h3>
+            <p class="benefit__text">ทุกการปรึกษานำโดยแพทย์ที่ได้รับการรับรองซึ่งอุทิศตนเพื่อสุขภาพของคุณ</p>
+          </div>
+        </li>
+        <li class="benefit">
+          <span class="benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <div class="benefit__body">
+            <h3 class="benefit__title">การเข้ารหัสระดับการแพทย์</h3>
+            <p class="benefit__text">บันทึกสุขภาพและการสนทนาของคุณได้รับการปกป้องอย่างเป็นส่วนตัวภายใต้มาตรฐานการคุ้มครองข้อมูลทางการแพทย์</p>
+          </div>
+        </li>
+        <li class="benefit">
+          <span class="benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+          <div class="benefit__body">
+            <h3 class="benefit__title">จัดส่งฟรีและเป็นส่วนตัว</h3>
+            <p class="benefit__text">ส่งถึงหน้าบ้านในบรรจุภัณฑ์ไม่มีตราสินค้า ไม่มีสิ่งบ่งบอกสิ่งที่อยู่ภายใน</p>
+          </div>
+        </li>
+        <li class="benefit">
+          <span class="benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg></span>
+          <div class="benefit__body">
+            <h3 class="benefit__title">การสนับสนุนทางการแพทย์อย่างต่อเนื่อง</h3>
+            <p class="benefit__text">มีคำถาม? เข้าถึงการติดตามผลทางการแพทย์และการปรึกษาปรับเปลี่ยนได้ไม่จำกัดฟรีตลอดเวลา</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ Clinical team ============ -->
+    <section class="team" id="team" aria-labelledby="team-title">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">ความเชี่ยวชาญที่นำทาง</p>
+          <h2 class="section-title" id="team-title">ผู้นำทางการแพทย์ระดับโลก</h2>
+        </div>
+
+        <div class="carousel" data-carousel>
+          <div class="carousel__row">
+            <button class="carousel__btn" type="button" data-prev aria-label="ดูแพทย์ก่อนหน้า">
+              <svg viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 1 3 10l8 9"/></svg>
+            </button>
+
+            <div class="carousel__viewport">
+              <div class="carousel__track" data-track>
+                <article class="clinician">
+                  <img class="clinician__photo" src="assets/landing/dr-surakiet.jpg" alt="นพ. สุรเกียรติ พรอนันต์">
+                  <div class="clinician__body">
+                    <div>
+                      <h3 class="clinician__name">นพ. สุรเกียรติ พรอนันต์, MD</h3>
+                      <p class="clinician__role">Chief Medical Officer</p>
+                    </div>
+                    <div class="clinician__meta">
+                      <p>ความเชี่ยวชาญ: เวชศาสตร์ฟื้นฟูสภาวะเสื่อมและชะลอวัย</p>
+                      <p>การศึกษา: คณะแพทยศาสตร์ ศิริราชพยาบาล, Fellowship in Anti-Aging Medicine (USA)</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="clinician">
+                  <img class="clinician__photo" src="assets/landing/dr-pichsinee.jpg" alt="ดร. พญ. พิชญ์สินี เมธาโรจน์">
+                  <div class="clinician__body">
+                    <div>
+                      <h3 class="clinician__name">ดร. พญ. พิชญ์สินี เมธาโรจน์, MD</h3>
+                      <p class="clinician__role">Clinical Director</p>
+                    </div>
+                    <div class="clinician__meta">
+                      <p>ความเชี่ยวชาญ: ต่อมไร้ท่อและระบบเผาผลาญ (Endocrinology &amp; Metabolism)</p>
+                      <p>การศึกษา: คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย, Specialist in GLP-1 Metabolic Care</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="clinician">
+                  <img class="clinician__photo" src="assets/landing/dr-marcus.jpg" alt="นพ. มาร์คัส แวนซ์">
+                  <div class="clinician__body">
+                    <div>
+                      <h3 class="clinician__name">นพ. มาร์คัส แวนซ์, MD</h3>
+                      <p class="clinician__role">Medical Advisor</p>
+                    </div>
+                    <div class="clinician__meta">
+                      <p>ความเชี่ยวชาญ: ระบบทางเดินปัสสาวะและสุขภาพผู้ชาย</p>
+                      <p>การศึกษา: คณะแพทยศาสตร์ สแตนฟอร์ด</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="clinician">
+                  <img class="clinician__photo" src="assets/landing/dr-ethan.jpg" alt="นพ. อีธาน ธอร์น">
+                  <div class="clinician__body">
+                    <div>
+                      <h3 class="clinician__name">นพ. อีธาน ธอร์น, MD</h3>
+                      <p class="clinician__role">Dermatology Lead</p>
+                    </div>
+                    <div class="clinician__meta">
+                      <p>ความเชี่ยวชาญ: ผิวหนังและสุขภาพเส้นผม</p>
+                      <p>การศึกษา: คณะแพทยศาสตร์ ฮาร์วาร์ด</p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <button class="carousel__btn" type="button" data-next aria-label="ดูแพทย์ถัดไป">
+              <svg viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 1 8 9-8 9"/></svg>
+            </button>
+          </div>
+
+          <div class="carousel__dots" data-dots role="tablist" aria-label="เลือกกลุ่มแพทย์"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Testimonials ============ -->
+    <section class="reviews" id="reviews" aria-labelledby="reviews-title">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">เสียงจากผู้ป่วย</p>
+          <h2 class="section-title" id="reviews-title">ความสำเร็จทางคลินิก ยืนยันโดยผู้ป่วย</h2>
+        </div>
+
+        <div class="review-grid">
+          <figure class="review">
+            <div class="review__stars" role="img" aria-label="ให้คะแนน 5 จาก 5 ดาว">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+            </div>
+            <blockquote class="review__quote">"ความสะดวกและความเป็นมืออาชีพของ Krane เปลี่ยนมุมมองของผมเกี่ยวกับการแพทย์ทางไกล บรรจุภัณฑ์พรีเมียมและการจัดส่งเป็นส่วนตัวอย่างสมบูรณ์แบบ"</blockquote>
+            <figcaption class="review__who"><b>เดวิด ก., 38</b><span>แผนฟื้นฟูเส้นผม</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <div class="review__stars" role="img" aria-label="ให้คะแนน 5 จาก 5 ดาว">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+            </div>
+            <blockquote class="review__quote">"ตอนแรกผมลังเล แต่การพูดคุยเป็นส่วนตัวกับแพทย์ผู้เชี่ยวชาญทำให้หายกังวล แพ็คเกจ ED ของผมมาถึงรวดเร็วและได้ผลดีเยี่ยม"</blockquote>
+            <figcaption class="review__who"><b>โรเบิร์ต ล., 44</b><span>โปรโตคอลออนดีมานด์</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <div class="review__stars" role="img" aria-label="ให้คะแนน 5 จาก 5 ดาว">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z"/></svg>
+            </div>
+            <blockquote class="review__quote">"กระบวนการวินิจฉัย TRT ครอบคลุมและอยู่ภายใต้การดูแลอย่างเข้มงวด บริการลูกค้าดีเยี่ยมและละเอียดทางการแพทย์"</blockquote>
+            <figcaption class="review__who"><b>เจมส์ ส., 35</b><span>โปรโตคอลพลังชีวิต</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Final CTA and footer ============ -->
+    <div class="tail">
+      <section class="final-cta" aria-labelledby="final-title">
+        <div>
+          <h2 id="final-title">เริ่มปรึกษาแพทย์วันนี้</h2>
+          <p>ใช้เวลาเพียง 5 นาทีในการกรอกแบบประเมินดิจิทัลและเริ่มสนทนาทางการแพทย์โดยตรงกับแพทย์เฉพาะทาง</p>
+        </div>
+        <a class="btn btn--primary" href="#start">ปรึกษาแพทย์เลย</a>
+      </section>
+
+      <footer class="site-footer">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <p class="footer__logo"><b>krane</b><span>คลินิก</span></p>
+            <p>โซลูชันทางคลินิกระดับพรีเมียมสำหรับผู้ชายยุคใหม่ ขับเคลื่อนด้วยวิทยาศาสตร์การแพทย์ ปรับแต่งอย่างเป็นส่วนตัวเพื่อสนับสนุนเส้นทางสุขภาพของคุณ</p>
+          </div>
+
+          <div class="footer__cols">
+            <nav class="footer__col" aria-label="บริการ">
+              <h3>บริการ</h3>
+              <a href="#hair">ผมร่วง</a>
+              <a href="#ed">สุขภาพทางเพศ</a>
+              <a href="#skin">ผิวพรรณ &amp; ชะลอวัย</a>
+              <a href="#weight">จัดการน้ำหนัก</a>
+              <a href="#trt">TRT &amp; ความยืนยาว</a>
+            </nav>
+            <nav class="footer__col" aria-label="เกี่ยวกับ">
+              <h3>เกี่ยวกับ</h3>
+              <a href="#guarantee">การรับประกันของเรา</a>
+              <a href="#how">วิธีการทำงาน</a>
+              <a href="#team">ที่ปรึกษาทางการแพทย์</a>
+              <a href="#careers">ร่วมงานกับเรา</a>
+              <a href="#press">สื่อมวลชน</a>
+            </nav>
+            <nav class="footer__col" aria-label="กฎหมายและติดต่อ">
+              <h3>กฎหมาย &amp; ติดต่อ</h3>
+              <a href="#privacy">นโยบายความเป็นส่วนตัว</a>
+              <a href="#terms">ข้อกำหนดการใช้บริการ</a>
+              <a href="#consent">ความยินยอมของผู้ป่วย</a>
+              <a href="#help">ศูนย์ช่วยเหลือ</a>
+              <a href="mailto:support@krane.clinic">support@krane.clinic</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p>&copy; 2026 Krane Clinic สงวนลิขสิทธิ์</p>
+          <nav aria-label="ลิงก์ทางกฎหมาย">
+            <a href="#privacy">ความเป็นส่วนตัว</a>
+            <a href="#terms">ข้อกำหนด</a>
+            <a href="#policy">นโยบายความเป็นส่วนตัว</a>
+          </nav>
+        </div>
+      </footer>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* Clinical team carousel. Keyboard operable, respects reduced motion,
+   and rebuilds its page count on resize. */
+(function(){
+  var root = document.querySelector('[data-carousel]');
+  if(!root) return;
+
+  var track  = root.querySelector('[data-track]');
+  var dots   = root.querySelector('[data-dots]');
+  var prev   = root.querySelector('[data-prev]');
+  var next   = root.querySelector('[data-next]');
+  var cards  = Array.prototype.slice.call(track.children);
+  var index  = 0;
+  var pages  = 1;
+
+  function perPage(){
+    var viewport = root.querySelector('.carousel__viewport').offsetWidth;
+    var card = cards[0].offsetWidth + 40;
+    return Math.max(1, Math.floor((viewport + 40) / card));
+  }
+
+  function render(){
+    var n = perPage();
+    pages = Math.max(1, Math.ceil(cards.length / n));
+    if(index > pages - 1) index = pages - 1;
+
+    var shift = index * (cards[0].offsetWidth + 40) * n;
+    track.style.transform = 'translateX(-' + shift + 'px)';
+
+    dots.innerHTML = '';
+    for(var i = 0; i < pages; i++){
+      (function(i){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role','tab');
+        b.setAttribute('aria-label','กลุ่มที่ ' + (i + 1));
+        b.setAttribute('aria-current', i === index ? 'true' : 'false');
+        b.addEventListener('click', function(){ index = i; render(); });
+        dots.appendChild(b);
+      })(i);
+    }
+
+    prev.disabled = index === 0;
+    next.disabled = index === pages - 1;
+    prev.style.opacity = index === 0 ? '.4' : '1';
+    next.style.opacity = index === pages - 1 ? '.4' : '1';
+  }
+
+  prev.addEventListener('click', function(){ if(index > 0){ index--; render(); } });
+  next.addEventListener('click', function(){ if(index < pages - 1){ index++; render(); } });
+
+  window.addEventListener('resize', render);
+  render();
+})();
+</script>
+
+</body>
+</html>
