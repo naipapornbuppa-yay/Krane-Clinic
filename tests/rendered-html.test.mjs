@@ -228,6 +228,9 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(components, /\.intake-duration-control\{max-width:620px\}/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*?\.care-journey__name\{display:block;margin-top:2px;font-size:9\.5px;font-weight:var\(--fw-regular\);line-height:1\.12\}/);
   assert.match(components, /\.care-journey__step\.is-current \.care-journey__name\{font-weight:var\(--fw-medium\)\}/);
+  assert.doesNotMatch(screenFragment(html, "conditions"), /conditionCategoryLabel/);
+  assert.match(screenFragment(html, "conditions"), /What are you particularly concerned about\?/);
+  assert.match(i18n, /"What are you particularly concerned about\?":"กังวลเรื่องใดเป็นพิเศษ"/);
   for (const copy of [
     '"Where is your hair thinning or shedding?":"ผมบางหรือร่วงบริเวณใด?"',
     '"Select duration":"เลือกระยะเวลา"',
