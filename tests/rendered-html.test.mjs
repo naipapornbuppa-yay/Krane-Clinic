@@ -634,6 +634,20 @@ test("all canonical B2C brand placements use the new Krane wordmark without clin
   assert.match(components, /\.brand-logo\{[^}]*width:112px[^}]*max-height:29px[^}]*object-fit:contain/);
 });
 
+test("mobile profile scales medication lists and keeps navigation compact", async () => {
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const profile = screenFragment(patient, "profile");
+
+  assert.match(profile, /class="treatment-medications" role="list"/);
+  assert.equal((profile.match(/class="treatment-medication" role="listitem"/g) || []).length, 3);
+  assert.match(profile, /Next refill in 24 days/);
+  assert.doesNotMatch(profile, /Need the doctor before 12 Sep/);
+  assert.match(components, /\.treatment-medication\{[^}]*grid-template-columns:minmax\(0,1fr\) auto/);
+  assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.bottomnav\{left:0;right:0;bottom:0/);
+  assert.match(components, /\.screen:has\(\.bottomnav\) \.screen__body\{padding-bottom:calc\(72px/);
+});
+
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
