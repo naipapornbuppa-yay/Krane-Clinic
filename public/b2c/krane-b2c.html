@@ -2217,14 +2217,21 @@
       <div class="card card--pad-sm stack-3">
         <div class="section-label">ผลการตรวจสอบ</div>
         <div class="between"><span class="muted">ผู้ถือสิทธิ์</span><strong>Mali Suthida</strong></div>
-        <div class="between"><span class="muted">บริษัทประกัน</span><strong>เมืองไทยประกันชีวิต</strong></div>
+        <div class="between"><span class="muted">บริษัทประกัน</span><strong data-partner-policy-provider>FWD ประกันชีวิต</strong></div>
         <div class="between"><span class="muted">ความคุ้มครอง</span><strong><span class="badge badge--ok">ใช้สิทธิ์ได้</span></strong></div>
-        <div class="between"><span class="muted">กรมธรรม์</span><strong>แผนสุขภาพพนักงาน MTL</strong></div>
-        <div class="hint">เลือกจากลิงก์พันธมิตร · ครอบคลุมค่าปรึกษา</div>
+        <div class="field">
+          <label for="partner-policy-select">กรมธรรม์ที่ต้องการใช้</label>
+          <select class="input" id="partner-policy-select" data-partner-policy-select>
+            <option value="fwd-partner" selected data-provider="FWD ประกันชีวิต" data-consult="ครอบคลุม ฿ 350" data-medicine="สูงสุด ฿ 1,000" data-medicine-credit="1000" data-delivery="ไม่รวมในสิทธิ์" data-note="ค่าเริ่มต้นจากลิงก์พันธมิตร · ครอบคลุมค่าปรึกษา">FWD Care Connect · แผนจากลิงก์พันธมิตร</option>
+            <option value="mtl-employee" data-provider="เมืองไทยประกันชีวิต" data-consult="ครอบคลุม ฿ 350" data-medicine="สูงสุด ฿ 800" data-medicine-credit="800" data-delivery="ไม่รวมในสิทธิ์" data-note="กรมธรรม์พนักงาน · ใช้ได้กับบริการนี้">แผนสุขภาพพนักงาน MTL</option>
+            <option value="aia-health" data-provider="AIA" data-consult="ครอบคลุม ฿ 350" data-medicine="สูงสุด ฿ 500" data-medicine-credit="500" data-delivery="ไม่รวมในสิทธิ์" data-note="กรมธรรม์ส่วนบุคคล · ตรวจพบในบัญชีนี้">AIA Health Happy</option>
+          </select>
+        </div>
+        <div class="hint" data-partner-policy-note>ค่าเริ่มต้นจากลิงก์พันธมิตร · ครอบคลุมค่าปรึกษา</div>
         <div class="divider"></div>
-        <div class="between"><span class="muted">ค่าปรึกษาแพทย์</span><strong>ครอบคลุม ฿ 350</strong></div>
-        <div class="between"><span class="muted">เครดิตค่ายา</span><strong>สูงสุด ฿ 1,000</strong></div>
-        <div class="between"><span class="muted">ค่าจัดส่ง</span><strong>ไม่รวมในสิทธิ์</strong></div>
+        <div class="between"><span class="muted">ค่าปรึกษาแพทย์</span><strong data-partner-policy-consult>ครอบคลุม ฿ 350</strong></div>
+        <div class="between"><span class="muted">เครดิตค่ายา</span><strong data-partner-policy-medicine>สูงสุด ฿ 1,000</strong></div>
+        <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
     <!-- Client flow diagram (27 Jul): both the insurance and the self-pay branch
@@ -4332,6 +4339,29 @@
       syncIntakeDropdownContinue(intakeScreen);
     }
   });
+  function syncPartnerPolicySummary(){
+    const select=document.querySelector('[data-partner-policy-select]');
+    if(!select) return null;
+    const option=select.selectedOptions?.[0] || select.options?.[select.selectedIndex];
+    if(!option) return null;
+    const bind=(selector,value) => {
+      const node=document.querySelector(selector);
+      if(node) node.textContent=value || '';
+    };
+    bind('[data-partner-policy-provider]',option.dataset.provider);
+    bind('[data-partner-policy-note]',option.dataset.note);
+    bind('[data-partner-policy-consult]',option.dataset.consult);
+    bind('[data-partner-policy-medicine]',option.dataset.medicine);
+    bind('[data-partner-policy-delivery]',option.dataset.delivery);
+    flowState.partnerPolicyId=option.value;
+    flowState.partnerPolicyProvider=option.dataset.provider || '';
+    flowState.partnerPolicyMedicineCredit=Number(option.dataset.medicineCredit || 0);
+    persistFlowState();
+    return option;
+  }
+  document.body.addEventListener('change',event => {
+    if(event.target.closest('[data-partner-policy-select]')) syncPartnerPolicySummary();
+  });
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','booking','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
@@ -5031,6 +5061,10 @@
     if(partnerPayment){
       const paymentMethod=partnerPayment.dataset.partnerPayment;
       const eligiblePartnerPolicy=paymentMethod==='insurance' && Boolean(partnerPayment.closest('#partner-insurance'));
+      const selectedPartnerPolicy=eligiblePartnerPolicy ? syncPartnerPolicySummary() : null;
+      const partnerMedicineCredit=Number(selectedPartnerPolicy?.dataset.medicineCredit || 1000);
+      const partnerPolicyProvider=selectedPartnerPolicy?.dataset.provider || 'FWD ประกันชีวิต';
+      const partnerPolicyId=selectedPartnerPolicy?.value || 'fwd-partner';
       flowState.entryChannel='partner';
       flowState.partnerPaymentChosen=true;
       flowState.partnerPaymentMethod=paymentMethod;
@@ -5038,9 +5072,9 @@
       // policy makes this demo balance zero and records the medicine credit for the
       // post-consult checkout. Self-pay keeps the ฿350 balance and no medicine credit.
       flowState.partnerConsultationBalanceDue=eligiblePartnerPolicy ? 0 : (paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null);
-      flowState.partnerMedicineCredit=eligiblePartnerPolicy ? 1000 : 0;
+      flowState.partnerMedicineCredit=eligiblePartnerPolicy ? partnerMedicineCredit : 0;
       flowState.coverage=eligiblePartnerPolicy
-        ? {provider:'MTL Group',policyId:'',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000}
+        ? {provider:partnerPolicyProvider,policyId:partnerPolicyId,consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:partnerMedicineCredit}
         : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
       persistFlowState();
       show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern'));
