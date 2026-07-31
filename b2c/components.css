@@ -121,7 +121,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-history-detail .input{width:100%}
 #partner-intake .field{gap:6px}
 #partner-intake .field label{font-size:13px;font-weight:var(--fw-medium);line-height:1.35;color:var(--color-ink)}
-#partner-intake .input,#partner-intake .select,#partner-intake .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-color:var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);font-size:15px}
+#partner-intake .input,#partner-intake .select,#partner-intake .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-color:var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);font-size:16px}
 #partner-intake .partner-binary{padding:4px}
 #partner-intake .input:focus,#partner-intake .select:focus{background:var(--color-surface)}
 .partner-nurse-avatar{display:grid;place-items:center;background:var(--color-bg-2);color:var(--color-ink)}
@@ -225,6 +225,114 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @keyframes krane-signal-float{0%,100%{transform:translateY(2px)}50%{transform:translateY(-4px)}}
 @keyframes krane-signal-blink{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
 @media(prefers-reduced-motion:reduce){.transition-stage__symbol{animation:none}}
+
+/* ---------- Shared mobile-first state view ----------
+   Loading, empty, success and recoverable outcome screens use one centred
+   hierarchy. The image treatment mirrors the landing menu: a transparent
+   cutout on a quiet powder tile with one restrained floating motion. */
+.state-view{
+  width:100%;min-height:100%;display:flex;flex:1;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;padding:24px 0 32px;
+  text-align:center
+}
+.state-view__visual{
+  position:relative;width:144px;height:144px;display:grid;place-items:center;
+  flex:none;overflow:visible
+}
+.state-view__tile{
+  width:120px;height:120px;display:grid;place-items:center;border-radius:50%;
+  background:var(--color-accent-soft-2);color:var(--color-accent-ink)
+}
+.state-view__image,.state-view__tile>img{
+  display:block;width:98px;height:98px;object-fit:contain;
+  filter:drop-shadow(0 12px 14px color-mix(in srgb,var(--color-ink) 16%,transparent));
+  animation:krane-signal-float 2.2s var(--ease-inout) infinite;
+  transform-origin:center
+}
+.state-view__badge{
+  position:absolute;right:2px;bottom:8px;width:40px;height:40px;
+  display:grid;place-items:center;padding:0;border:4px solid var(--color-surface);
+  border-radius:50%;background:var(--color-ink);color:var(--color-surface);
+  box-shadow:var(--shadow-sm)
+}
+.state-view__badge .ui-icon{width:18px;height:18px}
+.state-view__badge--loading,.state-view--loading .state-view__badge,
+.state-view__visual--loading .state-view__badge{
+  background:var(--color-accent);color:var(--color-on-accent)
+}
+.state-view__badge--loading,.state-view--loading .state-view__badge,
+.state-view__visual--loading .state-view__badge{
+  animation:krane-signal-blink 1.4s var(--ease-inout) infinite
+}
+.state-view__badge--success,.state-view--success .state-view__badge,
+.state-view__visual--success .state-view__badge{
+  background:var(--color-success);color:var(--color-surface)
+}
+.state-view__badge--danger,.state-view--danger .state-view__badge,
+.state-view__visual--danger .state-view__badge{
+  background:var(--color-danger);color:var(--color-surface)
+}
+.state-view__badge--warning,.state-view--warning .state-view__badge,
+.state-view__visual--warning .state-view__badge{
+  background:var(--color-warning);color:var(--color-ink)
+}
+.state-view__badge--neutral,.state-view--neutral .state-view__badge,
+.state-view__visual--neutral .state-view__badge{
+  background:var(--color-ink-2);color:var(--color-surface)
+}
+.state-view__copy{
+  width:100%;max-width:34ch;display:flex;flex-direction:column;align-items:center;
+  gap:7px;margin-inline:auto
+}
+.state-view__title,.state-view__copy>.h1,.state-view__copy>.h2{
+  margin:0;color:var(--color-ink);font-family:var(--font-display);
+  font-size:clamp(26px,7vw,34px);font-weight:var(--fw-bold);line-height:1.2;
+  text-wrap:balance
+}
+.state-view__description,.state-view__copy>.muted{
+  margin:0;color:var(--color-ink-2);font-size:var(--fs-base);
+  line-height:1.55;text-wrap:pretty
+}
+.state-view__timer{
+  min-width:72px;min-height:42px;max-width:100%;display:inline-block;
+  padding:10px 13px;border:1px solid var(--color-line);border-radius:var(--radius-pill);
+  background:var(--color-surface);color:var(--color-ink);
+  font-size:var(--fs-sm);font-weight:var(--fw-semibold);line-height:1.35;
+  font-variant-numeric:tabular-nums;text-align:center;box-shadow:var(--shadow-sm)
+}
+.state-view__cta{width:min(100%,320px);margin-top:4px}
+/* Decision states keep the visual hierarchy but release vertical room for
+   full-width recovery choices below the message. */
+.state-view--decision{
+  min-height:0;justify-content:flex-start;gap:14px;padding-top:12px
+}
+.state-view--decision .state-view__visual{width:124px;height:124px}
+.state-view--decision .state-view__tile{width:104px;height:104px}
+.state-view--decision .state-view__image,
+.state-view--decision .state-view__tile>img{width:86px;height:86px}
+.state-view--decision .state-view__copy{max-width:36ch}
+.state-view--decision>.stack-3{width:100%}
+
+@media(max-width:420px){
+  .state-view{gap:14px;padding:20px 0 24px}
+  .state-view__visual{width:120px;height:120px}
+  .state-view__tile{width:104px;height:104px}
+  .state-view__image,.state-view__tile>img{width:86px;height:86px}
+  .state-view__copy{max-width:32ch;gap:6px}
+  .state-view__title,.state-view__copy>.h1,.state-view__copy>.h2{font-size:26px}
+  .state-view__timer{min-height:40px}
+  .state-view--decision{gap:12px;padding-top:8px}
+  .state-view--decision .state-view__visual{width:108px;height:108px}
+  .state-view--decision .state-view__tile{width:92px;height:92px}
+  .state-view--decision .state-view__image,
+  .state-view--decision .state-view__tile>img{width:76px;height:76px}
+}
+@media(prefers-reduced-motion:reduce){
+  .state-view__image,.state-view__tile>img,
+  .state-view__badge--loading,
+  .state-view--loading .state-view__badge,
+  .state-view__visual--loading .state-view__badge{animation:none}
+}
 
 /* Pharmacy acceptance is deliberately brief: state, total, essentials, action. */
 .pharmacy-accepted{display:flex;flex-direction:column;align-items:center;gap:22px;padding-top:34px;text-align:center}
@@ -1098,7 +1206,7 @@ body.modal-open{overflow:hidden}
 .onboard-language select{
   min-width:64px;height:44px;padding:0 25px 0 12px;border:1px solid rgba(255,255,255,.9);
   border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(31,50,75,.07);
-  color:var(--color-ink-2);font:var(--fw-semibold) 13px/1 var(--font-base);cursor:pointer;
+  color:var(--color-ink-2);font:var(--fw-semibold) 16px/1 var(--font-base);cursor:pointer;
 }
 .onboard-language select:hover{background:#fff}
 .onboard-language select:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
@@ -1591,6 +1699,12 @@ body.lang-th *{letter-spacing:normal}
   .bottomnav a[aria-current="page"]{color:var(--color-accent)}
   .photo-graphic.payment-state-graphic{min-height:132px}
   #payment .checkout-order__note,#payment .checkout-row__label,#payment .checkout-calc{font-size:13px}
+}
+@media(max-width:480px){
+  .partner-duration-row{grid-template-columns:1fr}
+  .partner-duration-units{justify-content:stretch}
+  .partner-duration-units button{min-width:0;flex:1;padding-inline:10px}
+  .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:369px){
   #partner-intake .partner-health-grid,
