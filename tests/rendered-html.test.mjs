@@ -125,6 +125,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /class="partner-health-grid"[\s\S]*id="partner-dob" type="date"/);
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
+  assert.match(components, /#partner-intake \.input,#partner-intake \.select,#partner-intake \.partner-binary\{[^}]*font-size:16px/);
+  assert.match(components, /@media\(max-width:480px\)\{[\s\S]*\.partner-duration-row\{grid-template-columns:1fr\}[\s\S]*\.partner-relief-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
   assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.setting-row \.ic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.notif \.ic\{[^}]*border-radius:50%[^}]*border:0/);
@@ -139,13 +141,12 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /noStock\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('pharmacy-search'\)/);
   assert.match(html, /show\(nextAfterAuthentication\(\)\)/);
   assert.match(html, /document\.querySelectorAll\('\.screen'\)\.forEach/);
-  assert.match(html, /property="og:title" content="Krane Clinic · Client QA Review"/);
-  assert.match(html, /property="og:image" content="\/b2c\/assets\/krane-qa-line-share\.png\?v=20260728a"/);
+  assert.match(html, /property="og:title" content="Krane Clinic · Online Care"/);
+  assert.match(html, /property="og:image" content="\/b2c\/assets\/landing-573\/latest\/hero-base\.png"/);
   assert.doesNotMatch(html, /chatgpt\.site|proudproudd|naipaporn|Proud B\.|Proud Boonsiri|Proud Buppa/i);
-  await assert.doesNotReject(access(path.join(publicRoot, "b2c/assets/krane-qa-line-share.png")));
-  const sharePreviewSource = await readFile(path.join(publicRoot, "b2c/assets/krane-qa-line-share.svg"), "utf8");
-  assert.doesNotMatch(sharePreviewSource, /proud|naipaporn|chatgpt\.site/i);
-  assert.match(sharePreviewSource, /demo\.patient@example\.com/);
+  assert.doesNotMatch(html, /Client QA Review|Patient Flow Prototype|demo\.patient@example\.com|KRANE-DEMO/i);
+  assert.doesNotMatch(html, /Last edited|edits are timestamped|F35\.3/);
+  await assert.doesNotReject(access(path.join(publicRoot, "b2c/assets/landing-573/latest/hero-base.png")));
   assert.match(components, /#consent-terms\{min-height:0;overflow:hidden\}/);
   assert.match(components, /#consent-terms\{height:100%;max-height:100%\}/);
   assert.match(components, /#consent-terms \.consent-doc\{height:auto;min-height:0;max-height:none;overflow:visible/);
@@ -371,7 +372,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(screenFragment(html, "refund"), /photo-graphic/, "refund confirmation should share the compact result signal");
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
-  assert.match(css, /\.transition-stage__visual\{[^}]*width:136px[^}]*background:transparent/, "loading visuals must stay compact and panel-free");
+  assert.match(css, /\.transition-stage__visual\{[^}]*width:112px[^}]*background:transparent/, "loading visuals must stay compact and panel-free");
   assert.match(css, /@keyframes krane-orbit-pulse/, "loading visuals need a subtle Krane-owned motion treatment");
 
   for (const outcome of [failure, success]) {
@@ -486,7 +487,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
   assert.match(html, /class="compliance__group" aria-hidden="true"/);
   assert.match(html, /data-compliance-toggle/);
-  assert.match(html, /โปรแกรมการรักษาเฉพาะบุคคล/);
+  assert.match(html, /เลือกการดูแลที่เหมาะกับคุณ/);
+  assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
+  assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
   for (const image of [
     "hair-loss-prevention.png",
