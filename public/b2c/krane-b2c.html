@@ -25,12 +25,11 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260730loadercenter1">
+<link rel="stylesheet" href="components.css?v=20260731states1">
 <link rel="stylesheet" href="custom-select.css?v=20260730radius1">
 <script src="../krane-golden-fixture.js"></script>
-<script type="module" src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"></script>
 <script src="custom-select.js?v=20260729a" defer></script>
-<script src="i18n.js?v=20260730rail1" defer></script>
+<script src="i18n.js?v=20260731states1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -791,14 +790,14 @@
   <!-- ===================== INTAKE INELIGIBLE (edge state) ===================== -->
   <section class="screen" id="ineligible">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Let's get you the right care</span></div>
-    <div class="screen__body stack-5">
-      <div class="alert alert--warning"><span class="a-ic">!</span><div><div class="a-title">This needs in-person care</div><div class="hint">Based on your answers, an online consultation isn't the safest option for you right now.</div></div></div>
-      <div class="stack-2">
-        <p class="muted">One or more of your responses suggests a condition that a doctor should assess face-to-face before prescribing. We don't want to recommend treatment that isn't right for you.</p>
-        <div class="card card--flat card--filled card--pad-sm stack-2">
-          <strong>What you can do next</strong>
-          <div class="hint">· See a doctor at a clinic or hospital near you<br>· Come back and consult us once you've been assessed<br>· Message our care team if you think this is a mistake</div>
-        </div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--warning" role="img" aria-label="In-person care recommended">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy">
+        <h2 class="h1">You need in-person care</h2>
+        <p class="muted">Based on your answers, online care may not be safe. Please see a doctor in person before treatment.</p>
       </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="landing">Back to home</button><button class="btn btn--ghost" data-go="intake4">Review safety answers</button></div>
   </section>
@@ -909,18 +908,17 @@
 
   <!-- ===================== MATCHING (auto-match in progress) ===================== -->
   <section class="screen" id="matching">
-    <div class="screen__top transition-stage__top"><span class="ttl">กำลังจับคู่แพทย์</span><button class="transition-stage__close" data-back aria-label="ปิด">×</button></div>
-    <div class="screen__body transition-stage center">
-      <div class="transition-stage__visual" role="status" aria-label="กำลังจับคู่แพทย์">
-        <span class="transition-stage__symbol"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top transition-stage__top"><span class="ttl">Doctor match</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding your doctor">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="transition-stage__copy"><h2 class="h1">กำลังค้นหาแพทย์ที่เหมาะกับคุณ</h2><p class="muted" data-matching-copy>ระบบกำลังตรวจสอบแพทย์ที่พร้อมให้คำปรึกษา โดยปกติใช้เวลาไม่เกิน 10 วินาที</p></div>
-      <div class="matchbar" aria-hidden="true"><span></span></div>
-      <div class="transition-stage__steps" aria-label="สถานะการจับคู่">
-        <span data-match-step="1"><i class="step-dot" data-match-step-dot>1</i></span>
-        <span data-match-step="2"><i class="step-dot" data-match-step-dot>2</i></span>
-        <strong>กำลังตรวจสอบคิวแพทย์</strong>
+      <div class="state-view__copy">
+        <h2 class="h1">Finding your doctor</h2>
+        <p class="muted" data-matching-copy>Checking licensed doctors available for your concern.</p>
       </div>
+      <div class="state-view__timer">Usually under 10 seconds</div>
     </div>
   </section>
 
@@ -939,8 +937,12 @@
   <!-- ===================== NO DOCTOR FREE NOW, PICK A TIME (KRANE-F09 fallback) ===================== -->
   <section class="screen" id="noslots">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pick a time</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">No doctor is free right now</h2></div>
+    <div class="screen__body state-view state-view--decision">
+      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No doctor available now">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">No doctor available now</h2><p class="muted">Choose the next available time.</p></div>
       <div class="stack-3">
         <div class="eyebrow">Today's doctor availability</div>
         <div class="row" style="flex-wrap:wrap;gap:var(--sp-2)">
@@ -1037,10 +1039,16 @@
 
   <section class="screen" id="consultpay-fail">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Consultation payment</span></div>
-    <div class="screen__body stack-5">
-      <div class="photo-graphic photo-graphic--danger payment-state-graphic" role="img" aria-label="Consultation payment needs attention"><span class="photo-graphic__signal"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span></div>
-      <div class="stack-2"><h2 class="h1">Payment did not go through</h2></div>
-      <div class="card card--pad-sm between"><span class="muted">Amount due</span><strong data-consult-payment-total>฿ 350</strong></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--danger" role="img" aria-label="Consultation payment failed">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy">
+        <h2 class="h1">Consultation payment failed</h2>
+        <p class="muted">No charge was made. Your booking is saved.</p>
+      </div>
+      <div class="state-view__timer">Amount due · <strong data-consult-payment-total>฿ 350</strong></div>
     </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-consult-payment-retry>Try again</button><button class="btn btn--ghost" data-consult-payment-alternate>Use another method</button></div>
   </section>
@@ -1050,20 +1058,16 @@
        Doctor joins first; the patient is admitted the moment the doctor is ready. -->
   <section class="screen" id="waitroom">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
-    <div class="screen__body stack-5 center">
-      <div class="transition-stage__visual" role="status" aria-label="รอคุณหมออนุญาตเข้าห้อง"><span class="transition-stage__symbol"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span></div>
-      <div class="stack-2"><h2 class="h1">Waiting for the doctor to let you in</h2></div>
-      <div class="card card--pad-sm stack-3" style="text-align:left" data-wait-card>
-        <div class="between"><span class="muted">Current status</span><span class="badge badge--ok" data-wait-status>In waiting room</span></div>
-        <div class="between"><span class="muted">Estimated next step</span><strong data-wait-next>Doctor admits you in 2-3 min</strong></div>
-        <div class="hint" data-wait-hint>Consultation fee received. The doctor can see your intake and is preparing the consultation room.</div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="timeline" style="text-align:left">
-        <div class="step done"><strong>Intake submitted</strong><div class="hint">Doctor can review your answers &amp; photos</div></div>
-        <div class="step done"><strong>Consultation fee paid</strong><div class="hint">Receipt saved to your account</div></div>
-        <div class="step active" data-wait-step3><strong>Doctor is preparing the room</strong><div class="hint">You're next. Please wait to be admitted</div></div>
-        <div class="step" data-wait-step4><strong>Admitted to the room</strong><div class="hint">Video starts automatically. You can turn it off any time.</div></div>
+      <div class="state-view__copy">
+        <h2 class="h1" data-wait-title>Doctor will let you in shortly</h2>
+        <p class="muted" data-wait-copy>We'll notify you when the doctor is ready.</p>
       </div>
+      <div class="state-view__timer" data-wait-timer>About 2–3 min</div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
     <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="connecting">Waiting to be admitted…</button><button class="btn btn--ghost" data-go="notifications">Notify me when it's ready</button></div>
   </section>
@@ -1098,12 +1102,13 @@
 
   <!-- ===================== CONNECTING (call edge state) ===================== -->
   <section class="screen" id="connecting">
-    <div class="screen__top transition-stage__top"><span class="ttl">กำลังเชื่อมต่อ</span><button class="transition-stage__close" data-go="consult" aria-label="ยกเลิก">×</button></div>
-    <div class="screen__body transition-stage center">
-      <div class="transition-stage__visual" role="status" aria-label="กำลังเชื่อมต่อวิดีโอ">
-        <span class="transition-stage__symbol"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top transition-stage__top"><span class="ttl">Connecting</span><button class="transition-stage__close" data-go="consult" aria-label="Cancel">×</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Connecting to Dr. Narin">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="transition-stage__copy"><h2 class="h1">กำลังเชื่อมต่อคุณกับคุณหมอนรินทร์</h2></div>
+      <div class="state-view__copy"><h2 class="h1">Connecting to Dr. Narin</h2><p class="muted">This may take a moment.</p></div>
     </div>
   </section>
 
@@ -1144,32 +1149,19 @@
   <!-- ===================== WRITING PRESCRIPTION (KRANE-F15/F16 · client 6 Jul: prescribing
        can take a while; show a status screen before the treatment plan) ===================== -->
   <section class="screen" id="rx-writing">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">รอแผนการรักษา</span></div>
-    <div class="screen__body rx-waiting center">
-      <div class="rx-waiting__illustration" aria-hidden="true">
-        <svg viewBox="0 0 320 230" role="img">
-          <rect x="20" y="20" width="280" height="190" rx="34" fill="#eef3f8"/>
-          <path d="M20 76h280" stroke="#d9e4ef" stroke-width="2"/>
-          <path d="M52 76c8-28 50-29 59 0M222 76c8-28 50-29 59 0" fill="#fff"/>
-          <circle cx="160" cy="82" r="32" fill="#fff" stroke="#111827" stroke-width="4"/>
-          <path d="M140 79c6-25 38-27 45-1M145 91c10 9 23 9 32 0" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
-          <path d="M108 185c4-49 20-73 52-73s48 24 52 73" fill="#fff" stroke="#111827" stroke-width="4"/>
-          <path d="M128 119l32 50 32-50M160 169v22" fill="none" stroke="#111827" stroke-width="4" stroke-linejoin="round"/>
-          <rect x="159" y="139" width="58" height="47" rx="8" fill="#cbd9e8" stroke="#111827" stroke-width="4" transform="rotate(7 159 139)"/>
-          <path d="M180 151h20M178 162h18" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-          <path d="M119 154c-13 3-21 14-23 29M205 154c13 3 21 14 23 29" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="96" cy="187" r="6" fill="#111827"/><circle cx="228" cy="187" r="6" fill="#111827"/>
-        </svg>
-        <span class="rx-waiting__status">กำลังตรวจข้อมูล</span>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Treatment plan</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your treatment plan">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="clipboard-pen-line" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="rx-waiting__timer" aria-label="เวลาประมาณเก้านาทีสี่สิบแปดวินาที">9:48</div>
-      <div class="rx-waiting__copy">
-        <h1>รอคุณหมอวินิจฉัยและ<br>จัดทำแผนการรักษา</h1>
-        <p>คุณหมอกำลังตรวจข้อมูลและจัดทำแผนที่เหมาะกับคุณ<br>คุณออกจากหน้านี้ได้ เราจะแจ้งเตือนทันทีเมื่อแผนพร้อม</p>
+      <div class="state-view__copy">
+        <h2 class="h1">Your treatment plan is being prepared</h2>
+        <p class="muted">You can leave—we'll notify you when it's ready.</p>
       </div>
-      <div class="rx-waiting__notice">เปิดการแจ้งเตือนไว้เพื่อไม่พลาดเมื่อแผนการรักษาพร้อม</div>
+      <div class="state-view__timer">About 10 min</div>
     </div>
-    <div class="screen__footer rx-waiting__actions"><button class="btn btn--primary" data-go="plan">ดูแผนการรักษา (เดโม)</button><button class="btn btn--ghost" data-go="notifications">จัดการการแจ้งเตือน</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="notifications">Manage notifications</button></div>
   </section>
 
   <!-- ===================== TREATMENT PLAN ===================== -->
@@ -1207,12 +1199,13 @@
   </section>
 
   <section class="screen" id="pharmacy-locate">
-    <div class="screen__top transition-stage__top"><span class="ttl">กำลังตรวจสอบร้านยา</span><button class="transition-stage__close" data-back aria-label="ปิด">×</button></div>
-    <div class="screen__body transition-stage center">
-      <div class="transition-stage__visual" role="status" aria-label="กำลังค้นหาร้านยาใกล้คุณ">
-        <span class="transition-stage__symbol"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding a pharmacy">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="transition-stage__copy"><h2 class="h1">กำลังค้นหายาใกล้คุณ</h2></div>
+      <div class="state-view__copy"><h2 class="h1">Finding a pharmacy</h2><p class="muted">Checking nearby branches that can fulfil your prescription.</p></div>
     </div>
   </section>
 
@@ -1261,19 +1254,17 @@
   <!-- ===================== PHARMACY REVIEW (KRANE-F20 / KRANE-F21) =====================
        The pharmacy accepts the prescription and confirms stock before payment is taken. -->
   <section class="screen" id="pharmacy-search">
-    <div class="screen__top transition-stage__top"><span class="ttl">เภสัชกรตรวจสอบ</span><button class="transition-stage__close" data-back aria-label="ปิด">×</button></div>
-    <div class="screen__body transition-stage center">
-      <div class="transition-stage__visual" data-ph-graphic role="status" aria-label="เภสัชกรกำลังตรวจสอบคำสั่งซื้อ">
-        <span class="transition-stage__symbol"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy review</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" data-ph-graphic role="status" aria-label="Pharmacist reviewing your order">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="transition-stage__copy" data-ph-heading><h2 class="h1">กำลังส่งคำสั่งซื้อให้เภสัชกรตรวจสอบ</h2></div>
-      <div class="transition-stage__steps" aria-label="ขั้นตอนการตรวจสอบ">
-        <span data-ph-step="1"><i class="step-dot">1</i></span>
-        <span data-ph-step="2"><i class="step-dot">2</i></span>
-        <span data-ph-step="3"><i class="step-dot">3</i></span>
-        <strong>กำลังตรวจสอบ · โดยปกติไม่เกิน 5 นาที</strong>
+      <div class="state-view__copy" data-ph-heading>
+        <h2 class="h1">Pharmacist reviewing your order</h2>
+        <p class="muted">Checking the prescription and stock before payment.</p>
       </div>
-      <p class="hint" data-ph-branch>กำลังตรวจสอบกับร้านยาใกล้ที่อยู่จัดส่ง</p>
+      <div class="state-view__timer">Usually under 5 minutes</div>
     </div>
   </section>
 
@@ -1479,14 +1470,14 @@
   </section>
 
   <section class="screen" id="payment-success">
-    <div class="screen__top transition-stage__top"><span class="ttl">ยืนยันการชำระเงิน</span></div>
-    <div class="screen__body transition-stage center">
-      <div class="transition-stage__visual transition-stage__visual--success" role="img" aria-label="ชำระเงินสำเร็จ">
-        <span class="transition-stage__bubble">เรียบร้อย</span>
-        <span class="transition-stage__symbol"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top transition-stage__top"><span class="ttl">Payment</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Payment successful">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="transition-stage__meter"><strong data-payment-outcome-amount>฿ 1,160</strong></div>
-      <div class="transition-stage__copy"><h2 class="h1">ชำระเงินสำเร็จ</h2></div>
+      <div class="state-view__copy"><h2 class="h1">Payment successful</h2><p class="muted">Your order is confirmed.</p></div>
+      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 1,160</strong></div>
     </div>
   </section>
 
@@ -1513,15 +1504,16 @@
   <!-- ===================== PAYMENT FAILED (edge state) ===================== -->
   <section class="screen" id="payfail">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Payment</span></div>
-    <div class="screen__body stack-5">
-      <div class="photo-graphic photo-graphic--danger" role="img" aria-label="Payment needs attention"><span class="photo-graphic__signal"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span></div>
-      <div class="alert alert--danger"><span class="a-ic">!</span><div><div class="a-title">Payment didn't go through</div><div class="hint">Your bank declined the charge. No money has been taken.</div></div></div>
-      <div class="card card--pad-sm stack-2">
-        <div class="between"><span class="muted">ยอดที่ต้องชำระ</span><span class="amt" data-payment-failure-total data-payment-outcome-amount style="font-size:var(--fs-lg);font-weight:var(--fw-bold)">฿ 1,160</span></div>
-        <div class="between"><span class="muted">วิธีชำระเงิน</span><strong data-payment-outcome-method>QR / PromptPay</strong></div>
-        <div class="between"><span class="muted">การจัดส่ง</span><strong data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</strong></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--danger" role="img" aria-label="Payment failed">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <p class="muted">แผนการรักษายังอยู่ครบ ลองอีกครั้งหรือเลือกวิธีชำระเงินอื่น</p>
+      <div class="state-view__copy">
+        <h2 class="h1">Payment failed</h2>
+        <p class="muted">No charge was made. Your treatment plan is saved; delivery is confirmed after payment.</p>
+      </div>
+      <div class="state-view__timer"><strong data-payment-failure-total data-payment-outcome-amount>฿ 1,160</strong> · <span data-payment-outcome-method>QR / PromptPay</span></div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-payment-retry>Try payment again</button><button class="btn btn--ghost" data-payment-alternate-method>Use a different method</button></div>
   </section>
 
@@ -1531,73 +1523,67 @@
        fallback choice appears (switch to next-day + pay difference, or refund). -->
   <section class="screen" id="pharmacypending">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
-    <div class="screen__body stack-5 center">
-      <div class="transition-stage__visual" role="status" aria-label="Preparing medicine"><span class="transition-stage__symbol"><i data-lucide="package" class="ui-icon" aria-hidden="true"></i></span></div>
-      <div class="stack-2"><h2 class="h1">A pharmacist is reviewing your paid order</h2></div>
-      <div class="card card--pad-sm stack-2" style="text-align:left"><div class="between"><span class="muted">Payment received</span><strong data-payment-outcome-amount>฿ 1,160</strong></div><div class="between"><span class="muted">Payment method</span><strong data-payment-outcome-method>QR / PromptPay</strong></div></div>
-      <p class="hint">You can leave this screen. We'll notify you when it's out for delivery.</p>
-    <div class="screen__footer"><button class="btn btn--secondary" data-go="activity">View order activity</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your medicine">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">Preparing your medicine</h2><p class="muted">You can leave—we'll notify you when it ships.</p></div>
+      <div class="state-view__timer">About 15–25 min</div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="activity">View order</button></div>
   </section>
 
   <!-- ===================== PHARMACY ACCEPTED ===================== -->
   <section class="screen" id="pharmacyaccepted">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ร้านยารับคำสั่งซื้อแล้ว</span></div>
-    <div class="screen__body pharmacy-accepted center">
-      <div class="transition-stage__visual transition-stage__visual--success" role="img" aria-label="ร้านยารับคำสั่งซื้อแล้ว">
-        <span class="transition-stage__symbol"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pharmacy confirmed</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy confirmed your order">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <h2 class="h1">Fascino Ari รับออเดอร์แล้ว</h2>
-      <div class="pharmacy-accepted__summary" aria-label="สรุปคำสั่งซื้อ">
-        <div class="pharmacy-accepted__total">
-          <span>ยอดที่ต้องชำระ</span>
-          <strong data-payment-outcome-amount>฿ 1,160</strong>
-        </div>
-        <dl class="pharmacy-accepted__details">
-          <div><dt>วิธีชำระเงิน</dt><dd data-payment-outcome-method>QR / พร้อมเพย์</dd></div>
-          <div><dt>คำสั่งซื้อ</dt><dd>#KR-10293</dd></div>
-          <div><dt>การจัดส่ง</dt><dd data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</dd></div>
-        </dl>
-      </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-pay>ไปชำระเงิน</button></div>
+      <div class="state-view__copy"><h2 class="h1">Pharmacy confirmed your order</h2><p class="muted">Prescription and stock confirmed.</p></div>
+      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 1,160</strong> · <span data-payment-outcome-delivery>Same day · by 6pm</span></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-pay>Pay ฿1,160</button></div>
   </section>
 
   <!-- ===================== SLA FALLBACK (taking longer than expected) ===================== -->
   <section class="screen" id="pharmacyissue">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
-    <div class="screen__body stack-5">
-      <div class="alert alert--warning"><span class="a-ic">!</span><div><div class="a-title">This is taking longer than expected</div><div class="hint">Same-day delivery can't be guaranteed for this order right now. Choose what works best for you. Your payment is safe.</div></div></div>
+    <div class="screen__body state-view state-view--decision">
+      <div class="state-view__visual state-view__visual--warning" role="img" aria-label="Same-day delivery unavailable">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">Same-day delivery is unavailable</h2><p class="muted">Choose another option. Your payment is protected.</p></div>
       <div class="stack-3">
-        <div class="eyebrow">Choose an option</div>
         <button class="option" data-pharmacy-issue-action="postal"><span class="opt-body"><span class="opt-title">Switch to next-day delivery</span><span class="opt-sub">Ships tomorrow · ฿120 delivery fee refunded</span></span><span class="price" style="margin-left:auto">- ฿ 120</span><span class="chev">›</span></button>
         <button class="option" data-pharmacy-issue-action="wait"><span class="opt-body"><span class="opt-title">Keep waiting for same-day</span><span class="opt-sub">We'll keep trying and keep you posted</span></span><span class="chev">›</span></button>
-        <button class="option" data-pharmacy-issue-action="cancel"><span class="opt-body"><span class="opt-title">Cancel &amp; refund this order</span><span class="opt-sub">Full refund to the original method</span></span><span class="chev">›</span></button>
+        <button class="option" data-pharmacy-issue-action="cancel"><span class="opt-body"><span class="opt-title">Cancel &amp; refund this order</span><span class="opt-sub">Medication order refunded · consultation fee excluded</span></span><span class="chev">›</span></button>
       </div>
   </section>
 
   <!-- ===================== REFUND CONFIRMED ===================== -->
   <section class="screen" id="refund">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Refund</span></div>
-    <div class="screen__body stack-5 center">
-      <div class="transition-stage__visual transition-stage__visual--success" role="img" aria-label="Refund confirmed"><span class="transition-stage__symbol"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span></div>
-      <div class="stack-2"><h2 class="h1">Your refund has been returned to your card</h2></div>
-      <div class="card card--pad-sm stack-2" style="text-align:left">
-        <div class="between"><span class="muted">Refunded to</span><strong data-payment-outcome-method>Original payment method</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Refund amount</span><span class="amt" data-payment-outcome-amount>฿ 1,160</span></div>
-        <div class="between"><span class="muted">Reference</span><strong>RF-10293</strong></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Refund confirmed">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <p class="hint">The consultation fee is separate and is not affected by this refund.</p>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="profile">Back to home</button><button class="btn btn--ghost" data-go="concern">Start a new consultation</button></div>
+      <div class="state-view__copy"><h2 class="h1">Refund confirmed</h2><p class="muted">The medication order was refunded. The consultation fee is not included.</p></div>
+      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 1,160</strong> · <span data-payment-outcome-method>Original payment method</span> · RF-10293</div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="profile">Done</button></div>
   </section>
 
   <!-- ===================== CONFIRMATION ===================== -->
   <section class="screen" id="confirm">
-    <div class="screen__body stack-5 center">
-      <!-- Brand K mark, no background panel: this confirmation is a quiet close to the
-           journey, not another state graphic. Same mark as the matching-you loader. -->
-      <span class="confirm-mark" role="img" aria-label="Care plan and delivery confirmed"><svg viewBox="0 0 1204 835" xmlns="http://www.w3.org/2000/svg"><path d="M620.611 745.09L1076.03 834.079L882.342 692.74L620.611 745.09ZM452.05 693.99L452.059 694.005L522.083 725.833L840.433 662.164L585.752 477.521L452.05 693.99ZM0 420.224H261.048L428.229 659.849L552.237 459.085L331.085 337.452L197.378 305.617L0 420.224ZM853.181 203.744L612.746 449.903L865.708 633.301L974.154 509.361L1203.37 0L853.181 203.744Z"/></svg></span>
-      <div class="stack-2"><h2 class="h1">You're all set.</h2></div>
-      <div class="card card--pad-sm stack-2" style="text-align:left"><div class="between"><span class="muted">Medication payment</span><strong data-payment-outcome-amount>฿ 1,160</strong></div><div class="between"><span class="muted">Payment method</span><strong data-payment-outcome-method>QR / PromptPay</strong></div><div class="between"><span class="muted">Medication order</span><strong>#KR-10293</strong></div><div class="between"><span class="muted">Pharmacy</span><strong>Accepted · Fascino Ari</strong></div><div class="between"><span class="muted">Delivery</span><strong data-payment-outcome-delivery>Same day · by 6pm</strong></div></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Order confirmed">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">Order confirmed</h2><p class="muted">Expected by 6pm today.</p></div>
+      <div class="state-view__timer">#KR-10293 · <strong data-payment-outcome-amount>฿ 1,160</strong> · <span data-payment-outcome-delivery>Same day</span></div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="tracking">Track order</button><button class="btn btn--ghost" data-go="profile">Go to home</button></div>
   </section>
 
@@ -1640,10 +1626,13 @@
 
   <!-- ===================== FEEDBACK · THANKS ===================== -->
   <section class="screen" id="feedbackdone">
-    <div class="screen__body stack-5 center">
-      <div class="avatar" style="width:72px;height:72px;margin:var(--sp-5) auto 0;background:var(--color-accent);color:var(--color-on-accent);font-size:28px">★</div>
-      <div class="stack-2"><h2 class="h1">Thanks for the feedback.</h2></div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="plan">View treatment plan</button><button class="btn btn--ghost" data-go="profile">Back to home</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Feedback submitted">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="heart" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">Thank you</h2><p class="muted">Your feedback was submitted.</p></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="plan">View treatment plan</button></div>
   </section>
 
   <!-- ===================== REFILL (KRANE-F22) ===================== -->
@@ -1890,12 +1879,13 @@
   <!-- ===================== ACTIVITIES · EMPTY (edge state) ===================== -->
   <section class="screen" id="empty-activities">
     <div class="screen__top"><span class="ttl">Activities</span></div>
-    <div class="screen__body">
-      <div class="empty">
-        <div class="e-art"></div>
-        <div class="stack-2"><h2 class="h2">No active orders</h2><p class="muted">When you accept a treatment plan, your orders and deliveries will show up here.</p></div>
-        <button class="btn btn--primary btn--sm" data-go="concern">Start a consultation</button>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No active orders">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="package-open" class="ui-icon" aria-hidden="true"></i></span>
       </div>
+      <div class="state-view__copy"><h2 class="h1">No active orders</h2><p class="muted">Orders and delivery updates will appear here.</p></div>
+      <button class="btn btn--primary state-view__cta" data-go="concern">Start consultation</button>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Profile</a>
@@ -1908,12 +1898,13 @@
   <!-- ===================== HISTORY · EMPTY (edge state) ===================== -->
   <section class="screen" id="empty-history">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
-    <div class="screen__body">
-      <div class="empty">
-        <div class="e-art"></div>
-        <div class="stack-2"><h2 class="h2">Nothing here yet</h2><p class="muted">Your consultations and prescriptions will appear here after your first visit.</p></div>
-        <button class="btn btn--primary btn--sm" data-go="concern">Begin your first consultation</button>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No consultation history">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
       </div>
+      <div class="state-view__copy"><h2 class="h1">No consultation history</h2><p class="muted">Consultations and prescriptions will appear here.</p></div>
+      <button class="btn btn--primary state-view__cta" data-go="concern">Start consultation</button>
     </div>
   </section>
 
@@ -2347,13 +2338,12 @@
   </section>
 
   <section class="screen" id="preloader">
-    <div class="screen__body preloader-screen">
-      <div class="preloader-card" role="status" aria-live="polite">
-        <dotlottie-player class="preloader-lottie" src="assets/health-loader.lottie?v=20260730lottie1" background="transparent" speed="1" autoplay loop aria-label="กำลังเตรียมข้อมูลสุขภาพ"></dotlottie-player>
-        <div class="preloader-copy">
-          <h2 class="h1">กำลังเตรียมข้อมูลให้คุณ</h2>
-        </div>
+    <div class="screen__body state-view center" role="status" aria-live="polite">
+      <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
+        <span class="state-view__tile"><img src="assets/landing-573/treatments/hair-loss-prevention.png" alt="" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
+      <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
     </div>
   </section>
 
@@ -3171,6 +3161,10 @@
       screen.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(net); });
       screen.querySelectorAll('[data-payment-outcome-method]').forEach(el => { el.textContent=method; });
       screen.querySelectorAll('[data-payment-outcome-delivery]').forEach(el => { el.textContent=deliveryOutcomeLabel(); });
+      if(id==='pharmacyaccepted'){
+        const payButton=screen.querySelector('[data-pharmacy-accepted-pay]');
+        if(payButton) payButton.textContent=(document.documentElement.lang==='th' ? 'ชำระ ' : 'Pay ')+baht(net);
+      }
     });
     const refund=document.getElementById('refund');
     if(refund){
@@ -3684,10 +3678,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchStepTimer, enterTimer, waitTimer, typingTimer, pharmacyLocateTimer, paymentSuccessTimer, phTimer, phStepTimer, phStepTimer2, phFailTimer;
-  // Same checkmark used by the 5-step care stagebar (careJourneyMarkup), reused on the
-  // in-card step lists (matching, pharmacy-search) so both checkmark styles agree.
-  const STEP_CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, pharmacyLocateTimer, paymentSuccessTimer, preloaderTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -4502,6 +4493,12 @@
         if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('confirm');
       },reduceMotion ? 450 : 2200);
     }
+    clearTimeout(preloaderTimer);
+    if(id==='preloader'){
+      preloaderTimer=setTimeout(() => {
+        if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
+      },reduceMotion ? 350 : 1800);
+    }
     // connecting state auto-advances to the live video call (demo realism)
     clearTimeout(connectTimer);
     if(id === 'connecting'){ connectTimer = setTimeout(() => { if(document.getElementById('connecting').classList.contains('active')) replaceCurrent('video'); }, 1600); }
@@ -4516,21 +4513,10 @@
       const cb = document.querySelector('#consult [data-callbar]');
       if(cb){ cb.hidden = !callActive; cb.dataset.go = lastCall; }
     }
-    // matching: determinate cue (progress bar + step 1 completing into step 2), then auto-advance
-    clearTimeout(matchTimer); clearTimeout(matchStepTimer);
+    // Matching is a short automatic state; the visual carries the progress cue.
+    clearTimeout(matchTimer);
     const mScr = document.getElementById('matching');
-    if(mScr) mScr.classList.remove('matching-live');
     if(id === 'matching' && mScr){
-      void mScr.offsetWidth;
-      mScr.classList.add('matching-live');
-      const s1 = mScr.querySelector('[data-match-step="1"] .step-dot'), s2 = mScr.querySelector('[data-match-step="2"] .step-dot');
-      if(s1){ s1.className = 'step-dot'; s1.textContent = '1'; }
-      if(s2){ s2.className = 'step-dot'; s2.textContent = '2'; }
-      matchStepTimer = setTimeout(() => {
-        if(!mScr.classList.contains('active')) return;
-        if(s1){ s1.classList.add('is-done'); s1.innerHTML = STEP_CHECK_SVG; }
-        if(s2) s2.classList.add('is-done');
-      }, 1800);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> booking page to pick a slot, where the same gate runs on continue.
@@ -4541,48 +4527,31 @@
     }
     // Pharmacy review happens before payment. A decline reroutes automatically; after
     // three branches the patient chooses another route without being charged.
-    clearTimeout(phTimer); clearTimeout(phStepTimer); clearTimeout(phStepTimer2); clearTimeout(phFailTimer);
+    clearTimeout(phTimer); clearTimeout(phFailTimer);
     const pScr = document.getElementById('pharmacy-search');
-    if(pScr) pScr.classList.remove('matching-live');
     if(id === 'pharmacy-search' && pScr){
-      void pScr.offsetWidth;
-      pScr.classList.add('matching-live');
       const heading = pScr.querySelector('[data-ph-heading] .h1');
       const hint = pScr.querySelector('[data-ph-heading] .muted');
       const graphic = pScr.querySelector('[data-ph-graphic]');
       if(graphic){
-        graphic.classList.remove('photo-graphic--danger');
-        graphic.classList.add('photo-graphic--loading');
-        const gIcon = graphic.querySelector('i,svg');
-        if(gIcon) gIcon.outerHTML = '<i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i>';
+        graphic.classList.remove('state-view__visual--danger');
+        graphic.classList.add('state-view__visual--loading');
       }
-      // Static strings (not templated) so each one has a fixed Thai dictionary entry.
-      const phHeadings = ['กำลังส่งคำสั่งซื้อให้เภสัชกรตรวจสอบ','กำลังตรวจสอบกับร้านยาแห่งที่ 2','กำลังตรวจสอบกับร้านยาแห่งที่ 3'];
+      const phHeadings = ['Pharmacist reviewing your order','Checking another pharmacy','Checking another pharmacy'];
       if(heading) heading.textContent = phHeadings[Math.min(pharmacyRetryCount, 2)];
-      if(hint) hint.textContent = 'เภสัชกรจะตรวจใบสั่งยาและยืนยันสต็อก ก่อนรับออเดอร์';
-      const p1 = pScr.querySelector('[data-ph-step="1"] .step-dot'), p2 = pScr.querySelector('[data-ph-step="2"] .step-dot'), p3 = pScr.querySelector('[data-ph-step="3"] .step-dot');
-      [p1,p2,p3].forEach((dot,i) => { if(dot){ dot.className = 'step-dot'; dot.textContent = String(i+1); } });
-      phStepTimer = setTimeout(() => {
-        if(!pScr.classList.contains('active')) return;
-        if(p1){ p1.classList.add('is-done'); p1.innerHTML = STEP_CHECK_SVG; }
-      }, 1200);
-      phStepTimer2 = setTimeout(() => {
-        if(!pScr.classList.contains('active')) return;
-        if(p2){ p2.classList.add('is-done'); p2.innerHTML = STEP_CHECK_SVG; }
-      }, 2400);
+      if(hint) hint.textContent = pharmacyRetryCount
+        ? 'The previous pharmacy did not have every item. No payment has been taken.'
+        : 'Checking the prescription and stock before payment.';
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
         if(pharmacyForceDecline){
           pharmacyForceDecline = false; // one-shot demo trigger
           // Failed state: shown automatically, no action required from the patient.
-          // Reuses copy that already has a Thai dictionary entry.
-          if(heading) heading.textContent = 'ร้านยานี้ยังยืนยันคำสั่งซื้อไม่ได้';
-          if(hint) hint.textContent = 'สินค้าบางรายการหมดชั่วคราว ระบบกำลังตรวจสอบร้านยาใกล้เคียงแห่งถัดไป';
+          if(heading) heading.textContent = 'Checking another pharmacy';
+          if(hint) hint.textContent = 'The previous pharmacy did not have every item. No payment has been taken.';
           if(graphic){
-            graphic.classList.remove('photo-graphic--loading');
-            graphic.classList.add('photo-graphic--danger');
-            const gIcon = graphic.querySelector('i,svg');
-            if(gIcon) gIcon.outerHTML = '<i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i>';
+            graphic.classList.remove('state-view__visual--loading');
+            graphic.classList.add('state-view__visual--danger');
           }
           phFailTimer = setTimeout(() => {
             if(!pScr.classList.contains('active')) return;
@@ -4600,7 +4569,6 @@
           }, 1400);
           return;
         }
-        if(p3){ p3.classList.add('is-done'); p3.innerHTML = STEP_CHECK_SVG; }
         pharmacyRetryCount = 0;
         if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
         replaceCurrent('pharmacyaccepted');
@@ -4717,22 +4685,17 @@
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
-    const st = w.querySelector('[data-wait-status]'), nx = w.querySelector('[data-wait-next]'),
-          hn = w.querySelector('[data-wait-hint]'), s3 = w.querySelector('[data-wait-step3]'),
-          s4 = w.querySelector('[data-wait-step4]'), btn = w.querySelector('[data-wait-enter]');
-    if(st) st.textContent = 'In waiting room';
-    if(nx) nx.textContent = 'Doctor admits you in 2-3 min';
-    if(hn) hn.textContent = 'Consultation fee received. The doctor can see your intake and is preparing the consultation room.';
-    if(s3) s3.className = 'step active';
-    if(s4) s4.className = 'step';
+    const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
+          timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]');
+    if(title) title.textContent = 'Doctor will let you in shortly';
+    if(copy) copy.textContent = "We'll notify you when the doctor is ready.";
+    if(timer) timer.textContent = 'About 2–3 min';
     if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'Waiting to be admitted…'; }
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
-      if(st) st.textContent = 'Doctor is ready';
-      if(nx) nx.textContent = 'The doctor is ready for you now';
-      if(hn) hn.textContent = 'You have been admitted. Enter the room to start with chat and video.';
-      if(s3) s3.className = 'step done';
-      if(s4) s4.className = 'step active';
+      if(title) title.textContent = 'Doctor is ready';
+      if(copy) copy.textContent = 'Video starts when you enter. You can turn it off anytime.';
+      if(timer) timer.textContent = 'Ready now';
       if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'Enter the room'; }
     }, reduceMotion ? 400 : 4200);
   }

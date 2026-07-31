@@ -135,7 +135,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /flowState\.consentsComplete && !hasCurrentConsent\('direct'\) && !hasCurrentConsent\('partner'\)/);
   assert.match(html, /function directClinicalStartTarget\(\)\{/);
   assert.match(html, /DIRECT_NURSE_SCREENING_ENABLED \? 'nurse' : 'booking'/);
-  assert.match(html, /id="rx-writing"[\s\S]*data-go="plan">ดูแผนการรักษา \(เดโม\)[\s\S]*data-go="notifications">จัดการการแจ้งเตือน/);
+  assert.match(html, /id="rx-writing"[\s\S]*data-go="notifications">Manage notifications/);
+  assert.doesNotMatch(screenFragment(html, "rx-writing"), /\(เดโม\)|\(demo\)|data-go="plan"/i);
   assert.match(html, /tracking:'confirm', feedback:'consult'/);
   assert.match(html, /noMatch\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('matching'\)/);
   assert.match(html, /noStock\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('pharmacy-search'\)/);
@@ -363,23 +364,23 @@ test("post-consultation checkout carries the accepted order into delivery and pa
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
   assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('pharmacy-search'\)/, "Next must send the order to pharmacy review before payment");
-  assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*ไปชำระเงิน/, "payment can begin only after pharmacy acceptance");
+  assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*Pay ฿1,160/, "payment can begin only after pharmacy acceptance");
   assert.match(html, /closest\('\[data-pharmacy-accepted-pay\]'\)[\s\S]*show\('payment-gw'\)/, "accepted order must open the payment gateway");
-  assert.match(pharmacyAccepted, /transition-stage__visual--success/, "pharmacy acceptance should use the compact animated state signal");
-  assert.match(pharmacyAccepted, /pharmacy-accepted__summary/, "pharmacy acceptance needs a concise, scannable order summary");
+  assert.match(pharmacyAccepted, /state-view__visual--success/, "pharmacy acceptance should use the shared animated state signal");
+  assert.doesNotMatch(pharmacyAccepted, /pharmacy-accepted__summary|class="card/, "pharmacy acceptance should keep essential facts out of a second information box");
   assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ|ยอดที่ชำระแล้ว/, "pharmacy acceptance must not use a large state panel or imply payment already happened");
-  assert.doesNotMatch(screenFragment(html, "pharmacypending"), /photo-graphic/, "medicine preparation should share the compact transition signal");
-  assert.doesNotMatch(screenFragment(html, "refund"), /photo-graphic/, "refund confirmation should share the compact result signal");
+  assert.match(screenFragment(html, "pharmacypending"), /state-view__visual--loading/, "medicine preparation should share the state pattern");
+  assert.match(screenFragment(html, "refund"), /state-view__visual--success/, "refund confirmation should share the result pattern");
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
-  assert.match(css, /\.transition-stage__visual\{[^}]*width:112px[^}]*background:transparent/, "loading visuals must stay compact and panel-free");
-  assert.match(css, /@keyframes krane-orbit-pulse/, "loading visuals need a subtle Krane-owned motion treatment");
+  assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
+  assert.match(css, /\.state-view__tile>img\{?[\s\S]*animation:krane-signal-float/, "state imagery needs the same restrained floating motion as landing cutouts");
 
-  for (const outcome of [failure, success]) {
-    assert.match(outcome, /data-payment-outcome-amount/);
-    assert.match(outcome, /data-payment-outcome-method/);
-    assert.match(outcome, /data-payment-outcome-delivery/);
-  }
+  assert.match(failure, /data-payment-outcome-amount/);
+  assert.match(failure, /data-payment-outcome-method/);
+  assert.doesNotMatch(failure, /data-payment-outcome-delivery/, "failed payment must not promise a delivery time");
+  assert.match(success, /data-payment-outcome-amount/);
+  assert.match(success, /data-payment-outcome-delivery/);
   assert.match(html, /querySelectorAll\('\[data-payment-outcome-amount\]'\)/);
   assert.match(html, /querySelectorAll\('\[data-payment-outcome-method\]'\)/);
   assert.match(html, /querySelectorAll\('\[data-payment-outcome-delivery\]'\)/);
@@ -387,6 +388,31 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(failure, /data-payment-alternate-method/);
   assert.match(failure, /data-payment-retry/, "retrying the same payment must remain available");
   assert.match(html, /closest\('\[data-payment-alternate-method\]'\)/, "alternate payment must have its own handler");
+});
+
+test("standalone patient states share one concise visual hierarchy", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const stateIds = [
+    "ineligible", "matching", "noslots", "consultpay-fail", "waitroom",
+    "connecting", "rx-writing", "pharmacy-locate", "pharmacy-search",
+    "payment-success", "payfail", "pharmacypending", "pharmacyaccepted",
+    "pharmacyissue", "refund", "confirm", "feedbackdone",
+    "empty-activities", "empty-history", "preloader",
+  ];
+
+  for (const id of stateIds) {
+    const fragment = screenFragment(html, id);
+    assert.match(fragment, /class="screen__body state-view/, `${id} must use the shared state layout`);
+    assert.match(fragment, /state-view__visual/, `${id} must include one floating visual`);
+    assert.match(fragment, /state-view__copy/, `${id} must keep title and description together`);
+  }
+
+  assert.doesNotMatch(screenFragment(html, "waitroom"), /class="timeline"|data-wait-card/, "waitroom must not repeat its state in a timeline or information card");
+  assert.doesNotMatch(screenFragment(html, "payfail"), /class="alert|class="card/, "payment failure must use one explanation, not stacked information boxes");
+  assert.doesNotMatch(screenFragment(html, "refund"), /class="card/, "refund facts must remain concise and panel-free");
+  assert.doesNotMatch(screenFragment(html, "confirm"), /class="card|confirm-mark/, "confirmation must share the same product-state visual");
+  assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
+  assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
 });
 
 test("public login and legal routes bypass intake while consent acceptance still requires OTP", async () => {
