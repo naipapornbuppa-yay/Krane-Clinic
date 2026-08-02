@@ -421,7 +421,7 @@ test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const expected = {
     matching: "stage-graphic--doctor",
-    waitroom: "stage-graphic--waiting",
+    waitroom: "assets/status/realistic-v1/pharmacy-review.png",
     connecting: "stage-graphic--connecting",
     "rx-writing": "stage-graphic--plan",
     "pharmacy-locate": "stage-graphic--pharmacy",
