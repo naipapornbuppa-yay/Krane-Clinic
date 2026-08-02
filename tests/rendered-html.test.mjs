@@ -419,11 +419,12 @@ test("standalone patient states share one concise visual hierarchy", async () =>
 test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const expected = {
-    matching: "stage-graphic--doctor",
-    waitroom: "assets/status/realistic-v1/pharmacy-review.png",
-    connecting: "stage-graphic--connecting",
-    "rx-writing": "stage-graphic--plan",
-    preloader: "assets/status/realistic-v1/pharmacy-review.png"
+    matching: "assets/loading/doctor-matching.png",
+    waitroom: "assets/loading/waiting-room.png",
+    connecting: "assets/loading/video-connecting.png",
+    "rx-writing": "assets/loading/treatment-plan.png",
+    "pharmacy-search": "assets/loading/pharmacy-search.png",
+    preloader: "assets/loading/health-preparing.png"
   };
   for (const [screen, graphic] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
