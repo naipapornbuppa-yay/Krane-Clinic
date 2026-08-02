@@ -374,7 +374,6 @@
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
         <a data-go="intake-general">6 · General health <span class="rail-state">required · final question</span></a>
-        <a data-go="summary">Review answers</a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -873,7 +872,7 @@
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these</span></span><span class="opt-check"></span></button>
         </div>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-review-step>Continue</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="booking">Continue</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -883,11 +882,12 @@
       <div class="edu-eyebrow">While a doctor reviews your answers</div>
       <p class="edu-text">Factors like <span class="hl">aging</span>, <span class="hl">family history</span> and <span class="hl">stress</span> can drive hair shedding and thinning.</p>
       <p class="edu-text">The good news: <span class="hl">doctor-led treatment</span> can target those causes, so many men see visibly thicker, fuller hair in <span class="hl">3 to 6 months</span>.</p>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="summary">Next</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="booking">Next</button></div>
   </section>
 
-  <!-- ===================== SUMMARY (review intake before account creation) ===================== -->
-  <section class="screen" id="summary">
+  <!-- Doctor-facing intake summary source. Kept as inert template data; it is not
+       a patient screen or route. -->
+  <template id="doctor-intake-summary">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Review your answers</span></div>
     <div class="screen__body stack-4">
       <div class="card card--pad-sm stack-3 kv-list">
@@ -914,7 +914,7 @@
         <div class="between"><span class="muted">Height / weight</span><span class="kv-val"><strong data-summary-measurements>175 cm · 70 kg</strong><button class="kv-edit" data-review-edit data-edit-focus="about" data-go="intake-general" aria-label="Edit height and weight"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></span></div>
       </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="signup" data-post-auth="booking">Confirm answers &amp; continue</button></div>
-  </section>
+  </template>
 
   <!-- ===================== INTAKE INELIGIBLE (edge state) ===================== -->
   <section class="screen" id="ineligible">
@@ -2526,14 +2526,13 @@
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
 
   let selectedConditionId = 'hair-loss';
-  let reviewEditContext = null;
   let isAuthenticated = false;
   // The auth screens (login, signup, OTP, patient info) belong to the intake
   // journey only when the patient reached them from it. A returning user who
   // opens Log in from the nav or from "ดูแลต่อเนื่อง" has not answered อาการ yet,
   // so the 5-step care stepper must NOT show อาการ as done for them.
   let journeyActive = false;
-  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general','summary'];
+  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general'];
   const JOURNEY_AUTH = ['signup','login','social-confirm','otp','consent-terms','patient-info','identity'];
   // The public walkthrough starts clean. Existing-case protection is enabled only
   // after the demo enters the returning-patient profile state.
@@ -3043,7 +3042,7 @@
   const careJourneyLabels = ['health concern','patient details','payment','doctor consultation','home delivery'];
   const careJourneyShort  = ['Concern','Details','Payment','Doctor','Delivery'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,summary:1,
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,
     booking:3,matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
     plan:5,'pharmacy-locate':5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,refund:5,confirm:5,tracking:5
@@ -4153,8 +4152,8 @@
     concern:'landing', conditions:'concern', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
     intake5:'intake4', 'intake-general':'intake5',
-    'intake-edu':'intake-general', summary:'intake-general', ineligible:'intake4',
-    signup:'summary', login:'landing', 'social-confirm':'signup',
+    'intake-edu':'intake-general', ineligible:'intake4',
+    signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', identity:'patient-info', nurse:'identity',
     booking:'identity', matching:'booking', choosedoc:'booking', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
@@ -4587,12 +4586,6 @@
       syncConsentContinue();
     }
     if(id === 'conditions') renderConditionList();
-    if(id === 'summary'){
-      flowState.draftReady=true;
-      flowState.lastRequiredScreen='summary';
-      persistFlowState();
-      saveIntakeDraft();
-    }
     if(JOURNEY_INTAKE.includes(id) || JOURNEY_AUTH.includes(id)){
       flowState.lastRequiredScreen=id;
       persistFlowState();
@@ -4611,7 +4604,7 @@
       orderActions.forEach(btn => { btn.hidden = isSetup; });
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
-    if(id === 'summary' || id === 'matching' || id === 'intake1') updateSelectedCare();
+    if(id === 'matching' || id === 'intake1') updateSelectedCare();
     // A fresh match from the booking intro assumes a doctor is available again.
     if(id === 'booking') doctorAvailable = true;
     updateIntakeProgress(id);
@@ -4745,58 +4738,6 @@
     }
     updateFeatToast(id);
   }
-  function restoreReviewEditButton(){
-    if(reviewEditContext && reviewEditContext.button){
-      reviewEditContext.button.textContent = reviewEditContext.buttonLabel;
-    }
-  }
-  function beginReviewEdit(button){
-    restoreReviewEditButton();
-    const target = button.dataset.go;
-    reviewEditContext = {
-      target,
-      focus:button.dataset.editFocus || '',
-      button:null,
-      buttonLabel:''
-    };
-    show(target);
-    const screen = document.getElementById(target);
-    const saveButton = screen && screen.querySelector('.screen__footer .btn--primary');
-    if(saveButton){
-      reviewEditContext.button = saveButton;
-      reviewEditContext.buttonLabel = saveButton.textContent;
-      saveButton.textContent = 'บันทึกและกลับไปตรวจทาน';
-    }
-    window.requestAnimationFrame(() => {
-      if(!reviewEditContext || reviewEditContext.target !== target) return;
-      const focusTarget = reviewEditContext.focus
-        ? document.querySelector(`#${target} [data-review-section="${reviewEditContext.focus}"]`)
-        : document.querySelector(`#${target} .screen__body`);
-      if(focusTarget && focusTarget.scrollIntoView) focusTarget.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'});
-      const control = focusTarget && focusTarget.querySelector('button,input,textarea');
-      if(control && control.focus) control.focus({preventScroll:true});
-    });
-  }
-  function finishReviewEdit(message='อัปเดตคำตอบแล้ว'){
-    if(!reviewEditContext) return false;
-    restoreReviewEditButton();
-    reviewEditContext = null;
-    const reviewIndex = history.lastIndexOf('summary');
-    history = reviewIndex >= 0 ? history.slice(0, reviewIndex + 1) : ['landing','summary'];
-    show('summary', false);
-    updateSelectedCare();
-    showActionToast(message,'success');
-    return true;
-  }
-  function cancelReviewEdit(){
-    if(!reviewEditContext) return false;
-    restoreReviewEditButton();
-    reviewEditContext = null;
-    const reviewIndex = history.lastIndexOf('summary');
-    history = reviewIndex >= 0 ? history.slice(0, reviewIndex + 1) : ['landing','summary'];
-    show('summary', false);
-    return true;
-  }
   // medical certificate add-on (client 5 Jul): paid together with the doctor fee.
   // Keep the review screen, hosted gateway, QR and submit CTA on one amount.
   function syncConsultationPaymentAmount(){
@@ -4849,8 +4790,8 @@
   // deep link: open a screen directly via URL hash (e.g. prototype.html#concern)
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
-    // Preserve old review links after removing the duplicate insurance intake page.
-    const legacyRoutes = {'concern':'conditions','intake-ins':'summary','insurance-policy':'insurance','reduce-order':'payment'};
+    // Preserve old bookmarks after removing obsolete patient-facing screens.
+    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment'};
     const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
@@ -4956,11 +4897,6 @@
       }
       pharmacyForceDecline = true;
       show('pharmacy-search',!noStock.closest('.rail'));
-      return;
-    }
-    const reviewEdit = e.target.closest('[data-review-edit]');
-    if(reviewEdit){
-      beginReviewEdit(reviewEdit);
       return;
     }
     // OAuth demo: LINE/Google returns to a visible confirmation step before entering the app.
@@ -5645,19 +5581,6 @@
         }
         return;
       }
-      if(reviewEditContext && scr && scr.id === reviewEditContext.target){
-        // Editing a field from Review is a short detour: save this screen and return.
-        // Changing the whole service category is the exception because it changes
-        // which clinical questions are required, so that starts the relevant path.
-        if(scr.id === 'concern'){
-          restoreReviewEditButton();
-          reviewEditContext = null;
-          showActionToast('เปลี่ยนหมวดแล้ว กรุณาตอบคำถามที่เกี่ยวข้อง','info');
-        } else {
-          finishReviewEdit();
-          return;
-        }
-      }
       if(go.dataset.flagGo && scr && scr.querySelector('.option[data-flag][aria-selected="true"]')){
         show(go.dataset.flagGo); return;
       }
@@ -5703,10 +5626,6 @@
           if(edit) edit.textContent='เปลี่ยนเบอร์';
         }
         returnFromPhoneOtp(returnTarget);
-        return;
-      }
-      if(reviewEditContext && back.closest('.screen')?.id === reviewEditContext.target){
-        cancelReviewEdit();
         return;
       }
       if(history.length > 1){ history.pop(); show(history[history.length-1], false); }
@@ -5807,7 +5726,6 @@
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Paid Order, Pharmacist Review & Routing', stories:['The signed prescription and paid order are sent only after bank confirmation','A licensed pharmacist verifies the prescription, checks stock, and accepts into POS','A declined branch reroutes automatically; repeated declines open the protected fallback/refund choice'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
-    'summary':          { id:'KRANE-F04', name:'Health Intake, Review Summary', stories:['US-F04.5: Patient reviews and edits answers before confirming','A completed temporary draft is preserved while the patient creates and verifies an account'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
     'signup':           { id:'KRANE-F03', name:'Create Account', stories:['A new patient creates an account with the phone number already carried into OTP','OTP verifies the account but never skips patient information, identity, or current consent','The completed intake draft remains available throughout authentication'] },
     'login':            { id:'KRANE-F03', name:'Log In, Returning User', stories:['A returning patient verifies the phone number with OTP','A still-valid identity may skip repeat identity verification','Current PDPA and telemedicine consent remains mandatory before matching'] },
@@ -6114,15 +6032,16 @@
   });
 
 
-  // Insurance is handled by the dedicated entitlement flow, so intake always
-  // proceeds directly from general health to review.
+  // The patient already saw and entered every answer. Persist the completed draft
+  // for the doctor, then continue to account creation without a duplicate review page.
   document.body.addEventListener('click', e => {
-    if(!e.target.closest('[data-review-step]')) return;
-    if(reviewEditContext && reviewEditContext.target === 'intake-general'){
-      finishReviewEdit();
-      return;
-    }
-    show('summary');
+    if(!e.target.closest('[data-intake-complete]')) return;
+    flowState.draftReady=true;
+    flowState.lastRequiredScreen='signup';
+    persistFlowState();
+    saveIntakeDraft();
+    postAuthNext='booking';
+    show('signup');
   });
   function applyInsuranceVisibility(){
     const general = isGeneralPath();

@@ -154,8 +154,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /\.option\{[\s\S]*font:inherit;color:var\(--color-ink\)/);
   assert.match(html, /if\(location\.hash\) applyHash\(\);\s*else \{\s*history=\['landing'\];\s*show\('landing',false\);\s*\}/);
   assert.doesNotMatch(html, /กู้คืนแบบประเมินและขั้นตอนล่าสุดแล้ว/);
-  assert.match(screenFragment(html, "summary"), /data-post-auth="booking">Confirm answers &amp; continue<\/button>/);
-  assert.doesNotMatch(screenFragment(html, "summary"), /Continue as|Mali S\./, "summary actions must describe the task, not expose a demo patient name");
+  assert.doesNotMatch(html, /<section class="screen" id="summary"/, "patients must not see a duplicate answer-review screen");
+  assert.doesNotMatch(html, /data-go="summary"/, "patient navigation must not expose the removed review route");
+  assert.match(html, /<template id="doctor-intake-summary">[\s\S]*data-summary-concern/, "the doctor-facing intake summary source must remain available");
 });
 
 test("legacy patient URLs redirect to the canonical B2C routes", async () => {
@@ -476,7 +477,9 @@ test("public login and legal routes bypass intake while consent acceptance still
   assert.match(html, /data-consent-page-scroll/, "consent must read as one continuous legal page");
   assert.match(html, /consentChecked\.pdpa = true;[\s\S]*consentChecked\.telemedicine = true;/,
     "reaching the end must select both consent records automatically");
-  assert.match(html, /signup:'summary', login:'landing'/);
+  assert.match(html, /signup:'intake-general', login:'landing'/);
+  assert.doesNotMatch(html, /<section class="screen" id="summary"|data-go="summary"/);
+  assert.match(html, /data-intake-complete[\s\S]*flowState\.draftReady=true;[\s\S]*saveIntakeDraft\(\);[\s\S]*show\('signup'\)/);
   assert.match(html, /'consent-terms':'landing'/);
   assert.match(html, /const consentSubmit = e\.target\.closest\('\[data-consent-continue\]'\);[\s\S]*if\(!consentIdentityVerified\(\)\)/);
 });
