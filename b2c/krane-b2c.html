@@ -2090,7 +2090,7 @@
         <span class="consent-page__sentinel" data-consent-end aria-hidden="true"></span>
       </div>
     </div>
-    <div class="consent-scroll-cue" data-consent-scroll-cue aria-hidden="true"><span>↓</span> เลื่อนลงจนสุด</div>
+    <button class="consent-scroll-cue" type="button" data-consent-scroll-cue data-consent-auto-scroll><span>↓</span> เลื่อนไปด้านล่าง</button>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button></div>
   </section>
 
@@ -2946,6 +2946,8 @@
   const consentChecked = Object.assign({pdpa:false,telemedicine:false},flowState.consentChecked || {});
   const consentChecks = [...document.querySelectorAll('[data-consent-checkbox]')];
   const consentContinue = document.querySelector('[data-consent-continue]');
+  const consentAutoScroll = document.querySelector('[data-consent-auto-scroll]');
+  let consentAutoCheckTimer = 0;
   function consentIdentityVerified(){
     return flowState.entryChannel === 'partner'
       ? Boolean(flowState.partnerAccessComplete && flowState.partnerPhoneVerified)
@@ -2980,6 +2982,27 @@
   }
   // PDPA and telemedicine consent read as one continuous page. Reaching the end
   // marks both records read and selects both confirmations automatically.
+  function completeConsentBundleAfterDelay(box){
+    if(consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine) return;
+    clearTimeout(consentAutoCheckTimer);
+    consentAutoCheckTimer = window.setTimeout(() => {
+      const stillAtEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 12;
+      if(!stillAtEnd || !document.getElementById('consent-terms')?.classList.contains('active')) return;
+      markConsentRead('pdpa');
+      markConsentRead('telemedicine');
+      if(consentIdentityVerified()){
+        consentChecked.pdpa = true;
+        consentChecked.telemedicine = true;
+        flowState.consentChecked = Object.assign({},consentChecked);
+        persistFlowState();
+        renderConsentReadState('pdpa');
+        renderConsentReadState('telemedicine');
+        syncConsentContinue();
+      }
+      const cue=document.querySelector('[data-consent-scroll-cue]');
+      if(cue) cue.hidden=true;
+    },700);
+  }
   function checkConsentScrollEnd(box){
     const type = box.hasAttribute('data-consent-page-scroll') ? 'all' : box.dataset.consentScroll;
     const bundleComplete = consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine;
@@ -2991,19 +3014,7 @@
     const reachedEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 12;
     if(!overflows || reachedEnd){
       if(type === 'all'){
-        markConsentRead('pdpa');
-        markConsentRead('telemedicine');
-        if(consentIdentityVerified()){
-          consentChecked.pdpa = true;
-          consentChecked.telemedicine = true;
-          flowState.consentChecked = Object.assign({},consentChecked);
-          persistFlowState();
-          renderConsentReadState('pdpa');
-          renderConsentReadState('telemedicine');
-          syncConsentContinue();
-        }
-        const cue=document.querySelector('[data-consent-scroll-cue]');
-        if(cue) cue.hidden=true;
+        completeConsentBundleAfterDelay(box);
       }
       else markConsentRead(type);
     }
@@ -3023,6 +3034,9 @@
   });
   const consentPageScroll=document.querySelector('[data-consent-page-scroll]');
   if(consentPageScroll){
+    if(consentAutoScroll) consentAutoScroll.addEventListener('click',() => {
+      consentPageScroll.scrollTo({top:consentPageScroll.scrollHeight,behavior:'smooth'});
+    });
     consentPageScroll.addEventListener('scroll',() => checkConsentScrollEnd(consentPageScroll),{passive:true});
     // Re-check when the page gains a real height, i.e. when this screen is shown.
     if(window.ResizeObserver) new ResizeObserver(() => checkConsentScrollEnd(consentPageScroll)).observe(consentPageScroll);
