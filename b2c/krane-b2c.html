@@ -1420,19 +1420,23 @@
           </div>
           <div class="checkout-order__item" data-order-item="finasteride">
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span>
-            <span class="checkout-order__qty" data-order-qty>1×</span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Finasteride 1mg</span>
               <span class="checkout-order__note">รับประทานวันละ 1 เม็ด · ปริมาณ 1 เดือน</span>
+            </span>
+            <span class="qty" data-qty data-min="0" data-max="1" data-unit="590" aria-label="จำนวน Finasteride">
+              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน Finasteride">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน Finasteride">+</button>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 590</span>
           </div>
           <div class="checkout-order__item" data-order-item="minoxidil">
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span>
-            <span class="checkout-order__qty" data-order-qty>2×</span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Minoxidil 5% topical</span>
               <span class="checkout-order__note">ทาหนังศีรษะวันละ 2 ครั้ง · ปริมาณ 1 เดือน</span>
+            </span>
+            <span class="qty" data-qty data-min="0" data-max="2" data-unit="225" aria-label="จำนวน Minoxidil">
+              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน Minoxidil">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน Minoxidil">+</button>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 450</span>
           </div>
@@ -3172,7 +3176,16 @@
         const qtyControl=row.querySelector('[data-qty-n]');
         const price=row.querySelector('[data-order-price],[data-line-price]');
         if(qty) qty.textContent=`${quantity}×`;
-        if(qtyControl) qtyControl.textContent=String(quantity);
+        if(qtyControl){
+          qtyControl.textContent=String(quantity);
+          const control=qtyControl.closest('[data-qty]');
+          const min=Number(control?.dataset.min ?? 1);
+          const max=Number(control?.dataset.max ?? quantity);
+          const minus=control?.querySelector('[data-qty-minus]');
+          const plus=control?.querySelector('[data-qty-plus]');
+          if(minus) minus.disabled=quantity<=min;
+          if(plus) plus.disabled=quantity>=max;
+        }
         if(price) price.textContent=baht(unit*quantity);
       });
     });
@@ -5473,19 +5486,27 @@
     if(qbtn && !qbtn.disabled){
       const ctl = qbtn.closest('[data-qty]');
       const nEl = ctl.querySelector('[data-qty-n]');
+      const min = parseInt(ctl.dataset.min || '1', 10);
       const max = parseInt(ctl.dataset.max, 10), unit = parseInt(ctl.dataset.unit, 10);
       let q = parseInt(nEl.textContent, 10);
-      q = qbtn.hasAttribute('data-qty-minus') ? Math.max(1, q - 1) : Math.min(max, q + 1);
-      nEl.textContent = q;
-      ctl.querySelector('[data-qty-minus]').disabled = q <= 1;
-      ctl.querySelector('[data-qty-plus]').disabled = q >= max;
-      const line = ctl.closest('.plan-item').querySelector('[data-line-price]');
-      if(line) line.textContent = '฿ ' + (unit * q).toLocaleString();
+      q = qbtn.hasAttribute('data-qty-minus') ? Math.max(min, q - 1) : Math.min(max, q + 1);
       const item=ctl.closest('[data-order-item]')?.dataset.orderItem;
+      const nextQuantities=Object.assign({},flowState.orderState.quantities,item ? {[item]:q} : {});
+      if(Object.values(nextQuantities).every(value => Number(value)<=0)){
+        showActionToast('ต้องเลือกยาอย่างน้อย 1 รายการ','warning');
+        return;
+      }
+      nEl.textContent = q;
+      ctl.querySelector('[data-qty-minus]').disabled = q <= min;
+      ctl.querySelector('[data-qty-plus]').disabled = q >= max;
+      const row=ctl.closest('[data-order-item]');
+      const line = row?.querySelector('[data-line-price],[data-order-price]');
+      if(line) line.textContent = '฿ ' + (unit * q).toLocaleString();
       if(item){
         flowState.orderState.quantities[item]=q;
         persistFlowState();
         syncOrderCheckout();
+        refreshMedicationCheckout();
       }
       return;
     }
