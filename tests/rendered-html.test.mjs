@@ -337,12 +337,12 @@ test("post-consultation checkout carries the accepted order into delivery and pa
 
   assert.match(plan, /data-go="payment"/, "accepting the plan must go directly to payment");
   assert.doesNotMatch(plan, /data-go="address"|data-go="pharmacy-locate"/, "accepting the plan must not force an address or pharmacy-locate detour");
-  assert.match(payment, /data-go="address"[\s\S]*เลือกที่อยู่/, "payment must expose an explicit Choose address action");
-  assert.match(payment, /ยังไม่ได้เลือกที่อยู่จัดส่ง/, "checkout must begin with an empty delivery address");
-  assert.match(payment, /data-payment-go aria-disabled="true"[\s\S]*ต่อไป/, "checkout must gate the Next action until required fields are complete");
-  assert.match(address, /data-address-save/, "the address form must have a dedicated save-and-return action");
+  assert.match(payment, /data-go="address"[\s\S]*เปลี่ยนที่อยู่/, "payment must expose an explicit Change address action");
+  assert.match(payment, /The Base Park West/, "the golden Mali checkout must begin with her saved delivery address");
+  assert.match(payment, /data-payment-go[\s\S]*ไปหน้าชำระเงิน/, "checkout must use a specific payment action");
+  assert.match(address, /data-address-save[^>]*>บันทึกและกลับไปชำระเงิน/, "the address form must have a dedicated save-and-return action");
   assert.match(html, /function checkoutIsReady\(\)[\s\S]*addressConfirmed/, "checkout readiness must require an explicitly confirmed address");
-  assert.match(html, /address:\{building:/, "the saved delivery address must live in persisted order state");
+  assert.match(html, /MALI_SAVED_ADDRESS[\s\S]*The Base Park West/, "the saved delivery address must live in persisted order state");
   assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*history\.pop\(\)[\s\S]*show\('payment',false\)/, "saving an address must return to the existing payment step without duplicating history");
 
   const planItems = [...plan.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
@@ -350,8 +350,8 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.ok(planItems.length >= 2, "the accepted plan must expose stable order-item keys");
   assert.equal(new Set(planItems).size, planItems.length, "plan order-item keys must be unique");
   assert.deepEqual(new Set(paymentItems), new Set(planItems), "checkout must mirror every accepted plan item by key");
-  assert.equal((payment.match(/data-qty(?=[\s>])/g) || []).length, paymentItems.length, "every checkout medicine must be adjustable in place");
-  assert.match(html, /const qbtn = e\.target\.closest\('\[data-qty-minus\],\[data-qty-plus\]'\)[\s\S]*refreshMedicationCheckout\(\)/, "quantity changes must immediately recalculate checkout totals");
+  assert.equal((payment.match(/data-order-qty/g) || []).length, paymentItems.length, "checkout must show the accepted quantity for every medicine");
+  assert.doesNotMatch(payment, /data-qty(?=[\s>])/, "medicine quantities must be adjusted on the treatment plan, not in final checkout");
 
   const deliveryValues = [...payment.matchAll(/data-delivery-value="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(deliveryValues.includes("same-day"), "payment needs a same-day choice");
@@ -359,6 +359,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /data-delivery-value="same-day"[\s\S]{0,500}฿ 120/, "same-day must keep its quoted price when postal is selected");
   assert.equal((payment.match(/data-payment-delivery(?=[\s>])/g) || []).length, 1, "only the selected delivery bill row should receive the calculated fee");
   assert.doesNotMatch(address, /data-delivery-value=/, "delivery speed belongs on payment, not the address editor");
+  assert.doesNotMatch(address, /รูปแบบการจัดส่ง|ได้รับยาภายใน 1–3 ชั่วโมง/, "address editing must not duplicate a delivery promise");
   assert.match(html, /closest\('\[data-delivery-value\]'\)/);
   assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue/);
   assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue[\s\S]{0,900}refreshMedicationCheckout\(\)/, "delivery selection must refresh the fee and total");
@@ -368,12 +369,17 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /data-payment-addons/);
   assert.match(payment, /checkout-addon-rail/);
   assert.ok((payment.match(/data-addon-item/g) || []).length >= 2, "optional products must form a horizontal card rail");
+  assert.equal((payment.match(/assets\/addons-v1\/[^"']+\.png/g) || []).length, 3, "every optional product must use a distinct product image");
+  assert.equal((payment.match(/aria-pressed="false"/g) || []).length, 3, "optional product cards must expose button toggle state");
+  assert.doesNotMatch(payment, /role="listitem"/, "interactive add-on cards must retain button semantics");
   assert.doesNotMatch(payment, /data-delivery-value="[^"]+"[\s\S]{0,350}opt-check/, "delivery rows must not duplicate selection with checkbox controls");
   assert.doesNotMatch(payment, /฿ 350 (?:ชำระแล้ว|อยู่ในสิทธิ์)/);
   assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
   assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('payment-gw'\)/, "checkout must open the gateway before pharmacy review");
+  assert.match(html, /activateGatewayMethod\('payment-gw',paymentMethod,\{persistMedicationMethod:true\}\)/, "the selected checkout method must activate the matching gateway pane");
+  assert.match(html, /screen\?\.id==='payment-gw'/, "switching gateway tabs must persist the medication payment method");
   assert.match(html, /id==='payment-success'[\s\S]*replaceCurrent\('pharmacy-search'\)/, "bank confirmation must release the paid order to pharmacy review");
   assert.match(pharmacyAccepted, /data-pharmacy-accepted-continue[\s\S]*Continue to preparation/, "pharmacy acceptance must continue to preparation without charging again");
   assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('pharmacypending'\)/, "accepted paid order must open preparation");
@@ -384,6 +390,9 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(html, /id="refund"|refundAmount/, "obsolete refund fallback must stay removed");
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  assert.match(css, /\.checkout-pay \.btn\{[^}]*min-height:var\(--control-h\)/, "the payment CTA must keep a full touch target at 320px");
+  assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:190px/, "mobile add-on cards must remain compact and show the next choice");
+  assert.match(css, /\.checkout-addon-card__visual img\{[^}]*object-fit:contain/, "product cutouts must stay fully visible inside each add-on card");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
   assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
   assert.match(css, /background-image:url\("\.\.\/assets\/krane-review-wordmark\.svg"\)/, "state tiles must overlay the exact approved repository wordmark");
