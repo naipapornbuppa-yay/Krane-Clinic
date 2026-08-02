@@ -688,7 +688,8 @@ test("prototype rail nests error cases under related happy-flow pages", async ()
   assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
   assert.match(patient, /4 · Urgent safety[\s\S]*data-go="intake4"[\s\S]*class="rail-error-menu"[\s\S]*data-go="ineligible"/);
   assert.match(patient, /Doctor matching[\s\S]*data-go="booking"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
-  assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance-policy"[\s\S]*class="rail-error-menu"[\s\S]*data-go="reduce-order"/);
+  assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance"[\s\S]*Check entitlement &amp; coverage/);
+  assert.doesNotMatch(patient, /id="insurance-policy"|id="reduce-order"|data-go="insurance-policy"|data-go="reduce-order"/);
   assert.match(patient, /Pharmacy confirmation[\s\S]*data-go="pharmacyaccepted"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nostock/);
   assert.doesNotMatch(patient, /rail-group--exceptions/);
   assert.doesNotMatch(patient, /<span class="rail-step">QA<\/span>/);
