@@ -348,7 +348,7 @@
     "Based on your answers, online care may not be safe. Please see a doctor in person before treatment.":"จากคำตอบของคุณ การดูแลออนไลน์อาจไม่ปลอดภัย กรุณาพบแพทย์ด้วยตนเองก่อนรับการรักษา",
     "Doctor match":"จับคู่แพทย์",
     "Finding your doctor":"กำลังหาแพทย์ให้คุณ",
-    "Checking licensed doctors available for your concern.":"กำลังตรวจสอบแพทย์ที่มีใบอนุญาตและพร้อมให้คำปรึกษา",
+    "Checking licensed doctors available for your concern.":"เรากำลังค้นหาแพทย์ที่พร้อมให้คำปรึกษาและเหมาะกับอาการของคุณ",
     "Usually under 10 seconds":"โดยปกติไม่เกิน 10 วินาที",
     "No doctor available now":"ยังไม่มีแพทย์ว่างตอนนี้",
     "Choose the next available time.":"เลือกเวลาถัดไปที่สะดวก",
