@@ -92,7 +92,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="yes"/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail hidden/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail>/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/autocomplete="off" disabled/g) || []).length, 3);
+  assert.match(html, /input\.disabled=!hasDetails;[\s\S]*if\(!hasDetails\) input\.value=''/);
   assert.match(html, /function partnerHistoryValue\(key\)/);
   assert.match(html, /showActionToast\(`กรุณาระบุ\$\{label\}`,'warning'\)/);
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
