@@ -464,17 +464,17 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Care journey: the whole service stays visible, from first question to medicine
    arriving at home, so the patient can always see when they meet the doctor and
    what is left. Short labels keep all five steps on one line in a phone frame. */
-.care-journey{padding:var(--sp-3) var(--sp-3);border-bottom:1px solid var(--color-line);background:var(--color-surface)}
+.care-journey{padding:10px 12px;border-bottom:1px solid var(--color-line);background:linear-gradient(180deg,var(--color-surface),var(--color-bg-soft))}
 .care-journey[hidden]{display:none}
 .care-journey__current{display:none}
-.care-journey__steps{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none}
-.care-journey__step{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);min-width:0}
+.care-journey__steps{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0;padding:0;list-style:none}
+.care-journey__step{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:8px 4px 7px;border:1px solid transparent;border-radius:14px;transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
 /* connector runs behind the dots, between neighbours only */
-.care-journey__step::before{content:"";position:absolute;top:11px;right:50%;left:-50%;height:2px;background:var(--color-line)}
+.care-journey__step::before{content:"";position:absolute;z-index:0;top:21px;right:calc(50% + 14px);left:calc(-50% - 17px);height:2px;border-radius:2px;background:var(--color-line)}
 .care-journey__step:first-child::before{display:none}
 .care-journey__step.is-done::before,.care-journey__step.is-current::before{background:var(--color-accent)}
-.care-journey__dot{position:relative;z-index:1;width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;box-shadow:none}
-.care-journey__dot svg{width:12px;height:12px}
+.care-journey__dot{position:relative;z-index:1;width:28px;height:28px;flex:none;display:grid;place-items:center;border:1px solid var(--color-line-strong);border-radius:10px;background:var(--color-surface);color:var(--color-ink-3);font-size:11px;font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;box-shadow:0 2px 6px rgba(17,24,39,.05)}
+.care-journey__dot svg{width:13px;height:13px}
 /* Reusable numbered/check step marker, same visual language as .care-journey__dot,
    for step lists inside cards (pharmacy search, doctor matching) so the checkmark
    style is consistent with the 5-step stagebar shown on the same screen. */
@@ -482,10 +482,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   background:var(--color-bg-2);color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
 .step-dot svg{width:12px;height:12px}
 .step-dot.is-done{background:var(--color-accent);color:var(--color-on-accent)}
-.care-journey__name{width:100%;color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:normal}
-.care-journey__step.is-done .care-journey__dot{background:var(--color-accent);color:var(--color-on-accent)}
+.care-journey__name{position:relative;z-index:1;width:100%;color:var(--color-ink-3);font-size:11px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:normal}
+.care-journey__step.is-done .care-journey__dot{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent);box-shadow:none}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-2)}
-.care-journey__step.is-current .care-journey__dot{background:var(--color-accent);color:var(--color-on-accent)}
+.care-journey__step.is-current{border-color:color-mix(in srgb,var(--color-accent) 20%,transparent);background:var(--color-accent-soft)}
+.care-journey__step.is-current .care-journey__dot{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent);box-shadow:0 0 0 4px var(--color-surface),0 5px 12px color-mix(in srgb,var(--color-accent) 24%,transparent)}
 .care-journey__step.is-current .care-journey__name{color:var(--color-ink);font-weight:var(--fw-semibold)}
 @media(max-width:360px){
   .care-journey{padding-inline:var(--sp-2)}
@@ -810,8 +811,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 /* Per-question progress lifted out of the top bar to sit under the main
    care stepper on questionnaire screens. Same row layout the top bar used. */
-.screen__subprogress{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);flex:none}
-.screen__subprogress .hint{flex:none;white-space:nowrap}
+.screen__subprogress{display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);background:var(--color-surface);flex:none}
+.screen__subprogress .progress{height:6px;background:var(--color-line)}
+.screen__subprogress .progress>span{background:linear-gradient(90deg,var(--color-accent),color-mix(in srgb,var(--color-accent) 72%,#fff))}
+.screen__subprogress .hint{flex:none;min-width:42px;padding:4px 8px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);line-height:1;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
 /* min-height:0 overrides the flex default of "at least as tall as my content",
    which otherwise stops this from shrinking/scrolling inside a height-bound
    .screen (see .screen:has(.chat-body)) and pushes the footer off-frame instead. */
@@ -1688,15 +1691,19 @@ body.lang-th *{letter-spacing:normal}
   #partner-intake .partner-health-card{padding:14px}
   #partner-intake .section-label{margin-bottom:0}
 
-  .care-journey{display:block;padding:8px 10px 7px}
+  .care-journey{display:block;padding:8px 8px}
   .care-journey__current{display:none}
   .care-journey__steps{width:100%}
+  .care-journey__steps{gap:3px}
+  .care-journey__step{gap:4px;padding:6px 2px 5px;border-radius:11px}
   .care-journey__name{display:block;margin-top:2px;font-size:9.5px;font-weight:var(--fw-regular);line-height:1.12}
+  .care-journey__step .care-journey__name{margin-top:0}
   .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-medium)}
-  .care-journey__step::before{top:9px}
-  .care-journey__dot{width:18px;height:18px;font-size:11px}
-  .care-journey__dot svg{width:10px;height:10px}
-  .screen__subprogress{padding:7px 16px}
+  .care-journey__steps .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-semibold)}
+  .care-journey__step::before{top:18px;right:calc(50% + 12px);left:calc(-50% - 14px)}
+  .care-journey__dot{width:24px;height:24px;border-radius:8px;font-size:10px}
+  .care-journey__dot svg{width:11px;height:11px}
+  .screen__subprogress{padding:8px 16px;background:var(--color-surface)}
 
   /* Consent follows the familiar legal-page pattern: one long document scrolls
      beneath a fixed header and action. Reaching the end auto-selects both records. */
