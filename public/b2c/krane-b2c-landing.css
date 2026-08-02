@@ -316,18 +316,21 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .compliance>p{
   width:100%;
   color:#7e8b9b;
-  font:600 14px/20px "Inter",sans-serif;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  line-height:20px;
   letter-spacing:.2px;
   text-align:center;
 }
-.compliance__logos{width:100%;overflow:hidden}
-.compliance__track{width:100%}
-.compliance__group{width:100%;display:flex;align-items:center;justify-content:space-between;padding-inline:24px}
-.compliance__group[aria-hidden="true"]{display:none}
+.compliance__logos{width:100%;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.compliance__track{width:max-content;display:flex;align-items:center;animation:compliance-marquee 24s linear infinite;will-change:transform}
+.compliance__group,.compliance__group[aria-hidden="true"]{width:max-content;display:flex;flex:none;align-items:center;gap:72px;padding-inline:36px}
 .compliance__group>div{display:flex;align-items:center;gap:10px;min-width:0;transition:transform .25s var(--ease),filter .25s ease}
 .compliance__logos img{width:96px;height:96px;flex:none;object-fit:contain}
 .compliance__logos strong{color:#8a94a6;font:700 22px/1.2 "Inter","Prompt",sans-serif;letter-spacing:-.5px;white-space:nowrap}
 .compliance__motion-toggle{display:none}
+@media(hover:hover) and (pointer:fine){.compliance__logos:hover .compliance__track{animation-play-state:paused}}
 
 /* Patient journey */
 .clinical-block{border-radius:0;overflow:visible}
@@ -903,26 +906,6 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   .compliance__logos img{width:52px;height:52px}
   .compliance__logos strong{font-size:14px;letter-spacing:-.2px}
   .motion-enabled .compliance__group:first-child>.reveal-item{opacity:1;transform:none;transition:none;will-change:auto}
-  .compliance__motion-toggle{
-    position:absolute;
-    right:14px;
-    bottom:10px;
-    width:34px;
-    height:34px;
-    display:grid;
-    place-items:center;
-    border:1px solid rgba(17,27,48,.12);
-    border-radius:50%;
-    background:rgba(255,255,255,.9);
-    color:var(--landing-navy);
-    font:700 12px/1 "Inter",sans-serif;
-    box-shadow:0 5px 16px rgba(17,27,48,.08);
-  }
-  .compliance__motion-toggle [data-compliance-play]{display:none;font-size:10px}
-  .compliance.is-paused .compliance__track,
-  .compliance__logos:hover .compliance__track{animation-play-state:paused}
-  .compliance.is-paused .compliance__motion-toggle [data-compliance-pause]{display:none}
-  .compliance.is-paused .compliance__motion-toggle [data-compliance-play]{display:block}
   .clinical-block{margin-inline:var(--page-gutter)}
   .how{padding:48px 20px;gap:36px}
   .protocol{margin-inline:0;padding:48px 18px}
