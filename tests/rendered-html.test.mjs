@@ -107,7 +107,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /viewport-fit=cover/);
   assert.doesNotMatch(html, /class="devicebar"|id="fontPreview"|fontPreviewStacks|krane_font_preview/, "client-facing QA must not expose prototype device or font controls");
   const designTokens = await readFile(path.join(publicRoot, "b2c/design-tokens.css"), "utf8");
-  assert.match(designTokens, /--font-thai-base:\s*"Prompt"/);
+  assert.match(designTokens, /--font-thai-base:\s*"Noto Sans Thai"/);
   assert.match(designTokens, /--font-thai-display:\s*"Prompt"/);
   assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web\{max-width:min\(var\(--desktop-frame\),100%\)\}/);
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
@@ -126,7 +126,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
   assert.match(components, /#partner-intake \.input,#partner-intake \.select,#partner-intake \.partner-binary\{[^}]*font-size:16px/);
-  assert.match(components, /@media\(max-width:480px\)\{[\s\S]*\.partner-duration-row\{grid-template-columns:1fr\}[\s\S]*\.partner-relief-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
+  assert.match(components, /@media\(max-width:480px\)\{[\s\S]*\.partner-duration-stepper\{flex-basis:38%;min-width:142px[\s\S]*\.partner-relief-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
   assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.setting-row \.ic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.notif \.ic\{[^}]*border-radius:50%[^}]*border:0/);
