@@ -369,8 +369,7 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-general">6 · General health <span class="rail-state">required · penultimate</span></a>
-        <a data-go="intake-ins">7 · Insurance <span class="rail-state">final question</span></a>
+        <a data-go="intake-general">6 · General health <span class="rail-state">required · final question</span></a>
         <a data-go="summary">Review answers</a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
@@ -885,20 +884,7 @@
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these</span></span><span class="opt-check"></span></button>
         </div>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-insurance-step>Continue</button></div>
-  </section>
-
-  <!-- ===================== INTAKE · INSURANCE (KRANE-F35 · client 5 Jul: ask during intake,
-       "do you have insurance?", so checkout can route insured vs self-pay) ===================== -->
-  <section class="screen" id="intake-ins">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">Do you have health insurance?</h2></div>
-      <div class="stack-2">
-        <button class="option" data-select data-ins="yes"><span class="opt-body"><span class="opt-title">Yes, I have insurance</span><span class="opt-sub">AIA, Muang Thai Life and partner insurers</span></span><span class="opt-check"></span></button>
-        <button class="option" aria-selected="true" data-select data-ins="no"><span class="opt-body"><span class="opt-title">No, I'll pay myself</span><span class="opt-sub">Pay by card, QR or mobile banking</span></span><span class="opt-check"></span></button>
-      </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="summary">Review answers</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-review-step>Continue</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -937,8 +923,6 @@
         <div class="between"><span class="muted">Allergies</span><span class="kv-val"><strong data-summary-allergies>No known allergies</strong><button class="kv-edit" data-review-edit data-edit-focus="allergies" data-go="intake-general" aria-label="Edit allergies"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></span></div>
         <div class="divider" style="margin:0"></div>
         <div class="between"><span class="muted">Height / weight</span><span class="kv-val"><strong data-summary-measurements>175 cm · 70 kg</strong><button class="kv-edit" data-review-edit data-edit-focus="about" data-go="intake-general" aria-label="Edit height and weight"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></span></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Payment preference</span><span class="kv-val"><strong data-summary-payment>Self-pay</strong><button class="kv-edit" data-review-edit data-go="intake-ins" aria-label="Edit payment preference"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></span></div>
       </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="signup" data-post-auth="booking">Confirm answers &amp; continue</button></div>
   </section>
@@ -2587,7 +2571,7 @@
   // opens Log in from the nav or from "ดูแลต่อเนื่อง" has not answered อาการ yet,
   // so the 5-step care stepper must NOT show อาการ as done for them.
   let journeyActive = false;
-  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general','intake-ins','summary'];
+  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general','summary'];
   const JOURNEY_AUTH = ['signup','login','social-confirm','otp','consent-terms','patient-info','identity'];
   // The public walkthrough starts clean. Existing-case protection is enabled only
   // after the demo enters the returning-patient profile state.
@@ -3095,7 +3079,7 @@
   const careJourneyLabels = ['health concern','patient details','payment','doctor consultation','home delivery'];
   const careJourneyShort  = ['Concern','Details','Payment','Doctor','Delivery'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,'intake-ins':1,summary:1,
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,summary:1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,
     booking:3,matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
     plan:5,'pharmacy-locate':5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,refund:5,confirm:5,tracking:5
@@ -3816,7 +3800,7 @@
     const general = selectedCategory().general;
     const visual = categoryNeedsPhotos();
     const steps = general
-      ? {intake1:[17,'1 / 6'],intake2:[33,'2 / 6'],intake3:[50,'3 / 6'],intake4:[67,'4 / 6'],'intake-general':[83,'5 / 6'],'intake-ins':[100,'6 / 6']}
+      ? {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']}
       : visual
         ? {intake1:[17,'1 / 6'],intake2:[33,'2 / 6'],intake3:[50,'3 / 6'],intake4:[67,'4 / 6'],intake5:[83,'5 / 6'],'intake-general':[100,'6 / 6']}
         : {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']};
@@ -4180,8 +4164,8 @@
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
     concern:'landing', conditions:'concern', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
-    intake5:'intake4', 'intake-general':'intake5', 'intake-ins':'intake-general',
-    'intake-edu':'intake-ins', summary:'intake-ins', ineligible:'intake4',
+    intake5:'intake4', 'intake-general':'intake5',
+    'intake-edu':'intake-general', summary:'intake-general', ineligible:'intake4',
     signup:'summary', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', identity:'patient-info', nurse:'identity',
     booking:'identity', matching:'booking', choosedoc:'booking', noslots:'matching',
@@ -4194,7 +4178,7 @@
     confirm:'payment-gw', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
-    'insurance-policy':'intake-ins', 'reduce-order':'insurance-policy',
+    'insurance-policy':'insurance', 'reduce-order':'insurance-policy',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
@@ -4367,7 +4351,6 @@
     );
     const concernEl = document.querySelector('[data-summary-concern]');
     const symptomEl = document.querySelector('[data-summary-symptoms]');
-    const paymentEl = document.querySelector('[data-summary-payment]');
     const durationEl = document.querySelector('[data-summary-duration]');
     const detailEl = document.querySelector('[data-summary-detail]');
     const treatmentEl = document.querySelector('[data-summary-treatment]');
@@ -4382,10 +4365,8 @@
     const photoRow = document.querySelector('[data-summary-photo-row]');
     const photoDivider = document.querySelector('[data-summary-photo-divider]');
     const concernEdit = document.querySelector('#summary [aria-label="Edit concern"]');
-    const insured = document.querySelector('#intake-ins .option[data-ins="yes"][aria-selected="true"]');
     if(concernEl) concernEl.textContent = concern;
     if(symptomEl) symptomEl.textContent = symptoms;
-    if(paymentEl) paymentEl.textContent = insured ? (thai ? 'ใช้ประกัน' : 'Insurance') : (thai ? 'ชำระเอง' : 'Self-pay');
     if(durationEl) durationEl.textContent = duration;
     if(detailEl) detailEl.textContent = detail;
     if(treatmentEl) treatmentEl.textContent = treatment;
@@ -4425,7 +4406,7 @@
       ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern} โดยปกติใช้เวลาไม่เกิน 10 วินาที`
       : `Matching you with a licensed doctor for ${concern.toLowerCase()} who is available now. Usually under 10 seconds.`;
   }
-  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-general','intake-ins'];
+  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-general'];
   function saveIntakeDraft(){
     const fields={};
     INTAKE_DRAFT_SCREENS.forEach(screenId => {
@@ -4880,7 +4861,9 @@
   }
   // deep link: open a screen directly via URL hash (e.g. prototype.html#concern)
   function applyHash(){
-    const [id,hashQuery=''] = location.hash.slice(1).split('?');
+    const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
+    // Preserve old review links after removing the duplicate insurance intake page.
+    const id = rawId === 'intake-ins' ? 'summary' : rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
       if(guardActiveCase(id)){
@@ -5708,11 +5691,6 @@
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
         show('intake-general'); return;
       }
-      // insurance branch (F35): insured patients go through policy selection first
-      if(go.hasAttribute('data-ins-branch')){
-        const insured = document.querySelector('#intake-ins .option[data-ins="yes"][aria-selected="true"]');
-        show(insured ? 'insurance-policy' : 'payment'); return;
-      }
       if(go.dataset.go === 'consultpay'){
         show(consultationHandoffTarget());
         return;
@@ -5855,7 +5833,6 @@
     'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared Penultimate General Health', stories:['Client request 15 Jul: every consultation completes this as the penultimate question step','Captures conditions, allergies, medicine, supplements, height, weight and lifestyle in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Paid Order, Pharmacist Review & Routing', stories:['The signed prescription and paid order are sent only after bank confirmation','A licensed pharmacist verifies the prescription, checks stock, and accepts into POS','A declined branch reroutes automatically; repeated declines open the protected fallback/refund choice'] },
-    'intake-ins':       { id:'KRANE-F35', name:'Health Intake, Final Insurance Question', stories:['Client 15 Jul: insurance/payment preference is the final question after shared general health','Checkout later branches: insured patients see policy selection and credit check; self-pay patients see the hosted gateway'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
     'summary':          { id:'KRANE-F04', name:'Health Intake, Review Summary', stories:['US-F04.5: Patient reviews and edits answers before confirming','A completed temporary draft is preserved while the patient creates and verifies an account'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
@@ -6164,14 +6141,15 @@
   });
 
 
-  // Specialty paths skip the insurance question entirely and go straight to review.
+  // Insurance is handled by the dedicated entitlement flow, so intake always
+  // proceeds directly from general health to review.
   document.body.addEventListener('click', e => {
-    if(!e.target.closest('[data-insurance-step]')) return;
+    if(!e.target.closest('[data-review-step]')) return;
     if(reviewEditContext && reviewEditContext.target === 'intake-general'){
       finishReviewEdit();
       return;
     }
-    show(isGeneralPath() ? 'intake-ins' : 'summary');
+    show('summary');
   });
   function applyInsuranceVisibility(){
     const general = isGeneralPath();
@@ -6180,16 +6158,9 @@
     // (e.g. "Pay myself instead" at checkout), not a reason to hide the option upfront.
     const profileIns = document.querySelector('#patient-info [data-profile-insurance]');
     if(profileIns) profileIns.hidden = false;
-    // Review screen: hide the payment-preference row when it was never asked.
-    const summaryIns = document.querySelector('#summary [data-summary-payment]');
-    const summaryRow = summaryIns && summaryIns.closest('.between');
-    if(summaryRow) summaryRow.hidden = !general;
     // Checkout: the insurance row is only offered on the general path.
     const payIns = document.querySelector('#payment [data-payment-insurance-row]');
     if(payIns) payIns.hidden = !general;
-    // Prototype rail: mark the question as general-only so the client can see the rule.
-    const railIns = document.querySelector('.rail [data-go="intake-ins"]');
-    if(railIns) railIns.hidden = !general;
   }
 
   // Ticking QR expiry. On the medication gateway an expired active QR becomes the
