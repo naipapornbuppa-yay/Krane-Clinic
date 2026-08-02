@@ -2941,7 +2941,7 @@
   }
   // PDPA and telemedicine consent read as one continuous page. Reaching the end
   // marks both records read and selects both confirmations automatically.
-  function completeConsentBundleAfterDelay(box){
+  function completeConsentBundleAfterDelay(box,force=false){
     if(consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine) return;
     // Keep a brief, visible pause at the end before confirming both records.
     // The fallback monitor runs every 300ms, so retain the first pending action
@@ -2950,7 +2950,7 @@
     consentAutoCheckTimer = window.setTimeout(() => {
       consentAutoCheckTimer = 0;
       const stillAtEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 12;
-      if(!stillAtEnd || !document.getElementById('consent-terms')?.classList.contains('active')) return;
+      if((!force && !stillAtEnd) || !document.getElementById('consent-terms')?.classList.contains('active')) return;
       markConsentRead('pdpa');
       markConsentRead('telemedicine');
       consentChecked.pdpa = true;
@@ -3001,7 +3001,14 @@
       // motion, then run the same delayed auto-check used by manual scrolling.
       window.setTimeout(() => {
         consentPageScroll.scrollTop=consentPageScroll.scrollHeight;
-        checkConsentScrollEnd(consentPageScroll);
+        // A tap on this explicit control is the patient's read-to-end action.
+        // Complete it directly instead of depending on a browser's final scroll
+        // event (which Safari and some embedded webviews can omit).
+        if(consentAutoCheckTimer){
+          window.clearTimeout(consentAutoCheckTimer);
+          consentAutoCheckTimer=0;
+        }
+        completeConsentBundleAfterDelay(consentPageScroll,true);
       },420);
     });
     consentPageScroll.addEventListener('scroll',() => checkConsentScrollEnd(consentPageScroll),{passive:true});

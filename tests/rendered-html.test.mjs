@@ -477,8 +477,8 @@ test("public login and legal routes bypass intake while consent acceptance still
   assert.match(html, /data-consent-page-scroll/, "consent must read as one continuous legal page");
   assert.match(html, /consentChecked\.pdpa = true;[\s\S]*consentChecked\.telemedicine = true;/,
     "reaching the end must select both consent records automatically");
-  assert.match(html, /consentPageScroll\.scrollTop=consentPageScroll\.scrollHeight;[\s\S]*checkConsentScrollEnd\(consentPageScroll\);/,
-    "the scroll-to-bottom control must finish at the exact end before auto-checking");
+  assert.match(html, /consentPageScroll\.scrollTop=consentPageScroll\.scrollHeight;[\s\S]*completeConsentBundleAfterDelay\(consentPageScroll,true\);/,
+    "the scroll-to-bottom control must finish at the exact end and force the delayed auto-check");
   assert.match(html, /signup:'intake-general', login:'landing'/);
   assert.doesNotMatch(html, /<section class="screen" id="summary"|data-go="summary"/);
   assert.match(html, /data-intake-complete[\s\S]*flowState\.draftReady=true;[\s\S]*saveIntakeDraft\(\);[\s\S]*show\('signup'\)/);
