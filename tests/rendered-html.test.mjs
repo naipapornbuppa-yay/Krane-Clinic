@@ -65,10 +65,12 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "partner-access", "consent-terms", "partner-patient-info",
-    "partner-concern", "partner-intake", "partner-nurse",
+    "consent-terms", "partner-patient-info", "partner-intake", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
+  for (const id of ["partner-access", "partner-concern", "partner-review", "pharmacy-locate", "refund"]) {
+    assert.ok(!screenIds.includes(id), `outdated #${id} must stay removed`);
+  }
   assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
   assert.doesNotMatch(html, /id="partner-consent"|data-partner-consent/);
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
@@ -77,18 +79,15 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
   assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
   assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
-  assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
+  assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=5/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
-  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
+  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-intake'\)/);
   assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-insurance'\)/);
   assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">เลือกกรมธรรม์/);
-  assert.match(html, /id="partner-insurance"[\s\S]*data-partner-payment="insurance" data-go="partner-concern"/);
+  assert.match(html, /id="partner-insurance"[\s\S]*data-partner-payment="insurance" data-go="partner-intake"/);
   assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
   assert.doesNotMatch(html, /id="insurance-policy-number"|Policy number \(เลขกรมธรรม์\)|placeholder="Policy no\."/);
-  assert.match(html, /id="partner-concern"[\s\S]*data-partner-duration-step="-1"[\s\S]*data-partner-duration-unit="วัน"[\s\S]*data-partner-relief-value="ยังไม่ได้ทำ"/);
-  assert.doesNotMatch(html, /id="partner-concern-severity"/);
-  assert.match(components, /\.partner-duration-units button\[aria-selected="true"\]/);
   assert.match(html, /id="partner-intake"[\s\S]*partner-health-compact[\s\S]*partner-health-grid[\s\S]*partner-clinical-grid/);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
@@ -104,8 +103,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /\.partner-history-field\{[^}]*grid-template-columns:minmax\(120px,.65fr\) minmax\(180px,.8fr\) minmax\(220px,1.35fr\)[^}]*grid-template-rows:52px/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
   assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
-  assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
-  assert.match(html, /if\(id === 'partner-review'\) id = 'partner-intake'/);
+  assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
+  assert.match(html, /PARTNER_NURSE_SCREENING_ENABLED \? 'partner-nurse' : 'booking'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
@@ -131,7 +130,6 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
   assert.match(components, /#partner-intake \.input,#partner-intake \.select,#partner-intake \.partner-binary\{[^}]*font-size:16px/);
-  assert.match(components, /@media\(max-width:480px\)\{[\s\S]*\.partner-duration-stepper\{flex-basis:38%;min-width:142px[\s\S]*\.partner-relief-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
   assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.setting-row \.ic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.notif \.ic\{[^}]*border-radius:50%[^}]*border:0/);
@@ -252,16 +250,14 @@ test("intake keeps multi-select questions visible and uses compact required cont
   ]) assert.ok(i18n.includes(copy), `missing intake translation ${copy}`);
 });
 
-test("partner intake persists photo previews and optional health details into matching", async () => {
+test("partner entry reuses general intake and keeps the compact health profile", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
-  assert.match(html, /data-partner-photo-input/);
-  assert.match(html, /data-partner-photo-thumbs/);
-  assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''[^}]*photos:\[\]/);
-  assert.match(html, /function partnerPhotoRecords\(\)\{[\s\S]*flowState\.partnerHealth\.photos/);
-  assert.match(html, /function createPartnerPhotoRecord\(file\)\{[\s\S]*canvas\.toDataURL\('image\/jpeg',0\.78\)/);
-  assert.match(html, /partnerPhotoRecords\(\)\.push\(await createPartnerPhotoRecord\(file\)\)[\s\S]*persistFlowState\(\)[\s\S]*renderPartnerPhotos\(\)/);
-  assert.match(html, /flowState\.partnerHealth\.photos=partnerPhotoRecords\(\)\.filter\(photo => photo\.id!==remove\.dataset\.partnerPhotoRemove\)/);
+  assert.match(html, /data-go="intake1" data-entry-channel="partner"/);
+  assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'intake1'/);
+  assert.match(html, /flowState\.entryChannel==='partner'[\s\S]*show\('partner-patient-info'\)/);
+  assert.doesNotMatch(html, /partnerPhotoRecords|data-partner-photo|partner-concern/);
+  assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''/);
 
   for (const field of ["sex", "dob", "height", "weight"]) {
     assert.match(html, new RegExp(`${field}:document\\.getElementById\\('partner-${field}'\\)`), `partner state must save ${field}`);
@@ -376,7 +372,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(pharmacyAccepted, /pharmacy-accepted__summary|class="card/, "pharmacy acceptance should keep essential facts out of a second information box");
   assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ|ยอดที่ชำระแล้ว/, "pharmacy acceptance must not use a large state panel or imply payment already happened");
   assert.match(screenFragment(html, "pharmacypending"), /state-view__visual--loading/, "medicine preparation should share the state pattern");
-  assert.match(screenFragment(html, "refund"), /state-view__visual--success/, "refund confirmation should share the result pattern");
+  assert.doesNotMatch(html, /id="refund"|refundAmount/, "obsolete refund fallback must stay removed");
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
@@ -400,9 +396,9 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const stateIds = [
     "ineligible", "matching", "noslots", "consultpay-fail", "waitroom",
-    "connecting", "rx-writing", "pharmacy-locate", "pharmacy-search",
+    "connecting", "rx-writing", "pharmacy-search",
     "payment-success", "payfail", "pharmacypending", "pharmacyaccepted",
-    "pharmacyissue", "refund", "confirm", "feedbackdone",
+    "pharmacyissue", "confirm", "feedbackdone",
     "empty-activities", "empty-history", "preloader",
   ];
 
@@ -415,7 +411,6 @@ test("standalone patient states share one concise visual hierarchy", async () =>
 
   assert.doesNotMatch(screenFragment(html, "waitroom"), /class="timeline"|data-wait-card/, "waitroom must not repeat its state in a timeline or information card");
   assert.doesNotMatch(screenFragment(html, "payfail"), /class="alert|class="card/, "payment failure must use one explanation, not stacked information boxes");
-  assert.doesNotMatch(screenFragment(html, "refund"), /class="card/, "refund facts must remain concise and panel-free");
   assert.doesNotMatch(screenFragment(html, "confirm"), /class="card|confirm-mark/, "confirmation must share the same product-state visual");
   assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
@@ -428,7 +423,6 @@ test("each loading stage uses a stage-specific graphic", async () => {
     waitroom: "assets/status/realistic-v1/pharmacy-review.png",
     connecting: "stage-graphic--connecting",
     "rx-writing": "stage-graphic--plan",
-    "pharmacy-locate": "stage-graphic--pharmacy",
     preloader: "assets/status/realistic-v1/pharmacy-review.png"
   };
   for (const [screen, graphic] of Object.entries(expected)) {
@@ -511,9 +505,11 @@ test("Figma landing keeps every client access route and responsive menu contract
   const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
   const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
 
-  for (const route of ["login", "partner-access", "articles", "consent-terms"]) {
+  for (const route of ["login", "articles", "consent-terms"]) {
     assert.match(html, new RegExp(`data-route="${route}"`), `landing must preserve ${route} access`);
   }
+  assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/);
+  assert.match(html, /data-route="consent-terms" data-entry-channel="partner"/);
   assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
   assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
   assert.match(html, /class="mobile-treatment-menu"/);
@@ -539,7 +535,6 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /class="compliance__track"/);
   assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
   assert.match(html, /class="compliance__group" aria-hidden="true"/);
-  assert.match(html, /data-compliance-toggle/);
   assert.match(html, /เลือกการดูแลที่เหมาะกับคุณ/);
   assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
@@ -583,7 +578,6 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /animation:compliance-marquee 24s linear infinite/);
   assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
   assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
-  assert.match(script, /compliance\?\.classList\.toggle\("is-paused"\)/);
   assert.match(css, /--landing-blue:#1973ff/);
   assert.match(css, /\.hero\{[\s\S]*background:var\(--landing-blue\)/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);

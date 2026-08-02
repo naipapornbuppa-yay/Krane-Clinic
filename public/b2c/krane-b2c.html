@@ -382,7 +382,6 @@
       <div class="rail-group__body">
         <a data-go="address">Edit saved delivery address</a>
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
-          <a data-go="pharmacy-locate">Before payment · Find nearest pharmacy</a>
           <a data-go="pharmacy-search">After payment · Pharmacist review</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
@@ -404,7 +403,6 @@
         </div><div class="rail-error-menu">
           <a class="is-exception" data-demo-nostock><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
           <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
-          <a class="is-exception" data-go="refund"><span class="rail-error-tag">Error case</span>Refund required</a>
         </div></details>
         <a data-go="confirm">Order confirmation</a>
         <a data-go="tracking">Delivery tracking</a>
@@ -440,12 +438,11 @@
     <details class="rail-group">
       <summary><span class="rail-step">09</span><span>Partner access</span></summary>
       <div class="rail-group__body">
-        <a data-go="partner-access">Corporate entry <span class="rail-state">client start</span></a>
         <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
+        <a data-go="intake1" data-entry-channel="partner">อาการทั่วไป <span class="rail-state">SCR-002</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
         <a data-go="partner-insurance">เลือกกรมธรรม์</a>
-        <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
         <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
           <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
@@ -1309,17 +1306,6 @@
     </div>
   </section>
 
-  <section class="screen" id="pharmacy-locate">
-    <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding a pharmacy">
-        <span class="state-view__tile stage-graphic stage-graphic--pharmacy" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i><span class="stage-graphic__route"></span><span class="stage-graphic__cross">+</span></span>
-        <span class="state-view__badge"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Finding a pharmacy</h2><p class="muted">Checking nearby branches that can fulfil your prescription.</p></div>
-    </div>
-  </section>
-
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">รายละเอียดจัดส่ง</span></div>
@@ -1676,19 +1662,6 @@
     <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
   </section>
 
-  <!-- ===================== REFUND CONFIRMED ===================== -->
-  <section class="screen" id="refund">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Refund</span></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Refund confirmed">
-        <span class="state-view__tile"><img src="assets/status/realistic-v1/refund-confirmed.png" alt="" decoding="async"></span>
-        <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Refund confirmed</h2><p class="muted">The medication order was refunded. The consultation fee is not included.</p></div>
-      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 1,160</strong> · <span data-payment-outcome-method>Original payment method</span> · RF-10293</div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="profile">Done</button></div>
-  </section>
-
   <!-- ===================== CONFIRMATION ===================== -->
   <section class="screen" id="confirm">
     <div class="screen__body state-view center">
@@ -1848,13 +1821,6 @@
     <div class="screen__top"><span class="ttl">Activity</span></div>
     <div class="screen__body stack-5">
       <div class="stack-3">
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Orders needing action</div><span class="badge badge--warn">1</span></div>
-        <div class="card card--pad-sm order-card order-card--action" data-go="pharmacyissue">
-          <div class="order-top"><div><div class="order-id">#KR-10295</div><div class="order-title">Hair loss refill</div></div><span class="badge badge--warn">Choose delivery</span></div>
-          <div class="order-status"><span class="status-dot"></span><span>Same-day preparation is taking longer than expected</span></div>
-          <div class="order-meta"><span>฿ 1,160 paid</span><span>Tap to choose next-day, wait, or refund</span></div>
-        </div>
-
         <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Active orders</div><span class="badge">2</span></div>
         <div class="card card--pad-sm order-card" data-go="tracking">
           <div class="order-top"><div><div class="order-id">#KR-10293</div><div class="order-title">Hair loss treatment</div></div><span class="badge badge--ok">Out for delivery</span></div>
@@ -2173,18 +2139,6 @@
   </section>
 
   <!-- Full-page pre-loader overlay -->
-  <!-- ===================== PARTNER ACCESS (corporate entry) =====================
-       Entry from a corporate partner. Skips Stage 1 entirely (no concern picker,
-       no condition picker): the organisation has already scoped the entitlement.
-       Goes from the PDPA consent straight into Stage 2 (patient details), then
-       rejoins the shared clinical path at #booking. Screens mirror the Figma
-       page "screens/flows" partner column. -->
-  <section class="screen" id="partner-access">
-    <div class="screen__body" style="display:flex;align-items:center;justify-content:center">
-      <button class="btn btn--primary" data-partner-access-continue>เข้าสู่ระบบ Krane ผ่านพาร์ทเนอร์</button>
-    </div>
-  </section>
-
   <section class="screen" id="partner-patient-info" data-screen-code="SCR-003">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
     <div class="screen__body stack-4">
@@ -2204,51 +2158,6 @@
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-info-continue>ยืนยันข้อมูลและไปต่อ</button></div>
-  </section>
-
-  <!-- ===================== PARTNER TODAY'S CONCERN (client flow diagram, 27 Jul) =====================
-       Self-pay path and the insurance no-coverage fallback both land here before partner-intake. -->
-  <section class="screen" id="partner-concern">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">อาการที่ต้องการปรึกษา</span></div>
-    <div class="screen__body stack-4">
-      <div class="field"><label for="partner-concern-text">อาการเป็นอย่างไรบ้าง?</label><textarea class="textarea partner-concern-textarea" id="partner-concern-text" placeholder="เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด"></textarea></div>
-      <div class="field">
-        <label for="partner-concern-duration-value">เป็นมานานแค่ไหนแล้ว?</label>
-        <div class="partner-duration-row">
-          <div class="partner-duration-stepper">
-            <button type="button" data-partner-duration-step="-1" aria-label="ลดระยะเวลา">−</button>
-            <input id="partner-concern-duration-value" type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="จำนวนระยะเวลา">
-            <button type="button" data-partner-duration-step="1" aria-label="เพิ่มระยะเวลา">+</button>
-          </div>
-          <div class="partner-duration-units" aria-label="หน่วยระยะเวลา">
-            <button type="button" aria-selected="true" data-partner-duration-unit="วัน">วัน</button>
-            <button type="button" aria-selected="false" data-partner-duration-unit="เดือน">เดือน</button>
-            <button type="button" aria-selected="false" data-partner-duration-unit="ปี">ปี</button>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <span class="field-label">ทำอะไรเพื่อบรรเทาอาการไปแล้วบ้าง?</span>
-        <div class="partner-relief-grid" aria-label="สิ่งที่ลองทำแล้ว">
-          <button type="button" aria-selected="false" data-partner-relief-value="ยังไม่ได้ทำ">ยังไม่ได้ทำ</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="ทานหรือใช้ยา">ทานหรือใช้ยา</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="พบแพทย์">พบแพทย์</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="อื่น ๆ">อื่น ๆ</button>
-        </div>
-      </div>
-      <div class="field">
-        <span class="field-label">มีรูปประกอบอาการหรือยาหรือไม่? <span class="hint">(ถ้ามี)</span></span>
-        <label class="upload partner-photo-upload" for="partner-photo-input">
-          <span class="up-ic"><span data-demo-icon="camera"></span></span>
-          <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
-          <span class="up-sub">สูงสุด 5 รูป · 10 MB ต่อรูป</span>
-        </label>
-      </div>
-      <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
-      <div class="up-thumbs" data-partner-photo-thumbs aria-live="polite">
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-concern-continue>ดำเนินการต่อ</button></div>
   </section>
 
   <section class="screen" id="partner-insurance" data-screen-code="SCR-INS-RESULT">
@@ -2281,10 +2190,7 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <!-- Client flow diagram (27 Jul): both the insurance and the self-pay branch
-         converge on the "today's concern" question before the health snapshot.
-         Insurance status changes who pays, not what the doctor needs to know. -->
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">ใช้สิทธิ์นี้และดำเนินการต่อ</button><button class="btn btn--ghost btn--sm" data-partner-payment="self-pay" data-go="partner-concern">ไม่ใช้สิทธิประกัน</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-intake">ใช้สิทธิ์นี้และดำเนินการต่อ</button><button class="btn btn--ghost btn--sm" data-partner-payment="self-pay" data-go="partner-intake">ไม่ใช้สิทธิประกัน</button></div>
   </section>
 
   <section class="screen" id="partner-intake">
@@ -2607,14 +2513,11 @@
       stockLocked:false,
       paidAmount:null,
       paidMethod:'',
-      paidDeliveryMethod:'',
-      refundAmount:0
+      paidDeliveryMethod:''
     },
-    partnerAccessComplete:false,
     partnerConsentComplete:false,
     partnerInfoComplete:false,
     partnerPaymentChosen:false,
-    partnerConcernComplete:false,
     partnerHealthComplete:false,
     partnerReviewComplete:false,
     partnerNurseComplete:false,
@@ -2626,17 +2529,11 @@
     partnerPaymentMethod:'',
     partnerConsultationBalanceDue:null,
     partnerMedicineCredit:0,
-    partnerConcern:'',
-    partnerConcernDuration:'',
-    partnerConcernDurationValue:1,
-    partnerConcernDurationUnit:'วัน',
-    partnerConcernRelief:'',
-    partnerConcernSeverity:'',
-    partnerHealth:{conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:'',photos:[]},
+    partnerHealth:{conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:''},
     partnerScreening:{urgent:'',accurate:'',remote:''}
   }, readSessionJson(FLOW_STATE_KEY));
   flowState.partnerHealth=Object.assign(
-    {conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:'',photos:[]},
+    {conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:''},
     flowState.partnerHealth || {}
   );
   flowState.partnerScreening=Object.assign(
@@ -2648,7 +2545,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
+    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2664,6 +2561,7 @@
     flowState.orderState.addOns || {}
   );
   const flowConfig=new URLSearchParams(window.location.search);
+  if(flowConfig.get('entry')==='partner') flowState.entryChannel='partner';
   if(flowConfig.get('consult_payment')==='before') flowState.consultationPaymentTiming='before';
   if(flowConfig.get('consult_payment')==='after') flowState.consultationPaymentTiming='after';
   /* Existing QA sessions previously received a sample address automatically.
@@ -2691,124 +2589,18 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,checkoutFlowVersion:'pharmacy-before-payment-v1',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
-      partnerAccessComplete:false,partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
-      partnerConcernComplete:false,partnerHealthComplete:false,partnerReviewComplete:false,
+      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,checkoutFlowVersion:'pharmacy-before-payment-v1',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
+      partnerHealthComplete:false,partnerReviewComplete:false,
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
       partnerPhoneOtpPending:false,partnerPendingPhone:'',partnerName:'Mali Suthida',partnerPaymentMethod:'',partnerConsultationBalanceDue:null,
-      partnerMedicineCredit:0,partnerConcern:'',
-      partnerConcernDuration:'',partnerConcernDurationValue:1,partnerConcernDurationUnit:'วัน',partnerConcernRelief:'',partnerConcernSeverity:'',
-      partnerHealth:{conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:'',photos:[]},
+      partnerMedicineCredit:0,
+      partnerHealth:{conditions:'ไม่มี',medications:'ไม่มี',allergies:'ไม่มี',lifestyle:'ไม่',sex:'',dob:'',height:'',weight:''},
       partnerScreening:{urgent:'',accurate:'',remote:''}
     });
     try { sessionStorage.removeItem(DRAFT_KEY); sessionStorage.removeItem(CONSENT_RECORD_KEY); } catch(error) {}
     persistFlowState();
   }
-
-  const PARTNER_PHOTO_MAX_BYTES = 10 * 1024 * 1024;
-  const PARTNER_PHOTO_MAX_COUNT = 5;
-  function partnerPhotoRecords(){
-    const photos=Array.isArray(flowState.partnerHealth.photos) ? flowState.partnerHealth.photos : [];
-    flowState.partnerHealth.photos=photos.filter(photo =>
-      photo && typeof photo.dataUrl === 'string' && photo.dataUrl.startsWith('data:image/')
-    );
-    return flowState.partnerHealth.photos;
-  }
-  function createPartnerPhotoRecord(file){
-    return new Promise((resolve,reject) => {
-      const reader=new FileReader();
-      reader.addEventListener('error',() => reject(new Error('read-failed')));
-      reader.addEventListener('load',() => {
-        const image=new Image();
-        image.addEventListener('error',() => reject(new Error('decode-failed')));
-        image.addEventListener('load',() => {
-          const longest=Math.max(image.naturalWidth,image.naturalHeight);
-          if(!longest){ reject(new Error('decode-failed')); return; }
-          const scale=Math.min(1,640 / longest);
-          const canvas=document.createElement('canvas');
-          canvas.width=Math.max(1,Math.round(image.naturalWidth * scale));
-          canvas.height=Math.max(1,Math.round(image.naturalHeight * scale));
-          const context=canvas.getContext('2d');
-          if(!context){ reject(new Error('canvas-failed')); return; }
-          context.drawImage(image,0,0,canvas.width,canvas.height);
-          resolve({
-            id:`partner-photo-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
-            name:file.name || 'partner-photo.jpg',
-            size:file.size || 0,
-            dataUrl:canvas.toDataURL('image/jpeg',0.78)
-          });
-        },{once:true});
-        image.src=String(reader.result || '');
-      },{once:true});
-      reader.readAsDataURL(file);
-    });
-  }
-  function renderPartnerPhotos(){
-    const thumbs=document.querySelector('[data-partner-photo-thumbs]');
-    const empty=document.querySelector('[data-partner-photo-empty]');
-    const photos=partnerPhotoRecords();
-    if(thumbs){
-      thumbs.querySelectorAll('.up-thumb').forEach(thumb => thumb.remove());
-      photos.forEach(photo => {
-        const figure=document.createElement('figure');
-        figure.className='up-thumb';
-        const image=document.createElement('img');
-        image.src=photo.dataUrl;
-        image.alt=photo.name || 'รูปอาการที่แนบ';
-        const remove=document.createElement('button');
-        remove.type='button';
-        remove.className='x';
-        remove.dataset.partnerPhotoRemove=photo.id;
-        remove.setAttribute('aria-label',`ลบรูป ${photo.name || ''}`.trim());
-        remove.textContent='×';
-        figure.append(image,remove);
-        thumbs.appendChild(figure);
-      });
-    }
-    if(empty) empty.style.display=photos.length ? 'none' : '';
-  }
-  (function initPartnerPhotoUpload(){
-    const input=document.querySelector('[data-partner-photo-input]');
-    const thumbs=document.querySelector('[data-partner-photo-thumbs]');
-    if(!input || !thumbs) return;
-    input.addEventListener('change',async () => {
-      const files=Array.from(input.files || []);
-      input.value='';
-      const remaining=PARTNER_PHOTO_MAX_COUNT-partnerPhotoRecords().length;
-      if(remaining<=0){
-        showActionToast(`แนบรูปได้สูงสุด ${PARTNER_PHOTO_MAX_COUNT} รูป`,'warning');
-        return;
-      }
-      if(files.length>remaining) showActionToast(`แนบรูปได้สูงสุด ${PARTNER_PHOTO_MAX_COUNT} รูป`,'warning');
-      for(const file of files.slice(0,remaining)){
-        if(!file.type.startsWith('image/')){
-          showActionToast('กรุณาเลือกไฟล์รูปภาพ','warning');
-          continue;
-        }
-        if(file.size>PARTNER_PHOTO_MAX_BYTES){
-          showActionToast('รูปใหญ่เกิน 10 MB','warning');
-          continue;
-        }
-        try {
-          partnerPhotoRecords().push(await createPartnerPhotoRecord(file));
-          persistFlowState();
-          renderPartnerPhotos();
-          syncPartnerReview();
-        } catch(error) {
-          showActionToast('ไม่สามารถอ่านรูปนี้ได้ กรุณาเลือกรูปอื่น','warning');
-        }
-      }
-    });
-    thumbs.addEventListener('click',event => {
-      const remove=event.target.closest('[data-partner-photo-remove]');
-      if(!remove) return;
-      flowState.partnerHealth.photos=partnerPhotoRecords().filter(photo => photo.id!==remove.dataset.partnerPhotoRemove);
-      persistFlowState();
-      renderPartnerPhotos();
-      syncPartnerReview();
-    });
-    renderPartnerPhotos();
-  })();
 
   const consentDocuments = {
     pdpa:{
@@ -2866,7 +2658,7 @@
   let consentAutoCheckTimer = 0;
   function consentIdentityVerified(){
     return flowState.entryChannel === 'partner'
-      ? Boolean(flowState.partnerAccessComplete && flowState.partnerPhoneVerified)
+      ? Boolean(flowState.partnerPhoneVerified)
       : Boolean(flowState.otpVerified);
   }
 
@@ -3019,7 +2811,7 @@
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
     booking:3,matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
-    plan:5,'pharmacy-locate':5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,refund:5,confirm:5,tracking:5
+    plan:5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
   };
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
@@ -3257,8 +3049,7 @@
   }
   function syncPaymentOutcome(){
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
-    const refunded=Number(flowState.orderState.refundAmount || 0);
-    const net=Math.max(0,paid-refunded);
+    const net=paid;
     const method=PAYMENT_METHOD_LABELS[flowState.orderState.paidMethod || flowState.orderState.paymentMethod] || 'Original payment method';
     ['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm'].forEach(id => {
       const screen=document.getElementById(id);
@@ -3271,11 +3062,6 @@
         if(payButton) payButton.textContent=(document.documentElement.lang==='th' ? 'ชำระ ' : 'Pay ')+baht(net);
       }
     });
-    const refund=document.getElementById('refund');
-    if(refund){
-      refund.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(refunded || paid); });
-      refund.querySelectorAll('[data-payment-outcome-method]').forEach(el => { el.textContent=method; });
-    }
   }
   function setPaymentContext({due=1160, subtotal=1040, addon=0, delivery=120, credit=0, method='same-day'}={}){
     // The checkout and the bank gateway are separate screens, so both are updated.
@@ -3783,7 +3569,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, pharmacyLocateTimer, paymentSuccessTimer, preloaderTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, paymentSuccessTimer, preloaderTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -3891,8 +3677,6 @@
     const values={
       'partner-full-name':flowState.partnerName || 'Mali Suthida',
       'partner-phone':flowState.partnerPhone || '081-234-5678',
-      'partner-concern-text':flowState.partnerConcern || '',
-      'partner-concern-duration-value':flowState.partnerConcernDurationValue || 1,
       'partner-lifestyle':flowState.partnerHealth.lifestyle || 'ไม่',
       'partner-sex':flowState.partnerHealth.sex || '',
       'partner-dob':flowState.partnerHealth.dob || '',
@@ -3916,38 +3700,25 @@
     document.querySelectorAll('#partner-patient-info [data-partner-payment-choice-value]').forEach(option => {
       option.setAttribute('aria-selected',String(option.dataset.partnerPaymentChoiceValue===paymentMethod));
     });
-    const durationUnit=flowState.partnerConcernDurationUnit || 'วัน';
-    document.querySelectorAll('#partner-concern [data-partner-duration-unit]').forEach(option => {
-      option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===durationUnit));
-    });
-    document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(option => {
-      option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
-    });
     syncPartnerHistoryFields();
-    renderPartnerPhotos();
   }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
-    renderPartnerPhotos();
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
-    const order=['partner-access','consent-terms','partner-patient-info',
-      'partner-concern','partner-intake','booking'];
-    // Insurance branches from the confirmation screen. Treat it as the same
-    // checkpoint as today's concern when a QA shortcut opens it directly.
+    const order=['consent-terms','intake1','partner-patient-info','partner-intake','booking'];
     let targetIndex=target==='partner-insurance' ? 3 : order.indexOf(target);
-    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
+    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=5;
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
-    if(targetIndex>0) flowState.partnerAccessComplete=true;
-    if(targetIndex>1){
+    if(targetIndex>0){
       flowState.partnerConsentComplete=true;
       saveConsentRecords('partner',Object.entries(partnerConsentVersions).map(([type,version]) => ({
         type,version,acceptedAt:new Date().toISOString()
       })));
     }
-    if(targetIndex>2){
+    if(targetIndex>1){
       flowState.partnerInfoComplete=true;
       flowState.partnerPhoneVerified=true;
       flowState.partnerPaymentChosen=true;
@@ -3956,16 +3727,8 @@
         flowState.coverage=Object.assign({},flowState.coverage,{provider:'MTL Group',policyId:''});
       }
     }
-    if(targetIndex>3){
-      flowState.partnerConcernComplete=true;
-      flowState.partnerConcern=flowState.partnerConcern || 'ผื่นคันที่แขนมา 3 วัน';
-      flowState.partnerConcernDurationValue=flowState.partnerConcernDurationValue || 3;
-      flowState.partnerConcernDurationUnit=flowState.partnerConcernDurationUnit || 'วัน';
-      flowState.partnerConcernDuration=flowState.partnerConcernDuration || `${flowState.partnerConcernDurationValue} ${flowState.partnerConcernDurationUnit}`;
-      flowState.partnerConcernRelief=flowState.partnerConcernRelief || 'ยังไม่ได้ทำ';
-    }
-    if(targetIndex>4) flowState.partnerHealthComplete=true;
-    if(targetIndex>5) flowState.partnerReviewComplete=true;
+    if(targetIndex>3) flowState.partnerHealthComplete=true;
+    if(targetIndex>4) flowState.partnerReviewComplete=true;
     if(target==='partner-phr'){
       flowState.partnerNurseComplete=true;
       flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
@@ -3980,7 +3743,6 @@
     // prerequisite here and leave the consent itself unread for interaction.
     if(target==='consent-terms'){
       if(flowState.entryChannel==='partner'){
-        flowState.partnerAccessComplete=true;
         flowState.partnerPhoneVerified=true;
       } else {
         flowState.otpVerified=true;
@@ -4103,32 +3865,34 @@
     booking:'identity', matching:'booking', choosedoc:'booking', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
-    'pharmacy-locate':'plan', payment:'plan', address:'payment', 'pharmacy-search':'payment',
+    payment:'plan', address:'payment', 'pharmacy-search':'payment',
     pharmacyaccepted:'pharmacy-search', 'payment-gw':'pharmacyaccepted', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw', pharmacypending:'pharmacy-search',
-    pharmacyissue:'pharmacy-search', refund:'pharmacyissue',
+    pharmacyissue:'pharmacy-search',
     confirm:'payment-gw', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
-    'partner-access':'landing',
     'partner-patient-info':'consent-terms',
-    'partner-concern':'partner-patient-info', 'partner-insurance':'partner-patient-info',
-    'partner-intake':'partner-concern',
+    'partner-insurance':'partner-patient-info',
+    'partner-intake':'partner-patient-info',
     'partner-nurse':'partner-intake', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-access','partner-patient-info',
-    'partner-concern','partner-insurance','partner-intake',
+  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-intake',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
+  const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
   function directClinicalStartTarget(){
     return DIRECT_NURSE_SCREENING_ENABLED ? 'nurse' : 'booking';
+  }
+  function partnerClinicalStartTarget(){
+    return PARTNER_NURSE_SCREENING_ENABLED ? 'partner-nurse' : 'booking';
   }
   function consultationBalanceDue(){
     if(flowState.consultationPaid) return 0;
@@ -4431,21 +4195,17 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','booking','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','connecting','video','rx-writing','plan','pharmacy-locate','address','pharmacy-search',
+    'consult','connecting','video','rx-writing','plan','address','pharmacy-search',
     'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
-    'refund','confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
+    'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
-    // A real partner deep link starts at the shared PDPA screen. #partner-access is
-    // retained only as an internal demo launcher and is never a required journey step.
     if(PARTNER_SCREENS.includes(target)){
-      if(target!=='partner-access' && !flowState.partnerAccessComplete) return 'partner-access';
-      if(target!=='partner-access' && !flowState.partnerConsentComplete) return 'consent-terms';
-      if(!['partner-access','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-concern','partner-insurance','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
-      if(['partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'partner-concern';
+      if(!flowState.partnerConsentComplete) return 'consent-terms';
+      if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
+      if(['partner-insurance','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
@@ -4484,7 +4244,6 @@
       setSelectedCategory('general');
       id = 'intake1';
     }
-    if(id === 'partner-review') id = 'partner-intake';
     const requested=id;
     id=requiredRouteFor(id);
     if(id!==requested){
@@ -4494,7 +4253,7 @@
     }
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
-    if(['partner-patient-info','partner-concern','partner-intake'].includes(id)) restorePartnerFields();
+    if(['partner-patient-info','partner-intake'].includes(id)) restorePartnerFields();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -4574,20 +4333,13 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['pharmacy-locate','address','payment','payment-success','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
+    if(['address','payment','payment-success','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
     if(id==='address') syncDeliveryAddress({hydrateForm:true});
     if(id==='payment'){
       syncDeliveryAddress();
       refreshMedicationCheckout();
     }
-    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','refund','confirm','tracking'].includes(id)) syncPaymentOutcome();
-    clearTimeout(pharmacyLocateTimer);
-    if(id==='pharmacy-locate'){
-      refreshMedicationCheckout();
-      pharmacyLocateTimer=setTimeout(() => {
-        if(document.getElementById('pharmacy-locate')?.classList.contains('active')) replaceCurrent('payment');
-      },reduceMotion ? 250 : 1250);
-    }
+    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
     clearTimeout(paymentSuccessTimer);
     if(id==='payment-success'){
       syncPaymentOutcome();
@@ -4798,6 +4550,11 @@
       }
       if(e.data.category && setSelectedCategory(e.data.category)){
         renderConditionList();
+      }
+      if(e.data.entryChannel==='partner'){
+        flowState.entryChannel='partner';
+        flowState.partnerPhoneVerified=true;
+        persistFlowState();
       }
       if(e.data.to === 'login') postAuthNext = 'profile';
       show(e.data.to);
@@ -5016,24 +4773,6 @@
       });
       return;
     }
-    const partnerAccessContinue=e.target.closest('[data-partner-access-continue]');
-    if(partnerAccessContinue){
-      submitOnce('partner-access',partnerAccessContinue,() => {
-        flowState.entryChannel='partner';
-        flowState.partnerAccessComplete=true;
-        if(!hasCurrentConsent('partner')){
-          Object.keys(consentRead).forEach(type => {
-            consentRead[type]=false;
-            consentChecked[type]=false;
-          });
-          flowState.consentRead=Object.assign({},consentRead);
-          flowState.consentChecked=Object.assign({},consentChecked);
-        }
-        persistFlowState();
-        show('consent-terms');
-      });
-      return;
-    }
     const partnerInfoContinue=e.target.closest('[data-partner-info-continue]');
     if(partnerInfoContinue){
       const name=document.getElementById('partner-full-name')?.value.trim() || '';
@@ -5056,7 +4795,7 @@
         persistFlowState();
         showActionToast('ยืนยันข้อมูลผู้รับบริการแล้ว','success');
         if(paymentMethod==='insurance') insuranceEntry='partner';
-        show(paymentMethod==='insurance' ? 'insurance' : 'partner-concern');
+        show(paymentMethod==='insurance' ? 'insurance' : 'partner-intake');
       });
       return;
     }
@@ -5080,17 +4819,7 @@
         ? {provider:partnerPolicyProvider,policyId:partnerPolicyId,consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:partnerMedicineCredit}
         : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
       persistFlowState();
-      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern'));
-      return;
-    }
-    const durationStep=e.target.closest('[data-partner-duration-step]');
-    if(durationStep){
-      const input=document.getElementById('partner-concern-duration-value');
-      if(!input) return;
-      const next=Math.min(99,Math.max(1,(Number(input.value) || 1)+Number(durationStep.dataset.partnerDurationStep || 0)));
-      input.value=String(next);
-      flowState.partnerConcernDurationValue=next;
-      persistFlowState();
+      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-intake'));
       return;
     }
     const intakeDurationStep=e.target.closest('[data-intake-duration-step]');
@@ -5113,52 +4842,12 @@
       syncIntakeDropdownContinue(screen);
       return;
     }
-    const durationUnit=e.target.closest('[data-partner-duration-unit]');
-    if(durationUnit){
-      document.querySelectorAll('#partner-concern [data-partner-duration-unit]').forEach(option => {
-        option.setAttribute('aria-selected',String(option===durationUnit));
-      });
-      flowState.partnerConcernDurationUnit=durationUnit.dataset.partnerDurationUnit;
-      persistFlowState();
-      return;
-    }
-    const reliefOption=e.target.closest('[data-partner-relief-value]');
-    if(reliefOption){
-      document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(option => {
-        option.setAttribute('aria-selected',String(option===reliefOption));
-      });
-      flowState.partnerConcernRelief=reliefOption.dataset.partnerReliefValue;
-      persistFlowState();
-      return;
-    }
     const partnerHistoryChoice=e.target.closest('[data-partner-history-choice]');
     if(partnerHistoryChoice){
       const group=partnerHistoryChoice.closest('[data-partner-history]');
       const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
       setPartnerHistoryChoice(group,hasDetails);
       if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
-      return;
-    }
-    const partnerConcernContinue=e.target.closest('[data-partner-concern-continue]');
-    if(partnerConcernContinue){
-      const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
-      const durationValue=Math.min(99,Math.max(1,Number(document.getElementById('partner-concern-duration-value')?.value) || 0));
-      const durationUnit=document.querySelector('#partner-concern [data-partner-duration-unit][aria-selected="true"]')?.dataset.partnerDurationUnit || '';
-      const relief=document.querySelector('#partner-concern [data-partner-relief-value][aria-selected="true"]')?.dataset.partnerReliefValue || '';
-      if(concern.length<5){ showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning'); return; }
-      if(!durationValue || !durationUnit){ showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning'); return; }
-      if(!relief){ showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning'); return; }
-      submitOnce('partner-concern',partnerConcernContinue,() => {
-        flowState.partnerConcern=concern;
-        flowState.partnerConcernDurationValue=durationValue;
-        flowState.partnerConcernDurationUnit=durationUnit;
-        flowState.partnerConcernDuration=`${durationValue} ${durationUnit}`;
-        flowState.partnerConcernRelief=relief;
-        flowState.partnerConcernSeverity='';
-        flowState.partnerConcernComplete=true;
-        persistFlowState();
-        show('partner-intake');
-      });
       return;
     }
     const partnerHealthContinue=e.target.closest('[data-partner-health-continue]');
@@ -5181,8 +4870,7 @@
         sex:document.getElementById('partner-sex')?.value || '',
         dob:document.getElementById('partner-dob')?.value || '',
         height:document.getElementById('partner-height')?.value.trim() || '',
-        weight:document.getElementById('partner-weight')?.value.trim() || '',
-        photos:partnerPhotoRecords()
+        weight:document.getElementById('partner-weight')?.value.trim() || ''
       };
       submitOnce('partner-intake',partnerHealthContinue,() => {
         flowState.partnerHealth=health;
@@ -5197,7 +4885,7 @@
         flowState.patientName=flowState.partnerName || 'Mali Suthida';
         persistFlowState();
         showActionToast('บันทึกข้อมูลแล้ว กำลังจับคู่แพทย์','success');
-        show('booking');
+        show(partnerClinicalStartTarget());
       });
       return;
     }
@@ -5448,7 +5136,6 @@
       deliveryMethod='postal';
       flowState.orderState.deliveryMethod=deliveryMethod;
       flowState.orderState.paidDeliveryMethod='';
-      flowState.orderState.refundAmount=0;
       flowState.orderState.stockLocked=true;
       persistFlowState();
       pharmacyRetryCount=0;
@@ -5526,7 +5213,6 @@
       if(go.closest('.rail')){
         if(go.dataset.entryChannel==='partner'){
           flowState.entryChannel='partner';
-          flowState.partnerAccessComplete=true;
           persistFlowState();
         }
         seedPartnerStage(go.dataset.go);
@@ -5985,7 +5671,6 @@
       flowState.orderState.paidAmount=0;
       flowState.orderState.paidMethod='covered';
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
-      flowState.orderState.refundAmount=0;
       flowState.consultationPaid=true;
       flowState.paymentResolution='covered';
       persistFlowState();
@@ -6006,7 +5691,6 @@
       flowState.orderState.paidAmount=currentMedicationDue();
       flowState.orderState.paidMethod=paymentMethod;
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
-      flowState.orderState.refundAmount=0;
       flowState.consultationPaid=true;
       flowState.paymentResolution='final-paid';
       persistFlowState();
