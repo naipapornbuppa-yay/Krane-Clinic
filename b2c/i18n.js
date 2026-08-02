@@ -8,7 +8,7 @@
 (function () {
   var TH = {
     /* ---- common / buttons ---- */
-    "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระ","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log in":"เข้าสู่ระบบ",
+    "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Final step":"ขั้นตอนสุดท้าย","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระ","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log in":"เข้าสู่ระบบ",
     "Get started":"เริ่มต้นใช้งาน","Start your visit":"เริ่มการปรึกษา","Continue to payment":"ไปต่อที่การชำระเงิน","Skip for now":"ข้ามไปก่อน",
     "Use my current location":"ใช้ตำแหน่งปัจจุบันของฉัน","Set location on the map":"ปักหมุดบนแผนที่","Refill now":"สั่งซื้อซ้ำ","Reorder now":"สั่งซื้อซ้ำ",
     "Already have an account? Log in":"มีบัญชีอยู่แล้ว? เข้าสู่ระบบ","Mark all read":"ทำเครื่องหมายว่าอ่านแล้วทั้งหมด","All read":"อ่านแล้วทั้งหมด","Edit answers":"แก้ไขคำตอบ",
