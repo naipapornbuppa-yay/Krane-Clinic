@@ -433,6 +433,11 @@ test("each loading stage uses a stage-specific graphic", async () => {
   }
 });
 
+test("patient states never reuse the generic treatment bottle as status artwork", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  assert.doesNotMatch(html, /assets\/landing-573\/treatments\/hair-loss-prevention\.png/);
+});
+
 test("public login and legal routes bypass intake while consent acceptance still requires OTP", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const requiredRouteSource = html.match(/function requiredRouteFor\(target\)\{([\s\S]*?)\n  \}\n  function show\(id/);
