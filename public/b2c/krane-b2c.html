@@ -2943,8 +2943,9 @@
   // marks both records read and selects both confirmations automatically.
   function completeConsentBundleAfterDelay(box){
     if(consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine) return;
-    // The fallback monitor runs every 300ms. Keep the first pending completion
-    // instead of restarting its 700ms delay forever on every monitor tick.
+    // Keep a brief, visible pause at the end before confirming both records.
+    // The fallback monitor runs every 300ms, so retain the first pending action
+    // instead of restarting it on every tick.
     if(consentAutoCheckTimer) return;
     consentAutoCheckTimer = window.setTimeout(() => {
       consentAutoCheckTimer = 0;
@@ -2961,7 +2962,7 @@
       syncConsentContinue();
       const cue=document.querySelector('[data-consent-scroll-cue]');
       if(cue) cue.hidden=true;
-    },700);
+    },320);
   }
   function checkConsentScrollEnd(box){
     const type = box.hasAttribute('data-consent-page-scroll') ? 'all' : box.dataset.consentScroll;
@@ -2995,6 +2996,13 @@
   if(consentPageScroll){
     if(consentAutoScroll) consentAutoScroll.addEventListener('click',() => {
       consentPageScroll.scrollTo({top:consentPageScroll.scrollHeight,behavior:'smooth'});
+      // Safari and some in-app webviews can finish a smooth scroll without firing
+      // a final scroll event at the exact bottom. Snap to the end after the visible
+      // motion, then run the same delayed auto-check used by manual scrolling.
+      window.setTimeout(() => {
+        consentPageScroll.scrollTop=consentPageScroll.scrollHeight;
+        checkConsentScrollEnd(consentPageScroll);
+      },420);
     });
     consentPageScroll.addEventListener('scroll',() => checkConsentScrollEnd(consentPageScroll),{passive:true});
     // Re-check when the page gains a real height, i.e. when this screen is shown.
