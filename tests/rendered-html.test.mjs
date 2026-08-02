@@ -98,11 +98,12 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /function partnerHistoryValue\(key\)/);
   assert.match(html, /showActionToast\(`กรุณาระบุ\$\{label\}`,'warning'\)/);
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
-  assert.match(components, /#partner-intake \.partner-health-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#partner-intake \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
   assert.match(components, /\.partner-history-field\{[^}]*grid-template-columns:minmax\(120px,.65fr\) minmax\(180px,.8fr\) minmax\(220px,1.35fr\)[^}]*grid-template-rows:52px/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
   assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
+  assert.match(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto 48px auto/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /PARTNER_NURSE_SCREENING_ENABLED \? 'partner-nurse' : 'booking'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
@@ -128,6 +129,11 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /returnFromPhoneOtp\(returnTarget\)/);
   assert.match(html, /class="partner-health-grid"[\s\S]*id="partner-dob" type="date"/);
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
+  assert.match(components, /\.date-control__display\{[\s\S]*grid-template-columns:24px minmax\(0,1fr\) 24px/);
+  assert.match(html, /function enhancePatientDateFields\(\)\{[\s\S]*DD \/ MM \/ YYYY/);
+  assert.match(html, /id="social-birth-date"[^>]*required/);
+  assert.match(html, /id="insurance-dob"[^>]*required/);
+  assert.match(html, /id="partner-dob"[^>]*required/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
   assert.match(components, /#partner-intake \.input,#partner-intake \.select,#partner-intake \.partner-binary\{[^}]*font-size:16px/);
   assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
@@ -138,8 +144,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /flowState\.consentsComplete && !hasCurrentConsent\('direct'\) && !hasCurrentConsent\('partner'\)/);
   assert.match(html, /function directClinicalStartTarget\(\)\{/);
   assert.match(html, /DIRECT_NURSE_SCREENING_ENABLED \? 'nurse' : 'booking'/);
-  assert.match(html, /id="rx-writing"[\s\S]*data-go="notifications">Manage notifications/);
-  assert.doesNotMatch(screenFragment(html, "rx-writing"), /\(เดโม\)|\(demo\)|data-go="plan"/i);
+  assert.match(html, /id="rx-writing"[\s\S]*data-go="plan">View treatment plan/);
+  assert.match(html, /if\(id==='rx-writing'\)[\s\S]*replaceCurrent\('plan'\)/);
   assert.match(html, /tracking:'confirm', feedback:'consult'/);
   assert.match(html, /noMatch\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('matching'\)/);
   assert.match(html, /noStock\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('pharmacy-search'\)/);
@@ -277,7 +283,9 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.ok(balanceSource, "consultation balance function must remain extractable");
   assert.match(balanceSource[1], /flowState\.entryChannel/);
   assert.match(balanceSource[1], /flowState\.coverage/);
+  assert.doesNotMatch(balanceSource[1], /entryChannel !== 'partner'\) return CONSULTATION_FEE_BAHT/);
   assert.doesNotMatch(balanceSource[1], /history|lastPartnerIndex|lastDirectIndex/, "coverage must not be inferred from navigation history");
+  assert.match(html, /flowState\.entryChannel='insured';[\s\S]*consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000/);
 
   const coverageSource = html.match(/function partnerMedicineCoverageCredit\(\)\{([\s\S]*?)\n  \}/);
   assert.ok(coverageSource, "medicine coverage function must remain extractable");
@@ -308,14 +316,14 @@ test("payment totals and pharmacy fallback remain consistent across edge states"
   const issueScreen = screenFragment(html, "pharmacyissue");
   const issueActions = [...issueScreen.matchAll(/data-pharmacy-issue-action="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(issueActions, ["postal"], "fallback must offer one explicit postal confirmation");
-  assert.match(issueScreen, /Fascino[\s\S]*data-pharmacy-issue-action="postal"/);
+  assert.match(issueScreen, /ยอดชำระเดิมยังได้รับการคุ้มครอง[\s\S]*data-pharmacy-issue-action="postal"/);
   assert.doesNotMatch(issueScreen, /data-pharmacy-issue-confirm|Confirm choice/i);
 
   const fallbackHandler = html.match(/const pharmacyIssueAction = e\.target\.closest\('\[data-pharmacy-issue-action\]'\);([\s\S]*?)\n    const insuranceConfirm/);
   assert.ok(fallbackHandler, "immediate pharmacy fallback handler must remain extractable");
   assert.match(fallbackHandler[1], /deliveryMethod='postal'/);
   assert.match(fallbackHandler[1], /stockLocked=true/);
-  assert.match(fallbackHandler[1], /show\('payment'\)/);
+  assert.match(fallbackHandler[1], /show\('pharmacypending'\)/);
   assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)/);
 });
 
@@ -365,18 +373,20 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
-  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*stockLocked \? 'pharmacyaccepted' : 'pharmacy-search'/, "Next must obtain a stock lock before payment");
-  assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*Pay ฿1,160/, "payment can begin only after pharmacy acceptance");
-  assert.match(html, /closest\('\[data-pharmacy-accepted-pay\]'\)[\s\S]*show\('payment-gw'\)/, "accepted order must open the payment gateway");
+  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('payment-gw'\)/, "checkout must open the gateway before pharmacy review");
+  assert.match(html, /id==='payment-success'[\s\S]*replaceCurrent\('pharmacy-search'\)/, "bank confirmation must release the paid order to pharmacy review");
+  assert.match(pharmacyAccepted, /data-pharmacy-accepted-continue[\s\S]*Continue to preparation/, "pharmacy acceptance must continue to preparation without charging again");
+  assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('pharmacypending'\)/, "accepted paid order must open preparation");
   assert.match(pharmacyAccepted, /state-view__visual--success/, "pharmacy acceptance should use the shared animated state signal");
   assert.doesNotMatch(pharmacyAccepted, /pharmacy-accepted__summary|class="card/, "pharmacy acceptance should keep essential facts out of a second information box");
-  assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ|ยอดที่ชำระแล้ว/, "pharmacy acceptance must not use a large state panel or imply payment already happened");
+  assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ/, "pharmacy acceptance must not repeat checkout UI");
   assert.match(screenFragment(html, "pharmacypending"), /state-view__visual--loading/, "medicine preparation should share the state pattern");
   assert.doesNotMatch(html, /id="refund"|refundAmount/, "obsolete refund fallback must stay removed");
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
-  assert.match(css, /\.state-view__tile>img\{?[\s\S]*animation:krane-signal-float/, "state imagery needs the same restrained floating motion as landing cutouts");
+  assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
+  assert.match(css, /background-image:url\("\.\.\/assets\/krane-review-wordmark\.svg"\)/, "state tiles must overlay the exact approved repository wordmark");
 
   assert.match(failure, /data-payment-outcome-amount/);
   assert.match(failure, /data-payment-outcome-method/);
@@ -414,17 +424,18 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.doesNotMatch(screenFragment(html, "confirm"), /class="card|confirm-mark/, "confirmation must share the same product-state visual");
   assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
+  assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
 });
 
 test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const expected = {
-    matching: "assets/loading/doctor-matching.png",
-    waitroom: "assets/loading/waiting-room.png",
-    connecting: "assets/loading/video-connecting.png",
-    "rx-writing": "assets/loading/treatment-plan.png",
-    "pharmacy-search": "assets/loading/pharmacy-search.png",
-    preloader: "assets/loading/health-preparing.png"
+    matching: "assets/state-v2/doctor-matching.jpg",
+    waitroom: "assets/state-v2/waiting-room.jpg",
+    connecting: "assets/state-v2/video-connecting.jpg",
+    "rx-writing": "assets/state-v2/treatment-plan.jpg",
+    "pharmacy-search": "assets/state-v2/pharmacy-search.jpg",
+    preloader: "assets/state-v2/health-preparing.jpg"
   };
   for (const [screen, graphic] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
