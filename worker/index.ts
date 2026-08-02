@@ -28,9 +28,9 @@ const PUBLIC_REVIEW_ASSETS = new Set([
   "/og.png",
   "/b2c/assets/krane-qa-line-share.png",
   "/b2c/assets/landing-573/latest/hero-base.png",
-  "/b2c/assets/krane-lockup-charcoal.svg",
-  "/assets/krane-clinic-logo-charcoal.svg",
   "/assets/krane-review-wordmark.svg",
+  "/assets/krane-clinic-logo-charcoal.svg",
+  "/b2c/assets/krane-lockup-charcoal.svg",
 ]);
 
 function escapeHtml(value: string): string {

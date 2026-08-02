@@ -759,9 +759,13 @@ test("public QA review gate preserves deep links and uses a signed server cookie
   assert.doesNotMatch(worker, /Response\.redirect\(url\.toString\(\), 307\)/);
   assert.doesNotMatch(patient, /data-qa-access/);
   assert.doesNotMatch(patient, /sessionStorage\.getItem\('krane-qa-access'\)/);
-  assert.match(directory, /href="\/b2c\/krane-b2c#landing"/);
-  assert.match(directory, /href="\/cms\/doctor"/);
-  assert.match(directory, /href="\/cms\/admin"/);
+  assert.match(directory, /data-access-gate/);
+  assert.match(directory, /placeholder="Access code"/);
+  assert.match(directory, /sessionStorage\.getItem\('krane-qa-access'\)/);
+  assert.match(directory, /\.\/assets\/krane-review-wordmark\.svg\?v=20260803logo2/);
+  assert.match(directory, /href="\.\/b2c\/krane-b2c\.html#landing"/);
+  assert.match(directory, /href="\.\/cms\/cms-doctor\.html"/);
+  assert.match(directory, /href="\.\/cms\/cms-admin\.html"/);
   assert.match(directory, /แอปผู้รับบริการ/);
   assert.match(directory, /พอร์ทัลแพทย์/);
   assert.match(directory, /พอร์ทัลผู้ดูแล/);
