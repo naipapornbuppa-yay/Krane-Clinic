@@ -417,6 +417,23 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
 });
 
+test("each loading stage uses a stage-specific graphic", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const expected = {
+    matching: "stage-graphic--doctor",
+    waitroom: "stage-graphic--waiting",
+    connecting: "stage-graphic--connecting",
+    "rx-writing": "stage-graphic--plan",
+    "pharmacy-locate": "stage-graphic--pharmacy",
+    preloader: "stage-graphic--preparing"
+  };
+  for (const [screen, graphic] of Object.entries(expected)) {
+    const fragment = screenFragment(html, screen);
+    assert.match(fragment, new RegExp(graphic), `${screen} must use ${graphic}`);
+    assert.doesNotMatch(fragment, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
+  }
+});
+
 test("public login and legal routes bypass intake while consent acceptance still requires OTP", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const requiredRouteSource = html.match(/function requiredRouteFor\(target\)\{([\s\S]*?)\n  \}\n  function show\(id/);
