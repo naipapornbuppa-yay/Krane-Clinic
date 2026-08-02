@@ -147,19 +147,6 @@
   });
 
   const languageSelects = [...document.querySelectorAll("[data-language]")];
-  const compliance = document.querySelector(".compliance");
-  const complianceToggle = document.querySelector("[data-compliance-toggle]");
-
-  function syncComplianceToggleLabel(language = document.documentElement.lang) {
-    if (!complianceToggle) return;
-    const paused = compliance?.classList.contains("is-paused");
-    const thai = language !== "en";
-    complianceToggle.setAttribute("aria-pressed", paused ? "true" : "false");
-    complianceToggle.setAttribute("aria-label", thai
-      ? (paused ? "เล่นการเลื่อนโลโก้ต่อ" : "หยุดการเลื่อนโลโก้ชั่วคราว")
-      : (paused ? "Resume logo marquee" : "Pause logo marquee"));
-  }
-
   function setLanguage(language) {
     const lang = language === "en" ? "en" : "th";
     document.documentElement.lang = lang;
@@ -180,7 +167,6 @@
       memberCount.textContent = new Intl.NumberFormat(lang === "th" ? "th-TH" : "en-US")
         .format(Number(memberCount.dataset.currentValue || 0));
     }
-    syncComplianceToggleLabel(lang);
     try { localStorage.setItem("krane_lang", lang); } catch (_) {}
     document.dispatchEvent(new CustomEvent("krane:languagechange", { detail: { lang } }));
   }
@@ -197,11 +183,6 @@
   let initialLanguage = "th";
   try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
   setLanguage(initialLanguage);
-
-  complianceToggle?.addEventListener("click", () => {
-    compliance?.classList.toggle("is-paused");
-    syncComplianceToggleLabel();
-  });
 
   window.addEventListener("message", (event) => {
     if (event.data?.krane === "lang") setLanguage(event.data.th ? "th" : "en");
