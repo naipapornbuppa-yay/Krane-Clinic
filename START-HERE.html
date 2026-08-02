@@ -3,58 +3,87 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#d9dcde">
-  <meta name="description" content="Krane Clinic online care applications.">
-  <title>Krane Clinic</title>
-  <link rel="preload" href="/b2c/assets/landing-573/latest/hero-base.png" as="image">
-  <link rel="stylesheet" href="/client-start.css?v=20260729l">
+  <meta name="theme-color" content="#126df4">
+  <meta name="description" content="Krane Clinic client QA review.">
+  <title>Krane Clinic · Client QA Review</title>
+  <link rel="preload" href="./b2c/assets/landing-573/latest/hero-base.png" as="image">
+  <link rel="stylesheet" href="./client-start.css?v=20260803logo2">
 </head>
 <body>
   <main class="start-shell">
-    <header class="start-hero">
-      <img class="start-logo" src="/assets/krane-clinic-logo-charcoal.svg" alt="Krane Clinic">
-    </header>
+    <section class="access-gate" data-access-gate aria-labelledby="access-title">
+      <img class="start-logo" src="./assets/krane-review-wordmark.svg?v=20260803logo2" width="509" height="128" alt="Krane">
+      <h1 id="access-title">ตัวอย่างงานออกแบบ</h1>
+      <p class="start-subtitle">Design preview · ใส่รหัสแล้วเลือกส่วนที่ต้องการดู</p>
+      <form class="access-form" data-access-form novalidate>
+        <label class="sr-only" for="access-code">Access code</label>
+        <div class="access-field">
+          <input id="access-code" name="access-code" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" placeholder="Access code" aria-describedby="access-message" required autofocus>
+          <button type="submit" aria-label="เปิดตัวอย่างงาน"><span aria-hidden="true">→</span></button>
+        </div>
+        <p class="access-message" id="access-message" data-access-message aria-live="polite"></p>
+      </form>
+    </section>
 
-    <section class="portal-section" aria-labelledby="portal-title">
+    <section class="portal-section" data-portal hidden aria-labelledby="portal-title">
+      <header class="start-hero">
+        <img class="start-logo" src="./assets/krane-review-wordmark.svg?v=20260803logo2" width="509" height="128" alt="Krane">
+        <h1>ตัวอย่างงานออกแบบ</h1>
+        <p class="start-subtitle">Design preview · เลือกส่วนที่ต้องการดู</p>
+      </header>
       <h2 id="portal-title">เลือกส่วนที่ต้องการดู</h2>
       <nav class="portal-list" aria-label="Krane Clinic applications">
-        <a class="portal-card" href="/b2c/krane-b2c#partner-access">
+        <a class="portal-card" href="./b2c/krane-b2c.html#partner-access">
           <span class="portal-icon" aria-hidden="true"><i data-lucide="building-2">□</i></span>
-          <span class="portal-copy">
-            <strong>เข้าผ่านองค์กรพันธมิตร</strong>
-          </span>
+          <span class="portal-copy"><strong>เข้าผ่านองค์กรพันธมิตร</strong></span>
           <span class="portal-arrow" aria-hidden="true">→</span>
         </a>
-
-        <a class="portal-card" href="/b2c/krane-b2c#landing">
+        <a class="portal-card" href="./b2c/krane-b2c.html#landing">
           <span class="portal-icon" aria-hidden="true"><i data-lucide="smartphone">▯</i></span>
-          <span class="portal-copy">
-            <strong>แอปผู้รับบริการ</strong>
-          </span>
+          <span class="portal-copy"><strong>แอปผู้รับบริการ</strong></span>
           <span class="portal-arrow" aria-hidden="true">→</span>
         </a>
-
-        <a class="portal-card" href="/cms/doctor">
+        <a class="portal-card" href="./cms/cms-doctor.html">
           <span class="portal-icon" aria-hidden="true"><i data-lucide="user-round">○</i></span>
-          <span class="portal-copy">
-            <strong>พอร์ทัลแพทย์</strong>
-          </span>
+          <span class="portal-copy"><strong>พอร์ทัลแพทย์</strong></span>
           <span class="portal-arrow" aria-hidden="true">→</span>
         </a>
-
-        <a class="portal-card" href="/cms/admin">
+        <a class="portal-card" href="./cms/cms-admin.html">
           <span class="portal-icon" aria-hidden="true"><i data-lucide="layout-dashboard">▦</i></span>
-          <span class="portal-copy">
-            <strong>พอร์ทัลผู้ดูแล</strong>
-          </span>
+          <span class="portal-copy"><strong>พอร์ทัลผู้ดูแล</strong></span>
           <span class="portal-arrow" aria-hidden="true">→</span>
         </a>
       </nav>
+      <p class="portal-note">เปิดในมือถือได้ · works on mobile</p>
     </section>
-
   </main>
 
-  <script src="/b2c/assets/lucide.min.js"></script>
-  <script>window.lucide?.createIcons({attrs:{"stroke-width":1.8}});</script>
+  <script src="./b2c/assets/lucide.min.js"></script>
+  <script>
+    (() => {
+      const gate = document.querySelector('[data-access-gate]');
+      const portal = document.querySelector('[data-portal]');
+      const form = document.querySelector('[data-access-form]');
+      const input = document.querySelector('#access-code');
+      const message = document.querySelector('[data-access-message]');
+      const showPortal = () => {
+        gate.hidden = true;
+        portal.hidden = false;
+        window.lucide?.createIcons({attrs:{"stroke-width":1.8}});
+      };
+      if (sessionStorage.getItem('krane-qa-access') === 'granted') showPortal();
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (input.value === ['2','3','4'].join('')) {
+          sessionStorage.setItem('krane-qa-access', 'granted');
+          message.textContent = '';
+          showPortal();
+          return;
+        }
+        message.textContent = 'รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง';
+        input.select();
+      });
+    })();
+  </script>
 </body>
 </html>
