@@ -33,7 +33,7 @@
       </header>
       <h2 id="portal-title">เลือกส่วนที่ต้องการดู</h2>
       <nav class="portal-list" aria-label="Krane Clinic applications">
-        <a class="portal-card" href="./b2c/krane-b2c.html#partner-access">
+        <a class="portal-card" href="./b2c/krane-b2c.html?entry=partner#consent-terms">
           <span class="portal-icon" aria-hidden="true"><i data-lucide="building-2">□</i></span>
           <span class="portal-copy"><strong>เข้าผ่านองค์กรพันธมิตร</strong></span>
           <span class="portal-arrow" aria-hidden="true">→</span>
@@ -66,16 +66,24 @@
       const form = document.querySelector('[data-access-form]');
       const input = document.querySelector('#access-code');
       const message = document.querySelector('[data-access-message]');
+      const readAccess = () => {
+        try { return sessionStorage.getItem('krane-qa-access'); }
+        catch { return null; }
+      };
+      const rememberAccess = () => {
+        try { sessionStorage.setItem('krane-qa-access', 'granted'); }
+        catch { /* Some mobile in-app browsers block storage; access still continues. */ }
+      };
       const showPortal = () => {
         gate.hidden = true;
         portal.hidden = false;
         window.lucide?.createIcons({attrs:{"stroke-width":1.8}});
       };
-      if (sessionStorage.getItem('krane-qa-access') === 'granted') showPortal();
+      if (readAccess() === 'granted') showPortal();
       form?.addEventListener('submit', (event) => {
         event.preventDefault();
         if (input.value === ['2','3','4'].join('')) {
-          sessionStorage.setItem('krane-qa-access', 'granted');
+          rememberAccess();
           message.textContent = '';
           showPortal();
           return;

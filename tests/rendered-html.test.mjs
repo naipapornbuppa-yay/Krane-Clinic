@@ -171,8 +171,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
 test("legacy patient URLs redirect to the canonical B2C routes", async () => {
   const legacyPatient = await readFile(path.join(publicRoot, "krane-b2c.html"), "utf8");
   const legacyLanding = await readFile(path.join(publicRoot, "krane-b2c-landing.html"), "utf8");
-  assert.match(legacyPatient, /location\.replace\("\/b2c\/krane-b2c\.html"/);
-  assert.match(legacyLanding, /location\.replace\("\/b2c\/krane-b2c-landing\.html"/);
+  assert.match(legacyPatient, /location\.replace\("\.\/b2c\/krane-b2c\.html" \+ location\.search \+ location\.hash\)/);
+  assert.match(legacyLanding, /location\.replace\("\.\/b2c\/krane-b2c-landing\.html" \+ location\.search \+ location\.hash\)/);
+  assert.doesNotMatch(legacyPatient, /url=\/b2c\//, "legacy patient redirect must retain the GitHub Pages project prefix");
+  assert.doesNotMatch(legacyLanding, /url=\/b2c\//, "legacy landing redirect must retain the GitHub Pages project prefix");
   assert.doesNotMatch(legacyPatient, /class="devicebar"/);
 });
 
@@ -369,7 +371,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /data-payment-addons/);
   assert.match(payment, /checkout-addon-rail/);
   assert.ok((payment.match(/data-addon-item/g) || []).length >= 2, "optional products must form a horizontal card rail");
-  assert.equal((payment.match(/assets\/addons-v1\/[^"']+\.png/g) || []).length, 3, "every optional product must use a distinct product image");
+  assert.equal((payment.match(/assets\/addons-v2\/[^"']+\.png/g) || []).length, 3, "every optional product must use a distinct product image");
   assert.equal((payment.match(/aria-pressed="false"/g) || []).length, 3, "optional product cards must expose button toggle state");
   assert.doesNotMatch(payment, /role="listitem"/, "interactive add-on cards must retain button semantics");
   assert.doesNotMatch(payment, /data-delivery-value="[^"]+"[\s\S]{0,350}opt-check/, "delivery rows must not duplicate selection with checkbox controls");
@@ -393,6 +395,9 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(css, /\.checkout-pay \.btn\{[^}]*min-height:var\(--control-h\)/, "the payment CTA must keep a full touch target at 320px");
   assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:190px/, "mobile add-on cards must remain compact and show the next choice");
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*object-fit:contain/, "product cutouts must stay fully visible inside each add-on card");
+  assert.match(css, /\.checkout-addon-card__visual\{[^}]*height:100px[^}]*overflow:visible[^}]*background:transparent/, "add-on products must float on an unclipped stage");
+  assert.match(css, /\.checkout-addon-card__visual::before\{[^}]*82px[^}]*border-radius:50%[^}]*#dbe4f2/, "add-on products must share the landing menu's circular powder-blue stage");
+  assert.match(css, /\.checkout-addon-card__visual img\{[^}]*animation:loading-illustration-float/, "add-on cutouts must use the shared floating motion");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
   assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
   assert.match(css, /background-image:url\("\.\.\/assets\/krane-review-wordmark\.svg"\)/, "state tiles must overlay the exact approved repository wordmark");
@@ -771,7 +776,11 @@ test("public QA review gate preserves deep links and uses a signed server cookie
   assert.match(directory, /data-access-gate/);
   assert.match(directory, /placeholder="Access code"/);
   assert.match(directory, /sessionStorage\.getItem\('krane-qa-access'\)/);
+  assert.match(directory, /try \{ return sessionStorage\.getItem\('krane-qa-access'\); \}[\s\S]*catch \{ return null; \}/);
+  assert.match(directory, /try \{ sessionStorage\.setItem\('krane-qa-access', 'granted'\); \}[\s\S]*catch \{/);
   assert.match(directory, /\.\/assets\/krane-review-wordmark\.svg\?v=20260803logo2/);
+  assert.match(directory, /href="\.\/b2c\/krane-b2c\.html\?entry=partner#consent-terms"/);
+  assert.doesNotMatch(directory, /#partner-access/);
   assert.match(directory, /href="\.\/b2c\/krane-b2c\.html#landing"/);
   assert.match(directory, /href="\.\/cms\/cms-doctor\.html"/);
   assert.match(directory, /href="\.\/cms\/cms-admin\.html"/);
