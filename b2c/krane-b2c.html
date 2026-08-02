@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="th">
 <head>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Krane Clinic · Online Care</title>
@@ -10,8 +11,8 @@
 <meta property="og:site_name" content="Krane Clinic">
 <meta property="og:title" content="Krane Clinic · Online Care">
 <meta property="og:description" content="Private online consultation, doctor-led treatment and discreet delivery.">
-<meta property="og:image" content="/Krane-Clinic/b2c/assets/landing-573/latest/hero-base.png">
-<meta property="og:image:secure_url" content="/Krane-Clinic/b2c/assets/landing-573/latest/hero-base.png">
+<meta property="og:image" content="/b2c/assets/landing-573/latest/hero-base.png">
+<meta property="og:image:secure_url" content="/b2c/assets/landing-573/latest/hero-base.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1264">
 <meta property="og:image:height" content="843">
@@ -20,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Krane Clinic · Online Care">
 <meta name="twitter:description" content="Private online consultation, doctor-led treatment and discreet delivery.">
-<meta name="twitter:image" content="/Krane-Clinic/b2c/assets/landing-573/latest/hero-base.png">
+<meta name="twitter:image" content="/b2c/assets/landing-573/latest/hero-base.png">
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
@@ -131,6 +132,161 @@
     .otp-entry__cell{height:58px;border-radius:12px;font-size:24px}
   }
 </style>
+  <style id="insurance-entry-polish">
+    /* Insurance eligibility is entered before the consultation journey begins. */
+    #insurance > .care-journey {
+      display: none;
+    }
+
+    /* Keep section headings consistent with the form-label hierarchy. */
+    #insurance .screen__body > .stack-2 > .eyebrow {
+      color: #111827;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+  </style>
+  <style id="krane-native-date-field-fix">
+    /* Keep native date pickers usable while preventing iOS/Safari overflow. */
+    input[type="date"] {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    input[type="date"]::-webkit-date-and-time-value {
+      min-height: 1.4em;
+      text-align: left;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      flex: 0 0 auto;
+      margin: 0 0 0 auto;
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+      input[type="date"] {
+        inline-size: 100%;
+        min-inline-size: 0;
+      }
+    }
+  </style>
+  <style id="partner-clinical-balance-fix">
+    /* Keep the three clinical yes/no fields visually equal. */
+    #partner-intake .partner-clinical-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 16px !important;
+      align-items: start;
+    }
+
+    #partner-intake .partner-clinical-grid > * {
+      grid-column: auto !important;
+      min-width: 0;
+    }
+
+    #partner-intake .partner-clinical-grid .segmented,
+    #partner-intake .partner-clinical-grid [role="group"] {
+      width: 100%;
+    }
+
+    #partner-intake .partner-clinical-grid .segmented > *,
+    #partner-intake .partner-clinical-grid [role="group"] > * {
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+
+    @media (max-width: 640px) {
+      #partner-intake .partner-clinical-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+    }
+  </style>
+  <style id="krane-toast-layout-fix">
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) {
+      width: calc(100% - 32px) !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      margin-inline: 16px !important;
+      padding: 16px 20px !important;
+      gap: 12px !important;
+      justify-content: flex-start !important;
+      white-space: normal !important;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :first-child {
+      flex: 0 0 auto;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :last-child {
+      flex: 1 1 auto;
+      min-width: 0;
+      line-height: 1.45;
+    }
+  </style>
+  <style id="krane-toast-width-fix-v2">
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) {
+      width: calc(100% - 32px) !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      margin-inline: 16px !important;
+      padding: 16px 20px !important;
+      display: grid !important;
+      grid-template-columns: 40px minmax(0, 1fr) !important;
+      align-items: center !important;
+      column-gap: 12px !important;
+      text-align: left !important;
+      white-space: normal !important;
+      line-height: 1.45 !important;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :first-child {
+      justify-self: center !important;
+      flex: none !important;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :last-child {
+      min-width: 0 !important;
+    }
+  </style>
+  <style id="krane-toast-fullwidth-final">
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) {
+      width: calc(100% - 32px) !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      margin-inline: auto !important;
+      box-sizing: border-box !important;
+      padding: 16px 20px !important;
+      display: grid !important;
+      grid-template-columns: 40px minmax(0, 1fr) !important;
+      align-items: center !important;
+      gap: 12px !important;
+      text-align: left !important;
+      white-space: normal !important;
+      line-height: 1.45 !important;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :first-child {
+      justify-self: center;
+    }
+
+    :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) > :last-child {
+      min-width: 0;
+    }
+  </style>
 </head>
 <body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -6083,5 +6239,36 @@
 
   // F02 language toggle is handled by i18n.js (active-state + TH/EN copy swap).
 </script>
+  <style id="partner-clinical-balance-fix-v2">
+    /* Keep every clinical yes/no field on the same visual grid. */
+    #partner-intake .partner-clinical-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 16px !important;
+      align-items: start !important;
+    }
+
+    #partner-intake .partner-clinical-grid > * {
+      grid-column: auto !important;
+      width: auto !important;
+      min-width: 0 !important;
+    }
+
+    #partner-intake .partner-clinical-grid :is(.segmented, .binary-toggle, [role="radiogroup"], [role="group"]) {
+      width: 100% !important;
+    }
+
+    #partner-intake .partner-clinical-grid :is(.segmented, .binary-toggle, [role="radiogroup"], [role="group"]) > * {
+      flex: 1 1 50% !important;
+      min-width: 0 !important;
+    }
+
+    @media (max-width: 640px) {
+      #partner-intake .partner-clinical-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+    }
+  </style>
 </body>
 </html>
