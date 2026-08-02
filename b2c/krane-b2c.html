@@ -963,10 +963,27 @@
              prescription and delivery messages. -->
         <div class="field"><label for="patient-phone">เบอร์โทรศัพท์ที่ยืนยันแล้ว</label><input class="input" id="patient-phone" type="tel" autocomplete="tel" value="" readonly aria-readonly="true" data-phone-input><div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div></div>
       </div>
-      <div class="card card--pad-sm" data-profile-insurance>
-        <div class="list-row" data-go="insurance" style="cursor:pointer"><span class="ic" data-demo-icon="shield-check"></span><div class="grow"><strong>ใช้สิทธิ์ประกันสุขภาพ</strong><div class="hint">กรอกข้อมูลกรมธรรม์ที่มีอยู่ เพื่อใช้เป็นส่วนลดค่ายา</div></div><span class="chev">›</span></div>
+      <div class="stack-3" data-patient-payment-choice>
+        <div class="section-label">การชำระค่ายา</div>
+        <button class="option" data-select data-patient-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์และวงเงินที่ใช้ได้ก่อนดำเนินการต่อ</span></span><span class="opt-check"></span></button>
+        <button class="option" data-select data-patient-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ไม่ใช้สิทธิ์ประกัน</span><span class="opt-sub">ชำระค่ายาด้วยตนเองหลังแพทย์ออกแผนการรักษา</span></span><span class="opt-check"></span></button>
       </div>
     <div class="screen__footer"><button class="btn btn--primary" data-patient-info-continue>ยืนยันข้อมูลและไปต่อ</button></div>
+  </section>
+
+  <section class="screen" id="insurance-result">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ผลการตรวจสอบสิทธิ์</span></div>
+    <div class="screen__body stack-4">
+      <div class="stack-2"><h2 class="h1">พบสิทธิ์ที่ใช้งานได้</h2><p class="muted">ระบบบันทึกสิทธิ์นี้ไว้และจะคำนวณส่วนลดตามรายการยาจริงอีกครั้งในหน้าชำระเงิน</p></div>
+      <div class="card card--pad-sm stack-3">
+        <div class="between"><span class="muted">ผลิตภัณฑ์</span><strong>Health Happy</strong></div>
+        <div class="between"><span class="muted">เลขกรมธรรม์</span><strong>POL-88123</strong></div>
+        <div class="between"><span class="muted">สถานะ</span><span class="badge badge--ok">ใช้สิทธิ์ได้</span></div>
+        <div class="divider" style="margin:0"></div>
+        <div class="between"><span class="muted">เครดิตค่ายาคงเหลือ</span><strong>สูงสุด ฿ 1,000</strong></div>
+      </div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="identity">ใช้สิทธิ์นี้และไปต่อ</button></div>
   </section>
 
   <!-- ===================== NURSE PRE-SCREENING (KRANE-F38) ===================== -->
@@ -2570,6 +2587,7 @@
     phoneOtpCompletesAuth:false,
     lastRequiredScreen:'concern',
     patientName:'',
+    paymentPreference:'',
     consentRead:{pdpa:false,telemedicine:false},
     consentChecked:{pdpa:false,telemedicine:false},
     entryChannel:'direct',
@@ -2661,7 +2679,7 @@
       draftReady:false,accountCreated:false,otpVerified:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
-      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
+      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',paymentPreference:'',
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
@@ -2992,7 +3010,7 @@
   const careJourneyShort  = ['Concern','Details','Payment','Doctor','Delivery'];
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
-    signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,
+    signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
     booking:3,matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
     plan:5,'pharmacy-locate':5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,refund:5,confirm:5,tracking:5
   };
@@ -4074,7 +4092,7 @@
     intake5:'intake4', 'intake-general':'intake5',
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
-    otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', identity:'patient-info', nurse:'identity',
+    otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
     booking:'identity', matching:'booking', choosedoc:'booking', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
@@ -4504,6 +4522,11 @@
       // consent is never cleared merely because a user re-verifies a phone number.
       Object.keys(consentRead).forEach(renderConsentReadState);
       syncConsentContinue();
+    }
+    if(id === 'patient-info'){
+      document.querySelectorAll('#patient-info [data-patient-payment-choice-value]').forEach(option => {
+        option.setAttribute('aria-selected',String(option.dataset.patientPaymentChoiceValue===flowState.paymentPreference));
+      });
     }
     if(id === 'conditions') renderConditionList();
     if(JOURNEY_INTAKE.includes(id) || JOURNEY_AUTH.includes(id)){
@@ -5215,13 +5238,20 @@
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
     if(patientInfoContinue){
       const name=document.getElementById('patient-full-name').value.trim();
+      const paymentChoice=document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
+      if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
       submitOnce('patient-info',patientInfoContinue,() => {
         flowState.patientInfoComplete=true;
         flowState.patientName=name;
+        flowState.paymentPreference=paymentChoice;
+        if(paymentChoice==='self-pay') flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
         persistFlowState();
         showActionToast('บันทึกข้อมูลผู้รับบริการแล้ว','success');
-        show('identity');
+        if(paymentChoice==='insurance'){
+          insuranceEntry='profile';
+          show('insurance');
+        } else show('identity');
       });
       return;
     }
@@ -5417,8 +5447,10 @@
         return;
       }
       if(insuranceEntry === 'profile'){
-        showActionToast('บันทึกข้อมูลประกันแล้ว','success');
-        show('patient-info');
+        flowState.paymentPreference='insurance';
+        flowState.coverage={provider:'Health Happy',policyId:'POL-88123',consultationCredit:0,medicineCredit:1000};
+        persistFlowState();
+        show('insurance-result');
         return;
       }
       flowState.entryChannel='insured';
@@ -5956,11 +5988,6 @@
   });
   function applyInsuranceVisibility(){
     const general = isGeneralPath();
-    // Patient profile: offered on every condition, not just the general path. Coverage
-    // eligibility per condition is a downstream question the patient can decline later
-    // (e.g. "Pay myself instead" at checkout), not a reason to hide the option upfront.
-    const profileIns = document.querySelector('#patient-info [data-profile-insurance]');
-    if(profileIns) profileIns.hidden = false;
     // Checkout: the insurance row is only offered on the general path.
     const payIns = document.querySelector('#payment [data-payment-insurance-row]');
     if(payIns) payIns.hidden = !general;
