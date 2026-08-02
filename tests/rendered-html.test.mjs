@@ -425,7 +425,7 @@ test("each loading stage uses a stage-specific graphic", async () => {
     connecting: "stage-graphic--connecting",
     "rx-writing": "stage-graphic--plan",
     "pharmacy-locate": "stage-graphic--pharmacy",
-    preloader: "stage-graphic--preparing"
+    preloader: "assets/status/realistic-v1/pharmacy-review.png"
   };
   for (const [screen, graphic] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
