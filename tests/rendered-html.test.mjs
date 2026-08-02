@@ -66,7 +66,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
     "partner-access", "consent-terms", "partner-patient-info",
-    "partner-concern", "partner-intake", "partner-review", "partner-nurse",
+    "partner-concern", "partner-intake", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
   assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
@@ -74,7 +74,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentSource=flowState\.entryChannel==='partner' \? 'partner' : 'direct'/);
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
-  assert.match(html, /data-partner-review-concern/);
+  assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
+  assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
   assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
   assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /target==='partner-insurance' \? 'insurance'/);
@@ -103,9 +104,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /\.partner-history-field\{[^}]*grid-template-columns:minmax\(120px,.65fr\) minmax\(180px,.8fr\) minmax\(220px,1.35fr\)[^}]*grid-template-rows:52px/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
   assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
-  assert.match(screenFragment(html, "partner-review"), /ยืนยันและจับคู่แพทย์/);
-  assert.doesNotMatch(screenFragment(html, "partner-review"), /ส่งให้พยาบาลคัดกรอง|ตรวจสอบข้อมูลก่อนส่งให้พยาบาล/);
-  assert.match(html, /data-partner-review-continue[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
+  assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
+  assert.match(html, /if\(id === 'partner-review'\) id = 'partner-intake'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
@@ -252,12 +252,11 @@ test("intake keeps multi-select questions visible and uses compact required cont
   ]) assert.ok(i18n.includes(copy), `missing intake translation ${copy}`);
 });
 
-test("partner intake persists photo previews and optional health details into review", async () => {
+test("partner intake persists photo previews and optional health details into matching", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
   assert.match(html, /data-partner-photo-input/);
   assert.match(html, /data-partner-photo-thumbs/);
-  assert.match(html, /data-partner-review-photo-thumbs/);
   assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''[^}]*photos:\[\]/);
   assert.match(html, /function partnerPhotoRecords\(\)\{[\s\S]*flowState\.partnerHealth\.photos/);
   assert.match(html, /function createPartnerPhotoRecord\(file\)\{[\s\S]*canvas\.toDataURL\('image\/jpeg',0\.78\)/);
@@ -265,14 +264,9 @@ test("partner intake persists photo previews and optional health details into re
   assert.match(html, /flowState\.partnerHealth\.photos=partnerPhotoRecords\(\)\.filter\(photo => photo\.id!==remove\.dataset\.partnerPhotoRemove\)/);
 
   for (const field of ["sex", "dob", "height", "weight"]) {
-    assert.match(html, new RegExp(`partnerHealth\\.${field}`), `partner review must render ${field}`);
     assert.match(html, new RegExp(`${field}:document\\.getElementById\\('partner-${field}'\\)`), `partner state must save ${field}`);
   }
-  assert.match(html, /data-partner-review-details/);
-  assert.match(html, /data-partner-review-photos/);
-  assert.match(html, /details\.textContent=optional\.join\(' · '\) \|\| 'ยังไม่ได้ระบุ \(ไม่บังคับ\)'/);
-  assert.match(html, /const photoCount=partnerPhotoRecords\(\)\.length/);
-  assert.match(html, /photos\.textContent=photoCount/);
+  assert.doesNotMatch(html, /data-partner-review-/);
 });
 
 test("eligible partner coverage gates consultation cash checkout through explicit entry state", async () => {

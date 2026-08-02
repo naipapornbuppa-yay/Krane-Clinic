@@ -447,9 +447,7 @@
         <a data-go="partner-insurance">เลือกกรมธรรม์</a>
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา</a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
-        <details class="rail-page" open><summary>ตรวจทานและส่งต่อแพทย์</summary><div class="rail-sub">
-          <a data-go="partner-review">Happy flow · ตรวจทานข้อมูล</a>
-        </div><div class="rail-error-menu">
+        <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
           <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
           <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
         </div></details>
@@ -2329,25 +2327,6 @@
     <div class="screen__footer"><button class="btn btn--primary" data-partner-health-continue>ยืนยันข้อมูลสุขภาพ</button></div>
   </section>
 
-  <section class="screen" id="partner-review">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจทานข้อมูล</span></div>
-    <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">ตรวจทานก่อนส่ง</h2></div>
-      <div class="card card--pad-sm stack-3 review-summary">
-        <div class="review-row"><strong class="review-row__title">อาการที่ปรึกษา</strong><div class="review-row__value" data-partner-review-concern>—</div></div>
-        <div class="divider"></div>
-        <div class="review-row"><strong class="review-row__title">ระยะเวลาและสิ่งที่ลองทำแล้ว</strong><div class="review-row__value" data-partner-review-timing>—</div></div>
-        <div class="divider"></div>
-        <div class="review-row"><strong class="review-row__title">ข้อมูลสุขภาพ</strong><div class="review-row__value" data-partner-review-health>—</div></div>
-        <div class="divider"></div>
-        <div class="review-row"><strong class="review-row__title">ข้อมูลสุขภาพเพิ่มเติม</strong><div class="review-row__value" data-partner-review-details>ยังไม่ได้ระบุ (ไม่บังคับ)</div></div>
-        <div class="divider"></div>
-        <div class="review-row"><strong class="review-row__title">รูปภาพประกอบ</strong><div class="review-row__value" data-partner-review-photos>ยังไม่ได้แนบรูป (ไม่บังคับ)</div><div class="up-thumbs" data-partner-review-photo-thumbs></div></div>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-review-continue>ยืนยันและจับคู่แพทย์</button></div>
-  </section>
-
   <section class="screen" id="partner-nurse">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
     <div class="screen__body stack-4">
@@ -2762,19 +2741,6 @@
       });
     }
     if(empty) empty.style.display=photos.length ? 'none' : '';
-    const reviewThumbs=document.querySelector('[data-partner-review-photo-thumbs]');
-    if(reviewThumbs){
-      reviewThumbs.replaceChildren();
-      photos.forEach(photo => {
-        const figure=document.createElement('figure');
-        figure.className='up-thumb';
-        const image=document.createElement('img');
-        image.src=photo.dataUrl;
-        image.alt=photo.name || 'รูปอาการที่แนบ';
-        figure.appendChild(image);
-        reviewThumbs.appendChild(figure);
-      });
-    }
   }
   (function initPartnerPhotoUpload(){
     const input=document.querySelector('[data-partner-photo-input]');
@@ -3935,48 +3901,14 @@
     syncPartnerHistoryFields();
     renderPartnerPhotos();
   }
-  function partnerSexLabel(value){
-    return {male:'ชาย',female:'หญิง',unspecified:'ไม่ระบุ'}[value] || '';
-  }
-  function formatPartnerDob(value){
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return value || '';
-    const [year,month,day]=value.split('-').map(Number);
-    const date=new Date(Date.UTC(year,month-1,day));
-    if(date.getUTCFullYear()!==year || date.getUTCMonth()!==month-1 || date.getUTCDate()!==day) return value;
-    return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(date);
-  }
   function syncPartnerReview(){
-    const concern=document.querySelector('[data-partner-review-concern]');
-    const timing=document.querySelector('[data-partner-review-timing]');
-    const health=document.querySelector('[data-partner-review-health]');
-    const details=document.querySelector('[data-partner-review-details]');
-    const photos=document.querySelector('[data-partner-review-photos]');
     const phrName=document.querySelector('[data-partner-phr-name]');
-    if(concern) concern.textContent=flowState.partnerConcern || 'ยังไม่ได้ระบุอาการ';
-    if(timing) timing.textContent=[
-      flowState.partnerConcernDuration,
-      flowState.partnerConcernRelief ? `ลองแล้ว: ${flowState.partnerConcernRelief}` : ''
-    ].filter(Boolean).join(' · ') || 'ยังไม่ได้ระบุ';
-    if(health) health.textContent=`โรคประจำตัว: ${flowState.partnerHealth.conditions || 'ไม่มี'} · ยาที่ใช้: ${flowState.partnerHealth.medications || 'ไม่มี'} · แพ้ยา: ${flowState.partnerHealth.allergies || 'ไม่มี'}`;
-    if(details){
-      const optional=[
-        partnerSexLabel(flowState.partnerHealth.sex) ? `เพศกำเนิด: ${partnerSexLabel(flowState.partnerHealth.sex)}` : '',
-        flowState.partnerHealth.dob ? `วันเกิด: ${formatPartnerDob(flowState.partnerHealth.dob)}` : '',
-        flowState.partnerHealth.height ? `ส่วนสูง: ${flowState.partnerHealth.height} ซม.` : '',
-        flowState.partnerHealth.weight ? `น้ำหนัก: ${flowState.partnerHealth.weight} กก.` : ''
-      ].filter(Boolean);
-      details.textContent=optional.join(' · ') || 'ยังไม่ได้ระบุ (ไม่บังคับ)';
-    }
-    const photoCount=partnerPhotoRecords().length;
-    if(photos) photos.textContent=photoCount
-      ? `แนบแล้ว ${photoCount} รูป`
-      : 'ยังไม่ได้แนบรูป (ไม่บังคับ)';
     renderPartnerPhotos();
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
     const order=['partner-access','consent-terms','partner-patient-info',
-      'partner-concern','partner-intake','partner-review','booking'];
+      'partner-concern','partner-intake','booking'];
     // Insurance branches from the confirmation screen. Treat it as the same
     // checkpoint as today's concern when a QA shortcut opens it directly.
     let targetIndex=target==='partner-insurance' ? 3 : order.indexOf(target);
@@ -4159,15 +4091,15 @@
     'partner-access':'landing',
     'partner-patient-info':'consent-terms',
     'partner-concern':'partner-patient-info', 'partner-insurance':'partner-patient-info',
-    'partner-intake':'partner-concern', 'partner-review':'partner-intake',
-    'partner-nurse':'partner-review', 'partner-nurse-session':'partner-nurse',
+    'partner-intake':'partner-concern',
+    'partner-nurse':'partner-intake', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
   const PARTNER_SCREENS = ['partner-access','partner-patient-info',
     'partner-concern','partner-insurance','partner-intake',
-    'partner-review','partner-nurse','partner-nurse-session','partner-phr'];
+    'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
   function directClinicalStartTarget(){
@@ -4476,10 +4408,9 @@
       if(target!=='partner-access' && !flowState.partnerAccessComplete) return 'partner-access';
       if(target!=='partner-access' && !flowState.partnerConsentComplete) return 'consent-terms';
       if(!['partner-access','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-concern','partner-insurance','partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
-      if(['partner-intake','partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'partner-concern';
-      if(['partner-review','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
-      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerReviewComplete) return 'partner-review';
+      if(['partner-concern','partner-insurance','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(['partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'partner-concern';
+      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
     if(target==='signup' && !flowState.draftReady) return 'concern';
@@ -4517,6 +4448,7 @@
       setSelectedCategory('general');
       id = 'intake1';
     }
+    if(id === 'partner-review') id = 'partner-intake';
     const requested=id;
     id=requiredRouteFor(id);
     if(id!==requested){
@@ -4527,7 +4459,7 @@
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(['partner-patient-info','partner-concern','partner-intake'].includes(id)) restorePartnerFields();
-    if(['partner-review','partner-phr'].includes(id)) syncPartnerReview();
+    if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
@@ -5196,15 +5128,6 @@
       submitOnce('partner-intake',partnerHealthContinue,() => {
         flowState.partnerHealth=health;
         flowState.partnerHealthComplete=true;
-        persistFlowState();
-        syncPartnerReview();
-        show('partner-review');
-      });
-      return;
-    }
-    const partnerReviewContinue=e.target.closest('[data-partner-review-continue]');
-    if(partnerReviewContinue){
-      submitOnce('partner-review',partnerReviewContinue,() => {
         flowState.partnerReviewComplete=true;
         flowState.draftReady=true;
         flowState.accountCreated=true;
@@ -5214,7 +5137,7 @@
         flowState.identityVerified=true;
         flowState.patientName=flowState.partnerName || 'Mali Suthida';
         persistFlowState();
-        showActionToast('ตรวจทานเรียบร้อย กำลังจับคู่แพทย์','success');
+        showActionToast('บันทึกข้อมูลแล้ว กำลังจับคู่แพทย์','success');
         show('booking');
       });
       return;
