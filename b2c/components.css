@@ -604,31 +604,35 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 #payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2}
 #payment .checkout-order__body{grid-column:2;grid-row:1}
 #payment .checkout-order__price{grid-column:3;grid-row:1}
-#payment .checkout-order__item>.qty{grid-column:2 / 4;grid-row:2;justify-self:end;margin-top:6px}
+#payment .checkout-order__qty{grid-column:2;grid-row:2;justify-self:start;margin-top:4px;color:var(--color-ink-3)}
 
 /* Footer pays: amount sits beside the action, as in the Grab reference */
 .checkout-pay{display:flex;align-items:center;gap:var(--sp-4)}
 .checkout-pay__amount{display:flex;flex-direction:column;gap:2px;flex:none}
 .checkout-pay__amount span{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
 .checkout-pay__amount strong{color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;line-height:1.1}
-.checkout-pay .btn{flex:1}
-@media(max-width:380px){.checkout-pay{flex-direction:column;align-items:stretch;gap:var(--sp-2)}.checkout-pay__amount{flex-direction:row;align-items:baseline;justify-content:space-between}}
+.checkout-pay .btn{flex:1;min-width:0;min-height:var(--control-h);height:auto;padding-inline:var(--sp-3)}
+@media(max-width:340px){.checkout-pay{gap:var(--sp-3)}.checkout-pay__amount strong{font-size:var(--fs-md)}.checkout-pay .btn{font-size:var(--fs-sm)}}
 .checkout-addon__mark{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-bold);letter-spacing:-.02em}
 .checkout-addon[aria-selected="true"] .checkout-addon__mark{background:var(--color-surface)}
 .checkout-delivery-option{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left}
 .checkout-delivery-option[aria-checked="true"]{background:var(--color-accent-soft);border-color:var(--color-accent)}
 .checkout-delivery-option .checkout-order__price{justify-self:end;margin-left:var(--sp-4)}
-.checkout-addon-rail{display:flex;gap:var(--sp-3);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;padding:2px var(--sp-4) var(--sp-2);margin-inline:calc(var(--sp-4) * -1);scrollbar-width:none}
+.checkout-addon-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--sp-4);overscroll-behavior-inline:contain;padding:2px var(--sp-4) var(--sp-2);margin-inline:calc(var(--sp-4) * -1);scrollbar-width:none}
 .checkout-addon-rail::-webkit-scrollbar{display:none}
-.checkout-addon-card{flex:0 0 min(78%,280px);min-height:170px;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
-.checkout-addon-card[aria-selected="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
-.checkout-addon-card .checkout-addon__mark{width:48px;height:48px;border-radius:50%;font-size:11px;font-weight:var(--fw-semibold)}
-.checkout-addon-card__copy{display:flex;flex-direction:column;gap:4px}
-.checkout-addon-card__copy strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
-.checkout-addon-card__copy span{font-size:var(--fs-xs);color:var(--color-ink-3)}
-.checkout-addon-card__foot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-top:auto;font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.checkout-addon-card{flex:0 0 clamp(156px,44vw,176px);min-height:190px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:10px;border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.checkout-addon-card:active{transform:scale(.985)}
+.checkout-addon-card[aria-pressed="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.checkout-addon-card__visual{position:relative;width:100%;height:78px;display:grid;place-items:center;overflow:hidden;border-radius:calc(var(--radius-lg) - 4px);background:linear-gradient(145deg,#f4f7fb,#e8eff8)}
+.checkout-addon-card__visual img{width:100%;height:100%;object-fit:contain;padding:7px;filter:drop-shadow(0 7px 8px rgba(9,30,66,.12))}
+.checkout-addon-card__selected{position:absolute;top:7px;right:7px;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:#fff;font-size:13px;font-weight:var(--fw-bold);opacity:0;transform:scale(.75);transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.checkout-addon-card[aria-pressed="true"] .checkout-addon-card__selected{opacity:1;transform:scale(1)}
+.checkout-addon-card__copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+.checkout-addon-card__copy strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13px;line-height:1.35;font-weight:var(--fw-semibold)}
+.checkout-addon-card__copy span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--color-ink-3)}
+.checkout-addon-card__foot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-top:auto;font-size:13px;font-weight:var(--fw-semibold)}
 .checkout-addon-card__foot em{padding:4px 10px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-xs);font-style:normal;font-weight:var(--fw-medium)}
-.checkout-addon-card[aria-selected="true"] .checkout-addon-card__foot em{background:var(--color-ink);color:var(--color-surface)}
+.checkout-addon-card[aria-pressed="true"] .checkout-addon-card__foot em{background:var(--color-ink);color:var(--color-surface)}
 .photo-graphic.payment-state-graphic{min-height:160px}
 /* rows at the edge of a padded card: no dead air against the card's own padding */
 .card>.list-row:first-child,.card .stack-3>.list-row:first-child{padding-top:0;min-height:0}
