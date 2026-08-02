@@ -2944,8 +2944,11 @@
   // marks both records read and selects both confirmations automatically.
   function completeConsentBundleAfterDelay(box){
     if(consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine) return;
-    clearTimeout(consentAutoCheckTimer);
+    // The fallback monitor runs every 300ms. Keep the first pending completion
+    // instead of restarting its 700ms delay forever on every monitor tick.
+    if(consentAutoCheckTimer) return;
     consentAutoCheckTimer = window.setTimeout(() => {
+      consentAutoCheckTimer = 0;
       const stillAtEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 12;
       if(!stillAtEnd || !document.getElementById('consent-terms')?.classList.contains('active')) return;
       markConsentRead('pdpa');
