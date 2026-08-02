@@ -78,6 +78,12 @@
     menu.setAttribute('role','listbox');
     trigger.setAttribute('aria-controls',menu.id);
 
+    var scrim=document.createElement('button');
+    scrim.type='button';
+    scrim.className='custom-select__scrim';
+    scrim.tabIndex=-1;
+    scrim.setAttribute('aria-label','Close options');
+
     var label=select.id?document.querySelector('label[for="'+select.id+'"]'):null;
     if(label){
       if(!label.id)label.id=(select.id||'custom-select-'+sequence)+'-label';
@@ -110,12 +116,12 @@
     });
 
     select.parentNode.insertBefore(root,select);
-    root.append(select,trigger,menu);
+    root.append(select,trigger,scrim,menu);
     select.classList.add('custom-select__native');
     select.tabIndex=-1;
     select.setAttribute('aria-hidden','true');
 
-    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,options:optionButtons};
+    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,scrim:scrim,options:optionButtons};
     enhanced.push(record);
     syncSelect(record);
 
@@ -124,6 +130,7 @@
       if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();openSelect(record,true)}
       if(event.key==='Escape'&&record.root.classList.contains('is-open')){event.preventDefault();closeSelect(record,false)}
     });
+    scrim.addEventListener('click',function(){closeSelect(record,true)});
     select.addEventListener('change',function(){syncSelect(record)});
     root.addEventListener('focusout',function(){window.setTimeout(function(){if(!root.contains(document.activeElement))closeSelect(record,false)},0)});
   }
