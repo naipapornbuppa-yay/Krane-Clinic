@@ -2599,7 +2599,11 @@
   actionToast.setAttribute('role', 'status');
   function placeActionToast(){
     const host = document.querySelector('.screen.active') || document.querySelector('.stage');
-    if(host && actionToast.parentElement !== host) host.appendChild(actionToast);
+    if(host){
+      if(actionToast.parentElement !== host) host.appendChild(actionToast);
+      const footer = host.querySelector(':scope > .screen__footer');
+      actionToast.style.setProperty('--action-toast-bottom',((footer?.offsetHeight || 0) + 16) + 'px');
+    }
   }
   placeActionToast();
   function showActionToast(message,type='success'){
