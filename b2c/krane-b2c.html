@@ -2617,7 +2617,9 @@
     placeActionToast();
     actionToast.className = 'action-toast action-toast--' + type;
     actionToast.innerHTML = '<span class="action-toast__icon">'+window.kraneIcon(iconNames[type]||iconNames.info,'ui-icon--sm')+'</span><span>'+message+'</span>';
+    actionToast.classList.remove('is-wrapping');
     actionToast.classList.add('is-visible');
+    if(actionToast.scrollWidth > actionToast.clientWidth) actionToast.classList.add('is-wrapping');
     clearTimeout(actionToastTimer);
     actionToastTimer = setTimeout(() => actionToast.classList.remove('is-visible'), 1800);
   }
