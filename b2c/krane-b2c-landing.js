@@ -197,7 +197,8 @@
             krane: "nav",
             to: link.dataset.route,
             next: link.dataset.next || null,
-            category: link.dataset.category || null
+            category: link.dataset.category || null,
+            entryChannel: link.dataset.entryChannel || null
           }, "*");
         }
       } catch (_) {}
