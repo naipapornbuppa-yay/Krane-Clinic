@@ -185,38 +185,6 @@
       }
     }
   </style>
-  <style id="partner-clinical-balance-fix">
-    /* Keep the three clinical yes/no fields visually equal. */
-    #partner-intake .partner-clinical-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-      gap: 16px !important;
-      align-items: start;
-    }
-
-    #partner-intake .partner-clinical-grid > * {
-      grid-column: auto !important;
-      min-width: 0;
-    }
-
-    #partner-intake .partner-clinical-grid .segmented,
-    #partner-intake .partner-clinical-grid [role="group"] {
-      width: 100%;
-    }
-
-    #partner-intake .partner-clinical-grid .segmented > *,
-    #partner-intake .partner-clinical-grid [role="group"] > * {
-      flex: 1 1 50%;
-      min-width: 0;
-    }
-
-    @media (max-width: 640px) {
-      #partner-intake .partner-clinical-grid {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-      }
-    }
-  </style>
   <style id="krane-toast-layout-fix">
     :is(.toast, .app-toast, .demo-toast, .flow-toast, .prototype-toast, .status-toast, .toast-message, .snackbar) {
       width: calc(100% - 32px) !important;
@@ -2328,9 +2296,9 @@
               <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
               <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
             </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
+            <div class="partner-history-detail" data-partner-history-detail>
               <label class="sr-only" for="partner-conditions">ระบุโรคประจำตัว</label>
-              <input class="input" id="partner-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off">
+              <input class="input" id="partner-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off" disabled>
             </div>
           </fieldset>
           <fieldset class="partner-history-field" data-partner-history="medications">
@@ -2339,9 +2307,9 @@
               <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
               <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
             </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
+            <div class="partner-history-detail" data-partner-history-detail>
               <label class="sr-only" for="partner-medications">ระบุยาที่ใช้ประจำ</label>
-              <input class="input" id="partner-medications" placeholder="ระบุชื่อยา" autocomplete="off">
+              <input class="input" id="partner-medications" placeholder="ระบุชื่อยา" autocomplete="off" disabled>
             </div>
           </fieldset>
           <fieldset class="partner-history-field" data-partner-history="allergies">
@@ -2350,9 +2318,9 @@
               <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
               <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
             </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
+            <div class="partner-history-detail" data-partner-history-detail>
               <label class="sr-only" for="partner-allergies">ระบุประวัติแพ้ยา</label>
-              <input class="input" id="partner-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off">
+              <input class="input" id="partner-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off" disabled>
             </div>
           </fieldset>
         </div>
@@ -3905,7 +3873,12 @@
       ));
     });
     const detail=group.querySelector('[data-partner-history-detail]');
-    if(detail) detail.hidden=!hasDetails;
+    const input=detail?.querySelector('input');
+    if(detail) detail.hidden=false;
+    if(input){
+      input.disabled=!hasDetails;
+      if(!hasDetails) input.value='';
+    }
   }
   function syncPartnerHistoryFields(){
     document.querySelectorAll('[data-partner-history]').forEach(group => {
@@ -6140,36 +6113,5 @@
 
   // F02 language toggle is handled by i18n.js (active-state + TH/EN copy swap).
 </script>
-  <style id="partner-clinical-balance-fix-v2">
-    /* Keep every clinical yes/no field on the same visual grid. */
-    #partner-intake .partner-clinical-grid {
-      display: grid !important;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-      gap: 16px !important;
-      align-items: start !important;
-    }
-
-    #partner-intake .partner-clinical-grid > * {
-      grid-column: auto !important;
-      width: auto !important;
-      min-width: 0 !important;
-    }
-
-    #partner-intake .partner-clinical-grid :is(.segmented, .binary-toggle, [role="radiogroup"], [role="group"]) {
-      width: 100% !important;
-    }
-
-    #partner-intake .partner-clinical-grid :is(.segmented, .binary-toggle, [role="radiogroup"], [role="group"]) > * {
-      flex: 1 1 50% !important;
-      min-width: 0 !important;
-    }
-
-    @media (max-width: 640px) {
-      #partner-intake .partner-clinical-grid {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-      }
-    }
-  </style>
 </body>
 </html>
