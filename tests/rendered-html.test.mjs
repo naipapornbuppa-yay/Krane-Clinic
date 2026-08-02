@@ -184,7 +184,7 @@ test("onboarding is a clean bilingual three-step value sequence with stable cont
   assert.doesNotMatch(onboarding, /<img|entry-media|doctor-profile-male|cure_clarity|mens-health-review/);
   assert.match(onboarding, /data-go="onboard2" aria-label="Next"/);
   assert.match(onboarding, /data-go="onboard3" aria-label="Next"/);
-  assert.match(onboarding, /data-go="concern">Start /);
+  assert.match(onboarding, /data-go="conditions">Start /);
   assert.match(onboarding, /aria-label="Step 1 of 3"/);
   assert.match(onboarding, /aria-label="Step 2 of 3"/);
   assert.match(onboarding, /aria-label="Step 3 of 3"/);
