@@ -577,7 +577,7 @@
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
        The service entry now routes directly to condition selection. -->
   <!-- ===================== CONDITION (KRANE-F08) ===================== -->
-  <section class="screen" id="conditions">
+  <section class="screen" id="conditions" data-screen-code="SCR-DIR-01">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Choose a condition</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2">
@@ -631,7 +631,7 @@
   <!-- ===================== INTAKE Q1 (KRANE-F04 · symptoms + duration) =====================
        F04 update (client 15 Jul): the first questions branch by entry service, then both paths
        converge on urgent safety, universal health and insurance before review. -->
-  <section class="screen" id="intake1">
+  <section class="screen" id="intake1" data-screen-code="SCR-002">
     <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
     <div class="screen__body stack-5">
       <div><h2 class="h1">What are you noticing right now?</h2></div>
@@ -1015,7 +1015,7 @@
        Krane matches an available licensed doctor automatically. "Choose your doctor" is an
        optional path (admin-toggleable per channel). If no doctor is free now, we fall back to
        picking a time the doctor is available (#noslots). -->
-  <section class="screen" id="booking">
+  <section class="screen" id="booking" data-screen-code="SCR-005">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">See a doctor</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">We'll match you with a doctor</h2></div>
@@ -1029,7 +1029,7 @@
   </section>
 
   <!-- ===================== MATCHING (auto-match in progress) ===================== -->
-  <section class="screen" id="matching">
+  <section class="screen" id="matching" data-screen-code="SCR-006">
     <div class="screen__top transition-stage__top"><span class="ttl">Doctor match</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding your doctor">
@@ -1057,7 +1057,7 @@
   </section>
 
   <!-- ===================== NO DOCTOR FREE NOW, PICK A TIME (KRANE-F09 fallback) ===================== -->
-  <section class="screen" id="noslots">
+  <section class="screen" id="noslots" data-screen-code="SCR-007">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pick a time</span></div>
     <div class="screen__body state-view state-view--decision">
       <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No doctor available now">
@@ -1082,10 +1082,10 @@
   </section>
 
   <!-- ===================== CONSULTATION FEE PAYMENT (first payment) ===================== -->
-  <section class="screen" id="consultpay">
+  <section class="screen" id="consultpay" data-screen-code="SCR-008" data-checkout-mode="consultation">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pay consultation fee</span></div>
     <div class="screen__body stack-4">
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">ชำระค่าปรึกษา</div><div class="hint">ค่ายาจะแยกชำระหลังแพทย์ออกแผนการรักษา</div></div></div>
+      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-checkout-title>ค่าปรึกษาแพทย์</div><div class="hint" data-consult-checkout-copy>ตรวจสอบยอดก่อนดำเนินการต่อ</div></div></div>
       <div class="card card--pad-sm stack-3">
         <div class="between"><span class="muted">Doctor match</span><strong>Dr. Narin · ready now</strong></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
@@ -1096,14 +1096,14 @@
         <div class="between"><span class="muted">Pay now</span><span class="amt" data-pay-amt>฿ 350</span></div>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
-      <label class="card card--pad-sm row" style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>Add a medical certificate · ฿ 100</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
-      <div class="field"><label for="consult-discount-code">Discount code (optional)</label><div class="row" style="gap:var(--sp-2)"><input class="input grow" id="consult-discount-code" placeholder="Enter code"><button class="btn btn--secondary btn--sm" data-demo-action="ตรวจสอบโค้ดแล้ว">Apply</button></div></div>
-      <div class="stack-2">
+      <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>Add a medical certificate · ฿ 100</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
+      <div class="field" data-consult-payment-control><label for="consult-discount-code">Discount code (optional)</label><div class="row" style="gap:var(--sp-2)"><input class="input grow" id="consult-discount-code" placeholder="Enter code"><button class="btn btn--secondary btn--sm" data-demo-action="ตรวจสอบโค้ดแล้ว">Apply</button></div></div>
+      <div class="stack-2" data-consult-payment-control>
         <div class="eyebrow">Pay with</div>
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go>Pay <span data-pay-btn-amt>฿ 350</span></button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1178,7 +1178,7 @@
   <!-- ===================== WAITING ROOM (KRANE-F14 · waiting to be admitted) =====================
        F14 update (client 20 Jun): make it feel like waiting to be let into the consultation room.
        Doctor joins first; the patient is admitted the moment the doctor is ready. -->
-  <section class="screen" id="waitroom">
+  <section class="screen" id="waitroom" data-screen-code="SCR-009">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor">
@@ -1195,12 +1195,12 @@
   </section>
 
   <!-- ===================== CONSULT ROOM ===================== -->
-  <section class="screen" id="consult">
+  <section class="screen" id="consult" data-screen-code="SCR-010">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="avatar" style="width:32px;height:32px">N</span><div class="grow"><div class="ttl">Dr. Narin</div><div class="hint">in room · licence 12345</div></div></div>
     <div class="screen__body chat-body" style="background:var(--color-bg);position:relative">
       <!-- F13: chat and the call are one session; this bar appears while a call runs in the background -->
       <button class="callbar" data-callbar data-go="video" hidden><span class="cb-dot"></span><span class="grow" style="text-align:left">Call in progress · chat stays open</span><strong>Return to call</strong></button>
-      <div class="alert"><span class="a-ic">✓</span><div><div class="a-title">Consultation fee paid</div><div class="hint">This room stays open until the doctor closes it and shares the treatment plan.</div></div></div>
+      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-payment-status>ค่าปรึกษา ฿ 350</div><div class="hint">ห้องรักษาจะปิดเมื่อหมดเวลาปรึกษา</div></div></div>
       <div class="bubble bubble--in bubble--lbl" data-from="Dr. Narin">Hi, I've reviewed your intake. A couple of quick questions before I recommend a plan.</div>
       <div class="bubble bubble--out bubble--lbl" data-from="You">Sure, go ahead.</div>
       <div class="bubble bubble--in">Have you tried any hair loss treatment before?</div>
@@ -1209,11 +1209,11 @@
       <div class="typing" data-typing aria-label="Dr. Narin is typing"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
       <button class="callbar" data-rx-bar data-go="rx-writing"><span class="cb-dot"></span><span class="grow" style="text-align:left">Dr. Narin is writing your prescription</span><strong>View status</strong></button>
       <div class="card card--pad-sm stack-3" style="align-self:stretch" data-plan-card data-wait-hidden>
-        <div class="between"><span class="badge badge--ok">Treatment plan ready</span><span class="hint">from Dr. Narin</span></div>
+        <div class="between"><span class="badge badge--ok">รายการยาชั่วคราว</span><span class="hint">จากแพทย์</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div></div><span class="price">฿ 590</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div></div><span class="price">฿ 450</span></div>
-        <p class="hint">Medication and delivery are paid after you accept the plan.</p>
-        <button class="btn btn--primary btn--sm" style="width:100%" data-go="plan">Review treatment plan</button>
+        <p class="hint">ต้องการแก้ไขรายการยา แจ้งแพทย์ในแชทได้เลย</p>
+        <button class="btn btn--primary btn--sm" style="width:100%" data-go="rx-writing">จบการปรึกษา</button>
       </div>
       <button class="chat-fab" data-go="video" data-demo-icon="video" title="Start video call" aria-label="Start video call"></button>
     </div>
@@ -1270,7 +1270,7 @@
 
   <!-- ===================== WRITING PRESCRIPTION (KRANE-F15/F16 · client 6 Jul: prescribing
        can take a while; show a status screen before the treatment plan) ===================== -->
-  <section class="screen" id="rx-writing">
+  <section class="screen" id="rx-writing" data-screen-code="SCR-011">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Treatment plan</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your treatment plan">
@@ -1281,13 +1281,13 @@
         <h2 class="h1">Your treatment plan is being prepared</h2>
         <p class="muted">You can leave—we'll notify you when it's ready.</p>
       </div>
-      <div class="state-view__timer">About 10 min</div>
+      <div class="state-view__timer">ประมาณ 3 ถึง 5 นาที</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="notifications">Manage notifications</button></div>
   </section>
 
   <!-- ===================== TREATMENT PLAN ===================== -->
-  <section class="screen" id="plan">
+  <section class="screen" id="plan" data-screen-code="SCR-012">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your treatment plan</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div></div>
@@ -1302,18 +1302,7 @@
         </div><span class="price" data-line-price>฿ 450</span></div>
       </div>
       <p class="hint">You can reduce quantities within the prescription limit.</p>
-      <!-- F16 update (client 20 Jun): prescription detail, follow-up (omit if none),
-           refill allowance, and expiry. "Refill" is the single product term app-wide. -->
-      <div class="card card--pad-sm stack-3 kv-list">
-        <div class="section-label">Prescription details</div>
-        <div class="between"><span class="muted">Next follow-up</span><strong>12 Sep 2026</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Refills allowed</span><strong>3 refills</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Can request more medication?</span><strong>Yes · while valid</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Prescription valid until</span><strong>12 Dec 2026</strong></div>
-        <div class="hint">A refill lets you request more of this medicine without restarting the consultation flow, up to the number your doctor allowed and before the prescription expires.</div>
+      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">เอกสารทางการแพทย์ยังไม่เปิด</div><div class="hint">คำวินิจฉัย แผนการรักษา และใบสั่งยาจะเปิดหลังชำระเงินสำเร็จ</div></div></div>
     </div>
     <div class="screen__footer">
       <button class="btn btn--primary" data-go="payment">Accept &amp; continue to payment</button>
@@ -1332,7 +1321,7 @@
   </section>
 
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
-  <section class="screen" id="address">
+  <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">รายละเอียดจัดส่ง</span></div>
     <div class="screen__body delivery-details stack-3">
       <div class="delivery-card delivery-card--map">
@@ -1375,7 +1364,7 @@
 
   <!-- ===================== PHARMACY REVIEW (KRANE-F20 / KRANE-F21) =====================
        The pharmacy accepts the prescription and confirms stock before payment is taken. -->
-  <section class="screen" id="pharmacy-search">
+  <section class="screen" id="pharmacy-search" data-screen-code="SCR-014">
     <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy review</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" data-ph-graphic role="status" aria-label="Pharmacist reviewing your order">
@@ -1394,7 +1383,7 @@
        F18 update (client 20 Jun): payment is handled by a third-party hosted gateway (KBank /
        K-Payment Gateway). This screen mirrors that gateway chrome, Krane plugs into it rather than
        building its own card system. Card details never touch Krane's servers. -->
-  <section class="screen" id="payment">
+  <section class="screen" id="payment" data-screen-code="SCR-008" data-checkout-mode="final">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบคำสั่งซื้อ</span></div>
     <!-- Delivery-fee timestamp, matching the checkout pattern the client referenced.
          It tells the patient the fee is a live quote, not a fixed charge. -->
@@ -1438,6 +1427,7 @@
             <span class="checkout-order__price" data-order-price>฿ 450</span>
           </div>
           <div class="checkout-order__bill">
+            <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
             <div class="checkout-bill__row"><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 1,040</strong></div>
             <div class="checkout-bill__row"><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
             <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
@@ -1548,7 +1538,7 @@
   </section>
 
   <!-- Bank-hosted gateway, opened only after the patient confirms the checkout above -->
-  <section class="screen" id="payment-gw">
+  <section class="screen" id="payment-gw" data-screen-code="SCR-016">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">หน้าชำระเงินของธนาคาร</span></div>
     <div class="screen__body stack-4">
 <div class="gateway" data-gw>
@@ -1647,7 +1637,7 @@
        F34/F21 update (client 20 Jun): keep this simple. The patient just sees that the medicine
        is being prepared. The reroute/issue noise is gone; if preparation exceeds the SLA, a
        fallback choice appears (switch to next-day + pay difference, or refund). -->
-  <section class="screen" id="pharmacypending">
+  <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your medicine">
@@ -1672,20 +1662,18 @@
     <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-pay>Pay ฿1,160</button></div>
   </section>
 
-  <!-- ===================== SLA FALLBACK (taking longer than expected) ===================== -->
-  <section class="screen" id="pharmacyissue">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
+  <!-- Same SCR-014 status flow. The patient explicitly accepts postal fallback before checkout. -->
+  <section class="screen" id="pharmacyissue" data-screen-code="SCR-014">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบการจัดส่ง</span></div>
     <div class="screen__body state-view state-view--decision">
       <div class="state-view__visual state-view__visual--warning" role="img" aria-label="Same-day delivery unavailable">
         <span class="state-view__tile"><img src="assets/status/realistic-v1/delivery-unavailable.png" alt="" decoding="async"></span>
         <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">Same-day delivery is unavailable</h2><p class="muted">Choose another option. Your payment is protected.</p></div>
-      <div class="stack-3">
-        <button class="option" data-pharmacy-issue-action="postal"><span class="opt-body"><span class="opt-title">Switch to next-day delivery</span><span class="opt-sub">Ships tomorrow · ฿120 delivery fee refunded</span></span><span class="price" style="margin-left:auto">- ฿ 120</span><span class="chev">›</span></button>
-        <button class="option" data-pharmacy-issue-action="wait"><span class="opt-body"><span class="opt-title">Keep waiting for same-day</span><span class="opt-sub">We'll keep trying and keep you posted</span></span><span class="chev">›</span></button>
-        <button class="option" data-pharmacy-issue-action="cancel"><span class="opt-body"><span class="opt-title">Cancel &amp; refund this order</span><span class="opt-sub">Medication order refunded · consultation fee excluded</span></span><span class="chev">›</span></button>
-      </div>
+      <div class="state-view__copy"><h2 class="h1">ยังไม่มีร้านใกล้เคียงที่จัดส่งภายในวันได้</h2><p class="muted">เราสามารถจัดส่งยาจาก Fascino ทางไปรษณีย์แทน</p></div>
+      <div class="state-view__timer">จัดส่ง 1 ถึง 3 วัน · คำนวณราคาจริงก่อนชำระเงิน</div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
   </section>
 
   <!-- ===================== REFUND CONFIRMED ===================== -->
@@ -2040,7 +2028,7 @@
 
   <!-- Required Phase 1 consent. PDPA and telemedicine terms are presented as one
        continuous page. Reaching the end confirms both items automatically. -->
-  <section class="screen" id="consent-terms">
+  <section class="screen" id="consent-terms" data-screen-code="SCR-001">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ความยินยอม</span></div>
     <div class="screen__body stack-4" data-consent-page-scroll>
       <div class="stack-2 consent-page__intro"><p class="eyebrow">ความเป็นส่วนตัวและการรักษาความลับ</p><h2 class="h1">เพื่อความสบายใจในการใช้บริการ</h2></div>
@@ -2110,7 +2098,7 @@
   <!-- Prescription document (ใบสั่งยา · 8 fields) -->
   <!-- Client (6 Jul): documents are CONTENT on one screen, not separate pages.
        Prescription and medical certificate live here as tabs. -->
-  <section class="screen" id="prescription">
+  <section class="screen" id="prescription" data-screen-code="SCR-018">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Documents</span></div>
     <div class="screen__body stack-4">
       <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx" aria-selected="true">Prescription</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">Medical certificate</button></div>
@@ -2197,7 +2185,7 @@
     </div>
   </section>
 
-  <section class="screen" id="partner-patient-info">
+  <section class="screen" id="partner-patient-info" data-screen-code="SCR-003">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">ยืนยันชื่อและเบอร์โทรศัพท์</h2></div>
@@ -2354,7 +2342,7 @@
     <div class="screen__footer"><button class="btn btn--primary" data-partner-health-continue>ยืนยันข้อมูลสุขภาพ</button></div>
   </section>
 
-  <section class="screen" id="partner-nurse">
+  <section class="screen" id="partner-nurse" data-screen-code="SCR-004">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
     <div class="screen__body stack-4">
       <div class="card card--pad-sm row"><span class="avatar partner-nurse-avatar"><span data-demo-icon="video"></span></span><div class="grow"><div style="font-weight:var(--fw-semibold)">ทีมพยาบาลคัดกรอง</div><div class="hint">พยาบาลวิชาชีพขององค์กรพันธมิตร</div></div><span class="badge badge--line">พร้อมรับเคส</span></div>
@@ -2601,6 +2589,10 @@
     consentRead:{pdpa:false,telemedicine:false},
     consentChecked:{pdpa:false,telemedicine:false},
     entryChannel:'direct',
+    consultationPaymentTiming:'after',
+    consultationFeeAcknowledged:false,
+    consultationPaid:false,
+    paymentResolution:'',
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
     orderState:{
       quantities:{finasteride:1,minoxidil:2},
@@ -2612,6 +2604,7 @@
       promoAmount:0,
       paymentMethod:'qr',
       amountDue:1160,
+      stockLocked:false,
       paidAmount:null,
       paidMethod:'',
       paidDeliveryMethod:'',
@@ -2655,7 +2648,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
+    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2670,6 +2663,9 @@
     {wellness:false,pillcase:false,pouch:false},
     flowState.orderState.addOns || {}
   );
+  const flowConfig=new URLSearchParams(window.location.search);
+  if(flowConfig.get('consult_payment')==='before') flowState.consultationPaymentTiming='before';
+  if(flowConfig.get('consult_payment')==='after') flowState.consultationPaymentTiming='after';
   /* Existing QA sessions previously received a sample address automatically.
      Require an explicit address choice after this checkout flow correction. */
   if(flowState.orderState.checkoutFlowVersion!=='pharmacy-before-payment-v1'){
@@ -2693,8 +2689,9 @@
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,checkoutFlowVersion:'pharmacy-before-payment-v1',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
+      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:{building:'',floor:'',line:'',district:'',note:'',km:'3.2'},addressConfirmed:false,checkoutFlowVersion:'pharmacy-before-payment-v1',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:'',refundAmount:0},
       partnerAccessComplete:false,partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerConcernComplete:false,partnerHealthComplete:false,partnerReviewComplete:false,
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
@@ -4134,6 +4131,7 @@
     return DIRECT_NURSE_SCREENING_ENABLED ? 'nurse' : 'booking';
   }
   function consultationBalanceDue(){
+    if(flowState.consultationPaid) return 0;
     if(flowState.entryChannel !== 'partner') return CONSULTATION_FEE_BAHT;
     const explicitBalance=flowState.partnerConsultationBalanceDue;
     if(typeof explicitBalance === 'number' && Number.isFinite(explicitBalance)) return Math.max(0,explicitBalance);
@@ -4150,6 +4148,7 @@
   function medicineSubtotal(){
     return Object.entries(MEDICINE_PRICES).reduce((sum,[key,unit]) => sum + unit * Math.max(0,Number(flowState.orderState.quantities[key] || 0)),0);
   }
+  function hasMedicines(){ return medicineSubtotal()>0; }
   function selectedAddOnTotal(){
     return Object.entries(ADDON_PRICES).reduce((sum,[key,price]) => sum + (flowState.orderState.addOns[key] ? price : 0),0);
   }
@@ -4158,6 +4157,7 @@
   }
   function checkoutIsReady(){
     const address=flowState.orderState.address || {};
+    if(!hasMedicines()) return Boolean(flowState.orderState.paymentMethod);
     return Boolean(
       flowState.orderState.addressConfirmed &&
       address.building && address.line && address.district &&
@@ -4178,14 +4178,19 @@
     const delivery=deliveryFeeFor(deliveryMethod);
     // Medicine benefits never silently pay for delivery or optional retail add-ons.
     const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
+    const consultationDue=consultationBalanceDue();
     setPaymentContext({
-      due:Math.max(0,subtotal + addon + delivery - credit),
+      due:Math.max(0,consultationDue + subtotal + addon + delivery - credit),
       subtotal,
       addon,
       delivery,
       credit,
       method:deliveryMethod
     });
+    const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
+    const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
+    if(consultationRow) consultationRow.hidden=consultationDue<=0;
+    if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
     syncCheckoutReadiness();
   }
   function setMedicationCheckoutContext(){ refreshMedicationCheckout(); }
@@ -4210,7 +4215,9 @@
       : `${baht(CONSULTATION_FEE_BAHT)} ชำระแล้ว`;
   }
   function consultationHandoffTarget(){
-    return consultationBalanceDue() > 0 ? 'consultpay' : 'waitroom';
+    const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
+    if(consultationBalanceDue()<=0) return 'waitroom';
+    return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
   }
   function seededHistory(id){
     const path=[];
@@ -4431,7 +4438,8 @@
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
-    if(target==='consent-terms' && flowState.entryChannel==='partner' && !flowState.partnerAccessComplete) return 'partner-access';
+    // A real partner deep link starts at the shared PDPA screen. #partner-access is
+    // retained only as an internal demo launcher and is never a required journey step.
     if(PARTNER_SCREENS.includes(target)){
       if(target!=='partner-access' && !flowState.partnerAccessComplete) return 'partner-access';
       if(target!=='partner-access' && !flowState.partnerConsentComplete) return 'consent-terms';
@@ -4515,6 +4523,7 @@
     syncRailPath(id);
     if(push && history[history.length - 1] !== id) history.push(id);
     syncConsultationCoverageLabels();
+    if(id==='consultpay') syncConsultationCheckoutMode();
     if(id==='consultpay' || id==='consultpay-gw' || id==='consultpay-fail') syncConsultationPaymentAmount();
     const scr = document.getElementById(id);
     const body = document.querySelector('#'+id+' .screen__body');
@@ -4583,7 +4592,7 @@
     if(id==='payment-success'){
       syncPaymentOutcome();
       paymentSuccessTimer=setTimeout(() => {
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('confirm');
+        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('prescription');
       },reduceMotion ? 450 : 2200);
     }
     clearTimeout(preloaderTimer);
@@ -4664,6 +4673,8 @@
         }
         pharmacyRetryCount = 0;
         if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
+        flowState.orderState.stockLocked=true;
+        persistFlowState();
         replaceCurrent('pharmacyaccepted');
       }, 3600);
     }
@@ -4717,6 +4728,21 @@
     });
     const qr=document.querySelector('#consultpay-gw svg[data-qr]');
     if(qr){ qr.dataset.qrSeed=String(amount); drawQR(qr); }
+  }
+  function syncConsultationCheckoutMode(){
+    const screen=document.getElementById('consultpay');
+    if(!screen) return;
+    const noticeMode=flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid;
+    screen.dataset.checkoutMode=noticeMode ? 'fee-notice' : 'consultation-payment';
+    screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode; });
+    const title=screen.querySelector('[data-consult-checkout-title]');
+    const copy=screen.querySelector('[data-consult-checkout-copy]');
+    const label=screen.querySelector('[data-consultpay-label]');
+    const amount=screen.querySelector('[data-pay-btn-amt]');
+    if(title) title.textContent=noticeMode ? 'มีค่าปรึกษาแพทย์ ฿ 350' : 'ชำระค่าปรึกษาแพทย์';
+    if(copy) copy.textContent=noticeMode ? 'ยอดนี้จะชำระพร้อมค่ายาหลังจบการปรึกษา' : 'ชำระก่อนเข้าห้องพบแพทย์';
+    if(label) label.textContent=noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
+    if(amount) amount.hidden=noticeMode;
   }
   document.body.addEventListener('change', e => {
     const c = e.target.closest('[data-cert-check]');
@@ -5300,9 +5326,10 @@
         // finish those steps, and only returning (already-verified) patients straight
         // to booking, since patient-info/identity were skipped for them earlier.
         const consentNext = consentSource==='partner'
-          ? 'partner-patient-info'
+          ? 'intake1'
           : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
+        if(consentSource==='partner') setSelectedCategory('general');
         persistFlowState();
         showActionToast('บันทึกความยินยอมแล้ว','success');
         show(consentNext);
@@ -5402,10 +5429,6 @@
       q = qbtn.hasAttribute('data-qty-minus') ? Math.max(min, q - 1) : Math.min(max, q + 1);
       const item=ctl.closest('[data-order-item]')?.dataset.orderItem;
       const nextQuantities=Object.assign({},flowState.orderState.quantities,item ? {[item]:q} : {});
-      if(Object.values(nextQuantities).every(value => Number(value)<=0)){
-        showActionToast('ต้องเลือกยาอย่างน้อย 1 รายการ','warning');
-        return;
-      }
       nEl.textContent = q;
       ctl.querySelector('[data-qty-minus]').disabled = q <= min;
       ctl.querySelector('[data-qty-plus]').disabled = q >= max;
@@ -5422,24 +5445,16 @@
     }
     const pharmacyIssueAction = e.target.closest('[data-pharmacy-issue-action]');
     if(pharmacyIssueAction){
-      const choice=pharmacyIssueAction.dataset.pharmacyIssueAction;
-      if(choice==='cancel'){
-        flowState.orderState.refundAmount=Number(flowState.orderState.paidAmount || currentMedicationDue());
-        persistFlowState();
-        syncPaymentOutcome();
-        show('refund');
-        return;
-      }
-      deliveryMethod=choice==='wait' ? 'same-day' : 'postal';
+      deliveryMethod='postal';
       flowState.orderState.deliveryMethod=deliveryMethod;
-      flowState.orderState.paidDeliveryMethod=deliveryMethod;
-      flowState.orderState.refundAmount=choice==='postal' ? Math.min(120,Number(flowState.orderState.paidAmount || 0)) : 0;
+      flowState.orderState.paidDeliveryMethod='';
+      flowState.orderState.refundAmount=0;
+      flowState.orderState.stockLocked=true;
       persistFlowState();
-      syncPaymentOutcome();
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
-      show('pharmacy-search');
-      if(choice==='postal') showActionToast('เปลี่ยนเป็นส่งพรุ่งนี้แล้ว คืนค่าจัดส่ง ฿ 120','success');
+      show('payment');
+      showActionToast('เปลี่ยนเป็นจัดส่งมาตรฐานแล้ว กรุณาตรวจสอบยอดก่อนชำระเงิน','success');
       return;
     }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
@@ -5758,6 +5773,12 @@
   // consultation Pay -> open the gateway on whichever method the patient picked
   document.body.addEventListener('click', e => {
     if(!e.target.closest('[data-consultpay-go]')) return;
+    if(document.getElementById('consultpay')?.dataset.checkoutMode==='fee-notice'){
+      flowState.consultationFeeAcknowledged=true;
+      persistFlowState();
+      show('waitroom');
+      return;
+    }
     const sel = document.querySelector('#consultpay .option[aria-selected="true"]');
     const tab = sel && /QR|PromptPay/i.test(sel.textContent) ? 'qr' : 'card';
     syncConsultationPaymentAmount();
@@ -5768,6 +5789,9 @@
   });
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-consult-payment-submit]')){
+      flowState.consultationPaid=true;
+      flowState.paymentResolution='consultation-paid';
+      persistFlowState();
       show('waitroom');
       return;
     }
@@ -5938,7 +5962,20 @@
       showActionToast('กรุณาเลือกที่อยู่จัดส่งและกรอกข้อมูลจำเป็นให้ครบ','warning');
       return;
     }
-    show('pharmacy-search');
+    if(!hasMedicines()){
+      const due=currentMedicationDue();
+      if(due<=0){
+        flowState.consultationPaid=true;
+        flowState.paymentResolution='covered';
+        persistFlowState();
+        show('payment-success');
+      }else{
+        show('payment-gw');
+        resetGatewayAttempt('payment-gw');
+      }
+      return;
+    }
+    show(flowState.orderState.stockLocked ? 'pharmacyaccepted' : 'pharmacy-search');
   });
   document.body.addEventListener('click', e => {
     if(!e.target.closest('[data-pharmacy-accepted-pay]')) return;
@@ -5949,6 +5986,8 @@
       flowState.orderState.paidMethod='covered';
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
       flowState.orderState.refundAmount=0;
+      flowState.consultationPaid=true;
+      flowState.paymentResolution='covered';
       persistFlowState();
       syncPaymentOutcome();
       show('payment-success');
@@ -5968,6 +6007,8 @@
       flowState.orderState.paidMethod=paymentMethod;
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
       flowState.orderState.refundAmount=0;
+      flowState.consultationPaid=true;
+      flowState.paymentResolution='final-paid';
       persistFlowState();
       syncPaymentOutcome();
       show('payment-success');
@@ -5990,6 +6031,13 @@
   document.body.addEventListener('click', e => {
     if(!e.target.closest('[data-intake-complete]')) return;
     flowState.draftReady=true;
+    if(flowState.entryChannel==='partner'){
+      flowState.lastRequiredScreen='partner-patient-info';
+      persistFlowState();
+      saveIntakeDraft();
+      show('partner-patient-info');
+      return;
+    }
     flowState.lastRequiredScreen='signup';
     persistFlowState();
     saveIntakeDraft();

@@ -289,7 +289,10 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(coverageSource[1], /flowState\.coverage/);
   assert.match(html, /function refreshMedicationCheckout\(\)\{[\s\S]*partnerMedicineCoverageCredit\(\)[\s\S]*setPaymentContext/);
   assert.match(html, /function setMedicationCheckoutContext\(\)\{\s*refreshMedicationCheckout\(\);\s*\}/);
-  assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*consultationBalanceDue\(\) > 0 \? 'consultpay' : 'waitroom'/);
+  assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*consultationPaymentTiming[\s\S]*consultationFeeAcknowledged/);
+  assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="consultation"/);
+  assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="final"/);
+  assert.match(html, /data-consult-checkout-title[\s\S]*data-consultpay-label/);
   assert.match(html, /data-consultation-balance-amount/);
   assert.match(html, /data-consultation-payment-status/);
   assert.match(html, /replaceCurrent\(doctorAvailable \? consultationHandoffTarget\(\) : 'noslots'\)/);
@@ -308,15 +311,16 @@ test("payment totals and pharmacy fallback remain consistent across edge states"
 
   const issueScreen = screenFragment(html, "pharmacyissue");
   const issueActions = [...issueScreen.matchAll(/data-pharmacy-issue-action="([^"]+)"/g)].map((match) => match[1]);
-  assert.ok(issueActions.length >= 3, "every pharmacy issue choice must be an immediate action");
-  assert.equal(new Set(issueActions).size, issueActions.length, "pharmacy issue actions must be distinct");
+  assert.deepEqual(issueActions, ["postal"], "fallback must offer one explicit postal confirmation");
+  assert.match(issueScreen, /Fascino[\s\S]*data-pharmacy-issue-action="postal"/);
   assert.doesNotMatch(issueScreen, /data-pharmacy-issue-confirm|Confirm choice/i);
 
   const fallbackHandler = html.match(/const pharmacyIssueAction = e\.target\.closest\('\[data-pharmacy-issue-action\]'\);([\s\S]*?)\n    const insuranceConfirm/);
   assert.ok(fallbackHandler, "immediate pharmacy fallback handler must remain extractable");
-  assert.match(fallbackHandler[1], /show\('refund'\)/);
-  assert.match(fallbackHandler[1], /show\('pharmacy-search'\)/);
-  assert.doesNotMatch(fallbackHandler[1], /show\([^)]*pharmacyaccepted/);
+  assert.match(fallbackHandler[1], /deliveryMethod='postal'/);
+  assert.match(fallbackHandler[1], /stockLocked=true/);
+  assert.match(fallbackHandler[1], /show\('payment'\)/);
+  assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)/);
 });
 
 test("post-consultation checkout carries the accepted order into delivery and payment outcomes", async () => {
@@ -365,7 +369,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
-  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('pharmacy-search'\)/, "Next must send the order to pharmacy review before payment");
+  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*stockLocked \? 'pharmacyaccepted' : 'pharmacy-search'/, "Next must obtain a stock lock before payment");
   assert.match(pharmacyAccepted, /data-pharmacy-accepted-pay[\s\S]*Pay ฿1,160/, "payment can begin only after pharmacy acceptance");
   assert.match(html, /closest\('\[data-pharmacy-accepted-pay\]'\)[\s\S]*show\('payment-gw'\)/, "accepted order must open the payment gateway");
   assert.match(pharmacyAccepted, /state-view__visual--success/, "pharmacy acceptance should use the shared animated state signal");
