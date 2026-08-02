@@ -4028,6 +4028,21 @@
     syncPartnerReview();
   }
   function seedClinicalDemoStage(target){
+    // Review links must keep the shared consent screen usable on its own. In the
+    // real journey OTP is already complete before this step; seed only that
+    // prerequisite here and leave the consent itself unread for interaction.
+    if(target==='consent-terms'){
+      if(flowState.entryChannel==='partner'){
+        flowState.partnerAccessComplete=true;
+        flowState.partnerPhoneVerified=true;
+      } else {
+        flowState.otpVerified=true;
+      }
+      persistFlowState();
+      isAuthenticated=true;
+      syncConsentContinue();
+      return;
+    }
     if(!REQUIRED_CARE_TARGETS.has(target)) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
@@ -4846,6 +4861,7 @@
       if(category && setSelectedCategory(category)){
         renderConditionList();
       }
+      seedClinicalDemoStage(id);
       history=seededHistory(id); show(id, false);
     }
   }
