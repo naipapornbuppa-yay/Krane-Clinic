@@ -100,6 +100,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /#partner-intake \.partner-health-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
+  assert.match(components, /\.partner-history-field\{[^}]*grid-template-columns:minmax\(120px,.65fr\) minmax\(180px,.8fr\) minmax\(220px,1.35fr\)[^}]*grid-template-rows:52px/);
+  assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
+  assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
   assert.match(screenFragment(html, "partner-review"), /ยืนยันและจับคู่แพทย์/);
   assert.doesNotMatch(screenFragment(html, "partner-review"), /ส่งให้พยาบาลคัดกรอง|ตรวจสอบข้อมูลก่อนส่งให้พยาบาล/);
   assert.match(html, /data-partner-review-continue[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
