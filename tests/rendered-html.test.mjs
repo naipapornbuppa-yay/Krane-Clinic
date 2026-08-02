@@ -342,6 +342,8 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.ok(planItems.length >= 2, "the accepted plan must expose stable order-item keys");
   assert.equal(new Set(planItems).size, planItems.length, "plan order-item keys must be unique");
   assert.deepEqual(new Set(paymentItems), new Set(planItems), "checkout must mirror every accepted plan item by key");
+  assert.equal((payment.match(/data-qty(?=[\s>])/g) || []).length, paymentItems.length, "every checkout medicine must be adjustable in place");
+  assert.match(html, /const qbtn = e\.target\.closest\('\[data-qty-minus\],\[data-qty-plus\]'\)[\s\S]*refreshMedicationCheckout\(\)/, "quantity changes must immediately recalculate checkout totals");
 
   const deliveryValues = [...payment.matchAll(/data-delivery-value="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(deliveryValues.includes("same-day"), "payment needs a same-day choice");
