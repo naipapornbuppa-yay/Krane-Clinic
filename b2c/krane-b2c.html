@@ -2956,7 +2956,9 @@
     const card = document.querySelector(`[data-consent-card="${type}"]`);
     if(input){
       input.disabled = !consentRead[type] || !consentIdentityVerified();
-      input.checked = Boolean(consentIdentityVerified() && consentRead[type] && consentChecked[type]);
+      // Reaching the end visibly selects the shared consent items in every entry
+      // context. Identity verification still gates submission, not the read state.
+      input.checked = Boolean(consentRead[type] && consentChecked[type]);
     }
     if(card) card.classList.toggle('is-unread',!consentRead[type]);
     // Once read, the checkbox itself is the confirmation: an enabled, tappable control
@@ -2986,15 +2988,13 @@
       if(!stillAtEnd || !document.getElementById('consent-terms')?.classList.contains('active')) return;
       markConsentRead('pdpa');
       markConsentRead('telemedicine');
-      if(consentIdentityVerified()){
-        consentChecked.pdpa = true;
-        consentChecked.telemedicine = true;
-        flowState.consentChecked = Object.assign({},consentChecked);
-        persistFlowState();
-        renderConsentReadState('pdpa');
-        renderConsentReadState('telemedicine');
-        syncConsentContinue();
-      }
+      consentChecked.pdpa = true;
+      consentChecked.telemedicine = true;
+      flowState.consentChecked = Object.assign({},consentChecked);
+      persistFlowState();
+      renderConsentReadState('pdpa');
+      renderConsentReadState('telemedicine');
+      syncConsentContinue();
       const cue=document.querySelector('[data-consent-scroll-cue]');
       if(cue) cue.hidden=true;
     },700);
@@ -3021,11 +3021,10 @@
       box.innerHTML =
         '<div class="consent-doc__section-head"><strong>'+pdpa.label+'</strong><div class="hint">'+pdpa.description+'</div></div>'+pdpa.body+
         '<hr class="consent-doc__divider">'+
-        '<div class="consent-doc__section-head"><strong>'+tele.label+'</strong><div class="hint">'+tele.description+'</div></div>'+tele.body+
-        '<p class="consent-doc__end">จบเอกสาร</p>';
+        '<div class="consent-doc__section-head"><strong>'+tele.label+'</strong><div class="hint">'+tele.description+'</div></div>'+tele.body;
     } else {
       const doc = consentDocuments[box.dataset.consentScroll];
-      if(doc) box.innerHTML = doc.body + '<p class="consent-doc__end">จบเอกสาร</p>';
+      if(doc) box.innerHTML = doc.body;
     }
   });
   const consentPageScroll=document.querySelector('[data-consent-page-scroll]');
