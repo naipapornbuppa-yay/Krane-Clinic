@@ -415,9 +415,7 @@
           <a data-go="pharmacy-search">After payment · Pharmacist review</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
-          <a data-go="insurance">Check entitlement</a><a data-go="insurance-policy">Choose policy</a>
-        </div><div class="rail-error-menu"><span class="rail-error-menu__label">Error cases</span>
-          <a class="is-exception" data-go="reduce-order"><span class="rail-error-tag">Error case</span>Insurance limit exceeded</a>
+          <a data-go="insurance">Check entitlement &amp; coverage</a>
         </div></details>
         <details class="rail-page" open><summary>Medication payment</summary><div class="rail-sub">
           <a data-go="payment">Default</a><a data-go="payment-gw">Bank gateway</a><a data-go="payment-success">Payment confirmed</a>
@@ -1638,7 +1636,7 @@
         <div class="hint">Choose how much insurance credit to use.</div>
       </div>
       <p class="hint" data-insurance-profile-hint hidden>We will check your entitlement automatically the next time you have an order.</p>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-insurance-confirm>Check entitlement &amp; pay ฿ 160</button><button class="btn btn--ghost" data-go="reduce-order" data-insurance-order-action>Reduce items to fit my limit</button><button class="btn btn--ghost" data-go="payment" data-insurance-order-action>Pay myself instead</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-insurance-confirm>Check entitlement &amp; pay ฿ 160</button><button class="btn btn--ghost" data-go="payment" data-insurance-order-action>Pay myself instead</button></div>
   </section>
 
   <!-- ===================== PAYMENT FAILED (edge state) ===================== -->
@@ -2119,37 +2117,6 @@
       </div>
       <p class="hint center">Didn't get it? <a data-demo-action="ส่งรหัส OTP ใหม่แล้ว" style="color:var(--color-blue);text-decoration:underline;cursor:pointer">Resend code</a> · sent via SMS</p>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-auth-complete disabled>ยืนยันรหัสและไปต่อ</button></div>
-  </section>
-
-  <!-- Insurance · choose policy (>1) -->
-  <section class="screen" id="insurance-policy">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Choose your policy</span></div>
-    <div class="screen__body stack-4">
-      <div class="stack-2"><h2 class="h1">Which policy should we use?</h2></div>
-      <div class="stack-2">
-        <!-- partner logo tiles: representative monograms until partner brand assets arrive -->
-        <button class="option" aria-selected="true" data-select><span class="ins-logo" aria-hidden="true">AIA</span><span class="opt-body"><span class="opt-title">AIA Health Happy</span><span class="opt-sub">#POL-88123 · credit ฿ 1,000 left</span></span><span class="opt-check"></span></button>
-        <button class="option" data-select><span class="ins-logo" aria-hidden="true">MTL</span><span class="opt-body"><span class="opt-title">Muang Thai Life (MTL)</span><span class="opt-sub">#POL-77420 · credit ฿ 5,000 left</span></span><span class="opt-check"></span></button>
-      </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="insurance">Continue with this policy</button><button class="btn btn--ghost" data-go="payment">Pay myself instead</button></div>
-  </section>
-
-  <!-- Reduce items before confirming (insurance requirement) -->
-  <section class="screen" id="reduce-order">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Adjust your order</span></div>
-    <div class="screen__body stack-4">
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">Over your insurance limit</div><div class="hint">Reduce quantities to stay within your credit limit, or pay the difference yourself.</div></div></div>
-      <div class="card card--pad-sm stack-3">
-        <div class="between"><div><strong>Finasteride 1mg</strong><div class="hint">฿ 590 / month</div></div><span class="qty" data-reduce-qty data-unit="590" data-min="0" data-max="1" style="display:inline-flex;align-items:center;gap:12px"><button class="btn btn--secondary btn--sm" data-reduce-minus style="width:34px">−</button><b data-reduce-n>1</b><button class="btn btn--secondary btn--sm" data-reduce-plus disabled style="width:34px">+</button></span></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><div><strong>Minoxidil 5%</strong><div class="hint">฿ 225 / bottle</div></div><span class="qty" data-reduce-qty data-unit="225" data-min="0" data-max="2" style="display:inline-flex;align-items:center;gap:12px"><button class="btn btn--secondary btn--sm" data-reduce-minus style="width:34px">−</button><b data-reduce-n>2</b><button class="btn btn--secondary btn--sm" data-reduce-plus disabled style="width:34px">+</button></span></div>
-      </div>
-      <div class="card card--flat card--pad-sm stack-2" style="background:var(--color-bg-soft)">
-        <div class="between"><span class="muted">Order total</span><strong data-reduce-total>฿ 1,160</strong></div>
-        <div class="between"><span class="muted">Insurance credit</span><strong>- ฿ 1,000</strong></div>
-        <div class="between"><span class="muted">You pay</span><span class="amt" data-reduce-pay>฿ 160</span></div>
-      </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-reduce-confirm>Confirm order</button></div>
   </section>
 
   <!-- Prescription document (ใบสั่งยา · 8 fields) -->
@@ -4177,7 +4144,6 @@
     confirm:'payment-gw', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
-    'insurance-policy':'insurance', 'reduce-order':'insurance-policy',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
@@ -4862,7 +4828,8 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old review links after removing the duplicate insurance intake page.
-    const id = rawId === 'intake-ins' ? 'summary' : rawId;
+    const legacyRoutes = {'intake-ins':'summary','insurance-policy':'insurance','reduce-order':'payment'};
+    const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
       if(guardActiveCase(id)){
@@ -5581,30 +5548,6 @@
       persistFlowState();
       refreshMedicationCheckout();
       show('payment');
-      return;
-    }
-    const reduceQty = e.target.closest('[data-reduce-minus],[data-reduce-plus]');
-    if(reduceQty){
-      const control = reduceQty.closest('[data-reduce-qty]');
-      const valueEl = control.querySelector('[data-reduce-n]');
-      const min = Number(control.dataset.min), max = Number(control.dataset.max);
-      let value = Number(valueEl.textContent);
-      value = reduceQty.hasAttribute('data-reduce-minus') ? Math.max(min, value - 1) : Math.min(max, value + 1);
-      valueEl.textContent = value;
-      control.querySelector('[data-reduce-minus]').disabled = value <= min;
-      control.querySelector('[data-reduce-plus]').disabled = value >= max;
-      const order = [...document.querySelectorAll('#reduce-order [data-reduce-qty]')].reduce((sum, item) => sum + Number(item.dataset.unit) * Number(item.querySelector('[data-reduce-n]').textContent), 120);
-      const patientPay = Math.max(0, order - 1000);
-      document.querySelector('#reduce-order [data-reduce-total]').textContent = baht(order);
-      document.querySelector('#reduce-order [data-reduce-pay]').textContent = baht(patientPay);
-      return;
-    }
-    const reduceConfirm = e.target.closest('[data-reduce-confirm]');
-    if(reduceConfirm){
-      const order = [...document.querySelectorAll('#reduce-order [data-reduce-qty]')].reduce((sum, item) => sum + Number(item.dataset.unit) * Number(item.querySelector('[data-reduce-n]').textContent), 120);
-      const credit = Math.min(order, 1000), due = Math.max(0, order - credit);
-      if(due > 0){ setPaymentContext({due, subtotal:Math.max(0, order - 120), delivery:120, credit}); show('payment'); }
-      else show('pharmacy-search');
       return;
     }
     const chatSend = e.target.closest('[data-chat-send]');
