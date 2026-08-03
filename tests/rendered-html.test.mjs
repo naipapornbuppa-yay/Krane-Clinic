@@ -105,9 +105,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#partner-intake \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
-  assert.match(components, /\.partner-history-field\{[^}]*grid-template-columns:minmax\(120px,.65fr\) minmax\(180px,.8fr\) minmax\(220px,1.35fr\)[^}]*grid-template-rows:52px/);
+  assert.match(components, /\.partner-history-field\{[^}]*width:100%[^}]*min-inline-size:0[^}]*grid-template-columns:minmax\(128px,.72fr\) minmax\(0,1fr\) minmax\(0,1.2fr\)[^}]*grid-template-rows:52px/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
   assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
+  assert.match(components, /\.partner-history-detail\{[^}]*min-width:0[^}]*max-width:100%[^}]*overflow:hidden/);
   assert.match(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto 48px auto/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /PARTNER_NURSE_SCREENING_ENABLED \? 'partner-nurse' : 'booking'/);
