@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260804healthalign1">
+<link rel="stylesheet" href="components.css?v=20260804checkoutflow1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260804selectfix1" defer></script>
@@ -312,7 +312,7 @@
       <div class="rail-group__body">
         <a data-go="nurse">Nurse pre-screen</a>
         <details class="rail-page" open><summary>Doctor matching</summary><div class="rail-sub">
-          <a data-go="booking">Default · Auto-match</a><a data-go="matching">State · Matching</a><a data-go="choosedoc">Option · Choose doctor</a>
+          <a data-go="matching">Auto-match</a><a data-go="choosedoc">Option · Choose doctor</a>
         </div><div class="rail-error-menu">
           <a class="is-exception" data-demo-nomatch><span class="rail-error-tag">Error case</span>No doctor available now</a>
           <a class="is-exception" data-go="noslots"><span class="rail-error-tag">Error case</span>No booking slots</a>
@@ -796,7 +796,7 @@
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these</span></span><span class="opt-check"></span></button>
         </div>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="booking">Continue</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">Continue</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -806,7 +806,7 @@
       <div class="edu-eyebrow">While a doctor reviews your answers</div>
       <p class="edu-text">Factors like <span class="hl">aging</span>, <span class="hl">family history</span> and <span class="hl">stress</span> can drive hair shedding and thinning.</p>
       <p class="edu-text">The good news: <span class="hl">doctor-led treatment</span> can target those causes, so many men see visibly thicker, fuller hair in <span class="hl">3 to 6 months</span>.</p>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="booking">Next</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">Next</button></div>
   </section>
 
   <!-- Doctor-facing intake summary source. Kept as inert template data; it is not
@@ -837,7 +837,7 @@
         <div class="divider" style="margin:0"></div>
         <div class="between"><span class="muted">Height / weight</span><span class="kv-val"><strong data-summary-measurements>175 cm · 70 kg</strong><button class="kv-edit" data-review-edit data-edit-focus="about" data-go="intake-general" aria-label="Edit height and weight"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></span></div>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="signup" data-post-auth="booking">Confirm answers &amp; continue</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="signup" data-post-auth="matching">Confirm answers &amp; continue</button></div>
   </template>
 
   <!-- ===================== INTAKE INELIGIBLE (edge state) ===================== -->
@@ -965,25 +965,7 @@
         <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">Check basic eligibility</div></div>
         <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">Refer you to the right doctor</div></div>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="booking">Start nurse check-in</button><button class="btn btn--ghost" data-go="booking">Skip (when not required)</button></div>
-  </section>
-
-  <!-- ===================== BOOKING (KRANE-F09 · matching-first) =====================
-       F09 update (client 20 Jun): this is a MATCHING system. Patients do not pick a slot.
-       Krane matches an available licensed doctor automatically. "Choose your doctor" is an
-       optional path (admin-toggleable per channel). If no doctor is free now, we fall back to
-       picking a time the doctor is available (#noslots). -->
-  <section class="screen" id="booking" data-screen-code="SCR-005">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">See a doctor</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">We'll match you with a doctor</h2></div>
-      <div class="card card--pad-sm stack-2 consultation-fee-card" data-consultation-balance-card>
-        <div class="between"><span class="muted" data-consultation-balance-label>ค่าปรึกษาแพทย์</span><strong data-consultation-balance-amount>฿ 350</strong></div>
-        <div class="hint" data-consultation-balance-hint>สิทธิ์ประกันครอบคลุมค่าปรึกษาแพทย์ ฿ 350 จึงไม่ต้องชำระค่าปรึกษา ณ ขั้นตอนนี้</div>
-      </div>
-<!-- Client (5 Jul): choose-doctor is NOT part of the main flow. The screen exists as an
-     optional per-channel add-on (F09/F11) and is reachable from the review rail only. -->
-    <div class="screen__footer"><button class="btn btn--primary" data-go="matching">Match me with a doctor</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="matching">Start nurse check-in</button><button class="btn btn--ghost" data-go="matching">Skip (when not required)</button></div>
   </section>
 
   <!-- ===================== MATCHING (auto-match in progress) ===================== -->
@@ -1036,7 +1018,7 @@
         <div class="between"><span class="muted" data-consultation-balance-label>ค่าปรึกษาแพทย์</span><strong data-consultation-balance-amount>฿ 350</strong></div>
         <div class="hint" data-consultation-balance-hint>สิทธิ์ประกันครอบคลุมค่าปรึกษาแพทย์ ฿ 350 จึงไม่ต้องชำระค่าปรึกษา ณ ขั้นตอนนี้</div>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="consultpay">Book &amp; pay</button><button class="btn btn--ghost" data-go="booking">Back</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="consultpay">Book &amp; pay</button></div>
   </section>
 
   <!-- ===================== CONSULTATION FEE PAYMENT (first payment) ===================== -->
@@ -1248,18 +1230,16 @@
   <section class="screen" id="plan" data-screen-code="SCR-012">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Review medicine order</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Confirm the medicines and reduce quantities if needed before checkout.</p></div>
-      <!-- Client (5 Jul): quantities are reduce-only. The prescribed amount is the
-           ceiling; the patient can lower it but never add beyond the prescription. -->
+      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Review the medicines selected by your doctor. You can adjust the purchase quantity at checkout.</p></div>
       <div>
         <div class="plan-item" data-order-item="finasteride"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div><div class="hint">1 tablet daily · slows hair loss</div>
-          <div class="qty" data-qty data-max="1" data-unit="590"><button class="qty-btn" data-qty-minus disabled aria-label="Reduce quantity">-</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled title="Prescribed maximum" aria-label="Increase quantity">+</button><span class="hint">month</span></div>
+          <div class="hint plan-item__prescribed">Prescribed quantity · 1 month</div>
         </div><span class="price" data-line-price>฿ 590</span></div>
         <div class="plan-item" data-order-item="minoxidil"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div><div class="hint">Apply twice daily · regrowth · ฿ 225 per bottle</div>
-          <div class="qty" data-qty data-max="2" data-unit="225"><button class="qty-btn" data-qty-minus aria-label="Reduce quantity">-</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled title="Prescribed maximum" aria-label="Increase quantity">+</button><span class="hint">bottles</span></div>
+          <div class="hint plan-item__prescribed">Prescribed quantity · 2 bottles</div>
         </div><span class="price" data-line-price>฿ 450</span></div>
       </div>
-      <p class="hint">You can reduce quantities within the prescription limit.</p>
+      <p class="hint">The prescription sets the maximum quantity available in this order.</p>
       <div class="alert"><span class="a-ic">i</span><div><div class="a-title">เอกสารทางการแพทย์ยังไม่เปิด</div><div class="hint">คำวินิจฉัย แผนการรักษา และใบสั่งยาจะเปิดหลังชำระเงินสำเร็จ</div></div></div>
     </div>
     <div class="screen__footer">
@@ -1327,16 +1307,11 @@
        building its own card system. Card details never touch Krane's servers. -->
   <section class="screen" id="payment" data-screen-code="SCR-008" data-checkout-mode="final">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
-    <!-- Delivery-fee timestamp, matching the checkout pattern the client referenced.
-         It tells the patient the fee is a live quote, not a fixed charge. -->
-    <div class="checkout-calc">ค่าจัดส่งคำนวณเมื่อ <span data-fee-calc-time>16:47</span> น.</div>
     <div class="screen__body stack-4">
 
-      <!-- 1. Order summary. Itemised prescription lines with the cost breakdown inside the
-           same card, so the patient reads what is dispensed and what it costs together.
-           No "add items" and no quantity stepper: prescribed medicine is a clinical
-           recommendation, not a basket (DESIGN.md 7c). Quantity is adjusted on the plan
-           screen, which is where the doctor's limits apply. -->
+      <!-- 1. Order summary. The plan remains clinical and read-only; checkout is the
+           single place where the patient adjusts purchase quantities within the
+           doctor's prescribed ceiling. -->
       <div class="stack-2">
         <div class="checkout-head">
           <span class="section-label">สรุปคำสั่งซื้อ</span>
@@ -1352,7 +1327,9 @@
               <span class="checkout-order__name">Finasteride 1mg</span>
               <span class="checkout-order__note">รับประทานวันละ 1 เม็ด · ปริมาณ 1 เดือน</span>
             </span>
-            <span class="checkout-order__qty" data-order-qty>1×</span>
+            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="590" aria-label="Finasteride quantity">
+              <button class="qty-btn" data-qty-minus aria-label="Reduce Finasteride quantity">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="Increase Finasteride quantity">+</button><span class="hint">month</span>
+            </span>
             <span class="checkout-order__price" data-order-price>฿ 590</span>
           </div>
           <div class="checkout-order__item" data-order-item="minoxidil">
@@ -1361,18 +1338,10 @@
               <span class="checkout-order__name">Minoxidil 5% topical</span>
               <span class="checkout-order__note">ทาหนังศีรษะวันละ 2 ครั้ง · ปริมาณ 1 เดือน</span>
             </span>
-            <span class="checkout-order__qty" data-order-qty>2×</span>
+            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="225" aria-label="Minoxidil quantity">
+              <button class="qty-btn" data-qty-minus aria-label="Reduce Minoxidil quantity">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="Increase Minoxidil quantity">+</button><span class="hint">bottles</span>
+            </span>
             <span class="checkout-order__price" data-order-price>฿ 450</span>
-          </div>
-          <div class="checkout-order__bill">
-            <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-            <div class="checkout-bill__row"><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 1,040</strong></div>
-            <div class="checkout-bill__row"><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
-            <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
-            <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
-            <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-            <div class="checkout-bill__rule"></div>
-            <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 1,160</strong></div>
           </div>
         </div>
       </div>
@@ -1461,6 +1430,25 @@
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5 6v5.5c0 4 2.9 7.6 7 9.3 4.1-1.7 7-5.3 7-9.3V6Z"/><path d="m9.4 12.2 1.9 1.9 3.4-3.6"/></svg></span>
           <span class="checkout-row__body"><span class="checkout-row__label">สิทธิ์ที่ใช้โดยอัตโนมัติ</span><span class="checkout-row__value" data-payment-insurance-label>เครดิตจากกรมธรรม์</span></span>
           <span class="badge badge--ok">ใช้แล้ว</span>
+        </div>
+      </div>
+
+      <!-- 7. Final calculation comes after every editable decision and discount.
+           Delivery quote metadata stays beside the delivery cost it explains. -->
+      <div class="stack-2 checkout-final-summary">
+        <div class="checkout-head">
+          <span class="section-label">สรุปยอดชำระ</span>
+          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
+        </div>
+        <div class="checkout-bill">
+          <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row"><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 1,040</strong></div>
+          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery"><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__rule"></div>
+          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 1,160</strong></div>
         </div>
       </div>
 
@@ -1753,9 +1741,9 @@
           <!-- Client (6 Jul): there is NO messaging service. Talking to a doctor is always
                a booked consult. Two paths: consult now (own fee) vs the scheduled follow-up. -->
           <div class="treatment-actions">
-            <button class="btn btn--primary btn--sm treatment-actions__primary" data-go="booking">Start follow-up</button>
+            <button class="btn btn--primary btn--sm treatment-actions__primary" data-go="matching">Start follow-up</button>
             <button class="btn btn--secondary btn--sm" data-go="refill">Refill now</button>
-            <button class="btn btn--secondary btn--sm" data-go="booking">Consult now</button>
+            <button class="btn btn--secondary btn--sm" data-go="matching">Consult now</button>
           </div>
         </div>
 
@@ -2363,10 +2351,10 @@
   // after the demo enters the returning-patient profile state.
   let hasActiveCase = false;
   let postAuthNext = 'intake1';
-  let patientInfoNext = 'booking';
+  let patientInfoNext = 'matching';
   // Doctor matching outcome. true -> a doctor is matched and the consultation
   // balance gate decides whether checkout is needed; false -> no doctor can be
-  // matched now, so the booking page (noslots) is shown to pick a slot first.
+  // matched now, so the availability page (noslots) is shown to pick a slot first.
   // Toggled by the "No doctor now" demo state so both branches can be shown.
   let doctorAvailable = true;
   let actionToastTimer;
@@ -2776,7 +2764,7 @@
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
-    booking:3,matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
+    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
     plan:5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
   };
   function careJourneyMarkup(current){
@@ -2909,7 +2897,10 @@
   function syncOrderCheckout(){
     Object.entries(MEDICINE_PRICES).forEach(([key,unit]) => {
       const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
-      document.querySelectorAll(`[data-order-item="${key}"]`).forEach(row => {
+      // Purchase quantities belong to checkout. The clinical plan remains an
+      // unchanged record of what the doctor prescribed, even if the patient
+      // later removes an item from this purchase.
+      document.querySelectorAll(`#payment [data-order-item="${key}"]`).forEach(row => {
         const qty=row.querySelector('[data-order-qty]');
         const qtyControl=row.querySelector('[data-qty-n]');
         const price=row.querySelector('[data-order-price],[data-line-price]');
@@ -3673,7 +3664,7 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','booking'];
+    const order=['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','matching'];
     let targetIndex=order.indexOf(target);
     if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
@@ -3830,7 +3821,7 @@
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
-    booking:'identity', matching:'booking', choosedoc:'booking', noslots:'matching',
+    matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
     payment:'plan', address:'payment', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
@@ -3857,10 +3848,14 @@
   const DIRECT_NURSE_SCREENING_ENABLED = false;
   const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
   function directClinicalStartTarget(){
-    return DIRECT_NURSE_SCREENING_ENABLED ? 'nurse' : 'booking';
+    if(DIRECT_NURSE_SCREENING_ENABLED) return 'nurse';
+    doctorAvailable=true;
+    return 'matching';
   }
   function partnerClinicalStartTarget(){
-    return PARTNER_NURSE_SCREENING_ENABLED ? 'partner-nurse' : 'booking';
+    if(PARTNER_NURSE_SCREENING_ENABLED) return 'partner-nurse';
+    doctorAvailable=true;
+    return 'matching';
   }
   function consultationBalanceDue(){
     if(flowState.consultationPaid) return 0;
@@ -4179,7 +4174,7 @@
   });
 
   const REQUIRED_CARE_TARGETS = new Set([
-    'nurse','booking','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
+    'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','connecting','video','rx-writing','plan','address','pharmacy-search',
     'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
     'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
@@ -4252,7 +4247,7 @@
     if(PARTNER_SCREENS.includes(id) || (id==='consent-terms' && flowState.entryChannel==='partner')){
       // Partner access runs its own sequence and skips stage 1, so the five-step
       // B2C care stepper would mis-number it. Keep it off until the flow rejoins
-      // the shared clinical path at #booking.
+      // the shared clinical path at #matching.
       journeyActive = false;
     } else if(JOURNEY_INTAKE.includes(id)){
       journeyActive = true;                       // answering อาการ etc. starts the journey
@@ -4321,8 +4316,6 @@
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
     if(id === 'matching' || id === 'intake1') updateSelectedCare();
-    // A fresh match from the booking intro assumes a doctor is available again.
-    if(id === 'booking') doctorAvailable = true;
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -4368,7 +4361,7 @@
     if(id === 'matching' && mScr){
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
-      // NO -> booking page to pick a slot, where the same gate runs on continue.
+      // NO -> availability page to pick a slot, where the same gate runs on continue.
       matchTimer = setTimeout(() => {
         if(!mScr.classList.contains('active')) return;
         replaceCurrent(doctorAvailable ? consultationHandoffTarget() : 'noslots');
@@ -4615,7 +4608,7 @@
       if(insuranceEntry==='partner' && goInsurance.closest('.rail')) seedPartnerStage('partner-insurance');
     }
     // Demo: force the "no doctor available" outcome, then run the match animation
-    // so the flow shows match -> booking slot -> pay.
+    // so the flow shows match -> available-time fallback -> pay.
     const noMatch = e.target.closest('[data-demo-nomatch]');
     if(noMatch){
       if(noMatch.closest('.rail')){
@@ -4972,7 +4965,7 @@
         flowState.patientName=flowState.partnerName||'Mali Suthida';
         persistFlowState();
         showActionToast('ยืนยันสิทธิ์พันธมิตรแล้ว กำลังจับคู่แพทย์','success');
-        show('booking');
+        show('matching');
       });
       return;
     }
@@ -5029,7 +5022,7 @@
         else flowState.consentsComplete=true;
         // Consent now sits before patient info / identity: send new patients on to
         // finish those steps, and only returning (already-verified) patients straight
-        // to booking, since patient-info/identity were skipped for them earlier.
+        // to matching, since patient-info/identity were skipped for them earlier.
         const consentNext = consentSource==='partner'
           ? 'partner-patient-info'
           : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info');
@@ -5236,6 +5229,7 @@
     }
     const go = e.target.closest('[data-go]');
     if(go){
+      if(go.dataset.go === 'matching') doctorAvailable=true;
       if(go.closest('.rail') && go.dataset.go === 'login') postAuthNext = 'profile';
       if(guardActiveCase(go.dataset.go)) return;
       if(go.closest('.rail')){
@@ -5412,8 +5406,7 @@
     'signup':           { id:'KRANE-F03', name:'Create Account', stories:['A new patient creates an account with the phone number already carried into OTP','OTP verifies the account but never skips patient information, identity, or current consent','The completed intake draft remains available throughout authentication'] },
     'login':            { id:'KRANE-F03', name:'Log In, Returning User', stories:['A returning patient verifies the phone number with OTP','A still-valid identity may skip repeat identity verification','Current PDPA and telemedicine consent remains mandatory before matching'] },
     'social-confirm':   { id:'KRANE-F03', name:'Social Login Callback, Confirm Account', stories:['Client 14 Jul: LINE / Google login returns to a clear confirmation screen before continuing','Patient reviews the verified identity and contact details shared by the provider','New-patient and returning-patient routes continue to the correct next step'] },
-    'booking':          { id:'KRANE-F09', name:'Doctor Matching (Auto-match default)', stories:['US-F09.1: Auto-match: system assigns an available licensed doctor; patient does not pick a slot','US-F09.2: Optional "choose your doctor" path, admin-toggleable per channel','US-F09.4: If a doctor is online now, patient is connected immediately'] },
-    'matching':         { id:'KRANE-F09 + KRANE-F11', name:'Doctor Matching, In Progress', stories:['US-F11.1: Auto-match mode shows a waiting/matching screen while a doctor is assigned','If no doctor is immediately available, the system offers the next suitable appointment without sending the patient to an error page'] },
+    'matching':         { id:'KRANE-F09 + KRANE-F11', name:'Doctor Matching (Auto-match default)', stories:['US-F09.1: Auto-match assigns an available licensed doctor without a redundant introduction screen','US-F11.1: The patient sees one waiting state while a doctor is assigned','If no doctor is immediately available, the system offers the next suitable appointment without sending the patient to an error page'] },
     'choosedoc':        { id:'KRANE-F09 + KRANE-F11', name:'Choose a Doctor (optional)', stories:['US-F09.2: Patient browses available doctors for the service type and selects one','US-F09.5: When two doctors are free at once, a choice can be offered after a successful match'] },
     'noslots':          { id:'KRANE-F09', name:'No Doctor Free Now, Pick a Time', stories:['US-F09.5: Time selection appears only when no doctor is immediately available','US-F09.3: Booking confirmation and reminder are sent for the fallback time'] },
     'consultpay':       { id:'KRANE-F39 + KRANE-F09', name:'Consultation Fee Payment', stories:['US-F39.1: Discount / coupon code can be entered at checkout','Prototype assumption: Payment 1 is consultation fee only and is required before entering the waiting room','Prototype assumption: medicine and delivery remain a separate payment after prescription acceptance'] },
@@ -5749,7 +5742,7 @@
     flowState.lastRequiredScreen='signup';
     persistFlowState();
     saveIntakeDraft();
-    postAuthNext='booking';
+    postAuthNext='matching';
     show('signup');
   });
   function applyInsuranceVisibility(){
