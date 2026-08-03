@@ -269,16 +269,32 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   animation:loading-illustration-float 3.2s var(--ease-inout) infinite;
   transform-origin:center
 }
-/* The approved wordmark is a real repository asset, never generated inside the
-   state photography. This keeps the latest logo exact and replaceable. */
-.state-view__tile--brand::after{
-  content:"";position:absolute;z-index:2;top:14px;left:14px;width:112px;height:32px;
-  border:1px solid rgba(255,255,255,.7);border-radius:999px;background-color:rgba(255,255,255,.88);
-  background-image:url("../assets/krane-review-wordmark.svg");background-repeat:no-repeat;
-  background-position:center;background-size:88px auto;box-shadow:0 6px 18px rgba(18,31,55,.08);
-  pointer-events:none
+/* Success, empty and recoverable states use the same circular object stage as
+   loading screens. Branding belongs on the object itself; never add a second
+   floating logo tag above the artwork. */
+.state-view__tile--brand{
+  width:100%;height:100%;overflow:visible;border-radius:0;background:transparent;
+  box-shadow:none;isolation:isolate
 }
-.state-view__tile>img[src*="assets/status/realistic-v1/"]{object-fit:contain;padding:8px;box-sizing:border-box}
+.state-view__tile--brand::before{
+  content:"";position:absolute;z-index:0;width:80%;height:80%;border-radius:50%;
+  background:#dbe4f2;
+  box-shadow:inset 0 0 0 1px rgba(23,46,81,.04),0 18px 34px rgba(23,46,81,.09)
+}
+.state-view__tile--brand::after{content:none}
+.state-view__tile--brand>img{
+  position:relative;z-index:1;width:100%;height:100%;padding:0;object-fit:contain;
+  filter:drop-shadow(0 10px 12px rgba(23,46,81,.17));
+  animation:loading-illustration-float 3.2s var(--ease-inout) infinite;
+  transform-origin:center
+}
+/* Legacy state photography is opaque. Frame it as a circle rather than
+   allowing its square canvas to bring back the old rectangular tile. */
+.state-view__tile--brand>img[src*="assets/state-v2/"]{
+  width:76%;height:76%;border-radius:50%;object-fit:cover;clip-path:circle(50%);
+  filter:drop-shadow(0 10px 12px rgba(23,46,81,.12))
+}
+.state-view__tile--brand>img[src*="assets/status/realistic-v1/"]{object-fit:contain;padding:0;box-sizing:border-box}
 .state-view__badge{
   position:absolute;z-index:3;right:-4px;bottom:12px;width:44px;height:44px;
   display:grid;place-items:center;padding:0;border:4px solid var(--color-surface);
@@ -392,7 +408,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   .state-view__tile{width:100%;height:100%;border-radius:26px}
   .state-view__tile.loading-illustration.state-view__tile--cutout{border-radius:0}
   .state-view__image,.state-view__tile>img{width:100%;height:100%}
-  .state-view__tile--brand::after{top:12px;left:12px;width:102px;height:30px;background-size:80px auto}
+  .state-view__tile--brand{border-radius:0}
   .state-view__copy{max-width:32ch;gap:6px}
   .state-view__title,.state-view__copy>.h1,.state-view__copy>.h2{font-size:26px}
   .state-view__timer{min-height:40px}

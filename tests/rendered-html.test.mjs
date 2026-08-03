@@ -418,7 +418,8 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*animation:loading-illustration-float/, "add-on cutouts must use the shared floating motion");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
   assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
-  assert.match(css, /background-image:url\("\.\.\/assets\/krane-review-wordmark\.svg"\)/, "state tiles must overlay the exact approved repository wordmark");
+  assert.doesNotMatch(css, /state-view__tile--brand::after\{[^}]*background-image:url/, "state tiles must not add a separate logo tag");
+  assert.match(css, /\.state-view__tile--brand::before\{[\s\S]*border-radius:50%/, "outcome tiles must use the shared circular stage");
 
   assert.match(failure, /data-payment-outcome-amount/);
   assert.match(failure, /data-payment-outcome-method/);
@@ -457,6 +458,18 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
+});
+
+test("all outcome graphics use the shared circular stage without a logo tag", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  assert.match(components, /\.state-view__tile--brand\{[\s\S]*border-radius:0[\s\S]*background:transparent[\s\S]*box-shadow:none/);
+  assert.match(components, /\.state-view__tile--brand::before\{[\s\S]*border-radius:50%[\s\S]*background:#dbe4f2/);
+  assert.match(components, /\.state-view__tile--brand::after\{content:none\}/);
+  assert.match(components, /\.state-view__tile--brand>img\{[\s\S]*object-fit:contain[\s\S]*loading-illustration-float/);
+  assert.match(components, /img\[src\*="assets\/state-v2\/"\][\s\S]*border-radius:50%[\s\S]*clip-path:circle\(50%\)/);
+  assert.doesNotMatch(components, /state-view__tile--brand::after\{[\s\S]*krane-review-wordmark/);
+  assert.ok((html.match(/state-view__tile--brand/g) || []).length >= 10, "all outcome screens must keep the shared circular treatment");
 });
 
 test("each loading stage uses a stage-specific graphic", async () => {
