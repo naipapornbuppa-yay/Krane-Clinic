@@ -79,14 +79,18 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
   assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
-  assert.match(html, /target==='partner-insurance' \? 3 : order\.indexOf\(target\)/);
-  assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=5/);
-  assert.match(html, /target==='partner-insurance' \? 'insurance'/);
+  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','booking'\]/);
+  assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
-  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-intake'\)/);
+  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'intake1'\)/);
   assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-insurance'\)/);
-  assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">เลือกกรมธรรม์/);
-  assert.match(html, /id="partner-insurance"[\s\S]*data-partner-payment="insurance" data-go="partner-intake"/);
+  assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">สิทธิ์และการชำระเงิน/);
+  const partnerCoverageScreen = screenFragment(html, "partner-insurance");
+  assert.match(partnerCoverageScreen, /Coverage &amp; payment[\s\S]*Partner coverage confirmed/);
+  assert.match(partnerCoverageScreen, /No payment will be taken now[\s\S]*Any medicine or delivery balance will be shown after your consultation/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake1">Noted/);
+  assert.doesNotMatch(partnerCoverageScreen, /data-partner-payment="self-pay"/);
+  assert.doesNotMatch(partnerCoverageScreen, /ครอบคลุม ฿ 350/);
   assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
   assert.doesNotMatch(html, /id="insurance-policy-number"|Policy number \(เลขกรมธรรม์\)|placeholder="Policy no\."/);
   assert.match(html, /id="partner-intake"[\s\S]*partner-health-compact[\s\S]*partner-health-grid[\s\S]*partner-clinical-grid/);
@@ -263,8 +267,10 @@ test("partner entry reuses general intake and keeps the compact health profile",
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
   assert.match(html, /data-go="intake1" data-entry-channel="partner"/);
-  assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'intake1'/);
-  assert.match(html, /flowState\.entryChannel==='partner'[\s\S]*show\('partner-patient-info'\)/);
+  assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'partner-patient-info'/);
+  assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'intake1'\)/);
+  assert.match(html, /if\(flowState\.entryChannel==='partner'\)[\s\S]*flowState\.lastRequiredScreen='partner-intake'[\s\S]*show\('partner-intake'\)/);
+  assert.match(html, /target==='partner-intake' && !flowState\.draftReady\) return 'intake1'/);
   assert.doesNotMatch(html, /partnerPhotoRecords|data-partner-photo|partner-concern/);
   assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''/);
 
@@ -281,6 +287,12 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /eligiblePartnerPolicy=paymentMethod==='insurance' && Boolean\(partnerPayment\.closest\('#partner-insurance'\)\)/);
   assert.match(html, /flowState\.entryChannel\s*=\s*['"]partner['"]/);
   assert.match(html, /flowState\.coverage\s*=/);
+
+  const partnerCoverageScreen = screenFragment(html, "partner-insurance");
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake1">Noted/);
+  assert.doesNotMatch(partnerCoverageScreen, /฿\s*350|ชำระ|Pay now/i);
+  assert.match(html, /coveredPartner \? 'ครอบคลุม'/);
+  assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*if\(consultationBalanceDue\(\)<=0\) return 'waitroom'/);
 
   const balanceSource = html.match(/function consultationBalanceDue\(\)\{([\s\S]*?)\n  \}/);
   assert.ok(balanceSource, "consultation balance function must remain extractable");
@@ -809,6 +821,8 @@ test("master Mermaid separates consent, coverage, fulfilment exceptions, and con
   assert.match(flow, /Exception case.*Partner nurse screening/);
   assert.doesNotMatch(flow, /Mandatory partner nurse screening/);
   assert.match(flow, /No, fully covered/);
+  assert.match(flow, /Coverage and payment notice; record consultation and medicine coverage/);
+  assert.match(flow, /Noted; no payment captured/);
   assert.match(flow, /Another eligible pharmacy available\?/);
   assert.match(flow, /refundDone\(\["Refund confirmed"\]\)/);
   assert.match(flow, /Follow-up and refill are separate journeys/);

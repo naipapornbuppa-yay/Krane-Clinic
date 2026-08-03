@@ -61,7 +61,7 @@ flowchart LR
     partnerPaymentChoice -->|"Yes"| partnerEntitlement["Check entitlement and choose policy if needed"]
     partnerEntitlement --> partnerEligible{"Eligible with available credit?"}
     partnerEligible -->|"No"| partnerSelfPay
-    partnerEligible -->|"Yes"| partnerCoverage["Record consultation and medicine coverage"]
+    partnerEligible -->|"Yes"| partnerCoverage["Coverage and payment notice; record consultation and medicine coverage"]
   end
 
   subgraph carePhase["2 · Intake and clinical care"]
@@ -77,7 +77,7 @@ flowchart LR
     directNurse --> doctorMatch
 
     partnerSelfPay --> partnerConcern["Today's concern and optional photos"]
-    partnerCoverage --> partnerConcern
+    partnerCoverage -->|"Noted; no payment captured"| partnerConcern
     partnerConcern --> partnerHealth["Prefilled health snapshot"]
     partnerHealth --> partnerReview["Review submitted information"]
     partnerReview --> doctorMatch["Doctor match"]
@@ -196,6 +196,9 @@ flowchart LR
 - Partner entry has its own consent, entitlement and health review. Nurse
   screening is an exception path; when used, the nurse assigns an available
   doctor directly instead of returning the patient to automatic matching.
+- Eligible partner entry confirms coverage on a non-transactional payment
+  notice before intake. The CTA is `Noted`; no money is captured there, and any
+  medicine or delivery balance is shown only after the consultation.
 - Fully covered consultation or medicine bypasses only the relevant payment;
   excess balances still go through checkout.
 - Pharmacy decline reroutes first. Refund is a terminal outcome and never loops
