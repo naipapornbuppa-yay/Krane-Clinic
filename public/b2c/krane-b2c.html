@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260728d">
-<link rel="stylesheet" href="components.css?v=20260804consult1">
+<link rel="stylesheet" href="components.css?v=20260804addressquote1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260804selectfix1" defer></script>
@@ -343,6 +343,7 @@
       <div class="rail-group__body">
         <a data-go="address">Edit saved delivery address</a>
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
+          <a data-go="delivery-quote">Before payment · Delivery quote</a>
           <a data-go="pharmacy-search">After payment · Pharmacist review</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
@@ -1254,10 +1255,10 @@
     <div class="screen__body delivery-details stack-3">
       <div class="delivery-card delivery-card--map">
         <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><strong>ที่อยู่จัดส่ง</strong></div>
-        <div class="delivery-map-preview">
-          <iframe class="map-frame" title="ตำแหน่งจัดส่ง" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Sukhumvit%2077%2C%20Phra%20Khanong%20Nuea%2C%20Watthana%2C%20Bangkok&z=16&output=embed"></iframe>
+        <div class="delivery-map-preview" data-address-map>
+          <iframe class="map-frame" data-address-map-frame title="ตำแหน่งจัดส่ง" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Sukhumvit%2077%2C%20Phra%20Khanong%20Nuea%2C%20Watthana%2C%20Bangkok&z=16&output=embed"></iframe>
           <span class="map-pin"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-          <button class="delivery-map-cta" type="button" data-address-pick-demo>เลือกจุดบนแผนที่ <span aria-hidden="true">→</span></button>
+          <button class="delivery-map-cta" type="button" data-address-pick-demo><span data-address-map-cta-label>เลือกจุดบนแผนที่</span> <span aria-hidden="true">→</span></button>
         </div>
         <div class="delivery-address-summary"><strong data-address-preview-title>The Base Park West, ห้อง 22/418</strong><span data-address-preview-detail>ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110</span></div>
       </div>
@@ -1270,18 +1271,37 @@
       <details class="delivery-address-edit" open>
         <summary>แก้ไขรายละเอียดที่อยู่</summary>
         <div class="stack-3">
-          <div class="field"><label for="addrSearch">ค้นหาอาคาร คอนโด หรือถนน</label><input class="input" id="addrSearch" autocomplete="street-address" placeholder="เช่น The Base, Ideo หรือ BTS ทองหล่อ"></div>
+          <div class="field"><label for="addrSearch">ค้นหาอาคาร คอนโด หรือถนน</label><input class="input" id="addrSearch" autocomplete="off" placeholder="เช่น The Base, Ideo หรือ BTS ทองหล่อ"></div>
           <div class="autocomplete" id="addrSuggest" style="display:none">
             <div class="ac-item" aria-selected="true" data-fill data-building="The Base Park West, Rm 22/418" data-floor="22" data-addr="Soi Sukhumvit 77, Phra Khanong Nuea" data-district="Watthana, Bangkok 10110" data-km="3.2"><span class="ac-ic"><i data-lucide="house" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span><div><div class="ac-name">บ้าน · The Base Park West</div><div class="ac-sub">สุขุมวิท 77 เขตวัฒนา กรุงเทพฯ 10110</div></div></div>
           </div>
-          <div class="row" style="gap:var(--sp-2)"><div class="field grow"><label for="addrBuilding">อาคาร / ห้อง</label><input class="input" id="addrBuilding" placeholder="ชื่ออาคารและเลขห้อง" required></div><div class="field" style="width:96px"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" placeholder="ชั้น"></div></div>
-          <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" placeholder="ถนนหรือซอย" required></div>
-          <div class="field"><label for="addrDistrict">เขต / จังหวัด</label><input class="input" id="addrDistrict" placeholder="เขต จังหวัด และรหัสไปรษณีย์" required></div>
-          <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+          <div class="row" style="gap:var(--sp-2)"><div class="field grow"><label for="addrBuilding">อาคาร / ห้อง</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="ชื่ออาคารและเลขห้อง" required></div><div class="field" style="width:96px"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div></div>
+          <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
+          <div class="field"><label for="addrDistrict">เขต / จังหวัด</label><input class="input" id="addrDistrict" autocomplete="off" placeholder="เขต จังหวัด และรหัสไปรษณีย์" required></div>
+          <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
         </div>
       </details>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและกลับไปชำระเงิน</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
+  </section>
+
+  <!-- PRE-PAYMENT DELIVERY QUOTE
+       A changed address must be accepted by a nearby pharmacy before checkout can
+       display a reliable same-day delivery fee. This is deliberately separate
+       from #pharmacy-search, which only runs after bank-confirmed payment. -->
+  <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
+    <div class="screen__top transition-stage__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="กำลังรอร้านยายืนยันการจัดส่ง">
+        <span class="state-view__tile state-view__tile--cutout loading-illustration"><img src="assets/loading-v2/pharmacy-search.png" alt="" loading="eager" decoding="async"></span>
+        <span class="state-view__badge"><i data-lucide="map-pin-check" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy" aria-live="polite">
+        <h2 class="h1" data-delivery-quote-title>กำลังหาร้านยาที่จัดส่งถึงคุณ</h2>
+        <p class="muted" data-delivery-quote-copy>รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน</p>
+      </div>
+      <div class="state-view__timer" data-delivery-quote-timer>โดยปกติใช้เวลาไม่เกิน 10 วินาที</div>
+    </div>
   </section>
 
   <!-- ===================== PHARMACY REVIEW (KRANE-F20 / KRANE-F21) =====================
@@ -1373,7 +1393,7 @@
             <span class="opt-title">จัดส่งภายในวัน</span>
             <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้</span>
           </span>
-          <span class="checkout-order__price">฿ 120</span>
+          <span class="checkout-order__price" data-payment-same-day-fee>฿ 120</span>
         </button>
         <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
           <span class="opt-body">
@@ -2459,6 +2479,8 @@
       deliveryMethod:'same-day',
       address:Object.assign({},MALI_SAVED_ADDRESS),
       addressConfirmed:true,
+      deliveryQuoteStatus:'accepted',
+      deliveryQuoteAmount:120,
       addOns:{wellness:false,pillcase:false,pouch:false},
       promoCode:'',
       promoAmount:0,
@@ -2499,7 +2521,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2544,7 +2566,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{finasteride:1,minoxidil:2},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:1160,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
@@ -2766,7 +2788,7 @@
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
     matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
-    plan:5,address:5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
+    plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
   };
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
@@ -2936,6 +2958,21 @@
     const district=String(address.district || '').trim();
     return district && !primary.includes(district) ? `${primary} · ${district}` : primary;
   }
+  const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
+  function writeDeliveryAddressDraft(screen,address){
+    if(!screen) return;
+    screen.dataset.addressDraft=JSON.stringify({
+      building:String(address.building || ''),
+      floor:String(address.floor || ''),
+      line:String(address.line || ''),
+      district:String(address.district || ''),
+      note:String(address.note || ''),
+      km:String(address.km || screen.dataset.selectedKm || '3.2')
+    });
+  }
+  function readDeliveryAddressDraft(screen){
+    try { return JSON.parse(screen?.dataset.addressDraft || '{}'); } catch(error) { return {}; }
+  }
   function syncDeliveryAddress({hydrateForm=false}={}){
     const address=flowState.orderState.address;
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
@@ -2957,6 +2994,7 @@
     const screen=document.getElementById('address');
     if(!screen) return;
     const values={
+      addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
       addrLine:address.line,
@@ -2968,30 +3006,33 @@
       if(input) input.value=value || '';
     });
     screen.dataset.selectedKm=address.km || '3.2';
+    writeDeliveryAddressDraft(screen,address);
   }
   function saveDeliveryAddress(){
     const screen=document.getElementById('address');
     if(!screen) return;
-    const value=id => String(screen.querySelector(`#${id}`)?.value || '').trim();
-    const building=value('addrBuilding');
-    const line=value('addrLine');
-    const district=value('addrDistrict');
+    const draft=readDeliveryAddressDraft(screen);
+    const value=key => String(draft[key] || '').trim();
+    const building=value('building');
+    const line=value('line');
+    const district=value('district');
     if(!building || !line || !district){
       showActionToast('กรุณากรอกชื่ออาคาร ถนนหรือซอย และเขตจังหวัดให้ครบ','warning');
       return false;
     }
     flowState.orderState.address={
       building,
-      floor:value('addrFloor'),
+      floor:value('floor'),
       line,
       district,
-      note:value('addrNote'),
-      km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
+      note:value('note'),
+      km:value('km') || screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
     flowState.orderState.addressConfirmed=true;
+    flowState.orderState.deliveryQuoteStatus='pending';
+    flowState.orderState.deliveryQuoteAmount=null;
     persistFlowState();
     syncDeliveryAddress();
-    refreshMedicationCheckout();
     return true;
   }
   function tomorrowLabel(){
@@ -3044,6 +3085,7 @@
     if(subtotalEl) subtotalEl.textContent = baht(subtotal);
     // the fee shows twice: in the bill rows and on the delivery option card
     payment.querySelectorAll('[data-payment-delivery]').forEach(el => { el.textContent = baht(delivery); });
+    payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => { el.textContent = baht(deliveryFeeFor('same-day')); });
     if(addonRow) addonRow.hidden=addon<=0;
     if(addonEl) addonEl.textContent=baht(addon);
     if(insuranceRow) insuranceRow.hidden = credit <= 0;
@@ -3527,7 +3569,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -3864,7 +3906,7 @@
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
-    payment:'plan', address:'payment', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
+    payment:'plan', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
     'pharmacy-search':'payment-success', pharmacyaccepted:'pharmacy-search', pharmacypending:'pharmacyaccepted',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
@@ -3920,8 +3962,16 @@
   function selectedAddOnTotal(){
     return Object.entries(ADDON_PRICES).reduce((sum,[key,price]) => sum + (flowState.orderState.addOns[key] ? price : 0),0);
   }
+  function calculatedSameDayDeliveryFee(){
+    const km=Math.max(0,Number(flowState.orderState.address?.km || 0));
+    return Math.max(80,Math.ceil((80 + km * 10) / 10) * 10);
+  }
   function deliveryFeeFor(method=flowState.orderState.deliveryMethod){
-    return method === 'same-day' ? 120 : 0;
+    if(method!=='same-day') return 0;
+    const quoted=Number(flowState.orderState.deliveryQuoteAmount);
+    return flowState.orderState.deliveryQuoteStatus==='accepted' && Number.isFinite(quoted)
+      ? quoted
+      : calculatedSameDayDeliveryFee();
   }
   function checkoutIsReady(){
     const address=flowState.orderState.address || {};
@@ -3929,6 +3979,7 @@
     return Boolean(
       flowState.orderState.addressConfirmed &&
       address.building && address.line && address.district &&
+      flowState.orderState.deliveryQuoteStatus==='accepted' &&
       flowState.orderState.deliveryMethod &&
       flowState.orderState.paymentMethod
     );
@@ -4215,7 +4266,7 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','connecting','video','rx-writing','plan','address','pharmacy-search',
+    'consult','connecting','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
     'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
     'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
@@ -4361,8 +4412,43 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address','payment','payment-success','pharmacy-search','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
-    if(id==='address') syncDeliveryAddress({hydrateForm:true});
+    if(['address','delivery-quote','payment','payment-success','pharmacy-search','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
+    if(id==='address'){
+      // Some desktop browsers restore remembered address values just after the
+      // screen becomes visible. Re-apply the persisted order address after that
+      // restore pass so the form and preview can never disagree.
+      syncDeliveryAddress({hydrateForm:true});
+      window.requestAnimationFrame(() => syncDeliveryAddress({hydrateForm:true}));
+      window.setTimeout(() => {
+        if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
+      },120);
+    }
+    clearTimeout(deliveryQuoteTimer);
+    if(id==='delivery-quote'){
+      flowState.orderState.deliveryQuoteStatus='pending';
+      flowState.orderState.deliveryQuoteAmount=null;
+      persistFlowState();
+      const quoteScreen=document.getElementById('delivery-quote');
+      const title=quoteScreen?.querySelector('[data-delivery-quote-title]');
+      const copy=quoteScreen?.querySelector('[data-delivery-quote-copy]');
+      const timer=quoteScreen?.querySelector('[data-delivery-quote-timer]');
+      if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
+      if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
+      if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
+      deliveryQuoteTimer=setTimeout(() => {
+        if(!quoteScreen?.classList.contains('active')) return;
+        const fee=calculatedSameDayDeliveryFee();
+        flowState.orderState.deliveryQuoteStatus='accepted';
+        flowState.orderState.deliveryQuoteAmount=fee;
+        persistFlowState();
+        refreshMedicationCheckout();
+        if(history[history.length-1]==='delivery-quote') history.pop();
+        if(history[history.length-1]==='address') history.pop();
+        if(history[history.length-1]!=='payment') history.push('payment');
+        show('payment',false);
+        showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
+      },reduceMotion ? 900 : 4200);
+    }
     if(id==='payment'){
       syncDeliveryAddress();
       refreshMedicationCheckout();
@@ -5109,6 +5195,10 @@
       const sb = scr.querySelector('#addrSearch'); const nm = fillItem.querySelector('.ac-name');
       if(sb && nm) sb.value = nm.textContent.trim();
       const sg = scr.querySelector('#addrSuggest'); if(sg) sg.style.display = 'none';
+      writeDeliveryAddressDraft(scr,{
+        building:d.building,floor:d.floor,line:d.addr,district:d.district,
+        note:scr.querySelector('#addrNote')?.value || '',km:d.km || scr.dataset.selectedKm
+      });
     }
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
@@ -5116,27 +5206,55 @@
     const addressPick=e.target.closest('[data-address-pick-demo]');
     if(addressPick){
       const screen=addressPick.closest('#address');
-      const fill=(id,value) => { const input=screen?.querySelector(`#${id}`); if(input) input.value=value; };
-      fill('addrSearch','The Base Park West');
-      fill('addrBuilding','The Base Park West, ห้อง 22/418');
-      fill('addrFloor','22');
-      fill('addrLine','ซอยสุขุมวิท 77');
-      fill('addrDistrict','เขตวัฒนา กรุงเทพฯ 10110');
-      if(screen) screen.dataset.selectedKm='3.2';
+      const selected={
+        search:'Ideo Mobi Sukhumvit 66',
+        building:'Ideo Mobi Sukhumvit 66, ห้อง 18/92',
+        floor:'18',
+        line:'ซอยสุขุมวิท 66 ถนนสุขุมวิท',
+        district:'เขตบางนา กรุงเทพฯ 10260',
+        note:'ฝากที่ล็อบบี้อาคาร A โทรก่อนถึง 5 นาที',
+        km:'6.8',
+        query:'Ideo Mobi Sukhumvit 66 Bangkok'
+      };
+      const fill=(id,value) => {
+        const input=screen?.querySelector(`#${id}`);
+        if(!input) return;
+        input.value=value;
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      };
+      fill('addrSearch',selected.search);
+      fill('addrBuilding',selected.building);
+      fill('addrFloor',selected.floor);
+      fill('addrLine',selected.line);
+      fill('addrDistrict',selected.district);
+      fill('addrNote',selected.note);
+      const suggestions=screen?.querySelector('#addrSuggest');
+      if(suggestions) suggestions.style.display='none';
+      if(screen) screen.dataset.selectedKm=selected.km;
+      writeDeliveryAddressDraft(screen,selected);
       const title=screen?.querySelector('[data-address-preview-title]');
       const detail=screen?.querySelector('[data-address-preview-detail]');
-      if(title) title.textContent='The Base Park West, ห้อง 22/418';
-      if(detail) detail.textContent='ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110';
-      showActionToast('เลือกจุดจัดส่งแล้ว กรุณาตรวจสอบและบันทึก','success');
+      const map=screen?.querySelector('[data-address-map]');
+      const frame=screen?.querySelector('[data-address-map-frame]');
+      const ctaLabel=screen?.querySelector('[data-address-map-cta-label]');
+      if(title) title.textContent=selected.building;
+      if(detail) detail.textContent=`${selected.line} · ${selected.district}`;
+      if(frame) frame.src=`https://maps.google.com/maps?q=${encodeURIComponent(selected.query)}&z=16&output=embed`;
+      if(map){
+        map.classList.remove('is-pin-selected');
+        void map.offsetWidth;
+        map.classList.add('is-pin-selected');
+      }
+      if(ctaLabel) ctaLabel.textContent='เลือกตำแหน่งนี้แล้ว';
+      showActionToast('ปักหมุดแล้ว และกรอกรายละเอียดที่อยู่ให้แล้ว','success');
       return;
     }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      if(history[history.length-1]==='address') history.pop();
-      if(history[history.length-1]!=='payment') history.push('payment');
-      show('payment',false);
-      showActionToast('บันทึกที่อยู่จัดส่งแล้ว','success');
+      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
+      show('delivery-quote',false);
       return;
     }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
@@ -5913,6 +6031,19 @@
     const sync = () => { addrSuggest.style.display = addrSearch.value.trim() ? '' : 'none'; };
     addrSearch.addEventListener('input', sync);
     addrSearch.addEventListener('focus', sync);
+  }
+  const deliveryAddressScreen=document.getElementById('address');
+  if(deliveryAddressScreen){
+    // Update the persisted draft only from a field the patient is actively
+    // editing. Background browser autofill never gets to replace the chosen pin.
+    deliveryAddressScreen.addEventListener('input',event => {
+      const key=ADDRESS_FIELD_KEYS[event.target.id];
+      if(!key || document.activeElement!==event.target) return;
+      const draft=readDeliveryAddressDraft(deliveryAddressScreen);
+      draft[key]=event.target.value;
+      draft.km=deliveryAddressScreen.dataset.selectedKm || draft.km || '3.2';
+      writeDeliveryAddressDraft(deliveryAddressScreen,draft);
+    });
   }
 
   // F02 language toggle is handled by i18n.js (active-state + TH/EN copy swap).

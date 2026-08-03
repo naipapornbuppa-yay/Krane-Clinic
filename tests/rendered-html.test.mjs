@@ -372,10 +372,15 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /data-go="address"[\s\S]*เปลี่ยนที่อยู่/, "payment must expose an explicit Change address action");
   assert.match(payment, /The Base Park West/, "the golden Mali checkout must begin with her saved delivery address");
   assert.match(payment, /data-payment-go[\s\S]*ไปหน้าชำระเงิน/, "checkout must use a specific payment action");
-  assert.match(address, /data-address-save[^>]*>บันทึกและกลับไปชำระเงิน/, "the address form must have a dedicated save-and-return action");
+  assert.match(address, /data-address-save[^>]*>บันทึกและคำนวณค่าจัดส่ง/, "the address form must make delivery repricing explicit");
   assert.match(html, /function checkoutIsReady\(\)[\s\S]*addressConfirmed/, "checkout readiness must require an explicitly confirmed address");
   assert.match(html, /MALI_SAVED_ADDRESS[\s\S]*The Base Park West/, "the saved delivery address must live in persisted order state");
-  assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*history\.pop\(\)[\s\S]*show\('payment',false\)/, "saving an address must return to the existing payment step without duplicating history");
+  assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*show\('delivery-quote',false\)/, "saving an address must open the pre-payment pharmacy quote state");
+  const quote = screenFragment(html, "delivery-quote");
+  assert.match(quote, /กำลังหาร้านยาที่จัดส่งถึงคุณ[\s\S]*คำนวณค่าจัดส่งที่แน่นอน/, "the quote state must explain why the pharmacy acceptance is required");
+  assert.doesNotMatch(quote, /ยืนยันการชำระเงินแล้ว|payment is confirmed/i, "the pre-payment quote must not claim that payment already happened");
+  assert.match(html, /id==='delivery-quote'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*show\('payment',false\)/, "an accepted quote must return to payment with an exact fee");
+  assert.match(html, /Ideo Mobi Sukhumvit 66[\s\S]*addrNote[\s\S]*selected\.note/, "mock map selection must prefill every structured address field");
 
   const planItems = [...plan.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
   const paymentItems = [...payment.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
