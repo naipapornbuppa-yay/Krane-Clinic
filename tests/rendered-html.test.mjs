@@ -73,6 +73,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   }
   assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
   assert.doesNotMatch(html, /id="partner-consent"|data-partner-consent/);
+  assert.doesNotMatch(html, /syncPartnerConsentContinue/, "removed partner consent must not leave a runtime callback behind");
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentSource=flowState\.entryChannel==='partner' \? 'partner' : 'direct'/);
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
@@ -106,8 +107,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto 48px auto/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /PARTNER_NURSE_SCREENING_ENABLED \? 'partner-nurse' : 'booking'/);
-  assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและส่งต่อแพทย์/);
-  assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\('booking'\)/);
+  assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและพบแพทย์ที่พยาบาลเลือก/);
+  assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(consultationHandoffTarget\(\)\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
   assert.match(html, /viewport-fit=cover/);
   assert.doesNotMatch(html, /class="devicebar"|id="fontPreview"|fontPreviewStacks|krane_font_preview/, "client-facing QA must not expose prototype device or font controls");
@@ -338,6 +339,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   const success = screenFragment(html, "confirm");
 
   assert.match(plan, /data-go="payment"/, "accepting the plan must go directly to payment");
+  assert.match(plan, /Review medicine order[\s\S]*Confirm medicines &amp; continue to payment/, "the pre-address screen must clearly confirm the medicine order");
   assert.doesNotMatch(plan, /data-go="address"|data-go="pharmacy-locate"/, "accepting the plan must not force an address or pharmacy-locate detour");
   assert.match(payment, /data-go="address"[\s\S]*เปลี่ยนที่อยู่/, "payment must expose an explicit Change address action");
   assert.match(payment, /The Base Park West/, "the golden Mali checkout must begin with her saved delivery address");
@@ -443,19 +445,30 @@ test("standalone patient states share one concise visual hierarchy", async () =>
 
 test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const expected = {
-    matching: "assets/state-v2/doctor-matching.jpg",
-    waitroom: "assets/state-v2/waiting-room.jpg",
-    connecting: "assets/state-v2/video-connecting.jpg",
-    "rx-writing": "assets/state-v2/treatment-plan.jpg",
-    "pharmacy-search": "assets/state-v2/pharmacy-search.jpg",
-    preloader: "assets/state-v2/health-preparing.jpg"
+    matching: "assets/loading-v2/doctor-matching.png",
+    waitroom: "assets/loading-v2/waiting-room.png",
+    connecting: "assets/loading-v2/video-connecting.png",
+    "rx-writing": "assets/loading-v2/treatment-plan.png",
+    "pharmacy-search": "assets/loading-v2/pharmacy-search.png",
+    pharmacypending: "assets/loading-v2/pharmacy-preparing.png",
+    preloader: "assets/loading-v2/health-preparing.png"
   };
   for (const [screen, graphic] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
     assert.match(fragment, new RegExp(graphic), `${screen} must use ${graphic}`);
+    assert.match(fragment, /state-view__tile--cutout/, `${screen} must use the unclipped cutout stage`);
+    assert.doesNotMatch(fragment, /state-view__tile--brand/, `${screen} must not overlay a logo on loading artwork`);
+    assert.doesNotMatch(fragment, /\.jpe?g|assets\/state-v2|assets\/loading\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
     assert.doesNotMatch(fragment, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
+
+    const file = await readFile(path.join(publicRoot, "b2c", graphic));
+    assert.equal(file[25], 6, `${graphic} must be an RGBA PNG with transparency`);
   }
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout\{[^}]*overflow:visible[^}]*background:transparent/);
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout::before\{[^}]*border-radius:50%[^}]*#dbe4f2/);
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
 });
 
 test("patient states never reuse the generic treatment bottle as status artwork", async () => {

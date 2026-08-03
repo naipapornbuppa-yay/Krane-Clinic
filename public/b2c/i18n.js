@@ -95,7 +95,7 @@
     "Refer a friend":"แนะนำเพื่อน","Your share code":"รหัสแนะนำของคุณ","Copy code":"คัดลอกรหัส","Share via LINE":"แชร์ผ่าน LINE","Copy link":"คัดลอกลิงก์","Your referrals":"เพื่อนที่คุณแนะนำ","Back to profile":"กลับไปโปรไฟล์","Refer":"แนะนำ",
     "Just a moment…":"สักครู่นะ…","Continue with this policy":"ใช้กรมธรรม์นี้",
     /* ---- plan / accept ---- */
-    "Your treatment plan":"แผนการรักษาของคุณ","Prescription details":"รายละเอียดใบสั่งยา","Next follow-up":"นัดติดตามครั้งถัดไป","Refills allowed":"จำนวนครั้งที่สั่งซ้ำได้","Prescription valid until":"ใบสั่งยาใช้ได้ถึง","Accept & continue":"ยอมรับและไปต่อ","Discuss with doctor":"ปรึกษากับแพทย์","Plan accepted":"ยอมรับแผนแล้ว",
+    "Your treatment plan":"แผนการรักษาของคุณ","Review medicine order":"ตรวจสอบและยืนยันรายการยา","Prescription details":"รายละเอียดใบสั่งยา","Next follow-up":"นัดติดตามครั้งถัดไป","Refills allowed":"จำนวนครั้งที่สั่งซ้ำได้","Prescription valid until":"ใบสั่งยาใช้ได้ถึง","Accept & continue":"ยอมรับและไปต่อ","Confirm medicines & continue to payment":"ยืนยันรายการยาและไปชำระเงิน","Confirm the medicines and reduce quantities if needed before checkout.":"ตรวจสอบรายการยาและลดจำนวนได้ตามต้องการก่อนชำระเงิน","Discuss with doctor":"ปรึกษากับแพทย์","Plan accepted":"ยอมรับแผนแล้ว",
     /* ---- address ---- */
     "Delivery address":"ที่อยู่จัดส่ง","Where should we deliver?":"จัดส่งที่ไหนดี?","Search building, condo, landmark or street":"ค้นหาอาคาร คอนโด จุดสังเกต หรือถนน","Building / room":"อาคาร / ห้อง","Floor":"ชั้น","Street / soi":"ถนน / ซอย","District / Province":"เขต / จังหวัด",
     "Delivery speed":"ความเร็วในการจัดส่ง","Same day":"ส่งวันนี้","Next day":"ส่งวันถัดไป","Standard":"มาตรฐาน","Free":"ฟรี",

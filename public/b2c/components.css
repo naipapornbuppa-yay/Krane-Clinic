@@ -287,6 +287,24 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .state-view__badge .ui-icon{width:18px;height:18px}
 .state-view__tile.loading-illustration{width:100%;height:100%;border-radius:30px;background:var(--color-accent-soft-2)}
 .state-view__tile.loading-illustration>img{width:100%;height:100%;object-fit:cover;filter:none;animation:loading-illustration-float 3.2s var(--ease-inout) infinite}
+/* Loading stages use transparent product cutouts. Any brand mark is composited
+   from the repository artwork, never generated. The powder-blue circle belongs
+   to the interface and stays still; only the object floats. */
+.state-view__tile.loading-illustration.state-view__tile--cutout{
+  width:100%;height:100%;overflow:visible;border-radius:0;background:transparent;
+  box-shadow:none;isolation:isolate
+}
+.state-view__tile.loading-illustration.state-view__tile--cutout::before{
+  content:"";position:absolute;z-index:0;width:80%;height:80%;border-radius:50%;
+  background:#dbe4f2;
+  box-shadow:inset 0 0 0 1px rgba(23,46,81,.04),0 18px 34px rgba(23,46,81,.09)
+}
+.state-view__tile.loading-illustration.state-view__tile--cutout>img{
+  position:relative;z-index:1;width:100%;height:100%;padding:0;object-fit:contain;
+  filter:drop-shadow(0 10px 12px rgba(23,46,81,.17));
+  animation:loading-illustration-float 3.2s var(--ease-inout) infinite;
+  transform-origin:center
+}
 @keyframes loading-illustration-float{0%,100%{transform:translateY(2px) scale(1.01)}50%{transform:translateY(-4px) scale(1.025)}}
 .state-view__badge--loading,.state-view--loading .state-view__badge,
 .state-view__visual--loading .state-view__badge{
@@ -371,6 +389,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   .state-view{gap:14px;padding:20px 0 24px}
   .state-view__visual{width:min(64vw,224px);height:min(64vw,224px)}
   .state-view__tile{width:100%;height:100%;border-radius:26px}
+  .state-view__tile.loading-illustration.state-view__tile--cutout{border-radius:0}
   .state-view__image,.state-view__tile>img{width:100%;height:100%}
   .state-view__tile--brand::after{top:12px;left:12px;width:102px;height:30px;background-size:80px auto}
   .state-view__copy{max-width:32ch;gap:6px}
@@ -384,6 +403,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 }
 @media(prefers-reduced-motion:reduce){
   .state-view__image,.state-view__tile>img,
+  .state-view__tile.loading-illustration.state-view__tile--cutout>img,
   .state-view__badge--loading,
   .state-view--loading .state-view__badge,
   .state-view__visual--loading .state-view__badge{animation:none}

@@ -84,7 +84,8 @@ flowchart LR
     partnerReview -. "Exception case" .-> partnerNurse["Partner nurse screening"]
     partnerNurse --> partnerRemote{"Remote care appropriate?"}
     partnerRemote -->|"No"| inPerson["Urgent or in-person care guidance"]
-    partnerRemote -->|"Yes"| doctorMatch
+    partnerRemote -->|"Yes"| nurseAssigned["Nurse assigns an available doctor"]
+    nurseAssigned --> consultBalance
 
     doctorMatch --> doctorAvailable{"Doctor available now?"}
     doctorAvailable -->|"No"| bookedSlot["Choose or confirm appointment slot"]
@@ -107,7 +108,7 @@ flowchart LR
   end
 
   subgraph planPhase["3 · Plan, saved delivery and medicine payment"]
-    prescription --> planReview["Review treatment plan"]
+    prescription --> planReview["Review and confirm medicine order"]
     planReview --> planDecision{"Patient accepts?"}
     planDecision -->|"Request change"| doctorMessage["Message doctor"]
     doctorMessage -.-> prescription
@@ -192,8 +193,9 @@ flowchart LR
 
 - Direct intake happens before new-user authentication; accepted consent is
   version-aware and is not reopened after a phone-number change.
-- Partner entry has its own consent, entitlement, health-review, and mandatory
-  nurse-screening path.
+- Partner entry has its own consent, entitlement and health review. Nurse
+  screening is an exception path; when used, the nurse assigns an available
+  doctor directly instead of returning the patient to automatic matching.
 - Fully covered consultation or medicine bypasses only the relevant payment;
   excess balances still go through checkout.
 - Pharmacy decline reroutes first. Refund is a terminal outcome and never loops
