@@ -449,7 +449,7 @@ test("each loading stage uses a stage-specific graphic", async () => {
   const expected = {
     matching: "assets/loading-v2/doctor-matching.png",
     waitroom: "assets/loading-v2/waiting-room.png",
-    connecting: "assets/loading-v2/video-connecting.png",
+    connecting: "assets/loading-v2/video-connecting-branded.png",
     "rx-writing": "assets/loading-v2/treatment-plan.png",
     "pharmacy-search": "assets/loading-v2/pharmacy-search.png",
     pharmacypending: "assets/loading-v2/pharmacy-preparing.png",
