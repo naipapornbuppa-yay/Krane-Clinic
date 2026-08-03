@@ -135,7 +135,11 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /class="partner-health-grid"[\s\S]*id="partner-dob" type="date"/);
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /\.date-control__display\{[\s\S]*grid-template-columns:24px minmax\(0,1fr\) 24px/);
+  assert.match(components, /\.date-control>input\[type="date"\]\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
   assert.match(html, /function enhancePatientDateFields\(\)\{[\s\S]*DD \/ MM \/ YYYY/);
+  assert.match(html, /function openPatientDatePicker\(input\)\{[\s\S]*input\.showPicker\(\)/);
+  assert.match(html, /input\.addEventListener\('click',\(\) => openPatientDatePicker\(input\)\)/);
+  assert.match(html, /event\.key!=='Enter' && event\.key!==' '/);
   assert.match(html, /id="social-birth-date"[^>]*required/);
   assert.match(html, /id="insurance-dob"[^>]*required/);
   assert.match(html, /id="partner-dob"[^>]*required/);
