@@ -1,6 +1,7 @@
 (function(){
   var enhanced=[];
   var sequence=0;
+  var enhancementFrame=0;
 
   function closeSelect(record,returnFocus){
     record.root.classList.remove('is-open');
@@ -47,7 +48,12 @@
   }
 
   function enhance(select){
-    if(select.dataset.customSelectReady==='true')return;
+    if(!(select instanceof HTMLSelectElement))return;
+    /* A questionnaire screen can be replaced with saved/template markup. Never
+       trust the data flag by itself: copied markup may retain the flag without
+       retaining the live trigger or its listeners. */
+    if(select.dataset.customSelectReady==='true' && select.closest('.custom-select'))return;
+    delete select.dataset.customSelectReady;
     select.dataset.customSelectReady='true';
     sequence+=1;
 
@@ -88,7 +94,11 @@
     if(label){
       if(!label.id)label.id=(select.id||'custom-select-'+sequence)+'-label';
       trigger.setAttribute('aria-labelledby',label.id+' '+trigger.id);
-      label.addEventListener('click',function(event){event.preventDefault();trigger.focus()});
+      label.addEventListener('click',function(event){
+        event.preventDefault();
+        trigger.focus();
+        openSelect(record,false);
+      });
     }else{
       trigger.setAttribute('aria-label',select.getAttribute('aria-label')||'Select option');
     }
@@ -139,9 +149,44 @@
     var scope=root&&root.querySelectorAll?root:document;
     /* Skip selects the CMS enhancer already wrapped: both scripts load in the back
        office, and without this guard every select gets two visible triggers. */
-    scope.querySelectorAll('select:not([data-native-select]):not([data-cms-select-ready])').forEach(enhance);
+    if(scope.matches&&scope.matches('select:not([data-cms-select-ready])'))enhance(scope);
+    scope.querySelectorAll('select:not([data-cms-select-ready])').forEach(enhance);
+  }
+
+  function scheduleEnhancement(root){
+    window.cancelAnimationFrame(enhancementFrame);
+    enhancementFrame=window.requestAnimationFrame(function(){
+      enhancementFrame=0;
+      enhanceAll(root&&root.isConnected?root:document);
+    });
   }
   window.kraneEnhanceSelects=enhanceAll;
+  window.kraneSyncSelects=function(root){
+    enhanceAll(root||document);
+    enhanced=enhanced.filter(function(record){
+      if(!record.root.isConnected)return false;
+      syncSelect(record);
+      return true;
+    });
+  };
   document.addEventListener('click',function(event){enhanced.forEach(function(record){if(!record.root.contains(event.target))closeSelect(record,false)})});
-  document.addEventListener('DOMContentLoaded',function(){enhanceAll(document)});
+  document.addEventListener('krane:screenchange',function(event){
+    window.kraneSyncSelects(event.detail&&event.detail.screen||document);
+  });
+  document.addEventListener('DOMContentLoaded',function(){
+    enhanceAll(document);
+    /* Intake templates and restored drafts replace screen markup after startup.
+       Observe those replacements so the first tap works without a page refresh. */
+    new MutationObserver(function(mutations){
+      var root=null;
+      mutations.some(function(mutation){
+        return Array.from(mutation.addedNodes).some(function(node){
+          if(node.nodeType!==1)return false;
+          if(node.matches('select')||node.querySelector('select')){root=mutation.target;return true}
+          return false;
+        });
+      });
+      if(root)scheduleEnhancement(root);
+    }).observe(document.body,{childList:true,subtree:true});
+  });
 })();

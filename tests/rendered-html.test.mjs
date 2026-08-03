@@ -225,6 +225,8 @@ test("intake keeps multi-select questions visible and uses compact required cont
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const i18n = await readFile(path.join(publicRoot, "b2c/i18n.js"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const customSelect = await readFile(path.join(publicRoot, "b2c/custom-select.js"), "utf8");
+  const customSelectCss = await readFile(path.join(publicRoot, "b2c/custom-select.css"), "utf8");
   const hairStart = html.indexOf("hair:{");
   const hairEnd = html.indexOf("intake2:`", hairStart);
   const hairFirstQuestion = html.slice(hairStart, hairEnd);
@@ -244,7 +246,15 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(html, /data-intake-duration-unit="day"/);
   assert.match(html, /input\[data-intake-role="duration"\]\[required\]/);
   assert.match(html, /function intakeDropdown\(\{id,label,placeholder,options,role=''\}\)/);
-  assert.doesNotMatch(html, /data-native-select data-intake-select/);
+  assert.doesNotMatch(html, /data-native-select/, "intake dropdowns must not fall back to inconsistent browser pickers");
+  assert.match(html, /window\.kraneSyncSelects\) window\.kraneSyncSelects\(activeScreen\)/);
+  assert.match(html, /new CustomEvent\('krane:screenchange'/);
+  assert.match(customSelect, /querySelectorAll\('select:not\(\[data-cms-select-ready\]\)'\)\.forEach\(enhance\)/);
+  assert.match(customSelect, /new MutationObserver\(function\(mutations\)/, "dynamically rendered selects must work before refresh");
+  assert.match(customSelect, /document\.addEventListener\('krane:screenchange'/);
+  assert.match(customSelect, /select\.dataset\.customSelectReady==='true' && select\.closest\('\.custom-select'\)/);
+  assert.match(customSelectCss, /\.custom-select__trigger\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
+  assert.match(customSelectCss, /@media\(max-width:600px\)\{[\s\S]*\.custom-select\.is-open\{z-index:1000\}/);
   assert.match(html, /function intakeRequirementState\(screenOrId\)/);
   assert.match(html, /function syncIntakeDropdownContinue\(screenOrId\)/);
   assert.match(html, /missingGroup = optionGroups\.find/);
