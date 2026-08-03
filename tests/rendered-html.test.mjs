@@ -79,7 +79,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
   assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
-  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','booking'\]/);
+  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','matching'\]/);
   assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
   assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'intake1'\)/);
@@ -111,7 +111,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /\.partner-history-detail\{[^}]*min-width:0[^}]*max-width:100%[^}]*overflow:hidden/);
   assert.match(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto 48px auto/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
-  assert.match(html, /PARTNER_NURSE_SCREENING_ENABLED \? 'partner-nurse' : 'booking'/);
+  assert.match(html, /function partnerClinicalStartTarget\(\)\{[\s\S]*if\(PARTNER_NURSE_SCREENING_ENABLED\) return 'partner-nurse';[\s\S]*return 'matching'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและพบแพทย์ที่พยาบาลเลือก/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(consultationHandoffTarget\(\)\)/);
   assert.doesNotMatch(html, /พยาบาล ปรียา/);
@@ -153,7 +153,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /function hasCurrentConsent\(source\)\{/);
   assert.match(html, /flowState\.consentsComplete && !hasCurrentConsent\('direct'\) && !hasCurrentConsent\('partner'\)/);
   assert.match(html, /function directClinicalStartTarget\(\)\{/);
-  assert.match(html, /DIRECT_NURSE_SCREENING_ENABLED \? 'nurse' : 'booking'/);
+  assert.match(html, /function directClinicalStartTarget\(\)\{[\s\S]*if\(DIRECT_NURSE_SCREENING_ENABLED\) return 'nurse';[\s\S]*return 'matching'/);
+  assert.doesNotMatch(html, /<section class="screen" id="booking"/, "the redundant doctor-match introduction screen must stay removed");
   assert.match(html, /id="rx-writing"[\s\S]*data-go="plan">View treatment plan/);
   assert.match(html, /if\(id==='rx-writing'\)[\s\S]*replaceCurrent\('plan'\)/);
   assert.match(html, /tracking:'confirm', feedback:'consult'/);
@@ -381,8 +382,16 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.ok(planItems.length >= 2, "the accepted plan must expose stable order-item keys");
   assert.equal(new Set(planItems).size, planItems.length, "plan order-item keys must be unique");
   assert.deepEqual(new Set(paymentItems), new Set(planItems), "checkout must mirror every accepted plan item by key");
-  assert.equal((payment.match(/data-order-qty/g) || []).length, paymentItems.length, "checkout must show the accepted quantity for every medicine");
-  assert.doesNotMatch(payment, /data-qty(?=[\s>])/, "medicine quantities must be adjusted on the treatment plan, not in final checkout");
+  assert.doesNotMatch(plan, /data-qty(?=[\s>])/, "the clinical treatment plan must stay read-only");
+  assert.equal((payment.match(/data-qty(?=[\s>])/g) || []).length, paymentItems.length, "checkout must provide one quantity control per medicine");
+  assert.equal((payment.match(/data-min="0"/g) || []).length, paymentItems.length, "checkout must let a patient omit an individual medicine without editing the prescription");
+  assert.equal((payment.match(/data-qty-minus/g) || []).length, paymentItems.length);
+  assert.equal((payment.match(/data-qty-plus/g) || []).length, paymentItems.length);
+  assert.match(html, /querySelectorAll\(`#payment \[data-order-item="\$\{key\}"\]`\)/, "quantity changes must not rewrite the doctor's treatment plan");
+  const discountIndex = payment.indexOf('ส่วนลดและสิทธิ์');
+  const calculationIndex = payment.indexOf('checkout-final-summary');
+  assert.ok(discountIndex >= 0 && calculationIndex > discountIndex, "cost metadata and final calculation must follow discounts");
+  assert.ok(payment.indexOf('checkout-calc') > calculationIndex, "delivery quote metadata belongs inside the final calculation block");
 
   const deliveryValues = [...payment.matchAll(/data-delivery-value="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(deliveryValues.includes("same-day"), "payment needs a same-day choice");
@@ -792,7 +801,7 @@ test("prototype rail nests error cases under related happy-flow pages", async ()
 
   assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
   assert.match(patient, /4 · Urgent safety[\s\S]*data-go="intake4"[\s\S]*class="rail-error-menu"[\s\S]*data-go="ineligible"/);
-  assert.match(patient, /Doctor matching[\s\S]*data-go="booking"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
+  assert.match(patient, /Doctor matching[\s\S]*data-go="matching">Auto-match[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
   assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance"[\s\S]*Check entitlement &amp; coverage/);
   assert.doesNotMatch(patient, /id="insurance-policy"|id="reduce-order"|data-go="insurance-policy"|data-go="reduce-order"/);
   assert.match(patient, /Pharmacy confirmation[\s\S]*data-go="pharmacyaccepted"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nostock/);
