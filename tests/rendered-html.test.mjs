@@ -455,6 +455,19 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(html, /closest\('\[data-payment-alternate-method\]'\)/, "alternate payment must have its own handler");
 });
 
+test("video consultation shares one circular mode FAB and surfaces unread medication summaries", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const video = screenFragment(html, "video");
+
+  assert.match(video, /assets\/consultation\/doctor-video-live\.jpg/);
+  assert.match(video, /class="call-fab"[\s\S]*data-consult-unread-badge/);
+  assert.match(components, /\.chat-fab,\s*\n\.call-fab\{[^}]*width:56px[^}]*height:56px[^}]*border-radius:50%/);
+  assert.match(components, /\.call-fab__badge\{[^}]*background:var\(--color-danger\)/);
+  assert.match(html, /function revealConsultationSummary\(\)[\s\S]*activeId==='video'[\s\S]*syncConsultationSummaryUnread\(true\)/);
+  assert.match(html, /Switching[\s\S]*between video and chat does not[\s\S]*if\(!\['consult','video'\]\.includes\(id\)\)/);
+});
+
 test("standalone patient states share one concise visual hierarchy", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const stateIds = [

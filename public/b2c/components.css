@@ -707,9 +707,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Floating call button: sticks to the bottom of the scrolling thread, always
    visible above the composer, instead of a header link that scrolls out of view. */
 .chat-fab,
-.call-fab{box-shadow:var(--shadow-lg);cursor:pointer;flex:none;border:1px solid transparent;transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);-webkit-backdrop-filter:blur(var(--blur-sm));backdrop-filter:blur(var(--blur-sm));will-change:transform;display:inline-flex;align-items:center;justify-content:center;line-height:1;gap:var(--sp-2)}
-.chat-fab{align-self:flex-end;position:sticky;bottom:var(--sp-3);min-width:52px;min-height:52px;padding-inline:var(--sp-3);border-radius:var(--radius-pill);border-color:rgba(255,255,255,.14);background:var(--color-accent);color:var(--color-on-accent);z-index:2}
-.chat-fab .ui-icon{width:20px;height:20px;flex:none}
+.call-fab{width:56px;min-width:56px;max-width:56px;height:56px;min-height:56px;padding:0;aspect-ratio:1;border-radius:50%;box-shadow:var(--shadow-lg);cursor:pointer;flex:none;border:1px solid rgba(255,255,255,.18);background:var(--color-accent);color:var(--color-on-accent);transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);-webkit-backdrop-filter:blur(var(--blur-sm));backdrop-filter:blur(var(--blur-sm));will-change:transform;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.chat-fab{align-self:flex-end;position:sticky;bottom:var(--sp-3);z-index:2}
+.chat-fab .ui-icon,.call-fab .ui-icon{width:22px;height:22px;flex:none}
 .chat-fab:hover{background:var(--color-accent-hover);transform:translateY(-1px)}
 .chat-fab:active{transform:scale(.96)}
 .bubble{max-width:80%;line-height:1.45;box-shadow:var(--shadow-sm);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);font-size:var(--fs-base);position:relative}
@@ -1012,13 +1012,17 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    control row is call hardware, this leaves the call running and opens chat
    (the chat screen then shows .callbar to come back). */
 .call-fab{position:absolute;right:var(--sp-4);bottom:calc(var(--control-h-lg) + var(--sp-8));z-index:3;
-  width:auto;min-width:86px;height:44px;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:8px;
-  border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.34);background:rgba(16,20,26,.68);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.34);background:var(--color-accent);
   color:var(--color-on-dark);cursor:pointer;font:var(--fw-medium) var(--fs-sm)/1 "IBM Plex Sans Thai","Noto Sans Thai",sans-serif;
   -webkit-backdrop-filter:blur(var(--blur-sm));backdrop-filter:blur(var(--blur-sm));box-shadow:var(--shadow-md);
   transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
-.call-fab:hover{background:rgba(16,20,26,.86);transform:translateY(-1px)}
+.call-fab:hover{background:var(--color-accent-hover);transform:translateY(-1px)}
 .call-fab[hidden]{display:none}
+.call-fab__badge{position:absolute;top:-5px;right:-5px;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:var(--color-danger);color:#fff;border:3px solid #405570;font:700 11px/1 "IBM Plex Sans Thai","Noto Sans Thai",sans-serif;box-shadow:0 3px 10px rgba(138,45,34,.38)}
+.call-fab__badge[hidden]{display:none}
+.call-fab.has-unread{animation:consult-fab-pulse 1.8s var(--ease-inout) infinite}
+@keyframes consult-fab-pulse{0%,100%{box-shadow:var(--shadow-md)}50%{box-shadow:0 0 0 7px rgba(255,255,255,.12),var(--shadow-md)}}
 .callstage--live .call-controls{position:absolute;z-index:3;left:0;right:0;bottom:38px;padding:0 var(--sp-4)}
 .callstage--live .call-btn{background:rgba(16,20,26,.55);border-color:rgba(255,255,255,.32);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .callstage--live .call-btn--end{background:var(--color-danger);border-color:var(--color-danger)}
@@ -1031,11 +1035,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 #video .callstage--live{background:#405570}
 #video .callstage--live::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 20%,rgba(255,255,255,.09),transparent 38%),linear-gradient(180deg,rgba(30,45,65,.08),rgba(22,34,50,.25));pointer-events:none}
 #video .call-remote--video{position:absolute;inset:138px 16px auto;aspect-ratio:16/9;height:auto;display:block;padding:0;overflow:hidden;border:1px solid rgba(255,255,255,.2);border-radius:24px;background:#6d82a0;box-shadow:0 18px 46px rgba(16,28,43,.28);text-align:left}
-#video .call-remote__video{width:100%;height:100%;object-fit:cover;object-position:center 31%;mix-blend-mode:multiply;filter:saturate(.78) contrast(.96) brightness(1.13)}
+#video .call-remote__video{width:100%;height:100%;object-fit:cover;object-position:center center;mix-blend-mode:normal;filter:saturate(.96) contrast(1.01) brightness(.97)}
 #video .callstage--live .call-remote--video::after{background:linear-gradient(180deg,rgba(15,29,47,.04) 0%,transparent 48%,rgba(15,29,47,.7) 100%)}
 #video .call-remote__identity{left:16px;right:16px;bottom:14px}
 #video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:1px solid rgba(255,255,255,.26);border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
-#video .call-fab{right:16px;bottom:122px;background:rgba(29,43,63,.76)}
+#video .call-fab{right:16px;bottom:122px;background:var(--color-accent)}
 #video .callstage--live .call-controls{bottom:48px}
 #video .callstage--live .call-btn{background:rgba(29,43,63,.72)}
 #video .callstage--live .call-hint{bottom:10px;color:rgba(255,255,255,.78)}
