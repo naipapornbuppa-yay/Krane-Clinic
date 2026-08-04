@@ -24,7 +24,7 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260728d">
+<link rel="stylesheet" href="design-tokens.css?v=20260804a">
 <link rel="stylesheet" href="components.css?v=20260804addressquote1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <script src="../krane-golden-fixture.js"></script>
@@ -330,7 +330,7 @@
       <summary><span class="rail-step">05</span><span>Consultation</span></summary>
       <div class="rail-group__body">
         <details class="rail-page"><summary>Consultation room</summary><div class="rail-sub">
-          <a data-go="connecting">State · Connecting</a><a data-go="video">Default · Video</a><a data-go="consult">Fallback · Chat</a>
+          <a data-go="video">Default · Video</a><a data-go="consult">Fallback · Chat</a>
         </div></details>
         <details class="rail-page"><summary>Treatment plan</summary><div class="rail-sub">
           <a data-go="rx-writing">State · Writing prescription</a><a data-go="plan">Plan ready</a><a data-go="prescription">Prescription document</a>
@@ -978,8 +978,8 @@
         <span class="state-view__badge"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
-        <h2 class="h1">รอสักครู่นะ</h2>
-        <p class="muted" data-matching-copy>เรากำลังค้นหาแพทย์ที่พร้อมให้คำปรึกษาและเหมาะกับอาการของคุณ</p>
+        <h2 class="h1">ซักประวัติเรียบร้อยแล้วครับ</h2>
+        <p class="muted" data-matching-copy>รอสักครู่นะครับ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
       <div class="state-view__timer">Usually under 10 seconds</div>
     </div>
@@ -1028,7 +1028,7 @@
     <div class="screen__body stack-4">
       <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-checkout-title>ค่าปรึกษาแพทย์</div><div class="hint" data-consult-checkout-copy>ตรวจสอบยอดก่อนดำเนินการต่อ</div></div></div>
       <div class="card card--pad-sm stack-3">
-        <div class="between"><span class="muted">Doctor match</span><strong>Dr. Narin · ready now</strong></div>
+        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span> รับเคสแล้ว · พร้อมให้คำปรึกษา</strong></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">Partner coverage</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
         <div class="between" data-cert-row hidden><span class="muted">Medical certificate</span><strong>฿ 100</strong></div>
@@ -1044,7 +1044,11 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+            <!-- Q1 (pending): insurance coverage shown as a deduction line, the way
+             Health at Home do it, rather than rewriting the price. Hidden until
+             KRANE_FLAGS.coverageLine is true. -->
+        <div class="between" data-coverage-row hidden><span class="muted">สิทธิ์ครอบคลุมการรักษาครั้งนี้</span><strong data-coverage-amount>- ฿ 350</strong></div>
+<div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1127,12 +1131,13 @@
         <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
-        <h2 class="h1" data-wait-title>Doctor will let you in shortly</h2>
-        <p class="muted" data-wait-copy>We'll notify you when the doctor is ready.</p>
+        <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
+        <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
+        <p class="hint" data-wait-note>อย่าลืมอนุญาตให้ใช้กล้องและไมค์ด้วยครับ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอดนะครับ</p>
       </div>
       <div class="state-view__timer" data-wait-timer>About 2–3 min</div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
-    <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="connecting">Waiting to be admitted…</button><button class="btn btn--ghost" data-go="notifications">Notify me when it's ready</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button></div>
   </section>
 
   <!-- ===================== CONSULT ROOM ===================== -->
@@ -1141,7 +1146,6 @@
     <div class="screen__body chat-body" style="background:var(--color-bg);position:relative">
       <!-- F13: chat and the call are one session; this bar appears while a call runs in the background -->
       <button class="callbar" data-callbar data-go="video" hidden><span class="cb-dot"></span><span class="grow" style="text-align:left">Call in progress · chat stays open</span><strong>Return to call</strong></button>
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-payment-status>ค่าปรึกษา ฿ 350</div><div class="hint">ห้องรักษาจะปิดเมื่อหมดเวลาปรึกษา</div></div></div>
       <div class="bubble bubble--in bubble--lbl" data-from="Dr. Narin">Hi, I've reviewed your intake. A couple of quick questions before I recommend a plan.</div>
       <div class="bubble bubble--out bubble--lbl" data-from="You">Sure, go ahead.</div>
       <div class="bubble bubble--in">Have you tried any hair loss treatment before?</div>
@@ -1150,10 +1154,11 @@
       <div class="typing" data-typing aria-label="Dr. Narin is typing"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
       <button class="callbar" data-rx-bar data-go="rx-writing"><span class="cb-dot"></span><span class="grow" style="text-align:left">Dr. Narin is writing your prescription</span><strong>View status</strong></button>
       <div class="card card--pad-sm stack-3" style="align-self:stretch" data-plan-card data-wait-hidden>
-        <div class="between"><span class="badge badge--ok">รายการยาชั่วคราว</span><span class="hint">จากแพทย์</span></div>
+        <div class="between"><span class="badge badge--ok">ตัวอย่างรายการยา</span><span class="hint">จากแพทย์</span></div>
+        <div class="hint" data-plan-preview-summary>Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.</div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div></div><span class="price">฿ 590</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div></div><span class="price">฿ 450</span></div>
-        <p class="hint">ต้องการแก้ไขรายการยา แจ้งแพทย์ในแชทได้เลย</p>
+        <div class="alert plan-edit-callout"><span class="a-ic">i</span><div><div class="a-title">ต้องการแก้ไขรายการยา</div><div class="hint">แจ้งแพทย์ในแชทได้เลย ก่อนกดจบการปรึกษา</div></div></div>
         <button class="btn btn--primary btn--sm" style="width:100%" data-go="rx-writing">จบการปรึกษา</button>
       </div>
       <button class="chat-fab" data-go="video" data-demo-icon="video" title="Start video call" aria-label="Start video call"></button>
@@ -1164,18 +1169,7 @@
   </section>
 
   <!-- ===================== CONNECTING (call edge state) ===================== -->
-  <section class="screen" id="connecting">
-    <div class="screen__top transition-stage__top"><span class="ttl">Connecting</span><button class="transition-stage__close" data-go="consult" aria-label="Cancel">×</button></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Connecting to Dr. Narin">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/video-connecting-branded.png" alt="" loading="lazy" decoding="async"></span>
-        <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Connecting to Dr. Narin</h2><p class="muted">This may take a moment.</p></div>
-    </div>
-  </section>
-
-  <!-- ===================== CALL (KRANE-F13 · camera toggles voice-only in place, one screen) ===================== -->
+    <!-- ===================== CALL (KRANE-F13 · camera toggles voice-only in place, one screen) ===================== -->
   <section class="screen" id="video">
     <div class="screen__top video-call-top"><span class="ttl">ปรึกษาแพทย์</span><button class="transition-stage__close" data-endcall data-go="consult" aria-label="วางสาย">×</button></div>
     <div class="screen__body callstage callstage--live">
@@ -1209,6 +1203,23 @@
       <p class="call-hint" data-call-hint>Turning your camera off keeps the call on voice. End hangs up.</p>
     </div>
   </section>
+  <!-- Item 7 (04/08 deck): ending the call is destructive, so it confirms first.
+       Same sheet construction as the address map picker. -->
+  <div class="map-modal endcall-modal" data-endcall-modal hidden role="dialog" aria-modal="true" aria-labelledby="endcall-title">
+    <div class="map-modal__backdrop" data-endcall-cancel></div>
+    <div class="map-modal__sheet">
+      <div class="map-modal__head">
+        <strong id="endcall-title">วางสายการปรึกษา?</strong>
+        <button class="map-modal__close" type="button" data-endcall-cancel aria-label="ปิด">✕</button>
+      </div>
+      <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> ยังอยู่ในห้องนะครับ ถ้าวางสายแล้วยังคุยต่อทางแชทได้</p>
+      <div class="map-modal__foot">
+        <button class="btn btn--ghost" type="button" data-endcall-cancel>คุยต่อ</button>
+        <button class="btn btn--danger" type="button" data-endcall-confirm>วางสาย</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ===================== WRITING PRESCRIPTION (KRANE-F15/F16 · client 6 Jul: prescribing
        can take a while; show a status screen before the treatment plan) ===================== -->
@@ -1220,8 +1231,8 @@
         <span class="state-view__badge"><i data-lucide="clipboard-pen-line" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
-        <h2 class="h1">Your treatment plan is being prepared</h2>
-        <p class="muted">You can leave—we'll notify you when it's ready.</p>
+        <h2 class="h1">ใกล้เสร็จแล้วครับ</h2>
+        <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> กำลังสรุปผลวินิจฉัย แผนการรักษา และรายการยาให้อยู่ อาจใช้เวลาสักพักเพื่อยืนยันแผนการรักษาที่เหมาะกับคุณครับ</p>
       </div>
       <div class="state-view__timer">ประมาณ 3 ถึง 5 นาที</div>
     </div>
@@ -1232,17 +1243,30 @@
   <section class="screen" id="plan" data-screen-code="SCR-012">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Review medicine order</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Review the medicines selected by your doctor. You can adjust the purchase quantity at checkout.</p></div>
+      <div class="eyebrow">Prescribed by Dr. Narin</div>
       <div>
         <div class="plan-item" data-order-item="finasteride"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div><div class="hint">1 tablet daily · slows hair loss</div>
           <div class="hint plan-item__prescribed">Prescribed quantity · 1 month</div>
+          <span class="qty plan-item__stepper" data-qty data-min="0" data-max="1" data-unit="590">
+            <button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน ฟีนาสเตอไรด์ 1 มก.">−</button><span class="qty-n" data-qty-n role="status" aria-live="polite" aria-atomic="true">1</span><button type="button" class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน ฟีนาสเตอไรด์ 1 มก.">+</button><span class="hint">month</span>
+          </span>
         </div><span class="price" data-line-price>฿ 590</span></div>
         <div class="plan-item" data-order-item="minoxidil"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div><div class="hint">Apply twice daily · regrowth · ฿ 225 per bottle</div>
           <div class="hint plan-item__prescribed">Prescribed quantity · 2 bottles</div>
+          <span class="qty plan-item__stepper" data-qty data-min="0" data-max="2" data-unit="225">
+            <button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน ไมน็อกซิดิลชนิดทา 5%">−</button><span class="qty-n" data-qty-n role="status" aria-live="polite" aria-atomic="true">2</span><button type="button" class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน ไมน็อกซิดิลชนิดทา 5%">+</button><span class="hint">bottles</span>
+          </span>
         </div><span class="price" data-line-price>฿ 450</span></div>
       </div>
-      <p class="hint">The prescription sets the maximum quantity available in this order.</p>
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">เอกสารทางการแพทย์ยังไม่เปิด</div><div class="hint">คำวินิจฉัย แผนการรักษา และใบสั่งยาจะเปิดหลังชำระเงินสำเร็จ</div></div></div>
+
+      <!-- Competitor pattern (Health at Home): a medicine reduced to 0 is
+           declined, not deleted. It moves here so it stays visibly a choice the
+           patient made, with a way to put it back. -->
+      <div class="declined-list" data-declined-list hidden>
+        <div class="section-label">รายการที่คุณเลือกไม่รับ</div>
+        <div data-declined-items></div>
+        <p class="hint">แจ้งแพทย์ในแชทได้ถ้าต้องการเปลี่ยนใจ</p>
+      </div>
     </div>
     <div class="screen__footer">
       <button class="btn btn--primary" data-go="payment">Confirm medicines &amp; continue to payment</button>
@@ -1250,40 +1274,59 @@
   </section>
 
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
+  <!-- Restores the pre-160119a layout: map always visible at the top, fields
+       always visible beneath it, no accordion and no card chrome in between.
+       Two things are new and were never in that version: the map is half the
+       viewport rather than 210px, and the recipient name and phone sit on one
+       row directly under the map. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">แก้ไขที่อยู่จัดส่ง</span></div>
-    <div class="screen__body delivery-details stack-3">
-      <div class="delivery-card delivery-card--map">
-        <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><strong>ที่อยู่จัดส่ง</strong></div>
-        <div class="delivery-map-preview" data-address-map>
-          <iframe class="map-frame" data-address-map-frame title="ตำแหน่งจัดส่ง" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Sukhumvit%2077%2C%20Phra%20Khanong%20Nuea%2C%20Watthana%2C%20Bangkok&z=16&output=embed"></iframe>
-          <span class="map-pin"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-          <button class="delivery-map-cta" type="button" data-address-pick-demo><span data-address-map-cta-label>เลือกจุดบนแผนที่</span> <span aria-hidden="true">→</span></button>
-        </div>
-        <div class="delivery-address-summary"><strong data-address-preview-title>The Base Park West, ห้อง 22/418</strong><span data-address-preview-detail>ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110</span></div>
-      </div>
-
-      <div class="delivery-card">
-        <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="user-round" class="ui-icon" aria-hidden="true"></i></span><strong>ข้อมูลผู้รับ</strong></div>
-        <div class="delivery-recipient"><span><strong>Mali S.</strong><small>081-234-5678</small></span><button type="button" data-demo-action="เปิดแก้ไขข้อมูลผู้รับ">แก้ไข</button></div>
-      </div>
-
-      <details class="delivery-address-edit" open>
-        <summary>แก้ไขรายละเอียดที่อยู่</summary>
-        <div class="stack-3">
-          <div class="field"><label for="addrSearch">ค้นหาอาคาร คอนโด หรือถนน</label><input class="input" id="addrSearch" autocomplete="off" placeholder="เช่น The Base, Ideo หรือ BTS ทองหล่อ"></div>
-          <div class="autocomplete" id="addrSuggest" style="display:none">
-            <div class="ac-item" aria-selected="true" data-fill data-building="The Base Park West, Rm 22/418" data-floor="22" data-addr="Soi Sukhumvit 77, Phra Khanong Nuea" data-district="Watthana, Bangkok 10110" data-km="3.2"><span class="ac-ic"><i data-lucide="house" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span><div><div class="ac-name">บ้าน · The Base Park West</div><div class="ac-sub">สุขุมวิท 77 เขตวัฒนา กรุงเทพฯ 10110</div></div></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ที่อยู่จัดส่ง</span></div>
+    <div class="screen__body address-body stack-4">
+      <!-- Simulated map. In-app only: nothing here navigates out to Google. -->
+      <div class="address-map" data-address-map>
+        <div class="sim-map" data-sim-map data-sim-role="hero">
+          <div class="sim-map__plane" data-sim-plane></div>
+          <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+          <div class="sim-map__zoom">
+            <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
+            <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
           </div>
-          <div class="row" style="gap:var(--sp-2)"><div class="field grow"><label for="addrBuilding">อาคาร / ห้อง</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="ชื่ออาคารและเลขห้อง" required></div><div class="field" style="width:96px"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div></div>
-          <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
-          <div class="field"><label for="addrDistrict">เขต / จังหวัด</label><input class="input" id="addrDistrict" autocomplete="off" placeholder="เขต จังหวัด และรหัสไปรษณีย์" required></div>
-          <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+          <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
         </div>
-      </details>
+      </div>
+      <p class="address-readout" data-address-summary role="status" aria-live="polite">
+        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
+        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
+      </p>
+
+      <div class="field-row">
+        <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
+        <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
+        <div class="field field--narrow"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div>
+      </div>
+      <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
+      <div class="field-row">
+        <div class="field grow"><label for="addrSubdistrict">แขวง / ตำบล</label><input class="input" id="addrSubdistrict" autocomplete="off" placeholder="แขวงหรือตำบล" required></div>
+        <div class="field grow"><label for="addrDistrictName">เขต / อำเภอ</label><input class="input" id="addrDistrictName" autocomplete="off" placeholder="เขตหรืออำเภอ" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field grow"><label for="addrProvince">จังหวัด</label><input class="input" id="addrProvince" autocomplete="off" placeholder="จังหวัด" required></div>
+        <div class="field field--narrow"><label for="addrPostcode">รหัสไปรษณีย์</label><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder="10110" required></div>
+      </div>
+      <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+
+      <!-- addrDistrict is kept as the composed string the payment summary and the
+           km lookup already read. Never edited directly, always derived. -->
+      <input type="hidden" id="addrDistrict">
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
   </section>
+  <!-- The map picker modal is gone: the map on #address IS the picker now. -->
+
 
   <!-- PRE-PAYMENT DELIVERY QUOTE
        A changed address must be accepted by a nearby pharmacy before checkout can
@@ -1326,7 +1369,7 @@
        F18 update (client 20 Jun): payment is handled by a third-party hosted gateway (KBank /
        K-Payment Gateway). This screen mirrors that gateway chrome, Krane plugs into it rather than
        building its own card system. Card details never touch Krane's servers. -->
-  <section class="screen" id="payment" data-screen-code="SCR-008" data-checkout-mode="final">
+  <section class="screen" id="payment" data-screen-code="SCR-015" data-checkout-mode="final">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
     <div class="screen__body stack-4">
 
@@ -1371,10 +1414,10 @@
            accepting the treatment plan never forces the patient through this form. -->
       <div class="stack-2">
         <span class="section-label">การจัดส่ง</span>
-        <button class="checkout-row" data-go="address" aria-label="เปลี่ยนที่อยู่จัดส่ง" data-payment-address-row>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address>The Base Park West, ห้อง 22/418 · เขตวัฒนา กรุงเทพฯ 10110</span></span>
-          <span class="checkout-row__tag" data-payment-address-action>เปลี่ยนที่อยู่</span>
+          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
@@ -1385,15 +1428,15 @@
       <div class="stack-2">
         <div class="checkout-head">
           <span class="section-label">ตัวเลือกการจัดส่ง</span>
-          <span class="hint" data-payment-km>3.2 กม.</span>
+          <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
         </div>
         <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
         <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
           <span class="opt-body">
             <span class="opt-title">จัดส่งภายในวัน</span>
-            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้</span>
+            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้ · คำนวณหลังใส่ที่อยู่</span>
           </span>
-          <span class="checkout-order__price" data-payment-same-day-fee>฿ 120</span>
+          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">ค่าประมาณ ฿80 ถึง ฿180</span>
         </button>
         <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
           <span class="opt-body">
@@ -1614,7 +1657,7 @@
   </section>
 
   <!-- Same SCR-014 status flow. The patient explicitly accepts postal fallback before checkout. -->
-  <section class="screen" id="pharmacyissue" data-screen-code="SCR-014">
+  <section class="screen" id="pharmacyissue" data-screen-code="SCR-019">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบการจัดส่ง</span></div>
     <div class="screen__body state-view state-view--decision">
       <div class="state-view__visual state-view__visual--warning" role="img" aria-label="Same-day delivery unavailable">
@@ -2154,7 +2197,6 @@
         <div class="between"><span class="muted">เครดิตค่ายา</span><strong data-partner-policy-medicine>สูงสุด ฿ 1,000</strong></div>
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">No payment will be taken now</div><div class="hint">Any medicine or delivery balance will be shown after your consultation.</div></div></div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake1">Noted</button></div>
   </section>
@@ -2162,13 +2204,13 @@
   <section class="screen" id="partner-intake">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลสุขภาพ</span></div>
     <div class="screen__body partner-health-compact">
-      <div class="stack-1"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2></div>
+      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2><p class="muted">ข้อมูลที่ครบถ้วน จะช่วยให้คุณหมอวินิจฉัยอาการได้แม่นยำยิ่งขึ้น</p></div>
       <!-- One client-flow box equals one compact page: demographics, measurements
            and the three clinical-history fields stay together. -->
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
-          <div class="field grow"><label for="partner-sex">เพศกำเนิด</label><select class="select" id="partner-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option><option value="unspecified">ไม่ระบุ</option></select></div>
-          <div class="field grow"><label for="partner-dob">วันเกิด</label><input class="input" id="partner-dob" type="date" autocomplete="bday" required></div>
+          <div class="field grow"><label for="partner-sex">เพศกำเนิด</label><select class="select" id="partner-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
+          <div class="field grow"><label for="partner-dob">วันเกิด</label><input class="input" id="partner-dob" type="date" autocomplete="bday" value="1994-03-12" required></div>
         </div>
         <div class="partner-health-grid">
           <div class="field grow"><label for="partner-height">ส่วนสูง (ซม.)</label><input class="input" id="partner-height" inputmode="numeric" placeholder="เช่น 175"></div>
@@ -2543,9 +2585,15 @@
   if(flowConfig.get('consult_payment')==='after') flowState.consultationPaymentTiming='after';
   /* The golden Mali S. QA path starts with a saved delivery address. Address editing
      remains an explicit detour from checkout and never interrupts plan acceptance. */
+  /* Checkout now starts WITHOUT a delivery address so the auto-fill on #address
+     is visibly driven by pin selection. The saved Mali S. address is still
+     reachable: ?address=saved (or localStorage kraneDemoSavedAddress) restores
+     the pre-filled state for demoing a returning patient. */
+  const wantSavedAddress = /(?:\?|&)address=saved\b/.test(location.search)
+    || (()=>{ try{ return localStorage.getItem('kraneDemoSavedAddress')==='1' }catch(e){ return false } })();
   if(flowState.orderState.checkoutFlowVersion!=='saved-address-checkout-v2'){
-    flowState.orderState.address=Object.assign({},MALI_SAVED_ADDRESS);
-    flowState.orderState.addressConfirmed=true;
+    flowState.orderState.address=wantSavedAddress ? Object.assign({},MALI_SAVED_ADDRESS) : {};
+    flowState.orderState.addressConfirmed=wantSavedAddress;
     flowState.orderState.checkoutFlowVersion='saved-address-checkout-v2';
   }
   function readSessionJson(key){
@@ -2787,7 +2835,7 @@
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
-    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
+    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
     plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
   };
   function careJourneyMarkup(current){
@@ -2802,11 +2850,12 @@
       return '<li class="care-journey__step'+state+'" aria-current="'+(step===current?'step':'false')+'">'+
         '<span class="care-journey__dot">'+mark+'</span>'+
         '<span class="care-journey__name">'+short+'</span>'+
+        '<i class="care-journey__fill" data-journey-fill></i>'+
         '<span class="sr-only">ขั้นตอนที่ '+step+' จาก '+total+', '+careJourneyLabels[index]+'</span>'+
       '</li>';
     }).join('');
     return '<nav class="care-journey" aria-label="ขั้นตอนการรับบริการ">'+
-      '<span class="care-journey__current"><b>'+String(current).padStart(2,'0')+'</b><strong>'+careJourneyShort[current-1]+'</strong><small>'+(nextStep ? '<i>Next</i> '+nextStep : '<i>Final step</i>')+'</small><em>'+current+' / '+total+'</em></span>'+
+      '<span class="care-journey__current"><b>'+String(current).padStart(2,'0')+'</b><strong>'+careJourneyShort[current-1]+'</strong><small>'+(nextStep ? '<i>Next</i> '+nextStep : '<i>Final step</i>')+'</small></span>'+
       '<ol class="care-journey__steps">'+steps+'</ol>'+
     '</nav>';
   }
@@ -2818,19 +2867,16 @@
     // The stepper is always inserted right under the back/title bar.
     top.insertAdjacentHTML('afterend', careJourneyMarkup(current));
     const journey = top.nextElementSibling;
-    // Questionnaire screens keep a thin per-question progress bar (+ "1/7")
-    // inside .screen__top. That is the SUB level, so lift it out of the top
-    // bar and drop it directly BELOW the main stepper. The back button stays
-    // alone at the top where it belongs.
+    // The second thin bar is gone. It measured sub-steps while the stepper above
+    // measured stages, and both rendered as "1 / 5" a few pixels apart. The
+    // current stage's segment now fills as the sub-steps complete, so one
+    // control carries both facts. Strip the old bar and its duplicate count.
     const progress = top.querySelector('.progress');
-    if(progress && journey){
+    if(progress){
       const track = progress.closest('.grow') || progress;
+      track.remove();
       const count = top.querySelector('.hint');
-      const sub = document.createElement('div');
-      sub.className = 'screen__subprogress';
-      sub.appendChild(track);
-      if(count) sub.appendChild(count);
-      journey.insertAdjacentElement('afterend', sub);
+      if(count) count.remove();
     }
   });
   // Photo upload on the intake photo step: real file picker, live thumbnails,
@@ -3085,7 +3131,13 @@
     if(subtotalEl) subtotalEl.textContent = baht(subtotal);
     // the fee shows twice: in the bill rows and on the delivery option card
     payment.querySelectorAll('[data-payment-delivery]').forEach(el => { el.textContent = baht(delivery); });
-    payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => { el.textContent = baht(deliveryFeeFor('same-day')); });
+    // Same-day delivery is distance-based, so before an address exists it can only
+    // be quoted as a range. Postal stays free because it is flat-rate nationwide.
+    const addrKnown = Boolean(flowState.orderState.addressConfirmed);
+    payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => {
+      el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'ค่าประมาณ ฿80 ถึง ฿180';
+      el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
+    });
     if(addonRow) addonRow.hidden=addon<=0;
     if(addonEl) addonEl.textContent=baht(addon);
     if(insuranceRow) insuranceRow.hidden = credit <= 0;
@@ -3103,7 +3155,7 @@
     const kmTarget = payment.querySelector('[data-payment-km]');
     if(kmTarget) kmTarget.textContent = flowState.orderState.addressConfirmed
       ? `${flowState.orderState.address.km || '3.2'} กม.`
-      : 'เลือกที่อยู่ก่อน';
+      : 'คำนวณหลังใส่ที่อยู่';
     // Savings are stated plainly. No celebration copy and no emoji (DESIGN.md 7c).
     const saveWrap = payment.querySelector('[data-payment-save]');
     if(saveWrap){
@@ -3509,17 +3561,227 @@
     }
     return state;
   }
+  /* ==================== SIMULATED MAP (prototype only) ====================
+     SIMULATED, NOT REAL. There is no Google Maps API key in this prototype and
+     the previous implementation was a keyless `output=embed` iframe, which
+     cannot be panned or pin-dropped by the host page and sends any tap inside
+     it out to Google. That iframe is gone: nothing on this screen navigates
+     away from the app any more.
+
+     What is real here: pan, zoom, pin placement, the empty -> filled state
+     transition, and the field auto-fill. What is fake: the geography (a CSS
+     street grid), the reverse geocoding (a lookup table of Bangkok addresses
+     chosen by map position), and "current location" (a fixed Bangkok point,
+     not navigator.geolocation).
+
+     FOR PRODUCTION: replace .sim-map with a Maps JS API or Leaflet canvas,
+     swap simReverseGeocode() for a Geocoding API call, and swap simLocate()
+     for navigator.geolocation.getCurrentPosition(). The DOM contract below
+     (data-sim-* hooks and applyAddress()) can stay as-is.
+     ====================================================================== */
+  /* Address parts are stored split, the way a Thai address form asks for them.
+     `district` stays as a composed string because the payment summary and the
+     km lookup already read it, so splitting the inputs does not ripple into the
+     payment path. composeDistrict() is the single place that joins them. */
+  function composeDistrict(p){
+    return [p.subdistrict, p.districtName, p.province, p.postcode].filter(Boolean).join(' ');
+  }
+  const SIM_PLACES = [
+    { title:'The Base Park West, ห้อง 22/418', building:'The Base Park West, ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77',
+      subdistrict:'แขวงพระโขนงเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
+    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท',
+      subdistrict:'แขวงบางจาก', districtName:'เขตพระโขนง', province:'กรุงเทพมหานคร', postcode:'10260' },
+    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก',
+      subdistrict:'แขวงห้วยขวาง', districtName:'เขตห้วยขวาง', province:'กรุงเทพมหานคร', postcode:'10310' },
+    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12',
+      subdistrict:'แขวงคลองตันเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
+    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4',
+      subdistrict:'แขวงคลองเตย', districtName:'เขตคลองเตย', province:'กรุงเทพมหานคร', postcode:'10110' }
+  ];
+  SIM_PLACES.forEach(p => { p.district = composeDistrict(p); p.detail = p.line + ' · ' + p.district; });
+  const simState = { x:0, y:0, z:1, place:SIM_PLACES[0], picked:false };
+
+  function simReverseGeocode(x,y){
+    // FAKE. Deterministic pick so panning to the same spot gives the same result.
+    const idx = Math.abs(Math.round(x/180) * 3 + Math.round(y/180)) % SIM_PLACES.length;
+    return SIM_PLACES[idx];
+  }
+  function simApplyTransform(){
+    document.querySelectorAll('[data-sim-plane]').forEach(plane => {
+      plane.style.transform = `translate(calc(-50% + ${simState.x}px), calc(-50% + ${simState.y}px)) scale(${simState.z})`;
+    });
+  }
+  function simUpdateReadout(apply){
+    const place = simReverseGeocode(simState.x, simState.y);
+    simState.place = place;
+    if(apply !== false) applyAddress(place);
+  }
+  function simBindPan(map){
+    if(!map || map.dataset.simBound === 'true') return;
+    map.dataset.simBound = 'true';
+    let active=false, sx=0, sy=0, ox=0, oy=0;
+    map.addEventListener('pointerdown', e => {
+      if(e.target.closest('[data-sim-zoom],[data-sim-locate]')) return;
+      active=true; sx=e.clientX; sy=e.clientY; ox=simState.x; oy=simState.y;
+      map.classList.add('is-panning');
+      if(map.setPointerCapture) try{ map.setPointerCapture(e.pointerId) }catch(err){}
+    });
+    map.addEventListener('pointermove', e => {
+      if(!active) return;
+      simState.x = ox + (e.clientX - sx);
+      simState.y = oy + (e.clientY - sy);
+      simApplyTransform();
+    });
+    const end = () => { if(!active) return; active=false; map.classList.remove('is-panning'); simUpdateReadout(); };
+    map.addEventListener('pointerup', end);
+    map.addEventListener('pointercancel', end);
+    map.addEventListener('pointerleave', end);
+  }
+  function simLocate(){
+    // FAKE. Production: navigator.geolocation.getCurrentPosition().
+    simState.x=0; simState.y=0; simState.z=1.35;
+    simApplyTransform(); simUpdateReadout();
+    showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว และกรอกที่อยู่ให้แล้ว','success');
+  }
+  function applyAddress(place){
+    simState.picked=true;
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el && el.value!==v){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); } };
+    set('addrBuilding',place.building); set('addrFloor',place.floor); set('addrLine',place.line);
+    set('addrSubdistrict',place.subdistrict); set('addrDistrictName',place.districtName);
+    set('addrProvince',place.province); set('addrPostcode',place.postcode);
+    syncComposedDistrict();
+    const t=document.querySelector('[data-address-preview-title]');
+    const d=document.querySelector('[data-address-preview-detail]');
+    if(t) t.textContent=place.title;
+    if(d) d.textContent=place.detail;
+    const prev=document.querySelector('[data-address-map]');
+    if(prev) prev.classList.add('is-pin-selected');
+  }
+
+  /* addrDistrict is never typed into. It is recomposed from the four visible
+     parts on every edit, so the payment summary and the km lookup keep reading
+     exactly the string shape they read before the form was split. */
+  function syncComposedDistrict(){
+    const v=id=>(document.getElementById(id)?.value||'').trim();
+    const el=document.getElementById('addrDistrict');
+    if(!el) return;
+    el.value=composeDistrict({subdistrict:v('addrSubdistrict'),districtName:v('addrDistrictName'),
+                              province:v('addrProvince'),postcode:v('addrPostcode')});
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
+  /* The UX copy doc writes the doctor as "คุณหมอ __". Bind it to one value
+     rather than shipping the underscores. Production replaces DOCTOR_NAME with
+     the matched doctor from the booking response; every [data-doctor-name] slot
+     picks it up. */
+  /* ==================== PENDING DECISIONS ====================
+     Each of these is BUILT but OFF. Flip the flag to turn it on; nothing else
+     needs editing. Set from the URL for a quick look, e.g. ?coverage=on
+     ------------------------------------------------------------------- */
+  const KRANE_FLAGS = (() => {
+    const q = new URLSearchParams(location.search);
+    return {
+      // Q1: show the consultation fee struck through to 0 with a coverage line.
+      // Answer "coverage on, partner only" -> set coverageLine to true.
+      coverageLine: q.get('coverage') === 'on' ? true : false,
+      // Q1b: does coverage apply to everyone, or only the partner entry?
+      coverageAllEntries: false,
+    };
+  })();
+
+  const DOCTOR_NAME = 'นรินทร์';
+  function fillDoctorName(root){
+    (root || document).querySelectorAll('[data-doctor-name]').forEach(el => { el.textContent = DOCTOR_NAME; });
+  }
+
+  /* A medicine stepped down to 0 is declined rather than removed: it leaves the
+     order list and appears under "รายการที่คุณเลือกไม่รับ" with a way back.
+     Without this a zeroed row sat in the list at ฿0, indistinguishable from one
+     the patient kept. */
+  /* Q1 (pending). When the coverage flag is on, the consultation fee is shown
+     struck through and a deduction line brings it to zero. Off by default, so
+     the screen behaves exactly as before until the decision is made. */
+  function applyCoverageFlag(){
+    const scr=document.getElementById('consultpay');
+    if(!scr) return;
+    const row=scr.querySelector('[data-coverage-row]');
+    const applies = KRANE_FLAGS.coverageLine &&
+      (KRANE_FLAGS.coverageAllEntries || document.body.dataset.entry === 'partner');
+    if(row) row.hidden = !applies;
+    scr.querySelectorAll('[data-consult-fee]').forEach(el => {
+      el.style.textDecoration = applies ? 'line-through' : '';
+      el.style.opacity = applies ? '.55' : '';
+    });
+  }
+
+  function syncDeclinedMedicines(){
+    const plan=document.getElementById('plan');
+    if(!plan) return;
+    const wrap=plan.querySelector('[data-declined-list]');
+    const target=plan.querySelector('[data-declined-items]');
+    if(!wrap || !target) return;
+    const declined=[];
+    plan.querySelectorAll('[data-order-item]').forEach(row => {
+      const key=row.dataset.orderItem;
+      const ctl=row.querySelector('[data-qty]');
+      if(!ctl) return;
+      const q=parseInt(ctl.querySelector('[data-qty-n]')?.textContent || '0',10);
+      const nameEl=row.querySelector('[style*="fw-semibold"]');
+      const name=(nameEl?.textContent || key).trim();
+      row.hidden = q<=0;
+      if(q<=0) declined.push({key,name});
+    });
+    target.innerHTML = declined.map(d =>
+      '<div class="declined-row"><span class="grow">'+d.name+'</span>'+
+      '<button type="button" class="btn btn--ghost btn--sm" data-restore-item="'+d.key+'">เพิ่มกลับ</button></div>'
+    ).join('');
+    wrap.hidden = declined.length===0;
+  }
+
+  /* Keep addrDistrict in step with the four visible parts. */
+  ['addrSubdistrict','addrDistrictName','addrProvince','addrPostcode'].forEach(id => {
+    document.addEventListener('input', e => { if(e.target && e.target.id===id) syncComposedDistrict(); });
+  });
+
+  /* The map takes half the viewport, so every address field sits below the fold.
+     On a phone the keyboard then covers whichever field is focused, so scroll it
+     back into the visible half. scrollIntoView with block:'center' lands it above
+     the keyboard on both 390px and 360px viewports. */
+  document.addEventListener('focusin', e => {
+    const field=e.target && e.target.closest && e.target.closest('#address .field');
+    if(!field) return;
+    setTimeout(() => { try{ field.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){} }, 120);
+  });
+
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
     const byCategory = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
-    // Keep the first render of each screen so a path without its own intake3
-    // (hair and general) falls back to the shared markup instead of blanking out.
+    // Template coverage per concern (verified 2026-08-04):
+    //   skin / sexual / sleep -> own intake1, intake2, intake3
+    //   hair                  -> own intake1, intake2; intake3 falls back to the
+    //                            authored base, which is the generic "previous
+    //                            care or treatment" set and is concern-appropriate
+    //   general               -> own intake1, intake2; intake3 is SKIPPED entirely
+    //                            by the routing rule above (EC-011), so it never
+    //                            renders the concern-specific treatment history
+    // A missing template therefore falls back to the authored base markup only
+    // where that base is genuinely generic. Never let it inherit another
+    // concern's set: add an explicit template, or add the screen to
+    // INTAKE_SKIPPED_BY_GENERAL.
     ['intake1','intake2','intake3'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
-      if(!intakeBaseMarkup[id]) intakeBaseMarkup[id] = body.innerHTML;
+      // Cache the AUTHORED markup, never the enhanced markup. Reading innerHTML
+      // after custom-select has run captures its generated wrapper without the
+      // listeners, so restoring that cache produced a select that looked right
+      // and ignored every tap until a page refresh rebuilt it.
+      if(!intakeBaseMarkup[id]){
+        const pristine = body.cloneNode(true);
+        if(window.kraneStripSelectEnhancement) window.kraneStripSelectEnhancement(pristine);
+        intakeBaseMarkup[id] = pristine.innerHTML;
+      }
       const template = (intakeTemplates[key] || {})[id];
       body.innerHTML = template !== undefined ? template : intakeBaseMarkup[id];
       if(window.kraneEnhanceSelects) window.kraneEnhanceSelects(body);
@@ -3529,22 +3791,23 @@
   }
 
   function updateIntakeProgress(id){
-    const general = selectedCategory().general;
-    const visual = categoryNeedsPhotos();
-    const steps = general
-      ? {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']}
-      : visual
-        ? {intake1:[17,'1 / 6'],intake2:[33,'2 / 6'],intake3:[50,'3 / 6'],intake4:[67,'4 / 6'],intake5:[83,'5 / 6'],'intake-general':[100,'6 / 6']}
-        : {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']};
-    const config = steps[id];
-    if(!config) return;
+    /* Derived from intakeStepOrder(), so a concern that skips a step still
+       reaches 100% on its last sub-step: general and hair run 1/4..4/4 and the
+       final one fills the segment completely, rather than stopping at 4/5 of
+       the way across. */
+    const order = intakeStepOrder();
+    const index = order.indexOf(id);
+    if(index < 0) return;
+    const pct = Math.round(((index + 1) / order.length) * 100);
     const screen = document.getElementById(id);
-    const fill = screen && screen.querySelector('.progress span');
-    // The "1 / 7" count now lives in the sub-progress row under the stepper;
-    // fall back to the old top-bar position for any screen not yet moved.
-    const label = screen && (screen.querySelector('.screen__subprogress > .hint') || screen.querySelector('.screen__top > .hint'));
-    if(fill) fill.style.width = config[0] + '%';
-    if(label) label.textContent = config[1];
+    const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
+    if(!fill) return;
+    /* Start from the previous sub-step's width so the change is a visible
+       animation rather than a jump. The screen is already on-screen when this
+       runs, so paint the old width first, then the new one on the next frame. */
+    const prev = index > 0 ? Math.round((index / order.length) * 100) : 0;
+    if(!fill.style.width) fill.style.width = prev + '%';
+    window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
   }
 
   function renderConditionList(){
@@ -3690,7 +3953,9 @@
     });
     const detail=group.querySelector('[data-partner-history-detail]');
     const input=detail?.querySelector('input');
-    if(detail) detail.hidden=false;
+    // Item 3 (04/08 deck): the detail box appears only when "มี" is chosen,
+    // rather than always showing as a disabled field.
+    if(detail) detail.hidden=!hasDetails;
     if(input){
       input.disabled=!hasDetails;
       if(!hasDetails) input.value='';
@@ -3905,7 +4170,7 @@
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
-    connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
+    video:'consult', 'rx-writing':'consult', plan:'consult',
     payment:'plan', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
     'pharmacy-search':'payment-success', pharmacyaccepted:'pharmacy-search', pharmacypending:'pharmacyaccepted',
     payfail:'payment-gw',
@@ -4054,6 +4319,54 @@
     if(consultationBalanceDue()<=0) return 'waitroom';
     return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
   }
+  /* EC-011: a consultation must not be asked condition-specific questions that
+     do not belong to its concern. #intake3 is the "what have you tried for this
+     concern" set, and intakeTemplates only defines it for skin, sexual and
+     sleep. hair and general have no intake3 of their own, so both previously
+     fell through to the authored base markup and rendered another concern's
+     question set. Both now skip it.
+
+     The rule is derived from template coverage rather than a hardcoded concern
+     list, so adding an intake3 template for hair or general automatically stops
+     the skip and no second place needs editing. Kept as routing rather than
+     markup so it survives the innerHTML round-trip renderIntakeQuestions
+     performs (the same round-trip that previously broke the custom selects). */
+  const INTAKE_CONCERN_SPECIFIC = ['intake3'];
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  function intakeConcernKey(){
+    try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
+    catch(e){ return 'hair'; }
+  }
+  function intakeSkipped(id){
+    if(!INTAKE_CONCERN_SPECIFIC.includes(id)) return false;
+    try { return !((intakeTemplates[intakeConcernKey()] || {})[id]); }
+    catch(e){ return false; }
+  }
+  /* The screens this concern actually visits, in order. Everything that counts
+     intake steps reads from here so the progress label can never disagree with
+     the routing. */
+  function intakeStepOrder(){
+    const seq = ['intake1','intake2','intake3','intake4'];
+    try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
+    seq.push('intake-general');
+    return seq.filter(id => !intakeSkipped(id));
+  }
+  function skipForwardFrom(id){
+    const seq = ['intake1','intake2','intake3','intake4'];
+    let i = seq.indexOf(id);
+    if(i < 0) return id;
+    while(i < seq.length && intakeSkipped(seq[i])) i++;
+    return seq[i] || 'intake4';
+  }
+  function skipBackFrom(id){
+    const seq = ['intake1','intake2','intake3','intake4'];
+    let i = seq.indexOf(id);
+    if(i < 0) return null;
+    i--;
+    while(i >= 0 && intakeSkipped(seq[i])) i--;
+    return i >= 0 ? seq[i] : null;
+  }
+
   function seededHistory(id){
     const path=[];
     const visited=new Set();
@@ -4061,7 +4374,8 @@
     while(current && !visited.has(current)){
       visited.add(current);
       path.unshift(current);
-      current=directEntryParent[current];
+      const skipped=skipBackFrom(current);
+      current = skipped !== null ? skipped : directEntryParent[current];
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -4266,13 +4580,14 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','connecting','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
+    'consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
     'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
     'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
+    if(intakeSkipped(target)) target = skipForwardFrom(target);
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -4351,6 +4666,11 @@
       const cj = document.querySelector('#'+aid+' .care-journey');
       if(cj) cj.hidden = !journeyActive;
     });
+    /* Partner access does not follow the five-stage Krane shape, so it shows no
+       stepper at all rather than a step count that would be wrong. */
+    if(flowState.entryChannel === 'partner'){
+      document.querySelectorAll('.care-journey').forEach(cj => { cj.hidden = true; });
+    }
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
     if(window.kraneSyncSelects) window.kraneSyncSelects(activeScreen);
@@ -4423,31 +4743,86 @@
         if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
       },120);
     }
+    if(id==='consultpay') applyCoverageFlag();
+    if(id==='plan') syncDeclinedMedicines();
+    if(id==='address'){
+      const hero=document.querySelector('#address [data-sim-map]');
+      if(hero){ simBindPan(hero); simApplyTransform(); }
+    }
+    fillDoctorName();
     clearTimeout(deliveryQuoteTimer);
     if(id==='delivery-quote'){
-      flowState.orderState.deliveryQuoteStatus='pending';
-      flowState.orderState.deliveryQuoteAmount=null;
-      persistFlowState();
+      /* SCR-013B has three states, per the 04/08 feedback:
+           1 searching    - looking for a pharmacy that can deliver
+           2 found        - one accepted, with distance and ETA
+           3 unavailable  - none can do same-day, fall back to postal
+         Re-entering the screen (which is what an address change does) re-runs
+         the sequence from state 1. Copy is Thai in place, matching the rest of
+         this screen. */
       const quoteScreen=document.getElementById('delivery-quote');
       const title=quoteScreen?.querySelector('[data-delivery-quote-title]');
       const copy=quoteScreen?.querySelector('[data-delivery-quote-copy]');
       const timer=quoteScreen?.querySelector('[data-delivery-quote-timer]');
-      if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
-      if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
-      if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
+      const setQuoteState=(state,data) => {
+        if(!quoteScreen) return;
+        quoteScreen.dataset.quoteState=state;
+        if(state==='searching'){
+          if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
+          if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
+          if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
+        } else if(state==='found'){
+          if(title) title.textContent='พบร้านยาที่จัดส่งได้แล้ว';
+          if(copy) copy.textContent=`${data.pharmacy} · ห่าง ${data.km} กม. · ค่าจัดส่ง ${baht(data.fee)}`;
+          if(timer) timer.textContent=`ถึงภายใน ${data.eta}`;
+        } else if(state==='unavailable'){
+          if(title) title.textContent='ยังไม่มีร้านยาที่ส่งวันเดียวกันได้';
+          if(copy) copy.textContent='เปลี่ยนเป็นจัดส่งมาตรฐานให้แล้ว ไม่มีค่าจัดส่งเพิ่ม';
+          if(timer) timer.textContent='ถึงพรุ่งนี้ · มีหมายเลขติดตาม';
+        }
+      };
+      flowState.orderState.deliveryQuoteStatus='pending';
+      flowState.orderState.deliveryQuoteAmount=null;
+      persistFlowState();
+      setQuoteState('searching');
+      const sameDayUnavailable = pharmacyForceDecline === true;
       deliveryQuoteTimer=setTimeout(() => {
         if(!quoteScreen?.classList.contains('active')) return;
+        if(sameDayUnavailable){
+          // state 3: no same-day pharmacy, fall back to the free postal service
+          deliveryMethod='postal';
+          flowState.orderState.deliveryMethod='postal';
+          flowState.orderState.deliveryQuoteStatus='postal';
+          flowState.orderState.deliveryQuoteAmount=0;
+          persistFlowState();
+          setQuoteState('unavailable');
+          refreshMedicationCheckout();
+          deliveryQuoteTimer=setTimeout(() => {
+            if(!quoteScreen?.classList.contains('active')) return;
+            if(history[history.length-1]==='delivery-quote') history.pop();
+            if(history[history.length-1]==='address') history.pop();
+            if(history[history.length-1]!=='payment') history.push('payment');
+            show('payment',false);
+            showActionToast('เปลี่ยนเป็นจัดส่งมาตรฐาน ไม่มีค่าจัดส่งเพิ่ม','warning');
+          }, reduceMotion ? 700 : 2600);
+          return;
+        }
+        // state 2: a pharmacy accepted
         const fee=calculatedSameDayDeliveryFee();
+        const km=(flowState.orderState.address && flowState.orderState.address.km) || '3.2';
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=fee;
         persistFlowState();
+        setQuoteState('found',{pharmacy:'Fascino อารีย์',km:km,fee:fee,eta:'18:00 น. วันนี้'});
         refreshMedicationCheckout();
-        if(history[history.length-1]==='delivery-quote') history.pop();
-        if(history[history.length-1]==='address') history.pop();
-        if(history[history.length-1]!=='payment') history.push('payment');
-        show('payment',false);
-        showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
-      },reduceMotion ? 900 : 4200);
+        deliveryQuoteTimer=setTimeout(() => {
+          if(!quoteScreen?.classList.contains('active')) return;
+          if(history[history.length-1]==='delivery-quote') history.pop();
+          if(history[history.length-1]==='address') history.pop();
+          if(history[history.length-1]!=='payment') history.push('payment');
+          show('payment',false);
+          showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
+        }, reduceMotion ? 700 : 2600);
+      }, reduceMotion ? 700 : 2400);
     }
     if(id==='payment'){
       syncDeliveryAddress();
@@ -4467,9 +4842,7 @@
         if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
       },reduceMotion ? 350 : 1800);
     }
-    // connecting state auto-advances to the live video call (demo realism)
     clearTimeout(connectTimer);
-    if(id === 'connecting'){ connectTimer = setTimeout(() => { if(document.getElementById('connecting').classList.contains('active')) replaceCurrent('video'); }, 1600); }
     // F13: entering a call marks it active; the chat screen then shows the return bar
     if(id === 'video'){
       callActive = true; lastCall = id;
@@ -4502,7 +4875,11 @@
       // NO -> availability page to pick a slot, where the same gate runs on continue.
       matchTimer = setTimeout(() => {
         if(!mScr.classList.contains('active')) return;
-        replaceCurrent(doctorAvailable ? consultationHandoffTarget() : 'noslots');
+        /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
+           matching, including when insurance covers it and the balance is 0.
+           consultationHandoffTarget() skipped straight to the waiting room in
+           that case, which is what hid the fee summary. */
+        replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
       }, 3400);
     }
     // A bank-confirmed order is released to the pharmacist. A decline reroutes
@@ -4629,16 +5006,21 @@
     const w = document.getElementById('waitroom'); if(!w) return;
     const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
           timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]');
-    if(title) title.textContent = 'Doctor will let you in shortly';
-    if(copy) copy.textContent = "We'll notify you when the doctor is ready.";
-    if(timer) timer.textContent = 'About 2–3 min';
-    if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'Waiting to be admitted…'; }
+    /* Two states on one screen. Waiting carries the queue position and an
+       estimate; ready carries the UX-doc copy. Same three hooks either way. */
+    const queuePos = flowState.orderState.queuePosition || 2;
+    if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
+    if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME} ครับ`;
+    if(timer) timer.textContent = `ประมาณ ${queuePos * 3} นาที`;
+    if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
+    const note = w.querySelector('[data-wait-note]');
+    if(note) note.textContent = 'อย่าลืมอนุญาตให้ใช้กล้องและไมค์ด้วยครับ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอดนะครับ';
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
-      if(title) title.textContent = 'Doctor is ready';
-      if(copy) copy.textContent = 'Video starts when you enter. You can turn it off anytime.';
-      if(timer) timer.textContent = 'Ready now';
-      if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'Enter the room'; }
+      if(title) title.textContent = 'ถึงคิวแล้ว!';
+      if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
+      if(timer) timer.textContent = '';
+      if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'เข้าห้องปรึกษา'; }
     }, reduceMotion ? 400 : 4200);
   }
   // deep link: open a screen directly via URL hash (e.g. prototype.html#concern)
@@ -5203,53 +5585,55 @@
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
     if(ec) callActive = false;
-    const addressPick=e.target.closest('[data-address-pick-demo]');
-    if(addressPick){
-      const screen=addressPick.closest('#address');
-      const selected={
-        search:'Ideo Mobi Sukhumvit 66',
-        building:'Ideo Mobi Sukhumvit 66, ห้อง 18/92',
-        floor:'18',
-        line:'ซอยสุขุมวิท 66 ถนนสุขุมวิท',
-        district:'เขตบางนา กรุงเทพฯ 10260',
-        note:'ฝากที่ล็อบบี้อาคาร A โทรก่อนถึง 5 นาที',
-        km:'6.8',
-        query:'Ideo Mobi Sukhumvit 66 Bangkok'
-      };
-      const fill=(id,value) => {
-        const input=screen?.querySelector(`#${id}`);
-        if(!input) return;
-        input.value=value;
-        input.dispatchEvent(new Event('input',{bubbles:true}));
-        input.dispatchEvent(new Event('change',{bubbles:true}));
-      };
-      fill('addrSearch',selected.search);
-      fill('addrBuilding',selected.building);
-      fill('addrFloor',selected.floor);
-      fill('addrLine',selected.line);
-      fill('addrDistrict',selected.district);
-      fill('addrNote',selected.note);
-      const suggestions=screen?.querySelector('#addrSuggest');
-      if(suggestions) suggestions.style.display='none';
-      if(screen) screen.dataset.selectedKm=selected.km;
-      writeDeliveryAddressDraft(screen,selected);
-      const title=screen?.querySelector('[data-address-preview-title]');
-      const detail=screen?.querySelector('[data-address-preview-detail]');
-      const map=screen?.querySelector('[data-address-map]');
-      const frame=screen?.querySelector('[data-address-map-frame]');
-      const ctaLabel=screen?.querySelector('[data-address-map-cta-label]');
-      if(title) title.textContent=selected.building;
-      if(detail) detail.textContent=`${selected.line} · ${selected.district}`;
-      if(frame) frame.src=`https://maps.google.com/maps?q=${encodeURIComponent(selected.query)}&z=16&output=embed`;
-      if(map){
-        map.classList.remove('is-pin-selected');
-        void map.offsetWidth;
-        map.classList.add('is-pin-selected');
+    // ---- declined medicines: put one back ----
+    const restore=e.target.closest('[data-restore-item]');
+    if(restore){
+      const key=restore.dataset.restoreItem;
+      const row=document.querySelector(`#plan [data-order-item="${key}"]`);
+      const ctl=row?.querySelector('[data-qty]');
+      if(ctl){
+        const nEl=ctl.querySelector('[data-qty-n]');
+        const max=parseInt(ctl.dataset.max,10), unit=parseInt(ctl.dataset.unit,10);
+        nEl.textContent=max;
+        ctl.querySelector('[data-qty-minus]').disabled=false;
+        ctl.querySelector('[data-qty-plus]').disabled=true;
+        const line=row.querySelector('[data-line-price],[data-order-price]');
+        if(line) line.textContent='฿ '+(unit*max).toLocaleString();
+        flowState.orderState.quantities[key]=max;
+        persistFlowState();
+        syncDeclinedMedicines();
+        syncOrderCheckout();
+        refreshMedicationCheckout();
+        showActionToast('เพิ่มกลับเข้ารายการแล้ว','success');
       }
-      if(ctaLabel) ctaLabel.textContent='เลือกตำแหน่งนี้แล้ว';
-      showActionToast('ปักหมุดแล้ว และกรอกรายละเอียดที่อยู่ให้แล้ว','success');
       return;
     }
+    // ---- end-call confirmation (item 7) ----
+    const endCall=e.target.closest('[data-endcall]');
+    if(endCall){
+      e.preventDefault();
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m){ m.hidden=false; fillDoctorName(m); return; }
+    }
+    if(e.target.closest('[data-endcall-cancel]')){
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m) m.hidden=true;
+      return;
+    }
+    if(e.target.closest('[data-endcall-confirm]')){
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m) m.hidden=true;
+      show('consult');
+      return;
+    }
+    // ---- map picker (in-app only, never navigates out) ----
+    const simZoom=e.target.closest('[data-sim-zoom]');
+    if(simZoom){
+      const dir=parseInt(simZoom.dataset.simZoom,10);
+      simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
+      simApplyTransform(); return;
+    }
+    if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
@@ -5294,6 +5678,7 @@
         flowState.orderState.quantities[item]=q;
         persistFlowState();
         syncOrderCheckout();
+        syncDeclinedMedicines();
         refreshMedicationCheckout();
       }
       return;
@@ -5570,7 +5955,6 @@
     'consultpay':       { id:'KRANE-F39 + KRANE-F09', name:'Consultation Fee Payment', stories:['US-F39.1: Discount / coupon code can be entered at checkout','Prototype assumption: Payment 1 is consultation fee only and is required before entering the waiting room','Prototype assumption: medicine and delivery remain a separate payment after prescription acceptance'] },
     'waitroom':         { id:'KRANE-F14', name:'Waiting Room, Doctor Joins First', stories:['US-F14.4: Doctor joins first before patient enters the consultation room','Client v3: the patient cannot enter a blank room; the Enter button unlocks only when the doctor admits them','Patient sees current status, estimated next step, and what to prepare while waiting'] },
     'consult':          { id:'KRANE-F13', name:'Consultation Screen (Patient), Chat Tab', stories:['US-F13.1: Chat + video tabs freely switchable during session','US-F13.2: Patient sees doctor name, photo, and licence number in session','US-F13.3: Patient can view intake form summary in the same view','US-F13.4: Session stays open until doctor closes it and sends the treatment plan','Prototype assumption: consultation fee is already paid before this screen'] },
-    'connecting':       { id:'KRANE-F13', name:'Consultation Screen, Connecting (edge state)', stories:['US-F13.5: Video call is the default on session start'] },
     'video':            { id:'KRANE-F13', name:'Consultation Screen, Call (camera toggles voice-only in place)', stories:['US-F13.1: Chat + video tabs freely switchable without disruption','US-F13.6: Patient can navigate to payment and back without dropping the call'] },
     'rx-writing':       { id:'KRANE-F15', name:'Doctor Writing Prescription (status)', stories:['Client 6 Jul: prescribing can take a while; the patient sees a status screen before the treatment plan','US-F15.2: the patient is notified (LINE first) the moment the plan is ready','Patient can leave this screen without losing their place'] },
     'plan':             { id:'KRANE-F16', name:'Treatment Plan View (Acceptance)', stories:['US-F16.1: Structured summary: medicine, dosage, plain-language explanation, medicine price','US-F16.2: Patient can accept (→ medication payment) or message doctor to request changes','US-F16.3: Patient cannot edit the prescription directly (clinical model, not e-commerce)','US-F16.4: Shows next follow-up date when available, refills allowed, request-more eligibility, and prescription expiry','US-F16.5: "Refill" is the single consistent term'] },
