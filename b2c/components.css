@@ -132,12 +132,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Was a three-column grid locked to one 52px row: label, toggle and the detail
    input all fighting for width, so the toggle floated in the middle with a gap
    either side and the input was squeezed to a sliver. Now it stacks: label,
-   then the toggle at its natural width on the left, then the detail input full
-   width underneath and only when there is something to type. */
+   then the toggle across the full row, then the detail input full width
+   underneath and only when there is something to type. */
 .partner-history-field{width:100%;max-width:100%;min-width:0;min-inline-size:0;margin:0;padding:0;border:0;box-sizing:border-box;
   display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2)}
 .partner-history-field>legend{display:block;width:100%;padding:0;font-size:13px;font-weight:var(--fw-medium);line-height:1.35;margin:0;color:var(--color-ink)}
-.partner-history-field>.partner-binary{width:min(200px,100%);align-self:flex-start}
+.partner-history-field>.partner-binary{width:100%;align-self:stretch}
 .partner-binary{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:52px;padding:4px;border:1px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface)}
 .partner-binary__option{min-width:0;height:100%;padding:0 10px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-2);font-size:14px;font-weight:var(--fw-medium);cursor:pointer;transition:background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
 .partner-binary__option[aria-checked="true"]{background:var(--color-surface-deep);color:var(--color-on-dark);box-shadow:var(--shadow-sm)}
@@ -1220,11 +1220,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .alert[hidden]{display:none}
 .alert .a-ic{width:28px;height:28px;border-radius:var(--radius-pill);flex:none;display:grid;place-items:center;color:var(--color-on-dark);font-weight:var(--fw-bold);font-size:var(--fs-sm)}
 .alert:not(.alert--danger):not(.alert--warning):not(.alert--success) .a-ic{background:var(--color-info)}
-/* Medicine tick, replacing the product photo. The reference list marks each
-   prescribed item with a check rather than a cutout, and no photography exists
-   for general medicines. */
-.med-tick{width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:var(--radius-pill);
-  background:var(--color-success);color:var(--color-on-dark);font-size:12px;font-weight:var(--fw-bold);line-height:1}
+/* Medicine thumb. Every prescribed line carries a product image again, in the
+   same 44px block the hair-loss cutouts use, so the list reads as medicine
+   rather than a checklist. General medicines have no photography yet, so they
+   fall back to a neutral pill mark inside the same block: swap in a cutout at
+   .med-thumb img and nothing else has to change. */
+.med-thumb{width:44px;height:44px;flex:none;display:grid;place-items:center;
+  border-radius:var(--radius-md);background:var(--color-bg-2);overflow:hidden}
+.med-thumb img{width:88%;height:88%;object-fit:contain;display:block}
+.med-thumb .ui-icon,.checkout-order__thumb .ui-icon{width:22px;height:22px;color:var(--color-ink-3)}
 
 /* Draft plan card: one quiet line under each medicine giving the quantity and
    what it is for, so the list reads as a plan rather than two prices. */
@@ -1482,7 +1486,7 @@ body.modal-open{overflow:hidden}
 .onboard-badge--bottom{left:16px;bottom:18px}
 .onboard-badge__dot{width:8px;height:8px;border-radius:50%;background:#50779f}
 
-/* Step 1 — a neutral, abstract consultation device; no medical photography. */
+/* Step 1, a neutral, abstract consultation device; no medical photography. */
 .onboard-device{
   position:absolute;left:50%;top:52%;width:64%;height:72%;transform:translate(-50%,-50%) rotate(-4deg);
   border:8px solid #f8fafc;border-radius:30px;background:linear-gradient(155deg,#4d6380,#273c58);
@@ -1499,7 +1503,7 @@ body.modal-open{overflow:hidden}
 }
 .onboard-device__status svg{width:14px;height:14px}
 
-/* Step 2 — stacked care-plan cards create depth without implying a product. */
+/* Step 2, stacked care-plan cards create depth without implying a product. */
 .onboard-visual--plan{background:linear-gradient(145deg,#d1dbe3,#eef2f5 58%,#becbd6)}
 .onboard-plan-card{
   position:absolute;left:50%;top:52%;width:64%;height:72%;border:1px solid rgba(255,255,255,.84);
@@ -1519,7 +1523,7 @@ body.modal-open{overflow:hidden}
 .onboard-plan-card__row svg{width:13px;height:13px}
 .onboard-plan-card__row small{font-size:12px;color:var(--color-ink-2)}
 
-/* Step 3 — a clear parcel route communicates delivery without medicine imagery. */
+/* Step 3, a clear parcel route communicates delivery without medicine imagery. */
 .onboard-visual--delivery{background:linear-gradient(145deg,#c8d4dd,#edf2f5 55%,#b8c7d2)}
 .onboard-route{position:absolute;inset:6% 4% 4%;width:92%;height:90%;fill:none;stroke:#63809e;stroke-width:3;stroke-linecap:round;stroke-dasharray:8 10;opacity:.74}
 .onboard-route circle{fill:#31557d;stroke:none}
@@ -1851,7 +1855,7 @@ body.lang-th *{letter-spacing:normal}
   font-size:var(--fs-xs);line-height:1.35;font-weight:var(--fw-medium)}
 .review-row__value{display:block;color:var(--color-ink);font-size:var(--fs-md);
   line-height:1.5;font-weight:var(--fw-medium)}
-.review-row__value:empty::before{content:"—";color:var(--color-ink-3);font-weight:var(--fw-regular)}
+.review-row__value:empty::before{content:"-";color:var(--color-ink-3);font-weight:var(--fw-regular)}
 
 /* ---------- Inline consent documents (consent-terms screen) ---------- */
 /* The two consent documents read as one long legal page. */

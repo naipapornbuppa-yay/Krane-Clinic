@@ -43,8 +43,8 @@
       id: "KR-10293",
       deliveryFee: 120,
       total: 1160,
-      address: "The Base Park West, Room 22/418, Soi Sukhumvit 77, Phra Khanong Nuea, Watthana, Bangkok 10110",
-      shortAddress: "The Base Park West · Room 22/418",
+      address: "เดอะ เบส พาร์ค เวสต์ ห้อง 22/418 ซอยสุขุมวิท 77 แขวงพระโขนงเหนือ เขตวัฒนา กรุงเทพฯ 10110",
+      shortAddress: "เดอะ เบส พาร์ค เวสต์ · ห้อง 22/418",
       branch: "Fascino Ari",
       paymentStatus: "Paid",
       defaultStatus: "Preparing"
