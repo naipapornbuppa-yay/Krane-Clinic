@@ -2850,11 +2850,12 @@
       return '<li class="care-journey__step'+state+'" aria-current="'+(step===current?'step':'false')+'">'+
         '<span class="care-journey__dot">'+mark+'</span>'+
         '<span class="care-journey__name">'+short+'</span>'+
+        '<i class="care-journey__fill" data-journey-fill></i>'+
         '<span class="sr-only">ขั้นตอนที่ '+step+' จาก '+total+', '+careJourneyLabels[index]+'</span>'+
       '</li>';
     }).join('');
     return '<nav class="care-journey" aria-label="ขั้นตอนการรับบริการ">'+
-      '<span class="care-journey__current"><b>'+String(current).padStart(2,'0')+'</b><strong>'+careJourneyShort[current-1]+'</strong><small>'+(nextStep ? '<i>Next</i> '+nextStep : '<i>Final step</i>')+'</small><em>'+current+' / '+total+'</em></span>'+
+      '<span class="care-journey__current"><b>'+String(current).padStart(2,'0')+'</b><strong>'+careJourneyShort[current-1]+'</strong><small>'+(nextStep ? '<i>Next</i> '+nextStep : '<i>Final step</i>')+'</small></span>'+
       '<ol class="care-journey__steps">'+steps+'</ol>'+
     '</nav>';
   }
@@ -2866,19 +2867,16 @@
     // The stepper is always inserted right under the back/title bar.
     top.insertAdjacentHTML('afterend', careJourneyMarkup(current));
     const journey = top.nextElementSibling;
-    // Questionnaire screens keep a thin per-question progress bar (+ "1/7")
-    // inside .screen__top. That is the SUB level, so lift it out of the top
-    // bar and drop it directly BELOW the main stepper. The back button stays
-    // alone at the top where it belongs.
+    // The second thin bar is gone. It measured sub-steps while the stepper above
+    // measured stages, and both rendered as "1 / 5" a few pixels apart. The
+    // current stage's segment now fills as the sub-steps complete, so one
+    // control carries both facts. Strip the old bar and its duplicate count.
     const progress = top.querySelector('.progress');
-    if(progress && journey){
+    if(progress){
       const track = progress.closest('.grow') || progress;
+      track.remove();
       const count = top.querySelector('.hint');
-      const sub = document.createElement('div');
-      sub.className = 'screen__subprogress';
-      sub.appendChild(track);
-      if(count) sub.appendChild(count);
-      journey.insertAdjacentElement('afterend', sub);
+      if(count) count.remove();
     }
   });
   // Photo upload on the intake photo step: real file picker, live thumbnails,
@@ -3793,22 +3791,23 @@
   }
 
   function updateIntakeProgress(id){
-    // Derived from intakeStepOrder() so a skipped screen cannot leave a gap in
-    // the numbering (general and hair are 1/4..4/4 once intake3 is skipped).
+    /* Derived from intakeStepOrder(), so a concern that skips a step still
+       reaches 100% on its last sub-step: general and hair run 1/4..4/4 and the
+       final one fills the segment completely, rather than stopping at 4/5 of
+       the way across. */
     const order = intakeStepOrder();
-    const steps = {};
-    order.forEach((sid, index) => {
-      steps[sid] = [Math.round(((index + 1) / order.length) * 100), `${index + 1} / ${order.length}`];
-    });
-    const config = steps[id];
-    if(!config) return;
+    const index = order.indexOf(id);
+    if(index < 0) return;
+    const pct = Math.round(((index + 1) / order.length) * 100);
     const screen = document.getElementById(id);
-    const fill = screen && screen.querySelector('.progress span');
-    // The "1 / 7" count now lives in the sub-progress row under the stepper;
-    // fall back to the old top-bar position for any screen not yet moved.
-    const label = screen && (screen.querySelector('.screen__subprogress > .hint') || screen.querySelector('.screen__top > .hint'));
-    if(fill) fill.style.width = config[0] + '%';
-    if(label) label.textContent = config[1];
+    const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
+    if(!fill) return;
+    /* Start from the previous sub-step's width so the change is a visible
+       animation rather than a jump. The screen is already on-screen when this
+       runs, so paint the old width first, then the new one on the next frame. */
+    const prev = index > 0 ? Math.round((index / order.length) * 100) : 0;
+    if(!fill.style.width) fill.style.width = prev + '%';
+    window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
   }
 
   function renderConditionList(){
@@ -4667,6 +4666,11 @@
       const cj = document.querySelector('#'+aid+' .care-journey');
       if(cj) cj.hidden = !journeyActive;
     });
+    /* Partner access does not follow the five-stage Krane shape, so it shows no
+       stepper at all rather than a step count that would be wrong. */
+    if(flowState.entryChannel === 'partner'){
+      document.querySelectorAll('.care-journey').forEach(cj => { cj.hidden = true; });
+    }
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
     if(window.kraneSyncSelects) window.kraneSyncSelects(activeScreen);
