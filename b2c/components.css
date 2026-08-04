@@ -128,15 +128,22 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-health-grid>.field{min-width:0;max-width:100%}
 .partner-health-compact{display:flex;flex-direction:column;gap:var(--sp-4)}
 .partner-health-card{display:flex;flex-direction:column;gap:var(--sp-4);border-color:var(--color-line);border-radius:var(--radius-xl);background:var(--color-surface);box-shadow:var(--shadow-sm)}
-.partner-clinical-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-3)}
-.partner-history-field{width:100%;max-width:100%;min-width:0;min-inline-size:0;margin:0;padding:0;border:0;box-sizing:border-box;display:grid;grid-template-columns:minmax(128px,.72fr) minmax(0,1fr) minmax(0,1.2fr);grid-template-rows:52px;column-gap:var(--sp-3);align-items:center}
-.partner-history-field>legend{grid-column:1;grid-row:1;display:block;width:100%;padding:0;font-size:13px;font-weight:var(--fw-medium);line-height:1.35;margin:0;color:var(--color-ink)}
-.partner-history-field>.partner-binary{grid-column:2;grid-row:1}
+.partner-clinical-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-5)}
+/* Was a three-column grid locked to one 52px row: label, toggle and the detail
+   input all fighting for width, so the toggle floated in the middle with a gap
+   either side and the input was squeezed to a sliver. Now it stacks: label,
+   then the toggle at its natural width on the left, then the detail input full
+   width underneath and only when there is something to type. */
+.partner-history-field{width:100%;max-width:100%;min-width:0;min-inline-size:0;margin:0;padding:0;border:0;box-sizing:border-box;
+  display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2)}
+.partner-history-field>legend{display:block;width:100%;padding:0;font-size:13px;font-weight:var(--fw-medium);line-height:1.35;margin:0;color:var(--color-ink)}
+.partner-history-field>.partner-binary{width:min(200px,100%);align-self:flex-start}
 .partner-binary{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:52px;padding:4px;border:1px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface)}
 .partner-binary__option{min-width:0;height:100%;padding:0 10px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-2);font-size:14px;font-weight:var(--fw-medium);cursor:pointer;transition:background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
 .partner-binary__option[aria-checked="true"]{background:var(--color-surface-deep);color:var(--color-on-dark);box-shadow:var(--shadow-sm)}
 .partner-binary__option:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
-.partner-history-detail{grid-column:3;grid-row:1;display:flex;align-items:center;min-width:0;max-width:100%;margin:0;overflow:hidden}
+.partner-history-detail{display:flex;align-items:center;width:100%;min-width:0;max-width:100%;margin:0}
+.partner-history-detail[hidden]{display:none}
 .partner-history-detail .input{width:100%;min-width:0;max-width:100%;text-overflow:ellipsis}
 .partner-history-detail .input:disabled{cursor:not-allowed;background:var(--color-bg-2);color:var(--color-ink-3);opacity:.7}
 #partner-intake .field{gap:6px}
@@ -1213,6 +1220,24 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .alert[hidden]{display:none}
 .alert .a-ic{width:28px;height:28px;border-radius:var(--radius-pill);flex:none;display:grid;place-items:center;color:var(--color-on-dark);font-weight:var(--fw-bold);font-size:var(--fs-sm)}
 .alert:not(.alert--danger):not(.alert--warning):not(.alert--success) .a-ic{background:var(--color-info)}
+/* Medicine tick, replacing the product photo. The reference list marks each
+   prescribed item with a check rather than a cutout, and no photography exists
+   for general medicines. */
+.med-tick{width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:var(--radius-pill);
+  background:var(--color-success);color:var(--color-on-dark);font-size:12px;font-weight:var(--fw-bold);line-height:1}
+
+/* Draft plan card: one quiet line under each medicine giving the quantity and
+   what it is for, so the list reads as a plan rather than two prices. */
+.plan-item__gist{margin-top:2px;color:var(--color-ink-3);line-height:1.35}
+
+/* SCR-008 consultation detail rows: a fact on the left, its value on the right,
+   and a quiet supporting line underneath. Tokens only. */
+.consult-detail{display:flex;flex-direction:column;gap:2px}
+.consult-detail__row{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);color:var(--color-ink)}
+.consult-detail__row>span:first-child{color:var(--color-ink-2)}
+.consult-detail__row s{color:var(--color-ink-3);text-decoration-thickness:1px}
+.consult-detail .hint{margin:0;color:var(--color-ink-3)}
+
 /* SCR-010: "tell the doctor if you want the medicine list changed" was muted
    helper text under the list and read as a footnote. Promoted to a callout with
    the accent tint so it reads as an instruction the patient should act on,

@@ -419,7 +419,7 @@
     /* ---- coverage pass 11 (follow-up merged into the profile treatment card) ---- */
     "Next follow-up":"นัดติดตามครั้งถัดไป","12 Sep 2026 · Dr. Narin":"12 ก.ย. 2026 · คุณหมอนรินทร์ ทานากะ","Start follow-up":"เริ่มติดตามผล",
     /* ---- coverage pass 12 (medical certificate add-on at consult-fee checkout) ---- */
-    "Add a medical certificate · ฿ 100":"เพิ่มใบรับรองแพทย์ · ฿ 100","Medical certificate":"ใบรับรองแพทย์",
+    "Medical certificate":"ใบรับรองแพทย์",
     "Issued by your doctor after the consultation. A signed PDF appears in your documents.":"ออกโดยแพทย์ของคุณหลังการปรึกษา ไฟล์ PDF พร้อมลายเซ็นจะอยู่ในเอกสารของคุณ",
     /* ---- coverage pass 13 (upload-prescription entry points) ---- */
     "Already have a prescription? Upload it to order medicine":"มีใบสั่งยาอยู่แล้ว? อัปโหลดเพื่อสั่งยาได้เลย",
