@@ -404,7 +404,7 @@
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
         <a data-go="partner-insurance">สิทธิ์และการชำระเงิน</a>
-        <a data-go="intake1" data-entry-channel="partner">อาการทั่วไป <span class="rail-state">SCR-002</span></a>
+        <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">SCR-002</span></a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
         <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
           <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
@@ -2268,9 +2268,54 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake1">Noted</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">Noted</button></div>
   </section>
 
+  <!-- SCR-002, restored 2026-08-04. ca47e17 had pointed the partner path at the
+       general intake1 instead; that is six sub-steps of scrolling for a question
+       the partner journey answers in one screen. -->
+  <section class="screen" id="partner-concern" data-screen-id="SCR-002">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">อาการที่ต้องการปรึกษา</span></div>
+    <div class="screen__body stack-4">
+      <div class="field"><label for="partner-concern-text">อาการเป็นอย่างไรบ้าง?</label><textarea class="textarea partner-concern-textarea" id="partner-concern-text" placeholder="เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด"></textarea></div>
+      <div class="field">
+        <label for="partner-concern-duration-value">เป็นมานานแค่ไหนแล้ว?</label>
+        <div class="partner-duration-row">
+          <div class="partner-duration-stepper">
+            <button type="button" data-partner-duration-step="-1" aria-label="ลดระยะเวลา">−</button>
+            <input id="partner-concern-duration-value" type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="จำนวนระยะเวลา">
+            <button type="button" data-partner-duration-step="1" aria-label="เพิ่มระยะเวลา">+</button>
+          </div>
+          <div class="partner-duration-units" aria-label="หน่วยระยะเวลา">
+            <button type="button" aria-selected="true" data-partner-duration-unit="วัน">วัน</button>
+            <button type="button" aria-selected="false" data-partner-duration-unit="เดือน">เดือน</button>
+            <button type="button" aria-selected="false" data-partner-duration-unit="ปี">ปี</button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">ทำอะไรเพื่อบรรเทาอาการไปแล้วบ้าง?</span>
+        <div class="partner-relief-grid" aria-label="สิ่งที่ลองทำแล้ว">
+          <button type="button" aria-selected="false" data-partner-relief-value="ยังไม่ได้ทำ">ยังไม่ได้ทำ</button>
+          <button type="button" aria-selected="false" data-partner-relief-value="ทานหรือใช้ยา">ทานหรือใช้ยา</button>
+          <button type="button" aria-selected="false" data-partner-relief-value="พบแพทย์">พบแพทย์</button>
+          <button type="button" aria-selected="false" data-partner-relief-value="อื่น ๆ">อื่น ๆ</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">มีรูปประกอบอาการหรือยาหรือไม่? <span class="hint">(ถ้ามี)</span></span>
+        <label class="upload partner-photo-upload" for="partner-photo-input">
+          <span class="up-ic"><span data-demo-icon="camera"></span></span>
+          <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
+          <span class="up-sub">สูงสุด 5 รูป · 10 MB ต่อรูป</span>
+        </label>
+      </div>
+      <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
+      <div class="up-thumbs" data-partner-photo-thumbs aria-live="polite">
+      </div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-concern-continue>ดำเนินการต่อ</button></div>
+  </section>
   <section class="screen" id="partner-intake">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลสุขภาพ</span></div>
     <div class="screen__body partner-health-compact">
@@ -2607,6 +2652,7 @@
     partnerInfoComplete:false,
     partnerPaymentChosen:false,
     partnerHealthComplete:false,
+    partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
     partnerReviewComplete:false,
     partnerNurseComplete:false,
     partnerPhone:'081-234-5678',
@@ -2687,6 +2733,7 @@
       orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
+      partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
       partnerPhoneOtpPending:false,partnerPendingPhone:'',partnerName:'Mali Suthida',partnerPaymentMethod:'',partnerConsultationBalanceDue:null,
       partnerMedicineCredit:0,
@@ -4107,7 +4154,7 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'Mali Suthida';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','matching'];
+    const order=['consent-terms','partner-patient-info','partner-insurance','partner-concern','partner-intake','matching'];
     let targetIndex=order.indexOf(target);
     if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
@@ -4279,13 +4326,14 @@
     // screening is a separate exception case, not the happy path.
     'partner-patient-info':'consent-terms',
     'partner-insurance':'partner-patient-info',
-    'partner-intake':'partner-patient-info',
+    'partner-concern':'partner-patient-info',
+    'partner-intake':'partner-concern',
     'partner-nurse':'partner-intake', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-intake',
+  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-concern','partner-intake',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
@@ -4692,8 +4740,8 @@
     if(PARTNER_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-insurance','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
-      if(target==='partner-intake' && !flowState.draftReady) return 'intake1';
+      if(['partner-insurance','partner-concern','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(target==='partner-intake' && !flowState.partnerConcernComplete) return 'partner-concern';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
@@ -6551,6 +6599,82 @@
       writeDeliveryAddressDraft(deliveryAddressScreen,draft);
     });
   }
+
+  // SCR-002 compact concern (restored 2026-08-04). Self-contained so the main
+  // click delegate above is untouched: selection lives on aria-selected and is
+  // read back when the primary action fires.
+  document.body.addEventListener('click', e => {
+    const step = e.target.closest('#partner-concern [data-partner-duration-step]');
+    if(step){
+      const input = document.getElementById('partner-concern-duration-value');
+      if(input) input.value = String(Math.min(99, Math.max(1,
+        (Number(input.value) || 1) + Number(step.dataset.partnerDurationStep || 0))));
+      return;
+    }
+    const unit = e.target.closest('#partner-concern [data-partner-duration-unit]');
+    if(unit){
+      document.querySelectorAll('#partner-concern [data-partner-duration-unit]').forEach(o =>
+        o.setAttribute('aria-selected', String(o === unit)));
+      return;
+    }
+    const relief = e.target.closest('#partner-concern [data-partner-relief-value]');
+    if(relief){
+      document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(o =>
+        o.setAttribute('aria-selected', String(o === relief)));
+      return;
+    }
+    const go = e.target.closest('[data-partner-concern-continue]');
+    if(!go) return;
+    const concern = document.getElementById('partner-concern-text')?.value.trim() || '';
+    const amount = Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
+    const unitOn = document.querySelector('#partner-concern [data-partner-duration-unit][aria-selected="true"]');
+    const reliefOn = document.querySelector('#partner-concern [data-partner-relief-value][aria-selected="true"]');
+    if(concern.length < 5){ showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning'); return; }
+    if(!amount || !unitOn){ showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning'); return; }
+    if(!reliefOn){ showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning'); return; }
+    flowState.partnerConcern = concern;
+    flowState.partnerConcernDuration = amount + ' ' + unitOn.dataset.partnerDurationUnit;
+    flowState.partnerConcernRelief = reliefOn.dataset.partnerReliefValue;
+    flowState.partnerConcernComplete = true;
+    flowState.draftReady = true;
+    persistFlowState();
+    show('partner-intake');
+  });
+
+  // Optional photos on SCR-002. Thumbnails are local previews only.
+  (function partnerConcernPhotos(){
+    const input = document.querySelector('[data-partner-photo-input]');
+    const thumbs = document.querySelector('[data-partner-photo-thumbs]');
+    if(!input || !thumbs) return;
+    const empty = thumbs.querySelector('[data-partner-photo-empty]');
+    const MAX = 10 * 1024 * 1024;
+    const syncEmpty = () => { if(empty) empty.hidden = Boolean(thumbs.querySelector('.up-thumb')); };
+    input.addEventListener('change', () => {
+      Array.from(input.files || []).forEach(file => {
+        if(!file.type.startsWith('image/')) return;
+        if(file.size > MAX){ showActionToast('รูปใหญ่เกิน 10 MB','error'); return; }
+        if(thumbs.querySelectorAll('.up-thumb').length >= 5){ showActionToast('เพิ่มรูปได้สูงสุด 5 รูป','warning'); return; }
+        const fig = document.createElement('figure');
+        fig.className = 'up-thumb';
+        const img = document.createElement('img');
+        img.alt = file.name;
+        const rm = document.createElement('button');
+        rm.type = 'button'; rm.className = 'x'; rm.textContent = '×';
+        rm.setAttribute('aria-label','ลบรูปนี้');
+        rm.addEventListener('click', () => { fig.remove(); syncEmpty(); });
+        fig.append(img, rm);
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          img.src = String(reader.result || '');
+          thumbs.appendChild(fig);
+          syncEmpty();
+        });
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    });
+    syncEmpty();
+  })();
 
   // F02 language toggle is handled by i18n.js (active-state + TH/EN copy swap).
 </script>
