@@ -1153,7 +1153,8 @@
         <div class="hint" data-plan-preview-summary>Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.</div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div></div><span class="price">฿ 590</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div></div><span class="price">฿ 450</span></div>
-        <p class="hint">ต้องการแก้ไขรายการยา แจ้งแพทย์ในแชทได้เลย</p>
+        <div class="alert plan-edit-callout"><span class="a-ic">i</span><div><div class="a-title">ต้องการแก้ไขรายการยา</div><div class="hint">แจ้งแพทย์ในแชทได้เลย ก่อนกดจบการปรึกษา</div></div></div>
+        <button class="btn btn--primary btn--sm" style="width:100%" data-go="rx-writing">จบการปรึกษา</button>
       </div>
       <button class="chat-fab" data-go="video" data-demo-icon="video" title="Start video call" aria-label="Start video call"></button>
     </div>
@@ -4652,29 +4653,77 @@
     }
     clearTimeout(deliveryQuoteTimer);
     if(id==='delivery-quote'){
-      flowState.orderState.deliveryQuoteStatus='pending';
-      flowState.orderState.deliveryQuoteAmount=null;
-      persistFlowState();
+      /* SCR-013B has three states, per the 04/08 feedback:
+           1 searching    - looking for a pharmacy that can deliver
+           2 found        - one accepted, with distance and ETA
+           3 unavailable  - none can do same-day, fall back to postal
+         Re-entering the screen (which is what an address change does) re-runs
+         the sequence from state 1. Copy is Thai in place, matching the rest of
+         this screen. */
       const quoteScreen=document.getElementById('delivery-quote');
       const title=quoteScreen?.querySelector('[data-delivery-quote-title]');
       const copy=quoteScreen?.querySelector('[data-delivery-quote-copy]');
       const timer=quoteScreen?.querySelector('[data-delivery-quote-timer]');
-      if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
-      if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
-      if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
+      const setQuoteState=(state,data) => {
+        if(!quoteScreen) return;
+        quoteScreen.dataset.quoteState=state;
+        if(state==='searching'){
+          if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
+          if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
+          if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
+        } else if(state==='found'){
+          if(title) title.textContent='พบร้านยาที่จัดส่งได้แล้ว';
+          if(copy) copy.textContent=`${data.pharmacy} · ห่าง ${data.km} กม. · ค่าจัดส่ง ${baht(data.fee)}`;
+          if(timer) timer.textContent=`ถึงภายใน ${data.eta}`;
+        } else if(state==='unavailable'){
+          if(title) title.textContent='ยังไม่มีร้านยาที่ส่งวันเดียวกันได้';
+          if(copy) copy.textContent='เปลี่ยนเป็นจัดส่งมาตรฐานให้แล้ว ไม่มีค่าจัดส่งเพิ่ม';
+          if(timer) timer.textContent='ถึงพรุ่งนี้ · มีหมายเลขติดตาม';
+        }
+      };
+      flowState.orderState.deliveryQuoteStatus='pending';
+      flowState.orderState.deliveryQuoteAmount=null;
+      persistFlowState();
+      setQuoteState('searching');
+      const sameDayUnavailable = pharmacyForceDecline === true;
       deliveryQuoteTimer=setTimeout(() => {
         if(!quoteScreen?.classList.contains('active')) return;
+        if(sameDayUnavailable){
+          // state 3: no same-day pharmacy, fall back to the free postal service
+          deliveryMethod='postal';
+          flowState.orderState.deliveryMethod='postal';
+          flowState.orderState.deliveryQuoteStatus='postal';
+          flowState.orderState.deliveryQuoteAmount=0;
+          persistFlowState();
+          setQuoteState('unavailable');
+          refreshMedicationCheckout();
+          deliveryQuoteTimer=setTimeout(() => {
+            if(!quoteScreen?.classList.contains('active')) return;
+            if(history[history.length-1]==='delivery-quote') history.pop();
+            if(history[history.length-1]==='address') history.pop();
+            if(history[history.length-1]!=='payment') history.push('payment');
+            show('payment',false);
+            showActionToast('เปลี่ยนเป็นจัดส่งมาตรฐาน ไม่มีค่าจัดส่งเพิ่ม','warning');
+          }, reduceMotion ? 700 : 2600);
+          return;
+        }
+        // state 2: a pharmacy accepted
         const fee=calculatedSameDayDeliveryFee();
+        const km=(flowState.orderState.address && flowState.orderState.address.km) || '3.2';
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=fee;
         persistFlowState();
+        setQuoteState('found',{pharmacy:'Fascino อารีย์',km:km,fee:fee,eta:'18:00 น. วันนี้'});
         refreshMedicationCheckout();
-        if(history[history.length-1]==='delivery-quote') history.pop();
-        if(history[history.length-1]==='address') history.pop();
-        if(history[history.length-1]!=='payment') history.push('payment');
-        show('payment',false);
-        showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
-      },reduceMotion ? 900 : 4200);
+        deliveryQuoteTimer=setTimeout(() => {
+          if(!quoteScreen?.classList.contains('active')) return;
+          if(history[history.length-1]==='delivery-quote') history.pop();
+          if(history[history.length-1]==='address') history.pop();
+          if(history[history.length-1]!=='payment') history.push('payment');
+          show('payment',false);
+          showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
+        }, reduceMotion ? 700 : 2600);
+      }, reduceMotion ? 700 : 2400);
     }
     if(id==='payment'){
       syncDeliveryAddress();
