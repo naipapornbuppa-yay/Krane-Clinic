@@ -3054,25 +3054,50 @@
     screen.dataset.selectedKm=address.km || '3.2';
     writeDeliveryAddressDraft(screen,address);
   }
+  /* Read the form itself. The old version read screen.dataset.addressDraft,
+     which was only ever written by the fake "pick an address" demo button. That
+     button is gone, so the draft stayed empty, validation always failed and the
+     CTA refused to advance no matter how much you typed. */
+  function readAddressInputs(){
+    const v = id => (document.getElementById(id)?.value || '').trim();
+    syncComposedDistrict();
+    return {
+      recipientName:v('recipientName'), recipientPhone:v('recipientPhone'),
+      building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
+      subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
+      province:v('addrProvince'), postcode:v('addrPostcode'),
+      district:v('addrDistrict'), note:v('addrNote')
+    };
+  }
+
   function saveDeliveryAddress(){
     const screen=document.getElementById('address');
-    if(!screen) return;
-    const draft=readDeliveryAddressDraft(screen);
-    const value=key => String(draft[key] || '').trim();
-    const building=value('building');
-    const line=value('line');
-    const district=value('district');
-    if(!building || !line || !district){
-      showActionToast('กรุณากรอกชื่ออาคาร ถนนหรือซอย และเขตจังหวัดให้ครบ','warning');
+    if(!screen) return false;
+    const a=readAddressInputs();
+    /* Name the field that is actually missing and focus it, rather than one
+       generic message that leaves you hunting. */
+    const required=[
+      ['recipientName','ชื่อผู้รับ'], ['recipientPhone','เบอร์โทรศัพท์'],
+      ['addrBuilding','บ้านเลขที่ / อาคาร'], ['addrLine','ถนน / ซอย'],
+      ['addrSubdistrict','แขวง / ตำบล'], ['addrDistrictName','เขต / อำเภอ'],
+      ['addrProvince','จังหวัด'], ['addrPostcode','รหัสไปรษณีย์']
+    ];
+    for(const [id,label] of required){
+      const el=document.getElementById(id);
+      if(!el || el.value.trim()) continue;
+      showActionToast('กรุณากรอก'+label,'warning');
+      el.focus();
+      try{ el.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
       return false;
     }
+    writeDeliveryAddressDraft(screen,{
+      building:a.building, floor:a.floor, line:a.line, district:a.district,
+      note:a.note, km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
+    });
     flowState.orderState.address={
-      building,
-      floor:value('floor'),
-      line,
-      district,
-      note:value('note'),
-      km:value('km') || screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
+      building:a.building, floor:a.floor, line:a.line, district:a.district, note:a.note,
+      recipientName:a.recipientName, recipientPhone:a.recipientPhone,
+      km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
     flowState.orderState.addressConfirmed=true;
     flowState.orderState.deliveryQuoteStatus='pending';
@@ -3081,6 +3106,7 @@
     syncDeliveryAddress();
     return true;
   }
+
   function tomorrowLabel(){
     const tomorrow=new Date();
     tomorrow.setDate(tomorrow.getDate()+1);
