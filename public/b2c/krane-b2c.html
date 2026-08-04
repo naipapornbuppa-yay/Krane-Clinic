@@ -1274,79 +1274,58 @@
   </section>
 
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
+  <!-- Restores the pre-160119a layout: map always visible at the top, fields
+       always visible beneath it, no accordion and no card chrome in between.
+       Two things are new and were never in that version: the map is half the
+       viewport rather than 210px, and the recipient name and phone sit on one
+       row directly under the map. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">แก้ไขที่อยู่จัดส่ง</span></div>
-    <div class="screen__body delivery-details stack-3">
-      <div class="delivery-card delivery-card--map">
-        <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><strong>ที่อยู่จัดส่ง</strong></div>
-        <!-- Simulated map. No external navigation, no iframe, no API key. See
-             the sim-map note in the script block for what production needs. -->
-        <div class="delivery-map-preview" data-address-map>
-          <div class="sim-map" data-sim-map data-sim-role="preview" aria-hidden="true"><div class="sim-map__plane" data-sim-plane></div></div>
-          <span class="map-pin" data-sim-pin><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-          <button class="delivery-map-cta" type="button" data-address-open-map><span data-address-map-cta-label>แตะเพื่อปักหมุดบนแผนที่</span> <span aria-hidden="true">→</span></button>
-        </div>
-        <div class="delivery-address-summary" data-address-summary>
-          <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
-          <span data-address-preview-detail>ปักหมุดบนแผนที่เพื่อกรอกที่อยู่อัตโนมัติ</span>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ที่อยู่จัดส่ง</span></div>
+    <div class="screen__body address-body stack-4">
+      <!-- Simulated map. In-app only: nothing here navigates out to Google. -->
+      <div class="address-map" data-address-map>
+        <div class="sim-map" data-sim-map data-sim-role="hero">
+          <div class="sim-map__plane" data-sim-plane></div>
+          <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+          <div class="sim-map__zoom">
+            <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
+            <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
+          </div>
+          <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
         </div>
       </div>
+      <p class="address-readout" data-address-summary role="status" aria-live="polite">
+        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
+        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
+      </p>
 
-      <div class="delivery-card">
-        <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="user-round" class="ui-icon" aria-hidden="true"></i></span><strong>ข้อมูลผู้รับ</strong></div>
-        <div class="delivery-recipient" data-recipient-view>
-          <span><strong data-recipient-name>ยังไม่ได้ระบุผู้รับ</strong><small data-recipient-phone>เพิ่มชื่อและเบอร์โทรศัพท์</small></span>
-          <button type="button" data-recipient-edit>แก้ไข</button>
-        </div>
-        <div class="delivery-recipient-form" data-recipient-form hidden>
-          <div class="field"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุลผู้รับ"></div>
-          <div class="field"><label for="recipientPhone">เบอร์โทรศัพท์ผู้รับ</label><input class="input" id="recipientPhone" type="tel" autocomplete="tel" placeholder="08x-xxx-xxxx"></div>
-          <div class="row" style="gap:var(--sp-2)">
-            <button class="btn btn--primary btn--sm grow" type="button" data-recipient-save>บันทึกผู้รับ</button>
-            <button class="btn btn--ghost btn--sm" type="button" data-recipient-cancel>ยกเลิก</button>
-          </div>
-        </div>
+      <div class="field-row">
+        <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
+        <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
       </div>
 
-      <details class="delivery-address-edit">
-        <summary>แก้ไขรายละเอียดที่อยู่</summary>
-        <div class="stack-3">
-          <div class="field"><label for="addrSearch">ค้นหาอาคาร คอนโด หรือถนน</label><input class="input" id="addrSearch" autocomplete="off" placeholder="เช่น The Base, Ideo หรือ BTS ทองหล่อ"></div>
-          <div class="autocomplete" id="addrSuggest" style="display:none">
-            <div class="ac-item" aria-selected="true" data-fill data-building="The Base Park West, Rm 22/418" data-floor="22" data-addr="Soi Sukhumvit 77, Phra Khanong Nuea" data-district="Watthana, Bangkok 10110" data-km="3.2"><span class="ac-ic"><i data-lucide="house" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span><div><div class="ac-name">บ้าน · The Base Park West</div><div class="ac-sub">สุขุมวิท 77 เขตวัฒนา กรุงเทพฯ 10110</div></div></div>
-          </div>
-          <div class="row" style="gap:var(--sp-2)"><div class="field grow"><label for="addrBuilding">อาคาร / ห้อง</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="ชื่ออาคารและเลขห้อง" required></div><div class="field" style="width:96px"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div></div>
-          <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
-          <div class="field"><label for="addrDistrict">เขต / จังหวัด</label><input class="input" id="addrDistrict" autocomplete="off" placeholder="เขต จังหวัด และรหัสไปรษณีย์" required></div>
-          <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
-        </div>
-      </details>
+      <div class="field-row">
+        <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
+        <div class="field field--narrow"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div>
+      </div>
+      <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
+      <div class="field-row">
+        <div class="field grow"><label for="addrSubdistrict">แขวง / ตำบล</label><input class="input" id="addrSubdistrict" autocomplete="off" placeholder="แขวงหรือตำบล" required></div>
+        <div class="field grow"><label for="addrDistrictName">เขต / อำเภอ</label><input class="input" id="addrDistrictName" autocomplete="off" placeholder="เขตหรืออำเภอ" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field grow"><label for="addrProvince">จังหวัด</label><input class="input" id="addrProvince" autocomplete="off" placeholder="จังหวัด" required></div>
+        <div class="field field--narrow"><label for="addrPostcode">รหัสไปรษณีย์</label><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder="10110" required></div>
+      </div>
+      <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+
+      <!-- addrDistrict is kept as the composed string the payment summary and the
+           km lookup already read. Never edited directly, always derived. -->
+      <input type="hidden" id="addrDistrict">
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
   </section>
-  <!-- In-app map picker. Lives outside #address so it can overlay the screen. -->
-  <div class="map-modal" data-map-modal hidden role="dialog" aria-modal="true" aria-label="เลือกตำแหน่งจัดส่ง">
-    <div class="map-modal__backdrop" data-map-close></div>
-    <div class="map-modal__sheet">
-      <div class="map-modal__head">
-        <strong>ปักหมุดตำแหน่งจัดส่ง</strong>
-        <button class="map-modal__close" type="button" data-map-close aria-label="ปิดแผนที่">✕</button>
-      </div>
-      <div class="sim-map sim-map--full" data-sim-map data-sim-role="modal">
-        <div class="sim-map__plane" data-sim-plane></div>
-        <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-        <div class="sim-map__zoom">
-          <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
-          <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
-        </div>
-        <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
-      </div>
-      <div class="map-modal__foot">
-        <div class="map-modal__readout"><strong data-sim-readout-title>เลื่อนแผนที่เพื่อเลือกตำแหน่ง</strong><span class="hint" data-sim-readout-detail>หมุดจะอยู่กลางจอเสมอ</span></div>
-        <button class="btn btn--primary" type="button" data-sim-confirm>ยืนยันตำแหน่งนี้</button>
-      </div>
-    </div>
-  </div>
+  <!-- The map picker modal is gone: the map on #address IS the picker now. -->
 
 
   <!-- PRE-PAYMENT DELIVERY QUOTE
@@ -3602,18 +3581,26 @@
      for navigator.geolocation.getCurrentPosition(). The DOM contract below
      (data-sim-* hooks and applyAddress()) can stay as-is.
      ====================================================================== */
+  /* Address parts are stored split, the way a Thai address form asks for them.
+     `district` stays as a composed string because the payment summary and the
+     km lookup already read it, so splitting the inputs does not ripple into the
+     payment path. composeDistrict() is the single place that joins them. */
+  function composeDistrict(p){
+    return [p.subdistrict, p.districtName, p.province, p.postcode].filter(Boolean).join(' ');
+  }
   const SIM_PLACES = [
-    { title:'The Base Park West, ห้อง 22/418', detail:'ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110',
-      building:'The Base Park West, ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77', district:'เขตวัฒนา กรุงเทพฯ 10110' },
-    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', detail:'ถนนสุขุมวิท · เขตบางจาก กรุงเทพฯ 10260',
-      building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท', district:'เขตบางจาก กรุงเทพฯ 10260' },
-    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', detail:'ถนนรัชดาภิเษก · เขตห้วยขวาง กรุงเทพฯ 10310',
-      building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก', district:'เขตห้วยขวาง กรุงเทพฯ 10310' },
-    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', detail:'ซอยเอกมัย 12 · เขตวัฒนา กรุงเทพฯ 10110',
-      building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12', district:'เขตวัฒนา กรุงเทพฯ 10110' },
-    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', detail:'ถนนพระราม 4 · เขตคลองเตย กรุงเทพฯ 10110',
-      building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4', district:'เขตคลองเตย กรุงเทพฯ 10110' }
+    { title:'The Base Park West, ห้อง 22/418', building:'The Base Park West, ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77',
+      subdistrict:'แขวงพระโขนงเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
+    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท',
+      subdistrict:'แขวงบางจาก', districtName:'เขตพระโขนง', province:'กรุงเทพมหานคร', postcode:'10260' },
+    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก',
+      subdistrict:'แขวงห้วยขวาง', districtName:'เขตห้วยขวาง', province:'กรุงเทพมหานคร', postcode:'10310' },
+    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12',
+      subdistrict:'แขวงคลองตันเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
+    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4',
+      subdistrict:'แขวงคลองเตย', districtName:'เขตคลองเตย', province:'กรุงเทพมหานคร', postcode:'10110' }
   ];
+  SIM_PLACES.forEach(p => { p.district = composeDistrict(p); p.detail = p.line + ' · ' + p.district; });
   const simState = { x:0, y:0, z:1, place:SIM_PLACES[0], picked:false };
 
   function simReverseGeocode(x,y){
@@ -3626,12 +3613,10 @@
       plane.style.transform = `translate(calc(-50% + ${simState.x}px), calc(-50% + ${simState.y}px)) scale(${simState.z})`;
     });
   }
-  function simUpdateReadout(){
+  function simUpdateReadout(apply){
     const place = simReverseGeocode(simState.x, simState.y);
     simState.place = place;
-    const t=document.querySelector('[data-sim-readout-title]'), d=document.querySelector('[data-sim-readout-detail]');
-    if(t) t.textContent = place.title;
-    if(d) d.textContent = place.detail;
+    if(apply !== false) applyAddress(place);
   }
   function simBindPan(map){
     if(!map || map.dataset.simBound === 'true') return;
@@ -3654,39 +3639,37 @@
     map.addEventListener('pointercancel', end);
     map.addEventListener('pointerleave', end);
   }
-  function simOpenMap(){
-    const modal=document.querySelector('[data-map-modal]');
-    if(!modal) return;
-    modal.hidden=false;
-    modal.querySelectorAll('[data-sim-map]').forEach(simBindPan);
-    simApplyTransform(); simUpdateReadout();
-    if(window.lucide) try{ lucide.createIcons({icons:lucide.icons}) }catch(e){}
-  }
-  function simCloseMap(){
-    const modal=document.querySelector('[data-map-modal]');
-    if(modal) modal.hidden=true;
-  }
   function simLocate(){
     // FAKE. Production: navigator.geolocation.getCurrentPosition().
     simState.x=0; simState.y=0; simState.z=1.35;
     simApplyTransform(); simUpdateReadout();
-    showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว','success');
+    showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว และกรอกที่อยู่ให้แล้ว','success');
   }
   function applyAddress(place){
     simState.picked=true;
-    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v; };
-    set('addrBuilding',place.building); set('addrFloor',place.floor);
-    set('addrLine',place.line); set('addrDistrict',place.district);
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el && el.value!==v){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); } };
+    set('addrBuilding',place.building); set('addrFloor',place.floor); set('addrLine',place.line);
+    set('addrSubdistrict',place.subdistrict); set('addrDistrictName',place.districtName);
+    set('addrProvince',place.province); set('addrPostcode',place.postcode);
+    syncComposedDistrict();
     const t=document.querySelector('[data-address-preview-title]');
     const d=document.querySelector('[data-address-preview-detail]');
     if(t) t.textContent=place.title;
     if(d) d.textContent=place.detail;
     const prev=document.querySelector('[data-address-map]');
     if(prev) prev.classList.add('is-pin-selected');
-    const cta=document.querySelector('[data-address-map-cta-label]');
-    if(cta) cta.textContent='แก้ไขตำแหน่งบนแผนที่';
-    const acc=document.querySelector('.delivery-address-edit');
-    if(acc) acc.open=true;               // reveal the auto-filled fields
+  }
+
+  /* addrDistrict is never typed into. It is recomposed from the four visible
+     parts on every edit, so the payment summary and the km lookup keep reading
+     exactly the string shape they read before the form was split. */
+  function syncComposedDistrict(){
+    const v=id=>(document.getElementById(id)?.value||'').trim();
+    const el=document.getElementById('addrDistrict');
+    if(!el) return;
+    el.value=composeDistrict({subdistrict:v('addrSubdistrict'),districtName:v('addrDistrictName'),
+                              province:v('addrProvince'),postcode:v('addrPostcode')});
+    el.dispatchEvent(new Event('change',{bubbles:true}));
   }
 
   /* The UX copy doc writes the doctor as "คุณหมอ __". Bind it to one value
@@ -3756,6 +3739,21 @@
     ).join('');
     wrap.hidden = declined.length===0;
   }
+
+  /* Keep addrDistrict in step with the four visible parts. */
+  ['addrSubdistrict','addrDistrictName','addrProvince','addrPostcode'].forEach(id => {
+    document.addEventListener('input', e => { if(e.target && e.target.id===id) syncComposedDistrict(); });
+  });
+
+  /* The map takes half the viewport, so every address field sits below the fold.
+     On a phone the keyboard then covers whichever field is focused, so scroll it
+     back into the visible half. scrollIntoView with block:'center' lands it above
+     the keyboard on both 390px and 360px viewports. */
+  document.addEventListener('focusin', e => {
+    const field=e.target && e.target.closest && e.target.closest('#address .field');
+    if(!field) return;
+    setTimeout(() => { try{ field.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){} }, 120);
+  });
 
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
@@ -4743,6 +4741,10 @@
     }
     if(id==='consultpay') applyCoverageFlag();
     if(id==='plan') syncDeclinedMedicines();
+    if(id==='address'){
+      const hero=document.querySelector('#address [data-sim-map]');
+      if(hero){ simBindPan(hero); simApplyTransform(); }
+    }
     fillDoctorName();
     clearTimeout(deliveryQuoteTimer);
     if(id==='delivery-quote'){
@@ -5621,8 +5623,6 @@
       return;
     }
     // ---- map picker (in-app only, never navigates out) ----
-    if(e.target.closest('[data-address-open-map],[data-address-map] .sim-map')){ simOpenMap(); return; }
-    if(e.target.closest('[data-map-close]')){ simCloseMap(); return; }
     const simZoom=e.target.closest('[data-sim-zoom]');
     if(simZoom){
       const dir=parseInt(simZoom.dataset.simZoom,10);
@@ -5630,50 +5630,6 @@
       simApplyTransform(); return;
     }
     if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
-    if(e.target.closest('[data-sim-confirm]')){
-      applyAddress(simState.place);
-      simCloseMap();
-      showActionToast('ปักหมุดและกรอกที่อยู่ให้แล้ว','success');
-      return;
-    }
-    // ---- recipient inline editor ----
-    if(e.target.closest('[data-recipient-edit]')){
-      const view=document.querySelector('[data-recipient-view]');
-      const form=document.querySelector('[data-recipient-form]');
-      if(view&&form){
-        const n=document.querySelector('[data-recipient-name]');
-        const ph=document.querySelector('[data-recipient-phone]');
-        const ni=document.getElementById('recipientName');
-        const pi=document.getElementById('recipientPhone');
-        if(ni&&n&&!/ยังไม่ได้ระบุ/.test(n.textContent)) ni.value=n.textContent.trim();
-        if(pi&&ph&&/\d/.test(ph.textContent)) pi.value=ph.textContent.trim();
-        view.hidden=true; form.hidden=false;
-        if(ni) ni.focus();
-      }
-      return;
-    }
-    if(e.target.closest('[data-recipient-cancel]')){
-      const view=document.querySelector('[data-recipient-view]');
-      const form=document.querySelector('[data-recipient-form]');
-      if(view&&form){ form.hidden=true; view.hidden=false; }
-      return;
-    }
-    if(e.target.closest('[data-recipient-save]')){
-      const ni=document.getElementById('recipientName');
-      const pi=document.getElementById('recipientPhone');
-      const name=(ni?.value||'').trim(), phone=(pi?.value||'').trim();
-      if(!name){ showActionToast('กรุณากรอกชื่อผู้รับ','warning'); return; }
-      if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์ผู้รับ','warning'); return; }
-      const n=document.querySelector('[data-recipient-name]');
-      const ph=document.querySelector('[data-recipient-phone]');
-      if(n) n.textContent=name;
-      if(ph) ph.textContent=phone;
-      const view=document.querySelector('[data-recipient-view]');
-      const form=document.querySelector('[data-recipient-form]');
-      if(view&&form){ form.hidden=true; view.hidden=false; }
-      showActionToast('บันทึกข้อมูลผู้รับแล้ว','success');
-      return;
-    }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;

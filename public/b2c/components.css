@@ -192,6 +192,22 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .delivery-card__icon .ui-icon{width:18px;height:18px}
 /* Map frame is tall enough to actually place a pin (was a 98px strip). */
 .delivery-map-preview{position:relative;height:196px;overflow:hidden;background:var(--color-powder);cursor:pointer}
+/* ---- Address screen: map hero + always-visible field stack ----------------
+   Restores the pre-160119a shape (map on top, fields plainly beneath, no
+   accordion). The map is half the first viewport, clamped so it never eats a
+   short landscape screen or floats absurdly tall on a tablet. ------------- */
+.address-body{padding-bottom:var(--sp-6)}
+.address-map{position:relative;height:50vh;min-height:220px;max-height:420px;
+  border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg-2)}
+.address-readout{display:flex;flex-direction:column;gap:2px;margin:0}
+.address-readout strong{font-size:var(--fs-base);color:var(--color-ink)}
+.address-readout span{font-size:var(--fs-sm);color:var(--color-ink-2)}
+/* Two fields per row, each free to shrink; min-width:0 stops a long Thai label
+   forcing the row wider than the screen. */
+.field-row{display:flex;gap:var(--sp-3);align-items:flex-end}
+.field-row>.field{min-width:0}
+.field--narrow{width:96px;flex:none}
+
 /* ---- Simulated map -------------------------------------------------------
    Drawn entirely in CSS: no tile provider, no iframe, no API key, and no way
    to navigate out of the app. Pan and zoom are real; the geography is not.
