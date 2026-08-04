@@ -3708,13 +3708,13 @@
   }
 
   function updateIntakeProgress(id){
-    const general = selectedCategory().general;
-    const visual = categoryNeedsPhotos();
-    const steps = general
-      ? {intake1:[25,'1 / 4'],intake2:[50,'2 / 4'],intake4:[75,'3 / 4'],'intake-general':[100,'4 / 4']}
-      : visual
-        ? {intake1:[17,'1 / 6'],intake2:[33,'2 / 6'],intake3:[50,'3 / 6'],intake4:[67,'4 / 6'],intake5:[83,'5 / 6'],'intake-general':[100,'6 / 6']}
-        : {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']};
+    // Derived from intakeStepOrder() so a skipped screen cannot leave a gap in
+    // the numbering (general and hair are 1/4..4/4 once intake3 is skipped).
+    const order = intakeStepOrder();
+    const steps = {};
+    order.forEach((sid, index) => {
+      steps[sid] = [Math.round(((index + 1) / order.length) * 100), `${index + 1} / ${order.length}`];
+    });
     const config = steps[id];
     if(!config) return;
     const screen = document.getElementById(id);
@@ -4233,31 +4233,52 @@
     if(consultationBalanceDue()<=0) return 'waitroom';
     return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
   }
-  /* EC-011: a General consultation must not be asked condition-specific
-     questions. #intake3 is the "what have you tried for this concern" set, so
-     the general path skips it entirely. Kept as a routing rule rather than
-     markup, so it survives the innerHTML round-trip that renderIntakeQuestions
+  /* EC-011: a consultation must not be asked condition-specific questions that
+     do not belong to its concern. #intake3 is the "what have you tried for this
+     concern" set, and intakeTemplates only defines it for skin, sexual and
+     sleep. hair and general have no intake3 of their own, so both previously
+     fell through to the authored base markup and rendered another concern's
+     question set. Both now skip it.
+
+     The rule is derived from template coverage rather than a hardcoded concern
+     list, so adding an intake3 template for hair or general automatically stops
+     the skip and no second place needs editing. Kept as routing rather than
+     markup so it survives the innerHTML round-trip renderIntakeQuestions
      performs (the same round-trip that previously broke the custom selects). */
-  const INTAKE_SKIPPED_BY_GENERAL = ['intake3'];
+  const INTAKE_CONCERN_SPECIFIC = ['intake3'];
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  function intakeConcernKey(){
+    try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
+    catch(e){ return 'hair'; }
+  }
   function intakeSkipped(id){
-    try { return INTAKE_SKIPPED_BY_GENERAL.includes(id) && selectedCategory().general; }
+    if(!INTAKE_CONCERN_SPECIFIC.includes(id)) return false;
+    try { return !((intakeTemplates[intakeConcernKey()] || {})[id]); }
     catch(e){ return false; }
   }
+  /* The screens this concern actually visits, in order. Everything that counts
+     intake steps reads from here so the progress label can never disagree with
+     the routing. */
+  function intakeStepOrder(){
+    const seq = ['intake1','intake2','intake3','intake4'];
+    try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
+    seq.push('intake-general');
+    return seq.filter(id => !intakeSkipped(id));
+  }
   function skipForwardFrom(id){
-    // intake3 -> intake4 for general; generic so more skips can be added.
-    const order=['intake1','intake2','intake3','intake4'];
-    let i=order.indexOf(id);
-    if(i<0) return id;
-    while(i<order.length && intakeSkipped(order[i])) i++;
-    return order[i] || 'intake4';
+    const seq = ['intake1','intake2','intake3','intake4'];
+    let i = seq.indexOf(id);
+    if(i < 0) return id;
+    while(i < seq.length && intakeSkipped(seq[i])) i++;
+    return seq[i] || 'intake4';
   }
   function skipBackFrom(id){
-    const order=['intake1','intake2','intake3','intake4'];
-    let i=order.indexOf(id);
-    if(i<0) return null;
+    const seq = ['intake1','intake2','intake3','intake4'];
+    let i = seq.indexOf(id);
+    if(i < 0) return null;
     i--;
-    while(i>=0 && intakeSkipped(order[i])) i--;
-    return i>=0 ? order[i] : null;
+    while(i >= 0 && intakeSkipped(seq[i])) i--;
+    return i >= 0 ? seq[i] : null;
   }
 
   function seededHistory(id){
