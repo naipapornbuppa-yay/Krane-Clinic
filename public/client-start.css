@@ -1,81 +1,117 @@
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-html{min-height:100%;margin:0;background:#116ce8}
+/* Krane client QA gate.
+   Stripped to a logo and one password field.
+
+   This page previously carried its own palette (30 distinct colour literals)
+   and never linked the token library. It now imports design-tokens.css, which
+   also supplies Prompt: that file already @imports Prompt from Google Fonts, so
+   this page needs no extra font request and nothing global changes.
+
+   One value has no token equivalent. The darkest ink token is --color-ink /
+   --color-ink-strong at #121824, a very dark navy, not black. Black was asked
+   for explicitly, so it is declared once as --start-ink rather than repeated
+   as raw hex. Everything else maps onto real tokens. */
+@import url('./b2c/design-tokens.css?v=20260804a');
+
+:root{
+  --start-ink:#000;   /* no token equivalent; darkest token is #121824 */
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{min-height:100%}
+body{min-height:100dvh}
+
 body{
-  position:relative;isolation:isolate;min-height:100%;min-height:100dvh;margin:0;
-  display:grid;place-items:center;overflow-x:hidden;
-  padding:max(20px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
-  color:#fff;font-family:"Prompt","Noto Sans Thai",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  margin:0;
+  display:grid;
+  place-items:center;
+  padding:max(var(--sp-5),env(safe-area-inset-top)) max(var(--sp-5),env(safe-area-inset-right)) max(var(--sp-5),env(safe-area-inset-bottom)) max(var(--sp-5),env(safe-area-inset-left));
+  background:var(--color-bg);                 /* light grey page */
+  color:var(--start-ink);
+  font-family:"Prompt",var(--font-thai-display,sans-serif);
+  -webkit-font-smoothing:antialiased;
 }
-body::before{
-  content:"";position:fixed;z-index:-2;inset:-24px;
-  background:url("./b2c/assets/landing-573/latest/hero-base.png?v=20260803logo2") 36% center/cover no-repeat;
-  filter:saturate(.72) contrast(1.04);transform:scale(1.04);
-}
-body::after{
-  content:"";position:fixed;z-index:-1;inset:0;
-  background:linear-gradient(145deg,rgba(13,111,246,.88),rgba(16,106,235,.92) 50%,rgba(8,42,99,.94));
-}
+
 a{color:inherit;text-decoration:none}
-button,input{font:inherit}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.start-shell{width:min(100%,760px);margin-top:clamp(8px,3vh,34px)}
-.access-gate,.portal-section{
-  width:100%;padding:clamp(38px,5vw,54px) clamp(24px,5vw,48px) clamp(32px,4vw,44px);
-  border:1px solid rgba(255,255,255,.4);border-radius:clamp(30px,4vw,44px);
-  background:linear-gradient(145deg,rgba(25,127,255,.85),rgba(14,105,238,.75) 58%,rgba(17,76,171,.72));
-  box-shadow:0 30px 80px rgba(2,27,73,.32),inset 0 1px 0 rgba(255,255,255,.28);
-  text-align:center;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  animation:shell-in .45s cubic-bezier(.22,1,.36,1) both;
+.start-shell{width:min(100%,400px)}
+
+.access-gate,
+.portal-section{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--sp-6);
+  padding:var(--sp-7) var(--sp-5);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);            /* white container */
 }
-.start-logo{display:block;width:min(196px,54vw);height:auto;margin:0 auto 28px;filter:brightness(0) invert(1) drop-shadow(0 3px 12px rgba(4,36,89,.12))}
-h1{margin:0;font-size:clamp(34px,5vw,48px);font-weight:600;line-height:1.2;letter-spacing:-.025em}
-.start-subtitle{margin:16px 0 0;color:rgba(255,255,255,.78);font-size:clamp(16px,2.2vw,19px);line-height:1.55}
-.access-form{width:min(100%,520px);margin:34px auto 0}
+.access-gate[hidden],.portal-section[hidden]{display:none}
+
+/* The wordmark already ships with fill="black", so it needs no recolour and no
+   CSS filter. */
+.start-logo{display:block;width:min(180px,52vw);height:auto;margin:0 auto}
+
+.access-form{width:100%;display:flex;flex-direction:column;gap:var(--sp-3)}
+
 .access-field{
-  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;min-height:68px;padding:5px;
-  border:1.5px solid rgba(255,255,255,.82);border-radius:999px;background:rgba(255,255,255,.22);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:background .18s ease,box-shadow .18s ease;
+  display:flex;
+  align-items:center;
+  gap:var(--sp-2);
+  height:var(--control-h);
+  padding-left:var(--sp-4);
+  padding-right:var(--sp-2);
+  border:1px solid var(--color-line-strong);
+  border-radius:var(--radius-pill);
+  background:var(--color-surface);
 }
-.access-field:focus-within{background:rgba(255,255,255,.3);box-shadow:0 0 0 4px rgba(255,255,255,.12)}
-.access-field input{min-width:0;width:100%;height:56px;padding:0 18px;border:0;outline:0;background:transparent;color:#fff;text-align:center;font-size:18px;font-weight:500;letter-spacing:.08em}
-.access-field input::placeholder{color:rgba(255,255,255,.66);opacity:1;letter-spacing:.04em}
-.access-field button{display:grid;place-items:center;width:56px;height:56px;padding:0;border:0;border-radius:50%;background:#fff;color:#0865d5;font:400 30px/1 ui-sans-serif,system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 22px rgba(5,42,102,.22);transition:transform .18s ease,box-shadow .18s ease}
-.access-field button:hover{transform:translateX(2px);box-shadow:0 10px 26px rgba(5,42,102,.3)}
-.access-field button:active{transform:translateX(2px) scale(.96)}
-.access-message{min-height:22px;margin:12px 0 -10px;color:#fff2f0;font-size:13px;font-weight:600;line-height:1.45}
-.portal-section{padding-top:38px}
-.start-hero{text-align:center}
-.portal-section .start-logo{margin-bottom:18px}
-.portal-section h2{margin:32px 0 16px;color:rgba(255,255,255,.74);font-size:15px;font-weight:500;letter-spacing:.04em}
-.portal-list{display:grid;gap:12px;text-align:left}
+.access-field:focus-within{border-color:var(--start-ink)}
+
+.access-field input{
+  flex:1;min-width:0;height:100%;
+  border:0;background:transparent;
+  color:var(--start-ink);
+  font:inherit;
+  letter-spacing:.18em;
+}
+.access-field input::placeholder{color:var(--color-ink-3);letter-spacing:normal}
+.access-field input:focus{outline:none}
+
+.access-field button{
+  width:36px;height:36px;flex:none;
+  display:grid;place-items:center;
+  border:0;border-radius:var(--radius-pill);
+  background:var(--start-ink);
+  color:var(--color-surface);
+  font:inherit;line-height:1;cursor:pointer;
+}
+.access-field button:active{transform:scale(.94)}
+.access-field button:focus-visible{outline:2px solid var(--start-ink);outline-offset:2px}
+
+.access-message{
+  margin:0;min-height:1.2em;
+  color:var(--color-danger);
+  font-size:var(--fs-sm);
+  text-align:center;
+}
+/* Collapse the reserved error line when there is no error, so the card does not
+   sit with dead space under the field. */
+.access-message:empty{min-height:0}
+
+/* After unlock: the same four destinations, with no heading or helper text. */
+.portal-list{width:100%;display:flex;flex-direction:column;gap:var(--sp-3)}
 .portal-card{
-  display:grid;grid-template-columns:58px minmax(0,1fr) 40px;align-items:center;gap:18px;min-height:88px;padding:14px 18px;
-  border:1px solid rgba(255,255,255,.36);border-radius:26px;background:rgba(255,255,255,.18);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16);transition:transform .2s ease,background .2s ease,border-color .2s ease;
-  animation:portal-in .45s cubic-bezier(.22,1,.36,1) both;
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-4);
+  border:1px solid var(--color-line);
+  border-radius:var(--radius-md);
+  color:var(--start-ink);
+  font-weight:var(--fw-semibold);
 }
-.portal-card:nth-child(1){animation-delay:.05s}.portal-card:nth-child(2){animation-delay:.1s}.portal-card:nth-child(3){animation-delay:.15s}.portal-card:nth-child(4){animation-delay:.2s}
-.portal-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.26)}
-.portal-card:active{transform:scale(.99)}
-.portal-card:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.portal-icon{display:grid;place-items:center;width:58px;height:58px;border:1px solid rgba(255,255,255,.34);border-radius:18px;background:rgba(255,255,255,.12);color:#fff}
-.portal-icon i{display:grid;place-items:center;width:27px;height:27px;font-style:normal}.portal-icon svg{width:27px;height:27px}
-.portal-copy{display:grid;min-width:0}.portal-copy strong{font-size:clamp(18px,2.2vw,22px);font-weight:600;line-height:1.35}
-.portal-arrow{display:grid;place-items:center;justify-self:end;width:40px;height:40px;border-radius:50%;background:#fff;color:#0865d5;font:400 24px/1 ui-sans-serif,system-ui,sans-serif;transition:transform .2s ease}
-.portal-card:hover .portal-arrow{transform:translateX(3px)}
-.portal-note{margin:20px 0 0;color:rgba(255,255,255,.62);font-size:14px}
-@keyframes shell-in{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
-@keyframes portal-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media(max-width:600px){
-  body{padding:max(14px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-  body::before{background-position:28% center}.start-shell{margin-top:2vh}
-  .access-gate,.portal-section{padding:32px 14px 26px;border-radius:30px}.start-logo{width:164px;margin-bottom:22px}
-  h1{font-size:32px}.start-subtitle{margin-top:12px;font-size:15px}.access-form{margin-top:26px}
-  .access-field{min-height:58px}.access-field input{height:48px;padding:0 12px;font-size:16px}.access-field button{width:48px;height:48px;font-size:26px}
-  .portal-section{padding-top:28px}.portal-section .start-logo{margin-bottom:14px}.portal-section h2{margin:24px 0 13px;font-size:14px}.portal-list{gap:9px}
-  .portal-card{grid-template-columns:50px minmax(0,1fr) 34px;gap:12px;min-height:76px;padding:12px;border-radius:22px}
-  .portal-icon{width:50px;height:50px;border-radius:16px}.portal-icon i,.portal-icon svg{width:23px;height:23px}.portal-copy strong{font-size:17px}.portal-arrow{width:34px;height:34px;font-size:20px}
+.portal-card:hover{border-color:var(--start-ink)}
+.portal-card:focus-visible{outline:2px solid var(--start-ink);outline-offset:2px}
+.portal-copy{flex:1;min-width:0}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media(max-width:420px){
+  .access-gate,.portal-section{padding:var(--sp-6) var(--sp-4)}
 }
-@media(max-height:700px) and (max-width:600px){body{place-items:start center}.start-shell{margin-top:0}.access-gate,.portal-section{padding-top:24px}.start-logo{width:148px;margin-bottom:16px}.portal-section h2{margin-top:18px}.portal-card{min-height:70px}}
-@media(prefers-reduced-motion:reduce){.access-gate,.portal-section,.portal-card{animation:none}.access-field,.access-field button,.portal-card,.portal-arrow{transition:none}}
