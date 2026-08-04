@@ -1210,6 +1210,23 @@
       <p class="call-hint" data-call-hint>Turning your camera off keeps the call on voice. End hangs up.</p>
     </div>
   </section>
+  <!-- Item 7 (04/08 deck): ending the call is destructive, so it confirms first.
+       Same sheet construction as the address map picker. -->
+  <div class="map-modal endcall-modal" data-endcall-modal hidden role="dialog" aria-modal="true" aria-labelledby="endcall-title">
+    <div class="map-modal__backdrop" data-endcall-cancel></div>
+    <div class="map-modal__sheet">
+      <div class="map-modal__head">
+        <strong id="endcall-title">วางสายการปรึกษา?</strong>
+        <button class="map-modal__close" type="button" data-endcall-cancel aria-label="ปิด">✕</button>
+      </div>
+      <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> ยังอยู่ในห้องนะครับ ถ้าวางสายแล้วยังคุยต่อทางแชทได้</p>
+      <div class="map-modal__foot">
+        <button class="btn btn--ghost" type="button" data-endcall-cancel>คุยต่อ</button>
+        <button class="btn btn--danger" type="button" data-endcall-confirm>วางสาย</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ===================== WRITING PRESCRIPTION (KRANE-F15/F16 · client 6 Jul: prescribing
        can take a while; show a status screen before the treatment plan) ===================== -->
@@ -1371,7 +1388,7 @@
        F18 update (client 20 Jun): payment is handled by a third-party hosted gateway (KBank /
        K-Payment Gateway). This screen mirrors that gateway chrome, Krane plugs into it rather than
        building its own card system. Card details never touch Krane's servers. -->
-  <section class="screen" id="payment" data-screen-code="SCR-008" data-checkout-mode="final">
+  <section class="screen" id="payment" data-screen-code="SCR-015" data-checkout-mode="final">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
     <div class="screen__body stack-4">
 
@@ -2206,13 +2223,13 @@
   <section class="screen" id="partner-intake">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลสุขภาพ</span></div>
     <div class="screen__body partner-health-compact">
-      <div class="stack-1"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2></div>
+      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2><p class="muted">กรุณากรอกเพื่อช่วยให้แพทย์วินิจฉัยอาการได้แม่นยำมากขึ้น</p></div>
       <!-- One client-flow box equals one compact page: demographics, measurements
            and the three clinical-history fields stay together. -->
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
-          <div class="field grow"><label for="partner-sex">เพศกำเนิด</label><select class="select" id="partner-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option><option value="unspecified">ไม่ระบุ</option></select></div>
-          <div class="field grow"><label for="partner-dob">วันเกิด</label><input class="input" id="partner-dob" type="date" autocomplete="bday" required></div>
+          <div class="field grow"><label for="partner-sex">เพศกำเนิด</label><select class="select" id="partner-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
+          <div class="field grow"><label for="partner-dob">วันเกิด</label><input class="input" id="partner-dob" type="date" autocomplete="bday" value="1994-03-12" required></div>
         </div>
         <div class="partner-health-grid">
           <div class="field grow"><label for="partner-height">ส่วนสูง (ซม.)</label><input class="input" id="partner-height" inputmode="numeric" placeholder="เช่น 175"></div>
@@ -3878,7 +3895,9 @@
     });
     const detail=group.querySelector('[data-partner-history-detail]');
     const input=detail?.querySelector('input');
-    if(detail) detail.hidden=false;
+    // Item 3 (04/08 deck): the detail box appears only when "มี" is chosen,
+    // rather than always showing as a disabled field.
+    if(detail) detail.hidden=!hasDetails;
     if(input){
       input.disabled=!hasDetails;
       if(!hasDetails) input.value='';
@@ -4789,7 +4808,11 @@
       // NO -> availability page to pick a slot, where the same gate runs on continue.
       matchTimer = setTimeout(() => {
         if(!mScr.classList.contains('active')) return;
-        replaceCurrent(doctorAvailable ? consultationHandoffTarget() : 'noslots');
+        /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
+           matching, including when insurance covers it and the balance is 0.
+           consultationHandoffTarget() skipped straight to the waiting room in
+           that case, which is what hid the fee summary. */
+        replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
       }, 3400);
     }
     // A bank-confirmed order is released to the pharmacist. A decline reroutes
@@ -5495,6 +5518,24 @@
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
     if(ec) callActive = false;
+    // ---- end-call confirmation (item 7) ----
+    const endCall=e.target.closest('[data-endcall]');
+    if(endCall){
+      e.preventDefault();
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m){ m.hidden=false; fillDoctorName(m); return; }
+    }
+    if(e.target.closest('[data-endcall-cancel]')){
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m) m.hidden=true;
+      return;
+    }
+    if(e.target.closest('[data-endcall-confirm]')){
+      const m=document.querySelector('[data-endcall-modal]');
+      if(m) m.hidden=true;
+      show('consult');
+      return;
+    }
     // ---- map picker (in-app only, never navigates out) ----
     if(e.target.closest('[data-address-open-map],[data-address-map] .sim-map')){ simOpenMap(); return; }
     if(e.target.closest('[data-map-close]')){ simCloseMap(); return; }
