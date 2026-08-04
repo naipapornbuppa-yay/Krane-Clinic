@@ -4132,7 +4132,13 @@
     };
     Object.entries(values).forEach(([id,value]) => {
       const input=document.getElementById(id);
-      if(input) input.value=value;
+      if(!input) return;
+      // An empty stored value must not wipe the markup default. SCR-003 ships a
+      // prefilled date of birth (04/08 deck, slide 3), and blanking it here was
+      // what made the health screen refuse to continue on a fresh session.
+      // Selects have no defaultValue, so they fall back to empty as before.
+      const fallback='defaultValue' in input ? input.defaultValue : '';
+      input.value=value || fallback;
     });
     const phone=document.getElementById('partner-phone');
     const note=document.querySelector('#partner-patient-info [data-phone-note]');
