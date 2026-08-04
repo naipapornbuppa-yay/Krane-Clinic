@@ -7,6 +7,9 @@
    ============================================================ */
 (function () {
   var TH = {
+    /* SCR-010 draft plan preview: draft only, quantities not final. */
+    "Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.":"ตัวอย่างเท่านั้น 2 รายการ สำหรับ 1 เดือน จำนวนจริงยืนยันเมื่อแพทย์ออกแผนการรักษา",
+
     /* Doctor attribution and licence lines. --- */
     "in room · licence 12345":"อยู่ในห้อง · ใบอนุญาต 12345",
     "Prescribed by Dr. A · 12 May 2026":"สั่งโดย พญ. เอ · 12 พ.ค. 2026",
@@ -128,8 +131,6 @@
     "No doctor available now":"ยังไม่มีแพทย์ว่างตอนนี้",
     "Partner coverage":"ความคุ้มครองจากพันธมิตร",
     "Partner coverage confirmed":"ยืนยันความคุ้มครองจากพันธมิตรแล้ว",
-    "No payment will be taken now":"ยังไม่มีการเรียกเก็บเงินในขั้นตอนนี้",
-    "Any medicine or delivery balance will be shown after your consultation.":"ค่ายาและค่าจัดส่งส่วนที่เหลือจะแสดงหลังการปรึกษา",
     "Prescription and stock confirmed.":"ยืนยันใบสั่งยาและสต็อกแล้ว",
     "Your payment is confirmed. A licensed pharmacist is checking the prescription and stock.":"ยืนยันการชำระเงินแล้ว เภสัชกรที่มีใบอนุญาตกำลังตรวจสอบใบสั่งยาและสต็อก",
     "Your payment is confirmed. We’re sending the order to a licensed pharmacist.":"ยืนยันการชำระเงินแล้ว กำลังส่งคำสั่งซื้อให้เภสัชกรที่มีใบอนุญาต",
@@ -496,7 +497,6 @@
     "We'll notify you when the doctor is ready.":"เราจะแจ้งเมื่อแพทย์พร้อม",
     "About 2–3 min":"ประมาณ 2–3 นาที",
     "Waiting to be admitted…":"กำลังรอเข้าห้อง…",
-    "Notify me when it's ready":"แจ้งเตือนเมื่อพร้อม",
     "Doctor is ready":"แพทย์พร้อมแล้ว",
     "Video starts when you enter. You can turn it off anytime.":"วิดีโอจะเริ่มเมื่อคุณเข้าห้อง และปิดได้ทุกเมื่อ",
     "Ready now":"พร้อมแล้ว",
@@ -892,8 +892,6 @@
     "Corporate entry":"เข้าสู่ระบบผ่านองค์กร",
     "Coverage & payment":"สิทธิ์และการชำระเงิน",
     "Partner coverage confirmed":"ยืนยันสิทธิ์พาร์ทเนอร์แล้ว",
-    "No payment will be taken now":"ยังไม่มีการเรียกเก็บเงินในขั้นตอนนี้",
-    "Any medicine or delivery balance will be shown after your consultation.":"ยอดค่ายาหรือค่าจัดส่งที่ต้องชำระจะแสดงหลังจบการปรึกษา",
     "Noted":"รับทราบ",
     "Default · Video":"ค่าเริ่มต้น · วิดีโอ",
     "Deliver to":"จัดส่งไปที่",
