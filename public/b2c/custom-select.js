@@ -47,12 +47,49 @@
     closeSelect(record,true);
   }
 
+  /* The only proof an enhancement is alive is a record in `enhanced` whose DOM is
+     still connected. Markup alone proves nothing: an innerHTML round-trip copies
+     the wrapper and the data flag but not the listeners, which is how a select
+     could look enhanced and ignore every tap until a refresh rebuilt it. */
+  function liveRecordFor(select){
+    for(var i=0;i<enhanced.length;i++){
+      if(enhanced[i].select===select && enhanced[i].root.isConnected && enhanced[i].root.contains(select))return enhanced[i];
+    }
+    return null;
+  }
+
+  /* Put a select back as authored, discarding a dead wrapper so it can rebuild. */
+  function unwrap(select){
+    var wrapper=select.closest?select.closest('.custom-select'):null;
+    if(!wrapper||!wrapper.parentNode)return;
+    wrapper.parentNode.insertBefore(select,wrapper);
+    wrapper.remove();
+    enhanced=enhanced.filter(function(record){return record.select!==select});
+  }
+
+  /* Strip enhancement from a subtree, so cached markup never captures generated
+     DOM. Mutates the node passed in, so callers hand it a clone. */
+  function stripEnhancement(root){
+    if(!root||!root.querySelectorAll)return root;
+    Array.prototype.forEach.call(root.querySelectorAll('.custom-select select'),function(select){
+      var wrapper=select.closest('.custom-select');
+      if(wrapper&&wrapper.parentNode){wrapper.parentNode.insertBefore(select,wrapper);wrapper.remove()}
+      delete select.dataset.customSelectReady;
+      select.classList.remove('custom-select__native');
+      select.removeAttribute('tabindex');
+      select.removeAttribute('aria-hidden');
+      if(!select.getAttribute('class'))select.removeAttribute('class');
+    });
+    return root;
+  }
+
   function enhance(select){
     if(!(select instanceof HTMLSelectElement))return;
-    /* A questionnaire screen can be replaced with saved/template markup. Never
-       trust the data flag by itself: copied markup may retain the flag without
-       retaining the live trigger or its listeners. */
-    if(select.dataset.customSelectReady==='true' && select.closest('.custom-select'))return;
+    /* Enhanced and provably alive: no-op, so enhance() is safely idempotent. */
+    if(liveRecordFor(select))return;
+    /* Wrapper but no live record means copied or restored markup. Tear the dead
+       wrapper off and rebuild instead of trusting the flag. */
+    unwrap(select);
     delete select.dataset.customSelectReady;
     select.dataset.customSelectReady='true';
     sequence+=1;
@@ -161,6 +198,7 @@
     });
   }
   window.kraneEnhanceSelects=enhanceAll;
+  window.kraneStripSelectEnhancement=stripEnhancement;
   window.kraneSyncSelects=function(root){
     enhanceAll(root||document);
     enhanced=enhanced.filter(function(record){

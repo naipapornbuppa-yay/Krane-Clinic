@@ -24,7 +24,7 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260728d">
+<link rel="stylesheet" href="design-tokens.css?v=20260804a">
 <link rel="stylesheet" href="components.css?v=20260804addressquote1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <script src="../krane-golden-fixture.js"></script>
@@ -1232,13 +1232,19 @@
   <section class="screen" id="plan" data-screen-code="SCR-012">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Review medicine order</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Review the medicines selected by your doctor. You can adjust the purchase quantity at checkout.</p></div>
+      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Review the medicines selected by your doctor. You can adjust the quantity on this screen.</p></div>
       <div>
         <div class="plan-item" data-order-item="finasteride"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div><div class="hint">1 tablet daily · slows hair loss</div>
           <div class="hint plan-item__prescribed">Prescribed quantity · 1 month</div>
+          <span class="qty plan-item__stepper" data-qty data-min="0" data-max="1" data-unit="590">
+            <button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน ฟีนาสเตอไรด์ 1 มก.">−</button><span class="qty-n" data-qty-n role="status" aria-live="polite" aria-atomic="true">1</span><button type="button" class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน ฟีนาสเตอไรด์ 1 มก.">+</button><span class="hint">month</span>
+          </span>
         </div><span class="price" data-line-price>฿ 590</span></div>
         <div class="plan-item" data-order-item="minoxidil"><span class="thumb"><img src="assets/medicine/minoxidil-pump-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Minoxidil 5% topical</div><div class="hint">Apply twice daily · regrowth · ฿ 225 per bottle</div>
           <div class="hint plan-item__prescribed">Prescribed quantity · 2 bottles</div>
+          <span class="qty plan-item__stepper" data-qty data-min="0" data-max="2" data-unit="225">
+            <button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน ไมน็อกซิดิลชนิดทา 5%">−</button><span class="qty-n" data-qty-n role="status" aria-live="polite" aria-atomic="true">2</span><button type="button" class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน ไมน็อกซิดิลชนิดทา 5%">+</button><span class="hint">bottles</span>
+          </span>
         </div><span class="price" data-line-price>฿ 450</span></div>
       </div>
       <p class="hint">The prescription sets the maximum quantity available in this order.</p>
@@ -3519,7 +3525,15 @@
     ['intake1','intake2','intake3'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
-      if(!intakeBaseMarkup[id]) intakeBaseMarkup[id] = body.innerHTML;
+      // Cache the AUTHORED markup, never the enhanced markup. Reading innerHTML
+      // after custom-select has run captures its generated wrapper without the
+      // listeners, so restoring that cache produced a select that looked right
+      // and ignored every tap until a page refresh rebuilt it.
+      if(!intakeBaseMarkup[id]){
+        const pristine = body.cloneNode(true);
+        if(window.kraneStripSelectEnhancement) window.kraneStripSelectEnhancement(pristine);
+        intakeBaseMarkup[id] = pristine.innerHTML;
+      }
       const template = (intakeTemplates[key] || {})[id];
       body.innerHTML = template !== undefined ? template : intakeBaseMarkup[id];
       if(window.kraneEnhanceSelects) window.kraneEnhanceSelects(body);

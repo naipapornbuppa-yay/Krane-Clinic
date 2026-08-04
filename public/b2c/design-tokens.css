@@ -133,6 +133,11 @@
   --color-accent-soft: var(--preset-blue-accent-soft);   /* selected flat surface */
   --color-accent-soft-2: var(--preset-blue-accent-soft-2);   /* quiet supporting surface */
   --color-accent-ink: var(--preset-blue-accent-ink);   /* accessible accent text/icons on light */
+  /* Focus ring. Referenced by 4 :focus-visible rules that previously resolved to
+     an invalid colour, so the ring did not render. Aliases the accessible accent
+     ink (not the bright accent) because a focus indicator needs >=3:1 against the
+     adjacent surface and the bright teal only reaches ~2.3:1 on white. */
+  --color-focus: var(--color-accent-ink);
   --color-on-accent: var(--preset-blue-on-accent);   /* text/icons on the accent fill */
   --color-on-dark: #FFFFFF;     /* text/icons on ink, gradient-teal, and status (warning/danger/success/info) surfaces */
   --color-ink-strong: #121824;   /* highest-contrast CTAs/headings, Figma */
@@ -302,6 +307,8 @@
 
   /* ---- Component tokens (so components stay token-driven) ---- */
   --control-h-sm:40px;           /* compact buttons / tabs */
+  --tap-target-min:44px;         /* minimum touch target (DESIGN.md 3); expand hit
+                                    areas to this, do not inflate the visual control */
   --control-h-icon:40px;         /* square icon buttons */
   --control-h:48px;              /* primary buttons / inputs */
   --control-h-lg:56px;           /* high-priority media controls */

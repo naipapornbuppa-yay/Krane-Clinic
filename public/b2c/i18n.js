@@ -7,6 +7,15 @@
    ============================================================ */
 (function () {
   var TH = {
+    /* SCR-012 Review medicine order. Quantity is adjusted on this screen now that
+       the line items carry steppers, so the intro no longer says "at checkout". */
+    "Review the medicines selected by your doctor. You can adjust the quantity on this screen.":"ตรวจสอบรายการยาที่แพทย์เลือกให้ ปรับจำนวนได้ในหน้านี้",
+    "Prescribed quantity · 1 month":"จำนวนที่แพทย์สั่ง · 1 เดือน",
+    "Prescribed quantity · 2 bottles":"จำนวนที่แพทย์สั่ง · 2 ขวด",
+    "The prescription sets the maximum quantity available in this order.":"ใบสั่งยากำหนดจำนวนสูงสุดที่สั่งซื้อได้ในครั้งนี้ ลดได้แต่เพิ่มเกินไม่ได้",
+    "month":"เดือน",
+    "bottles":"ขวด",
+
     /* ---- common / buttons ---- */
     "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Final step":"ขั้นตอนสุดท้าย","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระ","Order":"สั่งยา","treatment order and delivery":"สั่งยาและจัดส่ง","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log in":"เข้าสู่ระบบ",
     "Get started":"เริ่มต้นใช้งาน","Start your visit":"เริ่มการปรึกษา","Continue to payment":"ไปต่อที่การชำระเงิน","Skip for now":"ข้ามไปก่อน",
