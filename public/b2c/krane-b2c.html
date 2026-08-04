@@ -1232,7 +1232,7 @@
   <section class="screen" id="plan" data-screen-code="SCR-012">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Review medicine order</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2"><div class="eyebrow">Prescribed by Dr. Narin</div><p class="hint">Review the medicines selected by your doctor. You can adjust the quantity on this screen.</p></div>
+      <div class="eyebrow">Prescribed by Dr. Narin</div>
       <div>
         <div class="plan-item" data-order-item="finasteride"><span class="thumb"><img src="assets/medicine/finasteride-bottle-cutout.png?v=20260726a" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Finasteride 1mg</div><div class="hint">1 tablet daily · slows hair loss</div>
           <div class="hint plan-item__prescribed">Prescribed quantity · 1 month</div>
@@ -1247,8 +1247,6 @@
           </span>
         </div><span class="price" data-line-price>฿ 450</span></div>
       </div>
-      <p class="hint">The prescription sets the maximum quantity available in this order.</p>
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title">เอกสารทางการแพทย์ยังไม่เปิด</div><div class="hint">คำวินิจฉัย แผนการรักษา และใบสั่งยาจะเปิดหลังชำระเงินสำเร็จ</div></div></div>
     </div>
     <div class="screen__footer">
       <button class="btn btn--primary" data-go="payment">Confirm medicines &amp; continue to payment</button>
@@ -1261,20 +1259,36 @@
     <div class="screen__body delivery-details stack-3">
       <div class="delivery-card delivery-card--map">
         <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><strong>ที่อยู่จัดส่ง</strong></div>
+        <!-- Simulated map. No external navigation, no iframe, no API key. See
+             the sim-map note in the script block for what production needs. -->
         <div class="delivery-map-preview" data-address-map>
-          <iframe class="map-frame" data-address-map-frame title="ตำแหน่งจัดส่ง" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Sukhumvit%2077%2C%20Phra%20Khanong%20Nuea%2C%20Watthana%2C%20Bangkok&z=16&output=embed"></iframe>
-          <span class="map-pin"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-          <button class="delivery-map-cta" type="button" data-address-pick-demo><span data-address-map-cta-label>เลือกจุดบนแผนที่</span> <span aria-hidden="true">→</span></button>
+          <div class="sim-map" data-sim-map data-sim-role="preview" aria-hidden="true"><div class="sim-map__plane" data-sim-plane></div></div>
+          <span class="map-pin" data-sim-pin><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
+          <button class="delivery-map-cta" type="button" data-address-open-map><span data-address-map-cta-label>แตะเพื่อปักหมุดบนแผนที่</span> <span aria-hidden="true">→</span></button>
         </div>
-        <div class="delivery-address-summary"><strong data-address-preview-title>The Base Park West, ห้อง 22/418</strong><span data-address-preview-detail>ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110</span></div>
+        <div class="delivery-address-summary" data-address-summary>
+          <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
+          <span data-address-preview-detail>ปักหมุดบนแผนที่เพื่อกรอกที่อยู่อัตโนมัติ</span>
+        </div>
       </div>
 
       <div class="delivery-card">
         <div class="delivery-card__head"><span class="delivery-card__icon"><i data-lucide="user-round" class="ui-icon" aria-hidden="true"></i></span><strong>ข้อมูลผู้รับ</strong></div>
-        <div class="delivery-recipient"><span><strong>Mali S.</strong><small>081-234-5678</small></span><button type="button" data-demo-action="เปิดแก้ไขข้อมูลผู้รับ">แก้ไข</button></div>
+        <div class="delivery-recipient" data-recipient-view>
+          <span><strong data-recipient-name>ยังไม่ได้ระบุผู้รับ</strong><small data-recipient-phone>เพิ่มชื่อและเบอร์โทรศัพท์</small></span>
+          <button type="button" data-recipient-edit>แก้ไข</button>
+        </div>
+        <div class="delivery-recipient-form" data-recipient-form hidden>
+          <div class="field"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุลผู้รับ"></div>
+          <div class="field"><label for="recipientPhone">เบอร์โทรศัพท์ผู้รับ</label><input class="input" id="recipientPhone" type="tel" autocomplete="tel" placeholder="08x-xxx-xxxx"></div>
+          <div class="row" style="gap:var(--sp-2)">
+            <button class="btn btn--primary btn--sm grow" type="button" data-recipient-save>บันทึกผู้รับ</button>
+            <button class="btn btn--ghost btn--sm" type="button" data-recipient-cancel>ยกเลิก</button>
+          </div>
+        </div>
       </div>
 
-      <details class="delivery-address-edit" open>
+      <details class="delivery-address-edit">
         <summary>แก้ไขรายละเอียดที่อยู่</summary>
         <div class="stack-3">
           <div class="field"><label for="addrSearch">ค้นหาอาคาร คอนโด หรือถนน</label><input class="input" id="addrSearch" autocomplete="off" placeholder="เช่น The Base, Ideo หรือ BTS ทองหล่อ"></div>
@@ -1290,6 +1304,30 @@
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
   </section>
+  <!-- In-app map picker. Lives outside #address so it can overlay the screen. -->
+  <div class="map-modal" data-map-modal hidden role="dialog" aria-modal="true" aria-label="เลือกตำแหน่งจัดส่ง">
+    <div class="map-modal__backdrop" data-map-close></div>
+    <div class="map-modal__sheet">
+      <div class="map-modal__head">
+        <strong>ปักหมุดตำแหน่งจัดส่ง</strong>
+        <button class="map-modal__close" type="button" data-map-close aria-label="ปิดแผนที่">✕</button>
+      </div>
+      <div class="sim-map sim-map--full" data-sim-map data-sim-role="modal">
+        <div class="sim-map__plane" data-sim-plane></div>
+        <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+        <div class="sim-map__zoom">
+          <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
+          <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
+        </div>
+        <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
+      </div>
+      <div class="map-modal__foot">
+        <div class="map-modal__readout"><strong data-sim-readout-title>เลื่อนแผนที่เพื่อเลือกตำแหน่ง</strong><span class="hint" data-sim-readout-detail>หมุดจะอยู่กลางจอเสมอ</span></div>
+        <button class="btn btn--primary" type="button" data-sim-confirm>ยืนยันตำแหน่งนี้</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- PRE-PAYMENT DELIVERY QUOTE
        A changed address must be accepted by a nearby pharmacy before checkout can
@@ -1377,10 +1415,10 @@
            accepting the treatment plan never forces the patient through this form. -->
       <div class="stack-2">
         <span class="section-label">การจัดส่ง</span>
-        <button class="checkout-row" data-go="address" aria-label="เปลี่ยนที่อยู่จัดส่ง" data-payment-address-row>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address>The Base Park West, ห้อง 22/418 · เขตวัฒนา กรุงเทพฯ 10110</span></span>
-          <span class="checkout-row__tag" data-payment-address-action>เปลี่ยนที่อยู่</span>
+          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
@@ -1391,15 +1429,15 @@
       <div class="stack-2">
         <div class="checkout-head">
           <span class="section-label">ตัวเลือกการจัดส่ง</span>
-          <span class="hint" data-payment-km>3.2 กม.</span>
+          <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
         </div>
         <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
         <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
           <span class="opt-body">
             <span class="opt-title">จัดส่งภายในวัน</span>
-            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้</span>
+            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้ · คำนวณหลังใส่ที่อยู่</span>
           </span>
-          <span class="checkout-order__price" data-payment-same-day-fee>฿ 120</span>
+          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">ค่าประมาณ ฿80 ถึง ฿180</span>
         </button>
         <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
           <span class="opt-body">
@@ -2549,9 +2587,15 @@
   if(flowConfig.get('consult_payment')==='after') flowState.consultationPaymentTiming='after';
   /* The golden Mali S. QA path starts with a saved delivery address. Address editing
      remains an explicit detour from checkout and never interrupts plan acceptance. */
+  /* Checkout now starts WITHOUT a delivery address so the auto-fill on #address
+     is visibly driven by pin selection. The saved Mali S. address is still
+     reachable: ?address=saved (or localStorage kraneDemoSavedAddress) restores
+     the pre-filled state for demoing a returning patient. */
+  const wantSavedAddress = /(?:\?|&)address=saved\b/.test(location.search)
+    || (()=>{ try{ return localStorage.getItem('kraneDemoSavedAddress')==='1' }catch(e){ return false } })();
   if(flowState.orderState.checkoutFlowVersion!=='saved-address-checkout-v2'){
-    flowState.orderState.address=Object.assign({},MALI_SAVED_ADDRESS);
-    flowState.orderState.addressConfirmed=true;
+    flowState.orderState.address=wantSavedAddress ? Object.assign({},MALI_SAVED_ADDRESS) : {};
+    flowState.orderState.addressConfirmed=wantSavedAddress;
     flowState.orderState.checkoutFlowVersion='saved-address-checkout-v2';
   }
   function readSessionJson(key){
@@ -3091,7 +3135,13 @@
     if(subtotalEl) subtotalEl.textContent = baht(subtotal);
     // the fee shows twice: in the bill rows and on the delivery option card
     payment.querySelectorAll('[data-payment-delivery]').forEach(el => { el.textContent = baht(delivery); });
-    payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => { el.textContent = baht(deliveryFeeFor('same-day')); });
+    // Same-day delivery is distance-based, so before an address exists it can only
+    // be quoted as a range. Postal stays free because it is flat-rate nationwide.
+    const addrKnown = Boolean(flowState.orderState.addressConfirmed);
+    payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => {
+      el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'ค่าประมาณ ฿80 ถึง ฿180';
+      el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
+    });
     if(addonRow) addonRow.hidden=addon<=0;
     if(addonEl) addonEl.textContent=baht(addon);
     if(insuranceRow) insuranceRow.hidden = credit <= 0;
@@ -3109,7 +3159,7 @@
     const kmTarget = payment.querySelector('[data-payment-km]');
     if(kmTarget) kmTarget.textContent = flowState.orderState.addressConfirmed
       ? `${flowState.orderState.address.km || '3.2'} กม.`
-      : 'เลือกที่อยู่ก่อน';
+      : 'คำนวณหลังใส่ที่อยู่';
     // Savings are stated plainly. No celebration copy and no emoji (DESIGN.md 7c).
     const saveWrap = payment.querySelector('[data-payment-save]');
     if(saveWrap){
@@ -3515,6 +3565,111 @@
     }
     return state;
   }
+  /* ==================== SIMULATED MAP (prototype only) ====================
+     SIMULATED, NOT REAL. There is no Google Maps API key in this prototype and
+     the previous implementation was a keyless `output=embed` iframe, which
+     cannot be panned or pin-dropped by the host page and sends any tap inside
+     it out to Google. That iframe is gone: nothing on this screen navigates
+     away from the app any more.
+
+     What is real here: pan, zoom, pin placement, the empty -> filled state
+     transition, and the field auto-fill. What is fake: the geography (a CSS
+     street grid), the reverse geocoding (a lookup table of Bangkok addresses
+     chosen by map position), and "current location" (a fixed Bangkok point,
+     not navigator.geolocation).
+
+     FOR PRODUCTION: replace .sim-map with a Maps JS API or Leaflet canvas,
+     swap simReverseGeocode() for a Geocoding API call, and swap simLocate()
+     for navigator.geolocation.getCurrentPosition(). The DOM contract below
+     (data-sim-* hooks and applyAddress()) can stay as-is.
+     ====================================================================== */
+  const SIM_PLACES = [
+    { title:'The Base Park West, ห้อง 22/418', detail:'ซอยสุขุมวิท 77 · เขตวัฒนา กรุงเทพฯ 10110',
+      building:'The Base Park West, ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77', district:'เขตวัฒนา กรุงเทพฯ 10110' },
+    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', detail:'ถนนสุขุมวิท · เขตบางจาก กรุงเทพฯ 10260',
+      building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท', district:'เขตบางจาก กรุงเทพฯ 10260' },
+    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', detail:'ถนนรัชดาภิเษก · เขตห้วยขวาง กรุงเทพฯ 10310',
+      building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก', district:'เขตห้วยขวาง กรุงเทพฯ 10310' },
+    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', detail:'ซอยเอกมัย 12 · เขตวัฒนา กรุงเทพฯ 10110',
+      building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12', district:'เขตวัฒนา กรุงเทพฯ 10110' },
+    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', detail:'ถนนพระราม 4 · เขตคลองเตย กรุงเทพฯ 10110',
+      building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4', district:'เขตคลองเตย กรุงเทพฯ 10110' }
+  ];
+  const simState = { x:0, y:0, z:1, place:SIM_PLACES[0], picked:false };
+
+  function simReverseGeocode(x,y){
+    // FAKE. Deterministic pick so panning to the same spot gives the same result.
+    const idx = Math.abs(Math.round(x/180) * 3 + Math.round(y/180)) % SIM_PLACES.length;
+    return SIM_PLACES[idx];
+  }
+  function simApplyTransform(){
+    document.querySelectorAll('[data-sim-plane]').forEach(plane => {
+      plane.style.transform = `translate(calc(-50% + ${simState.x}px), calc(-50% + ${simState.y}px)) scale(${simState.z})`;
+    });
+  }
+  function simUpdateReadout(){
+    const place = simReverseGeocode(simState.x, simState.y);
+    simState.place = place;
+    const t=document.querySelector('[data-sim-readout-title]'), d=document.querySelector('[data-sim-readout-detail]');
+    if(t) t.textContent = place.title;
+    if(d) d.textContent = place.detail;
+  }
+  function simBindPan(map){
+    if(!map || map.dataset.simBound === 'true') return;
+    map.dataset.simBound = 'true';
+    let active=false, sx=0, sy=0, ox=0, oy=0;
+    map.addEventListener('pointerdown', e => {
+      if(e.target.closest('[data-sim-zoom],[data-sim-locate]')) return;
+      active=true; sx=e.clientX; sy=e.clientY; ox=simState.x; oy=simState.y;
+      map.classList.add('is-panning');
+      if(map.setPointerCapture) try{ map.setPointerCapture(e.pointerId) }catch(err){}
+    });
+    map.addEventListener('pointermove', e => {
+      if(!active) return;
+      simState.x = ox + (e.clientX - sx);
+      simState.y = oy + (e.clientY - sy);
+      simApplyTransform();
+    });
+    const end = () => { if(!active) return; active=false; map.classList.remove('is-panning'); simUpdateReadout(); };
+    map.addEventListener('pointerup', end);
+    map.addEventListener('pointercancel', end);
+    map.addEventListener('pointerleave', end);
+  }
+  function simOpenMap(){
+    const modal=document.querySelector('[data-map-modal]');
+    if(!modal) return;
+    modal.hidden=false;
+    modal.querySelectorAll('[data-sim-map]').forEach(simBindPan);
+    simApplyTransform(); simUpdateReadout();
+    if(window.lucide) try{ lucide.createIcons({icons:lucide.icons}) }catch(e){}
+  }
+  function simCloseMap(){
+    const modal=document.querySelector('[data-map-modal]');
+    if(modal) modal.hidden=true;
+  }
+  function simLocate(){
+    // FAKE. Production: navigator.geolocation.getCurrentPosition().
+    simState.x=0; simState.y=0; simState.z=1.35;
+    simApplyTransform(); simUpdateReadout();
+    showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว','success');
+  }
+  function applyAddress(place){
+    simState.picked=true;
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v; };
+    set('addrBuilding',place.building); set('addrFloor',place.floor);
+    set('addrLine',place.line); set('addrDistrict',place.district);
+    const t=document.querySelector('[data-address-preview-title]');
+    const d=document.querySelector('[data-address-preview-detail]');
+    if(t) t.textContent=place.title;
+    if(d) d.textContent=place.detail;
+    const prev=document.querySelector('[data-address-map]');
+    if(prev) prev.classList.add('is-pin-selected');
+    const cta=document.querySelector('[data-address-map-cta-label]');
+    if(cta) cta.textContent='แก้ไขตำแหน่งบนแผนที่';
+    const acc=document.querySelector('.delivery-address-edit');
+    if(acc) acc.open=true;               // reveal the auto-filled fields
+  }
+
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
     const byCategory = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
@@ -5217,51 +5372,58 @@
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
     if(ec) callActive = false;
-    const addressPick=e.target.closest('[data-address-pick-demo]');
-    if(addressPick){
-      const screen=addressPick.closest('#address');
-      const selected={
-        search:'Ideo Mobi Sukhumvit 66',
-        building:'Ideo Mobi Sukhumvit 66, ห้อง 18/92',
-        floor:'18',
-        line:'ซอยสุขุมวิท 66 ถนนสุขุมวิท',
-        district:'เขตบางนา กรุงเทพฯ 10260',
-        note:'ฝากที่ล็อบบี้อาคาร A โทรก่อนถึง 5 นาที',
-        km:'6.8',
-        query:'Ideo Mobi Sukhumvit 66 Bangkok'
-      };
-      const fill=(id,value) => {
-        const input=screen?.querySelector(`#${id}`);
-        if(!input) return;
-        input.value=value;
-        input.dispatchEvent(new Event('input',{bubbles:true}));
-        input.dispatchEvent(new Event('change',{bubbles:true}));
-      };
-      fill('addrSearch',selected.search);
-      fill('addrBuilding',selected.building);
-      fill('addrFloor',selected.floor);
-      fill('addrLine',selected.line);
-      fill('addrDistrict',selected.district);
-      fill('addrNote',selected.note);
-      const suggestions=screen?.querySelector('#addrSuggest');
-      if(suggestions) suggestions.style.display='none';
-      if(screen) screen.dataset.selectedKm=selected.km;
-      writeDeliveryAddressDraft(screen,selected);
-      const title=screen?.querySelector('[data-address-preview-title]');
-      const detail=screen?.querySelector('[data-address-preview-detail]');
-      const map=screen?.querySelector('[data-address-map]');
-      const frame=screen?.querySelector('[data-address-map-frame]');
-      const ctaLabel=screen?.querySelector('[data-address-map-cta-label]');
-      if(title) title.textContent=selected.building;
-      if(detail) detail.textContent=`${selected.line} · ${selected.district}`;
-      if(frame) frame.src=`https://maps.google.com/maps?q=${encodeURIComponent(selected.query)}&z=16&output=embed`;
-      if(map){
-        map.classList.remove('is-pin-selected');
-        void map.offsetWidth;
-        map.classList.add('is-pin-selected');
+    // ---- map picker (in-app only, never navigates out) ----
+    if(e.target.closest('[data-address-open-map],[data-address-map] .sim-map')){ simOpenMap(); return; }
+    if(e.target.closest('[data-map-close]')){ simCloseMap(); return; }
+    const simZoom=e.target.closest('[data-sim-zoom]');
+    if(simZoom){
+      const dir=parseInt(simZoom.dataset.simZoom,10);
+      simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
+      simApplyTransform(); return;
+    }
+    if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
+    if(e.target.closest('[data-sim-confirm]')){
+      applyAddress(simState.place);
+      simCloseMap();
+      showActionToast('ปักหมุดและกรอกที่อยู่ให้แล้ว','success');
+      return;
+    }
+    // ---- recipient inline editor ----
+    if(e.target.closest('[data-recipient-edit]')){
+      const view=document.querySelector('[data-recipient-view]');
+      const form=document.querySelector('[data-recipient-form]');
+      if(view&&form){
+        const n=document.querySelector('[data-recipient-name]');
+        const ph=document.querySelector('[data-recipient-phone]');
+        const ni=document.getElementById('recipientName');
+        const pi=document.getElementById('recipientPhone');
+        if(ni&&n&&!/ยังไม่ได้ระบุ/.test(n.textContent)) ni.value=n.textContent.trim();
+        if(pi&&ph&&/\d/.test(ph.textContent)) pi.value=ph.textContent.trim();
+        view.hidden=true; form.hidden=false;
+        if(ni) ni.focus();
       }
-      if(ctaLabel) ctaLabel.textContent='เลือกตำแหน่งนี้แล้ว';
-      showActionToast('ปักหมุดแล้ว และกรอกรายละเอียดที่อยู่ให้แล้ว','success');
+      return;
+    }
+    if(e.target.closest('[data-recipient-cancel]')){
+      const view=document.querySelector('[data-recipient-view]');
+      const form=document.querySelector('[data-recipient-form]');
+      if(view&&form){ form.hidden=true; view.hidden=false; }
+      return;
+    }
+    if(e.target.closest('[data-recipient-save]')){
+      const ni=document.getElementById('recipientName');
+      const pi=document.getElementById('recipientPhone');
+      const name=(ni?.value||'').trim(), phone=(pi?.value||'').trim();
+      if(!name){ showActionToast('กรุณากรอกชื่อผู้รับ','warning'); return; }
+      if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์ผู้รับ','warning'); return; }
+      const n=document.querySelector('[data-recipient-name]');
+      const ph=document.querySelector('[data-recipient-phone]');
+      if(n) n.textContent=name;
+      if(ph) ph.textContent=phone;
+      const view=document.querySelector('[data-recipient-view]');
+      const form=document.querySelector('[data-recipient-form]');
+      if(view&&form){ form.hidden=true; view.hidden=false; }
+      showActionToast('บันทึกข้อมูลผู้รับแล้ว','success');
       return;
     }
     const addressSave=e.target.closest('[data-address-save]');

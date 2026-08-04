@@ -190,7 +190,50 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .delivery-card__head{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid var(--color-line);font-size:15px}
 .delivery-card__icon{width:28px;height:28px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--color-bg-soft);color:var(--color-ink)}
 .delivery-card__icon .ui-icon{width:18px;height:18px}
-.delivery-map-preview{position:relative;height:98px;overflow:hidden;background:var(--color-powder)}
+/* Map frame is tall enough to actually place a pin (was a 98px strip). */
+.delivery-map-preview{position:relative;height:196px;overflow:hidden;background:var(--color-powder);cursor:pointer}
+/* ---- Simulated map -------------------------------------------------------
+   Drawn entirely in CSS: no tile provider, no iframe, no API key, and no way
+   to navigate out of the app. Pan and zoom are real; the geography is not.
+   Production swaps .sim-map for a Maps JS API / Leaflet canvas. ---------- */
+.sim-map{position:absolute;inset:0;overflow:hidden;background:var(--color-bg-2);touch-action:none}
+.sim-map__plane{position:absolute;left:50%;top:50%;width:2400px;height:2400px;transform:translate(-50%,-50%);transform-origin:center;
+  background-color:var(--color-bg);
+  background-image:
+    linear-gradient(var(--color-powder) 2px,transparent 2px),
+    linear-gradient(90deg,var(--color-powder) 2px,transparent 2px),
+    linear-gradient(var(--color-bg-2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--color-bg-2) 1px,transparent 1px),
+    radial-gradient(circle at 30% 40%,var(--color-accent-soft) 0 90px,transparent 92px),
+    radial-gradient(circle at 72% 66%,var(--color-accent-soft-2) 0 120px,transparent 122px);
+  background-size:240px 240px,240px 240px,48px 48px,48px 48px,100% 100%,100% 100%;
+  will-change:transform}
+.sim-map--full{position:relative;height:clamp(260px,46vh,420px);border-radius:var(--radius-md);overflow:hidden}
+.sim-map__crosshair{position:absolute;left:50%;top:50%;z-index:2;display:grid;place-items:center;width:38px;height:38px;
+  transform:translate(-50%,-100%);color:var(--color-accent-ink);pointer-events:none;filter:drop-shadow(0 6px 8px rgba(23,46,81,.28))}
+.sim-map__crosshair .ui-icon{width:38px;height:38px}
+.sim-map__zoom{position:absolute;right:var(--sp-3);top:var(--sp-3);z-index:3;display:grid;gap:1px;border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow-sm)}
+.sim-map__zoom button{width:36px;height:36px;border:0;background:var(--color-surface);color:var(--color-ink);font-size:18px;line-height:1;cursor:pointer}
+.sim-map__zoom button:active{background:var(--color-bg-2)}
+.sim-map__locate{position:absolute;left:var(--sp-3);bottom:var(--sp-3);z-index:3;display:inline-flex;align-items:center;gap:var(--sp-2);
+  min-height:var(--tap-target-min,44px);padding:0 var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-pill);
+  background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:13px;font-weight:var(--fw-semibold);cursor:pointer;box-shadow:var(--shadow-sm)}
+.sim-map__locate .ui-icon{width:16px;height:16px}
+.sim-map.is-panning .sim-map__plane{transition:none}
+/* ---- In-app map modal ---- */
+.map-modal{position:absolute;inset:0;z-index:40;display:grid;place-items:end center}
+.map-modal[hidden]{display:none}
+.map-modal__backdrop{position:absolute;inset:0;background:rgba(23,46,81,.42)}
+.map-modal__sheet{position:relative;z-index:1;width:100%;max-height:92%;display:flex;flex-direction:column;gap:var(--sp-3);
+  padding:var(--sp-4);border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:var(--color-surface);box-shadow:var(--shadow-lg)}
+.map-modal__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.map-modal__close{width:var(--tap-target-min,44px);height:var(--tap-target-min,44px);border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:15px;cursor:pointer}
+.map-modal__foot{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.map-modal__readout{min-width:0}
+.map-modal__readout strong{display:block;font-size:14px}
+/* ---- Recipient inline edit ---- */
+.delivery-recipient-form{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-3) 12px 12px}
+.delivery-recipient-form[hidden]{display:none}
 .delivery-map-preview .map-frame{position:absolute;inset:0;width:100%;height:100%;border:0;filter:saturate(.42) contrast(.92);opacity:.78}
 .delivery-map-preview .map-pin{position:absolute;left:50%;top:45%;display:grid;place-items:center;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;background:var(--color-surface-deep);color:var(--color-on-dark);box-shadow:var(--shadow-md)}
 .delivery-map-preview .map-pin .ui-icon{width:18px;height:18px}
@@ -208,7 +251,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .delivery-method-note{padding:8px 14px;background:var(--color-bg-soft);color:var(--color-ink-2);font-size:12px}
 .delivery-method-price{flex:none;color:var(--color-ink);font-size:12px;font-weight:var(--fw-semibold);text-align:right}
 .delivery-address-edit{border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface)}
-.delivery-address-edit summary{padding:13px 14px;font-weight:var(--fw-semibold);cursor:pointer}
+.delivery-address-edit summary{display:grid;grid-template-columns:minmax(0,1fr) 14px;align-items:center;gap:var(--sp-2);
+  padding:13px 14px;font-weight:var(--fw-semibold);cursor:pointer;list-style:none}
+.delivery-address-edit summary::-webkit-details-marker{display:none}
+.delivery-address-edit summary::marker{content:""}
+/* Chevron on the right, rotating on open. Same construction as .rail-group. */
+.delivery-address-edit summary::after{content:"";justify-self:end;width:7px;height:7px;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;color:var(--color-ink-3);
+  transform:rotate(45deg);transition:transform .16s ease}
+.delivery-address-edit:not([open])>summary::after{transform:rotate(-45deg)}
 .delivery-address-edit[open] summary{border-bottom:1px solid var(--color-line)}
 .delivery-address-edit>.stack-3{padding:14px}
 
