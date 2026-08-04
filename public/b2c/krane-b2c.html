@@ -3675,8 +3675,18 @@
     const byCategory = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
-    // Keep the first render of each screen so a path without its own intake3
-    // (hair and general) falls back to the shared markup instead of blanking out.
+    // Template coverage per concern (verified 2026-08-04):
+    //   skin / sexual / sleep -> own intake1, intake2, intake3
+    //   hair                  -> own intake1, intake2; intake3 falls back to the
+    //                            authored base, which is the generic "previous
+    //                            care or treatment" set and is concern-appropriate
+    //   general               -> own intake1, intake2; intake3 is SKIPPED entirely
+    //                            by the routing rule above (EC-011), so it never
+    //                            renders the concern-specific treatment history
+    // A missing template therefore falls back to the authored base markup only
+    // where that base is genuinely generic. Never let it inherit another
+    // concern's set: add an explicit template, or add the screen to
+    // INTAKE_SKIPPED_BY_GENERAL.
     ['intake1','intake2','intake3'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
@@ -3701,7 +3711,7 @@
     const general = selectedCategory().general;
     const visual = categoryNeedsPhotos();
     const steps = general
-      ? {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']}
+      ? {intake1:[25,'1 / 4'],intake2:[50,'2 / 4'],intake4:[75,'3 / 4'],'intake-general':[100,'4 / 4']}
       : visual
         ? {intake1:[17,'1 / 6'],intake2:[33,'2 / 6'],intake3:[50,'3 / 6'],intake4:[67,'4 / 6'],intake5:[83,'5 / 6'],'intake-general':[100,'6 / 6']}
         : {intake1:[20,'1 / 5'],intake2:[40,'2 / 5'],intake3:[60,'3 / 5'],intake4:[80,'4 / 5'],'intake-general':[100,'5 / 5']};
@@ -4223,6 +4233,33 @@
     if(consultationBalanceDue()<=0) return 'waitroom';
     return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
   }
+  /* EC-011: a General consultation must not be asked condition-specific
+     questions. #intake3 is the "what have you tried for this concern" set, so
+     the general path skips it entirely. Kept as a routing rule rather than
+     markup, so it survives the innerHTML round-trip that renderIntakeQuestions
+     performs (the same round-trip that previously broke the custom selects). */
+  const INTAKE_SKIPPED_BY_GENERAL = ['intake3'];
+  function intakeSkipped(id){
+    try { return INTAKE_SKIPPED_BY_GENERAL.includes(id) && selectedCategory().general; }
+    catch(e){ return false; }
+  }
+  function skipForwardFrom(id){
+    // intake3 -> intake4 for general; generic so more skips can be added.
+    const order=['intake1','intake2','intake3','intake4'];
+    let i=order.indexOf(id);
+    if(i<0) return id;
+    while(i<order.length && intakeSkipped(order[i])) i++;
+    return order[i] || 'intake4';
+  }
+  function skipBackFrom(id){
+    const order=['intake1','intake2','intake3','intake4'];
+    let i=order.indexOf(id);
+    if(i<0) return null;
+    i--;
+    while(i>=0 && intakeSkipped(order[i])) i--;
+    return i>=0 ? order[i] : null;
+  }
+
   function seededHistory(id){
     const path=[];
     const visited=new Set();
@@ -4230,7 +4267,8 @@
     while(current && !visited.has(current)){
       visited.add(current);
       path.unshift(current);
-      current=directEntryParent[current];
+      const skipped=skipBackFrom(current);
+      current = skipped !== null ? skipped : directEntryParent[current];
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -4442,6 +4480,7 @@
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
+    if(intakeSkipped(target)) target = skipForwardFrom(target);
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
