@@ -330,7 +330,7 @@
       <summary><span class="rail-step">05</span><span>Consultation</span></summary>
       <div class="rail-group__body">
         <details class="rail-page"><summary>Consultation room</summary><div class="rail-sub">
-          <a data-go="connecting">State · Connecting</a><a data-go="video">Default · Video</a><a data-go="consult">Fallback · Chat</a>
+          <a data-go="video">Default · Video</a><a data-go="consult">Fallback · Chat</a>
         </div></details>
         <details class="rail-page"><summary>Treatment plan</summary><div class="rail-sub">
           <a data-go="rx-writing">State · Writing prescription</a><a data-go="plan">Plan ready</a><a data-go="prescription">Prescription document</a>
@@ -1044,7 +1044,11 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+            <!-- Q1 (pending): insurance coverage shown as a deduction line, the way
+             Health at Home do it, rather than rewriting the price. Hidden until
+             KRANE_FLAGS.coverageLine is true. -->
+        <div class="between" data-coverage-row hidden><span class="muted">สิทธิ์ครอบคลุมการรักษาครั้งนี้</span><strong data-coverage-amount>- ฿ 350</strong></div>
+<div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1133,7 +1137,7 @@
       </div>
       <div class="state-view__timer" data-wait-timer>About 2–3 min</div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
-    <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="connecting">Waiting to be admitted…</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button></div>
   </section>
 
   <!-- ===================== CONSULT ROOM ===================== -->
@@ -1165,18 +1169,7 @@
   </section>
 
   <!-- ===================== CONNECTING (call edge state) ===================== -->
-  <section class="screen" id="connecting">
-    <div class="screen__top transition-stage__top"><span class="ttl">Connecting</span><button class="transition-stage__close" data-go="consult" aria-label="Cancel">×</button></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Connecting to Dr. Narin">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/video-connecting-branded.png" alt="" loading="lazy" decoding="async"></span>
-        <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Connecting to Dr. Narin</h2><p class="muted">This may take a moment.</p></div>
-    </div>
-  </section>
-
-  <!-- ===================== CALL (KRANE-F13 · camera toggles voice-only in place, one screen) ===================== -->
+    <!-- ===================== CALL (KRANE-F13 · camera toggles voice-only in place, one screen) ===================== -->
   <section class="screen" id="video">
     <div class="screen__top video-call-top"><span class="ttl">ปรึกษาแพทย์</span><button class="transition-stage__close" data-endcall data-go="consult" aria-label="วางสาย">×</button></div>
     <div class="screen__body callstage callstage--live">
@@ -1264,6 +1257,15 @@
             <button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน ไมน็อกซิดิลชนิดทา 5%">−</button><span class="qty-n" data-qty-n role="status" aria-live="polite" aria-atomic="true">2</span><button type="button" class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน ไมน็อกซิดิลชนิดทา 5%">+</button><span class="hint">bottles</span>
           </span>
         </div><span class="price" data-line-price>฿ 450</span></div>
+      </div>
+
+      <!-- Competitor pattern (Health at Home): a medicine reduced to 0 is
+           declined, not deleted. It moves here so it stays visibly a choice the
+           patient made, with a way to put it back. -->
+      <div class="declined-list" data-declined-list hidden>
+        <div class="section-label">รายการที่คุณเลือกไม่รับ</div>
+        <div data-declined-items></div>
+        <p class="hint">แจ้งแพทย์ในแชทได้ถ้าต้องการเปลี่ยนใจ</p>
       </div>
     </div>
     <div class="screen__footer">
@@ -2854,7 +2856,7 @@
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
-    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,connecting:4,video:4,'rx-writing':4,
+    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
     plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
   };
   function careJourneyMarkup(current){
@@ -3691,9 +3693,68 @@
      rather than shipping the underscores. Production replaces DOCTOR_NAME with
      the matched doctor from the booking response; every [data-doctor-name] slot
      picks it up. */
+  /* ==================== PENDING DECISIONS ====================
+     Each of these is BUILT but OFF. Flip the flag to turn it on; nothing else
+     needs editing. Set from the URL for a quick look, e.g. ?coverage=on
+     ------------------------------------------------------------------- */
+  const KRANE_FLAGS = (() => {
+    const q = new URLSearchParams(location.search);
+    return {
+      // Q1: show the consultation fee struck through to 0 with a coverage line.
+      // Answer "coverage on, partner only" -> set coverageLine to true.
+      coverageLine: q.get('coverage') === 'on' ? true : false,
+      // Q1b: does coverage apply to everyone, or only the partner entry?
+      coverageAllEntries: false,
+    };
+  })();
+
   const DOCTOR_NAME = 'นรินทร์';
   function fillDoctorName(root){
     (root || document).querySelectorAll('[data-doctor-name]').forEach(el => { el.textContent = DOCTOR_NAME; });
+  }
+
+  /* A medicine stepped down to 0 is declined rather than removed: it leaves the
+     order list and appears under "รายการที่คุณเลือกไม่รับ" with a way back.
+     Without this a zeroed row sat in the list at ฿0, indistinguishable from one
+     the patient kept. */
+  /* Q1 (pending). When the coverage flag is on, the consultation fee is shown
+     struck through and a deduction line brings it to zero. Off by default, so
+     the screen behaves exactly as before until the decision is made. */
+  function applyCoverageFlag(){
+    const scr=document.getElementById('consultpay');
+    if(!scr) return;
+    const row=scr.querySelector('[data-coverage-row]');
+    const applies = KRANE_FLAGS.coverageLine &&
+      (KRANE_FLAGS.coverageAllEntries || document.body.dataset.entry === 'partner');
+    if(row) row.hidden = !applies;
+    scr.querySelectorAll('[data-consult-fee]').forEach(el => {
+      el.style.textDecoration = applies ? 'line-through' : '';
+      el.style.opacity = applies ? '.55' : '';
+    });
+  }
+
+  function syncDeclinedMedicines(){
+    const plan=document.getElementById('plan');
+    if(!plan) return;
+    const wrap=plan.querySelector('[data-declined-list]');
+    const target=plan.querySelector('[data-declined-items]');
+    if(!wrap || !target) return;
+    const declined=[];
+    plan.querySelectorAll('[data-order-item]').forEach(row => {
+      const key=row.dataset.orderItem;
+      const ctl=row.querySelector('[data-qty]');
+      if(!ctl) return;
+      const q=parseInt(ctl.querySelector('[data-qty-n]')?.textContent || '0',10);
+      const nameEl=row.querySelector('[style*="fw-semibold"]');
+      const name=(nameEl?.textContent || key).trim();
+      row.hidden = q<=0;
+      if(q<=0) declined.push({key,name});
+    });
+    target.innerHTML = declined.map(d =>
+      '<div class="declined-row"><span class="grow">'+d.name+'</span>'+
+      '<button type="button" class="btn btn--ghost btn--sm" data-restore-item="'+d.key+'">เพิ่มกลับ</button></div>'
+    ).join('');
+    wrap.hidden = declined.length===0;
   }
 
   function renderIntakeQuestions(){
@@ -4112,7 +4173,7 @@
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
-    connecting:'consult', video:'consult', 'rx-writing':'consult', plan:'consult',
+    video:'consult', 'rx-writing':'consult', plan:'consult',
     payment:'plan', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
     'pharmacy-search':'payment-success', pharmacyaccepted:'pharmacy-search', pharmacypending:'pharmacyaccepted',
     payfail:'payment-gw',
@@ -4522,7 +4583,7 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','connecting','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
+    'consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
     'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
     'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
@@ -4680,6 +4741,8 @@
         if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
       },120);
     }
+    if(id==='consultpay') applyCoverageFlag();
+    if(id==='plan') syncDeclinedMedicines();
     fillDoctorName();
     clearTimeout(deliveryQuoteTimer);
     if(id==='delivery-quote'){
@@ -4773,9 +4836,7 @@
         if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
       },reduceMotion ? 350 : 1800);
     }
-    // connecting state auto-advances to the live video call (demo realism)
     clearTimeout(connectTimer);
-    if(id === 'connecting'){ connectTimer = setTimeout(() => { if(document.getElementById('connecting').classList.contains('active')) replaceCurrent('video'); }, 1600); }
     // F13: entering a call marks it active; the chat screen then shows the return bar
     if(id === 'video'){
       callActive = true; lastCall = id;
@@ -5518,6 +5579,29 @@
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
     if(ec) callActive = false;
+    // ---- declined medicines: put one back ----
+    const restore=e.target.closest('[data-restore-item]');
+    if(restore){
+      const key=restore.dataset.restoreItem;
+      const row=document.querySelector(`#plan [data-order-item="${key}"]`);
+      const ctl=row?.querySelector('[data-qty]');
+      if(ctl){
+        const nEl=ctl.querySelector('[data-qty-n]');
+        const max=parseInt(ctl.dataset.max,10), unit=parseInt(ctl.dataset.unit,10);
+        nEl.textContent=max;
+        ctl.querySelector('[data-qty-minus]').disabled=false;
+        ctl.querySelector('[data-qty-plus]').disabled=true;
+        const line=row.querySelector('[data-line-price],[data-order-price]');
+        if(line) line.textContent='฿ '+(unit*max).toLocaleString();
+        flowState.orderState.quantities[key]=max;
+        persistFlowState();
+        syncDeclinedMedicines();
+        syncOrderCheckout();
+        refreshMedicationCheckout();
+        showActionToast('เพิ่มกลับเข้ารายการแล้ว','success');
+      }
+      return;
+    }
     // ---- end-call confirmation (item 7) ----
     const endCall=e.target.closest('[data-endcall]');
     if(endCall){
@@ -5634,6 +5718,7 @@
         flowState.orderState.quantities[item]=q;
         persistFlowState();
         syncOrderCheckout();
+        syncDeclinedMedicines();
         refreshMedicationCheckout();
       }
       return;
@@ -5910,7 +5995,6 @@
     'consultpay':       { id:'KRANE-F39 + KRANE-F09', name:'Consultation Fee Payment', stories:['US-F39.1: Discount / coupon code can be entered at checkout','Prototype assumption: Payment 1 is consultation fee only and is required before entering the waiting room','Prototype assumption: medicine and delivery remain a separate payment after prescription acceptance'] },
     'waitroom':         { id:'KRANE-F14', name:'Waiting Room, Doctor Joins First', stories:['US-F14.4: Doctor joins first before patient enters the consultation room','Client v3: the patient cannot enter a blank room; the Enter button unlocks only when the doctor admits them','Patient sees current status, estimated next step, and what to prepare while waiting'] },
     'consult':          { id:'KRANE-F13', name:'Consultation Screen (Patient), Chat Tab', stories:['US-F13.1: Chat + video tabs freely switchable during session','US-F13.2: Patient sees doctor name, photo, and licence number in session','US-F13.3: Patient can view intake form summary in the same view','US-F13.4: Session stays open until doctor closes it and sends the treatment plan','Prototype assumption: consultation fee is already paid before this screen'] },
-    'connecting':       { id:'KRANE-F13', name:'Consultation Screen, Connecting (edge state)', stories:['US-F13.5: Video call is the default on session start'] },
     'video':            { id:'KRANE-F13', name:'Consultation Screen, Call (camera toggles voice-only in place)', stories:['US-F13.1: Chat + video tabs freely switchable without disruption','US-F13.6: Patient can navigate to payment and back without dropping the call'] },
     'rx-writing':       { id:'KRANE-F15', name:'Doctor Writing Prescription (status)', stories:['Client 6 Jul: prescribing can take a while; the patient sees a status screen before the treatment plan','US-F15.2: the patient is notified (LINE first) the moment the plan is ready','Patient can leave this screen without losing their place'] },
     'plan':             { id:'KRANE-F16', name:'Treatment Plan View (Acceptance)', stories:['US-F16.1: Structured summary: medicine, dosage, plain-language explanation, medicine price','US-F16.2: Patient can accept (→ medication payment) or message doctor to request changes','US-F16.3: Patient cannot edit the prescription directly (clinical model, not e-commerce)','US-F16.4: Shows next follow-up date when available, refills allowed, request-more eligibility, and prescription expiry','US-F16.5: "Refill" is the single consistent term'] },
