@@ -39,10 +39,10 @@
     const floor = document.getElementById("addrFloor");
     const line = document.getElementById("addrLine");
     const district = document.getElementById("addrDistrict");
-    if (building) building.value = "The Base Park West, Room 22/418";
+    if (building) building.value = "เดอะ เบส พาร์ค เวสต์ ห้อง 22/418";
     if (floor) floor.value = "22";
-    if (line) line.value = "Soi Sukhumvit 77, Phra Khanong Nuea";
-    if (district) district.value = "Watthana, Bangkok 10110";
+    if (line) line.value = "ซอยสุขุมวิท 77 แขวงพระโขนงเหนือ";
+    if (district) district.value = "เขตวัฒนา กรุงเทพฯ 10110";
     const paymentAddress = document.querySelector("[data-payment-address]");
     if (paymentAddress) paymentAddress.textContent = f.order.shortAddress;
     updateTracking();
