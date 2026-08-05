@@ -3,9 +3,26 @@
   var sequence=0;
   var enhancementFrame=0;
 
+  /* Safari composites -webkit-backdrop-filter elements above later content no matter
+     how high the overlay's z-index is, so the blurred screen header and footer painted
+     over the bottom of the option sheet and swallowed its last option. components.css
+     flattens that chrome while body.overlay-open is set.
+
+     The flag is always DERIVED from what is on the page, never incremented, so two
+     overlay types can never clear each other's state: closing a select while a modal
+     is still up must leave the flag on. Modals are matched by selector rather than
+     wired at each call site, so a new one is covered the day it is added. */
+  var OVERLAY_SELECTORS='.custom-select.is-open,.modal-layer:not([hidden]),.map-modal:not([hidden]),[data-acceptplan-modal]:not([hidden]),[data-endcall-modal]:not([hidden])';
+  function syncSheetFlag(){
+    if(!document.body)return;
+    document.body.classList.toggle('overlay-open',!!document.querySelector(OVERLAY_SELECTORS));
+  }
+  window.kraneSyncOverlayFlag=syncSheetFlag;
+
   function closeSelect(record,returnFocus){
     record.root.classList.remove('is-open');
     record.trigger.setAttribute('aria-expanded','false');
+    syncSheetFlag();
     if(returnFocus)record.trigger.focus();
   }
 
@@ -25,6 +42,7 @@
     closeOthers(record);
     record.root.classList.add('is-open');
     record.trigger.setAttribute('aria-expanded','true');
+    syncSheetFlag();
     if(focusSelected){
       var selectedIndex=record.options.findIndex(function(option){return option.getAttribute('aria-selected')==='true'});
       window.requestAnimationFrame(function(){focusOption(record,selectedIndex<0?0:selectedIndex)});
@@ -206,6 +224,9 @@
       syncSelect(record);
       return true;
     });
+    /* A screen change can tear out an open sheet, so re-derive the flag from
+       what is still on the page instead of leaving the chrome flattened. */
+    syncSheetFlag();
   };
   document.addEventListener('click',function(event){enhanced.forEach(function(record){if(!record.root.contains(event.target))closeSelect(record,false)})});
   document.addEventListener('krane:screenchange',function(event){
@@ -213,6 +234,13 @@
   });
   document.addEventListener('DOMContentLoaded',function(){
     enhanceAll(document);
+    syncSheetFlag();
+    /* Modals open and close by flipping [hidden] in a dozen places. Watch the
+       attribute instead of editing every one of them, so the chrome flattens for
+       modals exactly as it does for the option sheet. */
+    new MutationObserver(syncSheetFlag).observe(document.body,{
+      attributes:true,attributeFilter:['hidden'],subtree:true
+    });
     /* Intake templates and restored drafts replace screen markup after startup.
        Observe those replacements so the first tap works without a page refresh. */
     new MutationObserver(function(mutations){
