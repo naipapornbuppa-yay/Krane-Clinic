@@ -390,10 +390,16 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .state-view__visual--icon{width:auto;height:auto;min-height:0}
 .state-view__stage{
   width:140px;height:140px;display:grid;place-items:center;flex:none;
-  border-radius:50%;background:var(--color-bg-2);box-shadow:none
+  border-radius:50%;background:var(--color-bg-2);box-shadow:none;
+  animation:stage-float 3.6s var(--ease-inout) infinite
 }
-/* The artwork carries its own motion. The disc stays still: two things moving at
-   once read as drift rather than as one object doing something. */
+@keyframes stage-float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.state-view__stage{animation:none}}
+/* Outcomes have finished, so their disc holds still. */
+.state-view__visual--success .state-view__stage,
+.state-view__visual--danger .state-view__stage,
+.state-view__visual--warning .state-view__stage,
+.state-view__visual--empty .state-view__stage{animation:none}
 .state-view__stage>img{width:54%;height:54%;display:block}
 .state-view__visual--danger .state-view__stage{background:var(--color-danger-soft)}
 @keyframes loading-illustration-float{0%,100%{transform:translateY(2px) scale(1.01)}50%{transform:translateY(-4px) scale(1.025)}}
