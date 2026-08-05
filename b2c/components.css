@@ -206,6 +206,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    accordion). The map is half the first viewport, clamped so it never eats a
    short landscape screen or floats absurdly tall on a tablet. ------------- */
 .address-body{padding-bottom:var(--sp-6)}
+/* The search bar and its dropdown are positioned from this wrapper rather than
+   from .address-map itself, so the suggestion list is free to drop past the
+   map's bottom edge and overlay the form below instead of being clipped at
+   the map's own height by its overflow:hidden. */
+.address-map-wrap{position:relative}
 .address-map{position:relative;height:34vh;min-height:200px;max-height:280px;
   border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg-2)}
 /* The readout sat flush against the map above it and the first field below, with
@@ -696,15 +701,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-bill__row strong{color:var(--color-ink);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
 .checkout-bill__row--credit strong{color:var(--color-success)}
 
-/* Grab-style itemised order summary on the checkout screen.
-   One card, a light header, then a line per prescribed item. */
+/* Grab-style itemised order summary on the checkout screen: one card, a line
+   per prescribed item. No header of its own any more, client's call. */
 .checkout-order{border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);overflow:hidden}
-.checkout-order__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--color-line);background:var(--color-bg-soft)}
-.checkout-order__head .badge{flex:none;white-space:nowrap}
-.checkout-order__by{min-width:0}
-.checkout-order__by{min-width:0;display:flex;align-items:baseline;gap:6px;font-size:var(--fs-sm);font-weight:var(--fw-regular);color:var(--color-ink-2)}
-.checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink)}
-.checkout-order__count{font-size:var(--fs-xs);color:var(--color-ink-3)}
 .checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
 .checkout-order__item+.checkout-order__item{border-top:1px solid var(--color-line)}
 .checkout-order__thumb{width:44px;height:44px;flex:none;border-radius:var(--radius-md);background:var(--color-bg-2);display:grid;place-items:center;overflow:hidden}
@@ -719,12 +718,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-order__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__note{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.4}
 .checkout-order__price{flex:none;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-#payment .checkout-order__item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center}
-#payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2}
+/* Denser than the base row: four items with a stepper each ran long on a
+   phone-height screen, so this trims the padding and the stepper controls
+   rather than the type, which stays readable at the same size. */
+#payment .checkout-order__item{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;padding-block:var(--sp-2);gap:var(--sp-2)}
+#payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2;width:38px;height:38px}
 #payment .checkout-order__body{grid-column:2;grid-row:1}
 #payment .checkout-order__price{grid-column:3;grid-row:1}
-#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:6px}
-#payment .checkout-order__stepper .qty-btn{width:34px;height:34px}
+#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:4px}
+#payment .checkout-order__stepper .qty-btn{width:30px;height:30px}
 #payment .checkout-order__stepper .hint{white-space:nowrap}
 
 /* Footer pays: amount sits beside the action, as in the Grab reference */
@@ -1830,15 +1832,10 @@ body.lang-th *{letter-spacing:normal}
 .checkout-final-summary{padding-top:var(--sp-2)}
 .checkout-final-summary .checkout-bill{background:var(--color-bg-soft)}
 .checkout-calc{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium);text-align:right}
+/* Delivery is the last row in the bill, the one addition after every reduction
+   rather than another line to reconcile against the subtotal, so it is the only
+   row set apart with a rule. */
 .checkout-bill__row--delivery{margin-top:4px;padding-top:12px;border-top:1px dashed var(--color-line-strong)}
-/* Group headings inside the bill (ยอดรวมย่อย / สิทธิความคุ้มครองตามกรมธรรม์): the
-   same small caps label used above the order card and the add-on rail, so the
-   bill reads as more of the same list rather than a different kind of block. A
-   heading that opens a new group carries the dashed rule the delivery row uses;
-   one that continues straight from the row above (ยอดรวมย่อย, first in the card)
-   does not. */
-.checkout-bill__group{display:block;margin-bottom:var(--sp-1)}
-.checkout-bill__group.checkout-bill__row--delivery{margin-bottom:var(--sp-2)}
 
 /* Savings line in the sticky pay bar. Stated plainly, never as a celebration. */
 .checkout-pay__save{color:var(--color-success);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
@@ -2027,6 +2024,8 @@ body.lang-th *{letter-spacing:normal}
 .map-search__text{display:flex;flex-direction:column;gap:2px;min-width:0}
 .map-search__text strong{font-size:var(--fs-sm);color:var(--color-ink);line-height:1.35}
 .map-search__text span{font-size:var(--fs-xs);color:var(--color-ink-2);line-height:1.4}
+.map-search__recent-tag{font-size:10px;font-weight:var(--fw-semibold);color:var(--color-blue);
+  text-transform:uppercase;letter-spacing:.04em}
 
 /* The add-on rail now sits between the order list and this card, so the two are
    no longer adjacent: it is a card of its own and takes the same corner radius
