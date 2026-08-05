@@ -1315,12 +1315,19 @@
             <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
           </div>
           <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
+          <!-- Search sits over the map the way it does on a real map app. Typing
+               offers the demo places; picking one fills every field below. -->
+          <div class="map-search" data-map-search>
+            <label class="sr-only" for="addrSearch">ค้นหาที่อยู่จัดส่ง</label>
+            <span class="map-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon ui-icon--sm"></i></span>
+            <input class="map-search__input" id="addrSearch" type="text" autocomplete="off" role="combobox"
+                   aria-expanded="false" aria-controls="addrSuggest" aria-autocomplete="list"
+                   placeholder="ค้นหาอาคาร คอนโด หรือถนน">
+            <button class="map-search__clear" type="button" data-map-search-clear aria-label="ล้างคำค้นหา" hidden>✕</button>
+            <div class="map-search__list" id="addrSuggest" role="listbox" hidden></div>
+          </div>
         </div>
       </div>
-      <p class="address-readout" data-address-summary role="status" aria-live="polite">
-        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
-        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
-      </p>
 
       <div class="field-row">
         <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
@@ -3810,6 +3817,63 @@
     map.addEventListener('pointercancel', end);
     map.addEventListener('pointerleave', end);
   }
+  /* Address search over the map. The demo places are the same five the pin
+     resolves to, so searching and dragging cannot disagree. Picking a result
+     runs applyAddress, which is the one path that fills the form, so a searched
+     address and a pinned one arrive by the same route. */
+  (function initAddressSearch(){
+    const wrap = document.querySelector('[data-map-search]');
+    if(!wrap) return;
+    const input = wrap.querySelector('#addrSearch');
+    const list = wrap.querySelector('#addrSuggest');
+    const clear = wrap.querySelector('[data-map-search-clear]');
+
+    function close(){
+      list.hidden = true;
+      list.innerHTML = '';
+      input.setAttribute('aria-expanded','false');
+    }
+    function matches(query){
+      const q = query.trim().toLowerCase();
+      if(!q) return [];
+      return SIM_PLACES.filter(place => [place.title,place.line,place.subdistrict,place.districtName,place.postcode]
+        .join(' ').toLowerCase().includes(q)).slice(0,4);
+    }
+    function render(query){
+      const found = matches(query);
+      clear.hidden = !query;
+      if(!found.length) return close();
+      list.innerHTML = found.map((place,index) =>
+        '<button type="button" class="map-search__item" role="option" aria-selected="false" data-place="'+index+'">'+
+        '<span class="map-search__pin" aria-hidden="true"></span>'+
+        '<span class="map-search__text"><strong>'+place.title+'</strong>'+
+        '<span>'+place.line+' · '+place.subdistrict+' '+place.districtName+'</span></span></button>'
+      ).join('');
+      list.dataset.results = found.map(place => SIM_PLACES.indexOf(place)).join(',');
+      list.hidden = false;
+      input.setAttribute('aria-expanded','true');
+    }
+
+    input.addEventListener('input', () => render(input.value));
+    input.addEventListener('focus', () => { if(input.value) render(input.value); });
+    input.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
+    clear.addEventListener('click', () => { input.value=''; clear.hidden=true; close(); input.focus(); });
+
+    list.addEventListener('click', e => {
+      const item = e.target.closest('[data-place]');
+      if(!item) return;
+      const order = (list.dataset.results || '').split(',');
+      const place = SIM_PLACES[Number(order[Number(item.dataset.place)])];
+      if(!place) return;
+      applyAddress(place);
+      input.value = place.title;
+      close();
+      showActionToast('กรอกที่อยู่จากผลการค้นหาแล้ว','success');
+    });
+
+    document.addEventListener('click', e => { if(!wrap.contains(e.target)) close(); });
+  })();
+
   function simLocate(){
     // FAKE. Production: navigator.geolocation.getCurrentPosition().
     simState.x=0; simState.y=0; simState.z=1.35;
