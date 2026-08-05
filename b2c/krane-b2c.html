@@ -1026,36 +1026,21 @@
   <section class="screen" id="consultpay" data-screen-code="SCR-008" data-checkout-mode="consultation">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pay consultation fee</span></div>
     <div class="screen__body stack-4">
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-checkout-title>ค่าปรึกษาแพทย์</div><div class="hint" data-consult-checkout-copy>ตรวจสอบยอดก่อนดำเนินการต่อ</div></div></div>
+      <!-- SCR-008: one card. The fee summary and the consultation details were two
+           cards that said the same things twice: the banner restated the fee, the
+           detail block restated it again with its own struck-through copy, and every
+           row carried a hint that repeated the value beside it. What is left is the
+           fee, what changes it, what is due, and the two facts a patient acts on. -->
       <div class="card card--pad-sm stack-3">
-        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span> รับเคสแล้ว · พร้อมให้คำปรึกษา</strong></div>
+        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
-        <div class="between"><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
+        <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
         <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Pay now</span><span class="amt" data-pay-amt>฿ 350</span></div>
-      </div>
-
-      <!-- SCR-008 detail block (04/08 deck): what the consultation includes, as
-           its own section under the price summary. The fee mirrors the summary
-           above rather than restating a number, so the two cannot disagree. -->
-      <div class="card card--pad-sm stack-3" data-consult-details>
-        <div class="section-label">รายละเอียดการปรึกษา</div>
-        <div class="consult-detail">
-          <div class="consult-detail__row">
-            <span>ค่าปรึกษาแพทย์</span>
-            <span><s data-consult-detail-was hidden>฿ 350</s> <strong data-consult-detail-fee>฿ 350</strong></span>
-          </div>
-          <p class="hint" data-consult-detail-fee-note hidden>คุ้มครองโดยประกัน</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ใช้เวลาในการปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
-          <p class="hint">คุยกับคุณหมอได้เต็มที่</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
-          <p class="hint">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
-        </div>
+        <div class="between"><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
+        <div class="divider" style="margin:0"></div>
+        <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
+        <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
       <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>ขอใบรับรองแพทย์ · ฟรี</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
@@ -1065,10 +1050,6 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-            <!-- Q1 (pending): insurance coverage shown as a deduction line, the way
-             Health at Home do it, rather than rewriting the price. Hidden until
-             KRANE_FLAGS.coverageLine is true. -->
-        <div class="between" data-coverage-row hidden><span class="muted">สิทธิ์ครอบคลุมการรักษาครั้งนี้</span><strong data-coverage-amount>- ฿ 350</strong></div>
 <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
@@ -3876,19 +3857,6 @@
   /* Q1 (pending). When the coverage flag is on, the consultation fee is shown
      struck through and a deduction line brings it to zero. Off by default, so
      the screen behaves exactly as before until the decision is made. */
-  function applyCoverageFlag(){
-    const scr=document.getElementById('consultpay');
-    if(!scr) return;
-    const row=scr.querySelector('[data-coverage-row]');
-    const applies = KRANE_FLAGS.coverageLine &&
-      (KRANE_FLAGS.coverageAllEntries || document.body.dataset.entry === 'partner');
-    if(row) row.hidden = !applies;
-    scr.querySelectorAll('[data-consult-fee]').forEach(el => {
-      el.style.textDecoration = applies ? 'line-through' : '';
-      el.style.opacity = applies ? '.55' : '';
-    });
-  }
-
   function syncDeclinedMedicines(){
     const plan=document.getElementById('plan');
     if(!plan) return;
@@ -4925,7 +4893,6 @@
         if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
       },120);
     }
-    if(id==='consultpay') applyCoverageFlag();
     if(id==='plan') syncDeclinedMedicines();
     if(id==='address'){
       const hero=document.querySelector('#address [data-sim-map]');
@@ -5153,14 +5120,6 @@
     const coverageAmount=document.querySelector('#consultpay [data-consult-coverage-amount]');
     if(coverageRow) coverageRow.hidden=covered<=0;
     if(coverageAmount) coverageAmount.textContent='- '+baht(covered);
-    /* Mirror the summary into the detail block: strike the original only when
-       partner coverage genuinely brings it down. */
-    const dWas=document.querySelector('[data-consult-detail-was]');
-    const dFee=document.querySelector('[data-consult-detail-fee]');
-    const dNote=document.querySelector('[data-consult-detail-fee-note]');
-    if(dFee) dFee.textContent=baht(balance);
-    if(dWas){ dWas.hidden=covered<=0; dWas.textContent=baht(CONSULTATION_FEE_BAHT); }
-    if(dNote) dNote.hidden=covered<=0;
     const amt = baht(amount);
     const a = document.querySelector('#consultpay [data-pay-amt]');
     const b = document.querySelector('#consultpay [data-pay-btn-amt]');
@@ -5178,12 +5137,13 @@
     const noticeMode=flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid;
     screen.dataset.checkoutMode=noticeMode ? 'fee-notice' : 'consultation-payment';
     screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode; });
-    const title=screen.querySelector('[data-consult-checkout-title]');
-    const copy=screen.querySelector('[data-consult-checkout-copy]');
+    /* The banner that used to carry this is gone. When the fee is settled later,
+       the total row says so itself instead of repeating the amount in a second
+       place that could disagree with it. */
+    const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    if(title) title.textContent=noticeMode ? 'มีค่าปรึกษาแพทย์ ฿ 350' : 'ชำระค่าปรึกษาแพทย์';
-    if(copy) copy.textContent=noticeMode ? 'ยอดนี้จะชำระพร้อมค่ายาหลังจบการปรึกษา' : 'ชำระก่อนเข้าห้องพบแพทย์';
+    if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
     if(label) label.textContent=noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
     if(amount) amount.hidden=noticeMode;
   }
