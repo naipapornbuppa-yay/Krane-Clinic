@@ -1029,13 +1029,23 @@
            row carried a hint that repeated the value beside it. What is left is the
            fee, what changes it, what is due, and the two facts a patient acts on. -->
       <div class="card card--pad-sm stack-3">
-        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
+        <!-- The doctor's own photo and licence number, not just a name, since this is
+             the moment the patient is asked to pay a named clinician. -->
+        <div class="row">
+          <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260805fee1" alt="" width="40" height="40">
+          <div class="between grow"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
+        </div>
+        <div class="between"><span class="muted">เลขใบประกอบวิชาชีพ</span><strong>12345</strong></div>
+        <div class="divider" style="margin:0"></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
         <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
-        <div class="divider" style="margin:0"></div>
+        <!-- Hidden as one group when the fee is covered in full: at that point the
+             coverage row above already says so, and a total of "฿0" beneath it
+             only restates the same fact as a number with nothing left to add. -->
+        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <div class="between" data-consult-total-row><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
+        <div class="divider" style="margin:0" data-consult-total-row></div>
         <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
         <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
       </div>
@@ -1227,9 +1237,12 @@
         <button class="map-modal__close" type="button" data-endcall-cancel aria-label="ปิด">✕</button>
       </div>
       <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> ยังอยู่ในห้อง ถ้าวางสายแล้วยังคุยต่อทางแชทได้</p>
+      <!-- One full-width action, same shape as the accept-plan modal beside it: the
+           header's × already cancels, so a second "คุยต่อ" button only duplicated it
+           and, cramped into a flex row next to a pill-shaped danger button, wrapped
+           onto two lines. -->
       <div class="map-modal__foot">
-        <button class="btn btn--ghost" type="button" data-endcall-cancel>คุยต่อ</button>
-        <button class="btn btn--danger" type="button" data-endcall-confirm>วางสาย</button>
+        <button class="btn btn--primary" type="button" data-endcall-confirm>วางสาย</button>
       </div>
     </div>
   </div>
@@ -5452,6 +5465,9 @@
     const covered=Math.max(0,CONSULTATION_FEE_BAHT-balance);
       // The medical certificate is free, so ticking it never changes the amount.
       const amount=balance;
+    // Coverage that cancels the fee back to zero leaves nothing for a "ชำระเงินตอนนี้
+    // ฿0" row beneath it to add: the coverage row alone says the visit is settled.
+    const fullyCovered=covered>0 && balance<=0;
     const row = document.querySelector('#consultpay [data-cert-row]');
     if(row) row.hidden = !on;
     const base=document.querySelector('#consultpay [data-consult-base-amount]');
@@ -5459,7 +5475,8 @@
     const coverageRow=document.querySelector('#consultpay [data-consult-coverage-row]');
     const coverageAmount=document.querySelector('#consultpay [data-consult-coverage-amount]');
     if(coverageRow) coverageRow.hidden=covered<=0;
-    if(coverageAmount) coverageAmount.textContent='- '+baht(covered);
+    if(coverageAmount) coverageAmount.textContent=fullyCovered ? 'ครอบคลุมเต็มจำนวน' : '- '+baht(covered);
+    document.querySelectorAll('#consultpay [data-consult-total-row]').forEach(el => { el.hidden=fullyCovered; });
     const amt = baht(amount);
     const a = document.querySelector('#consultpay [data-pay-amt]');
     const b = document.querySelector('#consultpay [data-pay-btn-amt]');
@@ -5483,9 +5500,12 @@
     const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
+    // Insurance covering the fee in full is not "pay now" or "pay later": there is
+    // nothing left to schedule, and the total row itself is hidden in this case.
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
     if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
-    if(label) label.textContent=noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
-    if(amount) amount.hidden=noticeMode;
+    if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
+    if(amount) amount.hidden=noticeMode || fullyCovered;
   }
   document.body.addEventListener('change', e => {
     const c = e.target.closest('[data-cert-check]');
