@@ -101,7 +101,24 @@
     return root;
   }
 
+  /* On a touch device the platform's own picker is used and this enhancement is
+     skipped entirely.
+
+     The custom sheet is a fixed overlay, and on iOS it kept losing its last
+     option: first behind the blurred footer, then still cut short after that was
+     fixed. A list a patient cannot reach is worse than a list that does not match
+     the mock, and the failure is invisible to anyone testing on a laptop, because
+     the sheet is correct in every desktop browser. iOS renders a select as native
+     full-screen UI that nothing on the page can clip or paint over, so the option
+     is always there. The native control already carries .input styling, so it
+     reads the same as every other field.
+
+     Pointer, not width: a narrow desktop window keeps the sheet, a tablet does
+     not. */
+  var USE_NATIVE_PICKER = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
   function enhance(select){
+    if(USE_NATIVE_PICKER)return;
     if(!(select instanceof HTMLSelectElement))return;
     /* Enhanced and provably alive: no-op, so enhance() is safely idempotent. */
     if(liveRecordFor(select))return;
