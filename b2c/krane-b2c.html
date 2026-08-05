@@ -2527,7 +2527,20 @@
     actionToast.innerHTML = '<span class="action-toast__icon">'+window.kraneIcon(iconNames[type]||iconNames.info,'ui-icon--sm')+'</span><span>'+message+'</span>';
     actionToast.classList.remove('is-wrapping');
     actionToast.classList.add('is-visible');
-    if(actionToast.scrollWidth > actionToast.clientWidth) actionToast.classList.add('is-wrapping');
+    /* Thai has no spaces, so the browser's max-content for a Thai message is the
+       longest run its line breaker allows rather than the whole string. Sizing to
+       that made short toasts wrap mid-phrase inside a box far wider than the text
+       needed. The label asks for one line, and only gives it up when one line
+       truly does not fit the width the toast is allowed. */
+    const label = actionToast.lastElementChild;
+    if(label){
+      const styles = getComputedStyle(actionToast);
+      const chrome = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight)
+        + (actionToast.firstElementChild ? actionToast.firstElementChild.offsetWidth : 0)
+        + parseFloat(styles.columnGap || styles.gap || 0);
+      const room = (actionToast.parentElement ? actionToast.parentElement.clientWidth : 0) - 32 - chrome;
+      if(label.scrollWidth > room) actionToast.classList.add('is-wrapping');
+    }
     clearTimeout(actionToastTimer);
     actionToastTimer = setTimeout(() => actionToast.classList.remove('is-visible'), 1800);
   }
