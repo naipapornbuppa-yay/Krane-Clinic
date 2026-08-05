@@ -35,15 +35,14 @@
   function applyFixture() {
     demo.replaceText(document.body, pairs);
     if (isThai()) demo.replaceText(document.body, thaiPairs);
-    /* The delivery form is not written here any more. This ran on load, on
-       hashchange and again on window load, filling four of the address fields
-       while the app's own hydration filled a different set, and neither wrote
-       the แขวง / เขต / จังหวัด / รหัสไปรษณีย์ that the form validates. The result
-       was a form that looked filled, refused to submit, and refilled itself
-       after the app had cleared it. The app owns those inputs: it hydrates them
-       from the saved order and the locate button fills them from the map. */
-    const paymentAddress = document.querySelector("[data-payment-address]");
-    if (paymentAddress) paymentAddress.textContent = f.order.shortAddress;
+    /* The delivery address is not written here any more, on the checkout summary
+       row any more than on the form inputs. This unconditionally overwrote
+       [data-payment-address] with a fixed demo string regardless of whether an
+       address had actually been confirmed, so the row read as filled while the
+       checkout CTA and delivery-fee estimate correctly still read as unconfirmed
+       — a patient could see a delivery address before choosing one. The app owns
+       that row: syncDeliveryAddress() already renders it from the real
+       addressConfirmed state. */
     updateTracking();
   }
 
