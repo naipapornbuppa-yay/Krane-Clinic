@@ -1629,9 +1629,10 @@
         <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/payment-success.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">Payment successful</h2><p class="muted">Your payment is confirmed. We’re sending the order to a licensed pharmacist.</p></div>
+      <div class="state-view__copy"><h2 class="h1">Payment successful</h2><p class="muted">ชำระเงินเรียบร้อย ร้านยากำลังจัดยาให้คุณ</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="confirm">ดูการยืนยันคำสั่งซื้อ</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -2623,10 +2624,10 @@
     orderState:{
       quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},
       deliveryMethod:'same-day',
-      address:Object.assign({},MALI_SAVED_ADDRESS),
-      addressConfirmed:true,
-      deliveryQuoteStatus:'accepted',
-      deliveryQuoteAmount:120,
+      address:{},
+      addressConfirmed:false,
+      deliveryQuoteStatus:'pending',
+      deliveryQuoteAmount:null,
       addOns:{wellness:false,pillcase:false,pouch:false},
       promoCode:'',
       promoAmount:0,
@@ -2719,7 +2720,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -4324,7 +4325,7 @@
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', plan:'consult',
-    payment:'plan', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
+    payment:'consult', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
     'pharmacy-search':'payment-success', pharmacyaccepted:'pharmacy-search', pharmacypending:'pharmacyaccepted',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
@@ -4783,7 +4784,14 @@
     }
     return target;
   }
+  /* The patient does not see SCR-012 for now: accepting the plan goes straight to
+     checkout, which lists the same medicines with the same quantity controls. One
+     redirect covers every route in, including the profile, history and
+     notification entries. Set this to false to give the screen back. */
+  const PLAN_SCREEN_HIDDEN = true;
+
   function show(id, push=true){
+    if(PLAN_SCREEN_HIDDEN && id === 'plan') id = 'payment';
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
     if(id === 'concern'){
@@ -4989,12 +4997,11 @@
     }
     if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
     clearTimeout(paymentSuccessTimer);
-    if(id==='payment-success'){
-      syncPaymentOutcome();
-      paymentSuccessTimer=setTimeout(() => {
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('pharmacy-search');
-      },reduceMotion ? 450 : 2200);
-    }
+    /* Paying is the end of the patient's waiting. The pharmacy review and the
+       preparing stage used to run as two more loading screens before the order
+       was confirmed; the outcome is shown straight away instead, and the
+       fulfilment stages stay in the rail for QA. */
+    if(id==='payment-success') syncPaymentOutcome();
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
@@ -5120,7 +5127,7 @@
     clearTimeout(rxTimer);
     if(id==='rx-writing'){
       rxTimer=setTimeout(() => {
-        if(document.getElementById('rx-writing')?.classList.contains('active')) replaceCurrent('plan');
+        if(document.getElementById('rx-writing')?.classList.contains('active')) replaceCurrent('payment');
       },reduceMotion ? 500 : 3400);
     }
     updateFeatToast(id);
