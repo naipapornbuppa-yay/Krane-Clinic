@@ -380,26 +380,22 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   box-shadow:var(--shadow-sm)
 }
 .state-view__badge .ui-icon{width:18px;height:18px}
-.state-view__tile.loading-illustration{width:100%;height:100%;border-radius:30px;background:var(--color-accent-soft-2)}
-.state-view__tile.loading-illustration>img{width:100%;height:100%;object-fit:cover;filter:none;animation:loading-illustration-float 3.2s var(--ease-inout) infinite}
-/* Loading stages use transparent product cutouts. Any brand mark is composited
-   from the repository artwork, never generated. The powder-blue circle belongs
-   to the interface and stays still; only the object floats. */
-.state-view__tile.loading-illustration.state-view__tile--cutout{
-  width:100%;height:100%;overflow:visible;border-radius:0;background:transparent;
-  box-shadow:none;isolation:isolate
+/* A loading stage is one icon, not a 248px photo tile with a badge tucked into its
+   corner. The disc stays on this element rather than inside the artwork so the
+   pharmacy failure state can recolour it without a second set of files. */
+.state-view__visual--icon{width:auto;height:auto;min-height:0}
+.state-view__stage{
+  width:88px;height:88px;display:grid;place-items:center;flex:none;
+  border-radius:50%;background:var(--color-accent);color:var(--color-on-accent);
+  box-shadow:0 10px 26px color-mix(in srgb,var(--color-accent) 26%,transparent);
+  animation:loading-illustration-float 3.2s var(--ease-inout) infinite
 }
-.state-view__tile.loading-illustration.state-view__tile--cutout::before{
-  content:"";position:absolute;z-index:0;width:80%;height:80%;border-radius:50%;
-  background:#dbe4f2;
-  box-shadow:inset 0 0 0 1px rgba(23,46,81,.04),0 18px 34px rgba(23,46,81,.09)
+.state-view__stage>img{width:100%;height:100%;display:block}
+.state-view__visual--danger .state-view__stage{
+  background:var(--color-danger);
+  box-shadow:0 10px 26px color-mix(in srgb,var(--color-danger) 26%,transparent)
 }
-.state-view__tile.loading-illustration.state-view__tile--cutout>img{
-  position:relative;z-index:1;width:100%;height:100%;padding:0;object-fit:contain;
-  filter:drop-shadow(0 10px 12px rgba(23,46,81,.17));
-  animation:loading-illustration-float 3.2s var(--ease-inout) infinite;
-  transform-origin:center
-}
+@media (prefers-reduced-motion:reduce){.state-view__stage{animation:none}}
 @keyframes loading-illustration-float{0%,100%{transform:translateY(2px) scale(1.01)}50%{transform:translateY(-4px) scale(1.025)}}
 .state-view__badge--loading,.state-view--loading .state-view__badge,
 .state-view__visual--loading .state-view__badge{
@@ -467,6 +463,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   font-size:var(--fs-sm);font-weight:var(--fw-semibold);line-height:1.35;
   font-variant-numeric:tabular-nums;text-align:center;box-shadow:var(--shadow-sm)
 }
+/* A stage that ends clears this readout, which used to leave an empty pill sitting
+   under the copy. Nothing to say means nothing to show. */
+.state-view__timer:empty{display:none}
 .state-view__cta{width:min(100%,320px);margin-top:4px}
 /* Decision states keep the visual hierarchy but release vertical room for
    full-width recovery choices below the message. */
@@ -484,7 +483,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   .state-view{gap:14px;padding:20px 0 24px}
   .state-view__visual{width:min(64vw,224px);height:min(64vw,224px)}
   .state-view__tile{width:100%;height:100%;border-radius:26px}
-  .state-view__tile.loading-illustration.state-view__tile--cutout{border-radius:0}
   .state-view__image,.state-view__tile>img{width:100%;height:100%}
   .state-view__tile--brand{border-radius:0}
   .state-view__copy{max-width:32ch;gap:6px}
