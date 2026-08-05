@@ -1632,7 +1632,7 @@
       <div class="state-view__copy"><h2 class="h1">Payment successful</h2><p class="muted">ชำระเงินเรียบร้อย ร้านยากำลังจัดยาให้คุณ</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="confirm">ดูการยืนยันคำสั่งซื้อ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามคำสั่งซื้อ</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -2241,7 +2241,7 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">Noted</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">Continue</button></div>
   </section>
 
   <!-- SCR-002, restored 2026-08-04. ca47e17 had pointed the partner path at the
@@ -4788,10 +4788,10 @@
      checkout, which lists the same medicines with the same quantity controls. One
      redirect covers every route in, including the profile, history and
      notification entries. Set this to false to give the screen back. */
-  const PLAN_SCREEN_HIDDEN = true;
+  const HIDDEN_SCREENS = { plan:'payment', confirm:'tracking' };
 
   function show(id, push=true){
-    if(PLAN_SCREEN_HIDDEN && id === 'plan') id = 'payment';
+    if(HIDDEN_SCREENS[id]) id = HIDDEN_SCREENS[id];
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
     if(id === 'concern'){
@@ -4940,6 +4940,11 @@
           if(title) title.textContent='พบร้านยาที่จัดส่งได้แล้ว';
           if(copy) copy.textContent=`${data.pharmacy} · ห่าง ${data.km} กม. · ค่าจัดส่ง ${baht(data.fee)}`;
           if(timer) timer.textContent=`ถึงภายใน ${data.eta}`;
+        } else if(state==='preparing'){
+          stopStageTimer();
+          if(title) title.textContent='เภสัชกรกำลังจัดยาให้คุณ';
+          if(copy) copy.textContent=`${data.pharmacy} · จัดยาตามใบสั่งแพทย์`;
+          if(timer) timer.textContent=`ส่งถึงภายใน ${data.eta}`;
         } else if(state==='unavailable'){
           stopStageTimer();
           if(title) title.textContent='ยังไม่มีร้านยาที่ส่งวันเดียวกันได้';
@@ -4979,16 +4984,21 @@
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=fee;
         persistFlowState();
-        setQuoteState('found',{pharmacy:'Fascino อารีย์',km:km,fee:fee,eta:'18:00 น. วันนี้'});
+        const quoteData={pharmacy:'Fascino อารีย์',km:km,fee:fee,eta:'18:00 น. วันนี้'};
+        setQuoteState('found',quoteData);
         refreshMedicationCheckout();
         deliveryQuoteTimer=setTimeout(() => {
+          if(!quoteScreen?.classList.contains('active')) return;
+          setQuoteState('preparing',quoteData);
+          deliveryQuoteTimer=setTimeout(() => {
           if(!quoteScreen?.classList.contains('active')) return;
           if(history[history.length-1]==='delivery-quote') history.pop();
           if(history[history.length-1]==='address') history.pop();
           if(history[history.length-1]!=='payment') history.push('payment');
           show('payment',false);
           showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
-        }, reduceMotion ? 700 : 2600);
+          }, reduceMotion ? 700 : 2600);
+        }, reduceMotion ? 600 : 2200);
       }, reduceMotion ? 700 : 2400);
     }
     if(id==='payment'){
