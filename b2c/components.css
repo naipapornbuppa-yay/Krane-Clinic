@@ -1005,6 +1005,13 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__body{width:100%;min-width:0;max-width:100%;min-height:0;flex:1;overflow-x:hidden;overflow-y:auto;padding:var(--sp-5) var(--sp-4)}
 .screen__body>*{min-width:0;max-width:100%}
 .screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+/* Safari composites a -webkit-backdrop-filter element above later content no matter
+   what the z-index says, so the blurred header and footer painted over any overlay
+   anchored to the viewport: it swallowed the last option of the select sheet and can
+   do the same to a modal. The blur is decoration, so every overlay raises
+   body.overlay-open for as long as it is up and the chrome renders flat instead. */
+body.overlay-open .screen__top,
+body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:none}
 .screen__footer>.btn:not(.btn--ghost):not(.btn--sm){width:100%;align-self:stretch}
 .screen__body>.screen__footer{width:calc(100% + (var(--sp-4) * 2));max-width:none;margin-left:calc(var(--sp-4) * -1)}
 .screen__footer.stack-2{text-align:center}

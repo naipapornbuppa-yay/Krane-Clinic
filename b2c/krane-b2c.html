@@ -2598,12 +2598,22 @@
   const FLOW_STATE_KEY = 'krane-p01-flow-state-v1';
   const DRAFT_KEY = 'krane-p01-intake-draft-v2';
   const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
+  /* The signed-in account holder. The delivery recipient defaults to this
+     profile, the same way the real Google Maps checkout fills the name and
+     number from the account instead of leaving them to the browser's own
+     contact autofill. Keep it in step with #account and #patient-full-name. */
+  const ACCOUNT_PROFILE = {
+    name:'มะลิ สุธิดา',
+    phone:'089-123-4567'
+  };
   const MALI_SAVED_ADDRESS = {
     building:'เดอะ เบส พาร์ค เวสต์, ห้อง 22/418',
     floor:'22',
     line:'ซอยสุขุมวิท 77',
     district:'เขตวัฒนา กรุงเทพฯ 10110',
     note:'',
+    recipientName:ACCOUNT_PROFILE.name,
+    recipientPhone:ACCOUNT_PROFILE.phone,
     km:'3.2'
   };
   const flowState = Object.assign({
@@ -3122,6 +3132,25 @@
     return district && !primary.includes(district) ? `${primary} · ${district}` : primary;
   }
   const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
+  /* Who the courier asks for at the door. It comes from the account the patient
+     is already signed in to: the direct profile, or the partner-supplied
+     identity when the consultation arrived through a partner deep link. A
+     recipient the patient edited on the order wins, so changing the name for
+     one delivery never rewrites the account. */
+  function accountRecipient(){
+    const partner=flowState.entryChannel==='partner';
+    const name=(partner ? flowState.partnerName : flowState.patientName) || flowState.patientName || ACCOUNT_PROFILE.name;
+    const phone=(partner ? flowState.partnerPhone : flowState.verifiedPhone) || flowState.verifiedPhone || ACCOUNT_PROFILE.phone;
+    return {name:String(name || '').trim(),phone:String(phone || '').trim()};
+  }
+  function orderRecipient(){
+    const address=flowState.orderState.address || {};
+    const account=accountRecipient();
+    return {
+      name:String(address.recipientName || '').trim() || account.name,
+      phone:String(address.recipientPhone || '').trim() || account.phone
+    };
+  }
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
     screen.dataset.addressDraft=JSON.stringify({
@@ -3156,8 +3185,11 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
+    const recipient=orderRecipient();
     const values={
       addrSearch:address.building,
+      recipientName:recipient.name,
+      recipientPhone:recipient.phone,
       addrBuilding:address.building,
       addrFloor:address.floor,
       addrLine:address.line,
@@ -4210,7 +4242,7 @@
     if(!REQUIRED_CARE_TARGETS.has(target)) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
-      patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
+      patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || ACCOUNT_PROFILE.name
     });
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
