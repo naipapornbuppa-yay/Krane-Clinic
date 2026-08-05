@@ -35,14 +35,13 @@
   function applyFixture() {
     demo.replaceText(document.body, pairs);
     if (isThai()) demo.replaceText(document.body, thaiPairs);
-    const building = document.getElementById("addrBuilding");
-    const floor = document.getElementById("addrFloor");
-    const line = document.getElementById("addrLine");
-    const district = document.getElementById("addrDistrict");
-    if (building) building.value = "เดอะ เบส พาร์ค เวสต์ ห้อง 22/418";
-    if (floor) floor.value = "22";
-    if (line) line.value = "ซอยสุขุมวิท 77 แขวงพระโขนงเหนือ";
-    if (district) district.value = "เขตวัฒนา กรุงเทพฯ 10110";
+    /* The delivery form is not written here any more. This ran on load, on
+       hashchange and again on window load, filling four of the address fields
+       while the app's own hydration filled a different set, and neither wrote
+       the แขวง / เขต / จังหวัด / รหัสไปรษณีย์ that the form validates. The result
+       was a form that looked filled, refused to submit, and refilled itself
+       after the app had cleared it. The app owns those inputs: it hydrates them
+       from the saved order and the locate button fills them from the map. */
     const paymentAddress = document.querySelector("[data-payment-address]");
     if (paymentAddress) paymentAddress.textContent = f.order.shortAddress;
     updateTracking();
