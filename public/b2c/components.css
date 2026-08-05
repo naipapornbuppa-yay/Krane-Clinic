@@ -206,7 +206,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    accordion). The map is half the first viewport, clamped so it never eats a
    short landscape screen or floats absurdly tall on a tablet. ------------- */
 .address-body{padding-bottom:var(--sp-6)}
-.address-map{position:relative;height:50vh;min-height:220px;max-height:420px;
+.address-map{position:relative;height:34vh;min-height:200px;max-height:280px;
   border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg-2)}
 /* The readout sat flush against the map above it and the first field below, with
    its two lines almost touching, so the pinned address read as an offcut of the
@@ -227,15 +227,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    Production swaps .sim-map for a Maps JS API / Leaflet canvas. ---------- */
 .sim-map{position:absolute;inset:0;overflow:hidden;background:var(--color-bg-2);touch-action:none}
 .sim-map__plane{position:absolute;left:50%;top:50%;width:2400px;height:2400px;transform:translate(-50%,-50%);transform-origin:center;
-  background-color:var(--color-bg);
+  background-color:#eef1f3;
   background-image:
-    linear-gradient(var(--color-powder) 2px,transparent 2px),
-    linear-gradient(90deg,var(--color-powder) 2px,transparent 2px),
-    linear-gradient(var(--color-bg-2) 1px,transparent 1px),
-    linear-gradient(90deg,var(--color-bg-2) 1px,transparent 1px),
-    radial-gradient(circle at 30% 40%,var(--color-accent-soft) 0 90px,transparent 92px),
-    radial-gradient(circle at 72% 66%,var(--color-accent-soft-2) 0 120px,transparent 122px);
-  background-size:240px 240px,240px 240px,48px 48px,48px 48px,100% 100%,100% 100%;
+    radial-gradient(circle at 26% 32%,#d7ead0 0 210px,transparent 212px),
+    radial-gradient(circle at 74% 68%,#d7ead0 0 150px,transparent 152px),
+    linear-gradient(112deg,transparent 0 44%,#bcd9ef 44% 49%,transparent 49%),
+    repeating-linear-gradient(0deg,#ffffff 0 7px,transparent 7px 300px),
+    repeating-linear-gradient(90deg,#ffffff 0 7px,transparent 7px 340px),
+    repeating-linear-gradient(0deg,#f7f9fa 0 3px,transparent 3px 75px),
+    repeating-linear-gradient(90deg,#f7f9fa 0 3px,transparent 3px 85px);
   will-change:transform}
 .sim-map--full{position:relative;height:clamp(260px,46vh,420px);border-radius:var(--radius-md);overflow:hidden}
 .sim-map__crosshair{position:absolute;left:50%;top:50%;z-index:2;display:grid;place-items:center;width:38px;height:38px;
@@ -1992,3 +1992,28 @@ body.lang-th *{letter-spacing:normal}
   .care-journey__current small{grid-column:3;grid-row:1;max-width:84px;font-size:9px}
   .care-journey__current em{grid-column:4;grid-row:1}
 }
+
+/* Address search, sitting over the map like a real map app's. */
+.map-search{position:absolute;z-index:4;top:var(--sp-3);left:var(--sp-3);right:var(--sp-3);
+  display:flex;align-items:center;gap:var(--sp-2);padding:0 var(--sp-3);height:44px;
+  border-radius:var(--radius-pill);background:var(--color-surface);
+  box-shadow:0 4px 16px rgba(23,46,81,.16),0 0 0 1px rgba(23,46,81,.06)}
+.map-search__icon{display:grid;place-items:center;flex:none;color:var(--color-ink-3)}
+.map-search__input{flex:1;min-width:0;height:100%;border:0;background:none;color:var(--color-ink);
+  font-family:var(--font-base);font-size:16px}
+.map-search__input:focus{outline:none}
+.map-search__input::placeholder{color:var(--color-ink-3)}
+.map-search__clear{flex:none;width:24px;height:24px;display:grid;place-items:center;padding:0;border:0;
+  border-radius:50%;background:var(--color-bg-2);color:var(--color-ink-2);font-size:12px;cursor:pointer}
+.map-search__list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;overflow:hidden;
+  border-radius:var(--radius-md);background:var(--color-surface);
+  box-shadow:0 12px 30px rgba(23,46,81,.18),0 0 0 1px rgba(23,46,81,.06)}
+.map-search__item{width:100%;display:flex;align-items:flex-start;gap:var(--sp-3);padding:12px var(--sp-4);
+  border:0;background:none;text-align:left;cursor:pointer;font:inherit}
+.map-search__item+.map-search__item{border-top:1px solid var(--color-line)}
+.map-search__item:hover,.map-search__item:focus-visible{outline:none;background:var(--color-bg-2)}
+.map-search__pin{flex:none;width:18px;height:18px;margin-top:2px;border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);background:var(--color-accent);box-shadow:inset 0 0 0 3px var(--color-surface)}
+.map-search__text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.map-search__text strong{font-size:var(--fs-sm);color:var(--color-ink);line-height:1.35}
+.map-search__text span{font-size:var(--fs-xs);color:var(--color-ink-2);line-height:1.4}
