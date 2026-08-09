@@ -701,10 +701,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /<a class="hero page-section" id="top" href="#services"/);
-  assert.match(html, /assets\/landing-573\/doctors\/client-doctor-ploy\.png/);
-  assert.match(css, /@keyframes hero-doctor-float/);
-  assert.match(css, /prefers-reduced-motion:reduce[\s\S]*\.motion-enabled \.hero__doctor\{animation:none!important/);
+  assert.match(html, /assets\/landing-573\/latest\/hero-base\.png/);
+  assert.match(html, /assets\/landing-573\/latest\/hero-overlay\.png/);
   assert.match(html, /<section class="compliance(?:\s|")/);
   assert.match(html, /latest\/compliance\/thai-fda\.png/);
   assert.match(html, /latest\/compliance\/pdpa\.png/);
@@ -737,8 +735,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/assets\/landing-573\/treatments\/[^"]+\.png/g) || []).length, 6);
   assert.doesNotMatch(html, /class="care-marquee"/);
   assert.match(css, /\.hero\{[\s\S]*height:512px/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__visual\{[\s\S]*?min-height:calc\(var\(--sp-8\) \* 5\)/, "the mobile hero must reserve a stable portrait stage");
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__doctor\{bottom:-20%;[\s\S]*?height:124%\}/, "the mobile doctor cutout must extend below its portrait stage without exposing an image seam");
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__photo\{[\s\S]*?height:calc\(100% \+ 20px\)/, "the mobile hero photo must extend past the blue section so it cannot create a cropped color seam");
   assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
@@ -761,7 +758,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /--landing-blue:#1973ff/);
   assert.match(css, /\.hero\{[\s\S]*background:var\(--landing-blue\)/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero\{[\s\S]*?height:auto;[\s\S]*?grid-template-columns:1fr/);
+  assert.match(css, /height:clamp\(590px,72svh,630px\)/);
   const protocolProductHashes = new Set();
   for (const image of [
     "clinical-injectors-v2.png",
@@ -796,8 +793,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.guarantee__copy h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
   assert.doesNotMatch(html, /class="guarantee__copy"[\s\S]*?<a class="button button--outline"/, "the standards section must not include a secondary CTA");
   assert.match(css, /--landing-section-title-size:clamp\(32px,9vw,40px\)/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__signals\{width:100%;max-width:none;gap:var\(--sp-3\);justify-content:flex-start;flex-wrap:wrap\}/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__signals>span\{gap:var\(--sp-1\);font-size:var\(--fs-xs\)\}/);
+  assert.match(css, /\.hero__signals\{top:20px;[\s\S]*flex-wrap:nowrap;justify-content:space-between\}/);
+  assert.match(css, /\.hero__signals>span\{min-width:0;gap:4px;font-size:clamp\(8px,2\.55vw,10px\);white-space:nowrap\}/);
   assert.doesNotMatch(css, /\.hero__signals>span:last-child\{width:100%/);
   assert.match(css, /\.steps li\.reveal-item::before\{[\s\S]*scaleY\(0\)/);
   assert.match(css, /\.steps li\.is-revealed::before\{opacity:1;transform:scaleY\(1\)\}/);
