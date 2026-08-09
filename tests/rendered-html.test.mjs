@@ -701,8 +701,20 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /assets\/landing-573\/latest\/hero-base\.png/);
-  assert.match(html, /assets\/landing-573\/latest\/hero-overlay\.png/);
+  assert.match(html, /<section class="hero hero--campaign page-section"/);
+  assert.match(html, /<a class="hero-care-card hero-care-card--weight"[^>]*data-route="intake1"[^>]*data-category="general"/);
+  assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
+  assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
+  for (const asset of [
+    "weight-injection-landscape-v2.png",
+    "weight-injection-loop-v2.mp4",
+    "ed-care-landscape-v2.png"
+  ]) {
+    const reference = `assets/product-hero/${asset}`;
+    assert.match(html, new RegExp(reference.replace(".", "\\.")));
+    const campaignAsset = await readFile(path.join(publicRoot, `b2c/${reference}`));
+    assert.ok(campaignAsset.length > 100_000, `${asset} must be a complete campaign asset`);
+  }
   assert.match(html, /<section class="compliance(?:\s|")/);
   assert.match(html, /latest\/compliance\/thai-fda\.png/);
   assert.match(html, /latest\/compliance\/pdpa\.png/);
@@ -734,8 +746,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal(treatmentHashes.size, 6, "every symptom needs a distinct product image");
   assert.equal((html.match(/assets\/landing-573\/treatments\/[^"]+\.png/g) || []).length, 6);
   assert.doesNotMatch(html, /class="care-marquee"/);
-  assert.match(css, /\.hero\{[\s\S]*height:512px/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__photo\{[\s\S]*?height:calc\(100% \+ 20px\)/, "the mobile hero photo must extend past the blue section so it cannot create a cropped color seam");
+  assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
+  assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{gap:2px\}[\s\S]*?\.hero-care-card\{min-height:460px/);
   assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
@@ -746,19 +759,23 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(script, /--hero-parallax/);
   assert.match(html, /data-review-dialog/);
   assert.match(script, /function openReview/);
-  assert.match(html, /class="announcement"/);
-  assert.match(html, /announcement__track" aria-hidden="true"/);
+  assert.match(html, /<a class="announcement"[^>]*data-route="intake1"[^>]*data-category="general"/);
+  assert.doesNotMatch(html, /announcement__track/);
   const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
-  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "announcement marquee must have a clean edge without a white fade");
-  assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
+  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "the clickable announcement must have a clean edge");
+  assert.match(css, /--campaign-banner-surface:#f1ff95/);
   assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
   assert.match(css, /animation:compliance-marquee 24s linear infinite/);
   assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
   assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
   assert.match(css, /--landing-blue:#1973ff/);
-  assert.match(css, /\.hero\{[\s\S]*background:var\(--landing-blue\)/);
+  assert.match(css, /--campaign-weight-surface:#8d6959/);
+  assert.match(css, /--campaign-sexual-surface:#74c8d8/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /height:clamp\(590px,72svh,630px\)/);
+  assert.match(css, /--campaign-card-height:560px/);
+  assert.match(script, /hoverVideo\.play\(\)/);
+  assert.match(script, /finePointerQuery/);
+  assert.match(script, /if \(reducedMotionQuery\.matches\) stopHoverVideo\(\)/);
   const protocolProductHashes = new Set();
   for (const image of [
     "clinical-injectors-v2.png",
@@ -793,8 +810,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.guarantee__copy h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
   assert.doesNotMatch(html, /class="guarantee__copy"[\s\S]*?<a class="button button--outline"/, "the standards section must not include a secondary CTA");
   assert.match(css, /--landing-section-title-size:clamp\(32px,9vw,40px\)/);
-  assert.match(css, /\.hero__signals\{top:20px;[\s\S]*flex-wrap:nowrap;justify-content:space-between\}/);
-  assert.match(css, /\.hero__signals>span\{min-width:0;gap:4px;font-size:clamp\(8px,2\.55vw,10px\);white-space:nowrap\}/);
+  assert.match(css, /\.hero--campaign \.hero__signals\{[\s\S]*position:static;[\s\S]*justify-content:center/);
+  assert.match(css, /\.hero--campaign \.hero__signals>span\{[\s\S]*white-space:nowrap\}/);
   assert.doesNotMatch(css, /\.hero__signals>span:last-child\{width:100%/);
   assert.match(css, /\.steps li\.reveal-item::before\{[\s\S]*scaleY\(0\)/);
   assert.match(css, /\.steps li\.is-revealed::before\{opacity:1;transform:scaleY\(1\)\}/);
