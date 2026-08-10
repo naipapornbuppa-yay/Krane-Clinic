@@ -25,7 +25,7 @@
       heroWeightTitle: "Doctor-led<br>weight care online",
       heroSexualKicker: "Private ED care",
       heroSexualTitle: "Feel confident<br>in your own way",
-      startAssessment: "Start assessment",
+      startConsultation: "Consult now",
       heroLegal: "Treatment and medication options depend on a doctor's assessment",
       treatmentTitle: "Choose the right care for you",
       complianceTitle: "Thai clinical and privacy standards",
@@ -168,7 +168,7 @@
     );
     document.querySelector(".hero-care-card--weight")?.setAttribute(
       "aria-label",
-      lang === "th" ? "เริ่มประเมินการดูแลน้ำหนักกับแพทย์" : "Start a doctor-led weight-care assessment"
+      lang === "th" ? "เริ่มปรึกษาเรื่องการดูแลน้ำหนักกับแพทย์" : "Start a doctor-led weight-care consultation"
     );
     document.querySelector(".hero-care-card--sexual")?.setAttribute(
       "aria-label",
