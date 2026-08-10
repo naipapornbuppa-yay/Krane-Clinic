@@ -709,7 +709,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   for (const asset of [
     "weight-injection-landscape-v2.png",
     "weight-injection-loop-v2.mp4",
-    "ed-care-couple-v3.png"
+    "ed-care-couple-v3.png",
+    "hair-care-closeup-v1.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
     assert.match(html, new RegExp(reference.replace(".", "\\.")));
@@ -729,8 +730,12 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
+  const hairTreatmentReference = "assets/product-hero/hair-care-closeup-v1.png";
+  assert.match(html, new RegExp(hairTreatmentReference.replace(".", "\\.")));
+  const hairTreatmentImage = await readFile(path.join(publicRoot, `b2c/${hairTreatmentReference}`));
+  assert.equal(hairTreatmentImage[25], 2, "hair close-up should remain a full-colour RGB campaign photo");
+  treatmentHashes.add(createHash("sha256").update(hairTreatmentImage).digest("hex"));
   for (const image of [
-    "hair-loss-prevention.png",
     "sexual-performance.png",
     "skin-anti-aging.png",
     "weight-management.png",
@@ -745,7 +750,8 @@ test("Figma landing keeps every client access route and responsive menu contract
     treatmentHashes.add(createHash("sha256").update(treatmentImage).digest("hex"));
   }
   assert.equal(treatmentHashes.size, 6, "every symptom needs a distinct product image");
-  assert.equal((html.match(/assets\/landing-573\/treatments\/[^"]+\.png/g) || []).length, 6);
+  assert.equal((html.match(/class="treatment-pill__image(?: treatment-pill__image--photo)?"/g) || []).length, 6, "landing needs six treatment thumbnails");
+  assert.match(css, /\.treatment-pill__image--photo img\{[^}]*padding:0;[^}]*object-fit:cover;[^}]*filter:none/);
   assert.doesNotMatch(html, /class="care-marquee"/);
   assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
   assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
