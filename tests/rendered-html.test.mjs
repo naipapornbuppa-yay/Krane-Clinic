@@ -706,6 +706,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
+  assert.match(html, /การดูแลที่คุณ<br>สมควรได้รับ/, "the first viewport needs an editorial two-line care headline");
   for (const asset of [
     "weight-care-studio-v4.jpg",
     "ed-care-product-closeup-v5.jpg",
@@ -754,8 +755,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(html, /class="care-marquee"/);
   assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
   assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{gap:2px\}[\s\S]*?\.hero-care-card\{min-height:380px/);
-  assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?scroll-snap-type:x mandatory;[\s\S]*?\.hero-care-card\{min-height:310px/);
+  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatments\{[\s\S]*?min-height:0/);
+  assert.match(css, /\.treatment-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?grid-auto-columns:calc\(\(100% - 36px\)\/4\)/);
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
@@ -770,7 +772,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="announcement__group"/g) || []).length, 2, "the marquee needs two identical groups for a continuous loop");
   const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
   assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "the clickable announcement must have a clean edge");
-  assert.match(css, /--campaign-banner-surface:#07101f/);
+  assert.match(css, /--campaign-banner-surface:#efff7b/);
   assert.match(css, /animation:announcement-scroll 28s linear infinite/);
   assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
   assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
@@ -781,7 +783,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /--campaign-weight-surface:#cbd0eb/);
   assert.match(css, /--campaign-sexual-surface:#b9dced/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /--campaign-card-height:520px/);
+  assert.match(css, /--campaign-card-height:286px/);
   assert.match(css, /--campaign-text:var\(--landing-navy\)/);
   assert.doesNotMatch(html, /data-hover-video/);
   assert.doesNotMatch(script, /hoverVideo|finePointerQuery/);
@@ -819,7 +821,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.guarantee__copy h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
   assert.doesNotMatch(html, /class="guarantee__copy"[\s\S]*?<a class="button button--outline"/, "the standards section must not include a secondary CTA");
   assert.match(css, /--landing-section-title-size:clamp\(32px,9vw,40px\)/);
-  assert.match(css, /\.hero--campaign \.hero__signals\{[\s\S]*position:static;[\s\S]*justify-content:center/);
+  assert.match(css, /Product-grid first viewport:[\s\S]*?\.hero--campaign \.hero__signals\{[\s\S]*?order:2;[\s\S]*?justify-content:flex-start/);
   assert.match(css, /\.hero--campaign \.hero__signals>span\{[\s\S]*white-space:nowrap\}/);
   assert.doesNotMatch(css, /\.hero__signals>span:last-child\{width:100%/);
   assert.match(css, /\.steps li\.reveal-item::before\{[\s\S]*scaleY\(0\)/);
