@@ -222,38 +222,6 @@
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const hoverVideo = document.querySelector("[data-hover-video]");
-  const hoverVideoCard = hoverVideo?.closest(".hero-care-card");
-  const finePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-  let hoverVideoRequested = false;
-
-  function stopHoverVideo() {
-    if (!hoverVideo) return;
-    hoverVideoRequested = false;
-    hoverVideo.pause();
-    hoverVideoCard?.classList.remove("is-playing");
-    try { hoverVideo.currentTime = 0; } catch {}
-  }
-
-  function startHoverVideo() {
-    if (!hoverVideo || reducedMotionQuery.matches || !finePointerQuery.matches) return;
-    hoverVideoRequested = true;
-    hoverVideoCard?.classList.add("is-playing");
-    hoverVideo.play().then(() => {
-      if (!hoverVideoRequested) stopHoverVideo();
-    }).catch(() => hoverVideoCard?.classList.remove("is-playing"));
-  }
-
-  hoverVideoCard?.addEventListener("pointerenter", startHoverVideo);
-  hoverVideoCard?.addEventListener("pointerleave", stopHoverVideo);
-  hoverVideoCard?.addEventListener("focusin", startHoverVideo);
-  hoverVideoCard?.addEventListener("focusout", stopHoverVideo);
-  reducedMotionQuery.addEventListener?.("change", () => {
-    if (reducedMotionQuery.matches) stopHoverVideo();
-  });
-  finePointerQuery.addEventListener?.("change", () => {
-    if (!finePointerQuery.matches) stopHoverVideo();
-  });
 
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
