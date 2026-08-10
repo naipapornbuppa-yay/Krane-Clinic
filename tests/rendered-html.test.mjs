@@ -705,6 +705,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /<a class="hero-care-card hero-care-card--weight"[^>]*data-route="intake1"[^>]*data-category="general"/);
   assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
+  assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
   for (const asset of [
     "weight-injection-landscape-v2.png",
     "weight-injection-loop-v2.mp4",
@@ -748,7 +749,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(html, /class="care-marquee"/);
   assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
   assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{gap:2px\}[\s\S]*?\.hero-care-card\{min-height:460px/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{gap:2px\}[\s\S]*?\.hero-care-card\{min-height:380px/);
   assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
