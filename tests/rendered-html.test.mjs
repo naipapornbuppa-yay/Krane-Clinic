@@ -707,10 +707,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
   for (const asset of [
-    "weight-injection-landscape-v2.png",
-    "weight-injection-loop-v2.mp4",
-    "ed-care-couple-v3.png",
-    "hair-care-handheld-v4.png"
+    "weight-care-studio-v4.jpg",
+    "ed-care-studio-v4.jpg",
+    "hair-care-handheld-v5.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
     assert.match(html, new RegExp(reference.replace(".", "\\.")));
@@ -730,7 +729,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
-  const hairTreatmentReference = "assets/product-hero/hair-care-handheld-v4.png";
+  const hairTreatmentReference = "assets/product-hero/hair-care-handheld-v5.png";
   assert.match(html, new RegExp(hairTreatmentReference.replace(".", "\\.")));
   const hairTreatmentImage = await readFile(path.join(publicRoot, `b2c/${hairTreatmentReference}`));
   assert.equal(hairTreatmentImage[25], 2, "hair close-up should remain a full-colour RGB campaign photo");
@@ -779,13 +778,13 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
   assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
   assert.match(css, /--landing-blue:#1973ff/);
-  assert.match(css, /--campaign-weight-surface:#8d6959/);
-  assert.match(css, /--campaign-sexual-surface:#74c8d8/);
+  assert.match(css, /--campaign-weight-surface:#cbd0eb/);
+  assert.match(css, /--campaign-sexual-surface:#b9dced/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /--campaign-card-height:560px/);
-  assert.match(script, /hoverVideo\.play\(\)/);
-  assert.match(script, /finePointerQuery/);
-  assert.match(script, /if \(reducedMotionQuery\.matches\) stopHoverVideo\(\)/);
+  assert.match(css, /--campaign-card-height:520px/);
+  assert.match(css, /--campaign-text:var\(--landing-navy\)/);
+  assert.doesNotMatch(html, /data-hover-video/);
+  assert.doesNotMatch(script, /hoverVideo|finePointerQuery/);
   const protocolProductHashes = new Set();
   for (const image of [
     "clinical-injectors-v2.png",
