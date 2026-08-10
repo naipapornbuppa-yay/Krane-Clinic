@@ -14,8 +14,9 @@
   --campaign-text:#fff;
   --campaign-cta-surface:#fff;
   --campaign-cta-ink:#171717;
-  --campaign-banner-surface:#f1ff95;
-  --campaign-banner-ink:#13191e;
+  --campaign-banner-surface:#07101f;
+  --campaign-banner-ink:rgba(255,255,255,.92);
+  --campaign-banner-accent:#8da4c4;
   --campaign-scrim-strong:rgba(8,17,27,.58);
   --campaign-scrim-soft:rgba(8,17,27,.34);
   --campaign-card-height:560px;
@@ -74,21 +75,24 @@ button{color:inherit}
 .announcement{
   position:relative;
   z-index:60;
+  height:40px;
   min-height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:var(--sp-2,8px);
-  padding:var(--sp-2,8px) var(--sp-4,16px);
+  display:block;
+  overflow:hidden;
+  padding:0;
   background:var(--campaign-banner-surface);
   color:var(--campaign-banner-ink);
-  text-align:center;
   text-decoration:none;
 }
+.announcement__track{width:max-content;height:100%;display:flex;animation:announcement-scroll 28s linear infinite;will-change:transform}
+.announcement__group{height:100%;min-height:40px;display:flex;align-items:center;gap:var(--sp-2,8px);padding-right:28px;white-space:nowrap}
 .announcement span,.announcement strong{font:500 var(--fs-sm,13px)/var(--lh-snug,1.35) "Inter","Prompt",sans-serif}
 .announcement strong{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.announcement b{color:var(--campaign-banner-accent);font-size:9px}
 .announcement svg{width:var(--fs-base,15px);height:var(--fs-base,15px);flex:none;transition:transform var(--dur-micro,140ms) var(--ease-out,var(--ease))}
 .announcement:hover svg,.announcement:focus-visible svg{transform:translate(var(--sp-1,4px),calc(0px - var(--sp-1,4px)))}
+.announcement:hover .announcement__track{animation-play-state:paused}
+@keyframes announcement-scroll{to{transform:translate3d(-50%,0,0)}}
 
 .site-header{
   position:sticky;
@@ -1071,7 +1075,8 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 }
 
 @media(max-width:700px){
-  .announcement{min-height:36px;gap:6px;padding:6px 10px}
+  .announcement{height:36px;min-height:36px;padding:0}
+  .announcement__group{min-height:36px;gap:6px;padding-right:22px}
   .announcement span,.announcement strong{font-size:10px}
   .announcement svg{width:13px;height:13px}
   .hero.hero--campaign{margin-inline:0}
