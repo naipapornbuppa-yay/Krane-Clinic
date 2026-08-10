@@ -710,7 +710,7 @@ test("Figma landing keeps every client access route and responsive menu contract
     "weight-injection-landscape-v2.png",
     "weight-injection-loop-v2.mp4",
     "ed-care-couple-v3.png",
-    "hair-care-closeup-v1.png"
+    "hair-care-product-closeup-v2.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
     assert.match(html, new RegExp(reference.replace(".", "\\.")));
@@ -730,7 +730,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
-  const hairTreatmentReference = "assets/product-hero/hair-care-closeup-v1.png";
+  const hairTreatmentReference = "assets/product-hero/hair-care-product-closeup-v2.png";
   assert.match(html, new RegExp(hairTreatmentReference.replace(".", "\\.")));
   const hairTreatmentImage = await readFile(path.join(publicRoot, `b2c/${hairTreatmentReference}`));
   assert.equal(hairTreatmentImage[25], 2, "hair close-up should remain a full-colour RGB campaign photo");
