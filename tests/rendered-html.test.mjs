@@ -708,7 +708,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
   for (const asset of [
     "weight-care-studio-v4.jpg",
-    "ed-care-studio-v4.jpg",
+    "ed-care-product-closeup-v5.jpg",
     "hair-care-handheld-v5.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
