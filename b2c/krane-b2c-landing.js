@@ -1,9 +1,8 @@
 (() => {
   const translations = {
     en: {
-      announcementVirtual: "VIRTUAL CONSULTATIONS AVAILABLE 24/7",
-      announcementDoctors: "BOARD-CERTIFIED DOCTORS ONLINE IN MINUTES",
-      announcementFree: "FIRST TELEMEDICINE VISIT FREE — BOOK NOW",
+      announcementCampaign: "Doctor-led weight care and GLP-1 options",
+      announcementLink: "Check your suitability",
       navTreatments: "Treatments",
       menuHair: "Hair loss & scalp",
       menuSkin: "Skin & acne",
@@ -21,8 +20,13 @@
       online: "100% online",
       certified: "Certified care",
       discreet: "Free discreet delivery",
-      heroTitle: "Premium healthcare<br>designed by medical experts",
-      heroCta: "Start your free assessment (5 min)",
+      heroTitle: "Healthier with Krane",
+      heroWeightKicker: "Doctor-led GLP-1 options",
+      heroWeightTitle: "Doctor-led<br>weight care online",
+      heroSexualKicker: "Private ED care",
+      heroSexualTitle: "Feel confident<br>in your own way",
+      startAssessment: "Start assessment",
+      heroLegal: "Treatment and medication options depend on a doctor's assessment",
       treatmentTitle: "Choose the right care for you",
       complianceTitle: "Thai clinical and privacy standards",
       hair: "Hair loss prevention",
@@ -158,6 +162,18 @@
     languageSelects.forEach((select) => { select.value = lang; });
     menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
     menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
+    document.querySelector(".announcement")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "ตรวจสอบความเหมาะสมสำหรับการดูแลน้ำหนักกับแพทย์" : "Check your suitability for doctor-led weight care"
+    );
+    document.querySelector(".hero-care-card--weight")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "เริ่มประเมินการดูแลน้ำหนักกับแพทย์" : "Start a doctor-led weight-care assessment"
+    );
+    document.querySelector(".hero-care-card--sexual")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "เริ่มปรึกษาสุขภาพทางเพศอย่างเป็นส่วนตัว" : "Start a private sexual-health consultation"
+    );
     document.querySelector("[data-members-label]")?.setAttribute(
       "aria-label",
       lang === "th" ? "ผู้ใช้งาน 3,000 คน" : "3,000 users"
@@ -206,6 +222,39 @@
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const hoverVideo = document.querySelector("[data-hover-video]");
+  const hoverVideoCard = hoverVideo?.closest(".hero-care-card");
+  const finePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  let hoverVideoRequested = false;
+
+  function stopHoverVideo() {
+    if (!hoverVideo) return;
+    hoverVideoRequested = false;
+    hoverVideo.pause();
+    hoverVideoCard?.classList.remove("is-playing");
+    try { hoverVideo.currentTime = 0; } catch {}
+  }
+
+  function startHoverVideo() {
+    if (!hoverVideo || reducedMotionQuery.matches || !finePointerQuery.matches) return;
+    hoverVideoRequested = true;
+    hoverVideoCard?.classList.add("is-playing");
+    hoverVideo.play().then(() => {
+      if (!hoverVideoRequested) stopHoverVideo();
+    }).catch(() => hoverVideoCard?.classList.remove("is-playing"));
+  }
+
+  hoverVideoCard?.addEventListener("pointerenter", startHoverVideo);
+  hoverVideoCard?.addEventListener("pointerleave", stopHoverVideo);
+  hoverVideoCard?.addEventListener("focusin", startHoverVideo);
+  hoverVideoCard?.addEventListener("focusout", stopHoverVideo);
+  reducedMotionQuery.addEventListener?.("change", () => {
+    if (reducedMotionQuery.matches) stopHoverVideo();
+  });
+  finePointerQuery.addEventListener?.("change", () => {
+    if (!finePointerQuery.matches) stopHoverVideo();
+  });
+
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
     [".treatments .treatment-pill", 55, "scale"],
