@@ -709,7 +709,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   for (const asset of [
     "weight-injection-landscape-v2.png",
     "weight-injection-loop-v2.mp4",
-    "ed-care-landscape-v2.png"
+    "ed-care-couple-v3.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
     assert.match(html, new RegExp(reference.replace(".", "\\.")));
