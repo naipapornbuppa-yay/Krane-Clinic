@@ -527,6 +527,13 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.doesNotMatch(screenFragment(html, "confirm"), /class="card|confirm-mark/, "confirmation must share the same product-state visual");
   assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
+  const preloader = screenFragment(html, "preloader");
+  assert.match(preloader, /data-loader="paper-crane"/, "preloader must expose the branded paper-crane loader");
+  for (const stage of ["sheet", "base", "forming", "crane"]) {
+    assert.match(html, new RegExp(`ks-fold-stage--${stage}`), `paper-crane loader must include the ${stage} fold stage`);
+  }
+  assert.match(html, /@keyframes ks-fold-crane/, "paper-crane loader must animate into the final crane");
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*ks-fold-stage--crane\{opacity:1;transform:none\}/, "paper-crane loader must show a static final crane when motion is reduced");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
 });
 
