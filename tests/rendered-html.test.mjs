@@ -706,10 +706,11 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
-  assert.match(html, /สุขภาพดี เริ่มที่ Krane/, "the first viewport needs a concise one-line Thai headline");
+  assert.match(html, /สุขภาพดีขึ้นกับ Krane/, "the first viewport needs a concise one-line Thai headline aligned to client copy");
   assert.doesNotMatch(html, /<h1 id="hero-title"[^>]*>[^<]*<br>/, "the hero headline must stay on one line");
   assert.match(html, /family=Noto\+Sans\+Thai/);
-  assert.match(html, /ลดน้ำหนักด้วย GLP-1 โดยแพทย์/, "the weight card must state the intended outcome clearly");
+  assert.match(html, /ลดน้ำหนักด้วย GLP-1 ภายใต้การดูแลของแพทย์/, "the weight card must state the intended outcome and medical oversight clearly");
+  assert.match(html, /เสริมความมั่นใจผู้ชายอย่างเป็นส่วนตัว/, "the ED card must use the client's men's-confidence framing");
   assert.match(html, /ดูแลปัญหาการแข็งตัว<br>อย่างเป็นส่วนตัว/, "the ED card must state the erection concern clearly");
   for (const asset of [
     "weight-injection-landscape-v2.png",
@@ -730,7 +731,14 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
   assert.match(html, /class="compliance__group" aria-hidden="true"/);
   assert.match(html, /บริการอื่น ๆ สำหรับคุณ/);
-  assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
+  assert.match(html, /มาตรฐานที่คุณ<br>วางใจได้/);
+  assert.match(html, /ใบอนุญาตเลขที่ 10101017669/);
+  assert.match(html, /เครือข่ายร้านยาฟาสซิโน/);
+  assert.match(html, /เฉพาะแพทย์ผู้ดูแลเคสเท่านั้น/);
+  assert.match(html, /ISO\/IEC 27001:2022/);
+  assert.equal((html.match(/class="step-number"/g) || []).length, 4, "the client journey must show all four supplied steps");
+  assert.match(html, /ชำระเงินและรอรับยา/);
+  assert.match(html, /ทีมแพทย์ของเรา/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
   for (const image of [
@@ -760,6 +768,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(css, /\.treatment-pill:first-child\{grid-row:span 2/, "additional-care cards must share one consistent geometry");
   assert.match(css, /consistent other-care cards[\s\S]*?\.hero-care-card__cta\{[\s\S]*?border-radius:var\(--radius-pill\);[\s\S]*?background:var\(--landing-blue\)!important;/, "hero CTAs must use a filled design-system button");
   assert.match(css, /\.hero--campaign h1\{[\s\S]*?font-family:"Inter","Noto Sans Thai",system-ui,sans-serif;[\s\S]*?white-space:nowrap;/, "the hero headline must use the cleaner Thai font stack and stay on one line");
+  assert.match(css, /\.steps\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/, "desktop journey must accommodate the four client-supplied steps");
   assert.match(css, /--landing-canvas:var\(--color-bg,#f4f6f8\)/, "the landing must retain the Krane canvas colour");
   assert.doesNotMatch(css, /background:#f7f4ee/, "care cards must not reuse the reference site's beige palette");
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
