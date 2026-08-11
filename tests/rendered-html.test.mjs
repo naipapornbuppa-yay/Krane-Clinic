@@ -737,10 +737,13 @@ test("Figma landing keeps every client access route and responsive menu contract
   const hairTreatmentImage = await readFile(path.join(publicRoot, `b2c/${hairTreatmentReference}`));
   assert.equal(hairTreatmentImage[25], 2, "hair close-up should remain a full-colour RGB campaign photo");
   treatmentHashes.add(createHash("sha256").update(hairTreatmentImage).digest("hex"));
+  const weightTreatmentReference = "assets/product-hero/weight-care-studio-v4.jpg";
+  assert.match(html, new RegExp(weightTreatmentReference.replace(".", "\\.")));
+  const weightTreatmentImage = await readFile(path.join(publicRoot, `b2c/${weightTreatmentReference}`));
+  treatmentHashes.add(createHash("sha256").update(weightTreatmentImage).digest("hex"));
   for (const image of [
     "sexual-performance.png",
     "skin-anti-aging.png",
-    "weight-management.png",
     "hormonal-balance-trt.png",
     "daily-focus-mind.png"
   ]) {
@@ -759,7 +762,10 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?scroll-snap-type:x mandatory;[\s\S]*?\.hero-care-card\{min-height:310px/);
   assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatments\{[\s\S]*?min-height:0/);
-  assert.match(css, /\.treatment-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?grid-auto-columns:calc\(\(100% - 36px\)\/4\)/);
+  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatment-grid\{[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.treatment-pill:first-child\{grid-row:span 2;height:284px\}/);
+  assert.match(css, /--landing-canvas:var\(--color-bg,#f4f6f8\)/, "the landing must retain the Krane canvas colour");
+  assert.doesNotMatch(css, /background:#f7f4ee/, "care cards must not reuse the reference site's beige palette");
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
