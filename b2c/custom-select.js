@@ -260,7 +260,7 @@
     });
     /* Intake templates and restored drafts replace screen markup after startup.
        Observe those replacements so the first tap works without a page refresh. */
-    new MutationObserver(function(mutations){
+    var selectObserver=new MutationObserver(function(mutations){
       var root=null;
       mutations.some(function(mutation){
         return Array.from(mutation.addedNodes).some(function(node){
@@ -270,6 +270,11 @@
         });
       });
       if(root)scheduleEnhancement(root);
-    }).observe(document.body,{childList:true,subtree:true});
+    });
+    /* A rapid QA/deep-link navigation can detach the old document between
+       DOMContentLoaded and this callback. Never ask MutationObserver to observe
+       a missing body; the next document installs its own observer normally. */
+    var selectRoot=document.body;
+    if(selectRoot)selectObserver.observe(selectRoot,{childList:true,subtree:true});
   });
 })();
