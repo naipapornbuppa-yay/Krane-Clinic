@@ -773,7 +773,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="announcement__group"/g) || []).length, 2, "the marquee needs two identical groups for a continuous loop");
   const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
   assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "the clickable announcement must have a clean edge");
-  assert.match(css, /--campaign-banner-surface:#efff7b/);
+  assert.match(css, /--campaign-banner-surface:#07101f/);
+  assert.match(css, /--campaign-banner-ink:rgba\(255,255,255,\.92\)/);
+  assert.match(css, /--campaign-banner-accent:#8da4c4/);
   assert.match(css, /animation:announcement-scroll 28s linear infinite/);
   assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
   assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
