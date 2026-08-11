@@ -688,18 +688,29 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/);
   assert.match(html, /data-route="consent-terms" data-entry-channel="partner"/);
   assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
-  assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
+  assert.equal((html.match(/data-nav-menu>/g) || []).length, 4, "desktop navigation must expose four health-goal menus");
+  assert.equal((html.match(/data-nav-menu-trigger/g) || []).length, 4, "every desktop health-goal menu needs an accessible trigger");
+  for (const menuId of ["desktop-weight-menu", "desktop-men-menu", "desktop-hair-skin-menu", "desktop-more-menu"]) {
+    assert.match(html, new RegExp(`aria-controls="${menuId}"[\\s\\S]*id="${menuId}"`), `${menuId} must be controlled by its trigger`);
+  }
   assert.match(html, /class="mobile-treatment-menu"/);
+  assert.equal((html.match(/data-mobile-nav-section/g) || []).length, 4, "mobile navigation must mirror the four desktop menus");
   for (const category of ["hair-skin", "sexual-health", "skin", "general", "sleep-stress"]) {
     assert.match(html, new RegExp(`data-category="${category}"`), `landing must preserve ${category} treatment route`);
   }
   assert.match(html, /<dialog class="mobile-menu"/);
   assert.match(html, /id="experts"/);
-  assert.match(html, /href="#experts" data-i18n="navDoctors"/);
+  assert.match(html, /href="#experts"/);
   assert.match(css, /@media\s*\(max-width:\s*700px\)/);
+  assert.match(css, /@media\(max-width:880px\)[\s\S]*?\.desktop-nav\{display:none\}/, "goal menus should remain visible at tablet-landscape widths");
+  assert.match(css, /\.nav-menu\.is-open \.nav-menu__menu\{opacity:1;visibility:visible;transform:none\}/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
+  assert.match(script, /const navMenus = \[\.\.\.document\.querySelectorAll\("\[data-nav-menu\]"\)\]/);
+  assert.match(script, /hoverNavQuery\.matches[\s\S]*pointerenter[\s\S]*pointerleave/, "desktop menus need Ro-style hover behavior on fine pointers");
+  assert.match(script, /event\.key !== "Escape"[\s\S]*setNavMenu\(null\)/, "desktop menus must close with Escape");
+  assert.match(script, /data-mobile-nav-section[\s\S]*sibling\.open = false/, "mobile menu sections must behave as an accordion");
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
   assert.match(html, /<section class="hero hero--campaign page-section"/);
   assert.match(html, /<a class="hero-care-card hero-care-card--weight"[^>]*data-route="intake1"[^>]*data-category="general"/);

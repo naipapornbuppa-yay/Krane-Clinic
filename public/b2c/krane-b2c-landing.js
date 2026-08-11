@@ -4,6 +4,20 @@
       announcementCampaign: "Nationwide medicine delivery · Private consultations · Licensed doctors",
       announcementLink: "Start care 100% online",
       navTreatments: "Treatments",
+      navWeight: "Weight",
+      navMen: "Men's health",
+      navHairSkin: "Hair & skin",
+      navMore: "More",
+      panelWeight: "Doctor-led weight care",
+      panelMen: "Private men's health care",
+      panelHairSkin: "Hair, skin & healthy ageing",
+      panelMore: "Care & resources",
+      menuWeightStart: "Start a weight-loss plan",
+      menuWeightGlp1: "GLP-1 options",
+      menuWeightCheck: "Check your eligibility",
+      menuEd: "Erectile dysfunction (ED)",
+      menuHormone: "Hormones & TRT",
+      menuSkinAge: "Skin & healthy ageing",
       menuHair: "Hair loss & scalp",
       menuSkin: "Skin & acne",
       menuSexual: "Sexual health",
@@ -93,7 +107,7 @@
   const menu = document.querySelector("#mobile-menu");
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
-  const mobileQuery = window.matchMedia("(max-width: 1100px)");
+  const mobileQuery = window.matchMedia("(max-width: 880px)");
 
   function menuIsOpen() {
     return menu && (menu.open || menu.hasAttribute("open"));
@@ -105,7 +119,7 @@
     menuOpen?.setAttribute("aria-expanded", "true");
     if (typeof menu.showModal === "function") menu.showModal();
     else menu.setAttribute("open", "");
-    requestAnimationFrame(() => menu.querySelector("nav a")?.focus());
+    requestAnimationFrame(() => menu.querySelector("nav summary, nav > a")?.focus());
   }
 
   function closeMenu({ restoreFocus = false } = {}) {
@@ -131,26 +145,69 @@
     if (!event.matches) closeMenu();
   });
 
-  const treatmentMenu = document.querySelector("[data-treatment-menu]");
-  const treatmentMenuTrigger = document.querySelector("[data-treatment-menu-trigger]");
-  function setTreatmentMenu(open) {
-    if (!treatmentMenu || !treatmentMenuTrigger) return;
-    treatmentMenu.classList.toggle("is-open", open);
-    treatmentMenuTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+  const navMenus = [...document.querySelectorAll("[data-nav-menu]")];
+  const hoverNavQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  let navCloseTimer = 0;
+
+  function setNavMenu(activeMenu) {
+    window.clearTimeout(navCloseTimer);
+    navMenus.forEach((navMenu) => {
+      const open = navMenu === activeMenu;
+      navMenu.classList.toggle("is-open", open);
+      navMenu.querySelector("[data-nav-menu-trigger]")?.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   }
-  treatmentMenuTrigger?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    setTreatmentMenu(!treatmentMenu.classList.contains("is-open"));
+
+  function queueNavClose() {
+    window.clearTimeout(navCloseTimer);
+    navCloseTimer = window.setTimeout(() => setNavMenu(null), 140);
+  }
+
+  navMenus.forEach((navMenu) => {
+    const trigger = navMenu.querySelector("[data-nav-menu-trigger]");
+    trigger?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const alreadyOpen = navMenu.classList.contains("is-open");
+      const toggleCloses = alreadyOpen && (!hoverNavQuery.matches || event.detail === 0);
+      setNavMenu(toggleCloses ? null : navMenu);
+    });
+    trigger?.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown") return;
+      event.preventDefault();
+      setNavMenu(navMenu);
+      navMenu.querySelector(".nav-menu__menu a")?.focus();
+    });
+    if (hoverNavQuery.matches) {
+      navMenu.addEventListener("pointerenter", () => setNavMenu(navMenu));
+      navMenu.addEventListener("pointerleave", queueNavClose);
+    }
+    navMenu.addEventListener("focusout", (event) => {
+      if (!navMenu.contains(event.relatedTarget)) queueNavClose();
+    });
+    navMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setNavMenu(null)));
   });
-  treatmentMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setTreatmentMenu(false)));
+
+  const mobileNavSections = [...document.querySelectorAll("[data-mobile-nav-section]")];
+  mobileNavSections.forEach((section) => section.addEventListener("toggle", () => {
+    if (!section.open) return;
+    mobileNavSections.forEach((sibling) => {
+      if (sibling !== section) sibling.open = false;
+    });
+  }));
+
   document.addEventListener("click", (event) => {
-    if (treatmentMenu && !treatmentMenu.contains(event.target)) setTreatmentMenu(false);
+    if (!(event.target instanceof Element) || !event.target.closest("[data-nav-menu]")) setNavMenu(null);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && treatmentMenu?.classList.contains("is-open")) {
-      setTreatmentMenu(false);
-      treatmentMenuTrigger?.focus();
-    }
+    if (event.key !== "Escape") return;
+    const openMenu = navMenus.find((navMenu) => navMenu.classList.contains("is-open"));
+    if (!openMenu) return;
+    setNavMenu(null);
+    openMenu.querySelector("[data-nav-menu-trigger]")?.focus();
+  });
+
+  mobileQuery.addEventListener("change", (event) => {
+    if (event.matches) setNavMenu(null);
   });
 
   const languageSelects = [...document.querySelectorAll("[data-language]")];
