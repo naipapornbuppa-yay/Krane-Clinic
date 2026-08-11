@@ -539,7 +539,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260811-client-feedback-polish-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260811-ro-style-nav-menus-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -5097,24 +5097,15 @@
     }
     return target;
   }
-  function normalizeScreenTarget(target){
-    // `concern` was removed when the landing treatment selector became the entry
-    // point, but prerequisite guards can still return that legacy route. Resolve
-    // it before toggling `.active`; otherwise every real screen is hidden and the
-    // stage becomes completely blank. Unknown stale routes fall back to landing
-    // for the same reason.
-    if(target==='concern'){
-      setSelectedCategory('general');
-      return 'intake1';
-    }
-    return document.getElementById(target) ? target : 'landing';
-  }
   function show(id, push=true){
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
-    id=normalizeScreenTarget(id);
+    if(id === 'concern'){
+      setSelectedCategory('general');
+      id = 'intake1';
+    }
     const requested=id;
-    id=normalizeScreenTarget(requiredRouteFor(id));
+    id=requiredRouteFor(id);
     if(id!==requested){
       history=seededHistory(id);
       push=false;
