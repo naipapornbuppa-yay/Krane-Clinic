@@ -706,7 +706,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
-  assert.match(html, /การดูแลที่คุณ<br>สมควรได้รับ/, "the first viewport needs an editorial two-line care headline");
+  assert.match(html, /สุขภาพดี เริ่มที่ Krane/, "the first viewport needs a concise one-line Thai headline");
+  assert.doesNotMatch(html, /<h1 id="hero-title"[^>]*>[^<]*<br>/, "the hero headline must stay on one line");
+  assert.match(html, /family=Noto\+Sans\+Thai/);
   assert.match(html, /ลดน้ำหนักด้วย GLP-1 โดยแพทย์/, "the weight card must state the intended outcome clearly");
   assert.match(html, /ดูแลปัญหาการแข็งตัว<br>อย่างเป็นส่วนตัว/, "the ED card must state the erection concern clearly");
   for (const asset of [
@@ -757,6 +759,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatment-grid\{[\s\S]*?grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.doesNotMatch(css, /\.treatment-pill:first-child\{grid-row:span 2/, "additional-care cards must share one consistent geometry");
   assert.match(css, /consistent other-care cards[\s\S]*?\.hero-care-card__cta\{[\s\S]*?border-radius:var\(--radius-pill\);[\s\S]*?background:var\(--landing-blue\)!important;/, "hero CTAs must use a filled design-system button");
+  assert.match(css, /\.hero--campaign h1\{[\s\S]*?font-family:"Inter","Noto Sans Thai",system-ui,sans-serif;[\s\S]*?white-space:nowrap;/, "the hero headline must use the cleaner Thai font stack and stay on one line");
   assert.match(css, /--landing-canvas:var\(--color-bg,#f4f6f8\)/, "the landing must retain the Krane canvas colour");
   assert.doesNotMatch(css, /background:#f7f4ee/, "care cards must not reuse the reference site's beige palette");
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);

@@ -20,7 +20,7 @@
       online: "100% online",
       certified: "Certified care",
       discreet: "Free discreet delivery",
-      heroTitle: "The care you’ve<br>always deserved",
+      heroTitle: "Better health starts with Krane",
       heroWeightKicker: "Doctor-led GLP-1 weight loss",
       heroWeightTitle: "Start your<br>weight-loss plan today",
       heroSexualKicker: "Private erectile dysfunction (ED) care",
