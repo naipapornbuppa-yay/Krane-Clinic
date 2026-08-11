@@ -728,8 +728,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /latest\/compliance\/nhso\.png/);
   assert.match(html, /latest\/compliance\/iso-27001\.png/);
   assert.match(html, /class="compliance__track"/);
-  assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
-  assert.match(html, /class="compliance__group" aria-hidden="true"/);
+  assert.equal((html.match(/class="compliance__group"/g) || []).length, 1, "standards must render as one non-repeating row");
+  assert.doesNotMatch(html, /class="compliance__group" aria-hidden="true"/);
   assert.match(html, /บริการอื่น ๆ สำหรับคุณ/);
   assert.match(html, /มาตรฐานที่คุณ<br>วางใจได้/);
   assert.match(html, /ใบอนุญาตเลขที่ 10101017669/);
@@ -739,6 +739,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="step-number"/g) || []).length, 4, "the client journey must show all four supplied steps");
   assert.match(html, /ชำระเงินและรอรับยา/);
   assert.match(html, /ทีมแพทย์ของเรา/);
+  assert.match(html, /<div class="expert-track">\s*<a class="expert-card" href="doctor-detail\.html\?doctor=2"/, "the selected client doctor must appear first");
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
   for (const image of [
@@ -790,10 +791,10 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /--campaign-banner-accent:#8da4c4/);
   assert.match(css, /animation:announcement-scroll 28s linear infinite/);
   assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
-  assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
-  assert.match(css, /animation:compliance-marquee 24s linear infinite/);
-  assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
-  assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
+  assert.doesNotMatch(css, /compliance-marquee/, "the standards row must not duplicate or marquee");
+  assert.match(css, /\.compliance__track\{[^}]*display:block;animation:none;will-change:auto\}/);
+  assert.match(css, /\.compliance__group\{[^}]*display:flex;[^}]*flex-wrap:nowrap/);
+  assert.match(css, /\.benefits>li>svg\{[^}]*overflow:visible/, "benefit icons must not clip their strokes");
   assert.match(css, /--landing-blue:#1973ff/);
   assert.match(css, /--campaign-weight-surface:#cbd0eb/);
   assert.match(css, /--campaign-sexual-surface:#b9dced/);
