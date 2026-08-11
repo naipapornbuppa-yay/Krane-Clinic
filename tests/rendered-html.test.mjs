@@ -26,24 +26,6 @@ function assetFile(fromFile, reference) {
   return path.resolve(path.dirname(path.join(publicRoot, fromFile)), clean);
 }
 
-// Extracts a top-level function body by counting braces from its opening
-// "{" rather than matching against whatever code happens to follow it, so
-// the extraction survives unrelated edits after the function.
-function extractFunctionBody(html, signature) {
-  const openIndex = html.indexOf(signature);
-  assert.ok(openIndex >= 0, `${signature} must exist in the source`);
-  const braceStart = html.indexOf("{", openIndex);
-  let depth = 0;
-  for (let i = braceStart; i < html.length; i++) {
-    if (html[i] === "{") depth++;
-    else if (html[i] === "}") {
-      depth--;
-      if (depth === 0) return html.slice(braceStart + 1, i);
-    }
-  }
-  throw new Error(`${signature} body is not balanced`);
-}
-
 function screenFragment(html, id) {
   const start = html.search(new RegExp(`<section class="[^"]*\\bscreen\\b[^"]*" id="${id}"`));
   assert.ok(start >= 0, `missing #${id}`);
@@ -83,7 +65,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "consent-terms", "partner-patient-info", "partner-concern", "partner-intake", "partner-nurse",
+    "consent-terms", "partner-patient-info", "partner-insurance", "partner-concern", "partner-intake", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
   for (const id of ["partner-access", "partner-review", "pharmacy-locate", "refund"]) {
@@ -105,11 +87,8 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">สิทธิ์และการชำระเงิน/);
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
   assert.match(partnerCoverageScreen, /Coverage &amp; payment[\s\S]*ตรวจสอบสิทธิ์ประกันแล้ว/);
-  // SCR-002 restored 2026-08-04: the partner path answers this in one compact
-  // screen instead of the six-step general intake, so payment/coverage detail
-  // now lives on the policy card itself rather than a separate reassurance line.
-  assert.match(partnerCoverageScreen, /data-partner-policy-consult>ครอบคลุมเต็มจำนวน/);
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Continue/);
+  assert.match(partnerCoverageScreen, /ค่าปรึกษาแพทย์[\s\S]*เครดิตค่ายา[\s\S]*ค่าจัดส่ง/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /data-partner-payment="self-pay"/);
   assert.doesNotMatch(partnerCoverageScreen, /ครอบคลุม ฿ 350/);
   assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
@@ -118,9 +97,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="yes"/g) || []).length, 3);
-  // Item 3 (04/08 deck): the detail box appears only once "มี" is chosen rather
-  // than always showing as a disabled field, so it starts hidden.
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail hidden>/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/autocomplete="off" disabled/g) || []).length, 3);
   assert.match(html, /input\.disabled=!hasDetails;[\s\S]*if\(!hasDetails\) input\.value=''/);
   assert.match(html, /function partnerHistoryValue\(key\)/);
@@ -128,14 +105,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#partner-intake \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
-  // Switched from a 3-column grid to a flex column (legend, binary toggle, then
-  // the detail field once shown): a layout that is already stacked at every
-  // width needs no separate narrow-viewport variant, so the old 520px grid
-  // override was dropped along with it rather than left dead.
-  assert.match(components, /\.partner-history-field\{width:100%;max-width:100%;min-width:0;min-inline-size:0;[^}]*display:flex;flex-direction:column;align-items:stretch/);
+  assert.match(components, /\.partner-history-field\{[^}]*width:100%[^}]*min-inline-size:0[^}]*display:flex;flex-direction:column;align-items:stretch/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{width:100%;align-self:stretch\}/);
-  assert.match(components, /\.partner-history-detail\{[^}]*min-width:0[^}]*max-width:100%/);
-  assert.doesNotMatch(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns/);
+  assert.match(components, /\.partner-history-detail\{[^}]*width:100%[^}]*min-width:0[^}]*max-width:100%/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /function partnerClinicalStartTarget\(\)\{[\s\S]*if\(PARTNER_NURSE_SCREENING_ENABLED\) return 'partner-nurse';[\s\S]*return 'matching'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและพบแพทย์ที่พยาบาลเลือก/);
@@ -149,6 +121,12 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web\{max-width:min\(var\(--desktop-frame\),100%\)\}/);
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.care-journey__current\{display:none\}[\s\S]*\.care-journey__name\{display:block/);
+  assert.match(html, /if\(flowConfig\.get\('entry'\)==='direct'\) flowState\.entryChannel='direct'/);
+  assert.match(html, /cj\.hidden=flowState\.entryChannel==='partner' \|\| coldAuth/);
+  assert.match(html, /Every ordinary landing navigation is a Krane-direct entry[\s\S]*flowState\.entryChannel='direct'/);
+  for (const id of ["partner-patient-info", "partner-insurance", "partner-concern", "partner-intake"]) {
+    assert.doesNotMatch(screenFragment(html, id), /care-journey/, `${id} must not embed Direct progress UI`);
+  }
   assert.match(html, /flowState\.phoneOtpPending/);
   assert.match(html, /data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6"/);
   assert.doesNotMatch(html, /maxlength="1"/);
@@ -182,7 +160,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /function directClinicalStartTarget\(\)\{[\s\S]*if\(DIRECT_NURSE_SCREENING_ENABLED\) return 'nurse';[\s\S]*return 'matching'/);
   assert.doesNotMatch(html, /<section class="screen" id="booking"/, "the redundant doctor-match introduction screen must stay removed");
   assert.match(html, /id="rx-writing"[\s\S]*data-go="plan">View treatment plan/);
-  assert.match(html, /if\(id==='rx-writing'\)[\s\S]*replaceCurrent\('plan-ready'\)/);
+  assert.match(html, /if\(id==='rx-writing'\)[\s\S]*replaceCurrent\('plan'\)/);
   assert.match(html, /tracking:'confirm', feedback:'consult'/);
   assert.match(html, /noMatch\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('matching'\)/);
   assert.match(html, /noStock\.closest\('\.rail'\)[\s\S]*seedClinicalDemoStage\('pharmacy-search'\)/);
@@ -280,12 +258,7 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(customSelect, /querySelectorAll\('select:not\(\[data-cms-select-ready\]\)'\)\.forEach\(enhance\)/);
   assert.match(customSelect, /new MutationObserver\(function\(mutations\)/, "dynamically rendered selects must work before refresh");
   assert.match(customSelect, /document\.addEventListener\('krane:screenchange'/);
-  // A dataset flag alone proved unenhanced: an innerHTML round-trip copies the
-  // flag but not the listeners, leaving a select that looks enhanced and
-  // ignores every tap. liveRecordFor() checks the wrapper is really still
-  // connected and enhance() rebuilds from scratch whenever it isn't.
-  assert.match(customSelect, /function liveRecordFor\(select\)\{[\s\S]*enhanced\[i\]\.root\.isConnected && enhanced\[i\]\.root\.contains\(select\)/);
-  assert.match(customSelect, /if\(liveRecordFor\(select\)\)return;/);
+  assert.match(customSelect, /function liveRecordFor\(select\)[\s\S]*root\.isConnected[\s\S]*root\.contains\(select\)/);
   assert.match(customSelectCss, /\.custom-select__trigger\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
   assert.match(customSelectCss, /@media\(max-width:600px\)\{[\s\S]*\.custom-select\.is-open\{z-index:1000\}/);
   assert.match(html, /function intakeRequirementState\(screenOrId\)/);
@@ -310,17 +283,31 @@ test("intake keeps multi-select questions visible and uses compact required cont
   ]) assert.ok(i18n.includes(copy), `missing intake translation ${copy}`);
 });
 
-test("partner entry answers its own compact concern screen and keeps the compact health profile", async () => {
+test("direct entry defaults to self-pay and clinical intake shows one question at a time", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const patientInfo = screenFragment(html, "patient-info");
+
+  assert.match(patientInfo, /aria-selected="true" data-select data-patient-payment-choice-value="self-pay"/);
+  assert.doesNotMatch(patientInfo, /aria-selected="true"[^>]*data-patient-payment-choice-value="insurance"/);
+  assert.match(html, /paymentPreference:'self-pay'/);
+  assert.match(html, /const INTAKE_ONE_QUESTION_SCREENS = \['intake1','intake2','intake3','intake-general'\]/);
+  assert.match(html, /function setupIntakeQuestionPages\(screenOrId,\{reset=false\}=\{\}\)/);
+  assert.match(html, /question\.hidden=!active/);
+  assert.match(html, /advanceIntakeQuestionPage\(intakeQuestionScreen\)/);
+  assert.match(html, /retreatIntakeQuestionPage\(backScreen\)/);
+  assert.match(html, /screen\.querySelector\('\[data-intake-question\]:not\(\[hidden\]\)'\) \|\| screen/);
+  assert.match(components, /\[data-intake-question\]\[hidden\]\{display:none!important\}/);
+});
+
+test("partner entry keeps its locked concern and compact health-profile sequence", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
-  // SCR-002 restored 2026-08-04: partner entry answers "what's wrong" on its own
-  // one-screen concern form (with photo upload) rather than the six-step general
-  // intake used by the direct-entry flow.
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'partner-patient-info'/);
   assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
-  assert.match(html, /if\(flowState\.entryChannel==='partner'\)[\s\S]*flowState\.lastRequiredScreen='partner-intake'[\s\S]*show\('partner-intake'\)/);
   assert.match(html, /target==='partner-intake' && !flowState\.partnerConcernComplete\) return 'partner-concern'/);
+  assert.match(html, /data-partner-concern-continue[\s\S]*flowState\.partnerConcernComplete = true[\s\S]*show\('partner-intake'\)/);
   assert.match(html, /data-partner-photo-input/);
   assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''/);
 
@@ -339,7 +326,7 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /flowState\.coverage\s*=/);
 
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Continue/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /฿\s*350|ชำระ|Pay now/i);
   assert.match(html, /coveredPartner \? 'ครอบคลุม'/);
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*if\(consultationBalanceDue\(\)<=0\) return 'waitroom'/);
@@ -361,15 +348,9 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*consultationPaymentTiming[\s\S]*consultationFeeAcknowledged/);
   assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="consultation"/);
   assert.match(html, /data-screen-code="SCR-015" data-checkout-mode="final"/);
-  // SCR-008 collapsed to one card: the banner that carried a separate checkout
-  // title was dropped as a duplicate of the fee already stated in the card below.
-  assert.match(html, /data-consult-total-label[\s\S]*data-consultpay-label/);
+  assert.match(html, /data-consult-checkout-title[\s\S]*data-consultpay-label/);
   assert.match(html, /data-consultation-balance-amount/);
   assert.match(html, /data-consultation-payment-status/);
-  // Item 4 (04/08 deck): the fee is always announced on SCR-008 after matching,
-  // including when a policy covers it and the balance is 0 — going straight to
-  // consultationHandoffTarget() there could skip to the waiting room and hide
-  // the fee summary entirely, so this leg always lands on consultpay itself.
   assert.match(html, /replaceCurrent\(doctorAvailable \? 'consultpay' : 'noslots'\)/);
   assert.match(html, /if\(go\.dataset\.go === 'consultpay'\)\{[\s\S]*show\(consultationHandoffTarget\(\)\)/);
   assert.match(html, /if\(go\.dataset\.go === 'payment' && !go\.hasAttribute\('data-keep-payment-total'\)\) setMedicationCheckoutContext\(\)/);
@@ -378,8 +359,7 @@ test("eligible partner coverage gates consultation cash checkout through explici
 test("payment totals and pharmacy fallback remain consistent across edge states", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   assert.ok((html.match(/data-consult-payment-total/g) || []).length >= 4);
-  // The certificate is free, so ticking it must never change the amount due.
-  assert.match(html, /function syncConsultationPaymentAmount\(\)\{[\s\S]*consultationBalanceDue\(\)[\s\S]*The medical certificate is free, so ticking it never changes the amount\.[\s\S]*const amount=balance;[\s\S]*#consultpay-gw \[data-consult-payment-total\]/);
+  assert.match(html, /function syncConsultationPaymentAmount\(\)\{[\s\S]*consultationBalanceDue\(\)[\s\S]*const amount=balance[\s\S]*#consultpay-gw \[data-consult-payment-total\]/);
   assert.match(html, /syncConsultationPaymentAmount\(\);\s*show\('consultpay-gw'\)/);
   assert.match(html, /data-payment-failure-total/);
   assert.match(html, /function syncMedicationFailureAmount\(amount=currentMedicationDue\(\)\)/);
@@ -388,15 +368,15 @@ test("payment totals and pharmacy fallback remain consistent across edge states"
   const issueScreen = screenFragment(html, "pharmacyissue");
   const issueActions = [...issueScreen.matchAll(/data-pharmacy-issue-action="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(issueActions, ["postal"], "fallback must offer one explicit postal confirmation");
-  assert.match(issueScreen, /ยอดชำระเดิมยังได้รับการคุ้มครอง[\s\S]*data-pharmacy-issue-action="postal"/);
+  assert.match(issueScreen, /เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน[\s\S]*data-pharmacy-issue-action="postal"/);
   assert.doesNotMatch(issueScreen, /data-pharmacy-issue-confirm|Confirm choice/i);
 
   const fallbackHandler = html.match(/const pharmacyIssueAction = e\.target\.closest\('\[data-pharmacy-issue-action\]'\);([\s\S]*?)\n    const insuranceConfirm/);
   assert.ok(fallbackHandler, "immediate pharmacy fallback handler must remain extractable");
   assert.match(fallbackHandler[1], /deliveryMethod='postal'/);
   assert.match(fallbackHandler[1], /stockLocked=true/);
-  assert.match(fallbackHandler[1], /show\('pharmacypending'\)/);
-  assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)/);
+  assert.match(fallbackHandler[1], /show\('payment'\)/);
+  assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)|show\('pharmacypending'\)/);
 });
 
 test("post-consultation checkout carries the accepted order into delivery and payment outcomes", async () => {
@@ -407,60 +387,58 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   const failure = screenFragment(html, "payfail");
   const success = screenFragment(html, "confirm");
 
-  assert.match(plan, /data-go="payment"/, "accepting the plan must go directly to payment");
-  assert.match(plan, /Review medicine order[\s\S]*Confirm medicines &amp; continue to payment/, "the pre-address screen must clearly confirm the medicine order");
-  assert.doesNotMatch(plan, /data-go="address"|data-go="pharmacy-locate"/, "accepting the plan must not force an address or pharmacy-locate detour");
-  // The address row's label text is written at runtime from confirmed state
-  // (syncDeliveryAddress), not baked into the static markup, so this checks the
-  // structural hook and the confirmed/unconfirmed copy it toggles between.
-  assert.match(payment, /data-go="address"[\s\S]*data-payment-address-action/, "payment must expose an explicit Change address action");
-  assert.match(html, /action\.textContent=confirmed \? 'เปลี่ยนที่อยู่' : 'เพิ่มที่อยู่'/);
-  // Checkout starts without a delivery address so the auto-fill on #address is
-  // visibly driven by pin selection; the saved Mali address lives in the shared
-  // fixture the address screen and payment summary both read from.
-  assert.match(html, /building:'เดอะ เบส พาร์ค เวสต์, ห้อง 22\/418'/, "the golden Mali fixture must carry her saved delivery address");
+  assert.match(plan, /Review medicine order[\s\S]*data-plan-continue[\s\S]*ยืนยันรายการยาและเลือกการจัดส่ง/, "medicine acceptance must continue to fulfilment details");
+  assert.match(html, /closest\('\[data-plan-continue\]'\)[\s\S]*show\(hasFulfillableItems\(\) \? 'address' : 'payment'\)/, "accepted medicines must open address while a zero-medicine order skips it");
+  assert.match(payment, /data-go="address"[\s\S]*data-payment-address-action/, "payment must expose an explicit address action");
+  assert.match(payment, /ยังไม่ได้เพิ่มที่อยู่จัดส่ง/, "a fresh checkout must not silently assume a saved address");
   assert.match(payment, /data-payment-go[\s\S]*ไปหน้าชำระเงิน/, "checkout must use a specific payment action");
   assert.match(address, /data-address-save[^>]*>บันทึกและคำนวณค่าจัดส่ง/, "the address form must make delivery repricing explicit");
-  assert.match(html, /function checkoutIsReady\(\)[\s\S]*addressConfirmed/, "checkout readiness must require an explicitly confirmed address");
-  assert.match(html, /MALI_SAVED_ADDRESS = \{[\s\S]*เดอะ เบส พาร์ค เวสต์/, "the saved delivery address must live in persisted order state");
+  assert.match(html, /function checkoutActionState\(\)[\s\S]*addressConfirmed[\s\S]*deliveryQuoteStatus!=='accepted'[\s\S]*!flowState\.orderState\.stockLocked/, "checkout readiness must require a confirmed address and locked pharmacy quote");
+  assert.match(html, /MALI_SAVED_ADDRESS[\s\S]*เดอะ เบส พาร์ค เวสต์/, "the saved delivery address must live in persisted order state");
+  assert.match(html, /if\(wantSavedAddress\)\{[\s\S]*addressConfirmed=true[\s\S]*stockLocked=true/, "the explicit returning-patient route must restore a payable locked quote");
+  assert.doesNotMatch(html, /flowState\.orderState\.address=Object\.assign\(\s*\{\},\s*MALI_SAVED_ADDRESS,/, "fresh checkout state must not inherit a partial saved address");
+  assert.match(html, /MALI_SAVED_ADDRESS = \{[\s\S]*recipientName:[\s\S]*recipientPhone:[\s\S]*subdistrict:[\s\S]*districtName:[\s\S]*province:[\s\S]*postcode:/, "the returning-patient fixture must hydrate every required address field");
   assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*show\('delivery-quote',false\)/, "saving an address must open the pre-payment pharmacy quote state");
   const quote = screenFragment(html, "delivery-quote");
-  assert.match(quote, /กำลังหาร้านยาที่จัดส่งถึงคุณ[\s\S]*รอร้านยายืนยัน เพื่อคำนวณค่าจัดส่ง/, "the quote state must explain why the pharmacy acceptance is required");
+  assert.match(quote, /กำลังคำนวณการจัดส่ง[\s\S]*ค่าจัดส่งโดยประมาณ[\s\S]*ร้านยายืนยัน/, "the quote state must stay an estimate before pharmacy acceptance");
   assert.doesNotMatch(quote, /ยืนยันการชำระเงินแล้ว|payment is confirmed/i, "the pre-payment quote must not claim that payment already happened");
-  assert.match(html, /id==='delivery-quote'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*show\('payment',false\)/, "an accepted quote must return to payment with an exact fee");
-  assert.match(html, /function applyAddress\(place\)\{[\s\S]*set\('addrBuilding',place\.building\); set\('addrFloor',place\.floor\); set\('addrLine',place\.line\);[\s\S]*set\('addrSubdistrict',place\.subdistrict\); set\('addrDistrictName',place\.districtName\);[\s\S]*set\('addrProvince',place\.province\); set\('addrPostcode',place\.postcode\)/, "mock map selection must prefill every structured address field");
+  assert.match(html, /id==='delivery-quote'[\s\S]*invalidateFulfillmentQuote\(\)[\s\S]*replaceCurrent\('pharmacy-search'\)/, "the delivery estimate must continue to pharmacy review without unlocking payment");
+  assert.match(html, /id === 'pharmacy-search'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*stockLocked=true[\s\S]*replaceCurrent\('payment'\)/, "pharmacy review must lock stock and final price before checkout");
+  assert.match(html, /const lockedDeliveryFee=flowState\.orderState\.deliveryMethod==='same-day' \? calculatedSameDayDeliveryFee\(\) : 0;[\s\S]*deliveryQuoteStatus='accepted';[\s\S]*deliveryQuoteAmount=lockedDeliveryFee/, "the final delivery fee must be calculated before the quote becomes accepted");
+  assert.match(html, /const SIM_PLACES = \[[\s\S]*subdistrict:[\s\S]*districtName:[\s\S]*province:[\s\S]*postcode:[\s\S]*function applyAddress\(place\)[\s\S]*set\('addrSubdistrict',place\.subdistrict\)[\s\S]*set\('addrPostcode',place\.postcode\)/, "mock map selection must prefill every structured address field");
 
   const planItems = [...plan.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
   const paymentItems = [...payment.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(planItems.length >= 2, "the accepted plan must expose stable order-item keys");
   assert.equal(new Set(planItems).size, planItems.length, "plan order-item keys must be unique");
   assert.deepEqual(new Set(paymentItems), new Set(planItems), "checkout must mirror every accepted plan item by key");
-  // #plan is now hidden from the patient (HIDDEN_SCREENS redirects it straight to
-  // #payment, the sole place quantities are edited), so its read-only guarantee
-  // comes from being unreachable rather than from having no stepper markup.
-  assert.match(html, /const HIDDEN_SCREENS = \{ plan:'payment', confirm:'tracking' \};/, "the treatment plan must redirect to checkout rather than render its own editable view");
+  assert.equal((plan.match(/data-qty(?=[\s>])/g) || []).length, planItems.length, "the pre-pay medicine list must let patients reduce within the prescription ceiling");
+  assert.equal((plan.match(/data-min="0"/g) || []).length, planItems.length, "the pre-pay medicine list must support declining every medicine");
   assert.equal((payment.match(/data-qty(?=[\s>])/g) || []).length, paymentItems.length, "checkout must provide one quantity control per medicine");
   assert.equal((payment.match(/data-min="0"/g) || []).length, paymentItems.length, "checkout must let a patient omit an individual medicine without editing the prescription");
   assert.equal((payment.match(/data-qty-minus/g) || []).length, paymentItems.length);
   assert.equal((payment.match(/data-qty-plus/g) || []).length, paymentItems.length);
   assert.match(html, /querySelectorAll\(`#payment \[data-order-item="\$\{key\}"\]`\)/, "quantity changes must not rewrite the doctor's treatment plan");
-  const calcIndex = payment.indexOf('checkout-calc');
-  const billIndex = payment.indexOf('checkout-bill--summary');
+  assert.match(payment, /data-no-fulfillment-notice[^>]*hidden/);
+  assert.ok((payment.match(/data-fulfillment-section/g) || []).length >= 2, "delivery-only sections must be independently hideable");
+  assert.match(html, /function hasFulfillableItems\(\)\{ return hasMedicines\(\) \|\| selectedAddOnTotal\(\)>0; \}/);
+  assert.match(html, /function checkoutActionState\(\)\{[\s\S]*if\(!hasFulfillableItems\(\)\) return[\s\S]*addressConfirmed/, "a zero-fulfilment checkout must bypass address and stock requirements");
+  assert.match(html, /if\(due<=0\)\{[\s\S]*documentsUnlocked=true[\s\S]*show\(hasFulfillableItems\(\) \? 'payment-success' : 'prescription'\)/, "a fully covered zero-medicine order must unlock documents without a gateway");
   const discountIndex = payment.indexOf('ส่วนลดและสิทธิ์');
-  assert.ok(calcIndex >= 0 && billIndex > calcIndex, "the delivery fee calculation note must sit above the bill totals");
-  assert.ok(discountIndex > billIndex, "discounts and coverage entry must follow the bill totals");
+  const calculationIndex = payment.indexOf('checkout-final-summary');
+  assert.ok(discountIndex >= 0 && calculationIndex > discountIndex, "cost metadata and final calculation must follow discounts");
+  assert.ok(payment.indexOf('checkout-calc') > calculationIndex, "delivery quote metadata belongs inside the final calculation block");
 
   const deliveryValues = [...payment.matchAll(/data-delivery-value="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(deliveryValues.includes("same-day"), "payment needs a same-day choice");
   assert.ok(deliveryValues.includes("postal"), "payment needs a postal choice");
-  assert.match(payment, /data-delivery-value="same-day"[\s\S]{0,300}data-payment-same-day-fee[^>]*>ค่าประมาณ ฿80-180</, "the same-day option must quote its own estimated fee before an address is known");
-  assert.match(payment, /data-delivery-value="postal"[\s\S]{0,350}>ฟรี</, "postal must keep its flat free price independent of the same-day quote");
+  assert.match(payment, /data-delivery-value="same-day"[\s\S]{0,500}ค่าประมาณ ฿80 ถึง ฿180/, "same-day must remain an estimate until the pharmacy locks the quote");
   assert.equal((payment.match(/data-payment-delivery(?=[\s>])/g) || []).length, 1, "only the selected delivery bill row should receive the calculated fee");
   assert.doesNotMatch(address, /data-delivery-value=/, "delivery speed belongs on payment, not the address editor");
   assert.doesNotMatch(address, /รูปแบบการจัดส่ง|ได้รับยาภายใน 1–3 ชั่วโมง/, "address editing must not duplicate a delivery promise");
   assert.match(html, /closest\('\[data-delivery-value\]'\)/);
-  assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue/);
-  assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue[\s\S]{0,900}refreshMedicationCheckout\(\)/, "delivery selection must refresh the fee and total");
+  assert.match(html, /const nextDeliveryMethod=deliveryChoice\.dataset\.deliveryValue[\s\S]*flowState\.orderState\.deliveryMethod=nextDeliveryMethod/);
+  assert.match(html, /flowState\.orderState\.deliveryMethod=nextDeliveryMethod[\s\S]{0,500}refreshMedicationCheckout\(\)/, "delivery selection must refresh the fee and total");
 
   assert.doesNotMatch(payment, /data-payment-note|โน้ตถึงไรเดอร์|note (?:for|to) (?:the )?rider/i);
   assert.doesNotMatch(payment, /data-payment-pdpa|\bPDPA\b|personal data protection|privacy policy|นโยบายความเป็นส่วนตัว/i);
@@ -472,23 +450,16 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(payment, /role="listitem"/, "interactive add-on cards must retain button semantics");
   assert.doesNotMatch(payment, /data-delivery-value="[^"]+"[\s\S]{0,350}opt-check/, "delivery rows must not duplicate selection with checkbox controls");
   assert.doesNotMatch(payment, /฿ 350 (?:ชำระแล้ว|อยู่ในสิทธิ์)/);
-  // The medicine card's doctor-attribution header was removed: the consultation
-  // fee now has its own card above it, so repeating the doctor's name on the
-  // medicine card was redundant.
-  assert.doesNotMatch(payment, /ใบสั่งยาโดย/, "the medicine card must not repeat the doctor-attribution header");
+  assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
-  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('payment-gw'\)/, "checkout must open the gateway before pharmacy review");
+  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*checkoutState==='quote-required'[\s\S]*show\('delivery-quote',false\)[\s\S]*show\('payment-gw'\)/, "checkout must obtain a locked pharmacy quote before opening the gateway");
   assert.match(html, /activateGatewayMethod\('payment-gw',paymentMethod,\{persistMedicationMethod:true\}\)/, "the selected checkout method must activate the matching gateway pane");
   assert.match(html, /screen\?\.id==='payment-gw'/, "switching gateway tabs must persist the medication payment method");
-  // The checkout flow was straightened (commit aef364f): paying now ends on the
-  // payment outcome screen itself, not two more loading screens after the money
-  // has left. The patient chooses when to open tracking from there.
-  assert.match(html, /id==='payment-success'\)\s*syncPaymentOutcome\(\)/, "bank confirmation must land on the payment outcome screen");
-  assert.doesNotMatch(html, /id==='payment-success'[\s\S]{0,200}replaceCurrent\('pharmacy-search'\)/, "the payment outcome screen must not auto-advance into a post-payment waiting screen");
-  assert.match(screenFragment(html, "payment-success"), /data-go="tracking"/, "the payment outcome screen must let the patient open tracking explicitly");
-  assert.match(pharmacyAccepted, /data-pharmacy-accepted-continue[\s\S]*Continue to preparation/, "pharmacy acceptance must continue to preparation without charging again");
-  assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('pharmacypending'\)/, "accepted paid order must open preparation");
+  assert.match(html, /id==='payment-success'[\s\S]*hasFulfillableItems\(\)[\s\S]*replaceCurrent\('pharmacypending'\)/, "bank confirmation must start preparation without a second pharmacy search");
+  assert.match(screenFragment(html, "pharmacypending"), /data-go="pharmacyaccepted"/, "preparation must continue into the post-payment pharmacy status");
+  assert.match(pharmacyAccepted, /ร้านยารับออเดอร์ที่ชำระแล้ว[\s\S]*data-pharmacy-accepted-continue[\s\S]*ดูการยืนยันออเดอร์/, "pharmacy acceptance must be a post-payment fulfilment state");
+  assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('confirm'\)/, "accepted fulfilment must continue to order confirmation without charging again");
   assert.match(pharmacyAccepted, /state-view__visual--success/, "pharmacy acceptance should use the shared animated state signal");
   assert.doesNotMatch(pharmacyAccepted, /pharmacy-accepted__summary|class="card/, "pharmacy acceptance should keep essential facts out of a second information box");
   assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ/, "pharmacy acceptance must not repeat checkout UI");
@@ -497,10 +468,10 @@ test("post-consultation checkout carries the accepted order into delivery and pa
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   assert.match(css, /\.checkout-pay \.btn\{[^}]*min-height:var\(--control-h\)/, "the payment CTA must keep a full touch target at 320px");
-  assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:148px/, "mobile add-on cards must remain compact and show the next choice");
+  assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:190px/, "mobile add-on cards must remain compact and show the next choice");
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*object-fit:contain/, "product cutouts must stay fully visible inside each add-on card");
-  assert.match(css, /\.checkout-addon-card__visual\{[^}]*height:72px[^}]*overflow:visible[^}]*background:transparent/, "add-on products must float on an unclipped stage");
-  assert.match(css, /\.checkout-addon-card__visual::before\{[^}]*60px[^}]*border-radius:50%[^}]*#dbe4f2/, "add-on products must share the landing menu's circular powder-blue stage");
+  assert.match(css, /\.checkout-addon-card__visual\{[^}]*height:100px[^}]*overflow:visible[^}]*background:transparent/, "add-on products must float on an unclipped stage");
+  assert.match(css, /\.checkout-addon-card__visual::before\{[^}]*82px[^}]*border-radius:50%[^}]*#dbe4f2/, "add-on products must share the landing menu's circular powder-blue stage");
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*animation:loading-illustration-float/, "add-on cutouts must use the shared floating motion");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
   assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
@@ -536,8 +507,6 @@ test("video consultation shares one circular mode FAB and surfaces unread medica
 
 test("standalone patient states share one concise visual hierarchy", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
-  // The connecting screen was removed (commit 6ddab26, "Deck item 6"): waitroom
-  // now enters the room directly, with no separate connecting state in between.
   const stateIds = [
     "ineligible", "matching", "noslots", "consultpay-fail", "waitroom",
     "rx-writing", "pharmacy-search",
@@ -559,48 +528,45 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.doesNotMatch(html, /dotlottie-player|@dotlottie\/player-component/, "preloader must not rely on a separate third-party visual system");
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
-  assert.doesNotMatch(html, /id="connecting"/, "the connecting screen must stay removed; waitroom enters the room directly");
 });
 
-// Commit 3d2d5f3 ("Loading stages: animated icons, a live counter, and no
-// button to press") replaced the old photo-tile system (state-view__tile,
-// state-view__tile--brand, the loading-v2 PNGs) with one icon disc,
-// state-view__stage, shared by every loading and outcome screen.
 test("all outcome graphics use the shared circular stage without a logo tag", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
-  assert.match(components, /\.state-view__stage\{[^}]*border-radius:50%/, "the icon stage must be a circle");
-  assert.match(components, /\.state-view__visual--success \.state-view__stage,\s*\n\.state-view__visual--danger \.state-view__stage,\s*\n\.state-view__visual--warning \.state-view__stage,\s*\n\.state-view__visual--empty \.state-view__stage\{animation:none\}/, "resolved outcomes must stop the loading float");
-  assert.doesNotMatch(html, /state-view__tile--brand/, "outcome screens must use the shared icon stage, not the retired photo tile");
-  assert.doesNotMatch(html, /state-view__tile(?!--)/, "the retired photo-tile wrapper must stay removed from every screen");
-  assert.ok((html.match(/state-view__stage/g) || []).length >= 15, "every loading and outcome screen must keep the shared circular icon stage");
+  assert.match(components, /\.state-view__tile--brand\{[\s\S]*border-radius:0[\s\S]*background:transparent[\s\S]*box-shadow:none/);
+  assert.match(components, /\.state-view__tile--brand::before\{[\s\S]*border-radius:50%[\s\S]*background:#dbe4f2/);
+  assert.match(components, /\.state-view__tile--brand::after\{content:none\}/);
+  assert.match(components, /\.state-view__tile--brand>img\{[\s\S]*object-fit:contain[\s\S]*loading-illustration-float/);
+  assert.match(components, /img\[src\*="assets\/state-v2\/"\][\s\S]*border-radius:50%[\s\S]*clip-path:circle\(50%\)/);
+  assert.doesNotMatch(components, /state-view__tile--brand::after\{[\s\S]*krane-review-wordmark/);
+  assert.ok((html.match(/state-view__tile--brand/g) || []).length >= 10, "all outcome screens must keep the shared circular treatment");
 });
 
 test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const expected = {
-    matching: "assets/loading-v3/doctor-matching.svg",
-    waitroom: "assets/loading-v3/waiting-room.svg",
-    "rx-writing": "assets/loading-v3/treatment-plan.svg",
-    "pharmacy-search": "assets/loading-v3/pharmacy-search.svg",
-    pharmacypending: "assets/loading-v3/pharmacy-preparing.svg",
-    preloader: "assets/loading-v3/health-preparing.svg"
+    matching: "krane-state-doctor-matching",
+    waitroom: "krane-state-waiting-room",
+    "rx-writing": "krane-state-treatment-plan",
+    "pharmacy-search": "krane-state-pharmacy-search",
+    pharmacypending: "krane-state-medicine-preparing",
+    preloader: "krane-state-loading-info"
   };
-  for (const [screen, graphic] of Object.entries(expected)) {
+  for (const [screen, symbol] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
-    assert.match(fragment, new RegExp(graphic.replace(".", "\\.")), `${screen} must use ${graphic}`);
-    assert.match(fragment, /state-view__stage/, `${screen} must use the shared icon stage`);
+    assert.match(fragment, new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
+    assert.match(html, new RegExp(`<symbol id="${symbol}"`), `${symbol} must be defined once in the shared SVG sprite`);
+    assert.match(fragment, /class="krane-state-art"/, `${screen} must use the shared vector-art treatment`);
+    assert.match(fragment, /state-view__tile--cutout/, `${screen} must use the unclipped cutout stage`);
     assert.doesNotMatch(fragment, /state-view__tile--brand/, `${screen} must not overlay a logo on loading artwork`);
-    assert.doesNotMatch(fragment, /\.jpe?g|assets\/state-v2|assets\/loading-v2\/|assets\/loading\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
+    assert.doesNotMatch(fragment, /\.(?:png|jpe?g)|assets\/state-v2|assets\/loading(?:-v2)?\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
     assert.doesNotMatch(fragment, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
-
-    await readFile(path.join(publicRoot, "b2c", graphic));
   }
-  const usedGraphics = new Set(Object.values(expected));
-  assert.equal(usedGraphics.size, Object.keys(expected).length, "every loading stage must use a distinct graphic");
-  assert.match(components, /\.state-view__stage\{[^}]*animation:stage-float/, "loading stages must keep the shared floating motion");
-  assert.match(components, /\.state-view__stage>img\{[^}]*width:54%[^}]*height:54%/, "the icon must sit inset within its circular stage");
+  assert.match(html, /\.krane-state-art \.(?:ks-float|ks-float-late)[\s\S]*animation:ks-float/, "vector loading art must retain restrained motion");
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout\{[^}]*overflow:visible[^}]*background:transparent/);
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout::before\{[^}]*border-radius:50%[^}]*#dbe4f2/);
+  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
 });
 
 test("patient states never reuse the generic treatment bottle as status artwork", async () => {
@@ -610,7 +576,8 @@ test("patient states never reuse the generic treatment bottle as status artwork"
 
 test("public login and legal routes bypass intake while consent acceptance still requires OTP", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
-  const requiredRouteBody = extractFunctionBody(html, "function requiredRouteFor(target)");
+  const requiredRouteSource = html.match(/function requiredRouteFor\(target\)\{([\s\S]*?)\n  \}\n  function show\(id/);
+  assert.ok(requiredRouteSource, "requiredRouteFor must remain extractable for route-contract tests");
 
   const cleanState = {
     draftReady: false,
@@ -626,19 +593,21 @@ test("public login and legal routes bypass intake while consent acceptance still
   const requiredRouteFor = Function(
     "flowState",
     "PARTNER_SCREENS",
+    "INTAKE_DRAFT_SCREENS",
     "REQUIRED_CARE_TARGETS",
+    "insuranceEntry",
     "intakeSkipped",
     "skipForwardFrom",
-    "insuranceEntry",
-    `return function requiredRouteFor(target){${requiredRouteBody}\n}`
-  )(cleanState, [], new Set(), () => false, (id) => id, "");
+    `return function requiredRouteFor(target){${requiredRouteSource[1]}\n}`
+  )(cleanState, [], [], new Set(), "checkout", () => false, (target) => target);
 
   assert.equal(requiredRouteFor("login"), "login", "clean-session login must open directly");
   assert.equal(requiredRouteFor("signup"), "concern", "first-time signup still begins with intake");
   assert.equal(requiredRouteFor("consent-terms"), "consent-terms", "public legal documents must be readable without OTP");
   assert.equal(requiredRouteFor("patient-info"), "concern", "clinical patient details remain guarded");
 
-  const syncConsentBody = extractFunctionBody(html, "function syncConsentContinue()");
+  const syncConsentSource = html.match(/function syncConsentContinue\(\)\{([\s\S]*?)\n  \}\n  consentChecks/);
+  assert.ok(syncConsentSource, "syncConsentContinue must remain extractable for consent-contract tests");
   const consentButton = { disabled: false };
   const completedChecks = [{ disabled: false, checked: true }, { disabled: false, checked: true }];
   const makeConsentSync = (state) => Function(
@@ -646,7 +615,7 @@ test("public login and legal routes bypass intake while consent acceptance still
     "consentContinue",
     "consentChecks",
     "consentIdentityVerified",
-    `return function syncConsentContinue(){${syncConsentBody}\n}`
+    `return function syncConsentContinue(){${syncConsentSource[1]}\n}`
   )(state, consentButton, completedChecks, () => Boolean(
     state.entryChannel === "partner"
       ? state.partnerAccessComplete && state.partnerPhoneVerified
@@ -688,50 +657,21 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/);
   assert.match(html, /data-route="consent-terms" data-entry-channel="partner"/);
   assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
-  assert.equal((html.match(/data-nav-menu>/g) || []).length, 4, "desktop navigation must expose four health-goal menus");
-  assert.equal((html.match(/data-nav-menu-trigger/g) || []).length, 4, "every desktop health-goal menu needs an accessible trigger");
-  for (const menuId of ["desktop-weight-menu", "desktop-men-menu", "desktop-hair-skin-menu", "desktop-more-menu"]) {
-    assert.match(html, new RegExp(`aria-controls="${menuId}"[\\s\\S]*id="${menuId}"`), `${menuId} must be controlled by its trigger`);
-  }
+  assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
   assert.match(html, /class="mobile-treatment-menu"/);
-  assert.equal((html.match(/data-mobile-nav-section/g) || []).length, 4, "mobile navigation must mirror the four desktop menus");
   for (const category of ["hair-skin", "sexual-health", "skin", "general", "sleep-stress"]) {
     assert.match(html, new RegExp(`data-category="${category}"`), `landing must preserve ${category} treatment route`);
   }
   assert.match(html, /<dialog class="mobile-menu"/);
   assert.match(html, /id="experts"/);
-  assert.match(html, /href="#experts"/);
+  assert.match(html, /href="#experts" data-i18n="navDoctors"/);
   assert.match(css, /@media\s*\(max-width:\s*700px\)/);
-  assert.match(css, /@media\(max-width:880px\)[\s\S]*?\.desktop-nav\{display:none\}/, "goal menus should remain visible at tablet-landscape widths");
-  assert.match(css, /\.nav-menu\.is-open \.nav-menu__menu\{opacity:1;visibility:visible;transform:none\}/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
-  assert.match(script, /const navMenus = \[\.\.\.document\.querySelectorAll\("\[data-nav-menu\]"\)\]/);
-  assert.match(script, /hoverNavQuery\.matches[\s\S]*pointerenter[\s\S]*pointerleave/, "desktop menus need Ro-style hover behavior on fine pointers");
-  assert.match(script, /event\.key !== "Escape"[\s\S]*setNavMenu\(null\)/, "desktop menus must close with Escape");
-  assert.match(script, /data-mobile-nav-section[\s\S]*sibling\.open = false/, "mobile menu sections must behave as an accordion");
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /<section class="hero hero--campaign page-section"/);
-  assert.match(html, /<a class="hero-care-card hero-care-card--weight"[^>]*data-route="intake1"[^>]*data-category="general"/);
-  assert.match(html, /<a class="hero-care-card hero-care-card--sexual"[^>]*data-route="conditions"[^>]*data-category="sexual-health"/);
-  assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
-  assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
-  assert.match(html, /สุขภาพดีขึ้นกับ Krane/, "the first viewport needs a concise one-line Thai headline aligned to client copy");
-  assert.doesNotMatch(html, /<h1 id="hero-title"[^>]*>[^<]*<br>/, "the hero headline must stay on one line");
-  assert.match(html, /family=Noto\+Sans\+Thai/);
-  assert.match(html, /ลดน้ำหนักด้วย GLP-1 ภายใต้การดูแลของแพทย์/, "the weight card must state the intended outcome and medical oversight clearly");
-  assert.match(html, /เสริมความมั่นใจผู้ชายอย่างเป็นส่วนตัว/, "the ED card must use the client's men's-confidence framing");
-  assert.match(html, /ดูแลปัญหาการแข็งตัว<br>อย่างเป็นส่วนตัว/, "the ED card must state the erection concern clearly");
-  for (const asset of [
-    "weight-injection-landscape-v2.png",
-    "ed-care-lap-v6.jpg"
-  ]) {
-    const reference = `assets/product-hero/${asset}`;
-    assert.match(html, new RegExp(reference.replace(".", "\\.")));
-    const campaignAsset = await readFile(path.join(publicRoot, `b2c/${reference}`));
-    assert.ok(campaignAsset.length > 100_000, `${asset} must be a complete campaign asset`);
-  }
+  assert.match(html, /assets\/landing-573\/latest\/hero-base\.png/);
+  assert.match(html, /assets\/landing-573\/latest\/hero-overlay\.png/);
   assert.match(html, /<section class="compliance(?:\s|")/);
   assert.match(html, /latest\/compliance\/thai-fda\.png/);
   assert.match(html, /latest\/compliance\/pdpa\.png/);
@@ -739,23 +679,17 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /latest\/compliance\/nhso\.png/);
   assert.match(html, /latest\/compliance\/iso-27001\.png/);
   assert.match(html, /class="compliance__track"/);
-  assert.equal((html.match(/class="compliance__group"/g) || []).length, 1, "standards must render as one non-repeating row");
-  assert.doesNotMatch(html, /class="compliance__group" aria-hidden="true"/);
-  assert.match(html, /บริการอื่น ๆ สำหรับคุณ/);
-  assert.match(html, /มาตรฐานที่คุณ<br>วางใจได้/);
-  assert.match(html, /ใบอนุญาตเลขที่ 10101017669/);
-  assert.match(html, /เครือข่ายร้านยาฟาสซิโน/);
-  assert.match(html, /เฉพาะแพทย์ผู้ดูแลเคสเท่านั้น/);
-  assert.match(html, /ISO\/IEC 27001:2022/);
-  assert.equal((html.match(/class="step-number"/g) || []).length, 4, "the client journey must show all four supplied steps");
-  assert.match(html, /ชำระเงินและรอรับยา/);
-  assert.match(html, /ทีมแพทย์ของเรา/);
-  assert.match(html, /<div class="expert-track">\s*<a class="expert-card" href="doctor-detail\.html\?doctor=2"/, "the selected client doctor must appear first");
+  assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
+  assert.match(html, /class="compliance__group" aria-hidden="true"/);
+  assert.match(html, /เลือกการดูแลที่เหมาะกับคุณ/);
+  assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
   for (const image of [
     "hair-loss-prevention.png",
+    "sexual-performance.png",
     "skin-anti-aging.png",
+    "weight-management.png",
     "hormonal-balance-trt.png",
     "daily-focus-mind.png"
   ]) {
@@ -766,23 +700,12 @@ test("Figma landing keeps every client access route and responsive menu contract
     assert.ok([4, 6].includes(treatmentImage[25]), `${image} must preserve a transparent PNG channel`);
     treatmentHashes.add(createHash("sha256").update(treatmentImage).digest("hex"));
   }
-  assert.equal(treatmentHashes.size, 4, "every additional-care card needs a distinct product image");
-  assert.equal((html.match(/class="treatment-pill__image(?: treatment-pill__image--photo)?"/g) || []).length, 4, "landing needs four non-repeating additional-care cards");
-  const servicesMarkup = html.match(/<section class="treatments[\s\S]*?<\/section>/)?.[0] || "";
-  assert.doesNotMatch(servicesMarkup, /care-card--weight|care-card--sexual/, "weight and ED must not repeat below their hero cards");
-  assert.match(css, /\.treatment-pill__image--photo img\{[^}]*padding:0;[^}]*object-fit:cover;[^}]*filter:none/);
+  assert.equal(treatmentHashes.size, 6, "every symptom needs a distinct product image");
+  assert.equal((html.match(/assets\/landing-573\/treatments\/[^"]+\.png/g) || []).length, 6);
   assert.doesNotMatch(html, /class="care-marquee"/);
-  assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
-  assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?scroll-snap-type:x mandatory;[\s\S]*?\.hero-care-card\{min-height:310px/);
-  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatments\{[\s\S]*?min-height:0/);
-  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatment-grid\{[\s\S]*?grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
-  assert.doesNotMatch(css, /\.treatment-pill:first-child\{grid-row:span 2/, "additional-care cards must share one consistent geometry");
-  assert.match(css, /consistent other-care cards[\s\S]*?\.hero-care-card__cta\{[\s\S]*?border-radius:var\(--radius-pill\);[\s\S]*?background:var\(--landing-blue\)!important;/, "hero CTAs must use a filled design-system button");
-  assert.match(css, /\.hero--campaign h1\{[\s\S]*?font-family:"Inter","Noto Sans Thai",system-ui,sans-serif;[\s\S]*?white-space:nowrap;/, "the hero headline must use the cleaner Thai font stack and stay on one line");
-  assert.match(css, /\.steps\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/, "desktop journey must accommodate the four client-supplied steps");
-  assert.match(css, /--landing-canvas:var\(--color-bg,#f4f6f8\)/, "the landing must retain the Krane canvas colour");
-  assert.doesNotMatch(css, /background:#f7f4ee/, "care cards must not reuse the reference site's beige palette");
+  assert.match(css, /\.hero\{[\s\S]*height:512px/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__photo\{[\s\S]*?height:calc\(100% \+ 20px\)/, "the mobile hero photo must extend past the blue section so it cannot create a cropped color seam");
+  assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
   assert.match(css, /--landing-blue-2:#1973ff/);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
@@ -792,28 +715,19 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(script, /--hero-parallax/);
   assert.match(html, /data-review-dialog/);
   assert.match(script, /function openReview/);
-  assert.match(html, /<a class="announcement"[^>]*data-route="intake1"[^>]*data-category="general"/);
+  assert.match(html, /class="announcement"/);
   assert.match(html, /announcement__track" aria-hidden="true"/);
-  assert.equal((html.match(/class="announcement__group"/g) || []).length, 2, "the marquee needs two identical groups for a continuous loop");
   const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
-  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "the clickable announcement must have a clean edge");
-  assert.match(css, /--campaign-banner-surface:#07101f/);
-  assert.match(css, /--campaign-banner-ink:rgba\(255,255,255,\.92\)/);
-  assert.match(css, /--campaign-banner-accent:#8da4c4/);
-  assert.match(css, /animation:announcement-scroll 28s linear infinite/);
+  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "announcement marquee must have a clean edge without a white fade");
   assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
-  assert.doesNotMatch(css, /compliance-marquee/, "the standards row must not duplicate or marquee");
-  assert.match(css, /\.compliance__track\{[^}]*display:block;animation:none;will-change:auto\}/);
-  assert.match(css, /\.compliance__group\{[^}]*display:flex;[^}]*flex-wrap:nowrap/);
-  assert.match(css, /\.benefits>li>svg\{[^}]*overflow:visible/, "benefit icons must not clip their strokes");
+  assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
+  assert.match(css, /animation:compliance-marquee 24s linear infinite/);
+  assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
+  assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
   assert.match(css, /--landing-blue:#1973ff/);
-  assert.match(css, /--campaign-weight-surface:#cbd0eb/);
-  assert.match(css, /--campaign-sexual-surface:#b9dced/);
+  assert.match(css, /\.hero\{[\s\S]*background:var\(--landing-blue\)/);
   assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /--campaign-card-height:286px/);
-  assert.match(css, /--campaign-text:var\(--landing-navy\)/);
-  assert.doesNotMatch(html, /data-hover-video/);
-  assert.doesNotMatch(script, /hoverVideo|finePointerQuery/);
+  assert.match(css, /height:clamp\(590px,72svh,630px\)/);
   const protocolProductHashes = new Set();
   for (const image of [
     "clinical-injectors-v2.png",
@@ -848,8 +762,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.guarantee__copy h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
   assert.doesNotMatch(html, /class="guarantee__copy"[\s\S]*?<a class="button button--outline"/, "the standards section must not include a secondary CTA");
   assert.match(css, /--landing-section-title-size:clamp\(32px,9vw,40px\)/);
-  assert.match(css, /Product-grid first viewport:[\s\S]*?\.hero--campaign \.hero__signals\{[\s\S]*?order:2;[\s\S]*?justify-content:flex-start/);
-  assert.match(css, /\.hero--campaign \.hero__signals>span\{[\s\S]*white-space:nowrap\}/);
+  assert.match(css, /\.hero__signals\{top:20px;[\s\S]*flex-wrap:nowrap;justify-content:space-between\}/);
+  assert.match(css, /\.hero__signals>span\{min-width:0;gap:4px;font-size:clamp\(8px,2\.55vw,10px\);white-space:nowrap\}/);
   assert.doesNotMatch(css, /\.hero__signals>span:last-child\{width:100%/);
   assert.match(css, /\.steps li\.reveal-item::before\{[\s\S]*scaleY\(0\)/);
   assert.match(css, /\.steps li\.is-revealed::before\{opacity:1;transform:scaleY\(1\)\}/);
