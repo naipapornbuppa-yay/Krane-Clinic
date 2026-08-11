@@ -65,10 +65,10 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "consent-terms", "partner-patient-info", "partner-intake", "partner-nurse",
+    "consent-terms", "partner-patient-info", "partner-insurance", "partner-concern", "partner-intake", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
-  for (const id of ["partner-access", "partner-concern", "partner-review", "pharmacy-locate", "refund"]) {
+  for (const id of ["partner-access", "partner-review", "pharmacy-locate", "refund"]) {
     assert.ok(!screenIds.includes(id), `outdated #${id} must stay removed`);
   }
   assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
@@ -79,16 +79,16 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
   assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
-  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','intake1','partner-intake','matching'\]/);
+  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','partner-concern','partner-intake','matching'\]/);
   assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
-  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'intake1'\)/);
+  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
   assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-insurance'\)/);
   assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">สิทธิ์และการชำระเงิน/);
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
-  assert.match(partnerCoverageScreen, /Coverage &amp; payment[\s\S]*Partner coverage confirmed/);
-  assert.match(partnerCoverageScreen, /No payment will be taken now[\s\S]*Any medicine or delivery balance will be shown after your consultation/);
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake1">Noted/);
+  assert.match(partnerCoverageScreen, /Coverage &amp; payment[\s\S]*ตรวจสอบสิทธิ์ประกันแล้ว/);
+  assert.match(partnerCoverageScreen, /ค่าปรึกษาแพทย์[\s\S]*เครดิตค่ายา[\s\S]*ค่าจัดส่ง/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /data-partner-payment="self-pay"/);
   assert.doesNotMatch(partnerCoverageScreen, /ครอบคลุม ฿ 350/);
   assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
@@ -97,7 +97,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="yes"/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail>/g) || []).length, 3);
+  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail/g) || []).length, 3);
   assert.equal((screenFragment(html, "partner-intake").match(/autocomplete="off" disabled/g) || []).length, 3);
   assert.match(html, /input\.disabled=!hasDetails;[\s\S]*if\(!hasDetails\) input\.value=''/);
   assert.match(html, /function partnerHistoryValue\(key\)/);
@@ -105,11 +105,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#partner-intake \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
-  assert.match(components, /\.partner-history-field\{[^}]*width:100%[^}]*min-inline-size:0[^}]*grid-template-columns:minmax\(128px,.72fr\) minmax\(0,1fr\) minmax\(0,1.2fr\)[^}]*grid-template-rows:52px/);
-  assert.match(components, /\.partner-history-field>\.partner-binary\{grid-column:2;grid-row:1\}/);
-  assert.match(components, /\.partner-history-detail\{grid-column:3;grid-row:1/);
-  assert.match(components, /\.partner-history-detail\{[^}]*min-width:0[^}]*max-width:100%[^}]*overflow:hidden/);
-  assert.match(components, /@media\(max-width:520px\)\{[\s\S]*\.partner-history-field\{grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto 48px auto/);
+  assert.match(components, /\.partner-history-field\{[^}]*width:100%[^}]*min-inline-size:0[^}]*display:flex;flex-direction:column;align-items:stretch/);
+  assert.match(components, /\.partner-history-field>\.partner-binary\{width:100%;align-self:stretch\}/);
+  assert.match(components, /\.partner-history-detail\{[^}]*width:100%[^}]*min-width:0[^}]*max-width:100%/);
   assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /function partnerClinicalStartTarget\(\)\{[\s\S]*if\(PARTNER_NURSE_SCREENING_ENABLED\) return 'partner-nurse';[\s\S]*return 'matching'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและพบแพทย์ที่พยาบาลเลือก/);
@@ -123,6 +121,12 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web\{max-width:min\(var\(--desktop-frame\),100%\)\}/);
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.care-journey__current\{display:none\}[\s\S]*\.care-journey__name\{display:block/);
+  assert.match(html, /if\(flowConfig\.get\('entry'\)==='direct'\) flowState\.entryChannel='direct'/);
+  assert.match(html, /cj\.hidden=flowState\.entryChannel==='partner' \|\| coldAuth/);
+  assert.match(html, /Every ordinary landing navigation is a Krane-direct entry[\s\S]*flowState\.entryChannel='direct'/);
+  for (const id of ["partner-patient-info", "partner-insurance", "partner-concern", "partner-intake"]) {
+    assert.doesNotMatch(screenFragment(html, id), /care-journey/, `${id} must not embed Direct progress UI`);
+  }
   assert.match(html, /flowState\.phoneOtpPending/);
   assert.match(html, /data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6"/);
   assert.doesNotMatch(html, /maxlength="1"/);
@@ -137,7 +141,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /\.date-control__display\{[\s\S]*grid-template-columns:24px minmax\(0,1fr\) 24px/);
   assert.match(components, /\.date-control>input\[type="date"\]\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
-  assert.match(html, /function enhancePatientDateFields\(\)\{[\s\S]*DD \/ MM \/ YYYY/);
+  assert.match(html, /function enhancePatientDateFields\(\)\{[\s\S]*วว \/ ดด \/ ปปปป/);
   assert.match(html, /function openPatientDatePicker\(input\)\{[\s\S]*input\.showPicker\(\)/);
   assert.match(html, /input\.addEventListener\('click',\(\) => openPatientDatePicker\(input\)\)/);
   assert.match(html, /event\.key!=='Enter' && event\.key!==' '/);
@@ -254,7 +258,7 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(customSelect, /querySelectorAll\('select:not\(\[data-cms-select-ready\]\)'\)\.forEach\(enhance\)/);
   assert.match(customSelect, /new MutationObserver\(function\(mutations\)/, "dynamically rendered selects must work before refresh");
   assert.match(customSelect, /document\.addEventListener\('krane:screenchange'/);
-  assert.match(customSelect, /select\.dataset\.customSelectReady==='true' && select\.closest\('\.custom-select'\)/);
+  assert.match(customSelect, /function liveRecordFor\(select\)[\s\S]*root\.isConnected[\s\S]*root\.contains\(select\)/);
   assert.match(customSelectCss, /\.custom-select__trigger\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
   assert.match(customSelectCss, /@media\(max-width:600px\)\{[\s\S]*\.custom-select\.is-open\{z-index:1000\}/);
   assert.match(html, /function intakeRequirementState\(screenOrId\)/);
@@ -279,15 +283,32 @@ test("intake keeps multi-select questions visible and uses compact required cont
   ]) assert.ok(i18n.includes(copy), `missing intake translation ${copy}`);
 });
 
-test("partner entry reuses general intake and keeps the compact health profile", async () => {
+test("direct entry defaults to self-pay and clinical intake shows one question at a time", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const patientInfo = screenFragment(html, "patient-info");
+
+  assert.match(patientInfo, /aria-selected="true" data-select data-patient-payment-choice-value="self-pay"/);
+  assert.doesNotMatch(patientInfo, /aria-selected="true"[^>]*data-patient-payment-choice-value="insurance"/);
+  assert.match(html, /paymentPreference:'self-pay'/);
+  assert.match(html, /const INTAKE_ONE_QUESTION_SCREENS = \['intake1','intake2','intake3','intake-general'\]/);
+  assert.match(html, /function setupIntakeQuestionPages\(screenOrId,\{reset=false\}=\{\}\)/);
+  assert.match(html, /question\.hidden=!active/);
+  assert.match(html, /advanceIntakeQuestionPage\(intakeQuestionScreen\)/);
+  assert.match(html, /retreatIntakeQuestionPage\(backScreen\)/);
+  assert.match(html, /screen\.querySelector\('\[data-intake-question\]:not\(\[hidden\]\)'\) \|\| screen/);
+  assert.match(components, /\[data-intake-question\]\[hidden\]\{display:none!important\}/);
+});
+
+test("partner entry keeps its locked concern and compact health-profile sequence", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
-  assert.match(html, /data-go="intake1" data-entry-channel="partner"/);
+  assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'partner-patient-info'/);
-  assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'intake1'\)/);
-  assert.match(html, /if\(flowState\.entryChannel==='partner'\)[\s\S]*flowState\.lastRequiredScreen='partner-intake'[\s\S]*show\('partner-intake'\)/);
-  assert.match(html, /target==='partner-intake' && !flowState\.draftReady\) return 'intake1'/);
-  assert.doesNotMatch(html, /partnerPhotoRecords|data-partner-photo|partner-concern/);
+  assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
+  assert.match(html, /target==='partner-intake' && !flowState\.partnerConcernComplete\) return 'partner-concern'/);
+  assert.match(html, /data-partner-concern-continue[\s\S]*flowState\.partnerConcernComplete = true[\s\S]*show\('partner-intake'\)/);
+  assert.match(html, /data-partner-photo-input/);
   assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''/);
 
   for (const field of ["sex", "dob", "height", "weight"]) {
@@ -305,7 +326,7 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /flowState\.coverage\s*=/);
 
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake1">Noted/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /฿\s*350|ชำระ|Pay now/i);
   assert.match(html, /coveredPartner \? 'ครอบคลุม'/);
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*if\(consultationBalanceDue\(\)<=0\) return 'waitroom'/);
@@ -326,11 +347,11 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /function setMedicationCheckoutContext\(\)\{\s*refreshMedicationCheckout\(\);\s*\}/);
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*consultationPaymentTiming[\s\S]*consultationFeeAcknowledged/);
   assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="consultation"/);
-  assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="final"/);
+  assert.match(html, /data-screen-code="SCR-015" data-checkout-mode="final"/);
   assert.match(html, /data-consult-checkout-title[\s\S]*data-consultpay-label/);
   assert.match(html, /data-consultation-balance-amount/);
   assert.match(html, /data-consultation-payment-status/);
-  assert.match(html, /replaceCurrent\(doctorAvailable \? consultationHandoffTarget\(\) : 'noslots'\)/);
+  assert.match(html, /replaceCurrent\(doctorAvailable \? 'consultpay' : 'noslots'\)/);
   assert.match(html, /if\(go\.dataset\.go === 'consultpay'\)\{[\s\S]*show\(consultationHandoffTarget\(\)\)/);
   assert.match(html, /if\(go\.dataset\.go === 'payment' && !go\.hasAttribute\('data-keep-payment-total'\)\) setMedicationCheckoutContext\(\)/);
 });
@@ -338,7 +359,7 @@ test("eligible partner coverage gates consultation cash checkout through explici
 test("payment totals and pharmacy fallback remain consistent across edge states", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   assert.ok((html.match(/data-consult-payment-total/g) || []).length >= 4);
-  assert.match(html, /function syncConsultationPaymentAmount\(\)\{[\s\S]*consultationBalanceDue\(\)[\s\S]*balance \+ \(on \? 100 : 0\)[\s\S]*#consultpay-gw \[data-consult-payment-total\]/);
+  assert.match(html, /function syncConsultationPaymentAmount\(\)\{[\s\S]*consultationBalanceDue\(\)[\s\S]*const amount=balance[\s\S]*#consultpay-gw \[data-consult-payment-total\]/);
   assert.match(html, /syncConsultationPaymentAmount\(\);\s*show\('consultpay-gw'\)/);
   assert.match(html, /data-payment-failure-total/);
   assert.match(html, /function syncMedicationFailureAmount\(amount=currentMedicationDue\(\)\)/);
@@ -347,15 +368,15 @@ test("payment totals and pharmacy fallback remain consistent across edge states"
   const issueScreen = screenFragment(html, "pharmacyissue");
   const issueActions = [...issueScreen.matchAll(/data-pharmacy-issue-action="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(issueActions, ["postal"], "fallback must offer one explicit postal confirmation");
-  assert.match(issueScreen, /ยอดชำระเดิมยังได้รับการคุ้มครอง[\s\S]*data-pharmacy-issue-action="postal"/);
+  assert.match(issueScreen, /เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน[\s\S]*data-pharmacy-issue-action="postal"/);
   assert.doesNotMatch(issueScreen, /data-pharmacy-issue-confirm|Confirm choice/i);
 
   const fallbackHandler = html.match(/const pharmacyIssueAction = e\.target\.closest\('\[data-pharmacy-issue-action\]'\);([\s\S]*?)\n    const insuranceConfirm/);
   assert.ok(fallbackHandler, "immediate pharmacy fallback handler must remain extractable");
   assert.match(fallbackHandler[1], /deliveryMethod='postal'/);
   assert.match(fallbackHandler[1], /stockLocked=true/);
-  assert.match(fallbackHandler[1], /show\('pharmacypending'\)/);
-  assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)/);
+  assert.match(fallbackHandler[1], /show\('payment'\)/);
+  assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)|show\('pharmacypending'\)/);
 });
 
 test("post-consultation checkout carries the accepted order into delivery and payment outcomes", async () => {
@@ -366,33 +387,43 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   const failure = screenFragment(html, "payfail");
   const success = screenFragment(html, "confirm");
 
-  assert.match(plan, /data-go="payment"/, "accepting the plan must go directly to payment");
-  assert.match(plan, /Review medicine order[\s\S]*Confirm medicines &amp; continue to payment/, "the pre-address screen must clearly confirm the medicine order");
-  assert.doesNotMatch(plan, /data-go="address"|data-go="pharmacy-locate"/, "accepting the plan must not force an address or pharmacy-locate detour");
-  assert.match(payment, /data-go="address"[\s\S]*เปลี่ยนที่อยู่/, "payment must expose an explicit Change address action");
-  assert.match(payment, /The Base Park West/, "the golden Mali checkout must begin with her saved delivery address");
+  assert.match(plan, /Review medicine order[\s\S]*data-plan-continue[\s\S]*ยืนยันรายการยาและเลือกการจัดส่ง/, "medicine acceptance must continue to fulfilment details");
+  assert.match(html, /closest\('\[data-plan-continue\]'\)[\s\S]*show\(hasFulfillableItems\(\) \? 'address' : 'payment'\)/, "accepted medicines must open address while a zero-medicine order skips it");
+  assert.match(payment, /data-go="address"[\s\S]*data-payment-address-action/, "payment must expose an explicit address action");
+  assert.match(payment, /ยังไม่ได้เพิ่มที่อยู่จัดส่ง/, "a fresh checkout must not silently assume a saved address");
   assert.match(payment, /data-payment-go[\s\S]*ไปหน้าชำระเงิน/, "checkout must use a specific payment action");
   assert.match(address, /data-address-save[^>]*>บันทึกและคำนวณค่าจัดส่ง/, "the address form must make delivery repricing explicit");
-  assert.match(html, /function checkoutIsReady\(\)[\s\S]*addressConfirmed/, "checkout readiness must require an explicitly confirmed address");
-  assert.match(html, /MALI_SAVED_ADDRESS[\s\S]*The Base Park West/, "the saved delivery address must live in persisted order state");
+  assert.match(html, /function checkoutActionState\(\)[\s\S]*addressConfirmed[\s\S]*deliveryQuoteStatus!=='accepted'[\s\S]*!flowState\.orderState\.stockLocked/, "checkout readiness must require a confirmed address and locked pharmacy quote");
+  assert.match(html, /MALI_SAVED_ADDRESS[\s\S]*เดอะ เบส พาร์ค เวสต์/, "the saved delivery address must live in persisted order state");
+  assert.match(html, /if\(wantSavedAddress\)\{[\s\S]*addressConfirmed=true[\s\S]*stockLocked=true/, "the explicit returning-patient route must restore a payable locked quote");
+  assert.doesNotMatch(html, /flowState\.orderState\.address=Object\.assign\(\s*\{\},\s*MALI_SAVED_ADDRESS,/, "fresh checkout state must not inherit a partial saved address");
+  assert.match(html, /MALI_SAVED_ADDRESS = \{[\s\S]*recipientName:[\s\S]*recipientPhone:[\s\S]*subdistrict:[\s\S]*districtName:[\s\S]*province:[\s\S]*postcode:/, "the returning-patient fixture must hydrate every required address field");
   assert.match(html, /closest\('\[data-address-save\]'\)[\s\S]*show\('delivery-quote',false\)/, "saving an address must open the pre-payment pharmacy quote state");
   const quote = screenFragment(html, "delivery-quote");
-  assert.match(quote, /กำลังหาร้านยาที่จัดส่งถึงคุณ[\s\S]*คำนวณค่าจัดส่งที่แน่นอน/, "the quote state must explain why the pharmacy acceptance is required");
+  assert.match(quote, /กำลังคำนวณการจัดส่ง[\s\S]*ค่าจัดส่งโดยประมาณ[\s\S]*ร้านยายืนยัน/, "the quote state must stay an estimate before pharmacy acceptance");
   assert.doesNotMatch(quote, /ยืนยันการชำระเงินแล้ว|payment is confirmed/i, "the pre-payment quote must not claim that payment already happened");
-  assert.match(html, /id==='delivery-quote'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*show\('payment',false\)/, "an accepted quote must return to payment with an exact fee");
-  assert.match(html, /Ideo Mobi Sukhumvit 66[\s\S]*addrNote[\s\S]*selected\.note/, "mock map selection must prefill every structured address field");
+  assert.match(html, /id==='delivery-quote'[\s\S]*invalidateFulfillmentQuote\(\)[\s\S]*replaceCurrent\('pharmacy-search'\)/, "the delivery estimate must continue to pharmacy review without unlocking payment");
+  assert.match(html, /id === 'pharmacy-search'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*stockLocked=true[\s\S]*replaceCurrent\('payment'\)/, "pharmacy review must lock stock and final price before checkout");
+  assert.match(html, /const lockedDeliveryFee=flowState\.orderState\.deliveryMethod==='same-day' \? calculatedSameDayDeliveryFee\(\) : 0;[\s\S]*deliveryQuoteStatus='accepted';[\s\S]*deliveryQuoteAmount=lockedDeliveryFee/, "the final delivery fee must be calculated before the quote becomes accepted");
+  assert.match(html, /const SIM_PLACES = \[[\s\S]*subdistrict:[\s\S]*districtName:[\s\S]*province:[\s\S]*postcode:[\s\S]*function applyAddress\(place\)[\s\S]*set\('addrSubdistrict',place\.subdistrict\)[\s\S]*set\('addrPostcode',place\.postcode\)/, "mock map selection must prefill every structured address field");
 
   const planItems = [...plan.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
   const paymentItems = [...payment.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(planItems.length >= 2, "the accepted plan must expose stable order-item keys");
   assert.equal(new Set(planItems).size, planItems.length, "plan order-item keys must be unique");
   assert.deepEqual(new Set(paymentItems), new Set(planItems), "checkout must mirror every accepted plan item by key");
-  assert.doesNotMatch(plan, /data-qty(?=[\s>])/, "the clinical treatment plan must stay read-only");
+  assert.equal((plan.match(/data-qty(?=[\s>])/g) || []).length, planItems.length, "the pre-pay medicine list must let patients reduce within the prescription ceiling");
+  assert.equal((plan.match(/data-min="0"/g) || []).length, planItems.length, "the pre-pay medicine list must support declining every medicine");
   assert.equal((payment.match(/data-qty(?=[\s>])/g) || []).length, paymentItems.length, "checkout must provide one quantity control per medicine");
   assert.equal((payment.match(/data-min="0"/g) || []).length, paymentItems.length, "checkout must let a patient omit an individual medicine without editing the prescription");
   assert.equal((payment.match(/data-qty-minus/g) || []).length, paymentItems.length);
   assert.equal((payment.match(/data-qty-plus/g) || []).length, paymentItems.length);
   assert.match(html, /querySelectorAll\(`#payment \[data-order-item="\$\{key\}"\]`\)/, "quantity changes must not rewrite the doctor's treatment plan");
+  assert.match(payment, /data-no-fulfillment-notice[^>]*hidden/);
+  assert.ok((payment.match(/data-fulfillment-section/g) || []).length >= 2, "delivery-only sections must be independently hideable");
+  assert.match(html, /function hasFulfillableItems\(\)\{ return hasMedicines\(\) \|\| selectedAddOnTotal\(\)>0; \}/);
+  assert.match(html, /function checkoutActionState\(\)\{[\s\S]*if\(!hasFulfillableItems\(\)\) return[\s\S]*addressConfirmed/, "a zero-fulfilment checkout must bypass address and stock requirements");
+  assert.match(html, /if\(due<=0\)\{[\s\S]*documentsUnlocked=true[\s\S]*show\(hasFulfillableItems\(\) \? 'payment-success' : 'prescription'\)/, "a fully covered zero-medicine order must unlock documents without a gateway");
   const discountIndex = payment.indexOf('ส่วนลดและสิทธิ์');
   const calculationIndex = payment.indexOf('checkout-final-summary');
   assert.ok(discountIndex >= 0 && calculationIndex > discountIndex, "cost metadata and final calculation must follow discounts");
@@ -401,13 +432,13 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   const deliveryValues = [...payment.matchAll(/data-delivery-value="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(deliveryValues.includes("same-day"), "payment needs a same-day choice");
   assert.ok(deliveryValues.includes("postal"), "payment needs a postal choice");
-  assert.match(payment, /data-delivery-value="same-day"[\s\S]{0,500}฿ 120/, "same-day must keep its quoted price when postal is selected");
+  assert.match(payment, /data-delivery-value="same-day"[\s\S]{0,500}ค่าประมาณ ฿80 ถึง ฿180/, "same-day must remain an estimate until the pharmacy locks the quote");
   assert.equal((payment.match(/data-payment-delivery(?=[\s>])/g) || []).length, 1, "only the selected delivery bill row should receive the calculated fee");
   assert.doesNotMatch(address, /data-delivery-value=/, "delivery speed belongs on payment, not the address editor");
   assert.doesNotMatch(address, /รูปแบบการจัดส่ง|ได้รับยาภายใน 1–3 ชั่วโมง/, "address editing must not duplicate a delivery promise");
   assert.match(html, /closest\('\[data-delivery-value\]'\)/);
-  assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue/);
-  assert.match(html, /flowState\.orderState\.deliveryMethod\s*=\s*\w+\.dataset\.deliveryValue[\s\S]{0,900}refreshMedicationCheckout\(\)/, "delivery selection must refresh the fee and total");
+  assert.match(html, /const nextDeliveryMethod=deliveryChoice\.dataset\.deliveryValue[\s\S]*flowState\.orderState\.deliveryMethod=nextDeliveryMethod/);
+  assert.match(html, /flowState\.orderState\.deliveryMethod=nextDeliveryMethod[\s\S]{0,500}refreshMedicationCheckout\(\)/, "delivery selection must refresh the fee and total");
 
   assert.doesNotMatch(payment, /data-payment-note|โน้ตถึงไรเดอร์|note (?:for|to) (?:the )?rider/i);
   assert.doesNotMatch(payment, /data-payment-pdpa|\bPDPA\b|personal data protection|privacy policy|นโยบายความเป็นส่วนตัว/i);
@@ -422,12 +453,13 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.match(payment, /ใบสั่งยาโดย<\/span><strong>คุณหมอนรินทร์ ทานากะ<\/strong>/);
 
   const pharmacyAccepted = screenFragment(html, "pharmacyaccepted");
-  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*show\('payment-gw'\)/, "checkout must open the gateway before pharmacy review");
+  assert.match(html, /closest\('\[data-payment-go\]'\)[\s\S]*checkoutState==='quote-required'[\s\S]*show\('delivery-quote',false\)[\s\S]*show\('payment-gw'\)/, "checkout must obtain a locked pharmacy quote before opening the gateway");
   assert.match(html, /activateGatewayMethod\('payment-gw',paymentMethod,\{persistMedicationMethod:true\}\)/, "the selected checkout method must activate the matching gateway pane");
   assert.match(html, /screen\?\.id==='payment-gw'/, "switching gateway tabs must persist the medication payment method");
-  assert.match(html, /id==='payment-success'[\s\S]*replaceCurrent\('pharmacy-search'\)/, "bank confirmation must release the paid order to pharmacy review");
-  assert.match(pharmacyAccepted, /data-pharmacy-accepted-continue[\s\S]*Continue to preparation/, "pharmacy acceptance must continue to preparation without charging again");
-  assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('pharmacypending'\)/, "accepted paid order must open preparation");
+  assert.match(html, /id==='payment-success'[\s\S]*hasFulfillableItems\(\)[\s\S]*replaceCurrent\('pharmacypending'\)/, "bank confirmation must start preparation without a second pharmacy search");
+  assert.match(screenFragment(html, "pharmacypending"), /data-go="pharmacyaccepted"/, "preparation must continue into the post-payment pharmacy status");
+  assert.match(pharmacyAccepted, /ร้านยารับออเดอร์ที่ชำระแล้ว[\s\S]*data-pharmacy-accepted-continue[\s\S]*ดูการยืนยันออเดอร์/, "pharmacy acceptance must be a post-payment fulfilment state");
+  assert.match(html, /closest\('\[data-pharmacy-accepted-continue\]'\)[\s\S]*show\('confirm'\)/, "accepted fulfilment must continue to order confirmation without charging again");
   assert.match(pharmacyAccepted, /state-view__visual--success/, "pharmacy acceptance should use the shared animated state signal");
   assert.doesNotMatch(pharmacyAccepted, /pharmacy-accepted__summary|class="card/, "pharmacy acceptance should keep essential facts out of a second information box");
   assert.doesNotMatch(pharmacyAccepted, /photo-graphic|ตรวจสอบรายการและยอดชำระ/, "pharmacy acceptance must not repeat checkout UI");
@@ -477,7 +509,7 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const stateIds = [
     "ineligible", "matching", "noslots", "consultpay-fail", "waitroom",
-    "connecting", "rx-writing", "pharmacy-search",
+    "rx-writing", "pharmacy-search",
     "payment-success", "payfail", "pharmacypending", "pharmacyaccepted",
     "pharmacyissue", "confirm", "feedbackdone",
     "empty-activities", "empty-history", "preloader",
@@ -514,25 +546,24 @@ test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const expected = {
-    matching: "assets/loading-v2/doctor-matching.png",
-    waitroom: "assets/loading-v2/waiting-room.png",
-    connecting: "assets/loading-v2/video-connecting-branded.png",
-    "rx-writing": "assets/loading-v2/treatment-plan.png",
-    "pharmacy-search": "assets/loading-v2/pharmacy-search.png",
-    pharmacypending: "assets/loading-v2/pharmacy-preparing.png",
-    preloader: "assets/loading-v2/health-preparing.png"
+    matching: "krane-state-doctor-matching",
+    waitroom: "krane-state-waiting-room",
+    "rx-writing": "krane-state-treatment-plan",
+    "pharmacy-search": "krane-state-pharmacy-search",
+    pharmacypending: "krane-state-medicine-preparing",
+    preloader: "krane-state-loading-info"
   };
-  for (const [screen, graphic] of Object.entries(expected)) {
+  for (const [screen, symbol] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
-    assert.match(fragment, new RegExp(graphic), `${screen} must use ${graphic}`);
+    assert.match(fragment, new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
+    assert.match(html, new RegExp(`<symbol id="${symbol}"`), `${symbol} must be defined once in the shared SVG sprite`);
+    assert.match(fragment, /class="krane-state-art"/, `${screen} must use the shared vector-art treatment`);
     assert.match(fragment, /state-view__tile--cutout/, `${screen} must use the unclipped cutout stage`);
     assert.doesNotMatch(fragment, /state-view__tile--brand/, `${screen} must not overlay a logo on loading artwork`);
-    assert.doesNotMatch(fragment, /\.jpe?g|assets\/state-v2|assets\/loading\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
+    assert.doesNotMatch(fragment, /\.(?:png|jpe?g)|assets\/state-v2|assets\/loading(?:-v2)?\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
     assert.doesNotMatch(fragment, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
-
-    const file = await readFile(path.join(publicRoot, "b2c", graphic));
-    assert.equal(file[25], 6, `${graphic} must be an RGBA PNG with transparency`);
   }
+  assert.match(html, /\.krane-state-art \.(?:ks-float|ks-float-late)[\s\S]*animation:ks-float/, "vector loading art must retain restrained motion");
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout\{[^}]*overflow:visible[^}]*background:transparent/);
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout::before\{[^}]*border-radius:50%[^}]*#dbe4f2/);
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
@@ -562,9 +593,13 @@ test("public login and legal routes bypass intake while consent acceptance still
   const requiredRouteFor = Function(
     "flowState",
     "PARTNER_SCREENS",
+    "INTAKE_DRAFT_SCREENS",
     "REQUIRED_CARE_TARGETS",
+    "insuranceEntry",
+    "intakeSkipped",
+    "skipForwardFrom",
     `return function requiredRouteFor(target){${requiredRouteSource[1]}\n}`
-  )(cleanState, [], new Set());
+  )(cleanState, [], [], new Set(), "checkout", () => false, (target) => target);
 
   assert.equal(requiredRouteFor("login"), "login", "clean-session login must open directly");
   assert.equal(requiredRouteFor("signup"), "concern", "first-time signup still begins with intake");
@@ -820,7 +855,7 @@ test("prototype rail nests error cases under related happy-flow pages", async ()
   assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
   assert.match(patient, /4 · Urgent safety[\s\S]*data-go="intake4"[\s\S]*class="rail-error-menu"[\s\S]*data-go="ineligible"/);
   assert.match(patient, /Doctor matching[\s\S]*data-go="matching">Auto-match[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
-  assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance"[\s\S]*Check entitlement &amp; coverage/);
+  assert.match(patient, /Insurance checkout[\s\S]*data-go="insurance"[\s\S]*ตรวจสอบสิทธิ์ประกัน/);
   assert.doesNotMatch(patient, /id="insurance-policy"|id="reduce-order"|data-go="insurance-policy"|data-go="reduce-order"/);
   assert.match(patient, /Pharmacy confirmation[\s\S]*data-go="pharmacyaccepted"[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nostock/);
   assert.doesNotMatch(patient, /rail-group--exceptions/);

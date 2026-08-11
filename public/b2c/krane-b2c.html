@@ -58,6 +58,8 @@
   .rail-sub{margin:1px 0 4px 30px;border-left:1px solid var(--color-line)}
   .rail-sub a{padding-left:16px;font-size:12px;color:var(--color-ink-3)}
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
+  .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
+  .rail a.current .rail-screen-id,.rail a.is-exception.current .rail-screen-id{color:inherit;opacity:.68}
   .rail-legend{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
   .rail-legend span{display:inline-flex;align-items:center;gap:5px}
   .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
@@ -220,6 +222,56 @@
       min-width: 0;
     }
   </style>
+  <style>
+    /* Krane state illustration system: static editorial line art + semantic motion only. */
+    .state-view__visual:has(.krane-state-art){
+      width:min(82vw,430px)!important;
+      height:auto!important;
+      min-height:0!important;
+      aspect-ratio:14/9;
+      overflow:visible!important;
+    }
+    .state-view__tile:has(.krane-state-art){
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      max-width:none!important;
+      border:0!important;
+      border-radius:0!important;
+      background:transparent!important;
+      box-shadow:none!important;
+      overflow:visible!important;
+      animation:none!important;
+      transform:none!important;
+    }
+    .state-view__visual:has(.krane-state-art)>.state-view__badge{display:none!important}
+    .krane-state-art{display:block;width:100%;height:100%;overflow:visible;color:#101722}
+    .krane-state-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+    .krane-state-art .ks-line{fill:none;stroke:#101722;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .krane-state-art .ks-line-thin{fill:none;stroke:#101722;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .krane-state-art .ks-paper{fill:#fbf4ee}
+    .krane-state-art .ks-blue-soft{fill:#dceaff}
+    .krane-state-art .ks-mint{fill:#ccefe0}
+    .krane-state-art .ks-coral{fill:#ff7b55}
+    .krane-state-art .ks-blue{fill:#2376f3}
+    .krane-state-art .ks-white{fill:#fff}
+    .krane-state-art .ks-float{transform-box:fill-box;transform-origin:center;animation:ks-float 2.8s ease-in-out infinite}
+    .krane-state-art .ks-float-late{transform-box:fill-box;transform-origin:center;animation:ks-float 2.8s .35s ease-in-out infinite}
+    .krane-state-art .ks-retry{transform-box:fill-box;transform-origin:center;animation:ks-retry 2.6s cubic-bezier(.4,0,.2,1) infinite}
+    .krane-state-art .ks-check{stroke-dasharray:54;stroke-dashoffset:54;animation:ks-draw 2.8s cubic-bezier(.4,0,.2,1) infinite}
+    .krane-state-art .ks-pop{transform-box:fill-box;transform-origin:center;animation:ks-pop 2.6s cubic-bezier(.4,0,.2,1) infinite}
+    .krane-state-art .ks-pulse{transform-box:fill-box;transform-origin:center;animation:ks-pulse 2.2s ease-in-out infinite}
+    .krane-state-art .ks-dot-1{animation:ks-dot 1.35s 0s ease-in-out infinite}
+    .krane-state-art .ks-dot-2{animation:ks-dot 1.35s .16s ease-in-out infinite}
+    .krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
+    @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
+    @keyframes ks-draw{0%,18%{stroke-dashoffset:54}45%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:-54}}
+    @keyframes ks-pop{0%,20%,100%{transform:scale(.86);opacity:.55}42%,80%{transform:scale(1);opacity:1}}
+    @keyframes ks-pulse{0%,100%{transform:scale(.94);opacity:.68}50%{transform:scale(1.06);opacity:1}}
+    @keyframes ks-dot{0%,65%,100%{transform:translateY(0);opacity:.35}32%{transform:translateY(-7px);opacity:1}}
+    @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(88vw,390px)!important}}
+  </style>
 </head>
 <body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -302,7 +354,7 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-general">6 · General health <span class="rail-state">required · final question</span></a>
+        <a data-go="intake-general">6 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">รูปแบบเดียวกับปรึกษาทั่วไป</span></a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -344,7 +396,7 @@
         <a data-go="address">Edit saved delivery address</a>
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
           <a data-go="delivery-quote">Before payment · Delivery quote</a>
-          <a data-go="pharmacy-search">After payment · Pharmacist review</a>
+          <a data-go="pharmacy-search">Before payment · Stock &amp; price review</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
           <a data-go="insurance">ตรวจสอบสิทธิ์ประกัน</a>
@@ -426,7 +478,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260802-mobile-signals" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260811-krane-care-cards-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -747,57 +799,46 @@
   <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (penultimate for every service) ===================== -->
   <section class="screen" id="intake-general">
     <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">General health</h2><p class="hint">Required for safe prescribing.</p></div>
-
-      <div class="common-group" data-review-section="medical">
-        <div class="section-label">Medical conditions</div>
-        <div class="stack-3">
-          <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">No existing medical conditions</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Heart condition or blood pressure problem</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Liver or kidney disease</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Diabetes or hormone-related condition</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Depression, anxiety or sleep disorder</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Another condition</span></span><span class="opt-check"></span></button>
+    <div class="screen__body partner-health-compact">
+      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2><p class="muted">ข้อมูลที่ครบถ้วน จะช่วยให้คุณหมอวินิจฉัยอาการได้แม่นยำยิ่งขึ้น</p></div>
+      <div class="card card--pad-sm partner-health-card">
+        <div class="partner-health-grid">
+          <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
+          <div class="field grow"><label for="intake-dob">วันเกิด</label><input class="input" id="intake-dob" type="date" autocomplete="bday" required></div>
+        </div>
+        <div class="partner-health-grid">
+          <div class="field grow"><label for="intake-height">ส่วนสูง (ซม.)</label><input class="input" id="intake-height" inputmode="numeric" placeholder="เช่น 175"></div>
+          <div class="field grow"><label for="intake-weight">น้ำหนัก (กก.)</label><input class="input" id="intake-weight" inputmode="numeric" placeholder="เช่น 70"></div>
+        </div>
+        <div class="partner-clinical-grid">
+          <fieldset class="partner-history-field" data-direct-history="conditions">
+            <legend>โรคประจำตัว</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="โรคประจำตัว">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-conditions">ระบุโรคประจำตัว</label><input class="input" id="intake-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off" disabled></div>
+          </fieldset>
+          <fieldset class="partner-history-field" data-direct-history="medications">
+            <legend>ยาที่ใช้ประจำ</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="ยาที่ใช้ประจำ">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-medications">ระบุยาที่ใช้ประจำ</label><input class="input" id="intake-medications" placeholder="ระบุชื่อยา" autocomplete="off" disabled></div>
+          </fieldset>
+          <fieldset class="partner-history-field" data-direct-history="allergies">
+            <legend>ประวัติแพ้ยา</legend>
+            <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา">
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+            </div>
+            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-allergies">ระบุประวัติแพ้ยา</label><input class="input" id="intake-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off" disabled></div>
+          </fieldset>
         </div>
       </div>
-
-      <div class="common-group" data-review-section="allergies">
-        <div class="section-label">Allergies</div>
-        <div class="stack-3">
-          <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">No known allergies</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Medicine allergy</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Food or supplement allergy</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Not sure</span></span><span class="opt-check"></span></button>
-        </div>
-      </div>
-
-      <div class="common-group" data-review-section="medication">
-        <div class="section-label">Current medicine and supplements</div>
-        <div class="stack-3">
-          <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">No current medicine or supplements</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Prescription medicine</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Over-the-counter medicine</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Vitamins, supplements or herbal products</span></span><span class="opt-check"></span></button>
-        </div>
-        <div class="field"><label for="intake-health-details">Names and details (if any)</label><textarea class="textarea" id="intake-health-details" placeholder="รายละเอียดยา ประวัติแพ้ หรือโรคที่แพทย์ควรทราบ"></textarea></div>
-      </div>
-
-      <div class="common-group" data-review-section="about">
-        <div class="section-label">About you</div>
-        <div class="row" style="gap:var(--sp-3)">
-          <div class="field grow"><label for="intake-height">Height (cm)</label><input class="input" id="intake-height" inputmode="numeric" value="175"></div>
-          <div class="field grow"><label for="intake-weight">Weight (kg)</label><input class="input" id="intake-weight" inputmode="numeric" value="70"></div>
-        </div>
-        <div class="stack-3">
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Pregnant, planning pregnancy or breastfeeding (if applicable)</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Smoke</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Drink alcohol regularly</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Sleep under 6 hours a night</span></span><span class="opt-check"></span></button>
-          <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these</span></span><span class="opt-check"></span></button>
-        </div>
-      </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">Continue</button></div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลสุขภาพ</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -846,7 +887,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Let's get you the right care</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--warning" role="img" aria-label="In-person care recommended">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/in-person-referral.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-in-person"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -925,7 +966,7 @@
       <div class="stack-3" data-patient-payment-choice>
         <div class="section-label">การชำระค่ายา</div>
         <button class="option" data-select data-patient-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์และวงเงินที่ใช้ได้ก่อนดำเนินการต่อ</span></span><span class="opt-check"></span></button>
-        <button class="option" data-select data-patient-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ไม่ใช้สิทธิ์ประกัน</span><span class="opt-sub">ชำระค่ายาด้วยตนเองหลังแพทย์ออกแผนการรักษา</span></span><span class="opt-check"></span></button>
+        <button class="option" aria-selected="true" data-select data-patient-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ไม่ใช้สิทธิ์ประกัน</span><span class="opt-sub">ชำระค่ายาด้วยตนเองหลังแพทย์ออกแผนการรักษา</span></span><span class="opt-check"></span></button>
       </div>
     <div class="screen__footer"><button class="btn btn--primary" data-patient-info-continue>ยืนยันข้อมูลและไปต่อ</button></div>
   </section>
@@ -974,7 +1015,7 @@
     <div class="screen__top transition-stage__top"><span class="ttl">Doctor match</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding your doctor">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/doctor-matching.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-doctor-matching"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -1002,7 +1043,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pick a time</span></div>
     <div class="screen__body state-view state-view--decision">
       <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No doctor available now">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/no-slots.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-no-slots"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">No doctor available now</h2><p class="muted">Choose the next available time.</p></div>
@@ -1129,7 +1170,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Consultation payment</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--danger" role="img" aria-label="Consultation payment failed">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/consult-payment-failed.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-failed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -1148,7 +1189,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/waiting-room.png?v=20260804a" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -1267,7 +1308,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Treatment plan</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your treatment plan">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/treatment-plan.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-treatment-plan"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="clipboard-pen-line" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -1317,7 +1358,7 @@
       </div>
     </div>
     <div class="screen__footer">
-      <button class="btn btn--primary" data-go="payment">Confirm medicines &amp; continue to payment</button>
+      <button class="btn btn--primary" data-plan-continue>ยืนยันรายการยาและเลือกการจัดส่ง</button>
     </div>
   </section>
 
@@ -1376,38 +1417,37 @@
   <!-- The map picker modal is gone: the map on #address IS the picker now. -->
 
 
-  <!-- PRE-PAYMENT DELIVERY QUOTE
-       A changed address must be accepted by a nearby pharmacy before checkout can
-       display a reliable same-day delivery fee. This is deliberately separate
-       from #pharmacy-search, which only runs after bank-confirmed payment. -->
+  <!-- PRE-PAYMENT DELIVERY ESTIMATE
+       The patient sees the selected delivery method and an estimate here. The
+       following SCR-014 pharmacy review locks stock, branch and final price. -->
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
     <div class="screen__top transition-stage__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="กำลังรอร้านยายืนยันการจัดส่ง">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><img src="assets/loading-v2/pharmacy-search.png" alt="" loading="eager" decoding="async"></span>
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="กำลังคำนวณการจัดส่ง">
+        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-search"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="map-pin-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy" aria-live="polite">
-        <h2 class="h1" data-delivery-quote-title>กำลังหาร้านยาที่จัดส่งถึงคุณ</h2>
-        <p class="muted" data-delivery-quote-copy>รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน</p>
+        <h2 class="h1" data-delivery-quote-title>กำลังคำนวณการจัดส่ง</h2>
+        <p class="muted" data-delivery-quote-copy>ตรวจสอบพื้นที่และค่าจัดส่งโดยประมาณ ก่อนส่งรายการให้ร้านยายืนยัน</p>
       </div>
       <div class="state-view__timer" data-delivery-quote-timer>โดยปกติใช้เวลาไม่เกิน 10 วินาที</div>
     </div>
   </section>
 
   <!-- ===================== PHARMACY REVIEW (KRANE-F20 / KRANE-F21) =====================
-       The paid order is released to a licensed pharmacist for prescription and stock review. -->
+       Pre-payment fallback/retry state for prescription, stock and branch review. -->
   <section class="screen" id="pharmacy-search" data-screen-code="SCR-014">
     <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy review</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" data-ph-graphic role="status" aria-label="Pharmacist reviewing your order">
         <!-- Exact white wordmark from landing-573/latest/hero-krane-wordmark.svg is composited into this cutout. -->
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><img src="assets/loading-v2/pharmacy-search.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-search"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy" data-ph-heading>
         <h2 class="h1">Pharmacist reviewing your order</h2>
-        <p class="muted">Your payment is confirmed. A licensed pharmacist is checking the prescription and stock.</p>
+        <p class="muted">A licensed pharmacist is confirming the prescription, stock and final price before payment.</p>
       </div>
       <div class="state-view__timer">Usually under 5 minutes</div>
     </div>
@@ -1421,9 +1461,8 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
     <div class="screen__body stack-4">
 
-      <!-- 1. Order summary. The plan remains clinical and read-only; checkout is the
-           single place where the patient adjusts purchase quantities within the
-           doctor's prescribed ceiling. -->
+      <!-- 1. Order summary. The patient may still reduce or decline items before
+           payment, but can never exceed the doctor's prescribed ceiling. -->
       <div class="stack-2">
         <div class="checkout-head">
           <span class="section-label">สรุปคำสั่งซื้อ</span>
@@ -1478,11 +1517,12 @@
             <span class="checkout-order__price" data-order-price>฿ 134</span>
           </div>
         </div>
+        <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
 
-      <!-- 2. Saved address. Address editing is an explicit detour from checkout;
-           accepting the treatment plan never forces the patient through this form. -->
-      <div class="stack-2">
+      <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
+           step first; a returning patient can review or change the saved result. -->
+      <div class="stack-2" data-fulfillment-section>
         <span class="section-label">การจัดส่ง</span>
         <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
@@ -1495,7 +1535,7 @@
       <!-- 3. Delivery options. Krane runs one same-day service, so this is a single
            selected card rather than a tier list. The card shape is kept so more
            services can be added later without changing the layout. -->
-      <div class="stack-2">
+      <div class="stack-2" data-fulfillment-section>
         <div class="checkout-head">
           <span class="section-label">ตัวเลือกการจัดส่ง</span>
           <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
@@ -1576,17 +1616,17 @@
         </div>
         <div class="checkout-bill">
           <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-          <div class="checkout-bill__row"><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
           <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--delivery"><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
           <div class="checkout-bill__rule"></div>
           <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
         </div>
       </div>
 
-      <p class="hint">หลังธนาคารยืนยันการชำระเงิน ระบบจะส่งคำสั่งซื้อให้เภสัชกรตรวจใบสั่งยาและสต็อก</p>
+      <p class="hint" data-checkout-assurance>ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน</p>
     </div>
     <div class="screen__footer">
       <div class="checkout-pay">
@@ -1653,10 +1693,10 @@
     <div class="screen__top transition-stage__top"><span class="ttl">Payment</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Payment successful">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/payment-success.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">Payment successful</h2><p class="muted">Your payment is confirmed. We’re sending the order to a licensed pharmacist.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Your payment is confirmed. The pharmacy can start preparing your order.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
   </section>
@@ -1686,12 +1726,12 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Payment</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--danger" role="img" aria-label="Payment failed">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/medication-payment-failed.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-failed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-x" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
         <h2 class="h1">Payment failed</h2>
-        <p class="muted">No charge was made. Your treatment plan is saved; delivery is confirmed after payment.</p>
+        <p class="muted">No charge was made. Your treatment plan and the pharmacy's confirmed quote are saved.</p>
       </div>
       <div class="state-view__timer"><strong data-payment-failure-total data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-method>QR / PromptPay</span></div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-payment-retry>Try payment again</button><button class="btn btn--ghost" data-payment-alternate-method>Use a different method</button></div>
@@ -1705,25 +1745,25 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your medicine">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><img src="assets/loading-v2/pharmacy-preparing.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your medicine</h2><p class="muted">You can leave, we'll notify you when it ships.</p></div>
       <div class="state-view__timer">About 15 to 25 min</div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="confirm">View order confirmation</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="pharmacyaccepted">ดูสถานะร้านยา</button></div>
   </section>
 
-  <!-- ===================== PHARMACY ACCEPTED ===================== -->
+  <!-- ===================== PHARMACY ACCEPTED (POST-PAYMENT STATUS) ===================== -->
   <section class="screen" id="pharmacyaccepted">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pharmacy confirmed</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pharmacy accepted</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy confirmed your order">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/status/realistic-v1/pharmacy-accepted.png" alt="" loading="lazy" decoding="async"></span>
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy accepted your paid order">
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-confirmed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">Pharmacy confirmed your order</h2><p class="muted">Prescription and stock confirmed.</p></div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์ที่ชำระแล้ว</h2><p class="muted">ยืนยันการชำระเงินแล้ว รายการถูกส่งเข้า POS เพื่อจัดยาและเตรียมส่ง</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-delivery>Same day · by 6pm</span></div>
-    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>Continue to preparation</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>ดูการยืนยันออเดอร์</button></div>
   </section>
 
   <!-- Same SCR-014 status flow. The patient explicitly accepts postal fallback before checkout. -->
@@ -1731,10 +1771,10 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบการจัดส่ง</span></div>
     <div class="screen__body state-view state-view--decision">
       <div class="state-view__visual state-view__visual--warning" role="img" aria-label="Same-day delivery unavailable">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/status/realistic-v1/delivery-unavailable.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-delivery-unavailable"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">ยังไม่มีร้านใกล้เคียงที่จัดส่งภายในวันได้</h2><p class="muted">เปลี่ยนเป็นการจัดส่งมาตรฐานได้ โดยยอดชำระเดิมยังได้รับการคุ้มครอง</p></div>
+      <div class="state-view__copy"><h2 class="h1">ยังไม่มีร้านใกล้เคียงที่จัดส่งภายในวันได้</h2><p class="muted">เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน ระบบจะคำนวณยอดใหม่ให้ทันที</p></div>
       <div class="state-view__timer">จัดส่ง 1 ถึง 3 วัน · ไม่มีค่าใช้จ่ายเพิ่ม</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
@@ -1744,7 +1784,7 @@
   <section class="screen" id="confirm">
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Order confirmed">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/status/realistic-v1/order-confirmed.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-order-confirmed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Order confirmed</h2><p class="muted">Expected by 6pm today.</p></div>
@@ -1793,7 +1833,7 @@
   <section class="screen" id="feedbackdone">
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Feedback submitted">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/feedback-submitted.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-feedback"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="heart" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Thank you</h2><p class="muted">Your feedback was submitted.</p></div>
@@ -2039,7 +2079,7 @@
     <div class="screen__top"><span class="ttl">Activities</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No active orders">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/empty-activities.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-empty"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="package-open" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">No active orders</h2><p class="muted">Orders and delivery updates will appear here.</p></div>
@@ -2058,7 +2098,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No consultation history">
-        <span class="state-view__tile state-view__tile--brand"><img src="assets/state-v2/empty-history.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-empty"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">No consultation history</h2><p class="muted">Consultations and prescriptions will appear here.</p></div>
@@ -2431,7 +2471,7 @@
   <section class="screen" id="preloader">
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><img src="assets/loading-v2/health-preparing.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-loading-info"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
@@ -2511,6 +2551,17 @@
   const screens = [...document.querySelectorAll('.screen')];
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
   const railGroups = [...document.querySelectorAll('.rail > .rail-group')];
+  railLinks.forEach(link => {
+    if(link.querySelector('.rail-screen-id')) return;
+    const screenId=link.dataset.go;
+    if(!screenId) return;
+    const idLabel=document.createElement('span');
+    idLabel.className='rail-screen-id';
+    idLabel.textContent=`#${screenId}`;
+    const stateLabel=link.querySelector('.rail-state');
+    if(stateLabel) link.insertBefore(idLabel,stateLabel);
+    else link.appendChild(idLabel);
+  });
   let history = ['landing'];
   let selectedCategoryId = 'hair-skin';
   // Insurance is claimable only on the general health path. Specialty paths are self-pay.
@@ -2599,10 +2650,16 @@
   const DRAFT_KEY = 'krane-p01-intake-draft-v2';
   const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
   const MALI_SAVED_ADDRESS = {
+    recipientName:'มะลิ สุธิดา',
+    recipientPhone:'081-234-5678',
     building:'เดอะ เบส พาร์ค เวสต์, ห้อง 22/418',
     floor:'22',
     line:'ซอยสุขุมวิท 77',
-    district:'เขตวัฒนา กรุงเทพฯ 10110',
+    subdistrict:'แขวงพระโขนงเหนือ',
+    districtName:'เขตวัฒนา',
+    province:'กรุงเทพมหานคร',
+    postcode:'10110',
+    district:'แขวงพระโขนงเหนือ เขตวัฒนา กรุงเทพมหานคร 10110',
     note:'',
     km:'3.2'
   };
@@ -2622,7 +2679,7 @@
     phoneOtpCompletesAuth:false,
     lastRequiredScreen:'concern',
     patientName:'',
-    paymentPreference:'',
+    paymentPreference:'self-pay',
     consentRead:{pdpa:false,telemedicine:false},
     consentChecked:{pdpa:false,telemedicine:false},
     entryChannel:'direct',
@@ -2630,14 +2687,15 @@
     consultationFeeAcknowledged:false,
     consultationPaid:false,
     paymentResolution:'',
+    documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
     orderState:{
       quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},
       deliveryMethod:'same-day',
-      address:Object.assign({},MALI_SAVED_ADDRESS),
-      addressConfirmed:true,
-      deliveryQuoteStatus:'accepted',
-      deliveryQuoteAmount:120,
+      address:{},
+      addressConfirmed:false,
+      deliveryQuoteStatus:'pending',
+      deliveryQuoteAmount:null,
       addOns:{wellness:false,pillcase:false,pouch:false},
       promoCode:'',
       promoAmount:0,
@@ -2679,12 +2737,11 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
     {},
-    MALI_SAVED_ADDRESS,
     flowState.orderState.address || {}
   );
   flowState.orderState.quantities=Object.assign(
@@ -2697,6 +2754,7 @@
   );
   const flowConfig=new URLSearchParams(window.location.search);
   if(flowConfig.get('entry')==='partner') flowState.entryChannel='partner';
+  if(flowConfig.get('entry')==='direct') flowState.entryChannel='direct';
   if(flowConfig.get('consult_payment')==='before') flowState.consultationPaymentTiming='before';
   if(flowConfig.get('consult_payment')==='after') flowState.consultationPaymentTiming='after';
   /* The golden Mali S. QA path starts with a saved delivery address. Address editing
@@ -2707,10 +2765,22 @@
      the pre-filled state for demoing a returning patient. */
   const wantSavedAddress = /(?:\?|&)address=saved\b/.test(location.search)
     || (()=>{ try{ return localStorage.getItem('kraneDemoSavedAddress')==='1' }catch(e){ return false } })();
-  if(flowState.orderState.checkoutFlowVersion!=='saved-address-checkout-v2'){
-    flowState.orderState.address=wantSavedAddress ? Object.assign({},MALI_SAVED_ADDRESS) : {};
-    flowState.orderState.addressConfirmed=wantSavedAddress;
-    flowState.orderState.checkoutFlowVersion='saved-address-checkout-v2';
+  if(wantSavedAddress){
+    // An explicit returning-patient QA route must win even when this tab has
+    // already passed an older checkout migration.
+    flowState.orderState.address=Object.assign({},MALI_SAVED_ADDRESS);
+    flowState.orderState.addressConfirmed=true;
+    flowState.orderState.deliveryQuoteStatus='accepted';
+    flowState.orderState.deliveryQuoteAmount=120;
+    flowState.orderState.stockLocked=true;
+    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
+  } else if(flowState.orderState.checkoutFlowVersion!=='structured-address-checkout-v3'){
+    flowState.orderState.address={};
+    flowState.orderState.addressConfirmed=false;
+    flowState.orderState.deliveryQuoteStatus='pending';
+    flowState.orderState.deliveryQuoteAmount=null;
+    flowState.orderState.stockLocked=false;
+    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
   }
   function readSessionJson(key){
     try { return JSON.parse(sessionStorage.getItem(key) || '{}'); } catch(error) { return {}; }
@@ -2724,13 +2794,13 @@
       draftReady:false,accountCreated:false,otpVerified:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
-      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',paymentPreference:'',
+      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',paymentPreference:'self-pay',
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:Object.assign({},MALI_SAVED_ADDRESS),addressConfirmed:true,deliveryQuoteStatus:'accepted',deliveryQuoteAmount:120,checkoutFlowVersion:'saved-address-checkout-v2',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -3083,9 +3153,8 @@
   function syncOrderCheckout(){
     Object.entries(MEDICINE_PRICES).forEach(([key,unit]) => {
       const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
-      // Purchase quantities belong to checkout. The clinical plan remains an
-      // unchanged record of what the doctor prescribed, even if the patient
-      // later removes an item from this purchase.
+      // Keep checkout quantities aligned with the patient's pre-pay medicine
+      // selection. The per-item maximum still comes from the prescription.
       document.querySelectorAll(`#payment [data-order-item="${key}"]`).forEach(row => {
         const qty=row.querySelector('[data-order-qty]');
         const qtyControl=row.querySelector('[data-qty-n]');
@@ -3115,6 +3184,10 @@
       option.setAttribute('aria-selected',String(selected));
       option.setAttribute('aria-checked',String(selected));
     });
+    const planContinue=document.querySelector('#plan [data-plan-continue]');
+    if(planContinue) planContinue.textContent=hasMedicines()
+      ? 'ยืนยันรายการยาและเลือกการจัดส่ง'
+      : 'ดำเนินการต่อโดยไม่รับยา';
   }
   function deliveryAddressSummary(address=flowState.orderState.address){
     const primary=String(address.building || address.line || 'ยังไม่ได้เลือกที่อยู่จัดส่ง').trim();
@@ -3157,10 +3230,16 @@
     const screen=document.getElementById('address');
     if(!screen) return;
     const values={
+      recipientName:address.recipientName,
+      recipientPhone:address.recipientPhone,
       addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
       addrLine:address.line,
+      addrSubdistrict:address.subdistrict,
+      addrDistrictName:address.districtName,
+      addrProvince:address.province,
+      addrPostcode:address.postcode,
       addrDistrict:address.district,
       addrNote:address.note
     };
@@ -3208,17 +3287,20 @@
       return false;
     }
     writeDeliveryAddressDraft(screen,{
-      building:a.building, floor:a.floor, line:a.line, district:a.district,
+      building:a.building, floor:a.floor, line:a.line,
+      subdistrict:a.subdistrict, districtName:a.districtName,
+      province:a.province, postcode:a.postcode, district:a.district,
       note:a.note, km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     });
     flowState.orderState.address={
-      building:a.building, floor:a.floor, line:a.line, district:a.district, note:a.note,
+      building:a.building, floor:a.floor, line:a.line,
+      subdistrict:a.subdistrict, districtName:a.districtName,
+      province:a.province, postcode:a.postcode, district:a.district, note:a.note,
       recipientName:a.recipientName, recipientPhone:a.recipientPhone,
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
     flowState.orderState.addressConfirmed=true;
-    flowState.orderState.deliveryQuoteStatus='pending';
-    flowState.orderState.deliveryQuoteAmount=null;
+    invalidateFulfillmentQuote();
     persistFlowState();
     syncDeliveryAddress();
     return true;
@@ -3250,6 +3332,13 @@
         if(payButton) payButton.textContent=(document.documentElement.lang==='th' ? 'ชำระ ' : 'Pay ')+baht(net);
       }
     });
+    const success=document.getElementById('payment-success');
+    const successTitle=success?.querySelector('[data-payment-success-title]');
+    const successCopy=success?.querySelector('[data-payment-success-copy]');
+    if(successTitle) successTitle.textContent=hasFulfillableItems() ? 'ชำระเงินสำเร็จ' : 'ชำระค่าปรึกษาสำเร็จ';
+    if(successCopy) successCopy.textContent=hasFulfillableItems()
+      ? 'ร้านยายืนยันรายการไว้แล้ว และกำลังเริ่มจัดเตรียมคำสั่งซื้อของคุณ'
+      : 'ไม่มีรายการจัดส่ง เอกสารจากการปรึกษาพร้อมให้เปิดดูแล้ว';
   }
   function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
     // The checkout and the bank gateway are separate screens, so both are updated.
@@ -3354,6 +3443,17 @@
       ]
     },
     {
+      id:'weight',
+      title:'Weight care & metabolism',
+      description:'Weight goals, metabolic health and doctor-led treatment options.',
+      icon:'pulse',
+      status:'Launch',
+      next:'conditions',
+      conditions:[
+        { id:'weight-management', title:'Weight care assessment', titleTh:'ประเมินการดูแลน้ำหนัก', description:'Review weight goals, health history and suitability for available care options.', descriptionTh:'ทบทวนเป้าหมายน้ำหนัก ประวัติสุขภาพ และความเหมาะสมของตัวเลือกการดูแล', status:'Launch', next:'intake1' }
+      ]
+    },
+    {
       id:'sexual-health',
       title:'Sexual health',
       description:'ED, performance concerns and related men\'s health questions.',
@@ -3437,6 +3537,7 @@
     hair:'hair-skin',
     'hair-skin':'hair-skin',
     skin:'skin',
+    weight:'weight',
     sexual:'sexual-health',
     'sexual-health':'sexual-health',
     sleep:'sleep-stress',
@@ -3647,11 +3748,103 @@
   };
 
   const intakeBaseMarkup = {};
+  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3','intake-general'];
+  function intakeQuestionPageState(screenOrId){
+    const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
+    const body = screen?.querySelector('.screen__body');
+    const questions = body ? [...body.querySelectorAll('[data-intake-question]')] : [];
+    const storedIndex = Number(body?.dataset.intakeQuestionIndex || 0);
+    const index = Math.max(0,Math.min(Number.isFinite(storedIndex) ? storedIndex : 0,Math.max(questions.length-1,0)));
+    return {screen,body,questions,index,total:questions.length};
+  }
+  function activateIntakeQuestionPage(screenOrId,index=0){
+    const state = intakeQuestionPageState(screenOrId);
+    if(!state.screen || !state.body || !state.total) return false;
+    const nextIndex = Math.max(0,Math.min(index,state.total-1));
+    state.body.dataset.intakeQuestionIndex=String(nextIndex);
+    state.questions.forEach((question,questionIndex) => {
+      const active = questionIndex===nextIndex;
+      question.hidden=!active;
+      question.setAttribute('aria-hidden',String(!active));
+    });
+    state.body.querySelectorAll('.partner-health-grid,.partner-clinical-grid').forEach(group => {
+      const nestedQuestions=[...group.querySelectorAll('[data-intake-question]')];
+      if(nestedQuestions.length) group.hidden=!nestedQuestions.some(question => !question.hidden);
+    });
+    const counter=state.body.querySelector('[data-intake-question-count]');
+    if(counter){
+      const thai=document.documentElement.lang==='th';
+      counter.textContent=thai ? `คำถาม ${nextIndex+1} / ${state.total}` : `Question ${nextIndex+1} of ${state.total}`;
+    }
+    const continueButton=state.screen.querySelector('.screen__footer .btn--primary[data-go]');
+    if(continueButton){
+      if(!continueButton.dataset.intakeFinalLabel) continueButton.dataset.intakeFinalLabel=continueButton.textContent.trim();
+      continueButton.textContent=document.documentElement.lang==='th'
+        ? 'ดำเนินการต่อ'
+        : (nextIndex<state.total-1 ? 'Continue' : continueButton.dataset.intakeFinalLabel);
+    }
+    state.body.scrollTop=0;
+    syncIntakeDropdownContinue(state.screen);
+    updateIntakeProgress(state.screen.id);
+    return true;
+  }
+  function setupIntakeQuestionPages(screenOrId,{reset=false}={}){
+    const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
+    if(!screen || !INTAKE_ONE_QUESTION_SCREENS.includes(screen.id)) return;
+    const body=screen.querySelector('.screen__body');
+    if(!body) return;
+    const children=[...body.children];
+    const titleBlock=children.find(child => child.querySelector('.h1')) || children[0];
+    const questions=screen.id==='intake-general'
+      ? [...body.querySelectorAll('.partner-health-grid > .field,.partner-clinical-grid > [data-direct-history]')]
+      : children.filter(child => child!==titleBlock);
+    questions.forEach((question,index) => {
+      question.dataset.intakeQuestion=String(index+1);
+    });
+    let counter=titleBlock?.querySelector('[data-intake-question-count]');
+    if(titleBlock && questions.length>1 && !counter){
+      counter=document.createElement('p');
+      counter.className='intake-question-count';
+      counter.dataset.intakeQuestionCount='';
+      counter.setAttribute('aria-live','polite');
+      titleBlock.appendChild(counter);
+    }
+    if(counter) counter.hidden=questions.length<=1;
+    if(reset || body.dataset.intakeQuestionIndex===undefined) body.dataset.intakeQuestionIndex='0';
+    activateIntakeQuestionPage(screen,Number(body.dataset.intakeQuestionIndex || 0));
+  }
+  function focusMissingIntakeAnswer(state){
+    if(!state?.target) return;
+    const customTrigger = state.target.matches?.('select') && state.target.parentElement?.querySelector('.custom-select__trigger');
+    const focusTarget = customTrigger || state.target;
+    focusTarget.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'center'});
+    window.setTimeout(() => focusTarget.focus?.(),reduceMotion ? 0 : 220);
+  }
+  function advanceIntakeQuestionPage(screenOrId){
+    const page=intakeQuestionPageState(screenOrId);
+    if(!page.total || page.index>=page.total-1) return false;
+    const requirement=syncIntakeDropdownContinue(page.screen);
+    if(!requirement?.ready){
+      showActionToast(requirement?.message || 'กรุณาตอบคำถามก่อนดำเนินการต่อ','warning');
+      focusMissingIntakeAnswer(requirement);
+      return true;
+    }
+    saveIntakeDraft();
+    activateIntakeQuestionPage(page.screen,page.index+1);
+    return true;
+  }
+  function retreatIntakeQuestionPage(screenOrId){
+    const page=intakeQuestionPageState(screenOrId);
+    if(!page.total || page.index<=0) return false;
+    activateIntakeQuestionPage(page.screen,page.index-1);
+    return true;
+  }
   function intakeRequirementState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     if(!screen) return {ready:true,message:'',target:null};
+    const scope = screen.querySelector('[data-intake-question]:not([hidden])') || screen;
     const thai = document.documentElement.lang === 'th';
-    const durationInput = screen.querySelector('input[data-intake-role="duration"][required]');
+    const durationInput = scope.querySelector('input[data-intake-role="duration"][required]');
     if(durationInput && (!durationInput.value || Number(durationInput.value) < 1)){
       return {
         ready:false,
@@ -3659,10 +3852,10 @@
         target:durationInput
       };
     }
-    const requiredSelects = [...screen.querySelectorAll('select[data-intake-select][required]')];
+    const requiredSelects = [...scope.querySelectorAll('select[data-intake-select][required]')];
     const missingSelect = requiredSelects.find(select => !select.value);
     if(missingSelect){
-      const label = screen.querySelector(`label[for="${missingSelect.id}"]`)?.textContent.trim();
+      const label = scope.querySelector(`label[for="${missingSelect.id}"]`)?.textContent.trim();
       const isDuration = missingSelect.dataset.intakeRole === 'duration';
       return {
         ready:false,
@@ -3674,7 +3867,26 @@
         target:missingSelect
       };
     }
-    const optionGroups = [...screen.querySelectorAll('.stack-3')].filter(group => {
+    const requiredField=scope.querySelector('input[required],select[required]');
+    if(requiredField && !requiredField.value){
+      const label=scope.querySelector(`label[for="${requiredField.id}"]`)?.textContent.trim();
+      return {
+        ready:false,
+        message:thai ? `กรุณาระบุ${label || 'ข้อมูลที่จำเป็น'}` : `Please enter ${label || 'the required information'}`,
+        target:requiredField
+      };
+    }
+    const directHistory=scope.matches('[data-direct-history]') ? scope : scope.querySelector('[data-direct-history]');
+    const directHistoryChoice=directHistory?.querySelector('[data-direct-history-choice][aria-checked="true"]');
+    const directHistoryInput=directHistory?.querySelector('input');
+    if(directHistoryChoice?.dataset.directHistoryChoice==='yes' && !directHistoryInput?.value.trim()){
+      const label=directHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
+      return {ready:false,message:`กรุณาระบุ${label}`,target:directHistoryInput};
+    }
+    const optionGroups = [
+      ...(scope.matches('.stack-3') ? [scope] : []),
+      ...scope.querySelectorAll('.stack-3')
+    ].filter(group => {
       const choices = [...group.children].filter(child => child.matches('.option[data-multi],.option[data-select]'));
       return choices.length > 0 && choices.length === group.children.length;
     });
@@ -3898,7 +4110,7 @@
 
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
-    const byCategory = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
     // Template coverage per concern (verified 2026-08-04):
@@ -3928,6 +4140,7 @@
       const template = (intakeTemplates[key] || {})[id];
       body.innerHTML = template !== undefined ? template : intakeBaseMarkup[id];
       if(window.kraneEnhanceSelects) window.kraneEnhanceSelects(body);
+      setupIntakeQuestionPages(id,{reset:true});
       syncIntakeDropdownContinue(id);
     });
     renderedIntakeContext = key;
@@ -3941,14 +4154,17 @@
     const order = intakeStepOrder();
     const index = order.indexOf(id);
     if(index < 0) return;
-    const pct = Math.round(((index + 1) / order.length) * 100);
     const screen = document.getElementById(id);
+    const questionPage=intakeQuestionPageState(screen);
+    const screenFraction=questionPage.total ? (questionPage.index+1)/questionPage.total : 1;
+    const pct = Math.round(((index + screenFraction) / order.length) * 100);
     const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
     if(!fill) return;
     /* Start from the previous sub-step's width so the change is a visible
        animation rather than a jump. The screen is already on-screen when this
        runs, so paint the old width first, then the new one on the next frame. */
-    const prev = index > 0 ? Math.round((index / order.length) * 100) : 0;
+    const previousFraction=questionPage.total ? questionPage.index/questionPage.total : 0;
+    const prev = Math.round(((index + previousFraction) / order.length) * 100);
     if(!fill.style.width) fill.style.width = prev + '%';
     window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
   }
@@ -4098,6 +4314,21 @@
     const input=detail?.querySelector('input');
     // Item 3 (04/08 deck): the detail box appears only when "มี" is chosen,
     // rather than always showing as a disabled field.
+    if(detail) detail.hidden=!hasDetails;
+    if(input){
+      input.disabled=!hasDetails;
+      if(!hasDetails) input.value='';
+    }
+  }
+  function setDirectHistoryChoice(group,hasDetails){
+    if(!group) return;
+    group.querySelectorAll('[data-direct-history-choice]').forEach(option => {
+      option.setAttribute('aria-checked',String(
+        option.dataset.directHistoryChoice===(hasDetails ? 'yes' : 'none')
+      ));
+    });
+    const detail=group.querySelector('[data-direct-history-detail]');
+    const input=detail?.querySelector('input');
     if(detail) detail.hidden=!hasDetails;
     if(input){
       input.disabled=!hasDetails;
@@ -4320,11 +4551,12 @@
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', plan:'consult',
-    payment:'plan', address:'payment', 'delivery-quote':'address', 'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
-    'pharmacy-search':'payment-success', pharmacyaccepted:'pharmacy-search', pharmacypending:'pharmacyaccepted',
+    address:'plan', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', payment:'pharmacy-search',
+    'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
+    pharmacypending:'payment-success', pharmacyaccepted:'pharmacypending',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
-    confirm:'pharmacypending', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
+    confirm:'pharmacyaccepted', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
@@ -4377,6 +4609,12 @@
   function selectedAddOnTotal(){
     return Object.entries(ADDON_PRICES).reduce((sum,[key,price]) => sum + (flowState.orderState.addOns[key] ? price : 0),0);
   }
+  function hasFulfillableItems(){ return hasMedicines() || selectedAddOnTotal()>0; }
+  function invalidateFulfillmentQuote(){
+    flowState.orderState.deliveryQuoteStatus='pending';
+    flowState.orderState.deliveryQuoteAmount=null;
+    flowState.orderState.stockLocked=false;
+  }
   function calculatedSameDayDeliveryFee(){
     const km=Math.max(0,Number(flowState.orderState.address?.km || 0));
     return Math.max(80,Math.ceil((80 + km * 10) / 10) * 10);
@@ -4388,31 +4626,31 @@
       ? quoted
       : calculatedSameDayDeliveryFee();
   }
-  function checkoutIsReady(){
+  function checkoutActionState(){
     const address=flowState.orderState.address || {};
-    if(!hasMedicines()) return false;
-    return Boolean(
-      flowState.orderState.addressConfirmed &&
-      address.building && address.line && address.district &&
-      flowState.orderState.deliveryQuoteStatus==='accepted' &&
-      flowState.orderState.deliveryMethod &&
-      flowState.orderState.paymentMethod
-    );
+    if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
+    if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
+    if(!flowState.orderState.deliveryMethod) return 'delivery-method-required';
+    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked) return 'quote-required';
+    if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
+    return 'ready';
   }
+  function checkoutIsReady(){ return checkoutActionState()==='ready'; }
   function syncCheckoutReadiness(){
     const button=document.querySelector('#payment [data-payment-go]');
     if(!button) return;
-    const ready=checkoutIsReady();
-    button.setAttribute('aria-disabled',String(!ready));
-    button.disabled=!ready;
+    const actionState=checkoutActionState();
+    const actionable=actionState==='ready' || actionState==='quote-required';
+    button.setAttribute('aria-disabled',String(!actionable));
+    button.disabled=!actionable;
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    const address=flowState.orderState.address || {};
-    const addressReady=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
-    if(!hasMedicines()) label.textContent='กลับไปดูแผนการรักษา';
-    else if(!addressReady) label.textContent='เลือกที่อยู่ก่อน';
-    else if(!flowState.orderState.deliveryMethod) label.textContent='เลือกวิธีจัดส่ง';
-    else if(!flowState.orderState.paymentMethod) label.textContent='เลือกวิธีชำระเงิน';
+    if(actionState==='address-required') label.textContent='เลือกที่อยู่ก่อน';
+    else if(actionState==='delivery-method-required') label.textContent='เลือกวิธีจัดส่ง';
+    else if(actionState==='quote-required') label.textContent='ให้ร้านยายืนยันสต็อกและราคา';
+    else if(actionState==='payment-method-required') label.textContent='เลือกวิธีชำระเงิน';
+    else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
+    else if(!hasFulfillableItems()) label.textContent=`ชำระค่าปรึกษา · ${baht(currentMedicationDue())}`;
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent=`ไปหน้าชำระเงิน · ${baht(currentMedicationDue())}`;
   }
@@ -4420,7 +4658,8 @@
     deliveryMethod=flowState.orderState.deliveryMethod || 'same-day';
     const subtotal=medicineSubtotal();
     const addon=selectedAddOnTotal();
-    const delivery=deliveryFeeFor(deliveryMethod);
+    const fulfillable=hasFulfillableItems();
+    const delivery=fulfillable ? deliveryFeeFor(deliveryMethod) : 0;
     // Medicine benefits never silently pay for delivery or optional retail add-ons.
     const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
     const consultationDue=consultationBalanceDue();
@@ -4436,6 +4675,19 @@
     const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
     if(consultationRow) consultationRow.hidden=consultationDue<=0;
     if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
+    document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
+    const noFulfillmentNotice=document.querySelector('#payment [data-no-fulfillment-notice]');
+    if(noFulfillmentNotice) noFulfillmentNotice.hidden=fulfillable;
+    const medicineRow=document.querySelector('#payment [data-payment-medicine-row]');
+    if(medicineRow) medicineRow.hidden=subtotal<=0;
+    const deliveryRow=document.querySelector('#payment [data-payment-delivery-row]');
+    if(deliveryRow) deliveryRow.hidden=!fulfillable;
+    const calc=document.querySelector('#payment .checkout-calc');
+    if(calc) calc.hidden=!fulfillable;
+    const assurance=document.querySelector('#payment [data-checkout-assurance]');
+    if(assurance) assurance.textContent=fulfillable
+      ? (flowState.orderState.stockLocked ? 'ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะให้ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน')
+      : 'ไม่มีรายการจัดส่ง คุณสามารถจบขั้นตอนและเปิดดูเอกสารได้ทันที';
     syncCheckoutReadiness();
   }
   function setMedicationCheckoutContext(){ refreshMedicationCheckout(); }
@@ -4482,7 +4734,7 @@
      markup so it survives the innerHTML round-trip renderIntakeQuestions
      performs (the same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
     catch(e){ return 'hair'; }
@@ -4577,18 +4829,15 @@
       '#intake4 .option[aria-selected="true"]',
       thai ? 'ผ่านเกณฑ์ปรึกษาออนไลน์' : 'Clear for online review'
     );
-    const medical = selectedOptionTitles(
-      '#intake-general [data-review-section="medical"] .option[aria-selected="true"]',
-      thai ? 'ไม่มีโรคประจำตัว' : 'None reported'
-    );
-    const medication = selectedOptionTitles(
-      '#intake-general [data-review-section="medication"] .option[aria-selected="true"]',
-      thai ? 'ไม่มียาหรืออาหารเสริมที่ใช้อยู่' : 'None reported'
-    );
-    const allergies = selectedOptionTitles(
-      '#intake-general [data-review-section="allergies"] .option[aria-selected="true"]',
-      thai ? 'ไม่มีประวัติแพ้ยา' : 'No known allergies'
-    );
+    const compactHistoryValue=(name,emptyValue) => {
+      const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
+      const selected=group?.querySelector('[data-direct-history-choice][aria-checked="true"]');
+      if(selected?.dataset.directHistoryChoice!=='yes') return emptyValue;
+      return group?.querySelector('input')?.value.trim() || (thai ? 'มี · ยังไม่ระบุรายละเอียด' : 'Yes · details not provided');
+    };
+    const medical=compactHistoryValue('conditions',thai ? 'ไม่มีโรคประจำตัว' : 'None reported');
+    const medication=compactHistoryValue('medications',thai ? 'ไม่มียาที่ใช้ประจำ' : 'None reported');
+    const allergies=compactHistoryValue('allergies',thai ? 'ไม่มีประวัติแพ้ยา' : 'No known allergies');
     const concernEl = document.querySelector('[data-summary-concern]');
     const symptomEl = document.querySelector('[data-summary-symptoms]');
     const durationEl = document.querySelector('[data-summary-duration]');
@@ -4663,8 +4912,12 @@
       if(!screen) return;
       options[screenId]=[...screen.querySelectorAll('.option[aria-selected]')].map(option => option.getAttribute('aria-selected'));
     });
+    const compactHistory={};
+    document.querySelectorAll('#intake-general [data-direct-history]').forEach(group => {
+      compactHistory[group.dataset.directHistory]=group.querySelector('[data-direct-history-choice][aria-checked="true"]')?.dataset.directHistoryChoice || 'none';
+    });
     writeSessionJson(DRAFT_KEY,{
-      selectedCategoryId,selectedConditionId,fields,options,
+      selectedCategoryId,selectedConditionId,fields,options,compactHistory,
       savedAt:new Date().toISOString(),
       complete:flowState.draftReady
     });
@@ -4684,6 +4937,10 @@
     Object.entries(draft.options || {}).forEach(([screenId,states]) => {
       const options=[...document.querySelectorAll(`#${screenId} .option[aria-selected]`)];
       states.forEach((value,index) => { if(options[index]) options[index].setAttribute('aria-selected',value); });
+    });
+    Object.entries(draft.compactHistory || {}).forEach(([name,value]) => {
+      const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
+      if(group) setDirectHistoryChoice(group,value==='yes');
     });
     flowState.draftReady=Boolean(flowState.draftReady || draft.complete);
     persistFlowState();
@@ -4794,6 +5051,7 @@
       window.requestAnimationFrame(() => showActionToast('กรุณาทำขั้นตอนที่จำเป็นให้ครบก่อน','warning'));
     }
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
+    if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(['partner-patient-info','partner-intake'].includes(id)) restorePartnerFields();
     if(id==='partner-phr') syncPartnerReview();
@@ -4812,15 +5070,13 @@
       // entering Log in cold (nav, followup care, home) turns it off
       if(!JOURNEY_INTAKE.includes(prevId) && !JOURNEY_AUTH.includes(prevId)) journeyActive = false;
     }
-    JOURNEY_AUTH.forEach(aid => {
-      const cj = document.querySelector('#'+aid+' .care-journey');
-      if(cj) cj.hidden = !journeyActive;
+    /* Direct entry always restores the progress UI, even if this tab previously
+       opened a partner link. Partner entry keeps it hidden on shared screens too. */
+    document.querySelectorAll('.care-journey').forEach(cj => {
+      const ownerScreen=cj.closest('.screen');
+      const coldAuth=ownerScreen && JOURNEY_AUTH.includes(ownerScreen.id) && !journeyActive;
+      cj.hidden=flowState.entryChannel==='partner' || coldAuth;
     });
-    /* Partner access does not follow the five-stage Krane shape, so it shows no
-       stepper at all rather than a step count that would be wrong. */
-    if(flowState.entryChannel === 'partner'){
-      document.querySelectorAll('.care-journey').forEach(cj => { cj.hidden = true; });
-    }
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
     if(window.kraneSyncSelects) window.kraneSyncSelects(activeScreen);
@@ -4853,6 +5109,12 @@
       syncConsentContinue();
     }
     if(id === 'patient-info'){
+      // Direct Krane visitors self-pay by default. Keep an explicit insurance
+      // choice if the patient already made one; partner entry uses its own state.
+      if(flowState.entryChannel==='direct' && !flowState.paymentPreference){
+        flowState.paymentPreference='self-pay';
+        persistFlowState();
+      }
       document.querySelectorAll('#patient-info [data-patient-payment-choice-value]').forEach(option => {
         option.setAttribute('aria-selected',String(option.dataset.patientPaymentChoiceValue===flowState.paymentPreference));
       });
@@ -4902,77 +5164,38 @@
     fillDoctorName();
     clearTimeout(deliveryQuoteTimer);
     if(id==='delivery-quote'){
-      /* SCR-013B has three states, per the 04/08 feedback:
-           1 searching    - looking for a pharmacy that can deliver
-           2 found        - one accepted, with distance and ETA
-           3 unavailable  - none can do same-day, fall back to postal
-         Re-entering the screen (which is what an address change does) re-runs
-         the sequence from state 1. Copy is Thai in place, matching the rest of
-         this screen. */
+      /* SCR-013B confirms the delivery method and shows only an estimate. The
+         next SCR-014 owns pharmacy acceptance, stock and final pricing. Keeping
+         those responsibilities separate prevents checkout opening too early. */
       const quoteScreen=document.getElementById('delivery-quote');
       const title=quoteScreen?.querySelector('[data-delivery-quote-title]');
       const copy=quoteScreen?.querySelector('[data-delivery-quote-copy]');
       const timer=quoteScreen?.querySelector('[data-delivery-quote-timer]');
-      const setQuoteState=(state,data) => {
-        if(!quoteScreen) return;
-        quoteScreen.dataset.quoteState=state;
-        if(state==='searching'){
-          if(title) title.textContent='กำลังหาร้านยาที่จัดส่งถึงคุณ';
-          if(copy) copy.textContent='รอร้านยาใกล้พื้นที่ยืนยันคำสั่งซื้อ เพื่อคำนวณค่าจัดส่งที่แน่นอน';
-          if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
-        } else if(state==='found'){
-          if(title) title.textContent='พบร้านยาที่จัดส่งได้แล้ว';
-          if(copy) copy.textContent=`${data.pharmacy} · ห่าง ${data.km} กม. · ค่าจัดส่ง ${baht(data.fee)}`;
-          if(timer) timer.textContent=`ถึงภายใน ${data.eta}`;
-        } else if(state==='unavailable'){
-          if(title) title.textContent='ยังไม่มีร้านยาที่ส่งวันเดียวกันได้';
-          if(copy) copy.textContent='เปลี่ยนเป็นจัดส่งมาตรฐานให้แล้ว ไม่มีค่าจัดส่งเพิ่ม';
-          if(timer) timer.textContent='ถึงพรุ่งนี้ · มีหมายเลขติดตาม';
-        }
-      };
-      flowState.orderState.deliveryQuoteStatus='pending';
-      flowState.orderState.deliveryQuoteAmount=null;
+      if(!hasFulfillableItems()){
+        replaceCurrent('payment');
+        return;
+      }
+      invalidateFulfillmentQuote();
       persistFlowState();
-      setQuoteState('searching');
-      const sameDayUnavailable = pharmacyForceDecline === true;
+      quoteScreen.dataset.quoteState='estimating';
+      if(title) title.textContent='กำลังคำนวณการจัดส่ง';
+      if(copy) copy.textContent='ตรวจสอบพื้นที่และค่าจัดส่งโดยประมาณ ก่อนส่งรายการให้ร้านยายืนยัน';
+      if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
       deliveryQuoteTimer=setTimeout(() => {
         if(!quoteScreen?.classList.contains('active')) return;
-        if(sameDayUnavailable){
-          // state 3: no same-day pharmacy, fall back to the free postal service
-          deliveryMethod='postal';
-          flowState.orderState.deliveryMethod='postal';
-          flowState.orderState.deliveryQuoteStatus='postal';
-          flowState.orderState.deliveryQuoteAmount=0;
-          persistFlowState();
-          setQuoteState('unavailable');
-          refreshMedicationCheckout();
-          deliveryQuoteTimer=setTimeout(() => {
-            if(!quoteScreen?.classList.contains('active')) return;
-            if(history[history.length-1]==='delivery-quote') history.pop();
-            if(history[history.length-1]==='address') history.pop();
-            if(history[history.length-1]!=='payment') history.push('payment');
-            show('payment',false);
-            showActionToast('เปลี่ยนเป็นจัดส่งมาตรฐาน ไม่มีค่าจัดส่งเพิ่ม','warning');
-          }, reduceMotion ? 700 : 2600);
-          return;
-        }
-        // state 2: a pharmacy accepted
-        const fee=calculatedSameDayDeliveryFee();
-        const km=(flowState.orderState.address && flowState.orderState.address.km) || '3.2';
-        flowState.orderState.deliveryQuoteStatus='accepted';
-        flowState.orderState.deliveryQuoteAmount=fee;
-        persistFlowState();
-        setQuoteState('found',{pharmacy:'Fascino อารีย์',km:km,fee:fee,eta:'18:00 น. วันนี้'});
-        refreshMedicationCheckout();
+        const sameDay=flowState.orderState.deliveryMethod==='same-day';
+        const estimate=sameDay ? calculatedSameDayDeliveryFee() : 0;
+        quoteScreen.dataset.quoteState='estimated';
+        if(title) title.textContent=sameDay ? 'ตรวจสอบพื้นที่จัดส่งแล้ว' : 'เลือกจัดส่งมาตรฐานแล้ว';
+        if(copy) copy.textContent=sameDay
+          ? `ค่าจัดส่งโดยประมาณ ${baht(estimate)} · ร้านยาจะยืนยันยอดจริงในขั้นตอนถัดไป`
+          : 'จัดส่ง 1 ถึง 3 วัน · ร้านยาจะยืนยันสต็อกและยอดจริงในขั้นตอนถัดไป';
+        if(timer) timer.textContent='กำลังส่งรายการให้เภสัชกรตรวจสอบ';
         deliveryQuoteTimer=setTimeout(() => {
           if(!quoteScreen?.classList.contains('active')) return;
-          if(history[history.length-1]==='delivery-quote') history.pop();
-          if(history[history.length-1]==='address') history.pop();
-          if(history[history.length-1]!=='payment') history.push('payment');
-          show('payment',false);
-          showActionToast(`ร้านยายืนยันแล้ว · ค่าจัดส่ง ${baht(fee)}`,'success');
-        }, reduceMotion ? 700 : 2600);
-      }, reduceMotion ? 700 : 2400);
+          replaceCurrent('pharmacy-search');
+        }, reduceMotion ? 500 : 1600);
+      }, reduceMotion ? 500 : 1400);
     }
     if(id==='payment'){
       syncDeliveryAddress();
@@ -4983,7 +5206,13 @@
     if(id==='payment-success'){
       syncPaymentOutcome();
       paymentSuccessTimer=setTimeout(() => {
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('pharmacy-search');
+        if(!document.getElementById('payment-success')?.classList.contains('active')) return;
+        if(hasFulfillableItems()) replaceCurrent('pharmacypending');
+        else {
+          flowState.documentsUnlocked=true;
+          persistFlowState();
+          replaceCurrent('prescription');
+        }
       },reduceMotion ? 450 : 2200);
     }
     clearTimeout(preloaderTimer);
@@ -5032,8 +5261,8 @@
         replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
       }, 3400);
     }
-    // A bank-confirmed order is released to the pharmacist. A decline reroutes
-    // automatically; after three branches the paid order offers postal fulfilment.
+    // Pharmacy and stock confirmation happens before bank payment. A decline
+    // reroutes automatically; after three branches checkout offers postal fulfilment.
     clearTimeout(phTimer); clearTimeout(phFailTimer);
     const pScr = document.getElementById('pharmacy-search');
     if(id === 'pharmacy-search' && pScr){
@@ -5050,15 +5279,15 @@
         : ['Pharmacist reviewing your order','Checking another pharmacy','Checking another pharmacy'];
       if(heading) heading.textContent = phHeadings[Math.min(pharmacyRetryCount, 2)];
       if(hint) hint.textContent = pharmacyRetryCount
-        ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ ยอดชำระของคุณยังได้รับการคุ้มครองระหว่างค้นหาร้านใหม่' : 'The previous pharmacy did not have every item. Your payment remains protected while we reroute.')
-        : (thai ? 'ยืนยันการชำระเงินแล้ว เภสัชกรกำลังตรวจใบสั่งยาและสต็อก' : 'Your payment is confirmed. Checking the prescription and stock now.');
+        ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.')
+        : (thai ? 'เภสัชกรกำลังตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน' : 'Checking the prescription, stock and final price before payment.');
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
         if(pharmacyForceDecline){
           pharmacyForceDecline = false; // one-shot demo trigger
           // Failed state: shown automatically, no action required from the patient.
           if(heading) heading.textContent = thai ? 'กำลังตรวจสอบร้านยาอื่น' : 'Checking another pharmacy';
-          if(hint) hint.textContent = thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ ยอดชำระของคุณยังได้รับการคุ้มครองระหว่างค้นหาร้านใหม่' : 'The previous pharmacy did not have every item. Your payment remains protected while we reroute.';
+          if(hint) hint.textContent = thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.';
           if(graphic){
             graphic.classList.remove('state-view__visual--loading');
             graphic.classList.add('state-view__visual--danger');
@@ -5081,9 +5310,13 @@
         }
         pharmacyRetryCount = 0;
         if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
+        const lockedDeliveryFee=flowState.orderState.deliveryMethod==='same-day' ? calculatedSameDayDeliveryFee() : 0;
+        flowState.orderState.deliveryQuoteStatus='accepted';
+        flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
         persistFlowState();
-        replaceCurrent('pharmacyaccepted');
+        replaceCurrent('payment');
+        showActionToast('ร้านยายืนยันสต็อก สาขา และราคาสุทธิแล้ว','success');
       }, 3600);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
@@ -5219,6 +5452,11 @@
         flowState.entryChannel='partner';
         flowState.partnerPhoneVerified=true;
         persistFlowState();
+      } else {
+        // Every ordinary landing navigation is a Krane-direct entry. Resetting
+        // this explicitly prevents a prior partner session hiding Direct progress.
+        flowState.entryChannel='direct';
+        persistFlowState();
       }
       if(e.data.to === 'login') postAuthNext = 'profile';
       show(e.data.to);
@@ -5266,6 +5504,12 @@
   }
   // navigation
   document.body.addEventListener('click', e => {
+    const planContinue=e.target.closest('[data-plan-continue]');
+    if(planContinue){
+      refreshMedicationCheckout();
+      show(hasFulfillableItems() ? 'address' : 'payment');
+      return;
+    }
     // The insurance intake/claim screen is shared by two contexts: opened from patient
     // profile setup (no order yet, just save the policy) or from checkout (an order is
     // being paid). Detect which one from where the click came from.
@@ -5521,6 +5765,15 @@
       const group=partnerHistoryChoice.closest('[data-partner-history]');
       const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
       setPartnerHistoryChoice(group,hasDetails);
+      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
+      return;
+    }
+    const directHistoryChoice=e.target.closest('[data-direct-history-choice]');
+    if(directHistoryChoice){
+      const group=directHistoryChoice.closest('[data-direct-history]');
+      const hasDetails=directHistoryChoice.dataset.directHistoryChoice==='yes';
+      setDirectHistoryChoice(group,hasDetails);
+      saveIntakeDraft();
       if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
       return;
     }
@@ -5822,7 +6075,9 @@
     }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
     if(deliveryChoice){
-      flowState.orderState.deliveryMethod=deliveryChoice.dataset.deliveryValue;
+      const nextDeliveryMethod=deliveryChoice.dataset.deliveryValue;
+      if(flowState.orderState.deliveryMethod!==nextDeliveryMethod) invalidateFulfillmentQuote();
+      flowState.orderState.deliveryMethod=nextDeliveryMethod;
       deliveryMethod=flowState.orderState.deliveryMethod;
       persistFlowState();
       refreshMedicationCheckout();
@@ -5832,6 +6087,7 @@
     if(addOnChoice){
       const key=addOnChoice.dataset.addonOption;
       flowState.orderState.addOns[key]=!flowState.orderState.addOns[key];
+      invalidateFulfillmentQuote();
       persistFlowState();
       refreshMedicationCheckout();
       return;
@@ -5855,6 +6111,7 @@
       if(line) line.textContent = '฿ ' + (unit * q).toLocaleString();
       if(item){
         flowState.orderState.quantities[item]=q;
+        invalidateFulfillmentQuote();
         persistFlowState();
         syncOrderCheckout();
         syncDeclinedMedicines();
@@ -5866,13 +6123,15 @@
     if(pharmacyIssueAction){
       deliveryMethod='postal';
       flowState.orderState.deliveryMethod=deliveryMethod;
-      flowState.orderState.paidDeliveryMethod=deliveryMethod;
+      flowState.orderState.deliveryQuoteStatus='accepted';
+      flowState.orderState.deliveryQuoteAmount=0;
       flowState.orderState.stockLocked=true;
       persistFlowState();
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
-      show('pharmacypending');
-      showActionToast('เปลี่ยนเป็นจัดส่งมาตรฐานแล้ว โดยไม่มีค่าใช้จ่ายเพิ่ม','success');
+      refreshMedicationCheckout();
+      show('payment');
+      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ตรวจสอบยอดก่อนชำระเงินได้เลย','success');
       return;
     }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
@@ -5951,6 +6210,8 @@
     }
     const go = e.target.closest('[data-go]');
     if(go){
+      const intakeQuestionScreen=go.closest('.screen');
+      if(intakeQuestionScreen && INTAKE_ONE_QUESTION_SCREENS.includes(intakeQuestionScreen.id) && advanceIntakeQuestionPage(intakeQuestionScreen)) return;
       if(go.dataset.go === 'matching') doctorAvailable=true;
       if(go.closest('.rail') && go.dataset.go === 'login') postAuthNext = 'profile';
       if(guardActiveCase(go.dataset.go)) return;
@@ -5996,6 +6257,7 @@
     const back = e.target.closest('[data-back]');
     if(back){
       const backScreen=back.closest('.screen');
+      if(backScreen && retreatIntakeQuestionPage(backScreen)) return;
       if(backScreen?.id==='otp' && flowState.partnerPhoneOtpPending){
         flowState.partnerPhoneOtpPending=false;
         flowState.partnerPendingPhone='';
@@ -6122,7 +6384,7 @@
     'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
     'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared Penultimate General Health', stories:['Client request 15 Jul: every consultation completes this as the penultimate question step','Captures conditions, allergies, medicine, supplements, height, weight and lifestyle in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
-    'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Paid Order, Pharmacist Review & Routing', stories:['The signed prescription and paid order are sent only after bank confirmation','A licensed pharmacist verifies the prescription, checks stock, and accepts into POS','A declined branch reroutes automatically; repeated declines open the protected fallback/refund choice'] },
+    'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
     'signup':           { id:'KRANE-F03', name:'Create Account', stories:['A new patient creates an account with the phone number already carried into OTP','OTP verifies the account but never skips patient information, identity, or current consent','The completed intake draft remains available throughout authentication'] },
@@ -6140,9 +6402,9 @@
     'address':          { id:'KRANE-F18', name:'Delivery Address, Search / Missing Address', stories:['US-F18.8: Patient searches condo, building, landmark or address, or pins location on a map','US-F18.9: Same-day delivery is disabled until a valid address exists'] },
     'payment':          { id:'KRANE-F18', name:'Medication Payment, Hosted Gateway', stories:['US-F18.10: Payment appears as a familiar third-party hosted KBank-style gateway','US-F18.5: Medicine and delivery costs shown separately; total summarised','Prototype assumption: this is Payment 2 after the consultation and prescription acceptance'] },
     'payfail':          { id:'KRANE-F18', name:'Medication Payment, Failed (edge state)', stories:['US-F18.6: Patient can retry or choose a different payment method','US-F18.7: Treatment plan is preserved; no data lost on failure'] },
-    'pharmacypending':  { id:'KRANE-F21', name:'Fulfilment, Pharmacist Review Pending', stories:['Payment is confirmed before the pharmacy receives the order','Patient sees that prescription verification and stock acceptance are still in progress'] },
-    'pharmacyaccepted': { id:'KRANE-F21', name:'Fulfilment, Pharmacy Accepted / POS Pick-Pack', stories:['Patient sees pharmacist verification and stock acceptance before preparation','Accepted order moves into pharmacy POS, pick and pack, then rider dispatch','Admin status updates are reflected in patient tracking'] },
-    'pharmacyissue':    { id:'KRANE-F21', name:'Fulfilment, SLA Fallback (taking too long)', stories:['US-F21.5: If preparation exceeds the SLA, patient chooses: switch to next-day (refund the same-day fee), keep waiting, or cancel & refund','US-F21.6: Payment is protected throughout; refunds are clearly confirmed'] },
+    'pharmacypending':  { id:'KRANE-F21', name:'Fulfilment, Preparing Confirmed Order', stories:['The pharmacy receives payment only after prescription, stock and price confirmation','Patient sees that the confirmed order is being prepared'] },
+    'pharmacyaccepted': { id:'KRANE-F21', name:'Fulfilment, Pharmacy Accepted / POS Pick-Pack', stories:['After payment, the patient sees that the paid order was accepted into pharmacy fulfilment','Accepted order moves into pharmacy POS, pick and pack, then rider dispatch','Admin status updates are reflected in patient tracking'] },
+    'pharmacyissue':    { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Standard-delivery Fallback', stories:['Repeated nearby-branch declines offer standard delivery before any charge','The fallback locks stock and recalculates the final amount before checkout reopens'] },
     'refund':           { id:'KRANE-F21', name:'Fulfilment, Refund Confirmed', stories:['US-F21.6: Refund confirmation: amount, card, and reference shown clearly','US-F21.7: Consultation fee is separate and unaffected by a medication refund'] },
     'confirm':          { id:'KRANE-F21', name:'Order Tracking, Confirmation', stories:['US-F21.1: Order confirmation shown after pharmacy acceptance, not immediately after medication payment','US-F21.3: Confirmation email with consultation + order summary sent to patient'] },
     'tracking':         { id:'KRANE-F21', name:'Order Tracking', stories:['US-F21.1: Real-time status: payment confirmed → pharmacy accepted → preparing → rider pickup → delivered','US-F21.2: Admin can manually update status at any stage (visible here)'] },
@@ -6399,7 +6661,13 @@
       return;
     }
     if(!e.target.closest('[data-payment-go]')) return;
-    if(!checkoutIsReady()){
+    const checkoutState=checkoutActionState();
+    if(checkoutState==='quote-required'){
+      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
+      show('delivery-quote',false);
+      return;
+    }
+    if(checkoutState!=='ready'){
       showActionToast('กรุณาเลือกที่อยู่จัดส่งและกรอกข้อมูลจำเป็นให้ครบ','warning');
       return;
     }
@@ -6410,9 +6678,10 @@
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
       flowState.consultationPaid=true;
       flowState.paymentResolution='covered';
+      flowState.documentsUnlocked=true;
       persistFlowState();
       syncPaymentOutcome();
-      show('payment-success');
+      show(hasFulfillableItems() ? 'payment-success' : 'prescription');
       return;
     }
     show('payment-gw');
@@ -6421,7 +6690,7 @@
   });
   document.body.addEventListener('click', e => {
     if(!e.target.closest('[data-pharmacy-accepted-continue]')) return;
-    show('pharmacypending');
+    show('confirm');
   });
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-payment-submit]')){
@@ -6430,6 +6699,7 @@
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
       flowState.consultationPaid=true;
       flowState.paymentResolution='final-paid';
+      flowState.documentsUnlocked=true;
       persistFlowState();
       syncPaymentOutcome();
       show('payment-success');
@@ -6451,7 +6721,28 @@
   // The patient already saw and entered every answer. Persist the completed draft
   // for the doctor, then continue to account creation without a duplicate review page.
   document.body.addEventListener('click', e => {
-    if(!e.target.closest('[data-intake-complete]')) return;
+    const intakeComplete=e.target.closest('[data-intake-complete]');
+    if(!intakeComplete) return;
+    const intakeQuestionScreen=intakeComplete.closest('.screen');
+    if(intakeQuestionScreen && INTAKE_ONE_QUESTION_SCREENS.includes(intakeQuestionScreen.id) && advanceIntakeQuestionPage(intakeQuestionScreen)) return;
+    if(intakeComplete.closest('#intake-general')){
+      const dob=document.getElementById('intake-dob');
+      if(!dob?.value){
+        showActionToast('กรุณาเลือกวันเกิด','warning');
+        dob?.focus();
+        return;
+      }
+      const incompleteHistory=[...document.querySelectorAll('#intake-general [data-direct-history]')].find(group => {
+        const selected=group.querySelector('[data-direct-history-choice][aria-checked="true"]');
+        return selected?.dataset.directHistoryChoice==='yes' && !group.querySelector('input')?.value.trim();
+      });
+      if(incompleteHistory){
+        const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
+        showActionToast(`กรุณาระบุ${label}`,'warning');
+        incompleteHistory.querySelector('input')?.focus();
+        return;
+      }
+    }
     flowState.draftReady=true;
     if(flowState.entryChannel==='partner'){
       flowState.lastRequiredScreen='partner-intake';
@@ -6687,5 +6978,118 @@
 
   // F02 language toggle is handled by i18n.js (active-state + TH/EN copy swap).
 </script>
+<svg class="krane-state-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <g id="krane-scene-payment" class="ks-line">
+      <path d="M88 292h387M178 291l-12 30m202-30 13 30M176 236h211v56H176z"/>
+      <path d="M166 290h-43v-98c0-18 14-32 32-32h24M124 224h47"/>
+      <path d="M242 101c-6-31 13-55 47-55 31 0 50 20 48 48-2 22-17 44-45 44-25 0-45-14-50-37z"/>
+      <path d="M244 91c12 2 27-3 35-15 7 12 22 19 52 18M259 133c-28 17-38 49-34 102h126c3-50-13-88-48-102"/>
+      <path d="M271 103c4 5 10 5 14 0m-18-10h1m27 0h1M276 122c8 5 18 4 24-2"/>
+      <path d="M250 166c20 14 36 28 51 47l47-19M328 194l37-24M330 179l31-14 12 23-32 13M304 161l-4 53"/>
+      <rect x="360" y="157" width="30" height="48" rx="4"/>
+      <path d="M248 236l-17 55m60-55 9 55m-69 0-28 30m97-30 33 30"/>
+      <path d="M425 244v47m-16-47h32M433 244c0-20 9-31 23-40m-23 40c0-16-7-27-18-37m18 25c12-10 21-15 31-15"/>
+    </g>
+    <g id="krane-scene-clinician" class="ks-line">
+      <path d="M82 292h399M160 292v-76h246v76M185 216h196"/>
+      <circle cx="276" cy="90" r="39"/>
+      <path d="M240 88c16 2 30-6 38-19 11 13 24 19 37 18M258 105c9 8 23 8 32 0"/>
+      <path d="M235 132c-27 20-36 47-32 84h149c4-38-7-66-36-84M246 135l30 40 31-40M276 175v40"/>
+      <path d="M251 151c-13 12-14 38 2 49 10 7 21 0 20-10m28-39c13 12 14 38-2 49-10 7-21 0-20-10"/>
+      <circle cx="276" cy="188" r="6"/>
+      <path d="M121 216l17-62h106l17 62zM145 171h74"/>
+    </g>
+    <g id="krane-scene-pharmacy" class="ks-line">
+      <path d="M72 292h416M118 292v-91h324v91M118 239h324"/>
+      <circle cx="270" cy="93" r="38"/>
+      <path d="M235 91c18 0 32-8 39-21 8 13 21 19 34 20M251 107c9 7 22 7 31 0"/>
+      <path d="M230 132c-28 18-39 44-34 69h150c4-28-9-53-37-69M247 135l23 31 23-31"/>
+      <path d="M174 216h65v-54h-65zM190 153h33v9M189 183h35M205 170v26"/>
+      <path d="M322 176h63v40h-63zM332 165h43l10 11M342 193h23"/>
+      <path d="M259 190c14 8 31 8 46 0"/>
+    </g>
+    <g id="krane-scene-empty" class="ks-line">
+      <path d="M92 292h375M180 291v-72h195v72M180 247h195"/>
+      <path d="M220 218v-74h116v74M238 164h80M238 182h55"/>
+      <path d="M128 291v-87m-19 0h38M137 204c0-19 9-31 26-40m-26 40c0-17-8-29-20-38"/>
+      <path d="M405 291v-55m-17-20c20 0 34 8 34 20h-34c0-12 6-20 17-20z"/>
+    </g>
+
+    <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="283" cy="182" r="132" opacity=".6"/>
+      <use href="#krane-scene-payment"/>
+      <g class="ks-retry ks-line" aria-hidden="true"><path d="M399 83a29 29 0 1 1-4 35"/><path d="M393 74l7 10-11 6"/></g>
+      <g class="ks-pop" aria-hidden="true"><circle class="ks-coral" cx="454" cy="105" r="22"/><path d="M446 97l16 16m0-16-16 16" fill="none" stroke="#101722" stroke-width="4" stroke-linecap="round"/></g>
+    </symbol>
+    <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="283" cy="182" r="132" opacity=".62"/><use href="#krane-scene-payment"/>
+      <g class="ks-float"><circle class="ks-mint" cx="439" cy="102" r="30"/><path class="ks-line ks-check" d="M424 102l11 11 21-25"/></g>
+    </symbol>
+    <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".62"/><use href="#krane-scene-clinician"/>
+      <g class="ks-line-thin"><path d="M405 91c25-23 55-14 62 7"/><path d="M462 88l5 10-11 4"/></g>
+      <g class="ks-blue"><circle class="ks-dot-1" cx="403" cy="125" r="6"/><circle class="ks-dot-2" cx="427" cy="125" r="6"/><circle class="ks-dot-3" cx="451" cy="125" r="6"/></g>
+    </symbol>
+    <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".5"/><use href="#krane-scene-clinician"/>
+      <g class="ks-float ks-line"><rect x="411" y="73" width="72" height="67" rx="10"/><path d="M411 96h72m-52-33v20m31-20v20"/></g>
+      <g class="ks-pop"><circle class="ks-coral" cx="476" cy="135" r="18"/><path d="M469 128l14 14m0-14-14 14" fill="none" stroke="#101722" stroke-width="3.5" stroke-linecap="round"/></g>
+    </symbol>
+    <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".55"/><use href="#krane-scene-payment"/>
+      <g class="ks-float ks-line"><rect x="402" y="70" width="83" height="61" rx="10"/><path d="M421 131v13m45-13v13m-57 0h70"/><path class="ks-blue" d="M437 88l20 12-20 12z" fill="#2376f3" stroke="none"/></g>
+      <circle class="ks-pulse ks-coral" cx="478" cy="76" r="8"/>
+    </symbol>
+    <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".55"/><use href="#krane-scene-clinician"/>
+      <g class="ks-float ks-line"><rect x="405" y="64" width="77" height="94" rx="9"/><path d="M428 64v-9h31v9M421 88h45m-45 19h45m-45 19h29"/></g>
+      <path class="ks-line ks-check" d="M450 143l9 9 19-24"/>
+    </symbol>
+    <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="278" cy="177" r="133" opacity=".55"/><use href="#krane-scene-pharmacy"/>
+      <g class="ks-float ks-line"><circle cx="442" cy="95" r="28"/><path d="M462 115l23 23"/></g>
+      <g class="ks-blue"><circle class="ks-dot-1" cx="416" cy="151" r="5"/><circle class="ks-dot-2" cx="439" cy="151" r="5"/><circle class="ks-dot-3" cx="462" cy="151" r="5"/></g>
+    </symbol>
+    <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="278" cy="177" r="133" opacity=".55"/><use href="#krane-scene-pharmacy"/>
+      <g class="ks-float ks-line"><path d="M403 83l39-21 40 21-40 22zM403 83v45l39 22 40-22V83M442 105v45"/></g>
+      <g class="ks-blue"><circle class="ks-dot-1" cx="416" cy="171" r="5"/><circle class="ks-dot-2" cx="439" cy="171" r="5"/><circle class="ks-dot-3" cx="462" cy="171" r="5"/></g>
+    </symbol>
+    <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="278" cy="177" r="133" opacity=".62"/><use href="#krane-scene-pharmacy"/>
+      <g class="ks-float"><circle class="ks-mint" cx="444" cy="101" r="30"/><path class="ks-line ks-check" d="M429 101l11 11 21-25"/></g>
+    </symbol>
+    <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".48"/><use href="#krane-scene-pharmacy"/>
+      <g class="ks-float ks-line"><path d="M397 130c18-44 58-56 90-29" stroke-dasharray="7 10"/><path d="M477 91l10 10-14 5"/></g>
+      <g class="ks-pop"><circle class="ks-coral" cx="403" cy="130" r="21"/><path d="M403 119v14m0 7h.1" fill="none" stroke="#101722" stroke-width="4" stroke-linecap="round"/></g>
+    </symbol>
+    <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="278" cy="177" r="133" opacity=".62"/><use href="#krane-scene-pharmacy"/>
+      <g class="ks-float ks-line"><path d="M403 83l39-21 40 21-40 22zM403 83v45l39 22 40-22V83M442 105v45"/></g>
+      <path class="ks-line ks-check" d="M422 117l13 13 26-32"/>
+      <path class="ks-line-thin ks-float-late" d="M489 62v18m-9-9h18"/>
+    </symbol>
+    <symbol id="krane-state-in-person" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".52"/><use href="#krane-scene-clinician"/>
+      <g class="ks-float ks-line"><path d="M450 63c-25 0-43 18-43 41 0 34 43 67 43 67s43-33 43-67c0-23-18-41-43-41z"/><circle cx="450" cy="103" r="13"/></g>
+      <path class="ks-line-thin ks-float-late" d="M398 71l-13-12m12 30h-19"/>
+    </symbol>
+    <symbol id="krane-state-feedback" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-mint" cx="283" cy="182" r="132" opacity=".55"/><use href="#krane-scene-payment"/>
+      <g class="ks-float"><path class="ks-coral" d="M440 133c-42-27-61-70-30-85 18-9 31 3 35 16 7-13 22-21 37-9 27 21-2 58-42 78z"/><path class="ks-line-thin" d="M440 133c-42-27-61-70-30-85 18-9 31 3 35 16 7-13 22-21 37-9 27 21-2 58-42 78z"/></g>
+    </symbol>
+    <symbol id="krane-state-empty" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="278" cy="177" r="133" opacity=".38"/><use href="#krane-scene-empty"/>
+      <path class="ks-line-thin ks-float" d="M406 98v26m-13-13h26"/><path class="ks-line-thin ks-float-late" d="M443 67v16m-8-8h16"/>
+    </symbol>
+    <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
+      <rect class="ks-paper" width="560" height="360" rx="30"/><circle class="ks-blue-soft" cx="283" cy="182" r="132" opacity=".52"/><use href="#krane-scene-payment"/>
+      <g class="ks-float ks-line"><rect x="405" y="65" width="76" height="88" rx="9"/><path d="M421 87h44m-44 19h44m-44 19h28"/></g>
+      <g class="ks-blue"><circle class="ks-dot-1" cx="416" cy="174" r="5"/><circle class="ks-dot-2" cx="439" cy="174" r="5"/><circle class="ks-dot-3" cx="462" cy="174" r="5"/></g>
+    </symbol>
+  </defs>
+</svg>
 </body>
 </html>
