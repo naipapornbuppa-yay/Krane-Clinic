@@ -27,7 +27,7 @@
       heroSexualTitle: "Treat erection concerns<br>with confidence",
       startConsultation: "Consult now",
       heroLegal: "Treatment and medication options depend on a doctor's assessment",
-      treatmentTitle: "Choose the right care for you",
+      treatmentTitle: "Explore more care",
       complianceTitle: "Thai clinical and privacy standards",
       hair: "Hair loss prevention",
       sexual: "Sexual performance",

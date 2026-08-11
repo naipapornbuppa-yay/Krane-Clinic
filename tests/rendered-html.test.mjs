@@ -711,8 +711,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /ดูแลปัญหาการแข็งตัว<br>อย่างเป็นส่วนตัว/, "the ED card must state the erection concern clearly");
   for (const asset of [
     "weight-injection-landscape-v2.png",
-    "ed-care-couple-v3.png",
-    "hair-care-handheld-v5.png"
+    "ed-care-lap-v6.jpg"
   ]) {
     const reference = `assets/product-hero/${asset}`;
     assert.match(html, new RegExp(reference.replace(".", "\\.")));
@@ -728,21 +727,12 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(html, /class="compliance__track"/);
   assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
   assert.match(html, /class="compliance__group" aria-hidden="true"/);
-  assert.match(html, /เลือกการดูแลที่เหมาะกับคุณ/);
+  assert.match(html, /บริการอื่น ๆ สำหรับคุณ/);
   assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
   assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
   const treatmentHashes = new Set();
-  const hairTreatmentReference = "assets/product-hero/hair-care-handheld-v5.png";
-  assert.match(html, new RegExp(hairTreatmentReference.replace(".", "\\.")));
-  const hairTreatmentImage = await readFile(path.join(publicRoot, `b2c/${hairTreatmentReference}`));
-  assert.equal(hairTreatmentImage[25], 2, "hair close-up should remain a full-colour RGB campaign photo");
-  treatmentHashes.add(createHash("sha256").update(hairTreatmentImage).digest("hex"));
-  const weightTreatmentReference = "assets/product-hero/weight-care-studio-v4.jpg";
-  assert.match(html, new RegExp(weightTreatmentReference.replace(".", "\\.")));
-  const weightTreatmentImage = await readFile(path.join(publicRoot, `b2c/${weightTreatmentReference}`));
-  treatmentHashes.add(createHash("sha256").update(weightTreatmentImage).digest("hex"));
   for (const image of [
-    "sexual-performance.png",
+    "hair-loss-prevention.png",
     "skin-anti-aging.png",
     "hormonal-balance-trt.png",
     "daily-focus-mind.png"
@@ -754,16 +744,19 @@ test("Figma landing keeps every client access route and responsive menu contract
     assert.ok([4, 6].includes(treatmentImage[25]), `${image} must preserve a transparent PNG channel`);
     treatmentHashes.add(createHash("sha256").update(treatmentImage).digest("hex"));
   }
-  assert.equal(treatmentHashes.size, 6, "every symptom needs a distinct product image");
-  assert.equal((html.match(/class="treatment-pill__image(?: treatment-pill__image--photo)?"/g) || []).length, 6, "landing needs six treatment thumbnails");
+  assert.equal(treatmentHashes.size, 4, "every additional-care card needs a distinct product image");
+  assert.equal((html.match(/class="treatment-pill__image(?: treatment-pill__image--photo)?"/g) || []).length, 4, "landing needs four non-repeating additional-care cards");
+  const servicesMarkup = html.match(/<section class="treatments[\s\S]*?<\/section>/)?.[0] || "";
+  assert.doesNotMatch(servicesMarkup, /care-card--weight|care-card--sexual/, "weight and ED must not repeat below their hero cards");
   assert.match(css, /\.treatment-pill__image--photo img\{[^}]*padding:0;[^}]*object-fit:cover;[^}]*filter:none/);
   assert.doesNotMatch(html, /class="care-marquee"/);
   assert.match(css, /\.hero\.hero--campaign\{[\s\S]*height:auto;[\s\S]*background:transparent/);
   assert.match(css, /\.hero-care-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero-care-grid\{[\s\S]*?grid-auto-flow:column;[\s\S]*?scroll-snap-type:x mandatory;[\s\S]*?\.hero-care-card\{min-height:310px/);
   assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatments\{[\s\S]*?min-height:0/);
-  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatment-grid\{[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.treatment-pill:first-child\{grid-row:span 2;height:284px\}/);
+  assert.match(css, /Product-grid first viewport:[\s\S]*?\.treatment-grid\{[\s\S]*?grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  assert.doesNotMatch(css, /\.treatment-pill:first-child\{grid-row:span 2/, "additional-care cards must share one consistent geometry");
+  assert.match(css, /consistent other-care cards[\s\S]*?\.hero-care-card__cta\{[\s\S]*?border-radius:var\(--radius-pill\);[\s\S]*?background:var\(--landing-blue\)!important;/, "hero CTAs must use a filled design-system button");
   assert.match(css, /--landing-canvas:var\(--color-bg,#f4f6f8\)/, "the landing must retain the Krane canvas colour");
   assert.doesNotMatch(css, /background:#f7f4ee/, "care cards must not reuse the reference site's beige palette");
   assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
