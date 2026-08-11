@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Krane B2C · State illustrations</title>
+  <link rel="stylesheet" href="design-tokens.css?v=20260805hotfix1">
+  <link rel="stylesheet" href="state-illustrations.css?v=20260811-editorial-v1">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f6f8;color:#101722;font-family:var(--font-body,"Noto Sans Thai",sans-serif)}
+    header{position:sticky;top:0;z-index:2;padding:18px 20px 16px;background:rgba(244,246,248,.94);border-bottom:1px solid #dfe4ea;backdrop-filter:blur(14px)}
+    h1{margin:0;font-size:22px;line-height:1.2;letter-spacing:-.02em}
+    header p{margin:6px 0 0;color:#5c6775;font-size:13px;line-height:1.45}
+    main{width:min(1180px,100%);margin:0 auto;padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    article{overflow:hidden;background:#fff;border:1px solid #dfe4ea;border-radius:20px;box-shadow:0 8px 30px rgba(23,52,95,.06)}
+    .art{display:block;width:100%;aspect-ratio:14/9}
+    .krane-state-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+    #krane-state-loading-info .ks-fold-stage--sheet,
+    #krane-state-loading-info .ks-fold-stage--base,
+    #krane-state-loading-info .ks-fold-stage--forming{display:none}
+    #krane-state-loading-info .ks-fold-stage--crane{opacity:1;transform:none}
+    .label{padding:0 18px 17px}
+    .label strong{display:block;font-size:16px;line-height:1.3}
+    .label span{display:block;margin-top:4px;color:#687383;font-size:12px}
+    .loading{display:grid;place-items:center;min-height:70vh;padding:24px;color:#687383;text-align:center}
+    @media(max-width:680px){main{grid-template-columns:1fr;padding:12px;gap:12px}header{padding:15px 16px 13px}article{border-radius:16px}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Krane B2C State Illustration System</h1>
+    <p>ภาพเล่าเรื่องสำหรับ loading, waiting, outcome และ empty state · Modern editorial cartoon</p>
+  </header>
+  <div class="loading" data-loading>กำลังเตรียมชุดภาพ…</div>
+  <main hidden></main>
+  <script>
+    const states = [
+      ['krane-state-loading-info','กำลังเตรียมข้อมูล','Loading · Paper crane'],
+      ['krane-state-doctor-matching','กำลังค้นหาแพทย์','Doctor matching'],
+      ['krane-state-no-slots','ยังไม่มีแพทย์ว่าง','No doctor available'],
+      ['krane-state-waiting-room','กำลังรอเข้าห้องปรึกษา','Doctor waiting room'],
+      ['krane-state-nurse-ready','พยาบาลพร้อมคัดกรอง','Nurse ready'],
+      ['krane-state-treatment-plan','แพทย์กำลังเขียนแผน','Treatment plan'],
+      ['krane-state-delivery-quote','กำลังคำนวณการจัดส่ง','Delivery estimate'],
+      ['krane-state-pharmacy-search','เภสัชกรกำลังตรวจคำสั่งซื้อ','Pharmacy review'],
+      ['krane-state-medicine-preparing','กำลังจัดเตรียมยา','Medicine preparation'],
+      ['krane-state-pharmacy-confirmed','ร้านยารับคำสั่งซื้อแล้ว','Pharmacy confirmed'],
+      ['krane-state-delivery-unavailable','ส่งภายในวันไม่ได้','Delivery fallback'],
+      ['krane-state-consult-payment-failed','ชำระค่าปรึกษาไม่สำเร็จ','Consultation payment recovery'],
+      ['krane-state-payment-failed','ชำระค่ายาไม่สำเร็จ','Order payment recovery'],
+      ['krane-state-payment-success','ชำระเงินสำเร็จ','Payment success'],
+      ['krane-state-order-confirmed','ยืนยันคำสั่งซื้อแล้ว','Order confirmed'],
+      ['krane-state-in-person','ควรพบแพทย์ที่คลินิก','In-person care'],
+      ['krane-state-feedback','ส่งความคิดเห็นแล้ว','Feedback submitted'],
+      ['krane-state-empty-activities','ยังไม่มีคำสั่งซื้อ','Empty activities'],
+      ['krane-state-empty-history','ยังไม่มีประวัติปรึกษา','Empty history']
+    ];
+
+    fetch('krane-b2c.html')
+      .then(response => response.text())
+      .then(source => {
+        const parsed = new DOMParser().parseFromString(source,'text/html');
+        const defs = parsed.querySelector('.krane-state-defs');
+        if(!defs) throw new Error('Illustration sprite not found');
+        document.body.append(defs);
+        const main = document.querySelector('main');
+        states.forEach(([id,title,caption]) => {
+          const card = document.createElement('article');
+          card.innerHTML = `<svg class="art" viewBox="0 0 560 360" aria-hidden="true"><use href="#${id}"></use></svg><div class="label"><strong>${title}</strong><span>${caption}</span></div>`;
+          main.append(card);
+        });
+        document.querySelector('[data-loading]').remove();
+        main.hidden = false;
+      })
+      .catch(() => { document.querySelector('[data-loading]').textContent = 'เปิดชุดภาพไม่สำเร็จ กรุณาลองรีเฟรชอีกครั้ง'; });
+  </script>
+</body>
+</html>
