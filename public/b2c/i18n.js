@@ -1066,7 +1066,10 @@
       if (x.dataset.lng) x.classList.toggle("is-active", (x.dataset.lng === "th") === th);
     });
   }
-  function observeOn() { if (mo && current && document.body) mo.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+  function observeOn() {
+    var translationRoot = document.body;
+    if (mo && current && translationRoot) mo.observe(translationRoot, { childList: true, subtree: true, characterData: true });
+  }
   function observeOff() { if (mo) mo.disconnect(); }
 
   function apply(th) {

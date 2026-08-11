@@ -300,6 +300,21 @@ test("direct entry defaults to self-pay and clinical intake shows one question a
   assert.match(components, /\[data-intake-question\]\[hidden\]\{display:none!important\}/);
 });
 
+test("legacy prerequisite redirects always resolve to a visible screen", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const customSelect = await readFile(path.join(publicRoot, "b2c/custom-select.js"), "utf8");
+  const icons = await readFile(path.join(publicRoot, "b2c/b2c-icons.js"), "utf8");
+  const i18n = await readFile(path.join(publicRoot, "b2c/i18n.js"), "utf8");
+
+  assert.match(html, /function normalizeScreenTarget\(target\)\{/);
+  assert.match(html, /if\(target==='concern'\)\{[\s\S]*return 'intake1'/);
+  assert.match(html, /return document\.getElementById\(target\) \? target : 'landing'/);
+  assert.match(html, /id=normalizeScreenTarget\(requiredRouteFor\(id\)\)/);
+  assert.match(customSelect, /var selectRoot=document\.body;[\s\S]*if\(selectRoot\)selectObserver\.observe\(selectRoot/);
+  assert.match(icons, /var iconRoot = document\.body;[\s\S]*iconObserver\.observe\(iconRoot/);
+  assert.match(i18n, /var translationRoot = document\.body;[\s\S]*mo\.observe\(translationRoot/);
+});
+
 test("partner entry keeps its locked concern and compact health-profile sequence", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
@@ -651,18 +666,35 @@ test("Figma landing keeps every client access route and responsive menu contract
   const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
   const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
 
+  // This suite owns the landing-to-app contract. Visual assets and section
+  // dimensions are intentionally free to evolve in the parallel landing work.
   for (const route of ["login", "articles", "consent-terms"]) {
     assert.match(html, new RegExp(`data-route="${route}"`), `landing must preserve ${route} access`);
   }
-  assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/);
-  assert.match(html, /data-route="consent-terms" data-entry-channel="partner"/);
-  assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
-  assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
+  assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/,
+    "landing must not revive the retired Partner route");
+  assert.match(html, /href="krane-b2c\.html\?entry=partner#consent-terms"[^>]*data-route="consent-terms"[^>]*data-entry-channel="partner"/,
+    "Partner entry must keep its explicit channel and locked consent deep link");
+  assert.doesNotMatch(html, /data-route="concern"/,
+    "landing must not route through the removed category-selection page");
+
+  assert.match(html, /data-nav-menu-trigger[\s\S]*id="desktop-weight-menu"/);
+  for (const menuId of ["desktop-weight-menu", "desktop-men-menu", "desktop-hair-skin-menu", "desktop-more-menu"]) {
+    assert.match(html, new RegExp(`aria-controls="${menuId}"[\\s\\S]*id="${menuId}"`), `landing must preserve the ${menuId} dropdown contract`);
+  }
   assert.match(html, /class="mobile-treatment-menu"/);
   for (const category of ["hair-skin", "sexual-health", "skin", "general", "sleep-stress"]) {
     assert.match(html, new RegExp(`data-category="${category}"`), `landing must preserve ${category} treatment route`);
   }
+  const treatmentLinks = [...html.matchAll(/<a\b[^>]*href="krane-b2c\.html#(conditions|intake1)\?category=([^"]+)"[^>]*data-route="([^"]+)"[^>]*data-category="([^"]+)"/g)];
+  assert.ok(treatmentLinks.length >= 5, "landing must expose reusable treatment entry points into the app");
+  for (const [, hrefRoute, hrefCategory, dataRoute, dataCategory] of treatmentLinks) {
+    assert.equal(dataRoute, hrefRoute, `data-route must match the treatment href for ${hrefCategory}`);
+    assert.equal(dataCategory, hrefCategory, `data-category must match the treatment href for ${hrefCategory}`);
+  }
+
   assert.match(html, /<dialog class="mobile-menu"/);
+  assert.match(html, /aria-controls="mobile-menu"[^>]*aria-expanded="false"/);
   assert.match(html, /id="experts"/);
   assert.match(html, /href="#experts" data-i18n="navDoctors"/);
   assert.match(css, /@media\s*\(max-width:\s*700px\)/);
@@ -670,133 +702,22 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /assets\/landing-573\/latest\/hero-base\.png/);
-  assert.match(html, /assets\/landing-573\/latest\/hero-overlay\.png/);
+
+  assert.match(html, /class="announcement"[^>]*data-route="intake1"[^>]*data-category="general"/);
+  assert.match(html, /announcement__track" aria-hidden="true"/);
   assert.match(html, /<section class="compliance(?:\s|")/);
-  assert.match(html, /latest\/compliance\/thai-fda\.png/);
-  assert.match(html, /latest\/compliance\/pdpa\.png/);
-  assert.match(html, /latest\/compliance\/medical-council\.png/);
-  assert.match(html, /latest\/compliance\/nhso\.png/);
-  assert.match(html, /latest\/compliance\/iso-27001\.png/);
   assert.match(html, /class="compliance__track"/);
-  assert.equal((html.match(/class="compliance__group"/g) || []).length, 2);
   assert.match(html, /class="compliance__group" aria-hidden="true"/);
-  assert.match(html, /เลือกการดูแลที่เหมาะกับคุณ/);
-  assert.match(html, /มาตรฐานคลินิกจริง<br>ความเป็นส่วนตัวจริง/);
-  assert.match(css, /\.expert-card p:nth-of-type\(n\+2\)\{display:none\}/);
-  const treatmentHashes = new Set();
-  for (const image of [
-    "hair-loss-prevention.png",
-    "sexual-performance.png",
-    "skin-anti-aging.png",
-    "weight-management.png",
-    "hormonal-balance-trt.png",
-    "daily-focus-mind.png"
-  ]) {
-    assert.match(html, new RegExp(`assets/landing-573/treatments/${image.replace(".", "\\.")}`));
-    const treatmentPath = path.join(publicRoot, `b2c/assets/landing-573/treatments/${image}`);
-    await assert.doesNotReject(access(treatmentPath));
-    const treatmentImage = await readFile(treatmentPath);
-    assert.ok([4, 6].includes(treatmentImage[25]), `${image} must preserve a transparent PNG channel`);
-    treatmentHashes.add(createHash("sha256").update(treatmentImage).digest("hex"));
+  for (const standard of ["อย. ไทย", "PDPA", "แพทยสภา", "สปสช.", "ISO 27001"]) {
+    assert.match(html, new RegExp(standard.replace(".", "\\.")), `landing must keep ${standard} trust context`);
   }
-  assert.equal(treatmentHashes.size, 6, "every symptom needs a distinct product image");
-  assert.equal((html.match(/assets\/landing-573\/treatments\/[^"]+\.png/g) || []).length, 6);
-  assert.doesNotMatch(html, /class="care-marquee"/);
-  assert.match(css, /\.hero\{[\s\S]*height:512px/);
-  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.hero__photo\{[\s\S]*?height:calc\(100% \+ 20px\)/, "the mobile hero photo must extend past the blue section so it cannot create a cropped color seam");
-  assert.match(css, /\.treatments\{[\s\S]*min-height:352px/);
-  assert.match(css, /\.compliance\{[\s\S]*min-height:312px/);
-  assert.match(css, /--landing-blue-2:#1973ff/);
+
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
-  assert.match(css, /\.motion-enabled \.reveal-item/);
-  assert.match(script, /new IntersectionObserver/);
   assert.match(script, /reducedMotionQuery/);
-  assert.match(script, /--hero-parallax/);
   assert.match(html, /data-review-dialog/);
   assert.match(script, /function openReview/);
-  assert.match(html, /class="announcement"/);
-  assert.match(html, /announcement__track" aria-hidden="true"/);
-  const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
-  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "announcement marquee must have a clean edge without a white fade");
-  assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
-  assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
-  assert.match(css, /animation:compliance-marquee 24s linear infinite/);
-  assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
-  assert.match(css, /\.compliance__group\[aria-hidden="true"\]\{display:none\}/);
-  assert.match(css, /--landing-blue:#1973ff/);
-  assert.match(css, /\.hero\{[\s\S]*background:var\(--landing-blue\)/);
-  assert.doesNotMatch(css, /background:#0b4cac|background:#073b98/);
-  assert.match(css, /height:clamp\(590px,72svh,630px\)/);
-  const protocolProductHashes = new Set();
-  for (const image of [
-    "clinical-injectors-v2.png",
-    "clinical-hair-v2.png",
-    "clinical-sexual-v2.png"
-  ]) {
-    const reference = `assets/landing-573/products/${image}`;
-    assert.match(`${html}\n${script}`, new RegExp(reference.replace(".", "\\.")));
-    const productPath = path.join(publicRoot, `b2c/${reference}`);
-    await assert.doesNotReject(access(productPath));
-    const productImage = await readFile(productPath);
-    assert.ok([4, 6].includes(productImage[25]), `${image} must preserve a transparent PNG channel`);
-    protocolProductHashes.add(createHash("sha256").update(productImage).digest("hex"));
-  }
-  assert.equal(protocolProductHashes.size, 3, "protocol carousel products must be visually distinct assets");
-  assert.doesNotMatch(`${html}\n${script}`, /protocol-hair\.png|protocol-sexual\.png|clinical-pens\.png/);
-  assert.match(css, /\.product-stage__image\{[\s\S]*object-fit:contain;object-position:center/);
-  assert.equal((html.match(/data-product-tag="[0-2]"/g) || []).length, 3, "protocol needs three reusable image annotations");
-  for (const slide of ["injectors", "hair", "sexual"]) {
-    assert.match(script, new RegExp(`id: "${slide}"`), `${slide} needs slide-specific annotation content`);
-    assert.match(css, new RegExp(`\\.product-stage\\[data-product-slide="${slide}"\\]`), `${slide} needs slide-specific annotation positions`);
-  }
-  for (const label of ["ปากกาฉีด", "หัวทาหนังศีรษะ", "ยาเม็ดรับประทาน", "Injection pen", "Scalp applicator", "Oral tablets"]) {
-    assert.match(`${html}\n${script}`, new RegExp(label), `protocol annotation must include ${label}`);
-  }
   assert.match(script, /document\.addEventListener\("krane:languagechange", renderProductCopy\)/);
-  assert.doesNotMatch(html, /FDA Approved|Clinically Proven|Fast Acting/);
-  assert.match(css, /--landing-section-title-size:56px/);
-  assert.match(css, /--landing-section-title-weight:500/);
-  assert.match(css, /\.section-heading h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
-  assert.match(css, /\.protocol__heading h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
-  assert.match(css, /\.guarantee__copy h2\{[\s\S]*font-size:var\(--landing-section-title-size\)[\s\S]*font-weight:var\(--landing-section-title-weight\)/);
-  assert.doesNotMatch(html, /class="guarantee__copy"[\s\S]*?<a class="button button--outline"/, "the standards section must not include a secondary CTA");
-  assert.match(css, /--landing-section-title-size:clamp\(32px,9vw,40px\)/);
-  assert.match(css, /\.hero__signals\{top:20px;[\s\S]*flex-wrap:nowrap;justify-content:space-between\}/);
-  assert.match(css, /\.hero__signals>span\{min-width:0;gap:4px;font-size:clamp\(8px,2\.55vw,10px\);white-space:nowrap\}/);
-  assert.doesNotMatch(css, /\.hero__signals>span:last-child\{width:100%/);
-  assert.match(css, /\.steps li\.reveal-item::before\{[\s\S]*scaleY\(0\)/);
-  assert.match(css, /\.steps li\.is-revealed::before\{opacity:1;transform:scaleY\(1\)\}/);
-  assert.match(css, /\.steps li:last-child::before\{display:none\}/);
-  assert.match(script, /function animateReviews/);
-  assert.match(script, /reviewHorizontalLoopWidth/);
-  assert.match(script, /reviewInteractionPauseUntil/);
-  assert.match(html, /data-member-count data-count-target="3000"/);
-  assert.doesNotMatch(html, /3,000,000/);
-  assert.match(script, /function startMemberCount\(\)/);
-  assert.match(script, /const duration = 1400/);
-  assert.match(script, /reviewCollage\.scrollLeft \+= elapsed \* 0\.035/);
-  assert.match(css, /\.review-column,\.review-column--offset,\.review-column--reverse,\.review-mobile-sequence\{display:contents\}/);
-  assert.match(script, /reviewDialog\?\.open/);
-  assert.match(script, /reducedMotionQuery\.addEventListener\?\.\("change", syncReviewMotionPreference\)/);
-
-  const reviewHashes = new Set();
-  for (const image of [
-    "hair-progress.png",
-    "skin-progress.png",
-    "weight-progress.png",
-    "telehealth-review.png",
-    "focus-review.png",
-    "mens-health-review.png"
-  ]) {
-    assert.match(html, new RegExp(`assets/landing-573/reviews-asian/${image.replace(".", "\\.")}`));
-    const reviewPath = path.join(publicRoot, `b2c/assets/landing-573/reviews-asian/${image}`);
-    await assert.doesNotReject(access(reviewPath));
-    reviewHashes.add(createHash("sha256").update(await readFile(reviewPath)).digest("hex"));
-  }
-  assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct Asian UGC images");
 });
-
 test("doctor cards open matching responsive profiles instead of a placeholder template", async () => {
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const detail = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");

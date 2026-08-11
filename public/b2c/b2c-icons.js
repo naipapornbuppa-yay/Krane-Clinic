@@ -98,8 +98,9 @@
   var iconNormalizePending = false;
 
   function observeIcons() {
-    if (iconObserver && document.body) {
-      iconObserver.observe(document.body, {childList:true, subtree:true});
+    var iconRoot = document.body;
+    if (iconObserver && iconRoot) {
+      iconObserver.observe(iconRoot, {childList:true, subtree:true});
     }
   }
 
