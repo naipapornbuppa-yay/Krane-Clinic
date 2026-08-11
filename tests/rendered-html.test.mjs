@@ -707,9 +707,11 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.equal((html.match(/class="hero-care-card hero-care-card--/g) || []).length, 2, "campaign hero needs two fully clickable care cards");
   assert.equal((html.match(/data-i18n="startConsultation">เริ่มปรึกษาเลย/g) || []).length, 2, "both campaign cards must use the consultation CTA");
   assert.match(html, /การดูแลที่คุณ<br>สมควรได้รับ/, "the first viewport needs an editorial two-line care headline");
+  assert.match(html, /ลดน้ำหนักด้วย GLP-1 โดยแพทย์/, "the weight card must state the intended outcome clearly");
+  assert.match(html, /ดูแลปัญหาการแข็งตัว<br>อย่างเป็นส่วนตัว/, "the ED card must state the erection concern clearly");
   for (const asset of [
-    "weight-care-studio-v4.jpg",
-    "ed-care-product-closeup-v5.jpg",
+    "weight-injection-landscape-v2.png",
+    "ed-care-couple-v3.png",
     "hair-care-handheld-v5.png"
   ]) {
     const reference = `assets/product-hero/${asset}`;
