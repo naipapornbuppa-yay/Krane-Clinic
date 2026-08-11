@@ -3,7 +3,7 @@
   --landing-ink-2:var(--color-ink-2,#495366);
   --landing-muted:var(--color-ink-3,#5c6479);
   --landing-line:var(--color-line,#e2e8f0);
-  --landing-canvas:#fff;
+  --landing-canvas:var(--color-bg,#f4f6f8);
   --landing-blue:#1973ff;
   --landing-blue-2:#1973ff;
   --landing-navy:#111b30;
@@ -1153,7 +1153,7 @@ main{gap:28px;margin-top:0}
   box-shadow:none;
 }
 .hero-care-card--weight,.hero-care-card--sexual{color:#fff}
-.hero-care-card--weight::after,.hero-care-card--sexual::after{background:linear-gradient(90deg,rgba(5,11,22,.76) 0%,rgba(5,11,22,.58) 35%,rgba(5,11,22,.16) 62%,transparent 80%)}
+.hero-care-card--weight::after,.hero-care-card--sexual::after{background:linear-gradient(90deg,rgba(17,27,48,.84) 0%,rgba(17,27,48,.64) 35%,rgba(25,115,255,.14) 64%,transparent 82%)}
 .hero-care-card__copy{max-width:52%}
 .hero-care-card__kicker{font-size:14px;line-height:1.3}
 .hero-care-card__title{margin-top:6px;font-size:clamp(26px,2.35vw,38px);line-height:1.08}
@@ -1194,32 +1194,37 @@ main{gap:28px;margin-top:0}
 }
 .treatment-grid{
   display:grid;
-  grid-template-columns:none;
-  grid-auto-flow:column;
-  grid-auto-columns:calc((100% - 36px)/4);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:12px;
-  overflow-x:auto;
-  overscroll-behavior-inline:contain;
-  scroll-snap-type:x proximity;
-  scrollbar-width:none;
+  overflow:visible;
 }
-.treatment-grid::-webkit-scrollbar{display:none}
 .treatment-pill{
-  height:114px;
-  grid-template-columns:minmax(0,1fr) 68px 22px;
-  gap:12px;
-  padding:16px 18px 16px 22px;
-  border:1px solid rgba(17,27,48,.04);
+  position:relative;
+  height:176px;
+  display:block;
+  overflow:hidden;
+  padding:20px;
+  border:1px solid rgba(17,27,48,.06);
   border-radius:28px;
-  background:#f7f4ee;
+  background:#e5edf7;
   box-shadow:none;
-  scroll-snap-align:start;
 }
-.treatment-pill__image{grid-column:2;grid-row:1;width:68px;height:68px;border-radius:22px;background:#e2eaf3}
-.treatment-pill>span:nth-child(2){grid-column:1;grid-row:1;font-size:16px;font-weight:500;white-space:normal;line-height:1.35}
-.treatment-pill>svg{grid-column:3;grid-row:1;width:22px;height:22px;padding:2px;border-radius:0;background:transparent;color:var(--landing-navy)}
+.care-card--weight{background:#d7e4f7}
+.care-card--hair{background:#e4ebf5}
+.care-card--sexual{background:#cadcf4}
+.care-card--skin{background:#edf1f6}
+.care-card--hormone{background:#dce6f2}
+.care-card--mind{background:#d7e8f4}
+.treatment-pill__image{position:absolute;right:18px;bottom:-16px;width:132px;height:132px;overflow:hidden;border-radius:0;background:transparent}
+.treatment-pill__image img{width:100%;height:100%;padding:0;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(17,27,48,.16))}
+.treatment-pill__image--photo{right:0;bottom:0;width:58%;height:100%;border-radius:0}
+.treatment-pill__image--photo img{object-fit:cover;object-position:center;filter:none}
+.care-card--weight .treatment-pill__image--photo img{object-position:58% center}
+.care-card--hair .treatment-pill__image--photo img{object-position:center 34%}
+.treatment-pill>span:nth-child(2){position:relative;z-index:2;display:block;width:58%;font-size:20px;font-weight:500;white-space:normal;line-height:1.3}
+.treatment-pill>svg{position:absolute;z-index:3;right:18px;bottom:16px;width:36px;height:36px;padding:10px;border-radius:50%;background:var(--landing-navy);color:#fff}
 .treatment-pill:hover,.treatment-pill:focus-visible{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,27,48,.1)}
-.treatment-pill:hover>svg,.treatment-pill:focus-visible>svg{background:transparent;color:var(--landing-blue)}
+.treatment-pill:hover>svg,.treatment-pill:focus-visible>svg{background:var(--landing-blue);color:#fff}
 
 @media(max-width:960px){
   .site-header{height:64px;margin:0;padding:10px 20px}
@@ -1227,7 +1232,8 @@ main{gap:28px;margin-top:0}
   .hero.hero--campaign,.treatments{margin-inline:20px}
   .hero--campaign h1{font-size:clamp(50px,7vw,66px)}
   .hero-care-card{min-height:280px}
-  .treatment-grid{grid-auto-columns:calc((100% - 24px)/3)}
+  .treatment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .treatment-pill{height:166px}
 }
 
 @media(max-width:700px){
@@ -1254,15 +1260,20 @@ main{gap:28px;margin-top:0}
   .hero-care-card__title{font-size:clamp(27px,8vw,32px);line-height:1.1}
   .hero-care-card--weight .hero-care-card__photo{object-position:60% center}
   .hero-care-card--sexual .hero-care-card__photo{object-position:64% center}
-  .hero-care-card--weight::after,.hero-care-card--sexual::after{background:linear-gradient(90deg,rgba(5,11,22,.82) 0%,rgba(5,11,22,.62) 58%,rgba(5,11,22,.18) 100%)}
+  .hero-care-card--weight::after,.hero-care-card--sexual::after{background:linear-gradient(90deg,rgba(17,27,48,.9) 0%,rgba(17,27,48,.7) 58%,rgba(25,115,255,.16) 100%)}
   .hero-care-card__cta{min-height:24px;font-size:14px}
   .hero__legal{justify-content:flex-start;padding-inline:0;text-align:left}
   .hero+.treatments{margin-top:-4px}
-  .treatment-grid{grid-auto-columns:minmax(238px,76vw);gap:8px}
-  .treatment-pill{height:94px;grid-template-columns:minmax(0,1fr) 58px 20px;gap:10px;padding:12px 14px 12px 16px;border-radius:22px}
-  .treatment-pill__image{width:58px;height:58px;border-radius:18px}
-  .treatment-pill>span:nth-child(2){font-size:15px}
-  .treatment-pill>svg{width:20px;height:20px}
+  .treatment-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:138px;gap:8px}
+  .treatment-pill{height:138px;padding:15px;border-radius:22px}
+  .treatment-pill:first-child{grid-row:span 2;height:284px}
+  .treatment-pill:last-child{grid-column:1/-1}
+  .treatment-pill__image{right:10px;bottom:-12px;width:94px;height:94px}
+  .treatment-pill__image--photo{right:0;bottom:0;width:100%;height:62%}
+  .treatment-pill:first-child .treatment-pill__image--photo{height:70%}
+  .treatment-pill__image--photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,27,48,0),rgba(17,27,48,.08))}
+  .treatment-pill>span:nth-child(2){width:82%;font-size:16px;line-height:1.28}
+  .treatment-pill>svg{right:12px;bottom:12px;width:32px;height:32px;padding:9px}
 }
 
 @media(max-width:420px){
@@ -1271,7 +1282,9 @@ main{gap:28px;margin-top:0}
   .hero-care-grid{grid-auto-columns:minmax(276px,88vw)}
   .hero-care-card{min-height:300px;padding-inline:18px}
   .hero-care-card__title{font-size:27px}
-  .treatment-grid{grid-auto-columns:minmax(224px,78vw)}
+  .treatment-grid{grid-auto-rows:132px}
+  .treatment-pill{height:132px}
+  .treatment-pill:first-child{height:272px}
 }
 
 @media(prefers-reduced-motion:reduce){
