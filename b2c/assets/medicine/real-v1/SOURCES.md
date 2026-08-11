@@ -1,0 +1,13 @@
+# B2C medicine photo sources
+
+Downloaded for the Krane Clinic B2C prototype on 2026-08-11. These are unchanged product photographs used as compact identification thumbnails; they are not proof that a particular brand will be dispensed.
+
+Public availability documents provenance, not marketing permission. Keep these assets prototype-only until the product owner or legal reviewer confirms reuse permission and the pharmacy confirms the exact Thai-market brand, strength, formulation, registration, and pack that will be fulfilled.
+
+## Sources
+
+- `tusspac-15-100-130.jpg` — TUSSPAC box, Inpac Pharma, Thailand; dextromethorphan HBr 15 mg + guaifenesin 100 mg + terpin hydrate 130 mg tablets. Product page: https://www.buymed.co.th/product/11-tusspac-inpac-box-500s. Formula and Thai registration 2A 93/44 cross-check: https://ndi.fda.moph.go.th/drug_detail/index/?rcno=4400093&rctype=2A&register=MkEgOTMvNDQ%3D. Image owner/host: Buymed Thailand. Reuse permission: not yet documented. SHA-256: `3919df0bcbf332a98af8a8dc0dbf14669c92c82ad870ebe5c060fa63f2f81149`.
+- `loratadine-loreze-10mg.jpg` — Loreze Clearcap, Loratadine 10 mg, 10-softgel Thai presentation. Official manufacturer page and image: https://www.megawecare.co.th/product/loreze/. Owner: Mega Lifesciences. Thai registration shown by owner: 1A 191/56. Reuse permission: not yet documented. SHA-256: `70ef35c32bcca43fe88f61a0644cafdd06d7c4221d510c5e331c20b91ed14891`.
+- `paracetamol-para-gpo-500mg.png` — Para GPO 500 mg box and blister, Thailand. Source image: https://filebroker-cdn.lazada.co.th/kf/S9444f392cba5480ba2c202656cabfc39i.jpg. Product owner shown on pack: Government Pharmaceutical Organization. Image host: Lazada Thailand. Reuse permission: not yet documented. SHA-256: `6507cf45994de0bd5af8c910439be806bd56f95a4357b9bde75130cdcd783e56`.
+- `naproxen-250mg-thai-mit.jpg` — Naproxen 250 Thai-market box, registration 1A 399/32, Community Pharmacy Public Company Limited. Product certification and unchanged image: https://mit.fti.or.th/Product/ProductInfo/MiT6408001262. Owner/host: Federation of Thai Industries, Made in Thailand database. Reuse permission: not yet documented. SHA-256: `1ab9ccf04d32b7e893f96e9500813cea2c50bcbcf65c8a78b61f764e5290b80e`.
+- `tretinoin-retin-a-0025.jpg` — Retin-A cream 0.025%, 10 g Thai presentation. Source page: https://www.pharmanet.co.th/web/pharmacy-products/view?id=190098. Image host: R1/Osakadou product media; pack identifies OLIC Thailand/Janssen. Thai NDI ingredient and strength cross-check: https://ndi.fda.moph.go.th/index.php/drug_infopeople/detail?name=tretinoin. Reuse permission: not yet documented. SHA-256: `804b7db6bb700a74150e6793fea45107c5fbf1a3c915078ac2ae45ed234f9ad4`.
