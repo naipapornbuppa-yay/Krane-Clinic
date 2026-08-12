@@ -45,19 +45,16 @@ test("every B2C state uses its intended editorial scene", async () => {
   assert.notEqual(expected["empty-activities"], expected["empty-history"]);
 });
 
-test("state art uses reusable cartoon actors and reduced-motion-safe animation", async () => {
+test("state art uses mood-board editorial assets and a reduced-motion-safe crane loader", async () => {
   const html = await readFile(path.join(b2c, "krane-b2c.html"), "utf8");
   const css = await readFile(path.join(b2c, "state-illustrations.css"), "utf8");
   const gallery = await readFile(path.join(b2c, "state-illustrations.html"), "utf8");
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
 
-  assert.ok((defs.match(/id="krane-scene-[^"]+" class="ksi-character"/g) || []).length >= 10);
-  assert.ok((defs.match(/<use href="#krane-scene-/g) || []).length >= 18);
-  assert.match(css, /\.ksi-skin\{fill:#fffaf1\}/, "faces should use the mood board's unpainted paper tone");
-  assert.match(css, /\.ksi-hair\{fill:#0b2d5d\}/, "hair should use the mood board's navy ink");
-  assert.match(css, /\.ksi-hair-detail\{[^}]*stroke:#54739a/, "adult characters should retain hand-drawn hair texture");
-  assert.ok((defs.match(/class="ksi-hair-detail"/g) || []).length >= 10, "the actor set should include visible ink texture");
-  assert.match(css, /@keyframes ksi-route/);
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v1\/[^"]+\.jpg)"/g)].map((match) => match[1]);
+  assert.ok(editorialHrefs.length >= 19, "all state symbols except the crane loader should use the approved editorial set");
+  assert.ok(new Set(editorialHrefs).size >= 17, "the care journey should not collapse into one generic character image");
+  assert.match(defs, /<symbol id="krane-state-loading-info"[\s\S]*ks-fold-stage--crane/);
   assert.match(css, /@media \(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(css, /filter:\s*drop-shadow|url\(/, "illustrations should stay crisp and lightweight");
   assert.equal((gallery.match(/\['krane-state-/g) || []).length, 19);

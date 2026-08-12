@@ -562,18 +562,36 @@ test("each loading stage uses a stage-specific graphic", async () => {
   };
   for (const [screen, symbol] of Object.entries(expected)) {
     const fragment = screenFragment(html, screen);
-    assert.match(fragment, new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
+    const close = fragment.indexOf("</section>");
+    const screenMarkup = close < 0 ? fragment : fragment.slice(0, close + 10);
+    assert.match(screenMarkup, new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
     assert.match(html, new RegExp(`<symbol id="${symbol}"`), `${symbol} must be defined once in the shared SVG sprite`);
-    assert.match(fragment, /class="krane-state-art"/, `${screen} must use the shared vector-art treatment`);
-    assert.match(fragment, /state-view__tile--cutout/, `${screen} must use the unclipped cutout stage`);
-    assert.doesNotMatch(fragment, /state-view__tile--brand/, `${screen} must not overlay a logo on loading artwork`);
-    assert.doesNotMatch(fragment, /\.(?:png|jpe?g)|assets\/state-v2|assets\/loading(?:-v2)?\/|realistic-v1/, `${screen} must not use an opaque or stale loading asset`);
-    assert.doesNotMatch(fragment, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
+    assert.match(screenMarkup, /class="krane-state-art"/, `${screen} must use the shared art treatment`);
+    assert.match(screenMarkup, /state-view__tile--cutout/, `${screen} must use the unclipped cutout stage`);
+    assert.doesNotMatch(screenMarkup, /state-view__tile--brand/, `${screen} must not overlay a logo on loading artwork`);
+    assert.doesNotMatch(screenMarkup, /assets\/state-v2|assets\/loading(?:-v2)?\/|realistic-v1/, `${screen} must not use a stale loading asset`);
+    assert.doesNotMatch(screenMarkup, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
   }
   assert.match(html, /\.krane-state-art \.(?:ks-float|ks-float-late)[\s\S]*animation:ks-float/, "vector loading art must retain restrained motion");
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout\{[^}]*overflow:visible[^}]*background:transparent/);
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout::before\{[^}]*border-radius:50%[^}]*#dbe4f2/);
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
+});
+
+test("state symbols use the mood-board editorial artwork while the crane loader stays vector", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
+  assert.ok(defs, "state illustration definitions must exist");
+
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v1\/[^"]+\.jpg)"/g)].map((match) => match[1]);
+  assert.ok(editorialHrefs.length >= 19, "all non-loader state symbols should use the mood-board artwork set");
+  assert.ok(new Set(editorialHrefs).size >= 17, "distinct care states should retain distinct narrative artwork");
+  for (const href of new Set(editorialHrefs)) await access(path.join(publicRoot, "b2c", href));
+
+  const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
+  assert.match(loader, /ks-fold-stage--sheet/);
+  assert.match(loader, /ks-fold-stage--crane/);
+  assert.doesNotMatch(loader, /<image\b/, "the paper-to-crane loader must remain native animated vector artwork");
 });
 
 test("patient states never reuse the generic treatment bottle as status artwork", async () => {
