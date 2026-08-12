@@ -578,15 +578,29 @@ test("each loading stage uses a stage-specific graphic", async () => {
   assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
 });
 
-test("state symbols use the mood-board editorial artwork while the crane loader stays vector", async () => {
+test("state symbols reserve character art for care interactions and align object-only status marks", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
   assert.ok(defs, "state illustration definitions must exist");
 
   const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v2-cutout\/[^"]+\.png)"/g)].map((match) => match[1]);
-  assert.ok(editorialHrefs.length >= 19, "all non-loader state symbols should use the mood-board artwork set");
-  assert.ok(new Set(editorialHrefs).size >= 17, "distinct care states should retain distinct narrative artwork");
+  assert.equal(editorialHrefs.length, 5, "only relational care scenes should retain a person");
+  assert.equal(new Set(editorialHrefs).size, 5, "each relational care scene should retain distinct narrative artwork");
   for (const href of new Set(editorialHrefs)) await access(path.join(publicRoot, "b2c", href));
+
+  const objectOnlySymbols = [
+    "consult-payment-failed", "payment-failed", "payment-success", "no-slots",
+    "delivery-quote", "pharmacy-search", "medicine-preparing", "pharmacy-confirmed",
+    "delivery-unavailable", "order-confirmed", "feedback", "empty-activities", "empty-history"
+  ];
+  for (const id of objectOnlySymbols) {
+    const symbol = defs.match(new RegExp(`<symbol id="krane-state-${id}"[\\s\\S]*?<\\/symbol>`))?.[0] || "";
+    assert.match(symbol, /href="#ksi-object-/, `${id} must use the aligned object illustration kit`);
+    assert.doesNotMatch(symbol, /<image\b/, `${id} must not render a person`);
+  }
+  const alignedMarks = [...defs.matchAll(/href="#ksi-mark-(?:check|alert|clock|bubble-check|search)" transform="translate\(([^)]+)\)"/g)];
+  assert.ok(alignedMarks.length >= 10, "outcome symbols should reuse the shared status-mark family");
+  for (const mark of alignedMarks) assert.equal(mark[1], "420 91", "every status mark must share one optical anchor");
 
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
   assert.match(loader, /ks-fold-stage--sheet/);
