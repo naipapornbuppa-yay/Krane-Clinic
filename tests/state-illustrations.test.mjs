@@ -32,7 +32,6 @@ test("every B2C state uses its intended editorial scene", async () => {
     feedbackdone: "krane-state-feedback",
     "empty-activities": "krane-state-empty-activities",
     "empty-history": "krane-state-empty-history",
-    preloader: "krane-state-loading-info",
   };
 
   assert.match(html, /state-illustrations\.css\?v=20260812-moodboard-v2/);
@@ -40,6 +39,8 @@ test("every B2C state uses its intended editorial scene", async () => {
     assert.match(screenFragment(html, screen), new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
     assert.equal((html.match(new RegExp(`<symbol id="${symbol}"`, "g")) || []).length, 1, `${symbol} must be defined once`);
   }
+  assert.match(screenFragment(html, "preloader"), /assets\/loading-v4\/paper-crane-fold-v1\.gif/, "preloader must use the hand-drawn GIF directly on mobile");
+  assert.equal((html.match(/<symbol id="krane-state-loading-info"/g) || []).length, 1, "the gallery loader symbol must be defined once");
   assert.notEqual(expected["delivery-quote"], expected["pharmacy-search"]);
   assert.notEqual(expected["consultpay-fail"], expected.payfail);
   assert.notEqual(expected["empty-activities"], expected["empty-history"]);
@@ -72,8 +73,17 @@ test("state art balances human care scenes with aligned object-only graphics", a
   assert.ok(alignedMarks.length >= 10);
   for (const mark of alignedMarks) assert.equal(mark[1], "420 91");
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /ks-fold-stage--crane/);
+  assert.match(loader, /assets\/loading-v4\/paper-crane-fold-v1\.gif/, "the gallery must use the hand-drawn folding GIF");
+  assert.match(loader, /assets\/loading-v4\/paper-crane-fold-06\.png/, "the gallery must keep a reduced-motion final frame");
+  assert.doesNotMatch(loader, /ks-fold-stage|<polygon\b|<path\b/, "the rejected geometric SVG crane must not remain");
+  const gif = await readFile(path.join(b2c, "assets/loading-v4/paper-crane-fold-v1.gif"));
+  assert.equal(gif.subarray(0, 6).toString(), "GIF89a");
+  for (let frame = 1; frame <= 6; frame += 1) {
+    const png = await readFile(path.join(b2c, `assets/loading-v4/paper-crane-fold-${String(frame).padStart(2, "0")}.png`));
+    assert.equal(png.subarray(1, 4).toString(), "PNG", `fold frame ${frame} must be a PNG`);
+  }
   assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper crane must have no background scenery");
+  assert.match(css, /ks-paper-crane-static\{display:none\}/);
   assert.match(css, /@media \(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(css, /filter:\s*drop-shadow|url\(/, "illustrations should stay crisp and lightweight");
   assert.equal((gallery.match(/\['krane-state-/g) || []).length, 19);

@@ -529,11 +529,10 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   const preloader = screenFragment(html, "preloader");
   assert.match(preloader, /data-loader="paper-crane"/, "preloader must expose the branded paper-crane loader");
-  for (const stage of ["sheet", "base", "forming", "crane"]) {
-    assert.match(html, new RegExp(`ks-fold-stage--${stage}`), `paper-crane loader must include the ${stage} fold stage`);
-  }
-  assert.match(html, /@keyframes ks-fold-crane/, "paper-crane loader must animate into the final crane");
-  assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*ks-fold-stage--crane\{opacity:1;transform:none\}/, "paper-crane loader must show a static final crane when motion is reduced");
+  assert.match(preloader, /assets\/loading-v4\/paper-crane-fold-v1\.gif/, "preloader must use the six-frame editorial GIF");
+  assert.match(preloader, /assets\/loading-v4\/paper-crane-fold-06\.png/, "preloader must include the final still");
+  assert.doesNotMatch(preloader, /ks-fold-stage|<polygon\b/, "preloader must not use the rejected geometric SVG frames");
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*krane-paper-crane-gif\{display:none\}[\s\S]*krane-paper-crane-static\{display:block\}/, "paper-crane loader must show a static final crane when motion is reduced");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
 });
 
@@ -603,9 +602,9 @@ test("state symbols reserve character art for care interactions and align object
   for (const mark of alignedMarks) assert.equal(mark[1], "420 91", "every status mark must share one optical anchor");
 
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /ks-fold-stage--sheet/);
-  assert.match(loader, /ks-fold-stage--crane/);
-  assert.doesNotMatch(loader, /<image\b/, "the paper-to-crane loader must remain native animated vector artwork");
+  assert.match(loader, /paper-crane-fold-v1\.gif/);
+  assert.match(loader, /paper-crane-fold-06\.png/);
+  assert.doesNotMatch(loader, /ks-fold-stage|<polygon\b|<path\b/, "the paper-to-crane loader must not retain the rejected geometric artwork");
   assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper-to-crane loader must not render background scenery");
 });
 
