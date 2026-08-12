@@ -52,7 +52,7 @@ test("state art balances human care scenes with aligned object-only graphics", a
   const gallery = await readFile(path.join(b2c, "state-illustrations.html"), "utf8");
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
 
-  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v2-cutout\/[^"]+\.png)"/g)].map((match) => match[1]);
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v3-simple\/[^"]+\.png)"/g)].map((match) => match[1]);
   assert.equal(editorialHrefs.length, 5, "only relational care scenes should retain a person");
   assert.equal(new Set(editorialHrefs).size, 5, "relational care scenes should keep distinct character artwork");
   for (const href of new Set(editorialHrefs)) {

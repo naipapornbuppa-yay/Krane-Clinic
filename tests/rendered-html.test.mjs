@@ -582,7 +582,7 @@ test("state symbols reserve character art for care interactions and align object
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
   assert.ok(defs, "state illustration definitions must exist");
 
-  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v2-cutout\/[^"]+\.png)"/g)].map((match) => match[1]);
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v3-simple\/[^"]+\.png)"/g)].map((match) => match[1]);
   assert.equal(editorialHrefs.length, 5, "only relational care scenes should retain a person");
   assert.equal(new Set(editorialHrefs).size, 5, "each relational care scene should retain distinct narrative artwork");
   for (const href of new Set(editorialHrefs)) await access(path.join(publicRoot, "b2c", href));
