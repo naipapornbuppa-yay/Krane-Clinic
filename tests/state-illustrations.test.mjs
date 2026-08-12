@@ -35,7 +35,7 @@ test("every B2C state uses its intended editorial scene", async () => {
     preloader: "krane-state-loading-info",
   };
 
-  assert.match(html, /state-illustrations\.css\?v=20260811-editorial-v1/);
+  assert.match(html, /state-illustrations\.css\?v=20260812-moodboard-v2/);
   for (const [screen, symbol] of Object.entries(expected)) {
     assert.match(screenFragment(html, screen), new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
     assert.equal((html.match(new RegExp(`<symbol id="${symbol}"`, "g")) || []).length, 1, `${symbol} must be defined once`);
@@ -53,8 +53,10 @@ test("state art uses reusable cartoon actors and reduced-motion-safe animation",
 
   assert.ok((defs.match(/id="krane-scene-[^"]+" class="ksi-character"/g) || []).length >= 10);
   assert.ok((defs.match(/<use href="#krane-scene-/g) || []).length >= 18);
-  assert.match(css, /\.ksi-skin\{fill:#edc2a5\}/);
-  assert.match(css, /\.ksi-hair\{fill:#17345f\}/);
+  assert.match(css, /\.ksi-skin\{fill:#fffaf1\}/, "faces should use the mood board's unpainted paper tone");
+  assert.match(css, /\.ksi-hair\{fill:#0b2d5d\}/, "hair should use the mood board's navy ink");
+  assert.match(css, /\.ksi-hair-detail\{[^}]*stroke:#54739a/, "adult characters should retain hand-drawn hair texture");
+  assert.ok((defs.match(/class="ksi-hair-detail"/g) || []).length >= 10, "the actor set should include visible ink texture");
   assert.match(css, /@keyframes ksi-route/);
   assert.match(css, /@media \(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(css, /filter:\s*drop-shadow|url\(/, "illustrations should stay crisp and lightweight");
