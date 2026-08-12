@@ -583,7 +583,7 @@ test("state symbols use the mood-board editorial artwork while the crane loader 
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
   assert.ok(defs, "state illustration definitions must exist");
 
-  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v1\/[^"]+\.jpg)"/g)].map((match) => match[1]);
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v2-cutout\/[^"]+\.png)"/g)].map((match) => match[1]);
   assert.ok(editorialHrefs.length >= 19, "all non-loader state symbols should use the mood-board artwork set");
   assert.ok(new Set(editorialHrefs).size >= 17, "distinct care states should retain distinct narrative artwork");
   for (const href of new Set(editorialHrefs)) await access(path.join(publicRoot, "b2c", href));
@@ -592,6 +592,7 @@ test("state symbols use the mood-board editorial artwork while the crane loader 
   assert.match(loader, /ks-fold-stage--sheet/);
   assert.match(loader, /ks-fold-stage--crane/);
   assert.doesNotMatch(loader, /<image\b/, "the paper-to-crane loader must remain native animated vector artwork");
+  assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper-to-crane loader must not render background scenery");
 });
 
 test("patient states never reuse the generic treatment bottle as status artwork", async () => {

@@ -51,10 +51,16 @@ test("state art uses mood-board editorial assets and a reduced-motion-safe crane
   const gallery = await readFile(path.join(b2c, "state-illustrations.html"), "utf8");
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
 
-  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v1\/[^"]+\.jpg)"/g)].map((match) => match[1]);
+  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v2-cutout\/[^"]+\.png)"/g)].map((match) => match[1]);
   assert.ok(editorialHrefs.length >= 19, "all state symbols except the crane loader should use the approved editorial set");
   assert.ok(new Set(editorialHrefs).size >= 17, "the care journey should not collapse into one generic character image");
-  assert.match(defs, /<symbol id="krane-state-loading-info"[\s\S]*ks-fold-stage--crane/);
+  for (const href of new Set(editorialHrefs)) {
+    const asset = await readFile(path.join(b2c, href));
+    assert.ok([4, 6].includes(asset[25]), `${href} must preserve a transparent PNG channel`);
+  }
+  const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
+  assert.match(loader, /ks-fold-stage--crane/);
+  assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper crane must have no background scenery");
   assert.match(css, /@media \(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(css, /filter:\s*drop-shadow|url\(/, "illustrations should stay crisp and lightweight");
   assert.equal((gallery.match(/\['krane-state-/g) || []).length, 19);
