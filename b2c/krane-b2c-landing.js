@@ -458,9 +458,9 @@
   const productSlides = [
     {
       id: "injectors",
-      src: "assets/landing-editorial-v1/clinical-mixed-medicine-v1.svg",
+      src: "assets/landing-editorial-v1/clinical-mixed-medicine-photo-v2.png",
       alt: {
-        th: "ภาพประกอบยาฉีดและยาเม็ดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
+        th: "ภาพผลิตภัณฑ์ยาฉีดและยาเม็ดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
         en: "Injection and oral medicines that may be prescribed as part of a treatment plan"
       },
       tags: {
