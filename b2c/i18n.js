@@ -8,14 +8,14 @@
 (function () {
   var TH = {
     /* SCR-010 draft plan preview: draft only, quantities not final. */
-    "Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.":"ตัวอย่างเท่านั้น 2 รายการ สำหรับ 1 เดือน จำนวนจริงยืนยันเมื่อแพทย์ออกแผนการรักษา",
+    "Draft only, 4 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.":"ตัวอย่างเท่านั้น 4 รายการ สำหรับ 1 เดือน จำนวนจริงยืนยันเมื่อแพทย์ออกแผนการรักษา",
 
-    /* Doctor attribution and licence lines. --- */
-    "in room · licence 12345":"อยู่ในห้อง · ใบอนุญาต 12345",
-    "Prescribed by Dr. A · 12 May 2026":"สั่งโดย พญ. เอ · 12 พ.ค. 2026",
-    "Prescribed by Dr. B · 2 Apr 2026":"สั่งโดย นพ. บี · 2 เม.ย. 2026",
-    "Dr. Narin · licence 12345":"พญ. นรินทร์ · ใบอนุญาต 12345",
-    "Prescribed by Dr. Narin T. · licence 12345":"สั่งโดย พญ. นรินทร์ ต. · ใบอนุญาต 12345",
+    /* Doctor attribution and credential lines. --- */
+    "in room · licensed doctor":"อยู่ในห้อง · แพทย์ผู้ได้รับใบอนุญาต",
+    "Prescribed by Dr. Narin T. · 12 May 2026":"สั่งโดย พญ. นรินทร์ ต. · 12 พ.ค. 2026",
+    "Prescribed by Dr. Anong S. · 2 Apr 2026":"สั่งโดย พญ. อนงค์ ส. · 2 เม.ย. 2026",
+    "Dr. Narin · licensed doctor":"พญ. นรินทร์ · แพทย์ผู้ได้รับใบอนุญาต",
+    "Prescribed by Dr. Narin T. · licensed doctor":"สั่งโดย พญ. นรินทร์ ต. · แพทย์ผู้ได้รับใบอนุญาต",
     "Required once for first-time sign-up. Your documents are encrypted and used only to verify it's you.":"ทำครั้งเดียวสำหรับสมัครใหม่ เอกสารถูกเข้ารหัสและใช้เพื่อยืนยันตัวตนเท่านั้น",
 
     /* --- Flow-wide Thai coverage pass. Plain UI strings. --- */
@@ -117,7 +117,7 @@
     "Today, 11:20":"วันนี้ 11:20",
     "Today, 11:22":"วันนี้ 11:22",
     "Noted":"รับทราบ",
-    "Dr. A., Dermatology · reviewed Jun 2026 · 4 min read":"พญ. เอ · ผิวหนัง · ทบทวน มิ.ย. 2026 · อ่าน 4 นาที",
+    "Dr. Anong S., Dermatology · reviewed Jun 2026 · 4 min read":"พญ. อนงค์ ส. · ผิวหนัง · ทบทวน มิ.ย. 2026 · อ่าน 4 นาที",
     /* --- Clinical / legal wording: translated conservatively, pending review. --- */
     "A licensed pharmacist checks your prescription before the order is accepted.":"เภสัชกรที่มีใบอนุญาตตรวจสอบใบสั่งยาก่อนรับคำสั่งซื้อ",
     "Photo or PDF from a licensed doctor.":"รูปหรือ PDF จากแพทย์ที่มีใบอนุญาต",
@@ -853,7 +853,7 @@
 
   /* ---- implementation QA coverage for the client walkthrough · 15 Jul ---- */
   var TH_B2C_QA15 = {
-    "Payment preference":"รูปแบบการชำระเงิน","Self-pay":"ชำระเอง","Pay ฿ 350 securely":"ชำระ ฿ 350 อย่างปลอดภัย","Doctor admits you in 2-3 min":"แพทย์จะเปิดห้องให้ภายใน 2-3 นาที","in room · licence 12345":"อยู่ในห้อง · ใบอนุญาต 12345","from Dr. Narin":"จาก คุณหมอนรินทร์ ทานากะ","1-month plan · review & accept here":"แผน 1 เดือน · ตรวจและยืนยันที่นี่","You":"คุณ","Video consultation · 02:14":"ปรึกษาผ่านวิดีโอ · 02:14","Voice consultation · 00:42":"ปรึกษาผ่านเสียง · 00:42",
+    "Payment preference":"รูปแบบการชำระเงิน","Self-pay":"ชำระเอง","Pay ฿ 350 securely":"ชำระ ฿ 350 อย่างปลอดภัย","Doctor admits you in 2-3 min":"แพทย์จะเปิดห้องให้ภายใน 2-3 นาที","in room · licensed doctor":"อยู่ในห้อง · แพทย์ผู้ได้รับใบอนุญาต","from Dr. Narin":"จาก คุณหมอนรินทร์ ทานากะ","1-month plan · review & accept here":"แผน 1 เดือน · ตรวจและยืนยันที่นี่","You":"คุณ","Video consultation · 02:14":"ปรึกษาผ่านวิดีโอ · 02:14","Voice consultation · 00:42":"ปรึกษาผ่านเสียง · 00:42",
     "Order #KR-10293 is on its way, arriving by 6pm.":"ออเดอร์ #KR-10293 กำลังนำส่ง คาดว่าจะถึงก่อน 18:00","Consent":"ความยินยอม",
     "Krane provides doctor-led telemedicine and medicine delivery. By continuing you agree to how the service is delivered and your responsibilities as a patient.":"Krane ให้บริการพบแพทย์ทางไกลและจัดส่งยา โดยการดำเนินการต่อถือว่าคุณยอมรับรูปแบบบริการและหน้าที่ของผู้รับบริการ",
     "Online consultation has limits. A doctor may ask you to seek in-person care if your condition is not suitable for remote treatment.":"การปรึกษาออนไลน์มีข้อจำกัด แพทย์อาจแนะนำให้ไปพบแพทย์ที่สถานพยาบาล หากอาการไม่เหมาะกับการดูแลทางไกล",
@@ -917,7 +917,7 @@
     "Dr. Anong S.":"คุณหมออนงค์ ส.",
     "Dr. Narin":"คุณหมอนรินทร์",
     "Dr. Narin T.":"คุณหมอนรินทร์ ท.",
-    "Dr. Narin · licence 12345":"คุณหมอนรินทร์ · ใบอนุญาต 12345",
+    "Dr. Narin · licensed doctor":"คุณหมอนรินทร์ · แพทย์ผู้ได้รับใบอนุญาต",
     "Edit saved delivery address":"แก้ไขที่อยู่จัดส่งที่บันทึกไว้",
     "Empty states":"สถานะที่ยังไม่มีข้อมูล",
     "Fallback · Chat":"สำรอง · แชท",
@@ -949,9 +949,9 @@
     "Pharmacy & fulfilment":"ร้านยาและการจัดส่ง",
     "Pharmacy review":"เภสัชกรตรวจสอบ",
     "Policy number (เลขกรมธรรม์)":"เลขกรมธรรม์",
-    "Prescribed by Dr. A · 12 May 2026":"สั่งโดยคุณหมอ A · 12 พ.ค. 2026",
-    "Prescribed by Dr. B · 2 Apr 2026":"สั่งโดยคุณหมอ B · 2 เม.ย. 2026",
-    "Prescribed by Dr. Narin T. · licence 12345":"สั่งโดยคุณหมอนรินทร์ ท. · ใบอนุญาต 12345",
+    "Prescribed by Dr. Narin T. · 12 May 2026":"สั่งโดยคุณหมอนรินทร์ ท. · 12 พ.ค. 2026",
+    "Prescribed by Dr. Anong S. · 2 Apr 2026":"สั่งโดยคุณหมออนงค์ ส. · 2 เม.ย. 2026",
+    "Prescribed by Dr. Narin T. · licensed doctor":"สั่งโดยคุณหมอนรินทร์ ท. · แพทย์ผู้ได้รับใบอนุญาต",
     "Rate this consultation":"ให้คะแนนการปรึกษา",
     "Reimbursement / claim":"เบิกคืน / เคลม",
     "Save address & return to payment":"บันทึกที่อยู่และกลับไปชำระเงิน",
@@ -1001,7 +1001,7 @@
     "Care built around you.":"การดูแลที่ออกแบบรอบตัวคุณ",
     "From consultation to your door.":"ตั้งแต่การปรึกษาจนถึงหน้าบ้านคุณ",
     "Private care, wherever you are.":"การดูแลที่เป็นส่วนตัว ไม่ว่าคุณอยู่ที่ไหน",
-    "Dr. A., Dermatology · reviewed Jun 2026 · 4 min read":"คุณหมอ A, ผิวหนัง · ตรวจทาน มิ.ย. 2026 · อ่าน 4 นาที",
+    "Dr. Anong S., Dermatology · reviewed Jun 2026 · 4 min read":"คุณหมออนงค์ ส., ผิวหนัง · ตรวจทาน มิ.ย. 2026 · อ่าน 4 นาที",
     "Ari · Bangkok":"อารีย์ · กรุงเทพฯ",
     "Bank gateway":"ช่องทางชำระเงินของธนาคาร",
     "Kasikornbank · secure checkout":"ธนาคารกสิกรไทย · ชำระเงินอย่างปลอดภัย",
