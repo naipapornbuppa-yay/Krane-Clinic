@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260804selectfix1" defer></script>
-<script src="i18n.js?v=20260814-client-readiness1" defer></script>
+<script src="i18n.js?v=20260815-intake-routes-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -3654,6 +3654,34 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Scalp discomfort or visible change</span></span><span class="opt-check"></span></button>
         </div></div>`
     },
+    weight:{
+      intake1:`
+        <div><h2 class="h1">What is your main weight-care goal?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Lose weight</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Maintain weight after previous loss</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Improve metabolic health</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Check whether medical treatment could be suitable</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake2:`
+        <div><h2 class="h1">How has your weight changed over the past 6 months?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has increased steadily</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has gone up and down</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has stayed similar but is difficult to reduce</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has decreased without me trying</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake3:`
+        <div><h2 class="h1">What have you already tried for weight management?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Food or calorie plan</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Exercise program</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Dietitian or structured weight program</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Prescription or over-the-counter medicine</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">GLP-1 or another injection</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">I have not tried a structured plan</span></span><span class="opt-check"></span></button>
+        </div>`
+    },
     general:{
       intake1:`
         <div><h2 class="h1">What can we help with today?</h2></div>
@@ -3790,7 +3818,7 @@
   };
 
   const intakeBaseMarkup = {};
-  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3','intake-general'];
+  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
   function intakeQuestionPageState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     const body = screen?.querySelector('.screen__body');
@@ -3835,11 +3863,23 @@
     if(!screen || !INTAKE_ONE_QUESTION_SCREENS.includes(screen.id)) return;
     const body=screen.querySelector('.screen__body');
     if(!body) return;
+    let compactGeneral=false;
+    try { compactGeneral=screen.id==='intake1' && selectedCategory().general; } catch(e){}
+    if(compactGeneral){
+      body.removeAttribute('data-intake-question-index');
+      body.querySelectorAll('[data-intake-question]').forEach(question => {
+        question.hidden=false;
+        question.removeAttribute('aria-hidden');
+        question.removeAttribute('data-intake-question');
+      });
+      body.querySelector('[data-intake-question-count]')?.remove();
+      syncIntakeDropdownContinue(screen);
+      updateIntakeProgress(screen.id);
+      return;
+    }
     const children=[...body.children];
     const titleBlock=children.find(child => child.querySelector('.h1')) || children[0];
-    const questions=screen.id==='intake-general'
-      ? [...body.querySelectorAll('.partner-health-grid > .field,.partner-clinical-grid > [data-direct-history]')]
-      : children.filter(child => child!==titleBlock);
+    const questions=children.filter(child => child!==titleBlock);
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
     });
@@ -4152,7 +4192,7 @@
 
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
-    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
     // Template coverage per concern (verified 2026-08-04):
@@ -4798,12 +4838,14 @@
      markup so it survives the innerHTML round-trip renderIntakeQuestions
      performs (the same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3'];
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
     catch(e){ return 'hair'; }
   }
   function intakeSkipped(id){
+    if(intakeConcernKey()==='general' && GENERAL_COMPACT_SKIPPED_SCREENS.includes(id)) return true;
     if(!INTAKE_CONCERN_SPECIFIC.includes(id)) return false;
     try { return !((intakeTemplates[intakeConcernKey()] || {})[id]); }
     catch(e){ return false; }
@@ -4861,6 +4903,7 @@
     const thai = document.documentElement.lang === 'th';
     const summaries = {
       'hair-skin':{th:'ผมร่วงและหนังศีรษะ',en:'Hair loss & scalp',symTh:'ผมบาง ผมร่วง หรือปัญหาหนังศีรษะ',symEn:'Hair thinning, shedding or scalp concern',durationTh:'6 เดือน ถึง 2 ปี',durationEn:'6 months to 2 years',detailTh:'ปานกลาง · รูปแบบเปลี่ยนอย่างต่อเนื่อง',detailEn:'Moderate · gradual pattern change'},
+      weight:{th:'ดูแลน้ำหนัก',en:'Weight care',symTh:'เป้าหมายการดูแลน้ำหนักตามที่เลือก',symEn:'Selected weight-care goal',durationTh:'ช่วง 6 เดือนที่ผ่านมา',durationEn:'Over the past 6 months',detailTh:'แนวโน้มน้ำหนักตามที่เลือก',detailEn:'Selected weight-change pattern'},
       skin:{th:'ผิวและสิว',en:'Skin & acne',symTh:'สิว ผื่น หรือการระคายเคืองผิว',symEn:'Acne, rash or skin irritation',durationTh:'น้อยกว่า 3 เดือน',durationEn:'Less than 3 months',detailTh:'อาการผิวตามที่เลือก',detailEn:'Selected skin symptoms'},
       'sexual-health':{th:'สุขภาพทางเพศ',en:'Sexual health',symTh:'อาการสุขภาพทางเพศตามที่เลือก',symEn:'Selected sexual health symptoms',durationTh:'น้อยกว่า 3 เดือน',durationEn:'Less than 3 months',detailTh:'ข้อมูลเป็นความลับสำหรับแพทย์',detailEn:'Private details for doctor review'},
       'sleep-stress':{th:'การนอนและความเครียด',en:'Sleep & stress',symTh:'การนอน ความเครียด หรือพลังงาน',symEn:'Sleep, stress or energy concern',durationTh:'1 ถึง 3 เดือน',durationEn:'1 to 3 months',detailTh:'อาการและพฤติกรรมการนอนตามที่เลือก',detailEn:'Selected sleep pattern and habits'},
