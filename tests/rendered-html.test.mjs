@@ -529,8 +529,8 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   const preloader = screenFragment(html, "preloader");
   assert.match(preloader, /data-loader="paper-crane"/, "preloader must expose the branded paper-crane loader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-fold-v3\.svg/, "preloader must use the editorial rigid-fold vector animation");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-final-v3\.svg/, "preloader must include the matching final still");
+  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg/, "preloader must use the editorial frame-by-frame flying animation");
+  assert.match(preloader, /assets\/loading-v5\/paper-crane-final-v4\.svg/, "preloader must include the matching final still");
   assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*krane-paper-crane-animated\{display:none\}[\s\S]*krane-paper-crane-static\{display:block\}/, "paper-crane loader must show a static final crane when motion is reduced");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
 });
@@ -570,7 +570,7 @@ test("each loading stage uses a stage-specific graphic", async () => {
     assert.doesNotMatch(screenMarkup, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
   }
   const preloader = screenFragment(html, "preloader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-fold-v3\.svg/);
+  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg/);
   assert.match(preloader, /class="krane-state-art krane-paper-crane-media krane-paper-crane-animated"/);
   assert.match(preloader, /state-view__tile--cutout/);
   assert.doesNotMatch(preloader, /state-view__tile--brand/);
@@ -605,8 +605,8 @@ test("state symbols reserve character art for care interactions and align object
   for (const mark of alignedMarks) assert.equal(mark[1], "420 91", "every status mark must share one optical anchor");
 
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /paper-crane-fold-v3\.svg/);
-  assert.match(loader, /paper-crane-final-v3\.svg/);
+  assert.match(loader, /paper-crane-flight-v4\.svg/);
+  assert.match(loader, /paper-crane-final-v4\.svg/);
   assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper-to-crane loader must not render background scenery");
 });
 
