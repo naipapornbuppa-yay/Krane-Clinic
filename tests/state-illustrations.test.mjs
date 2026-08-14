@@ -39,7 +39,7 @@ test("every B2C state uses its intended editorial scene", async () => {
     assert.match(screenFragment(html, screen), new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
     assert.equal((html.match(new RegExp(`<symbol id="${symbol}"`, "g")) || []).length, 1, `${symbol} must be defined once`);
   }
-  assert.match(screenFragment(html, "preloader"), /assets\/loading-v5\/paper-crane-flight-v4\.svg\?v=20260814-framefix1/, "preloader must use the cache-safe editorial flying animation directly on mobile");
+  assert.match(screenFragment(html, "preloader"), /assets\/loading-v5\/paper-crane-flight-v5\.svg/, "preloader must use the anatomically clear editorial flying animation directly on mobile");
   assert.equal((html.match(/<symbol id="krane-state-loading-info"/g) || []).length, 1, "the gallery loader symbol must be defined once");
   assert.notEqual(expected["delivery-quote"], expected["pharmacy-search"]);
   assert.notEqual(expected["consultpay-fail"], expected.payfail);
@@ -73,9 +73,9 @@ test("state art balances human care scenes with aligned object-only graphics", a
   assert.ok(alignedMarks.length >= 10);
   for (const mark of alignedMarks) assert.equal(mark[1], "420 91");
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /assets\/loading-v5\/paper-crane-flight-v4\.svg\?v=20260814-framefix1/, "the gallery must use the cache-safe editorial flying animation");
-  assert.match(loader, /assets\/loading-v5\/paper-crane-final-v4\.svg/, "the gallery must keep a reduced-motion final crane");
-  const animatedCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-flight-v4.svg"), "utf8");
+  assert.match(loader, /assets\/loading-v5\/paper-crane-flight-v5\.svg/, "the gallery must use the anatomically clear editorial flying animation");
+  assert.match(loader, /assets\/loading-v5\/paper-crane-final-v5\.svg/, "the gallery must keep a reduced-motion final crane");
+  const animatedCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-flight-v5.svg"), "utf8");
   assert.match(animatedCrane, /vector-effect:non-scaling-stroke/);
   assert.match(animatedCrane, /<animateTransform\b/);
   assert.doesNotMatch(animatedCrane, /<animate\s+attributeName="d"|filter=|<filter\b|blur\(|feGaussianBlur|linearGradient|radialGradient/);
@@ -85,12 +85,13 @@ test("state art balances human care scenes with aligned object-only graphics", a
   assert.match(animatedCrane, /wing-frame--down/);
   assert.match(animatedCrane, /calcMode="discrete"/);
   assert.equal((animatedCrane.match(/keyTimes="0;\.25;\.5;\.75;1"/g) || []).length, 5, "all four wing drawings and the body drift must share one complete flight cycle");
-  const staticCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-final-v4.svg"), "utf8");
+  assert.match(animatedCrane, /Traditional orizuru anatomy/);
+  const staticCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-final-v5.svg"), "utf8");
   assert.match(staticCrane, /<svg\b/);
   assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper crane must have no background scenery");
   assert.match(css, /ks-paper-crane-static\{display:none\}/);
   assert.match(css, /@media \(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(css, /filter:\s*drop-shadow|url\(/, "illustrations should stay crisp and lightweight");
   assert.equal((gallery.match(/\['krane-state-/g) || []).length, 19);
-  assert.match(gallery, /fetch\('krane-b2c\.html\?art=20260814-crane-flight-v4', \{ cache: 'no-store' \}\)/, "the gallery must not reuse a stale illustration sprite");
+  assert.match(gallery, /fetch\('krane-b2c\.html\?art=20260814-crane-anatomy-v5', \{ cache: 'no-store' \}\)/, "the gallery must not reuse a stale illustration sprite");
 });
