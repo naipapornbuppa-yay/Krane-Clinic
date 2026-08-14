@@ -1739,7 +1739,16 @@ body{
   .campaign-slide__image{transform:none!important}
 }
 
-/* One in-app editorial art system for every service card. */
+/* Product photography is primary; editorial art appears on hover/focus. */
+.treatment-grid .care-card--hair,
+.treatment-grid .care-card--sexual,
+.treatment-grid .care-card--skin,
+.treatment-grid .care-card--hormone,
+.treatment-grid .care-card--mind,
+.treatment-grid .care-card--general{
+  border-color:rgba(17,27,48,.07);
+  background:#eef0f2;
+}
 .treatment-pill__image,
 .treatment-pill__image--photo,
 .treatment-pill__image--doctor{
@@ -1764,10 +1773,52 @@ body{
   object-fit:contain;
   object-position:center bottom;
   filter:none;
-  transform:none;
 }
-.treatment-pill:hover .treatment-pill__image img,
-.treatment-pill:focus-visible .treatment-pill__image img{transform:translateY(-2px) scale(1.025)}
+.treatment-grid .treatment-pill .treatment-pill__image img{
+  position:absolute;
+  inset:0;
+  transition:opacity .24s ease,transform .34s var(--ease);
+}
+.treatment-grid .treatment-pill .treatment-pill__product{
+  opacity:1;
+  transform:none;
+  filter:drop-shadow(0 10px 14px rgba(17,27,48,.12));
+}
+.treatment-grid .care-card--sexual .treatment-pill__product{
+  transform:rotate(38deg) scale(.9);
+}
+.treatment-grid .care-card--skin .treatment-pill__product,
+.treatment-grid .care-card--general .treatment-pill__product{
+  mix-blend-mode:multiply;
+}
+.treatment-grid .treatment-pill .treatment-pill__illustration{
+  opacity:0;
+  transform:translateY(3px) scale(.97);
+}
+@media(hover:hover) and (pointer:fine){
+  .treatment-grid .treatment-pill:hover .treatment-pill__product{
+    opacity:0;
+    transform:translateY(2px) scale(.96);
+  }
+  .treatment-grid .care-card--sexual:hover .treatment-pill__product{
+    transform:rotate(38deg) scale(.86);
+  }
+  .treatment-grid .treatment-pill:hover .treatment-pill__illustration{
+    opacity:1;
+    transform:translateY(-2px) scale(1.025);
+  }
+}
+.treatment-grid .treatment-pill:focus-visible .treatment-pill__product{
+  opacity:0;
+  transform:translateY(2px) scale(.96);
+}
+.treatment-grid .care-card--sexual:focus-visible .treatment-pill__product{
+  transform:rotate(38deg) scale(.86);
+}
+.treatment-grid .treatment-pill:focus-visible .treatment-pill__illustration{
+  opacity:1;
+  transform:translateY(-2px) scale(1.025);
+}
 
 /* Preserve the real product-photo cutout at full fidelity. */
 .product-stage[data-product-slide="injectors"] .product-stage__image{
