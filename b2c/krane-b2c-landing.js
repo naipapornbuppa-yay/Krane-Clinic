@@ -458,14 +458,14 @@
   const productSlides = [
     {
       id: "injectors",
-      src: "assets/landing-573/products/clinical-injectors-v2.png",
+      src: "assets/landing-editorial-v1/clinical-mixed-medicine-v1.svg",
       alt: {
-        th: "อุปกรณ์ยาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
-        en: "Injection devices that may be prescribed as part of a treatment plan"
+        th: "ภาพประกอบยาฉีดและยาเม็ดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
+        en: "Injection and oral medicines that may be prescribed as part of a treatment plan"
       },
       tags: {
-        th: ["ปากกาฉีด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
-        en: ["Injection pen", "Dose control", "Prescription only"]
+        th: ["ยาฉีด + ยาเม็ด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
+        en: ["Injection + tablets", "Dose control", "Prescription only"]
       }
     },
     {
