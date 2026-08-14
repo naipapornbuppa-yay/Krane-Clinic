@@ -8,10 +8,6 @@
       navMen: "Men's health",
       navHairSkin: "Hair & skin",
       navMore: "More",
-      panelWeight: "Doctor-led weight care",
-      panelMen: "Private men's health care",
-      panelHairSkin: "Hair, skin & healthy ageing",
-      panelMore: "Care & resources",
       menuWeightStart: "Start a weight-loss plan",
       menuWeightGlp1: "GLP-1 options",
       menuWeightCheck: "Check your eligibility",
@@ -34,17 +30,35 @@
       online: "100% private consultations",
       certified: "Licensed doctors",
       discreet: "Discreet delivery nationwide",
-      heroTitle: "Better health with Krane",
+      heroTitle: "Weight · ED · Hair loss<br>Online care with doctors",
+      bannerWeightKicker: "Weight-loss injections with doctor oversight",
+      bannerWeightTitle: "A weight-loss plan<br>made for you",
+      bannerWeightProducts: "Mounjaro · Ozempic · Wegovy*",
+      bannerWeightCta: "Start assessment",
+      bannerEdKicker: "ED medication with private care",
+      bannerEdTitle: "Treat ED<br>with an online doctor",
+      bannerEdProducts: "Sildenafil · Tadalafil*",
+      bannerEdCta: "Start ED care",
+      bannerHairKicker: "Medication for hair loss and regrowth",
+      bannerHairTitle: "Reduce hair loss<br>and restore growth",
+      bannerHairProducts: "Finasteride 1 mg · Minoxidil 5%*",
+      bannerHairCta: "Start hair care",
+      bannerSkinKicker: "Skin & healthy ageing",
+      bannerSkinTitle: "Start a skin-care plan<br>with a doctor",
+      bannerSkinProducts: "Assess acne, dark spots and fine lines*",
+      bannerSkinCta: "Start skin care",
       campaignWeightEyebrow: "Doctor-led weight care",
       campaignWeightTitle: "Start a weight-loss plan<br>made for you",
       campaignWeightLead: "Check eligibility and consult a doctor online.",
-      campaignWeightProducts: "GLP-1 options: Mounjaro · Ozempic · Wegovy*",
+      campaignWeightProducts: "Mounjaro · Ozempic · Wegovy*",
       campaignWeightCta: "Start assessment",
       campaignWeightStoryEyebrow: "Ongoing doctor follow-up",
       campaignWeightStoryTitle: "Manage your weight<br>with a doctor",
       campaignWeightStoryLead: "Start with your health history and personal goals.",
-      campaignWeightStoryProducts: "Assessment · Consultation · Online follow-up*",
+      campaignWeightStoryProducts: "Semaglutide · Tirzepatide*",
       campaignWeightStoryCta: "Start weight care",
+      carePickerEyebrow: "Start with what you want to improve",
+      carePickerTitle: "Choose your care",
       campaignHairEyebrow: "Hair restoration",
       campaignHairTitle: "Treat hair loss<br>at the source",
       campaignHairLead: "Consult online and follow your progress with a doctor.",
@@ -247,9 +261,9 @@
       "aria-label",
       lang === "th" ? "เริ่มการดูแลสุขภาพออนไลน์กับแพทย์" : "Start online care with a doctor"
     );
-    document.querySelector("[data-campaign-carousel]")?.setAttribute(
+    document.querySelector("[data-care-banner-grid]")?.setAttribute(
       "aria-label",
-      lang === "th" ? "การดูแลแนะนำ" : "Featured care"
+      lang === "th" ? "เริ่มการดูแลตามเรื่องที่สนใจ" : "Start care by concern"
     );
     document.querySelector("[data-members-label]")?.setAttribute(
       "aria-label",
@@ -311,87 +325,6 @@
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  const campaignCarousel = document.querySelector("[data-campaign-carousel]");
-  const campaignViewport = campaignCarousel?.querySelector(".campaign-carousel__viewport");
-  const campaignSlides = [...document.querySelectorAll("[data-campaign-slide]")];
-  const campaignDots = [...document.querySelectorAll("[data-campaign-index]")];
-  const campaignButtons = [...document.querySelectorAll("[data-campaign-direction]")];
-  let activeCampaign = 0;
-  let campaignTimer = 0;
-  let campaignPointerStart = null;
-
-  function renderCampaign(index) {
-    if (!campaignSlides.length) return;
-    activeCampaign = (index + campaignSlides.length) % campaignSlides.length;
-    campaignSlides.forEach((slide, slideIndex) => {
-      const active = slideIndex === activeCampaign;
-      slide.classList.toggle("is-active", active);
-      slide.setAttribute("aria-hidden", active ? "false" : "true");
-      slide.querySelectorAll("a, button").forEach((control) => {
-        control.tabIndex = active ? 0 : -1;
-      });
-    });
-    campaignDots.forEach((dot, dotIndex) => {
-      const active = dotIndex === activeCampaign;
-      dot.classList.toggle("is-active", active);
-      dot.setAttribute("aria-selected", active ? "true" : "false");
-      dot.tabIndex = active ? 0 : -1;
-    });
-  }
-
-  function stopCampaignAutoPlay() {
-    window.clearTimeout(campaignTimer);
-    campaignTimer = 0;
-  }
-
-  function scheduleCampaignAutoPlay() {
-    stopCampaignAutoPlay();
-    if (!campaignCarousel || reducedMotionQuery.matches || document.hidden) return;
-    campaignTimer = window.setTimeout(() => {
-      renderCampaign(activeCampaign + 1);
-      scheduleCampaignAutoPlay();
-    }, 7000);
-  }
-
-  campaignDots.forEach((dot) => dot.addEventListener("click", () => {
-    renderCampaign(Number(dot.dataset.campaignIndex));
-    scheduleCampaignAutoPlay();
-  }));
-  campaignButtons.forEach((button) => button.addEventListener("click", () => {
-    renderCampaign(activeCampaign + Number(button.dataset.campaignDirection));
-    scheduleCampaignAutoPlay();
-  }));
-  campaignCarousel?.addEventListener("pointerenter", stopCampaignAutoPlay);
-  campaignCarousel?.addEventListener("pointerleave", scheduleCampaignAutoPlay);
-  campaignCarousel?.addEventListener("focusin", stopCampaignAutoPlay);
-  campaignCarousel?.addEventListener("focusout", (event) => {
-    if (!campaignCarousel.contains(event.relatedTarget)) scheduleCampaignAutoPlay();
-  });
-  campaignCarousel?.addEventListener("keydown", (event) => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    event.preventDefault();
-    renderCampaign(activeCampaign + (event.key === "ArrowRight" ? 1 : -1));
-    campaignDots[activeCampaign]?.focus();
-    scheduleCampaignAutoPlay();
-  });
-  campaignViewport?.addEventListener("pointerdown", (event) => {
-    if (event.pointerType !== "touch") return;
-    campaignPointerStart = event.clientX;
-  }, { passive: true });
-  campaignViewport?.addEventListener("pointerup", (event) => {
-    if (campaignPointerStart == null || event.pointerType !== "touch") return;
-    const distance = event.clientX - campaignPointerStart;
-    campaignPointerStart = null;
-    if (Math.abs(distance) < 42) return;
-    renderCampaign(activeCampaign + (distance < 0 ? 1 : -1));
-    scheduleCampaignAutoPlay();
-  }, { passive: true });
-  campaignViewport?.addEventListener("pointercancel", () => { campaignPointerStart = null; });
-  document.addEventListener("visibilitychange", scheduleCampaignAutoPlay);
-  reducedMotionQuery.addEventListener?.("change", scheduleCampaignAutoPlay);
-  renderCampaign(0);
-  scheduleCampaignAutoPlay();
 
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
@@ -458,14 +391,14 @@
   const productSlides = [
     {
       id: "injectors",
-      src: "assets/landing-editorial-v1/clinical-mixed-medicine-photo-v2.png",
+      src: "assets/landing-573/products/clinical-injectors-v2.png",
       alt: {
-        th: "ภาพผลิตภัณฑ์ยาฉีดและยาเม็ดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
-        en: "Injection and oral medicines that may be prescribed as part of a treatment plan"
+        th: "ปากกาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
+        en: "Injection pens that may be prescribed as part of a treatment plan"
       },
       tags: {
-        th: ["ยาฉีด + ยาเม็ด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
-        en: ["Injection + tablets", "Dose control", "Prescription only"]
+        th: ["ปากกาฉีด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
+        en: ["Injection pen", "Dose control", "Prescription only"]
       }
     },
     {
