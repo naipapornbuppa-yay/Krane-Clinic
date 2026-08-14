@@ -40,6 +40,11 @@
       campaignWeightLead: "Check eligibility and consult a doctor online.",
       campaignWeightProducts: "GLP-1 options: Mounjaro · Ozempic · Wegovy*",
       campaignWeightCta: "Start assessment",
+      campaignWeightStoryEyebrow: "Ongoing doctor follow-up",
+      campaignWeightStoryTitle: "Manage your weight<br>with a doctor",
+      campaignWeightStoryLead: "Start with your health history and personal goals.",
+      campaignWeightStoryProducts: "Assessment · Consultation · Online follow-up*",
+      campaignWeightStoryCta: "Start weight care",
       campaignHairEyebrow: "Hair restoration",
       campaignHairTitle: "Treat hair loss<br>at the source",
       campaignHairLead: "Consult online and follow your progress with a doctor.",
@@ -64,6 +69,7 @@
       weight: "Weight management",
       hormone: "Hormones & TRT",
       mind: "Focus & mind",
+      general: "General symptoms / Not sure",
       licensedDoctors: "Licensed doctors",
       howKicker: "How it works",
       howTitle: "Start care in four steps",
@@ -275,6 +281,13 @@
     if (event.data?.krane === "lang") setLanguage(event.data.th ? "th" : "en");
   });
 
+  let routeFallbackTimer = 0;
+  window.addEventListener("message", (event) => {
+    if (event.data?.krane !== "navAck") return;
+    window.clearTimeout(routeFallbackTimer);
+    routeFallbackTimer = 0;
+  });
+
   document.querySelectorAll("[data-route]").forEach((link) => {
     link.addEventListener("click", (event) => {
       try {
@@ -287,6 +300,11 @@
             category: link.dataset.category || null,
             entryChannel: link.dataset.entryChannel || null
           }, "*");
+          window.clearTimeout(routeFallbackTimer);
+          routeFallbackTimer = window.setTimeout(() => {
+            try { window.top.location.assign(link.href); }
+            catch (_) { window.location.assign(link.href); }
+          }, 500);
         }
       } catch (_) {}
     });

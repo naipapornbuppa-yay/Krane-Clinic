@@ -491,7 +491,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260812-care-carousel-v2" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260814-mobile-flow-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1405,6 +1405,7 @@
         <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
         <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
       </div>
+      <p class="hint">ดึงชื่อและเบอร์โทรจากบัญชีของคุณแล้ว แก้ไขได้หากผู้รับเป็นคนอื่น</p>
 
       <div class="field-row">
         <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
@@ -2590,7 +2591,7 @@
   // opens Log in from the nav or from "ดูแลต่อเนื่อง" has not answered อาการ yet,
   // so the 5-step care stepper must NOT show อาการ as done for them.
   let journeyActive = false;
-  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general'];
+  const JOURNEY_INTAKE = ['concern','conditions','partner-concern','intake1','intake2','intake3','intake4','intake5','intake-general'];
   const JOURNEY_AUTH = ['signup','login','social-confirm','otp','consent-terms','patient-info','identity'];
   // The public walkthrough starts clean. Existing-case protection is enabled only
   // after the demo enters the returning-patient profile state.
@@ -3210,13 +3211,33 @@
     const district=String(address.district || '').trim();
     return district && !primary.includes(district) ? `${primary} · ${district}` : primary;
   }
-  const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
+  const ADDRESS_FIELD_KEYS={
+    recipientName:'recipientName',recipientPhone:'recipientPhone',
+    addrBuilding:'building',addrFloor:'floor',addrLine:'line',
+    addrSubdistrict:'subdistrict',addrDistrictName:'districtName',
+    addrProvince:'province',addrPostcode:'postcode',addrDistrict:'district',addrNote:'note'
+  };
+  function deliveryRecipientIdentity(){
+    const partner=flowState.entryChannel==='partner';
+    return {
+      recipientName:String(partner ? flowState.partnerName : flowState.patientName || '').trim(),
+      recipientPhone:String(partner ? flowState.partnerPhone : flowState.verifiedPhone || '').trim()
+    };
+  }
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
+    const previous=readDeliveryAddressDraft(screen);
+    const identity=deliveryRecipientIdentity();
     screen.dataset.addressDraft=JSON.stringify({
+      recipientName:String(address.recipientName || previous.recipientName || identity.recipientName || ''),
+      recipientPhone:String(address.recipientPhone || previous.recipientPhone || identity.recipientPhone || ''),
       building:String(address.building || ''),
       floor:String(address.floor || ''),
       line:String(address.line || ''),
+      subdistrict:String(address.subdistrict || ''),
+      districtName:String(address.districtName || ''),
+      province:String(address.province || ''),
+      postcode:String(address.postcode || ''),
       district:String(address.district || ''),
       note:String(address.note || ''),
       km:String(address.km || screen.dataset.selectedKm || '3.2')
@@ -3245,9 +3266,10 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
+    const identity=deliveryRecipientIdentity();
     const values={
-      recipientName:address.recipientName,
-      recipientPhone:address.recipientPhone,
+      recipientName:address.recipientName || identity.recipientName,
+      recipientPhone:address.recipientPhone || identity.recipientPhone,
       addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
@@ -3264,7 +3286,10 @@
       if(input) input.value=value || '';
     });
     screen.dataset.selectedKm=address.km || '3.2';
-    writeDeliveryAddressDraft(screen,address);
+    writeDeliveryAddressDraft(screen,Object.assign({},address,identity,{
+      recipientName:address.recipientName || identity.recipientName,
+      recipientPhone:address.recipientPhone || identity.recipientPhone
+    }));
   }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
      which was only ever written by the fake "pick an address" demo button. That
@@ -3303,6 +3328,7 @@
       return false;
     }
     writeDeliveryAddressDraft(screen,{
+      recipientName:a.recipientName, recipientPhone:a.recipientPhone,
       building:a.building, floor:a.floor, line:a.line,
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district,
@@ -3500,7 +3526,7 @@
       description:'Not sure where to start? Talk to a doctor without choosing a disease path.',
       icon:'chat',
       status:'General',
-      next:'intake1',
+      next:'partner-concern',
       general:true,
       conditions:[]
     }
@@ -4402,6 +4428,23 @@
     });
     syncPartnerHistoryFields();
   }
+  function restoreSharedConcernFields(){
+    const text=document.getElementById('partner-concern-text');
+    if(text && flowState.partnerConcern) text.value=flowState.partnerConcern;
+    const duration=String(flowState.partnerConcernDuration || '').trim().match(/^(\d+)\s+(.+)$/);
+    const amount=document.getElementById('partner-concern-duration-value');
+    if(amount && duration) amount.value=duration[1];
+    if(duration){
+      document.querySelectorAll('#partner-concern [data-partner-duration-unit]').forEach(option => {
+        option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===duration[2]));
+      });
+    }
+    if(flowState.partnerConcernRelief){
+      document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(option => {
+        option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
+      });
+    }
+  }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
@@ -4457,7 +4500,9 @@
     if(!REQUIRED_CARE_TARGETS.has(target)) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
-      patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
+      patientInfoComplete:true,identityVerified:true,
+      patientName:flowState.patientName || 'มะลิ ส.',
+      verifiedPhone:flowState.verifiedPhone || '081-234-5678'
     });
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
@@ -4589,6 +4634,9 @@
   // about them and the care stepper does not try to number partner screens.
   const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-concern','partner-intake',
     'partner-nurse','partner-nurse-session','partner-phr'];
+  function isSharedDirectConcern(target){
+    return target==='partner-concern' && flowState.entryChannel==='direct';
+  }
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
   const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
@@ -4793,7 +4841,9 @@
       visited.add(current);
       path.unshift(current);
       const skipped=skipBackFrom(current);
-      current = skipped !== null ? skipped : directEntryParent[current];
+      current = skipped !== null
+        ? skipped
+        : (current==='partner-concern' && flowState.entryChannel==='direct' ? 'landing' : directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -4820,23 +4870,30 @@
     const concern = condition && !cat.general
       ? (thai ? (condition.titleTh || summary.th) : condition.title)
       : (thai ? summary.th : summary.en);
-    const symptoms = selectedOptionTitles(
-      '#intake1 .option[data-multi][aria-selected="true"]',
-      thai ? summary.symTh : summary.symEn
-    );
+    const sharedGeneralConcern=cat.general && flowState.partnerConcernComplete;
+    const symptoms = sharedGeneralConcern
+      ? flowState.partnerConcern
+      : selectedOptionTitles(
+          '#intake1 .option[data-multi][aria-selected="true"]',
+          thai ? summary.symTh : summary.symEn
+        );
     const durationValue = document.querySelector('#intake1 input[data-intake-role="duration"]')?.value;
     const durationUnit = document.querySelector('#intake1 [data-intake-duration-unit][aria-selected="true"]')?.dataset.intakeDurationUnit;
-    const duration = durationValue && durationUnit
-      ? `${durationValue} ${durationUnit}`
+    const duration = sharedGeneralConcern
+      ? flowState.partnerConcernDuration
+      : (durationValue && durationUnit
+          ? `${durationValue} ${durationUnit}`
+          : selectedOptionTitles(
+              '#intake1 select[data-intake-role="duration"], #intake1 .option[data-select][aria-selected="true"]',
+              thai ? summary.durationTh : summary.durationEn,
+              1
+            ));
+    const detail = sharedGeneralConcern
+      ? (thai ? `สิ่งที่ลองทำแล้ว: ${flowState.partnerConcernRelief}` : `Relief tried: ${flowState.partnerConcernRelief}`)
       : selectedOptionTitles(
-          '#intake1 select[data-intake-role="duration"], #intake1 .option[data-select][aria-selected="true"]',
-          thai ? summary.durationTh : summary.durationEn,
-          1
+          '#intake2 .option[aria-selected="true"], #intake2 select[data-intake-select]',
+          thai ? summary.detailTh : summary.detailEn
         );
-    const detail = selectedOptionTitles(
-      '#intake2 .option[aria-selected="true"], #intake2 select[data-intake-select]',
-      thai ? summary.detailTh : summary.detailEn
-    );
     const treatment = selectedOptionTitles(
       '#intake3 .option[aria-selected="true"], #intake3 select[data-intake-select]',
       thai ? 'ไม่ได้ระบุการรักษาก่อนหน้า' : 'No previous treatment reported'
@@ -4885,7 +4942,7 @@
       measurementsEl.textContent = `${height} ซม. · ${weight} กก.`;
     }
     if(photosEl){
-      const thumbs = [...document.querySelectorAll('#intake5 .up-thumb img')];
+      const thumbs = [...document.querySelectorAll(sharedGeneralConcern ? '#partner-concern .up-thumb img' : '#intake5 .up-thumb img')];
       const count = thumbs.length;
       photosEl.textContent = count
         ? (thai ? `เพิ่มแล้ว ${count} รูป` : `${count} photo${count === 1 ? '' : 's'} added`)
@@ -4905,7 +4962,7 @@
     }
     if(photoRow) photoRow.hidden = !categoryNeedsPhotos();
     if(photoDivider) photoDivider.hidden = !categoryNeedsPhotos();
-    if(concernEdit) concernEdit.dataset.go = cat.general ? 'concern' : 'conditions';
+    if(concernEdit) concernEdit.dataset.go = cat.general ? 'partner-concern' : 'conditions';
     const matchingCopy = document.querySelector('[data-matching-copy]');
     if(matchingCopy) matchingCopy.textContent = thai
       ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern} โดยปกติใช้เวลาไม่เกิน 10 วินาที`
@@ -5016,7 +5073,7 @@
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(flowState.partnerPaymentMethod==='insurance' && !flowState.coverage?.policyId) return 'partner-insurance';
     }
-    if(PARTNER_SCREENS.includes(target)){
+    if(PARTNER_SCREENS.includes(target) && !isSharedDirectConcern(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
       if(['partner-insurance','partner-concern','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -5060,7 +5117,7 @@
     // for the same reason.
     if(target==='concern'){
       setSelectedCategory('general');
-      return 'intake1';
+      return 'partner-concern';
     }
     return document.getElementById(target) ? target : 'landing';
   }
@@ -5079,11 +5136,12 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(['partner-patient-info','partner-intake'].includes(id)) restorePartnerFields();
+    if(id==='partner-concern') restoreSharedConcernFields();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
-    if(PARTNER_SCREENS.includes(id) || (id==='consent-terms' && flowState.entryChannel==='partner')){
+    if((PARTNER_SCREENS.includes(id) && !isSharedDirectConcern(id)) || (id==='consent-terms' && flowState.entryChannel==='partner')){
       // Partner access runs its own sequence and skips stage 1, so the five-step
       // B2C care stepper would mis-number it. Keep it off until the flow rejoins
       // the shared clinical path at #matching.
@@ -5163,7 +5221,7 @@
       orderActions.forEach(btn => { btn.hidden = isSetup; });
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
-    if(id === 'matching' || id === 'intake1') updateSelectedCare();
+    if(id === 'matching' || id === 'intake1' || id === 'partner-concern') updateSelectedCare();
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -6963,7 +7021,13 @@
     flowState.partnerConcernComplete = true;
     flowState.draftReady = true;
     persistFlowState();
-    show('partner-intake');
+    if(flowState.entryChannel==='direct' && selectedCategoryId==='general'){
+      flowState.lastRequiredScreen='intake-general';
+      persistFlowState();
+      show('intake-general');
+    }else{
+      show('partner-intake');
+    }
   });
 
   // Optional photos on SCR-002. Thumbnails are local previews only.
