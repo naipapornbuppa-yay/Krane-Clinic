@@ -529,7 +529,7 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   const preloader = screenFragment(html, "preloader");
   assert.match(preloader, /data-loader="paper-crane"/, "preloader must expose the branded paper-crane loader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg/, "preloader must use the editorial frame-by-frame flying animation");
+  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg\?v=20260814-framefix1/, "preloader must use the cache-safe editorial flying animation");
   assert.match(preloader, /assets\/loading-v5\/paper-crane-final-v4\.svg/, "preloader must include the matching final still");
   assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*krane-paper-crane-animated\{display:none\}[\s\S]*krane-paper-crane-static\{display:block\}/, "paper-crane loader must show a static final crane when motion is reduced");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
@@ -570,7 +570,7 @@ test("each loading stage uses a stage-specific graphic", async () => {
     assert.doesNotMatch(screenMarkup, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
   }
   const preloader = screenFragment(html, "preloader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg/);
+  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v4\.svg\?v=20260814-framefix1/);
   assert.match(preloader, /class="krane-state-art krane-paper-crane-media krane-paper-crane-animated"/);
   assert.match(preloader, /state-view__tile--cutout/);
   assert.doesNotMatch(preloader, /state-view__tile--brand/);
