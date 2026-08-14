@@ -39,7 +39,7 @@ test("every B2C state uses its intended editorial scene", async () => {
     assert.match(screenFragment(html, screen), new RegExp(`href="#${symbol}"`), `${screen} must use ${symbol}`);
     assert.equal((html.match(new RegExp(`<symbol id="${symbol}"`, "g")) || []).length, 1, `${symbol} must be defined once`);
   }
-  assert.match(screenFragment(html, "preloader"), /assets\/loading-v5\/paper-crane-fold-v2\.svg/, "preloader must use the rigid-fold vector animation directly on mobile");
+  assert.match(screenFragment(html, "preloader"), /assets\/loading-v5\/paper-crane-fold-v3\.svg/, "preloader must use the editorial rigid-fold vector animation directly on mobile");
   assert.equal((html.match(/<symbol id="krane-state-loading-info"/g) || []).length, 1, "the gallery loader symbol must be defined once");
   assert.notEqual(expected["delivery-quote"], expected["pharmacy-search"]);
   assert.notEqual(expected["consultpay-fail"], expected.payfail);
@@ -73,13 +73,15 @@ test("state art balances human care scenes with aligned object-only graphics", a
   assert.ok(alignedMarks.length >= 10);
   for (const mark of alignedMarks) assert.equal(mark[1], "420 91");
   const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /assets\/loading-v5\/paper-crane-fold-v2\.svg/, "the gallery must use the rigid-fold vector animation");
-  assert.match(loader, /assets\/loading-v5\/paper-crane-final-v2\.svg/, "the gallery must keep a reduced-motion final crane");
-  const animatedCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-fold-v2.svg"), "utf8");
+  assert.match(loader, /assets\/loading-v5\/paper-crane-fold-v3\.svg/, "the gallery must use the editorial rigid-fold vector animation");
+  assert.match(loader, /assets\/loading-v5\/paper-crane-final-v3\.svg/, "the gallery must keep a reduced-motion final crane");
+  const animatedCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-fold-v3.svg"), "utf8");
   assert.match(animatedCrane, /vector-effect:non-scaling-stroke/);
   assert.match(animatedCrane, /<animateTransform\b/);
   assert.doesNotMatch(animatedCrane, /<animate\s+attributeName="d"|filter=|<filter\b|blur\(|feGaussianBlur|linearGradient|radialGradient/);
-  const staticCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-final-v2.svg"), "utf8");
+  assert.match(animatedCrane, /stroke-width:2\.25/);
+  assert.match(animatedCrane, /class="pencil"/);
+  const staticCrane = await readFile(path.join(b2c, "assets/loading-v5/paper-crane-final-v3.svg"), "utf8");
   assert.match(staticCrane, /<svg\b/);
   assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper crane must have no background scenery");
   assert.match(css, /ks-paper-crane-static\{display:none\}/);
