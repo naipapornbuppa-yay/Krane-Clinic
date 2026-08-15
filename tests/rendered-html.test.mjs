@@ -10,6 +10,7 @@ const root = path.resolve(import.meta.dirname, "..");
 const publicRoot = path.join(root, "public");
 const canonicalPages = [
   "b2c/krane-b2c-landing.html",
+  "b2c/condition-detail.html",
   "b2c/krane-b2c.html",
   "cms/cms-doctor.html",
   "cms/cms-admin.html",
@@ -61,14 +62,15 @@ test("canonical QA pages do not contain broken local href/src references", async
 
 test("patient app contains unique screens and the guarded partner journey", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const screenIds = [...html.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(screenIds).size, screenIds.length, "screen ids must be unique");
   for (const id of [
-    "consent-terms", "partner-patient-info", "partner-insurance", "partner-concern", "partner-intake", "partner-nurse",
+    "consent-terms", "partner-patient-info", "partner-insurance", "intake-concern", "intake-general", "partner-nurse",
     "partner-nurse-session", "partner-phr", "plan", "tracking"
   ]) assert.ok(screenIds.includes(id), `missing #${id}`);
-  for (const id of ["partner-access", "partner-review", "pharmacy-locate", "refund"]) {
+  for (const id of ["partner-access", "partner-review", "partner-concern", "partner-intake", "pharmacy-locate", "refund"]) {
     assert.ok(!screenIds.includes(id), `outdated #${id} must stay removed`);
   }
   assert.ok(!screenIds.includes("partner-payment-choice"), "payment choice must be integrated into partner confirmation");
@@ -79,36 +81,44 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /target==='partner-phr' && !flowState\.partnerNurseComplete/);
   assert.ok(!screenIds.includes("partner-review"), "partner review screen must be removed");
   assert.doesNotMatch(html, /data-go="partner-review"|data-partner-review-/);
-  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','partner-concern','partner-intake','matching'\]/);
+  assert.match(html, /const order=\['consent-terms','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'\]/);
   assert.match(html, /if\(\['partner-nurse','partner-nurse-session','partner-phr'\]\.includes\(target\)\) targetIndex=6/);
   assert.match(html, /id="partner-patient-info"[\s\S]*data-partner-payment-options[\s\S]*aria-selected="true" data-select data-partner-payment-choice-value="insurance"/);
-  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
+  assert.match(html, /if\(paymentMethod==='insurance'\) insuranceEntry='partner';[\s\S]*show\(paymentMethod==='insurance' \? 'insurance' : 'intake-concern'\)/);
   assert.match(html, /insuranceEntry === 'partner'[\s\S]*show\('partner-insurance'\)/);
   assert.match(html, /data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน[\s\S]*data-go="partner-insurance">สิทธิ์และการชำระเงิน/);
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
   assert.match(partnerCoverageScreen, /Coverage &amp; payment[\s\S]*ตรวจสอบสิทธิ์ประกันแล้ว/);
   assert.match(partnerCoverageScreen, /ค่าปรึกษาแพทย์[\s\S]*เครดิตค่ายา[\s\S]*ค่าจัดส่ง/);
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /data-partner-payment="self-pay"/);
   assert.doesNotMatch(partnerCoverageScreen, /ครอบคลุม ฿ 350/);
   assert.doesNotMatch(screenFragment(html, "partner-insurance"), /พบ 1 กรมธรรม์ที่ใช้ได้กับบริการนี้/);
   assert.doesNotMatch(html, /id="insurance-policy-number"|Policy number \(เลขกรมธรรม์\)|placeholder="Policy no\."/);
-  assert.match(html, /id="partner-intake"[\s\S]*partner-health-compact[\s\S]*partner-health-grid[\s\S]*partner-clinical-grid/);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history="/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="none"/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-choice="yes"/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/data-partner-history-detail/g) || []).length, 3);
-  assert.equal((screenFragment(html, "partner-intake").match(/autocomplete="off" disabled/g) || []).length, 3);
+  const sharedConcernScreen = screenFragment(html, "intake-concern");
+  const sharedHealthScreen = screenFragment(html, "intake-general");
+  assert.match(sharedConcernScreen, /อาการที่ต้องการปรึกษา[\s\S]*data-shared-concern[\s\S]*data-partner-photo-input/);
+  assert.doesNotMatch(sharedConcernScreen, /data-direct-history|partner-health-grid/);
+  assert.match(sharedHealthScreen, /ข้อมูลสุขภาพทั่วไป[\s\S]*partner-health-grid[\s\S]*partner-clinical-grid/);
+  assert.doesNotMatch(sharedHealthScreen, /data-shared-concern|partner-concern-text/);
+  assert.doesNotMatch(sharedHealthScreen, /ใช้ข้อมูลชุดเดียวกันทั้งการเข้าทาง Krane และสิทธิ์ประกัน/);
+  assert.equal((landing.match(/data-route="intake-concern" data-category="general"/g) || []).length, 2, "general-care landing links must start on the concern page");
+  assert.doesNotMatch(landing, /data-route="intake-general" data-category="general"/);
+  assert.equal((sharedHealthScreen.match(/data-direct-history="/g) || []).length, 3);
+  assert.equal((sharedHealthScreen.match(/data-direct-history-choice="none"/g) || []).length, 3);
+  assert.equal((sharedHealthScreen.match(/data-direct-history-choice="yes"/g) || []).length, 3);
+  assert.equal((sharedHealthScreen.match(/data-direct-history-detail/g) || []).length, 3);
+  assert.equal((sharedHealthScreen.match(/autocomplete="off" disabled/g) || []).length, 3);
   assert.match(html, /input\.disabled=!hasDetails;[\s\S]*if\(!hasDetails\) input\.value=''/);
   assert.match(html, /function partnerHistoryValue\(key\)/);
   assert.match(html, /showActionToast\(`กรุณาระบุ\$\{label\}`,'warning'\)/);
-  assert.doesNotMatch(screenFragment(html, "partner-intake"), /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
-  assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#partner-intake \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
+  assert.doesNotMatch(sharedHealthScreen, /partner-lifestyle|การสูบบุหรี่หรือดื่มแอลกอฮอล์/);
+  assert.match(components, /@media\(max-width:780px\)\{[\s\S]*#intake-general \.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:12px\}/);
   assert.match(components, /\.partner-binary__option\[aria-checked="true"\]/);
   assert.match(components, /\.partner-history-field\{[^}]*width:100%[^}]*min-inline-size:0[^}]*display:flex;flex-direction:column;align-items:stretch/);
   assert.match(components, /\.partner-history-field>\.partner-binary\{width:100%;align-self:stretch\}/);
   assert.match(components, /\.partner-history-detail\{[^}]*width:100%[^}]*min-width:0[^}]*max-width:100%/);
-  assert.match(html, /submitOnce\('partner-intake'[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
+  assert.match(html, /flowState\.partnerHealth=\{[\s\S]*flowState\.partnerReviewComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(partnerClinicalStartTarget\(\)\)/);
   assert.match(html, /function partnerClinicalStartTarget\(\)\{[\s\S]*if\(PARTNER_NURSE_SCREENING_ENABLED\) return 'partner-nurse';[\s\S]*return 'matching'/);
   assert.match(html, /data-partner-nurse-complete[\s\S]*ยืนยันและพบแพทย์ที่พยาบาลเลือก/);
   assert.match(html, /flowState\.partnerNurseComplete=true;[\s\S]*flowState\.identityVerified=true;[\s\S]*show\(consultationHandoffTarget\(\)\)/);
@@ -118,15 +128,20 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   const designTokens = await readFile(path.join(publicRoot, "b2c/design-tokens.css"), "utf8");
   assert.match(designTokens, /--font-thai-base:\s*"Noto Sans Thai"/);
   assert.match(designTokens, /--font-thai-display:\s*"Prompt"/);
+  assert.match(designTokens, /--theme-canvas: #F7F5EE/);
+  assert.match(designTokens, /--theme-canvas-inset: #EEE9DD/);
+  assert.match(designTokens, /--color-canvas-warm: var\(--theme-canvas\)/);
+  assert.match(designTokens, /--color-canvas-warm-deep: var\(--theme-canvas-inset\)/);
   assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web\{max-width:min\(var\(--desktop-frame\),100%\)\}/);
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.care-journey__current\{display:none\}[\s\S]*\.care-journey__name\{display:block/);
   assert.match(html, /if\(flowConfig\.get\('entry'\)==='direct'\) flowState\.entryChannel='direct'/);
   assert.match(html, /cj\.hidden=flowState\.entryChannel==='partner' \|\| coldAuth/);
   assert.match(html, /Every ordinary landing navigation is a Krane-direct entry[\s\S]*flowState\.entryChannel='direct'/);
-  for (const id of ["partner-patient-info", "partner-insurance", "partner-concern", "partner-intake"]) {
+  for (const id of ["partner-patient-info", "partner-insurance"]) {
     assert.doesNotMatch(screenFragment(html, id), /care-journey/, `${id} must not embed Direct progress UI`);
   }
+  assert.match(html, /cj\.hidden=flowState\.entryChannel==='partner' \|\| coldAuth/);
   assert.match(html, /flowState\.phoneOtpPending/);
   assert.match(html, /data-otp-code inputmode="numeric" autocomplete="one-time-code" maxlength="6"/);
   assert.doesNotMatch(html, /maxlength="1"/);
@@ -137,7 +152,7 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /if\(id === 'otp'\) prepareFreshOtpChallenge\(\)/);
   assert.match(html, /returnFromPhoneOtp\('partner-patient-info'\)/);
   assert.match(html, /returnFromPhoneOtp\(returnTarget\)/);
-  assert.match(html, /class="partner-health-grid"[\s\S]*id="partner-dob" type="date"/);
+  assert.match(sharedHealthScreen, /class="partner-health-grid"[\s\S]*id="intake-dob" type="date"/);
   assert.match(components, /input\[type="date"\]\.input\{[^}]*min-inline-size:0/);
   assert.match(components, /\.date-control__display\{[\s\S]*grid-template-columns:24px minmax\(0,1fr\) 24px/);
   assert.match(components, /\.date-control>input\[type="date"\]\{[\s\S]*pointer-events:auto[\s\S]*touch-action:manipulation/);
@@ -147,9 +162,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(html, /event\.key!=='Enter' && event\.key!==' '/);
   assert.match(html, /id="social-birth-date"[^>]*required/);
   assert.match(html, /id="insurance-dob"[^>]*required/);
-  assert.match(html, /id="partner-dob"[^>]*required/);
+  assert.match(html, /id="intake-dob"[^>]*required/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.screen__body\{padding:16px\}[\s\S]*\.partner-health-grid\{grid-template-columns:minmax\(0,1fr\);gap:16px\}/);
-  assert.match(components, /#partner-intake \.input,#partner-intake \.select,#partner-intake \.partner-binary\{[^}]*font-size:16px/);
+  assert.match(components, /#intake-general \.input,#intake-general \.select,#intake-general \.partner-binary\{[^}]*font-size:16px/);
   assert.match(components, /\.quick-row a \.qic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.setting-row \.ic\{[^}]*border-radius:50%[^}]*border:0/);
   assert.match(components, /\.notif \.ic\{[^}]*border-radius:50%[^}]*border:0/);
@@ -239,7 +254,7 @@ test("intake keeps multi-select questions visible and uses compact required cont
   const firstQuestionTemplates = [...html.matchAll(/intake1:`([\s\S]*?)`,\s*intake2:`/g)].map((match) => match[1]);
 
   assert.ok(hairStart >= 0 && hairEnd > hairStart, "hair intake template must remain extractable");
-  assert.equal(firstQuestionTemplates.length, 5, "every service intake needs a first-question template");
+  assert.equal(firstQuestionTemplates.length, 7, "every service intake needs a first-question template");
   firstQuestionTemplates.forEach((template) => {
     assert.doesNotMatch(template, /<p class="hint">/, "first intake titles must not include a redundant description");
   });
@@ -254,6 +269,7 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(html, /function intakeDropdown\(\{id,label,placeholder,options,role=''\}\)/);
   assert.doesNotMatch(html, /data-native-select/, "intake dropdowns must not fall back to inconsistent browser pickers");
   assert.match(html, /window\.kraneSyncSelects\) window\.kraneSyncSelects\(activeScreen\)/);
+  assert.match(html, /const entry = hashParams\.get\('entry'\);[\s\S]*flowState\.entryChannel=entry;[\s\S]*persistFlowState\(\)/, "a direct condition-detail deep link must restore direct intake progress even after a Partner session");
   assert.match(html, /new CustomEvent\('krane:screenchange'/);
   assert.match(customSelect, /querySelectorAll\('select:not\(\[data-cms-select-ready\]\)'\)\.forEach\(enhance\)/);
   assert.match(customSelect, /new MutationObserver\(function\(mutations\)/, "dynamically rendered selects must work before refresh");
@@ -268,6 +284,10 @@ test("intake keeps multi-select questions visible and uses compact required cont
   assert.match(html, /continueButton\.classList\.toggle\('is-disabled',!state\.ready\)/);
   assert.match(html, /control\.selectedOptions\[0\]\?\.textContent\.trim\(\)/);
   assert.match(html, /const DRAFT_KEY = 'krane-p01-intake-draft-v2'/);
+  assert.match(html, /weight:\{[\s\S]*What is your main weight-care goal\?[\s\S]*How has your weight changed over the past 6 months\?[\s\S]*What have you already tried for weight management\?/);
+  assert.match(html, /const byCategory = \{[^}]*weight:'weight'/, "weight entry must render weight-specific questions");
+  assert.match(html, /const INTAKE_CATEGORY_KEY = \{[^}]*weight:'weight'/, "weight progress and routing must keep the weight template key");
+  assert.doesNotMatch(html, /weight:'general'/, "weight entry must never inherit the general-symptom intake");
   assert.match(components, /\.intake-dropdown-field \.select\{font-size:16px\}/, "mobile intake selects must not trigger iOS input zoom");
   assert.match(components, /\.intake-duration-control\{max-width:620px\}/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*?\.care-journey__name\{display:block;margin-top:2px;font-size:9\.5px;font-weight:var\(--fw-regular\);line-height:1\.12\}/);
@@ -283,7 +303,17 @@ test("intake keeps multi-select questions visible and uses compact required cont
   ]) assert.ok(i18n.includes(copy), `missing intake translation ${copy}`);
 });
 
-test("direct entry defaults to self-pay and clinical intake shows one question at a time", async () => {
+test("condition detail opens specialty intake as a direct flow with progress", async () => {
+  const detail = await readFile(path.join(publicRoot, "b2c/condition-detail.js"), "utf8");
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+
+  assert.match(detail, /krane-b2c\.html\?v=20260815-intake-progress-v1#intake1\?category=\$\{encodeURIComponent\(data\.category\)\}&entry=direct/);
+  assert.match(patient, /cj\.hidden=flowState\.entryChannel==='partner' \|\| coldAuth/);
+  assert.match(patient, /if\(entry==='direct' \|\| entry==='partner'\)\{[\s\S]*flowState\.entryChannel=entry/);
+  assert.match(patient, /function updateIntakeProgress\(id\)\{[\s\S]*const screenFraction=questionPage\.total \? \(questionPage\.index\+1\)\/questionPage\.total : 1/);
+});
+
+test("direct entry defaults to self-pay while general consultation stays compact", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const patientInfo = screenFragment(html, "patient-info");
@@ -291,7 +321,11 @@ test("direct entry defaults to self-pay and clinical intake shows one question a
   assert.match(patientInfo, /aria-selected="true" data-select data-patient-payment-choice-value="self-pay"/);
   assert.doesNotMatch(patientInfo, /aria-selected="true"[^>]*data-patient-payment-choice-value="insurance"/);
   assert.match(html, /paymentPreference:'self-pay'/);
-  assert.match(html, /const INTAKE_ONE_QUESTION_SCREENS = \['intake1','intake2','intake3','intake-general'\]/);
+  assert.match(html, /const INTAKE_ONE_QUESTION_SCREENS = \['intake1','intake2','intake3'\]/);
+  assert.doesNotMatch(html, /INTAKE_ONE_QUESTION_SCREENS = \[[^\]]*'intake-general'/);
+  assert.match(html, /compactGeneral=screen\.id==='intake1' && selectedCategory\(\)\.general/);
+  assert.match(html, /const GENERAL_COMPACT_SKIPPED_SCREENS = \['intake2','intake3'\]/);
+  assert.match(html, /intakeConcernKey\(\)==='general' && GENERAL_COMPACT_SKIPPED_SCREENS\.includes\(id\)/);
   assert.match(html, /function setupIntakeQuestionPages\(screenOrId,\{reset=false\}=\{\}\)/);
   assert.match(html, /question\.hidden=!active/);
   assert.match(html, /advanceIntakeQuestionPage\(intakeQuestionScreen\)/);
@@ -300,19 +334,29 @@ test("direct entry defaults to self-pay and clinical intake shows one question a
   assert.match(components, /\[data-intake-question\]\[hidden\]\{display:none!important\}/);
 });
 
-test("partner entry keeps its locked concern and compact health-profile sequence", async () => {
+test("general direct and partner entry share separate concern and health-profile screens", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
   assert.match(html, /data-go="consent-terms" data-entry-channel="partner"/);
   assert.match(html, /const consentNext = consentSource==='partner'[\s\S]*\? 'partner-patient-info'/);
-  assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'partner-concern'\)/);
-  assert.match(html, /target==='partner-intake' && !flowState\.partnerConcernComplete\) return 'partner-concern'/);
-  assert.match(html, /data-partner-concern-continue[\s\S]*flowState\.partnerConcernComplete = true[\s\S]*show\('partner-intake'\)/);
-  assert.match(html, /data-partner-photo-input/);
+  assert.match(html, /show\(paymentMethod==='insurance' \? 'insurance' : 'intake-concern'\)/);
+  assert.match(html, /if\(target==='partner-concern'\) return 'intake-concern'/);
+  assert.match(html, /if\(target==='partner-intake'\) return 'intake-general'/);
+  assert.doesNotMatch(html, /<section class="screen" id="partner-concern"|<section class="screen" id="partner-intake"/);
+  assert.match(screenFragment(html, "intake-concern"), /data-shared-concern[\s\S]*data-partner-photo-input/);
+  assert.match(screenFragment(html, "intake-general"), /data-direct-history="conditions"[\s\S]*data-direct-history="allergies"/);
+  assert.match(html, /flowState\.partnerConcernComplete=true;[\s\S]*show\('intake-general'\)/);
+  assert.match(html, /function sharedConcernRequired\(\)\{ return flowState\.entryChannel === 'partner' \|\| isGeneralPath\(\); \}/);
+  assert.match(html, /function finalIntakeTarget\(\)\{ return sharedConcernRequired\(\) \? 'intake-concern' : 'intake-general'; \}/);
+  assert.match(html, /if\(sharedConcernRequired\(\)\) seq\.push\('intake-concern'\);[\s\S]*seq\.push\('intake-general'\)/);
+  assert.match(html, /if\(target==='intake-concern' && !sharedConcernRequired\(\)\) return 'intake-general'/);
+  assert.match(screenFragment(html, "intake5"), /data-go="intake-general">Continue[\s\S]*data-go="intake-general">Skip for now/);
+  assert.match(html, /if\(go\.dataset\.go === 'intake5' && !categoryNeedsPhotos\(\)\)\{[\s\S]*show\(finalIntakeTarget\(\)\)/);
+  assert.match(html, /flowState\.partnerHealth=\{[\s\S]*flowState\.partnerHealthComplete=true/);
   assert.match(html, /partnerHealth:\{[^}]*sex:''[^}]*dob:''[^}]*height:''[^}]*weight:''/);
 
   for (const field of ["sex", "dob", "height", "weight"]) {
-    assert.match(html, new RegExp(`${field}:document\\.getElementById\\('partner-${field}'\\)`), `partner state must save ${field}`);
+    assert.match(html, new RegExp(`${field}:document\\.getElementById\\('intake-${field}'\\)`), `shared state must save ${field}`);
   }
   assert.doesNotMatch(html, /data-partner-review-/);
 });
@@ -326,7 +370,7 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /flowState\.coverage\s*=/);
 
   const partnerCoverageScreen = screenFragment(html, "partner-insurance");
-  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="partner-concern">Noted/);
+  assert.match(partnerCoverageScreen, /data-partner-payment="insurance" data-go="intake-concern">Noted/);
   assert.doesNotMatch(partnerCoverageScreen, /฿\s*350|ชำระ|Pay now/i);
   assert.match(html, /coveredPartner \? 'ครอบคลุม'/);
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*if\(consultationBalanceDue\(\)<=0\) return 'waitroom'/);
@@ -348,7 +392,11 @@ test("eligible partner coverage gates consultation cash checkout through explici
   assert.match(html, /function consultationHandoffTarget\(\)\{[\s\S]*consultationPaymentTiming[\s\S]*consultationFeeAcknowledged/);
   assert.match(html, /data-screen-code="SCR-008" data-checkout-mode="consultation"/);
   assert.match(html, /data-screen-code="SCR-015" data-checkout-mode="final"/);
-  assert.match(html, /data-consult-checkout-title[\s\S]*data-consultpay-label/);
+  const consultationPayment = screenFragment(html, "consultpay");
+  assert.doesNotMatch(consultationPayment, /data-consult-checkout-title|data-consult-checkout-copy|data-consult-details/);
+  assert.match(consultationPayment, /consult-doctor-photo[\s\S]*เลขใบประกอบวิชาชีพ[\s\S]*data-consult-total-label/);
+  assert.equal((consultationPayment.match(/card card--pad-sm stack-3/g) || []).length, 1, "SCR-008 must keep the approved 5 Aug single-card summary");
+  assert.match(html, /if\(totalLabel\) totalLabel\.textContent=noticeMode \? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้'/);
   assert.match(html, /data-consultation-balance-amount/);
   assert.match(html, /data-consultation-payment-status/);
   assert.match(html, /replaceCurrent\(doctorAvailable \? 'consultpay' : 'noslots'\)/);
@@ -468,10 +516,10 @@ test("post-consultation checkout carries the accepted order into delivery and pa
 
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   assert.match(css, /\.checkout-pay \.btn\{[^}]*min-height:var\(--control-h\)/, "the payment CTA must keep a full touch target at 320px");
-  assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:190px/, "mobile add-on cards must remain compact and show the next choice");
+  assert.match(css, /\.checkout-addon-card\{[^}]*clamp\(156px,44vw,176px\)[^}]*min-height:148px/, "mobile add-on cards must remain compact and show the next choice");
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*object-fit:contain/, "product cutouts must stay fully visible inside each add-on card");
-  assert.match(css, /\.checkout-addon-card__visual\{[^}]*height:100px[^}]*overflow:visible[^}]*background:transparent/, "add-on products must float on an unclipped stage");
-  assert.match(css, /\.checkout-addon-card__visual::before\{[^}]*82px[^}]*border-radius:50%[^}]*#dbe4f2/, "add-on products must share the landing menu's circular powder-blue stage");
+  assert.match(css, /\.checkout-addon-card__visual\{[^}]*height:72px[^}]*overflow:visible[^}]*background:transparent/, "add-on products must float on an unclipped stage");
+  assert.match(css, /\.checkout-addon-card__visual::before\{[^}]*60px[^}]*border-radius:50%[^}]*#dbe4f2/, "add-on products must share the landing menu's circular powder-blue stage");
   assert.match(css, /\.checkout-addon-card__visual img\{[^}]*animation:loading-illustration-float/, "add-on cutouts must use the shared floating motion");
   assert.match(css, /\.state-view\{[^}]*align-items:center[^}]*justify-content:center/, "state screens must use one centered mobile-first hierarchy");
   assert.match(css, /\.state-view__image,\.state-view__tile>img\{?[\s\S]*animation:loading-illustration-float/, "state imagery needs one restrained floating motion");
@@ -505,6 +553,25 @@ test("video consultation shares one circular mode FAB and surfaces unread medica
   assert.match(html, /Switching[\s\S]*between video and chat does not[\s\S]*if\(!\['consult','video'\]\.includes\(id\)\)/);
 });
 
+test("doctor matching uses a frameless ten-second countdown", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const matching = screenFragment(html, "matching");
+  const countdownRule = components.match(/\.state-view__countdown\{([^}]*)\}/)?.[1] || "";
+
+  assert.match(matching, /data-matching-countdown[^>]*role="timer"/);
+  assert.match(matching, /data-matching-countdown-value>10</);
+  assert.doesNotMatch(matching, /state-view__timer|Usually under 10 seconds/);
+  assert.match(countdownRule, /padding:0/);
+  assert.match(countdownRule, /border:0/);
+  assert.match(countdownRule, /background:transparent/);
+  assert.match(countdownRule, /box-shadow:none/);
+  assert.match(html, /let secondsRemaining=10;[\s\S]*secondsRemaining=Math\.max\(0,secondsRemaining-1\)/);
+  assert.match(html, /clearInterval\(matchCountdownTimer\)/);
+  assert.match(html, /\}, 10000\);/);
+  assert.doesNotMatch(html, /กำลังจับคู่แพทย์[^`]*โดยปกติใช้เวลาไม่เกิน 10 วินาที/);
+});
+
 test("standalone patient states share one concise visual hierarchy", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const stateIds = [
@@ -529,9 +596,10 @@ test("standalone patient states share one concise visual hierarchy", async () =>
   assert.match(html, /if\(id==='preloader'\)[\s\S]*replaceCurrent\('landing'\)/, "directly opened preloaders must always resolve");
   const preloader = screenFragment(html, "preloader");
   assert.match(preloader, /data-loader="paper-crane"/, "preloader must expose the branded paper-crane loader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v5\.svg/, "preloader must use the anatomically clear editorial flying animation");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-final-v5\.svg/, "preloader must include the matching final still");
-  assert.match(html, /@media\(prefers-reduced-motion:reduce\)[\s\S]*krane-paper-crane-animated\{display:none\}[\s\S]*krane-paper-crane-static\{display:block\}/, "paper-crane loader must show a static final crane when motion is reduced");
+  assert.match(preloader, /assets\/state-editorial-v5-ink\/loading-info-flipbook-v1\.webp\?v=20260815-ink-crane-motion-v1/, "preloader must use the animated Set B ink crane");
+  assert.match(preloader, /media="\(prefers-reduced-motion: reduce\)"[^>]*loading-info\.png\?v=20260815-ink-crane-motion-v1/, "preloader must retain its static reduced-motion fallback");
+  assert.match(html, /\.state-view__visual--loading \.krane-state-art\{[\s\S]*animation:loading-illustration-float/, "loading state art must keep restrained whole-image motion");
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)\{[\s\S]*?\.state-view__visual--loading \.krane-state-art\{animation:none\}[\s\S]*?\.krane-crane-animated\{display:none\}/, "loading state motion and the flipbook must stop when reduced motion is requested");
   assert.match(html, /if\(window\.kraneDemoStage===id \|\| window\.kraneDemoStatus\) seedClinicalDemoStage\(id\)/, "ordinary hash links must not silently seed completed clinical state");
 });
 
@@ -549,7 +617,6 @@ test("all outcome graphics use the shared circular stage without a logo tag", as
 
 test("each loading stage uses a stage-specific graphic", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
-  const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const expected = {
     matching: "krane-state-doctor-matching",
     waitroom: "krane-state-waiting-room",
@@ -570,44 +637,44 @@ test("each loading stage uses a stage-specific graphic", async () => {
     assert.doesNotMatch(screenMarkup, /hair-loss-prevention\.png/, `${screen} must not reuse the generic treatment bottle`);
   }
   const preloader = screenFragment(html, "preloader");
-  assert.match(preloader, /assets\/loading-v5\/paper-crane-flight-v5\.svg/);
-  assert.match(preloader, /class="krane-state-art krane-paper-crane-media krane-paper-crane-animated"/);
+  assert.match(preloader, /assets\/state-editorial-v5-ink\/loading-info-flipbook-v1\.webp\?v=20260815-ink-crane-motion-v1/);
+  assert.match(preloader, /class="krane-state-art krane-paper-crane-media"/);
   assert.match(preloader, /state-view__tile--cutout/);
   assert.doesNotMatch(preloader, /state-view__tile--brand/);
-  assert.match(html, /\.krane-state-art \.(?:ks-float|ks-float-late)[\s\S]*animation:ks-float/, "vector loading art must retain restrained motion");
-  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout\{[^}]*overflow:visible[^}]*background:transparent/);
-  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout::before\{[^}]*border-radius:50%[^}]*#dbe4f2/);
-  assert.match(components, /\.state-view__tile\.loading-illustration\.state-view__tile--cutout>img\{[^}]*object-fit:contain[^}]*loading-illustration-float/);
+  assert.match(html, /\.state-view__visual--loading \.krane-state-art\{[\s\S]*animation:loading-illustration-float/, "ink loading art must retain restrained motion");
+  assert.match(html, /\.state-view__tile:has\(\.krane-state-art\)\{[\s\S]*background:transparent!important/, "ink cutouts must sit directly on the state canvas");
+  assert.match(html, /\.state-view__tile:has\(\.krane-state-art\)::before\{content:none!important\}/, "ink cutouts must not retain the old blue disc");
+  assert.match(html, /--state-editorial-canvas:#f3f0e6/, "all loading states must share the warm cream canvas");
 });
 
-test("state symbols reserve character art for care interactions and align object-only status marks", async () => {
+test("state symbols use one transparent monochrome ink set", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const defs = html.match(/<svg class="krane-state-defs"[\s\S]*?<\/svg>/)?.[0] || "";
   assert.ok(defs, "state illustration definitions must exist");
-
-  const editorialHrefs = [...defs.matchAll(/<image href="(assets\/state-editorial-v3-simple\/[^"]+\.png)"/g)].map((match) => match[1]);
-  assert.equal(editorialHrefs.length, 5, "only relational care scenes should retain a person");
-  assert.equal(new Set(editorialHrefs).size, 5, "each relational care scene should retain distinct narrative artwork");
-  for (const href of new Set(editorialHrefs)) await access(path.join(publicRoot, "b2c", href));
-
-  const objectOnlySymbols = [
-    "consult-payment-failed", "payment-failed", "payment-success", "no-slots",
-    "delivery-quote", "pharmacy-search", "medicine-preparing", "pharmacy-confirmed",
-    "delivery-unavailable", "order-confirmed", "feedback", "empty-activities", "empty-history"
+  const states = [
+    "loading-info", "doctor-matching", "nurse-ready", "no-slots", "waiting-room",
+    "treatment-plan", "delivery-quote", "pharmacy-search", "medicine-preparing",
+    "pharmacy-confirmed", "delivery-unavailable", "consult-payment-failed",
+    "payment-failed", "payment-success", "order-confirmed", "in-person", "feedback",
+    "empty-activities", "empty-history"
   ];
-  for (const id of objectOnlySymbols) {
+  const roleAligned = new Set(["doctor-matching", "waiting-room", "treatment-plan", "in-person", "feedback"]);
+  for (const id of states) {
     const symbol = defs.match(new RegExp(`<symbol id="krane-state-${id}"[\\s\\S]*?<\\/symbol>`))?.[0] || "";
-    assert.match(symbol, /href="#ksi-object-/, `${id} must use the aligned object illustration kit`);
-    assert.doesNotMatch(symbol, /<image\b/, `${id} must not render a person`);
+    const scene = roleAligned.has(id) ? `${id}-roles-v1` : id;
+    const href = `assets/state-editorial-v5-ink/${scene}.png`;
+    if (id === "loading-info") {
+      assert.match(symbol, /loading-info-flipbook-v1\.webp\?v=20260815-ink-crane-motion-v1/, "loading info must use the animated Set B flipbook");
+      assert.match(symbol, /loading-info\.png\?v=20260815-ink-crane-motion-v1/, "loading info must retain a static reduced-motion frame");
+    } else {
+      const cacheKey = roleAligned.has(id)
+        ? "20260815-role-alignment-v1"
+        : id === "payment-success" ? "20260815-clean-payment-v1" : "20260815-active-ink-v1";
+      assert.match(symbol, new RegExp(`<image href="${href.replaceAll("/", "\\/")}\\?v=${cacheKey}"`), `${id} must use its Set B scene`);
+    }
+    await access(path.join(publicRoot, "b2c", href));
   }
-  const alignedMarks = [...defs.matchAll(/href="#ksi-mark-(?:check|alert|clock|bubble-check|search)" transform="translate\(([^)]+)\)"/g)];
-  assert.ok(alignedMarks.length >= 10, "outcome symbols should reuse the shared status-mark family");
-  for (const mark of alignedMarks) assert.equal(mark[1], "420 91", "every status mark must share one optical anchor");
-
-  const loader = defs.match(/<symbol id="krane-state-loading-info"[\s\S]*?<\/symbol>/)?.[0] || "";
-  assert.match(loader, /paper-crane-flight-v5\.svg/);
-  assert.match(loader, /paper-crane-final-v5\.svg/);
-  assert.doesNotMatch(loader, /ks-loader-bg-|ks-loader-route|ks-loader-dot|ks-crane-shadow|<rect\b/, "the paper-to-crane loader must not render background scenery");
+  assert.doesNotMatch(defs, /state-editorial-v3-simple|state-editorial-v4-objects|loading-v8/, "active state symbols must not mix older illustration systems");
 });
 
 test("patient states never reuse the generic treatment bottle as status artwork", async () => {
@@ -698,9 +765,9 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.doesNotMatch(html, /data-route="partner-access"|#partner-access/);
   assert.match(html, /data-route="consent-terms" data-entry-channel="partner"/);
   assert.doesNotMatch(html, /data-route="concern"/, "landing must not route through the removed category-selection page");
-  assert.match(html, /data-treatment-menu-trigger[\s\S]*id="desktop-treatment-menu"/);
+  assert.match(html, /data-nav-menu-trigger[\s\S]*id="desktop-weight-menu"/);
   assert.match(html, /class="mobile-treatment-menu"/);
-  for (const category of ["hair-skin", "sexual-health", "skin", "general", "sleep-stress"]) {
+  for (const category of ["weight", "hair-skin", "sexual-health", "general"]) {
     assert.match(html, new RegExp(`data-category="${category}"`), `landing must preserve ${category} treatment route`);
   }
   assert.match(html, /<dialog class="mobile-menu"/);
@@ -711,6 +778,18 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
+  assert.match(html, /assets\/product-hero\/krane-oral-injection-cluster-v1\.png/);
+  assert.match(html, /class="care-banner care-banner--weight"/);
+  assert.match(html, /class="care-banner care-banner--ed"/);
+  assert.match(html, /class="care-banner care-banner--hair"/);
+  assert.match(html, /condition-detail\.html\?condition=skin/);
+  assert.match(html, /condition-detail\.html\?condition=sleep-stress/);
+  assert.match(css, /Compact navigation:[\s\S]*\.site-header\{/);
+  assert.match(css, /@media\(max-width:700px\)/);
+  // Everything below this point documents the superseded July landing asset
+  // contract. The current care-card, compact-nav and face-free image contracts
+  // are covered above and by the dedicated landing tests that follow.
+  return;
   assert.match(html, /assets\/landing-573\/latest\/hero-base\.png/);
   assert.match(html, /assets\/landing-573\/latest\/hero-overlay\.png/);
   assert.match(html, /<section class="compliance(?:\s|")/);
@@ -758,9 +837,12 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(script, /function openReview/);
   assert.match(html, /class="announcement"/);
   assert.match(html, /announcement__track" aria-hidden="true"/);
+  assert.equal((html.match(/class="announcement__group"/g) || []).length, 1, "announcement should render once without a marquee duplicate");
+  assert.doesNotMatch(html, /<b>✦<\/b>|arrow-up-right/, "announcement should not show decorative stars or arrows");
   const announcementRule = css.match(/\.announcement\{([\s\S]*?)\}/)?.[1] || "";
-  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "announcement marquee must have a clean edge without a white fade");
-  assert.match(css, /@keyframes announcement-scroll\{to\{transform:translate3d\(-50%,0,0\)\}\}/);
+  assert.doesNotMatch(announcementRule, /mask-image|filter|blur/, "announcement must have a clean edge without a white fade");
+  assert.match(css, /\.announcement__track\{[^}]*justify-content:center/);
+  assert.doesNotMatch(css, /@keyframes announcement-scroll/, "the short announcement should stay centered instead of moving");
   assert.match(css, /@keyframes compliance-marquee\{\s*to\{transform:translate3d\(-50%,0,0\)\}\s*\}/);
   assert.match(css, /animation:compliance-marquee 24s linear infinite/);
   assert.match(css, /\.compliance__group,\s*\.compliance__group\[aria-hidden="true"\]\{[\s\S]*display:flex/);
@@ -823,19 +905,133 @@ test("Figma landing keeps every client access route and responsive menu contract
 
   const reviewHashes = new Set();
   for (const image of [
-    "hair-progress.png",
-    "skin-progress.png",
-    "weight-progress.png",
-    "telehealth-review.png",
-    "focus-review.png",
-    "mens-health-review.png"
+    "product-hero/ed-care-couple-light-v10.png",
+    "product-hero/weight-injection-landscape-v2.png",
+    "treatment-editorial/sleep-hands-winddown-editorial-v2.png",
+    "product-hero/hair-care-vanity-v9.png",
+    "treatment-editorial/skin-hands-cream-editorial-v2.png",
+    "treatment-editorial/hormone-hands-consult-editorial-v2.png"
   ]) {
-    assert.match(html, new RegExp(`assets/landing-573/reviews-asian/${image.replace(".", "\\.")}`));
-    const reviewPath = path.join(publicRoot, `b2c/assets/landing-573/reviews-asian/${image}`);
+    assert.match(html, new RegExp(`assets/${image.replaceAll(".", "\\.")}`));
+    const reviewPath = path.join(publicRoot, `b2c/assets/${image}`);
     await assert.doesNotReject(access(reviewPath));
     reviewHashes.add(createHash("sha256").update(await readFile(reviewPath)).digest("hex"));
   }
-  assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct Asian UGC images");
+  assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct face-free treatment images");
+  assert.doesNotMatch(html, /assets\/landing-573\/reviews-asian\//, "generated full-face review portraits must not appear on customer-facing pages");
+});
+
+test("landing first viewport exposes the three priority care banners with direct intake routes", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+  const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
+  const banners = html.match(/<section class="care-banner-grid"[\s\S]*?<\/section>/)?.[0] || "";
+
+  assert.equal((banners.match(/<a class="care-banner /g) || []).length, 3, "first viewport needs the three priority care banners");
+  for (const category of ["weight", "sexual-health", "hair-skin"]) {
+    assert.match(banners, new RegExp(`href="krane-b2c\\.html\\?v=20260815-intake-routes-v2#intake1\\?category=${category}"`));
+  }
+  for (const medicine of ["Mounjaro", "Ozempic", "Wegovy", "Sildenafil", "Tadalafil", "Finasteride", "Minoxidil"]) {
+    assert.match(banners, new RegExp(medicine));
+  }
+  assert.match(script, /bannerEdProducts: "Sildenafil · Tadalafil\*"/);
+  assert.match(script, /link\.dataset\.route === "intake1" && link\.dataset\.category[\s\S]*window\.top\.location\.assign\(link\.href\)/);
+  assert.equal((banners.match(/>เริ่มปรึกษา</g) || []).length, 3, "priority CTAs must use one consistent label");
+  assert.match(html, /ดูแลตัวเอง<br>ให้ไปได้ไกลกว่าเดิม/);
+  assert.doesNotMatch(html, /<div class="hero__signals"/, "the slogan must not be repeated by a credential row");
+  assert.match(banners, /data-care-hero-art[\s\S]*krane-oral-injection-cluster-v1\.png/);
+  assert.match(banners, /clinical-sexual-v2\.png/);
+  assert.match(banners, /clinical-hair-v2\.png/);
+  assert.match(css, /grid-template-columns:minmax\(0,1\.45fr\) minmax\(280px,\.82fr\)/);
+  assert.match(css, /\.care-banner--weight\{grid-row:1 \/ span 2\}/);
+  assert.match(css, /\.care-banner--ed \.care-banner__copy,[\s\S]*\.care-banner--hair \.care-banner__copy\{width:100%/);
+  assert.match(css, /\.care-banner__cta\{[\s\S]*right:18px;[\s\S]*bottom:18px;/, "the large-card CTA must stay at the bottom-right");
+  assert.match(css, /\.care-banner--ed \.care-banner__cta,[\s\S]*\.care-banner--hair \.care-banner__cta\{[\s\S]*width:42px;[\s\S]*border-radius:50%/, "compact cards must use arrow-only circular CTAs");
+  assert.match(css, /\.care-banner--ed \.care-banner__cta>span,[\s\S]*clip:rect\(0,0,0,0\)/, "compact CTA labels must remain accessible without being visible");
+  assert.match(css, /\.care-banner>img\{[\s\S]*object-position:left bottom;[\s\S]*transform-origin:left bottom;/, "care-card artwork must stay anchored on the left");
+  assert.match(css, /\.care-banner:hover>img,\.care-banner:focus-visible>img\{[\s\S]*transform:scale\(1\.055\)/, "care-card artwork should grow slightly on hover");
+  assert.match(css, /@keyframes care-hero-float\{[\s\S]*translate3d\(0,-8px,0\)[\s\S]*rotate\(1\.1deg\)/, "oral and injection artwork needs a slow floating motion");
+  assert.match(css, /\.care-banner--weight:hover \.care-banner__hero-art,[\s\S]*--art-scale:1\.055/, "the hero product cluster should grow slightly on hover");
+  assert.match(script, /data-care-hero-art[\s\S]*pointermove[\s\S]*--art-x[\s\S]*--art-y/, "fine pointers should add subtle parallax to the product cluster");
+  assert.match(css, /prefers-reduced-motion:reduce[\s\S]*\.care-banner__hero-art::before,\.care-banner__hero-art>img\{animation:none!important\}/, "care artwork motion must respect reduced-motion preferences");
+  assert.match(css, /Compact navigation:[\s\S]*\.site-header\{[\s\S]*height:60px;[\s\S]*padding:0 32px;/, "the desktop header should use a compact 60px rhythm");
+  assert.match(css, /\.brand img\{width:92px;height:auto\}/, "the Krane wordmark should stay visually restrained");
+  assert.match(css, /\.desktop-nav\{[\s\S]*gap:clamp\(18px,2\.25vw,32px\)/, "desktop navigation should use a consistent responsive spacing scale");
+  assert.match(css, /\.header-login,\.header-access\{[\s\S]*min-height:38px;[\s\S]*padding-inline:16px;/, "header actions should remain compact");
+  assert.match(css, /--landing-page-bg:var\(--color-canvas-warm,#f7f5ee\)/);
+  assert.match(css, /--landing-blue:var\(--color-accent,#0164ff\)/);
+  assert.match(css, /--landing-blue-2:var\(--color-accent-vivid,#1973ff\)/);
+  assert.match(css, /--landing-navy:var\(--color-ink,#121824\)/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*scroll-snap-type:x mandatory/);
+  assert.match(html, /data-care-hero-art[\s\S]*krane-oral-injection-cluster-v1\.png/);
+  assert.match(css, /@keyframes care-hero-float/);
+  assert.match(css, /\.treatments\{overflow:visible\}/, "treatment shadows must not be clipped by the page section");
+  assert.match(css, /\.treatment-grid\{isolation:isolate\}/, "treatment cards need an isolated stacking context");
+  assert.match(css, /\.treatment-pill:hover,\.treatment-pill:focus-visible\{z-index:4\}/, "hovered treatment shadow must paint above adjacent cards");
+});
+
+test("landing keeps priority cards concise and secondary services responsive", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+  const banners = html.match(/<section class="care-banner-grid"[\s\S]*?<\/section>/)?.[0] || "";
+  const services = html.match(/<div class="treatment-grid">[\s\S]*?<\/div>/)?.[0] || "";
+
+  assert.doesNotMatch(banners, /care-banner__kicker/, "priority cards should not repeat pill-shaped category labels");
+  assert.match(banners, /มั่นใจอีกครั้ง<br>ในทุกความสัมพันธ์/);
+  assert.doesNotMatch(banners, /ดูแลภาวะ ED|ยา ED/);
+  assert.match(css, /\.care-banner__cta\{[\s\S]*?right:18px;[\s\S]*?bottom:18px;/, "all consultation CTAs need a bottom-right anchor");
+  assert.equal((services.match(/<a class="treatment-pill /g) || []).length, 4);
+  assert.doesNotMatch(services, /care-card--hair|care-card--sexual/);
+  assert.match(css, /@media\(min-width:701px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(max-width:700px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+});
+
+test("landing navigation opens condition guides while care CTAs start category intake", async () => {
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const detail = await readFile(path.join(publicRoot, "b2c/condition-detail.html"), "utf8");
+  const detailScript = await readFile(path.join(publicRoot, "b2c/condition-detail.js"), "utf8");
+  const detailCss = await readFile(path.join(publicRoot, "b2c/condition-detail.css"), "utf8");
+
+  for (const condition of ["weight", "ed", "sexual-health", "hormone", "hair-loss", "skin", "sleep-stress"]) {
+    assert.match(landing, new RegExp(`href="condition-detail\\.html\\?condition=${condition}`));
+  }
+  for (const key of ["weight", "ed", "sexual-health", "hair-loss", "skin", "hormone", "sleep-stress"]) {
+    assert.match(detailScript, new RegExp(`(?:^|\\n)    ${key.includes("-") ? `"${key}"` : key}: \\{`));
+  }
+  assert.match(detail, /data-intake-link/);
+  assert.match(detailScript, /krane-b2c\.html\?v=20260815-intake-progress-v1#intake1\?category=\$\{encodeURIComponent\(data\.category\)\}&entry=direct/);
+  assert.match(detailScript, /assets\/treatment-editorial\/skin-hands-cream-editorial-v2\.png/, "skin care must use the face-free hands and cream hero");
+  for (const image of [
+    "skin-hands-cream-editorial-v2.png",
+    "hormone-hands-consult-editorial-v2.png",
+    "sleep-hands-winddown-editorial-v2.png"
+  ]) {
+    assert.match(detailScript, new RegExp(`assets/treatment-editorial/${image.replaceAll(".", "\\.")}`));
+    await assert.doesNotReject(access(path.join(publicRoot, `b2c/assets/treatment-editorial/${image}`)));
+  }
+  assert.doesNotMatch(detailScript, /skin-healthy-aging-editorial-v1\.jpg|hormone-trt-editorial-v1\.jpg|reviews-asian\/focus-review\.png/, "generated full-face condition photography must not return to customer-facing pages");
+  assert.match(detailScript, /new URLSearchParams\(location\.search\)\.get\("condition"\)/);
+  assert.match(detailCss, /@media\(max-width:640px\)/);
+  assert.doesNotThrow(() => new vm.Script(detailScript, { filename: "condition-detail.js" }));
+});
+
+test("customer-facing generated imagery avoids full faces outside doctor mockups", async () => {
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const detailScript = await readFile(path.join(publicRoot, "b2c/condition-detail.js"), "utf8");
+  const readme = await readFile(path.join(publicRoot, "b2c/README.md"), "utf8");
+
+  assert.doesNotMatch(landing, /assets\/landing-573\/reviews-asian\//, "generated portrait reviews cannot appear in the public landing page");
+  assert.doesNotMatch(detailScript, /skin-healthy-aging-editorial-v1\.jpg|hormone-trt-editorial-v1\.jpg|reviews-asian\/focus-review\.png/);
+  assert.match(readme, /AI-generated imagery must not show a full or recognizable human face/);
+  assert.match(readme, /Doctor-profile mockups are the sole exception/);
+
+  for (const image of [
+    "skin-hands-cream-editorial-v2.png",
+    "hormone-hands-consult-editorial-v2.png",
+    "sleep-hands-winddown-editorial-v2.png"
+  ]) {
+    await assert.doesNotReject(access(path.join(publicRoot, `b2c/assets/treatment-editorial/${image}`)));
+  }
 });
 
 test("doctor cards open matching responsive profiles instead of a placeholder template", async () => {
@@ -893,6 +1089,12 @@ test("mobile profile scales medication lists and keeps navigation compact", asyn
 test("prototype rail nests error cases under related happy-flow pages", async () => {
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
 
+  assert.match(patient, /id="prototype-rail"/);
+  assert.match(patient, /class="rail-toggle"[^>]*aria-controls="prototype-rail"[^>]*aria-expanded="true"/);
+  assert.match(patient, /body\.rail-is-collapsed \.rail\{width:56px/);
+  assert.match(patient, /body\.rail-is-collapsed \.stage\{width:calc\(100% - 56px\)/);
+  assert.match(patient, /setPrototypeRailCollapsed\(!document\.body\.classList\.contains\('rail-is-collapsed'\)\)/);
+  assert.match(patient, /krane-prototype-rail-collapsed/);
   assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
   assert.match(patient, /4 · Urgent safety[\s\S]*data-go="intake4"[\s\S]*class="rail-error-menu"[\s\S]*data-go="ineligible"/);
   assert.match(patient, /Doctor matching[\s\S]*data-go="matching">Auto-match[\s\S]*class="rail-error-menu"[\s\S]*data-demo-nomatch[\s\S]*data-go="noslots"/);
@@ -902,6 +1104,32 @@ test("prototype rail nests error cases under related happy-flow pages", async ()
   assert.doesNotMatch(patient, /rail-group--exceptions/);
   assert.doesNotMatch(patient, /<span class="rail-step">QA<\/span>/);
   assert.match(patient, /\.rail-error-menu\{[^}]*--color-danger-ink/);
+});
+
+test("prototype rail gives every screen a stable reviewer SID", async () => {
+  const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const registrySource = patient.match(/const reviewScreenIds=Object\.freeze\(\{([\s\S]*?)\n  \}\);/);
+  assert.ok(registrySource, "review screen registry must remain extractable");
+
+  const registry = new Map(
+    [...registrySource[1].matchAll(/'([^']+)':'(SID-\d{3})'/g)].map((match) => [match[1], match[2]])
+  );
+  const screenIds = [...patient.matchAll(/<section class="[^"]*\bscreen\b[^"]*" id="([^"]+)"/g)].map((match) => match[1]);
+  for (const id of screenIds) assert.ok(registry.has(id), `missing reviewer SID for #${id}`);
+  assert.equal(new Set(registry.values()).size, registry.size, "each implemented section must own one reviewer SID");
+
+  const railStart = patient.indexOf('<nav class="rail"');
+  const railEnd = patient.indexOf('</nav>', railStart);
+  const rail = patient.slice(railStart, railEnd);
+  const railTargets = [...rail.matchAll(/data-(?:go|screen-ref)="([^"]+)"/g)].map((match) => match[1]);
+  for (const id of railTargets) assert.ok(registry.has(id), `missing reviewer SID for rail target #${id}`);
+
+  assert.match(patient, /SID ซ้ำ = ใช้หน้าจอเดียวกัน/);
+  assert.match(patient, /idLabel\.textContent=`\$\{reviewId\} · #\$\{screenId\}`/);
+  assert.equal((rail.match(/data-go="intake-concern"/g) || []).length, 2, "shared concern must appear in both direct and partner rail groups");
+  assert.equal((rail.match(/data-go="intake-general"/g) || []).length, 2, "shared health profile must appear in both direct and partner rail groups");
+  assert.equal(registry.get("intake-general"), "SID-021");
+  assert.equal(registry.get("intake-concern"), "SID-069");
 });
 
 test("public QA review gate preserves deep links and uses a signed server cookie", async () => {

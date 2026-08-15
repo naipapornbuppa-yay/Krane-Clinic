@@ -1,10 +1,19 @@
 (() => {
   const translations = {
     en: {
-      announcementVirtual: "VIRTUAL CONSULTATIONS AVAILABLE 24/7",
-      announcementDoctors: "BOARD-CERTIFIED DOCTORS ONLINE IN MINUTES",
-      announcementFree: "FIRST TELEMEDICINE VISIT FREE — BOOK NOW",
+      announcementCampaign: "Nationwide medicine delivery · Private consultations · Licensed doctors",
+      announcementLink: "Start care 100% online",
       navTreatments: "Treatments",
+      navWeight: "Weight",
+      navMen: "Men's health",
+      navHairSkin: "Hair & skin",
+      navMore: "More",
+      menuWeightStart: "Start a weight-loss plan",
+      menuWeightGlp1: "GLP-1 options",
+      menuWeightCheck: "Check your eligibility",
+      menuEd: "Erectile dysfunction (ED)",
+      menuHormone: "Hormones & TRT",
+      menuSkinAge: "Skin & healthy ageing",
       menuHair: "Hair loss & scalp",
       menuSkin: "Skin & acne",
       menuSexual: "Sexual health",
@@ -18,45 +27,89 @@
       healthArticles: "Health articles",
       language: "Language",
       partnerAccess: "Partner access",
-      online: "100% online",
-      certified: "Certified care",
-      discreet: "Free discreet delivery",
-      heroTitle: "Premium healthcare<br>designed by medical experts",
-      heroCta: "Start your free assessment (5 min)",
-      treatmentTitle: "Choose the right care for you",
-      complianceTitle: "Thai clinical and privacy standards",
-      hair: "Hair loss prevention",
+      online: "100% private consultations",
+      certified: "Licensed doctors",
+      discreet: "Discreet delivery nationwide",
+      heroTitle: "Take care of yourself.<br>Go further.",
+      bannerWeightTitle: "A weight-loss plan<br>made for you",
+      bannerWeightProducts: "Mounjaro · Ozempic · Wegovy*",
+      bannerWeightCta: "Start consultation",
+      bannerEdTitle: "Feel confident again<br>in every relationship",
+      bannerEdProducts: "Sildenafil · Tadalafil*",
+      bannerEdCta: "Start consultation",
+      bannerHairTitle: "Reduce hair loss<br>and restore growth",
+      bannerHairProducts: "Finasteride 1 mg · Minoxidil 5%*",
+      bannerHairCta: "Start consultation",
+      bannerSkinKicker: "Skin & healthy ageing",
+      bannerSkinTitle: "Start a skin-care plan<br>with a doctor",
+      bannerSkinProducts: "Assess acne, dark spots and fine lines*",
+      bannerSkinCta: "Start skin care",
+      campaignWeightEyebrow: "Doctor-led weight care",
+      campaignWeightTitle: "Start a weight-loss plan<br>made for you",
+      campaignWeightLead: "Check eligibility and consult a doctor online.",
+      campaignWeightProducts: "Mounjaro · Ozempic · Wegovy*",
+      campaignWeightCta: "Start assessment",
+      campaignWeightStoryEyebrow: "Ongoing doctor follow-up",
+      campaignWeightStoryTitle: "Manage your weight<br>with a doctor",
+      campaignWeightStoryLead: "Start with your health history and personal goals.",
+      campaignWeightStoryProducts: "Semaglutide · Tirzepatide*",
+      campaignWeightStoryCta: "Start weight care",
+      carePickerEyebrow: "Start with what you want to improve",
+      carePickerTitle: "Choose your care",
+      campaignHairEyebrow: "Hair restoration",
+      campaignHairTitle: "Treat hair loss<br>at the source",
+      campaignHairLead: "Consult online and follow your progress with a doctor.",
+      campaignHairProducts: "Finasteride 1 mg · Minoxidil 5%*",
+      campaignHairCta: "Consult about hair",
+      campaignMenEyebrow: "Men's health",
+      campaignMenTitle: "Feel confident<br>in private",
+      campaignMenLead: "Consult a doctor online about erectile dysfunction.",
+      campaignMenProducts: "Viagra and ED options selected by your doctor*",
+      campaignMenCta: "Start consultation",
+      heroWeightKicker: "GLP-1 weight loss under medical care",
+      heroWeightTitle: "Start your<br>weight-loss plan today",
+      heroSexualKicker: "Private online doctor consultation",
+      heroSexualTitle: "Support men's confidence",
+      startConsultation: "Consult now",
+      heroLegal: "*Treatment and medication options depend on a doctor's assessment",
+      treatmentTitle: "Explore more care",
+      complianceTitle: "Standards you can trust",
+      hair: "Restore your hair",
       sexual: "Sexual performance",
       skin: "Skin & anti-ageing",
       weight: "Weight management",
       hormone: "Hormones & TRT",
       mind: "Focus & mind",
+      general: "General symptoms / Not sure",
       licensedDoctors: "Licensed doctors",
-      howKicker: "Simple & safe",
-      howTitle: "The modern patient journey",
-      step1Title: "Consult online",
-      step1Body: "Complete a five-minute health assessment.",
-      step2Title: "A doctor reviews",
-      step2Body: "A doctor assesses your needs and creates your plan.",
-      step3Title: "Discreet delivery",
-      step3Body: "Receive treatment at home in discreet packaging.",
-      protocolKicker: "Our protocols",
-      protocolTitle: "Clinically proven<br>FDA approved",
-      protocolLead: "Doctor prescribed. Pharmacist dispensed.",
-      benefit1Title: "100% licensed doctors",
+      howKicker: "How it works",
+      howTitle: "Start care in four steps",
+      step1Title: "Complete a health assessment",
+      step1Body: "Share the key information your doctor needs before the consultation.",
+      step2Title: "Consult a doctor online",
+      step2Body: "Speak privately with a licensed doctor.",
+      step3Title: "Receive your treatment plan",
+      step3Body: "Your doctor assesses your needs and creates a suitable plan.",
+      step4Title: "Pay and await delivery",
+      step4Body: "Medicine is delivered nationwide in discreet packaging.",
+      protocolKicker: "Authentic medicine, delivered home",
+      protocolTitle: "Doctor prescribed.<br>Pharmacist dispensed.",
+      protocolLead: "Delivered through the Fascino pharmacy network.",
+      benefit1Title: "A real clinic with telemedicine services",
       benefit1Body: "Every consultation is led by a certified doctor dedicated to your health.",
-      benefit2Title: "Medical-grade encryption",
+      benefit2Title: "Clinic licence no. 10101017669",
       benefit2Body: "Your health records and conversations are securely encrypted and protected.",
-      benefit3Title: "Free, private delivery",
+      benefit3Title: "Nationwide delivery through the Fascino pharmacy network",
       benefit3Body: "Delivered to your door in unbranded packaging with nothing to indicate what is inside.",
-      benefit4Title: "Ongoing medical support",
+      benefit4Title: "Your information is protected under PDPA",
       benefit4Body: "Access unlimited medical follow-ups and treatment-adjustment consultations.",
-      standardKicker: "Our standard",
-      guaranteeTitle: "Real clinical standards.<br>Real privacy.",
-      guaranteeLead: "We believe men deserve clinical excellence without compromise. No waiting rooms, generic prescriptions or awkward face-to-face appointments.",
+      standardKicker: "Confidence at every step",
+      guaranteeTitle: "Standards you<br>can trust",
+      guaranteeLead: "Access is role-based and limited to the doctor responsible for your case. Your information is not disclosed without consent unless required by law.",
+      standardsLine: "International Standard powered by INET · ISO/IEC 27001:2022 · ISO/IEC 27018 · ISO/IEC 20000-1 · ISO 22301 · CSA STAR",
       ourGuarantee: "Our guarantee",
-      expertsKicker: "Expertise that leads",
-      expertsTitle: "World-class medical leadership",
+      expertsKicker: "Licensed doctors",
+      expertsTitle: "Our medical team",
       reviewsTrust: "95% love their care experience",
       reviewsMembers: "users",
       reviewsQuote: "“Excellent care and service”",
@@ -86,7 +139,7 @@
   const menu = document.querySelector("#mobile-menu");
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
-  const mobileQuery = window.matchMedia("(max-width: 1100px)");
+  const mobileQuery = window.matchMedia("(max-width: 880px)");
 
   function menuIsOpen() {
     return menu && (menu.open || menu.hasAttribute("open"));
@@ -98,7 +151,7 @@
     menuOpen?.setAttribute("aria-expanded", "true");
     if (typeof menu.showModal === "function") menu.showModal();
     else menu.setAttribute("open", "");
-    requestAnimationFrame(() => menu.querySelector("nav a")?.focus());
+    requestAnimationFrame(() => menu.querySelector("nav summary, nav > a")?.focus());
   }
 
   function closeMenu({ restoreFocus = false } = {}) {
@@ -124,26 +177,69 @@
     if (!event.matches) closeMenu();
   });
 
-  const treatmentMenu = document.querySelector("[data-treatment-menu]");
-  const treatmentMenuTrigger = document.querySelector("[data-treatment-menu-trigger]");
-  function setTreatmentMenu(open) {
-    if (!treatmentMenu || !treatmentMenuTrigger) return;
-    treatmentMenu.classList.toggle("is-open", open);
-    treatmentMenuTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+  const navMenus = [...document.querySelectorAll("[data-nav-menu]")];
+  const hoverNavQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  let navCloseTimer = 0;
+
+  function setNavMenu(activeMenu) {
+    window.clearTimeout(navCloseTimer);
+    navMenus.forEach((navMenu) => {
+      const open = navMenu === activeMenu;
+      navMenu.classList.toggle("is-open", open);
+      navMenu.querySelector("[data-nav-menu-trigger]")?.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   }
-  treatmentMenuTrigger?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    setTreatmentMenu(!treatmentMenu.classList.contains("is-open"));
+
+  function queueNavClose() {
+    window.clearTimeout(navCloseTimer);
+    navCloseTimer = window.setTimeout(() => setNavMenu(null), 140);
+  }
+
+  navMenus.forEach((navMenu) => {
+    const trigger = navMenu.querySelector("[data-nav-menu-trigger]");
+    trigger?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const alreadyOpen = navMenu.classList.contains("is-open");
+      const toggleCloses = alreadyOpen && (!hoverNavQuery.matches || event.detail === 0);
+      setNavMenu(toggleCloses ? null : navMenu);
+    });
+    trigger?.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown") return;
+      event.preventDefault();
+      setNavMenu(navMenu);
+      navMenu.querySelector(".nav-menu__menu a")?.focus();
+    });
+    if (hoverNavQuery.matches) {
+      navMenu.addEventListener("pointerenter", () => setNavMenu(navMenu));
+      navMenu.addEventListener("pointerleave", queueNavClose);
+    }
+    navMenu.addEventListener("focusout", (event) => {
+      if (!navMenu.contains(event.relatedTarget)) queueNavClose();
+    });
+    navMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setNavMenu(null)));
   });
-  treatmentMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setTreatmentMenu(false)));
+
+  const mobileNavSections = [...document.querySelectorAll("[data-mobile-nav-section]")];
+  mobileNavSections.forEach((section) => section.addEventListener("toggle", () => {
+    if (!section.open) return;
+    mobileNavSections.forEach((sibling) => {
+      if (sibling !== section) sibling.open = false;
+    });
+  }));
+
   document.addEventListener("click", (event) => {
-    if (treatmentMenu && !treatmentMenu.contains(event.target)) setTreatmentMenu(false);
+    if (!(event.target instanceof Element) || !event.target.closest("[data-nav-menu]")) setNavMenu(null);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && treatmentMenu?.classList.contains("is-open")) {
-      setTreatmentMenu(false);
-      treatmentMenuTrigger?.focus();
-    }
+    if (event.key !== "Escape") return;
+    const openMenu = navMenus.find((navMenu) => navMenu.classList.contains("is-open"));
+    if (!openMenu) return;
+    setNavMenu(null);
+    openMenu.querySelector("[data-nav-menu-trigger]")?.focus();
+  });
+
+  mobileQuery.addEventListener("change", (event) => {
+    if (event.matches) setNavMenu(null);
   });
 
   const languageSelects = [...document.querySelectorAll("[data-language]")];
@@ -158,6 +254,14 @@
     languageSelects.forEach((select) => { select.value = lang; });
     menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
     menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
+    document.querySelector(".announcement")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "เริ่มการดูแลสุขภาพออนไลน์กับแพทย์" : "Start online care with a doctor"
+    );
+    document.querySelector("[data-care-banner-grid]")?.setAttribute(
+      "aria-label",
+      lang === "th" ? "เริ่มการดูแลตามเรื่องที่สนใจ" : "Start care by concern"
+    );
     document.querySelector("[data-members-label]")?.setAttribute(
       "aria-label",
       lang === "th" ? "ผู้ใช้งาน 3,000 คน" : "3,000 users"
@@ -188,11 +292,25 @@
     if (event.data?.krane === "lang") setLanguage(event.data.th ? "th" : "en");
   });
 
+  let routeFallbackTimer = 0;
+  window.addEventListener("message", (event) => {
+    if (event.data?.krane !== "navAck") return;
+    window.clearTimeout(routeFallbackTimer);
+    routeFallbackTimer = 0;
+  });
+
   document.querySelectorAll("[data-route]").forEach((link) => {
     link.addEventListener("click", (event) => {
       try {
         if (window.parent && window.parent !== window) {
           event.preventDefault();
+          // Category-specific care must reload the parent app so an already-open
+          // tab cannot keep an older intake mapping in memory. The versioned href
+          // also makes the category part of the canonical fallback URL.
+          if (link.dataset.route === "intake1" && link.dataset.category) {
+            window.top.location.assign(link.href);
+            return;
+          }
           window.parent.postMessage({
             krane: "nav",
             to: link.dataset.route,
@@ -200,12 +318,38 @@
             category: link.dataset.category || null,
             entryChannel: link.dataset.entryChannel || null
           }, "*");
+          window.clearTimeout(routeFallbackTimer);
+          routeFallbackTimer = window.setTimeout(() => {
+            try { window.top.location.assign(link.href); }
+            catch (_) { window.location.assign(link.href); }
+          }, 500);
         }
       } catch (_) {}
     });
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  const careHeroArt = document.querySelector("[data-care-hero-art]");
+  const careHeroCard = careHeroArt?.closest(".care-banner--weight");
+  if (careHeroCard && careHeroArt && !reducedMotionQuery.matches && window.matchMedia("(pointer: fine)").matches) {
+    let careHeroMotionFrame = 0;
+    careHeroCard.addEventListener("pointermove", (event) => {
+      const bounds = careHeroCard.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      window.cancelAnimationFrame(careHeroMotionFrame);
+      careHeroMotionFrame = window.requestAnimationFrame(() => {
+        careHeroArt.style.setProperty("--art-x", x.toFixed(3));
+        careHeroArt.style.setProperty("--art-y", y.toFixed(3));
+      });
+    });
+    careHeroCard.addEventListener("pointerleave", () => {
+      careHeroArt.style.setProperty("--art-x", "0");
+      careHeroArt.style.setProperty("--art-y", "0");
+    });
+  }
+
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
     [".treatments .treatment-pill", 55, "scale"],
@@ -271,10 +415,10 @@
   const productSlides = [
     {
       id: "injectors",
-      src: "assets/landing-573/products/clinical-injectors-v2.png",
+      src: "assets/product-hero/krane-oral-injection-cluster-v1.png",
       alt: {
-        th: "อุปกรณ์ยาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
-        en: "Injection devices that may be prescribed as part of a treatment plan"
+        th: "ปากกาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
+        en: "Injection pens that may be prescribed as part of a treatment plan"
       },
       tags: {
         th: ["ปากกาฉีด", "ปรับขนาดยา", "ใช้ตามใบสั่งแพทย์"],
@@ -309,6 +453,7 @@
   let activeProduct = 0;
   let productSwapTimer = 0;
   productSlides.forEach((slide) => {
+    if (!slide.src) return;
     const image = new Image();
     image.src = slide.src;
   });
@@ -329,6 +474,13 @@
     renderProductCopy();
     window.clearTimeout(productSwapTimer);
     productImage.style.opacity = "0";
+    if (!slide.src) {
+      if (productIndex) productIndex.textContent = String(activeProduct + 1).padStart(2, "0");
+      productDots.forEach((dot, index) => {
+        dot.style.background = index === activeProduct ? "#0f172a" : "#cbd5e1";
+      });
+      return;
+    }
     productSwapTimer = window.setTimeout(() => {
       productImage.src = slide.src;
       productImage.style.opacity = "1";
@@ -341,6 +493,25 @@
 
   document.addEventListener("krane:languagechange", renderProductCopy);
   renderProductCopy();
+
+  const productScene = document.querySelector("[data-product-scene]");
+  if (productStage && productScene && !reducedMotionQuery.matches) {
+    let productMotionFrame = 0;
+    productStage.addEventListener("pointermove", (event) => {
+      const bounds = productStage.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      window.cancelAnimationFrame(productMotionFrame);
+      productMotionFrame = window.requestAnimationFrame(() => {
+        productScene.style.setProperty("--scene-x", x.toFixed(3));
+        productScene.style.setProperty("--scene-y", y.toFixed(3));
+      });
+    });
+    productStage.addEventListener("pointerleave", () => {
+      productScene.style.setProperty("--scene-x", "0");
+      productScene.style.setProperty("--scene-y", "0");
+    });
+  }
 
   document.querySelectorAll("[data-product-direction]").forEach((button) => {
     button.addEventListener("click", () => {

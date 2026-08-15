@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
-<meta name="theme-color" content="#1973FF">
+<meta name="theme-color" content="#F7F5EE">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Krane Clinic">
 <meta property="og:title" content="Krane Clinic · Online Care">
@@ -24,24 +24,28 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260805hotfix1">
-<link rel="stylesheet" href="components.css?v=20260805hotfix1">
+<link rel="stylesheet" href="design-tokens.css?v=20260815-core-palette-v2">
+<link rel="stylesheet" href="components.css?v=20260815-matching-countdown-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260812-moodboard-v2">
+<link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260804selectfix1" defer></script>
-<script src="i18n.js?v=20260805hotfix1" defer></script>
+<script src="i18n.js?v=20260815-split-intake-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
   body{max-width:100%;background:var(--gradient-teal-soft);overflow-x:hidden}
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;overflow-x:hidden}
-  .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
-  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) var(--sp-2) var(--sp-4);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
+  .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
+  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
   .rail-head .logo{display:flex;align-items:center;margin:0}
   .rail-logo{display:block;width:96px;height:auto;max-height:25px;object-fit:contain;object-position:left center}
   .rail-head__label{font-size:11px;font-weight:var(--fw-semibold);color:var(--color-ink-3);text-transform:uppercase;letter-spacing:0}
+  .rail-toggle{position:absolute;top:50%;right:4px;width:30px;height:30px;display:grid;place-items:center;padding:0;border:1px solid var(--color-line);border-radius:10px;background:var(--color-surface);color:var(--color-ink);cursor:pointer;transform:translateY(-50%);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .rail-toggle:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
+  .rail-toggle:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+  .rail-toggle__icon{width:8px;height:8px;border-left:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg);transition:transform .22s ease}
   .rail details,.rail details>summary,.rail-group__body,.rail-page,.rail-sub,.rail a{max-width:100%;min-width:0}
   .rail details>summary{list-style:none;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
   .rail details>summary::-webkit-details-marker{display:none}
@@ -61,8 +65,9 @@
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
   .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
   .rail a.current .rail-screen-id,.rail a.is-exception.current .rail-screen-id{color:inherit;opacity:.68}
-  .rail-legend{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
+  .rail-legend{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
   .rail-legend span{display:inline-flex;align-items:center;gap:5px}
+  .rail-legend .rail-legend__screen-id{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;opacity:.82}
   .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
   .rail-legend .is-error{color:var(--color-danger-ink)}
   .rail-legend .is-error i{background:var(--color-danger-ink)}
@@ -78,7 +83,16 @@
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
   .rail a.is-exception.current{background:var(--color-danger-ink);color:#fff;font-weight:var(--fw-semibold)}
   .rail a.is-exception.current .rail-state{color:inherit}
-  .stage{width:calc(100% - 286px);min-width:0;max-width:calc(100vw - 286px);flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);overflow-x:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-7)}
+  .stage{width:calc(100% - 286px);min-width:0;max-width:calc(100vw - 286px);flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);overflow-x:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-7);transition:width .22s ease,max-width .22s ease}
+  body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
+  body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
+  body.rail-is-collapsed .rail-head .logo,
+  body.rail-is-collapsed .rail-head__label,
+  body.rail-is-collapsed .rail-legend,
+  body.rail-is-collapsed .rail>.rail-group{display:none}
+  body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
+  body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
+  body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
   .screen{display:none;min-width:0}
   .screen.active{display:flex}
   .note-bar{display:none}
@@ -224,9 +238,16 @@
     }
   </style>
   <style>
-    /* Krane state illustration system: static editorial line art + semantic motion only. */
+    /* Krane state illustration system: monochrome ink cutouts + semantic motion only. */
+    :root{--state-editorial-canvas:#f3f0e6}
+    .screen:has(> .screen__body.state-view),
+    .screen__body.state-view{background:var(--state-editorial-canvas)}
+    .screen:has(> .screen__body.state-view)>.screen__top,
+    .screen:has(> .screen__body.state-view)>.screen__footer{
+      background:color-mix(in srgb,var(--state-editorial-canvas) 92%,transparent)
+    }
     .state-view__visual:has(.krane-state-art){
-      width:min(82vw,430px)!important;
+      width:min(70vw,365px)!important;
       height:auto!important;
       min-height:0!important;
       aspect-ratio:14/9;
@@ -269,20 +290,23 @@
     .krane-state-defs .ks-dot-1,.krane-state-art .ks-dot-1{animation:ks-dot 1.35s 0s ease-in-out infinite}
     .krane-state-defs .ks-dot-2,.krane-state-art .ks-dot-2{animation:ks-dot 1.35s .16s ease-in-out infinite}
     .krane-state-defs .ks-dot-3,.krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
-    /* Rigid vector pieces fold while edge-on, keeping every navy line crisp.
-       The static final crane replaces the animation for reduced motion. */
-    .krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
-    .state-view__tile>.krane-paper-crane-static{display:none}
+    .krane-paper-crane-picture,.krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
+    .krane-crane-static{display:none}
+    .state-view__visual--loading .krane-state-art{
+      transform-origin:center;
+      animation:loading-illustration-float 3.2s var(--ease-inout) infinite
+    }
     @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
     @keyframes ks-draw{0%,18%{stroke-dashoffset:54}45%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:-54}}
     @keyframes ks-pop{0%,20%,100%{transform:scale(.86);opacity:.55}42%,80%{transform:scale(1);opacity:1}}
     @keyframes ks-pulse{0%,100%{transform:scale(.94);opacity:.68}50%{transform:scale(1.06);opacity:1}}
     @keyframes ks-dot{0%,65%,100%{transform:translateY(0);opacity:.35}32%{transform:translateY(-7px);opacity:1}}
-    @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(88vw,390px)!important}}
+    @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(75vw,332px)!important}}
     @media(prefers-reduced-motion:reduce){
-      .state-view__tile>.krane-paper-crane-animated{display:none}
-      .state-view__tile>.krane-paper-crane-static{display:block}
+      .state-view__visual--loading .krane-state-art{animation:none}
+      .krane-crane-animated{display:none}
+      .krane-crane-static{display:inline}
     }
   </style>
 </head>
@@ -321,9 +345,9 @@
 <div class="proto">
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
-  <nav class="rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span></div>
-    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span></div>
+  <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
+    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
       <summary><span class="rail-step">01</span><span>Start &amp; discover</span></summary>
@@ -367,7 +391,8 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-general">6 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">รูปแบบเดียวกับปรึกษาทั่วไป</span></a>
+        <a data-go="intake-concern" data-category="general">6 · อาการที่ต้องการปรึกษา <span class="rail-state">เฉพาะปรึกษาทั่วไป · อาการ ระยะเวลา และสิ่งที่ลองทำแล้ว</span></a>
+        <a data-go="intake-general">7 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">ประวัติสุขภาพและข้อมูลร่างกาย</span></a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -379,7 +404,7 @@
         <details class="rail-page" open><summary>Doctor matching</summary><div class="rail-sub">
           <a data-go="matching">Auto-match</a><a data-go="choosedoc">Option · Choose doctor</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nomatch><span class="rail-error-tag">Error case</span>No doctor available now</a>
+          <a class="is-exception" data-demo-nomatch data-screen-ref="matching"><span class="rail-error-tag">Error case</span>No doctor available now</a>
           <a class="is-exception" data-go="noslots"><span class="rail-error-tag">Error case</span>No booking slots</a>
         </div></details>
         <details class="rail-page" open><summary>Consultation payment</summary><div class="rail-sub">
@@ -428,7 +453,7 @@
         <details class="rail-page" open><summary>Pharmacy confirmation</summary><div class="rail-sub">
           <a data-go="pharmacypending">State · Preparing</a><a data-go="pharmacyaccepted">State · Accepted</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nostock><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
+          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
           <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
         </div></details>
         <a data-go="confirm">Order confirmation</a>
@@ -469,8 +494,8 @@
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
         <a data-go="partner-insurance">สิทธิ์และการชำระเงิน</a>
-        <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">SCR-002</span></a>
-        <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
+        <a data-go="intake-concern" data-entry-channel="partner">อาการที่ต้องการปรึกษา</a>
+        <a data-go="intake-general" data-entry-channel="partner">ข้อมูลสุขภาพทั่วไป</a>
         <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
           <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
           <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
@@ -491,7 +516,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260811-krane-care-cards-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-sage-couple-v4" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -771,25 +796,25 @@
         <ol class="photo-guide">
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/hair-angle-front.jpg" alt="ตัวอย่างภาพถ่ายแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2.png?v=20260815-mascot-photo-guide-v2" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">แนวไรผมด้านหน้า</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/hair-angle-crown.jpg" alt="ตัวอย่างภาพถ่ายกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v2.png?v=20260815-mascot-photo-guide-v2" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">กลางศีรษะ</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/hair-angle-back.jpg" alt="ตัวอย่างภาพถ่ายขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2.png?v=20260815-mascot-photo-guide-v2" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ขม่อมด้านหลัง</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/hair-angle-side.jpg" alt="ตัวอย่างภาพถ่ายด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2.png?v=20260815-mascot-photo-guide-v2" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ด้านข้างและขมับ</span>
           </li>
@@ -809,11 +834,59 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="intake-general">Continue</button><button class="btn btn--ghost btn--sm" data-go="intake-general">Skip for now</button></div>
   </section>
 
-  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (penultimate for every service) ===================== -->
-  <section class="screen" id="intake-general">
+  <!-- ===================== INTAKE · SHARED CONCERN DETAILS ===================== -->
+  <section class="screen" id="intake-concern">
     <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
-    <div class="screen__body partner-health-compact">
-      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2><p class="muted">ข้อมูลที่ครบถ้วน จะช่วยให้คุณหมอวินิจฉัยอาการได้แม่นยำยิ่งขึ้น</p></div>
+    <div class="screen__body partner-health-compact shared-health-intake">
+      <div class="stack-2"><h2 class="h1">อาการที่ต้องการปรึกษา</h2><p class="muted">กรอกรายละเอียดอาการ ระยะเวลา และสิ่งที่ลองทำแล้ว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น</p></div>
+      <div class="card card--pad-sm shared-concern-card" data-shared-concern>
+        <div class="shared-concern-grid">
+          <div class="field"><label for="partner-concern-text">อาการเป็นอย่างไรบ้าง?</label><textarea class="textarea partner-concern-textarea" id="partner-concern-text" placeholder="เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด"></textarea></div>
+          <div class="field">
+            <label for="partner-concern-duration-value">เป็นมานานแค่ไหนแล้ว?</label>
+            <div class="partner-duration-row">
+              <div class="partner-duration-stepper">
+                <button type="button" data-partner-duration-step="-1" aria-label="ลดระยะเวลา">−</button>
+                <input id="partner-concern-duration-value" type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="จำนวนระยะเวลา">
+                <button type="button" data-partner-duration-step="1" aria-label="เพิ่มระยะเวลา">+</button>
+              </div>
+              <div class="partner-duration-units" aria-label="หน่วยระยะเวลา">
+                <button type="button" aria-selected="true" data-partner-duration-unit="วัน">วัน</button>
+                <button type="button" aria-selected="false" data-partner-duration-unit="เดือน">เดือน</button>
+                <button type="button" aria-selected="false" data-partner-duration-unit="ปี">ปี</button>
+              </div>
+            </div>
+          </div>
+          <div class="field shared-concern-grid__wide">
+            <span class="field-label">ทำอะไรเพื่อบรรเทาอาการไปแล้วบ้าง?</span>
+            <div class="partner-relief-grid" aria-label="สิ่งที่ลองทำแล้ว">
+              <button type="button" aria-selected="false" data-partner-relief-value="ยังไม่ได้ทำ">ยังไม่ได้ทำ</button>
+              <button type="button" aria-selected="false" data-partner-relief-value="ทานหรือใช้ยา">ทานหรือใช้ยา</button>
+              <button type="button" aria-selected="false" data-partner-relief-value="พบแพทย์">พบแพทย์</button>
+              <button type="button" aria-selected="false" data-partner-relief-value="อื่น ๆ">อื่น ๆ</button>
+            </div>
+          </div>
+          <div class="field shared-concern-grid__wide">
+            <span class="field-label">มีรูปประกอบอาการหรือยาหรือไม่? <span class="hint">(ถ้ามี)</span></span>
+            <label class="upload partner-photo-upload" for="partner-photo-input">
+              <span class="up-ic"><span data-demo-icon="camera"></span></span>
+              <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
+              <span class="up-sub">สูงสุด 5 รูป · 10 MB ต่อรูป</span>
+            </label>
+          </div>
+          <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
+          <div class="up-thumbs shared-concern-grid__wide" data-partner-photo-thumbs aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
+  </section>
+
+  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (final for every service) ===================== -->
+  <section class="screen" id="intake-general">
+    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
+    <div class="screen__body partner-health-compact shared-health-intake">
+      <div><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2></div>
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
@@ -851,7 +924,7 @@
         </div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลสุขภาพ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลและดำเนินการต่อ</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -1035,7 +1108,9 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__timer">Usually under 10 seconds</div>
+      <div class="state-view__countdown" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที">
+        <strong data-matching-countdown-value>10</strong><span data-matching-countdown-unit>วินาที</span>
+      </div>
     </div>
   </section>
 
@@ -1080,36 +1155,23 @@
   <section class="screen" id="consultpay" data-screen-code="SCR-008" data-checkout-mode="consultation">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pay consultation fee</span></div>
     <div class="screen__body stack-4">
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-checkout-title>ค่าปรึกษาแพทย์</div><div class="hint" data-consult-checkout-copy>ตรวจสอบยอดก่อนดำเนินการต่อ</div></div></div>
+      <!-- Restored from the approved 5 Aug SCR-008: one card, with no separate
+           fee banner and no second detail card repeating the same information. -->
       <div class="card card--pad-sm stack-3">
-        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span> รับเคสแล้ว · พร้อมให้คำปรึกษา</strong></div>
+        <div class="row">
+          <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260805bill3" alt="" width="40" height="40">
+          <div class="between grow"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
+        </div>
+        <div class="between"><span class="muted">เลขใบประกอบวิชาชีพ</span><strong>12345</strong></div>
+        <div class="divider" style="margin:0"></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
-        <div class="between"><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Pay now</span><span class="amt" data-pay-amt>฿ 350</span></div>
-      </div>
-
-      <!-- SCR-008 detail block (04/08 deck): what the consultation includes, as
-           its own section under the price summary. The fee mirrors the summary
-           above rather than restating a number, so the two cannot disagree. -->
-      <div class="card card--pad-sm stack-3" data-consult-details>
-        <div class="section-label">รายละเอียดการปรึกษา</div>
-        <div class="consult-detail">
-          <div class="consult-detail__row">
-            <span>ค่าปรึกษาแพทย์</span>
-            <span><s data-consult-detail-was hidden>฿ 350</s> <strong data-consult-detail-fee>฿ 350</strong></span>
-          </div>
-          <p class="hint" data-consult-detail-fee-note hidden>คุ้มครองโดยประกัน</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ใช้เวลาในการปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
-          <p class="hint">คุยกับคุณหมอได้เต็มที่</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
-          <p class="hint">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
-        </div>
+        <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
+        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <div class="between" data-consult-total-row><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
+        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
+        <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
       <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>ขอใบรับรองแพทย์ · ฟรี</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
@@ -1119,10 +1181,6 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-            <!-- Q1 (pending): insurance coverage shown as a deduction line, the way
-             Health at Home do it, rather than rewriting the price. Hidden until
-             KRANE_FLAGS.coverageLine is true. -->
-        <div class="between" data-coverage-row hidden><span class="muted">สิทธิ์ครอบคลุมการรักษาครั้งนี้</span><strong data-coverage-amount>- ฿ 350</strong></div>
 <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
@@ -2321,107 +2379,7 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="partner-concern">Noted</button></div>
-  </section>
-
-  <!-- SCR-002, restored 2026-08-04. ca47e17 had pointed the partner path at the
-       general intake1 instead; that is six sub-steps of scrolling for a question
-       the partner journey answers in one screen. -->
-  <section class="screen" id="partner-concern" data-screen-id="SCR-002">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">อาการที่ต้องการปรึกษา</span></div>
-    <div class="screen__body stack-4">
-      <div class="field"><label for="partner-concern-text">อาการเป็นอย่างไรบ้าง?</label><textarea class="textarea partner-concern-textarea" id="partner-concern-text" placeholder="เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด"></textarea></div>
-      <div class="field">
-        <label for="partner-concern-duration-value">เป็นมานานแค่ไหนแล้ว?</label>
-        <div class="partner-duration-row">
-          <div class="partner-duration-stepper">
-            <button type="button" data-partner-duration-step="-1" aria-label="ลดระยะเวลา">−</button>
-            <input id="partner-concern-duration-value" type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="จำนวนระยะเวลา">
-            <button type="button" data-partner-duration-step="1" aria-label="เพิ่มระยะเวลา">+</button>
-          </div>
-          <div class="partner-duration-units" aria-label="หน่วยระยะเวลา">
-            <button type="button" aria-selected="true" data-partner-duration-unit="วัน">วัน</button>
-            <button type="button" aria-selected="false" data-partner-duration-unit="เดือน">เดือน</button>
-            <button type="button" aria-selected="false" data-partner-duration-unit="ปี">ปี</button>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <span class="field-label">ทำอะไรเพื่อบรรเทาอาการไปแล้วบ้าง?</span>
-        <div class="partner-relief-grid" aria-label="สิ่งที่ลองทำแล้ว">
-          <button type="button" aria-selected="false" data-partner-relief-value="ยังไม่ได้ทำ">ยังไม่ได้ทำ</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="ทานหรือใช้ยา">ทานหรือใช้ยา</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="พบแพทย์">พบแพทย์</button>
-          <button type="button" aria-selected="false" data-partner-relief-value="อื่น ๆ">อื่น ๆ</button>
-        </div>
-      </div>
-      <div class="field">
-        <span class="field-label">มีรูปประกอบอาการหรือยาหรือไม่? <span class="hint">(ถ้ามี)</span></span>
-        <label class="upload partner-photo-upload" for="partner-photo-input">
-          <span class="up-ic"><span data-demo-icon="camera"></span></span>
-          <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
-          <span class="up-sub">สูงสุด 5 รูป · 10 MB ต่อรูป</span>
-        </label>
-      </div>
-      <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
-      <div class="up-thumbs" data-partner-photo-thumbs aria-live="polite">
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-concern-continue>ดำเนินการต่อ</button></div>
-  </section>
-  <section class="screen" id="partner-intake">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลสุขภาพ</span></div>
-    <div class="screen__body partner-health-compact">
-      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไปของคุณ</h2><p class="muted">ข้อมูลที่ครบถ้วน จะช่วยให้คุณหมอวินิจฉัยอาการได้แม่นยำยิ่งขึ้น</p></div>
-      <!-- One client-flow box equals one compact page: demographics, measurements
-           and the three clinical-history fields stay together. -->
-      <div class="card card--pad-sm partner-health-card">
-        <div class="partner-health-grid">
-          <div class="field grow"><label for="partner-sex">เพศกำเนิด</label><select class="select" id="partner-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
-          <div class="field grow"><label for="partner-dob">วันเกิด</label><input class="input" id="partner-dob" type="date" autocomplete="bday" value="1994-03-12" required></div>
-        </div>
-        <div class="partner-health-grid">
-          <div class="field grow"><label for="partner-height">ส่วนสูง (ซม.)</label><input class="input" id="partner-height" inputmode="numeric" placeholder="เช่น 175"></div>
-          <div class="field grow"><label for="partner-weight">น้ำหนัก (กก.)</label><input class="input" id="partner-weight" inputmode="numeric" placeholder="เช่น 70"></div>
-        </div>
-        <div class="partner-clinical-grid">
-          <fieldset class="partner-history-field" data-partner-history="conditions">
-            <legend>โรคประจำตัว</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="โรคประจำตัว">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
-              <label class="sr-only" for="partner-conditions">ระบุโรคประจำตัว</label>
-              <input class="input" id="partner-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off" disabled>
-            </div>
-          </fieldset>
-          <fieldset class="partner-history-field" data-partner-history="medications">
-            <legend>ยาที่ใช้ประจำ</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="ยาที่ใช้ประจำ">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
-              <label class="sr-only" for="partner-medications">ระบุยาที่ใช้ประจำ</label>
-              <input class="input" id="partner-medications" placeholder="ระบุชื่อยา" autocomplete="off" disabled>
-            </div>
-          </fieldset>
-          <fieldset class="partner-history-field" data-partner-history="allergies">
-            <legend>ประวัติแพ้ยา</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-partner-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-partner-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-partner-history-detail hidden>
-              <label class="sr-only" for="partner-allergies">ระบุประวัติแพ้ยา</label>
-              <input class="input" id="partner-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off" disabled>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-health-continue>ยืนยันข้อมูลสุขภาพ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake-concern">Noted</button></div>
   </section>
 
   <section class="screen" id="partner-nurse" data-screen-code="SCR-004">
@@ -2485,8 +2443,10 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <img class="krane-state-art krane-paper-crane-media krane-paper-crane-animated" src="assets/loading-v5/paper-crane-flight-v5.svg" width="560" height="360" alt="">
-          <img class="krane-state-art krane-paper-crane-media krane-paper-crane-static" src="assets/loading-v5/paper-crane-final-v5.svg" width="560" height="360" alt="">
+          <picture class="krane-paper-crane-picture">
+            <source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1">
+            <img class="krane-state-art krane-paper-crane-media" src="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" width="560" height="360" alt="">
+          </picture>
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -2565,15 +2525,110 @@
     if(footer) screen.appendChild(footer);
   });
   const screens = [...document.querySelectorAll('.screen')];
+  // Stable reviewer-facing IDs are separate from the product SCR inventory.
+  // One SID identifies one implemented <section>; repeated rail entries that open
+  // the same section therefore show the same number without redefining SCR scope.
+  const reviewScreenIds=Object.freeze({
+    'landing':'SID-001',
+    'onboard1':'SID-002',
+    'onboard2':'SID-003',
+    'onboard3':'SID-004',
+    'conditions':'SID-005',
+    'articles':'SID-006',
+    'article':'SID-007',
+    'signup':'SID-008',
+    'social-confirm':'SID-009',
+    'login':'SID-010',
+    'otp':'SID-011',
+    'patient-info':'SID-012',
+    'identity':'SID-013',
+    'consent-terms':'SID-014',
+    'intake1':'SID-015',
+    'intake2':'SID-016',
+    'intake3':'SID-017',
+    'intake4':'SID-018',
+    'ineligible':'SID-019',
+    'intake5':'SID-020',
+    'intake-general':'SID-021',
+    'intake-edu':'SID-022',
+    'nurse':'SID-023',
+    'matching':'SID-024',
+    'choosedoc':'SID-025',
+    'noslots':'SID-026',
+    'consultpay':'SID-027',
+    'consultpay-gw':'SID-028',
+    'consultpay-fail':'SID-029',
+    'waitroom':'SID-030',
+    'video':'SID-031',
+    'consult':'SID-032',
+    'rx-writing':'SID-033',
+    'plan':'SID-034',
+    'prescription':'SID-035',
+    'address':'SID-036',
+    'delivery-quote':'SID-037',
+    'pharmacy-search':'SID-038',
+    'insurance':'SID-039',
+    'payment':'SID-040',
+    'payment-gw':'SID-041',
+    'payment-success':'SID-042',
+    'payfail':'SID-043',
+    'pharmacypending':'SID-044',
+    'pharmacyaccepted':'SID-045',
+    'pharmacyissue':'SID-046',
+    'confirm':'SID-047',
+    'tracking':'SID-048',
+    'feedback':'SID-049',
+    'feedbackdone':'SID-050',
+    'profile':'SID-051',
+    'activity':'SID-052',
+    'empty-activities':'SID-053',
+    'history':'SID-054',
+    'empty-history':'SID-055',
+    'notifications':'SID-056',
+    'account':'SID-057',
+    'settings':'SID-058',
+    'refill':'SID-059',
+    'upload-rx':'SID-060',
+    'referral':'SID-061',
+    'partner-patient-info':'SID-062',
+    'partner-insurance':'SID-063',
+    'partner-nurse':'SID-064',
+    'partner-nurse-session':'SID-065',
+    'preloader':'SID-066',
+    'insurance-result':'SID-067',
+    'partner-phr':'SID-068',
+    'intake-concern':'SID-069'
+  });
+  screens.forEach(screen => {
+    const reviewId=reviewScreenIds[screen.id];
+    if(reviewId) screen.dataset.reviewScreenId=reviewId;
+  });
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
   const railGroups = [...document.querySelectorAll('.rail > .rail-group')];
-  railLinks.forEach(link => {
+  const prototypeRail = document.querySelector('#prototype-rail');
+  const railToggle = prototypeRail?.querySelector('.rail-toggle');
+  const railCollapseStorageKey = 'krane-prototype-rail-collapsed';
+  function setPrototypeRailCollapsed(collapsed, persist = true){
+    document.body.classList.toggle('rail-is-collapsed', collapsed);
+    if(railToggle){
+      railToggle.setAttribute('aria-expanded', String(!collapsed));
+      railToggle.setAttribute('aria-label', collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง');
+      railToggle.title = collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง';
+    }
+    if(persist){
+      try{ window.localStorage.setItem(railCollapseStorageKey, collapsed ? '1' : '0'); }catch(error){}
+    }
+  }
+  try{ setPrototypeRailCollapsed(window.localStorage.getItem(railCollapseStorageKey) === '1', false); }catch(error){ setPrototypeRailCollapsed(false, false); }
+  railToggle?.addEventListener('click', () => setPrototypeRailCollapsed(!document.body.classList.contains('rail-is-collapsed')));
+  document.querySelectorAll('.rail a[data-go],.rail a[data-screen-ref]').forEach(link => {
     if(link.querySelector('.rail-screen-id')) return;
-    const screenId=link.dataset.go;
-    if(!screenId) return;
+    const screenId=link.dataset.go || link.dataset.screenRef;
+    const reviewId=reviewScreenIds[screenId];
+    if(!screenId || !reviewId) return;
     const idLabel=document.createElement('span');
     idLabel.className='rail-screen-id';
-    idLabel.textContent=`#${screenId}`;
+    idLabel.textContent=`${reviewId} · #${screenId}`;
     const stateLabel=link.querySelector('.rail-state');
     if(stateLabel) link.insertBefore(idLabel,stateLabel);
     else link.appendChild(idLabel);
@@ -2582,6 +2637,10 @@
   let selectedCategoryId = 'hair-skin';
   // Insurance is claimable only on the general health path. Specialty paths are self-pay.
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
+  // The free-form concern page is reserved for Partner entry and General consultation.
+  // Specialty banners already capture the concern in their condition-specific intake.
+  function sharedConcernRequired(){ return flowState.entryChannel === 'partner' || isGeneralPath(); }
+  function finalIntakeTarget(){ return sharedConcernRequired() ? 'intake-concern' : 'intake-general'; }
 
   let selectedConditionId = 'hair-loss';
   let isAuthenticated = false;
@@ -2590,7 +2649,7 @@
   // opens Log in from the nav or from "ดูแลต่อเนื่อง" has not answered อาการ yet,
   // so the 5-step care stepper must NOT show อาการ as done for them.
   let journeyActive = false;
-  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general'];
+  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general'];
   const JOURNEY_AUTH = ['signup','login','social-confirm','otp','consent-terms','patient-info','identity'];
   // The public walkthrough starts clean. Existing-case protection is enabled only
   // after the demo enters the returning-patient profile state.
@@ -3036,7 +3095,7 @@
   const careJourneyLabels = ['อาการที่ปรึกษา','รายละเอียดผู้รับบริการ','การชำระเงิน','การปรึกษาแพทย์','การสั่งยาและจัดส่ง'];
   const careJourneyShort  = ['Concern','Details','Payment','Doctor','Order'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
     matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
     plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
@@ -3495,12 +3554,23 @@
       ]
     },
     {
+      id:'hormone',
+      title:'Hormones & TRT',
+      description:'Energy, hormone symptoms and doctor-led TRT assessment.',
+      icon:'pulse',
+      status:'Launch',
+      next:'conditions',
+      conditions:[
+        { id:'hormone-assessment', title:'Hormone & TRT assessment', titleTh:'ประเมินฮอร์โมนและ TRT', description:'Review symptoms, health history, medicines and relevant lab results before considering treatment.', descriptionTh:'ทบทวนอาการ ประวัติสุขภาพ ยาที่ใช้ และผลตรวจที่เกี่ยวข้องก่อนพิจารณาการรักษา', status:'Launch', next:'intake1' }
+      ]
+    },
+    {
       id:'general',
       title:'General / Not sure',
       description:'Not sure where to start? Talk to a doctor without choosing a disease path.',
       icon:'chat',
       status:'General',
-      next:'intake1',
+      next:'intake-concern',
       general:true,
       conditions:[]
     }
@@ -3627,6 +3697,64 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Patchy hair loss</span></span><span class="opt-check"></span></button>
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Scalp discomfort or visible change</span></span><span class="opt-check"></span></button>
         </div></div>`
+    },
+    weight:{
+      intake1:`
+        <div><h2 class="h1">What is your main weight-care goal?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Lose weight</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Maintain weight after previous loss</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Improve metabolic health</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">Check whether medical treatment could be suitable</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake2:`
+        <div><h2 class="h1">How has your weight changed over the past 6 months?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has increased steadily</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has gone up and down</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has stayed similar but is difficult to reduce</span></span><span class="opt-check"></span></button>
+          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has decreased without me trying</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake3:`
+        <div><h2 class="h1">What have you already tried for weight management?</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Food or calorie plan</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Exercise program</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Dietitian or structured weight program</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Prescription or over-the-counter medicine</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">GLP-1 or another injection</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">I have not tried a structured plan</span></span><span class="opt-check"></span></button>
+        </div>`
+    },
+    hormone:{
+      intake1:`
+        <div><h2 class="h1">อาการใดที่ทำให้คุณอยากประเมินฮอร์โมน</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">อ่อนเพลียหรือพลังงานลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ความต้องการทางเพศหรือสมรรถภาพลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มวลกล้ามเนื้อหรือความแข็งแรงลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">อารมณ์ สมาธิ หรือคุณภาพการนอนเปลี่ยน</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีผลตรวจฮอร์โมนและต้องการให้แพทย์ช่วยประเมิน</span></span><span class="opt-check"></span></button>
+        </div>
+        ${intakeDurationControl({label:'มีอาการมานานเท่าไร?',thai:true})}`,
+      intake2:`
+        <div><h2 class="h1">ข้อมูลสุขภาพที่เกี่ยวข้อง</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีโรคหัวใจ ความดัน เบาหวาน หรือไขมันสูง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีปัญหาต่อมลูกหมากหรือการปัสสาวะ</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีภาวะหยุดหายใจขณะหลับหรือกรนมาก</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ต้องการมีบุตรในอนาคต</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มีข้อใดตรง</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake3:`
+        <div><h2 class="h1">เคยตรวจหรือใช้ฮอร์โมนมาก่อนหรือไม่</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ยังไม่เคยตรวจหรือรักษา</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีผลตรวจฮอร์โมนในช่วง 6 เดือนที่ผ่านมา</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">เคยใช้ TRT ภายใต้การดูแลของแพทย์</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">เคยใช้ฮอร์โมนหรือสารเสริมเอง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ใช้ยา อาหารเสริม หรือสารกระตุ้นเป็นประจำ</span></span><span class="opt-check"></span></button>
+        </div>`
     },
     general:{
       intake1:`
@@ -3764,7 +3892,11 @@
   };
 
   const intakeBaseMarkup = {};
-  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3','intake-general'];
+  /* Specialty care keeps one clinical question per page. General consultation
+     is intentionally compact: its concern, description and duration belong on
+     one screen, and the shared health profile is one complete form just like
+     the insurance journey. */
+  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
   function intakeQuestionPageState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     const body = screen?.querySelector('.screen__body');
@@ -3809,11 +3941,23 @@
     if(!screen || !INTAKE_ONE_QUESTION_SCREENS.includes(screen.id)) return;
     const body=screen.querySelector('.screen__body');
     if(!body) return;
+    let compactGeneral=false;
+    try { compactGeneral=screen.id==='intake1' && selectedCategory().general; } catch(e){}
+    if(compactGeneral){
+      body.removeAttribute('data-intake-question-index');
+      body.querySelectorAll('[data-intake-question]').forEach(question => {
+        question.hidden=false;
+        question.removeAttribute('aria-hidden');
+        question.removeAttribute('data-intake-question');
+      });
+      body.querySelector('[data-intake-question-count]')?.remove();
+      syncIntakeDropdownContinue(screen);
+      updateIntakeProgress(screen.id);
+      return;
+    }
     const children=[...body.children];
     const titleBlock=children.find(child => child.querySelector('.h1')) || children[0];
-    const questions=screen.id==='intake-general'
-      ? [...body.querySelectorAll('.partner-health-grid > .field,.partner-clinical-grid > [data-direct-history]')]
-      : children.filter(child => child!==titleBlock);
+    const questions=children.filter(child => child!==titleBlock);
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
     });
@@ -4126,21 +4270,21 @@
 
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
-    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
     // Template coverage per concern (verified 2026-08-04):
-    //   skin / sexual / sleep -> own intake1, intake2, intake3
+    //   weight / skin / sexual / sleep -> own intake1, intake2, intake3
     //   hair                  -> own intake1, intake2; intake3 falls back to the
     //                            authored base, which is the generic "previous
     //                            care or treatment" set and is concern-appropriate
-    //   general               -> own intake1, intake2; intake3 is SKIPPED entirely
-    //                            by the routing rule above (EC-011), so it never
-    //                            renders the concern-specific treatment history
+    //   general               -> own intake1 is shown as one compact screen;
+    //                            intake2 and intake3 are SKIPPED by EC-011 so the
+    //                            journey moves directly to urgent screening
     // A missing template therefore falls back to the authored base markup only
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
-    // INTAKE_SKIPPED_BY_GENERAL.
+    // GENERAL_COMPACT_SKIPPED_SCREENS.
     ['intake1','intake2','intake3'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
@@ -4207,7 +4351,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -4367,16 +4511,26 @@
     if(!group || selected?.dataset.partnerHistoryChoice!=='yes') return 'ไม่มี';
     return group.querySelector('input')?.value.trim() || '';
   }
+  function directHistoryValue(key){
+    const group=document.querySelector(`#intake-general [data-direct-history="${key}"]`);
+    const selected=group?.querySelector('[data-direct-history-choice][aria-checked="true"]');
+    if(!group || selected?.dataset.directHistoryChoice!=='yes') return 'ไม่มี';
+    return group.querySelector('input')?.value.trim() || '';
+  }
   function restorePartnerFields(){
     const values={
       'partner-full-name':flowState.partnerName || 'มะลิ สุธิดา',
       'partner-phone':flowState.partnerPhone || '081-234-5678',
-      'partner-lifestyle':flowState.partnerHealth.lifestyle || 'ไม่',
-      'partner-sex':flowState.partnerHealth.sex || '',
-      'partner-dob':flowState.partnerHealth.dob || '',
-      'partner-height':flowState.partnerHealth.height || '',
-      'partner-weight':flowState.partnerHealth.weight || ''
+      'partner-lifestyle':flowState.partnerHealth.lifestyle || 'ไม่'
     };
+    if(flowState.entryChannel==='partner') Object.assign(values,{
+      'intake-sex':flowState.partnerHealth.sex || '',
+      'intake-dob':flowState.partnerHealth.dob || '1994-03-12',
+      'intake-height':flowState.partnerHealth.height || '',
+      'intake-weight':flowState.partnerHealth.weight || '',
+      'partner-concern-text':flowState.partnerConcern || '',
+      'partner-concern-duration-value':parseInt(flowState.partnerConcernDuration,10) || 1
+    });
     Object.entries(values).forEach(([id,value]) => {
       const input=document.getElementById(id);
       if(!input) return;
@@ -4400,6 +4554,25 @@
     document.querySelectorAll('#partner-patient-info [data-partner-payment-choice-value]').forEach(option => {
       option.setAttribute('aria-selected',String(option.dataset.partnerPaymentChoiceValue===paymentMethod));
     });
+    if(flowState.entryChannel==='partner'){
+      Object.entries(flowState.partnerHealth || {}).forEach(([key,value]) => {
+        const group=document.querySelector(`#intake-general [data-direct-history="${key}"]`);
+        if(!group || !['conditions','medications','allergies'].includes(key)) return;
+        const hasDetails=Boolean(value && value!=='ไม่มี');
+        setDirectHistoryChoice(group,hasDetails);
+        const input=group.querySelector('input');
+        if(input && hasDetails) input.value=value;
+      });
+      const durationUnit=(String(flowState.partnerConcernDuration || '').match(/\s(วัน|เดือน|ปี)$/) || [])[1];
+      if(durationUnit){
+        document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(option => {
+          option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===durationUnit));
+        });
+      }
+      document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(option => {
+        option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
+      });
+    }
     syncPartnerHistoryFields();
   }
   function syncPartnerReview(){
@@ -4407,7 +4580,7 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','partner-concern','partner-intake','matching'];
+    const order=['consent-terms','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
     let targetIndex=order.indexOf(target);
     if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
@@ -4429,6 +4602,7 @@
         flowState.coverage={provider:'แผนสุขภาพออนไลน์',policyId:'online-care',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000};
       }
     }
+    if(targetIndex>3) flowState.partnerConcernComplete=true;
     if(targetIndex>4) flowState.partnerHealthComplete=true;
     if(targetIndex>5) flowState.partnerReviewComplete=true;
     if(target==='partner-phr'){
@@ -4560,7 +4734,7 @@
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
     concern:'landing', conditions:'concern', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
-    intake5:'intake4', 'intake-general':'intake5',
+    intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
@@ -4580,14 +4754,12 @@
     // screening is a separate exception case, not the happy path.
     'partner-patient-info':'consent-terms',
     'partner-insurance':'partner-patient-info',
-    'partner-concern':'partner-patient-info',
-    'partner-intake':'partner-concern',
-    'partner-nurse':'partner-intake', 'partner-nurse-session':'partner-nurse',
+    'partner-nurse':'intake-general', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-concern','partner-intake',
+  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
@@ -4742,20 +4914,24 @@
      concern" set, and intakeTemplates only defines it for skin, sexual and
      sleep. hair and general have no intake3 of their own, so both previously
      fell through to the authored base markup and rendered another concern's
-     question set. Both now skip it.
+     question set. Both now skip it. General consultation also keeps its concern
+     details together on intake1 and moves directly to urgent screening, so its
+     separate severity/pattern screen is skipped rather than stretching the
+     same concern across another page.
 
-     The rule is derived from template coverage rather than a hardcoded concern
-     list, so adding an intake3 template for hair or general automatically stops
-     the skip and no second place needs editing. Kept as routing rather than
-     markup so it survives the innerHTML round-trip renderIntakeQuestions
-     performs (the same round-trip that previously broke the custom selects). */
+     Specialty intake3 skipping is derived from template coverage, while the
+     deliberately shorter general route is explicit. Both stay in routing so
+     they survive the innerHTML round-trip renderIntakeQuestions performs (the
+     same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'general', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3'];
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
     catch(e){ return 'hair'; }
   }
   function intakeSkipped(id){
+    if(intakeConcernKey()==='general' && GENERAL_COMPACT_SKIPPED_SCREENS.includes(id)) return true;
     if(!INTAKE_CONCERN_SPECIFIC.includes(id)) return false;
     try { return !((intakeTemplates[intakeConcernKey()] || {})[id]); }
     catch(e){ return false; }
@@ -4766,6 +4942,7 @@
   function intakeStepOrder(){
     const seq = ['intake1','intake2','intake3','intake4'];
     try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
+    if(sharedConcernRequired()) seq.push('intake-concern');
     seq.push('intake-general');
     return seq.filter(id => !intakeSkipped(id));
   }
@@ -4793,7 +4970,13 @@
       visited.add(current);
       path.unshift(current);
       const skipped=skipBackFrom(current);
-      current = skipped !== null ? skipped : directEntryParent[current];
+      const partnerParent=current==='intake-concern' && flowState.entryChannel==='partner'
+        ? (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-patient-info')
+        : null;
+      const healthParent=current==='intake-general'
+        ? (sharedConcernRequired() ? 'intake-concern' : (categoryNeedsPhotos() ? 'intake5' : 'intake4'))
+        : null;
+      current = skipped !== null ? skipped : (partnerParent || healthParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -4811,6 +4994,7 @@
     const thai = document.documentElement.lang === 'th';
     const summaries = {
       'hair-skin':{th:'ผมร่วงและหนังศีรษะ',en:'Hair loss & scalp',symTh:'ผมบาง ผมร่วง หรือปัญหาหนังศีรษะ',symEn:'Hair thinning, shedding or scalp concern',durationTh:'6 เดือน ถึง 2 ปี',durationEn:'6 months to 2 years',detailTh:'ปานกลาง · รูปแบบเปลี่ยนอย่างต่อเนื่อง',detailEn:'Moderate · gradual pattern change'},
+      weight:{th:'ดูแลน้ำหนัก',en:'Weight care',symTh:'เป้าหมายการดูแลน้ำหนักตามที่เลือก',symEn:'Selected weight-care goal',durationTh:'ช่วง 6 เดือนที่ผ่านมา',durationEn:'Over the past 6 months',detailTh:'แนวโน้มน้ำหนักตามที่เลือก',detailEn:'Selected weight-change pattern'},
       skin:{th:'ผิวและสิว',en:'Skin & acne',symTh:'สิว ผื่น หรือการระคายเคืองผิว',symEn:'Acne, rash or skin irritation',durationTh:'น้อยกว่า 3 เดือน',durationEn:'Less than 3 months',detailTh:'อาการผิวตามที่เลือก',detailEn:'Selected skin symptoms'},
       'sexual-health':{th:'สุขภาพทางเพศ',en:'Sexual health',symTh:'อาการสุขภาพทางเพศตามที่เลือก',symEn:'Selected sexual health symptoms',durationTh:'น้อยกว่า 3 เดือน',durationEn:'Less than 3 months',detailTh:'ข้อมูลเป็นความลับสำหรับแพทย์',detailEn:'Private details for doctor review'},
       'sleep-stress':{th:'การนอนและความเครียด',en:'Sleep & stress',symTh:'การนอน ความเครียด หรือพลังงาน',symEn:'Sleep, stress or energy concern',durationTh:'1 ถึง 3 เดือน',durationEn:'1 to 3 months',detailTh:'อาการและพฤติกรรมการนอนตามที่เลือก',detailEn:'Selected sleep pattern and habits'},
@@ -4908,10 +5092,10 @@
     if(concernEdit) concernEdit.dataset.go = cat.general ? 'concern' : 'conditions';
     const matchingCopy = document.querySelector('[data-matching-copy]');
     if(matchingCopy) matchingCopy.textContent = thai
-      ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern} โดยปกติใช้เวลาไม่เกิน 10 วินาที`
-      : `Matching you with a licensed doctor for ${concern.toLowerCase()} who is available now. Usually under 10 seconds.`;
+      ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern}`
+      : `Matching you with a licensed doctor for ${concern.toLowerCase()} who is available now.`;
   }
-  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-general'];
+  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general'];
   function saveIntakeDraft(){
     const fields={};
     INTAKE_DRAFT_SCREENS.forEach(screenId => {
@@ -4932,8 +5116,12 @@
     document.querySelectorAll('#intake-general [data-direct-history]').forEach(group => {
       compactHistory[group.dataset.directHistory]=group.querySelector('[data-direct-history-choice][aria-checked="true"]')?.dataset.directHistoryChoice || 'none';
     });
+    const sharedConcern={
+      durationUnit:document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]')?.dataset.partnerDurationUnit || 'วัน',
+      relief:document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]')?.dataset.partnerReliefValue || ''
+    };
     writeSessionJson(DRAFT_KEY,{
-      selectedCategoryId,selectedConditionId,fields,options,compactHistory,
+      selectedCategoryId,selectedConditionId,fields,options,compactHistory,sharedConcern,
       savedAt:new Date().toISOString(),
       complete:flowState.draftReady
     });
@@ -4957,6 +5145,12 @@
     Object.entries(draft.compactHistory || {}).forEach(([name,value]) => {
       const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
       if(group) setDirectHistoryChoice(group,value==='yes');
+    });
+    document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(option => {
+      option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===(draft.sharedConcern?.durationUnit || 'วัน')));
+    });
+    document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(option => {
+      option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===(draft.sharedConcern?.relief || '')));
     });
     flowState.draftReady=Boolean(flowState.draftReady || draft.complete);
     persistFlowState();
@@ -5011,6 +5205,7 @@
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
     if(intakeSkipped(target)) target = skipForwardFrom(target);
+    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake-general';
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -5019,9 +5214,9 @@
     if(PARTNER_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-insurance','partner-concern','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
-      if(target==='partner-intake' && !flowState.partnerConcernComplete) return 'partner-concern';
-      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
+      if(['partner-insurance','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'intake-concern';
+      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
     if(target==='signup' && !flowState.draftReady) return 'concern';
@@ -5052,15 +5247,28 @@
     }
     return target;
   }
+  function normalizeScreenTarget(target){
+    // `concern` was removed when the landing treatment selector became the entry
+    // point, but prerequisite guards can still return that legacy route. Resolve
+    // it before toggling `.active`; otherwise every real screen is hidden and the
+    // stage becomes completely blank. Unknown stale routes fall back to landing
+    // for the same reason.
+    if(target==='concern'){
+      setSelectedCategory('general');
+      return 'intake-concern';
+    }
+    // Keep legacy partner bookmarks working while routing each old page name to
+    // the matching step in the now-separated clinical intake.
+    if(target==='partner-concern') return 'intake-concern';
+    if(target==='partner-intake') return 'intake-general';
+    return document.getElementById(target) ? target : 'landing';
+  }
   function show(id, push=true){
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
-    if(id === 'concern'){
-      setSelectedCategory('general');
-      id = 'intake1';
-    }
+    id=normalizeScreenTarget(id);
     const requested=id;
-    id=requiredRouteFor(id);
+    id=normalizeScreenTarget(requiredRouteFor(id));
     if(id!==requested){
       history=seededHistory(id);
       push=false;
@@ -5069,7 +5277,7 @@
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
-    if(['partner-patient-info','partner-intake'].includes(id)) restorePartnerFields();
+    if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -5154,7 +5362,7 @@
       orderActions.forEach(btn => { btn.hidden = isSetup; });
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
-    if(id === 'matching' || id === 'intake1') updateSelectedCare();
+    if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -5261,10 +5469,33 @@
         scheduleConsultationSummary();
       }
     }
-    // Matching is a short automatic state; the visual carries the progress cue.
+    // Matching is a short automatic state. The frameless numeric countdown is
+    // the only time cue and reaches zero at the same moment the handoff occurs.
     clearTimeout(matchTimer);
+    clearInterval(matchCountdownTimer);
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
+      const countdown=mScr.querySelector('[data-matching-countdown]');
+      const countdownValue=mScr.querySelector('[data-matching-countdown-value]');
+      const countdownUnit=mScr.querySelector('[data-matching-countdown-unit]');
+      let secondsRemaining=10;
+      const syncMatchingCountdown=() => {
+        if(countdownValue) countdownValue.textContent=String(secondsRemaining);
+        if(countdownUnit) countdownUnit.textContent=document.documentElement.lang==='th' ? 'วินาที' : (secondsRemaining===1 ? 'second' : 'seconds');
+        if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
+          ? `เหลือ ${secondsRemaining} วินาที`
+          : `${secondsRemaining} seconds remaining`);
+      };
+      syncMatchingCountdown();
+      matchCountdownTimer=setInterval(() => {
+        if(!mScr.classList.contains('active')){
+          clearInterval(matchCountdownTimer);
+          return;
+        }
+        secondsRemaining=Math.max(0,secondsRemaining-1);
+        syncMatchingCountdown();
+        if(secondsRemaining===0) clearInterval(matchCountdownTimer);
+      },1000);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> availability page to pick a slot, where the same gate runs on continue.
@@ -5275,7 +5506,7 @@
            consultationHandoffTarget() skipped straight to the waiting room in
            that case, which is what hid the fee summary. */
         replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
-      }, 3400);
+      }, 10000);
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
@@ -5369,15 +5600,8 @@
     const coverageRow=document.querySelector('#consultpay [data-consult-coverage-row]');
     const coverageAmount=document.querySelector('#consultpay [data-consult-coverage-amount]');
     if(coverageRow) coverageRow.hidden=covered<=0;
-    if(coverageAmount) coverageAmount.textContent='- '+baht(covered);
-    /* Mirror the summary into the detail block: strike the original only when
-       partner coverage genuinely brings it down. */
-    const dWas=document.querySelector('[data-consult-detail-was]');
-    const dFee=document.querySelector('[data-consult-detail-fee]');
-    const dNote=document.querySelector('[data-consult-detail-fee-note]');
-    if(dFee) dFee.textContent=baht(balance);
-    if(dWas){ dWas.hidden=covered<=0; dWas.textContent=baht(CONSULTATION_FEE_BAHT); }
-    if(dNote) dNote.hidden=covered<=0;
+    if(coverageAmount) coverageAmount.textContent=fullyCovered ? 'ครอบคลุมเต็มจำนวน' : '- '+baht(covered);
+    document.querySelectorAll('#consultpay [data-consult-total-row]').forEach(el => { el.hidden=fullyCovered; });
     const amt = baht(amount);
     const a = document.querySelector('#consultpay [data-pay-amt]');
     const b = document.querySelector('#consultpay [data-pay-btn-amt]');
@@ -5395,14 +5619,13 @@
     const noticeMode=flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid;
     screen.dataset.checkoutMode=noticeMode ? 'fee-notice' : 'consultation-payment';
     screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode; });
-    const title=screen.querySelector('[data-consult-checkout-title]');
-    const copy=screen.querySelector('[data-consult-checkout-copy]');
+    const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    if(title) title.textContent=noticeMode ? 'มีค่าปรึกษาแพทย์ ฿ 350' : 'ชำระค่าปรึกษาแพทย์';
-    if(copy) copy.textContent=noticeMode ? 'ยอดนี้จะชำระพร้อมค่ายาหลังจบการปรึกษา' : 'ชำระก่อนเข้าห้องพบแพทย์';
-    if(label) label.textContent=noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
-    if(amount) amount.hidden=noticeMode;
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
+    if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
+    if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
+    if(amount) amount.hidden=noticeMode || fullyCovered;
   }
   document.body.addEventListener('change', e => {
     const c = e.target.closest('[data-cert-check]');
@@ -5435,10 +5658,19 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment'};
+    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
+      // Hash deep links can arrive from a standalone condition-detail page in
+      // the same browser that previously used a Partner flow. Resolve the entry
+      // channel before seeding history or showing the screen; show() uses it to
+      // decide whether the direct-care progress bar is visible.
+      const entry = hashParams.get('entry');
+      if(entry==='direct' || entry==='partner'){
+        flowState.entryChannel=entry;
+        persistFlowState();
+      }
       if(guardActiveCase(id)){
         history=['landing'];
         show('landing',false);
@@ -5456,8 +5688,9 @@
   window.addEventListener('hashchange', applyHash);
   // landing iframe asks the app to navigate (avoids target=_parent, which can be blocked in previews)
   window.addEventListener('message', e => {
-    if(e.data && e.data.krane === 'nav' && e.data.to && document.getElementById(e.data.to)){
-      if(guardActiveCase(e.data.to)){
+    const messageTarget=e.data?.to ? normalizeScreenTarget(e.data.to) : '';
+    if(e.data && e.data.krane === 'nav' && messageTarget && document.getElementById(messageTarget)){
+      if(guardActiveCase(messageTarget)){
         try{ if(e.source && e.source.postMessage) e.source.postMessage({krane:'navAck'}, '*'); }catch(x){}
         return;
       }
@@ -5474,8 +5707,8 @@
         flowState.entryChannel='direct';
         persistFlowState();
       }
-      if(e.data.to === 'login') postAuthNext = 'profile';
-      show(e.data.to);
+      if(messageTarget === 'login') postAuthNext = 'profile';
+      show(messageTarget);
       // ack so the landing knows the app handled it (otherwise it self-navigates)
       try{ if(e.source && e.source.postMessage) e.source.postMessage({krane:'navAck'}, '*'); }catch(x){}
     }
@@ -5726,9 +5959,9 @@
         if(paymentMethod==='insurance') insuranceEntry='partner';
         else setSelectedCategory('general');
         // Paying out of pocket changes who settles the bill, not which intake
-        // this entry uses. Both branches keep the compact SCR-002 concern
-        // screen; only the insurance branch detours through the check first.
-        show(paymentMethod==='insurance' ? 'insurance' : 'partner-concern');
+        // this entry uses. Both branches start with concern details, then move
+        // to general health; insurance only adds the entitlement detour.
+        show(paymentMethod==='insurance' ? 'insurance' : 'intake-concern');
       });
       return;
     }
@@ -5753,7 +5986,7 @@
         : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
       persistFlowState();
       if(partnerPayment.dataset.go==='intake1') setSelectedCategory('general');
-      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-concern'));
+      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'intake-concern'));
       return;
     }
     const intakeDurationStep=e.target.closest('[data-intake-duration-step]');
@@ -5793,51 +6026,6 @@
       if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
       return;
     }
-    const partnerHealthContinue=e.target.closest('[data-partner-health-continue]');
-    if(partnerHealthContinue){
-      const partnerDob=document.getElementById('partner-dob');
-      if(!partnerDob?.value){
-        showActionToast('กรุณาเลือกวันเกิด','warning');
-        partnerDob?.focus();
-        return;
-      }
-      const incompleteHistory=[...document.querySelectorAll('[data-partner-history]')].find(group => {
-        const selected=group.querySelector('[data-partner-history-choice][aria-checked="true"]');
-        return selected?.dataset.partnerHistoryChoice==='yes' && !group.querySelector('input')?.value.trim();
-      });
-      if(incompleteHistory){
-        const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
-        showActionToast(`กรุณาระบุ${label}`,'warning');
-        incompleteHistory.querySelector('input')?.focus();
-        return;
-      }
-      const health={
-        conditions:partnerHistoryValue('conditions'),
-        medications:partnerHistoryValue('medications'),
-        allergies:partnerHistoryValue('allergies'),
-        lifestyle:document.getElementById('partner-lifestyle')?.value || 'ไม่',
-        sex:document.getElementById('partner-sex')?.value || '',
-        dob:document.getElementById('partner-dob')?.value || '',
-        height:document.getElementById('partner-height')?.value.trim() || '',
-        weight:document.getElementById('partner-weight')?.value.trim() || ''
-      };
-      submitOnce('partner-intake',partnerHealthContinue,() => {
-        flowState.partnerHealth=health;
-        flowState.partnerHealthComplete=true;
-        flowState.partnerReviewComplete=true;
-        flowState.draftReady=true;
-        flowState.accountCreated=true;
-        flowState.otpVerified=true;
-        flowState.consentsComplete=true;
-        flowState.patientInfoComplete=true;
-        flowState.identityVerified=true;
-        flowState.patientName=flowState.partnerName || 'มะลิ สุธิดา';
-        persistFlowState();
-        showActionToast('บันทึกข้อมูลแล้ว กำลังจับคู่แพทย์','success');
-        show(partnerClinicalStartTarget());
-      });
-      return;
-    }
     const partnerScreeningOption=e.target.closest('[data-partner-screening-value]');
     if(partnerScreeningOption){
       const group=partnerScreeningOption.closest('[data-partner-screening-question]');
@@ -5861,7 +6049,7 @@
         flowState.partnerReviewComplete=false;
         persistFlowState();
         showActionToast('กลับไปแก้ไขข้อมูลสุขภาพก่อนส่งให้พยาบาล','info');
-        show('partner-intake');
+        show('intake-general');
         return;
       }
       if(flowState.partnerScreening.remote!=='yes'){
@@ -6236,6 +6424,7 @@
           flowState.entryChannel='partner';
           persistFlowState();
         }
+        if(go.dataset.category) setSelectedCategory(go.dataset.category);
         seedPartnerStage(go.dataset.go);
         seedClinicalDemoStage(go.dataset.go);
         history = seededHistory(go.dataset.go);
@@ -6260,7 +6449,7 @@
         show(go.dataset.flagGo); return;
       }
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
-        show('intake-general'); return;
+        show(finalIntakeTarget()); return;
       }
       if(go.dataset.go === 'consultpay'){
         show(consultationHandoffTarget());
@@ -6398,7 +6587,8 @@
     'intake3':          { id:'KRANE-F04', name:'Health Intake, Q3 Previous Care', stories:['US-F04.9: Prior treatment and its outcome are captured for the current concern','US-F04.4: Answers are surfaced to the doctor before the session'] },
     'intake4':          { id:'KRANE-F04', name:'Health Intake, Q4 Urgent Safety', stories:['US-F04.9: Warning signs are screened before online care continues','US-F04.7: Ineligible patients can be routed to in-person care'] },
     'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
-    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared Penultimate General Health', stories:['Client request 15 Jul: every consultation completes this as the penultimate question step','Captures conditions, allergies, medicine, supplements, height, weight and lifestyle in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
+    'intake-concern':   { id:'KRANE-F04', name:'Health Intake, General / Partner Concern Details', stories:['Partner entry and General consultation record free-form symptoms, duration, attempted relief and optional photos on a dedicated page','Specialty banner journeys skip this page because their condition-specific intake already captures the concern','US-F04.4: Concern details are surfaced to the doctor before the session'] },
+    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared General Health', stories:['Every consultation completes general health on a separate final intake page','Captures conditions, allergies, medicine, supplements, height and weight in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
@@ -6741,6 +6931,35 @@
     if(!intakeComplete) return;
     const intakeQuestionScreen=intakeComplete.closest('.screen');
     if(intakeQuestionScreen && INTAKE_ONE_QUESTION_SCREENS.includes(intakeQuestionScreen.id) && advanceIntakeQuestionPage(intakeQuestionScreen)) return;
+    if(intakeComplete.closest('#intake-concern')){
+      const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
+      const amount=Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
+      const unitOn=document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]');
+      const reliefOn=document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]');
+      if(concern.length<5){
+        showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning');
+        document.getElementById('partner-concern-text')?.focus();
+        return;
+      }
+      if(!amount || !unitOn){
+        showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning');
+        document.getElementById('partner-concern-duration-value')?.focus();
+        return;
+      }
+      if(!reliefOn){
+        showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning');
+        return;
+      }
+      flowState.partnerConcern=concern;
+      flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
+      flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
+      flowState.partnerConcernComplete=true;
+      flowState.lastRequiredScreen='intake-general';
+      persistFlowState();
+      saveIntakeDraft();
+      show('intake-general');
+      return;
+    }
     if(intakeComplete.closest('#intake-general')){
       const dob=document.getElementById('intake-dob');
       if(!dob?.value){
@@ -6761,10 +6980,29 @@
     }
     flowState.draftReady=true;
     if(flowState.entryChannel==='partner'){
-      flowState.lastRequiredScreen='partner-intake';
+      flowState.partnerHealth={
+        conditions:directHistoryValue('conditions'),
+        medications:directHistoryValue('medications'),
+        allergies:directHistoryValue('allergies'),
+        lifestyle:'ไม่',
+        sex:document.getElementById('intake-sex')?.value || '',
+        dob:document.getElementById('intake-dob')?.value || '',
+        height:document.getElementById('intake-height')?.value.trim() || '',
+        weight:document.getElementById('intake-weight')?.value.trim() || ''
+      };
+      flowState.partnerHealthComplete=true;
+      flowState.partnerReviewComplete=true;
+      flowState.accountCreated=true;
+      flowState.otpVerified=true;
+      flowState.consentsComplete=true;
+      flowState.patientInfoComplete=true;
+      flowState.identityVerified=true;
+      flowState.patientName=flowState.partnerName || 'มะลิ สุธิดา';
+      flowState.lastRequiredScreen='intake-general';
       persistFlowState();
       saveIntakeDraft();
-      show('partner-intake');
+      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กำลังจับคู่แพทย์','success');
+      show(partnerClinicalStartTarget());
       return;
     }
     flowState.lastRequiredScreen='signup';
@@ -6916,48 +7154,33 @@
     });
   }
 
-  // SCR-002 compact concern (restored 2026-08-04). Self-contained so the main
-  // click delegate above is untouched: selection lives on aria-selected and is
-  // read back when the primary action fires.
+  // Shared concern controls live on their own page for both Krane-direct and
+  // insurance entry. General health follows as the next screen.
   document.body.addEventListener('click', e => {
-    const step = e.target.closest('#partner-concern [data-partner-duration-step]');
+    const step = e.target.closest('#intake-concern [data-partner-duration-step]');
     if(step){
       const input = document.getElementById('partner-concern-duration-value');
       if(input) input.value = String(Math.min(99, Math.max(1,
         (Number(input.value) || 1) + Number(step.dataset.partnerDurationStep || 0))));
+      saveIntakeDraft();
       return;
     }
-    const unit = e.target.closest('#partner-concern [data-partner-duration-unit]');
+    const unit = e.target.closest('#intake-concern [data-partner-duration-unit]');
     if(unit){
-      document.querySelectorAll('#partner-concern [data-partner-duration-unit]').forEach(o =>
+      document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(o =>
         o.setAttribute('aria-selected', String(o === unit)));
+      saveIntakeDraft();
       return;
     }
-    const relief = e.target.closest('#partner-concern [data-partner-relief-value]');
+    const relief = e.target.closest('#intake-concern [data-partner-relief-value]');
     if(relief){
-      document.querySelectorAll('#partner-concern [data-partner-relief-value]').forEach(o =>
+      document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(o =>
         o.setAttribute('aria-selected', String(o === relief)));
-      return;
+      saveIntakeDraft();
     }
-    const go = e.target.closest('[data-partner-concern-continue]');
-    if(!go) return;
-    const concern = document.getElementById('partner-concern-text')?.value.trim() || '';
-    const amount = Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
-    const unitOn = document.querySelector('#partner-concern [data-partner-duration-unit][aria-selected="true"]');
-    const reliefOn = document.querySelector('#partner-concern [data-partner-relief-value][aria-selected="true"]');
-    if(concern.length < 5){ showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning'); return; }
-    if(!amount || !unitOn){ showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning'); return; }
-    if(!reliefOn){ showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning'); return; }
-    flowState.partnerConcern = concern;
-    flowState.partnerConcernDuration = amount + ' ' + unitOn.dataset.partnerDurationUnit;
-    flowState.partnerConcernRelief = reliefOn.dataset.partnerReliefValue;
-    flowState.partnerConcernComplete = true;
-    flowState.draftReady = true;
-    persistFlowState();
-    show('partner-intake');
   });
 
-  // Optional photos on SCR-002. Thumbnails are local previews only.
+  // Optional photos on the shared intake. Thumbnails are local previews only.
   (function partnerConcernPhotos(){
     const input = document.querySelector('[data-partner-photo-input]');
     const thumbs = document.querySelector('[data-partner-photo-thumbs]');
@@ -7224,178 +7447,165 @@
 
     <!-- Object-only state kit. Every scene shares the same 560×360 optical box,
          280px center axis, 294px baseline and 76px status-mark frame. -->
-    <g id="ksi-mark-check">
+    <g id="ksi-mark-check" class="ksi-mark-editorial">
       <circle class="ksi-paper" cx="0" cy="0" r="38"/>
-      <path class="ksi-line ksi-draw" d="M-17 0l12 13 24-29" style="stroke:#f36f4a;stroke-width:6"/>
+      <path class="ksi-line ksi-draw" d="M-17 0l12 13 24-29" style="stroke:#f36f4a;stroke-width:2.6"/>
     </g>
-    <g id="ksi-mark-alert">
+    <g id="ksi-mark-alert" class="ksi-mark-editorial">
       <circle class="ksi-paper" cx="0" cy="0" r="38" style="stroke:#f36f4a"/>
-      <path class="ksi-line" d="M0-19v25" style="stroke:#f36f4a;stroke-width:6"/>
+      <path class="ksi-line" d="M0-19v25" style="stroke:#f36f4a;stroke-width:2.6"/>
       <circle class="ksi-coral ksi-fill-only" cx="0" cy="19" r="4.5"/>
     </g>
-    <g id="ksi-mark-clock">
+    <g id="ksi-mark-clock" class="ksi-mark-editorial">
       <circle class="ksi-paper" cx="0" cy="0" r="38"/>
       <path class="ksi-line" d="M0-20V2l16 10"/>
     </g>
-    <g id="ksi-mark-bubble-check">
+    <g id="ksi-mark-bubble-check" class="ksi-mark-editorial">
       <path class="ksi-paper" d="M-43-29h86a10 10 0 0110 10v36a10 10 0 01-10 10H-13l-18 14 5-14h-17a10 10 0 01-10-10v-36a10 10 0 0110-10z"/>
-      <path class="ksi-line ksi-draw" d="M-16 0l11 11 22-25" style="stroke:#f36f4a;stroke-width:6"/>
+      <path class="ksi-line ksi-draw" d="M-16 0l11 11 22-25" style="stroke:#f36f4a;stroke-width:2.6"/>
     </g>
-    <g id="ksi-mark-search">
+    <g id="ksi-mark-search" class="ksi-mark-editorial">
       <circle class="ksi-paper" cx="-6" cy="-6" r="27"/>
       <path class="ksi-line" d="M14 14l22 22"/>
     </g>
-    <g id="ksi-object-phone">
-      <rect class="ksi-ink" x="-55" y="-97" width="110" height="194" rx="18"/>
-      <rect class="ksi-blue-soft" x="-43" y="-76" width="86" height="144" rx="8"/>
-      <path class="ksi-line-thin" d="M-14-85h28M-8 82h16" style="stroke:#fffaf1"/>
+    <g id="ksi-object-phone" class="ksi-object-editorial">
+      <path class="ksi-paper" d="M-37-97c-10 1-17 9-17 19l1 157c0 11 7 18 18 18l71-1c11 0 18-8 18-19L53-79c0-10-8-18-18-18Z"/>
+      <path class="ksi-blue-soft" d="M-42-74 42-75 43 68l-84 1Z"/>
+      <path class="ksi-line-thin" d="M-13-85h27M-8 83h16"/>
     </g>
-    <g id="ksi-object-card">
-      <rect class="ksi-blue" x="-82" y="-49" width="164" height="98" rx="13"/>
-      <path class="ksi-line" d="M-81-19H81"/>
-      <rect class="ksi-paper" x="-58" y="4" width="34" height="22" rx="4"/>
-      <path class="ksi-line-thin" d="M25 18h31"/>
+    <g id="ksi-object-card" class="ksi-object-editorial">
+      <path class="ksi-blue-soft" d="M-68-48c-9 0-14 6-14 14l1 69c0 9 6 14 15 14l134-1c9 0 14-6 14-15l-1-68c0-9-6-14-15-14Z"/>
+      <path class="ksi-line" d="M-81-18 81-19"/>
+      <path class="ksi-paper" d="m-58 4 35-1v23l-35 1Z"/>
+      <path class="ksi-line-thin" d="m25 18 31-1"/>
     </g>
-    <g id="ksi-object-receipt">
+    <g id="ksi-object-receipt" class="ksi-object-editorial">
       <path class="ksi-paper" d="M-61-83h122v166l-15-10-15 10-15-10-16 10-15-10-15 10-15-10-16 10z"/>
-      <path class="ksi-line-soft" d="M-37-49h74M-37-22h74M-37 5h48M-37 34h62"/>
+      <path class="ksi-line-soft" d="m-37-49 74-1m-74 28 74-1M-37 5l48-1m-48 30 62-1"/>
     </g>
-    <g id="ksi-object-calendar">
-      <rect class="ksi-paper" x="-116" y="-84" width="232" height="174" rx="12"/>
+    <g id="ksi-object-calendar" class="ksi-object-editorial">
+      <path class="ksi-paper" d="M-104-84h208c8 0 12 5 12 13l-1 149c0 8-5 12-13 12h-207c-8 0-12-5-12-13l1-149c0-8 4-12 12-12Z"/>
       <path class="ksi-blue-soft" d="M-116-72a12 12 0 0112-12h208a12 12 0 0112 12v37h-232z"/>
       <path class="ksi-line" d="M-116-35h232M-76-100v29m51-29v29m50-29v29m51-29v29"/>
-      <path class="ksi-line-soft" d="M-80-10h160M-80 21h160M-80 52h160M-48-10v93M-16-10v93M16-10v93M48-10v93"/>
+      <path class="ksi-line-soft" d="m-80-9 160-1m-160 32 160-1m-160 32 160-1M-40-9v92M0-9v92M40-9v92"/>
     </g>
-    <g id="ksi-object-parcel">
+    <g id="ksi-object-parcel" class="ksi-object-editorial">
       <path class="ksi-sage-soft" d="M-112-46L0-93l112 47L0 2z"/>
       <path class="ksi-paper" d="M-112-46L0 2v108l-112-47z"/>
       <path class="ksi-bone" d="M112-46L0 2v108l112-47z"/>
       <path class="ksi-line" d="M0 2v108M-37-77l111 47M36-78L-75-31"/>
       <path class="ksi-sage" d="M-20-85l39-1 40 17-39 16z"/>
+      <path class="ksi-line-soft" d="m-103-39 102 43 101-43M-104 58-2 101"/>
     </g>
-    <g id="ksi-object-clipboard">
-      <rect class="ksi-paper" x="-103" y="-119" width="206" height="242" rx="12"/>
+    <g id="ksi-object-clipboard" class="ksi-object-editorial">
+      <path class="ksi-paper" d="M-91-119h182c8 0 12 5 12 13l-1 217c0 8-5 12-13 12H-91c-8 0-12-5-12-13l1-217c0-8 4-12 11-12Z"/>
       <path class="ksi-blue-soft" d="M-31-130h62l11 16h28v31H-70v-31h28z"/>
-      <path class="ksi-line-soft" d="M-67-43h134M-67-5h134M-67 33h96M-67 71h118"/>
+      <path class="ksi-line-soft" d="m-67-43 134-1M-67-5 67-6M-67 33l96-1m-96 39 118-1"/>
     </g>
-    <g id="ksi-object-prescription">
+    <g id="ksi-object-prescription" class="ksi-object-editorial">
       <path class="ksi-paper" d="M-92-105H42L92-55V105H-92z"/>
       <path class="ksi-blue-soft" d="M42-105v50h50z"/>
       <path class="ksi-line" d="M-57-61h34m-17-17v34"/>
-      <path class="ksi-line-soft" d="M-57-11h105M-57 22h105M-57 55h72"/>
+      <path class="ksi-line-soft" d="m-57-11 105-1M-57 22l105-1m-105 34 72-1"/>
     </g>
-    <g id="ksi-object-medicine">
-      <rect class="ksi-paper" x="-78" y="-70" width="92" height="140" rx="8"/>
+    <g id="ksi-object-medicine" class="ksi-object-editorial">
+      <path class="ksi-paper" d="M-69-70h75c5 0 8 3 8 8V62c0 5-3 8-8 8h-76c-5 0-8-3-8-8V-62c0-5 4-8 9-8Z"/>
       <path class="ksi-sage-soft" d="M-78-70h92v39h-92z"/>
       <path class="ksi-line" d="M-48 4h33M-31-12v33"/>
-      <rect class="ksi-blue-soft" x="32" y="-34" width="82" height="104" rx="8"/>
-      <path class="ksi-line-soft" d="M48-8h50M48 17h50M48 42h34"/>
+      <path class="ksi-blue-soft" d="M40-34h66c5 0 8 3 8 8v88c0 5-3 8-8 8H40c-5 0-8-3-8-8v-88c0-5 3-8 8-8Z"/>
+      <path class="ksi-line-soft" d="m48-8 50-1M48 17l50-1M48 42l34-1"/>
+      <path class="ksi-coral-soft" d="M-25 86c6-6 16-6 22 0l10 10c6 6 6 16 0 22s-16 6-22 0l-10-10c-6-6-6-16 0-22Z"/>
+      <path class="ksi-line-thin" d="m-18 92 19 19"/>
+      <circle class="ksi-sage-soft" cx="34" cy="108" r="12"/>
     </g>
-    <g id="ksi-object-open-box">
+    <g id="ksi-object-open-box" class="ksi-object-editorial">
       <path class="ksi-bone" d="M-105-20L0 22l105-42v104L0 127l-105-43z"/>
       <path class="ksi-sage-soft" d="M-105-20L-38-69 0-25-64 24zM105-20L38-69 0-25l64 49z"/>
       <path class="ksi-line" d="M0 22v105"/>
-      <rect class="ksi-paper" x="-48" y="-94" width="68" height="86" rx="7"/>
+      <path class="ksi-paper" d="M-41-94h54c5 0 7 3 7 7v72c0 5-3 7-7 7h-54c-5 0-7-3-7-7v-72c0-4 3-7 7-7Z"/>
       <path class="ksi-line" d="M-27-53h26M-14-66v26"/>
-      <rect class="ksi-blue-soft" x="27" y="-73" width="62" height="72" rx="7" transform="rotate(8 58 -37)"/>
+      <path class="ksi-blue-soft" d="M36-72h47c4 0 7 3 7 7v59c0 4-3 7-7 7H35c-4 0-7-3-7-7v-59c0-4 3-7 8-7Z" transform="rotate(8 58 -37)"/>
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-phone" transform="translate(243 191) rotate(-7)"/><use href="#ksi-object-card" transform="translate(335 232) scale(.78) rotate(8)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-alert" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-phone" transform="translate(243 191) rotate(-7)"/><use href="#ksi-object-card" transform="translate(335 232) scale(.78) rotate(8)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-alert" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-phone" transform="translate(242 188) rotate(-6)"/><use href="#ksi-object-receipt" transform="translate(340 226) scale(.63) rotate(8)"/><use href="#ksi-object-card" transform="translate(185 247) scale(.58) rotate(-8)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-check" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260815-clean-payment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/doctor-matching.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/nurse-ready.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-calendar" transform="translate(270 195)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-clock" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/waiting-room.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/treatment-plan.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-parcel" transform="translate(260 191) scale(.92)"/><use href="#ksi-object-receipt" transform="translate(374 215) scale(.58) rotate(6)"/></g>
-      <path class="ksi-route" d="M117 246c24-77 69-129 130-151"/>
-      <circle class="ksi-coral ksi-fill-only" cx="116" cy="249" r="8"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-prescription" transform="translate(238 187) scale(.88)"/><use href="#ksi-object-medicine" transform="translate(351 235) scale(.67)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-search" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-open-box" transform="translate(280 180) scale(.95)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-clock" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-medicine" transform="translate(247 203) scale(.9)"/><use href="#ksi-object-receipt" transform="translate(358 224) scale(.55) rotate(7)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-check" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-parcel" transform="translate(270 195) scale(.92)"/></g>
-      <path class="ksi-route" d="M121 250c30-82 76-132 137-153"/>
-      <path class="ksi-line" d="M105 236l28 28m0-28l-28 28" style="stroke:#f36f4a;stroke-width:5"/>
-      <g class="ksi-pop"><use href="#ksi-mark-alert" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-parcel" transform="translate(255 196) scale(.9)"/><use href="#ksi-object-receipt" transform="translate(367 224) scale(.55) rotate(7)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-check" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/in-person.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-phone" transform="translate(275 194) rotate(-7) scale(1.08)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-bubble-check" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-calendar" transform="translate(225 194) scale(.86)"/></g>
-      <g class="ksi-bob-late"><use href="#ksi-object-parcel" transform="translate(382 231) scale(.52)"/></g>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-clipboard" transform="translate(270 185) scale(.91)"/></g>
-      <g class="ksi-pop"><use href="#ksi-mark-clock" transform="translate(420 91)"/></g>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <g class="ksi-bob"><use href="#ksi-object-calendar" transform="translate(225 194) scale(.86)"/></g>
-      <g class="ksi-bob-late"><use href="#ksi-object-parcel" transform="translate(382 231) scale(.52)"/></g>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image class="ks-paper-crane-animated" href="assets/loading-v5/paper-crane-flight-v5.svg" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image class="ks-paper-crane-static" href="assets/loading-v5/paper-crane-final-v5.svg" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" class="krane-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1" class="krane-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
