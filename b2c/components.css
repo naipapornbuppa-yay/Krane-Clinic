@@ -1922,12 +1922,28 @@ body.lang-th *{letter-spacing:normal}
 /* True phone viewport: the product shell fills the visible app area while only
    the content region scrolls. The primary action and bottom navigation therefore
    keep one stable baseline across short and long screens. */
+@container screen (max-width:780px){
+  /* The directory rail can make the product surface phone-width while the outer
+     browser is still desktop-width. Mirror the phone gutter from the component's
+     own width so review mode and a real handset stay visually identical. */
+  .screen__top,.screen__body,.screen__footer{inline-size:100%;max-inline-size:100%;margin-inline:0}
+  .screen__top{padding-inline:16px}
+  .screen__body{padding-inline:16px}
+  .screen__footer{padding-inline:16px}
+  .screen__body>.screen__footer{inline-size:calc(100% + 32px);max-inline-size:none;margin-inline:-16px}
+}
 @media(max-width:780px){
   :root{--fs-base:16px;--fs-sm:14px;--fs-xs:13px}
+  /* A phone screen must own the whole stage. Older cached frame rules used a
+     capped screen width, which left the unused width on the right when the
+     browser crossed into the phone breakpoint. Keep every shared screen and
+     its chrome explicitly full-width, then use one symmetric gutter. */
+  .stage>.screen{inline-size:100%;max-inline-size:100%;margin-inline:0}
+  .screen__top,.screen__body,.screen__footer{inline-size:100%;max-inline-size:100%;margin-inline:0}
   .screen__top{min-height:56px;padding:8px 16px}
   .screen__body{padding:16px}
   .screen__footer{padding:12px 16px max(12px,env(safe-area-inset-bottom))}
-  .screen__body>.screen__footer{width:calc(100% + 32px);margin-left:-16px}
+  .screen__body>.screen__footer{inline-size:calc(100% + 32px);max-inline-size:none;margin-inline:-16px}
   .partner-health-grid{grid-template-columns:minmax(0,1fr);gap:16px}
   #intake-general .partner-health-grid{grid-template-columns:minmax(0,1fr);gap:12px}
   #intake-general .partner-clinical-grid{grid-template-columns:minmax(0,1fr);gap:12px}
