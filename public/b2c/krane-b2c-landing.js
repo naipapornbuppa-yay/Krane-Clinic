@@ -89,6 +89,13 @@
       hormone: "Hormones & TRT",
       mind: "Focus & mind",
       general: "General symptoms / Not sure",
+      confidenceEyebrow: "Private men's health care",
+      confidenceTitle: "Feel close again,<br>with confidence",
+      confidenceLead: "Consult a doctor privately, one-to-one, with care options tailored to you.",
+      confidenceCta: "Consult now",
+      confidenceProofTitle: "Private 1-to-1 consultation",
+      confidenceProofBody: "With a licensed doctor",
+      confidenceLegal: "*Care and medication options depend on a doctor's assessment",
       licensedDoctors: "Licensed doctors",
       howKicker: "How it works",
       trustKicker: "The Krane standard of care",
@@ -356,6 +363,14 @@
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const confidenceVideo = document.querySelector(".confidence-campaign__video");
+  const syncConfidenceVideoMotion = () => {
+    if (!confidenceVideo) return;
+    if (reducedMotionQuery.matches) confidenceVideo.pause();
+    else confidenceVideo.play().catch(() => {});
+  };
+  syncConfidenceVideoMotion();
+  reducedMotionQuery.addEventListener?.("change", syncConfidenceVideoMotion);
 
   const careHeroArt = document.querySelector("[data-care-hero-art]");
   const careHeroCard = careHeroArt?.closest(".care-banner--weight");

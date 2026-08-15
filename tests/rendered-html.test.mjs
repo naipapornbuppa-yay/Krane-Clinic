@@ -1025,6 +1025,24 @@ test("landing reflects the client-approved trust, privacy, care journey, and med
   assert.match(css, /\.privacy-section\{[\s\S]*grid-template-columns:minmax\(0,\.8fr\) minmax\(0,1\.2fr\)/);
 });
 
+test("landing adds an indirect men's confidence video campaign with a working consultation route", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+  const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
+  const campaign = html.match(/<section class="confidence-campaign[\s\S]*?<\/section>/)?.[0] || "";
+
+  assert.match(campaign, /\.\.\/assets\/landing\/beach\.mp4/);
+  assert.match(campaign, /กลับมาใกล้ชิด<br>อย่างมั่นใจอีกครั้ง/);
+  assert.match(campaign, />ปรึกษาเลย</);
+  assert.match(campaign, /data-route="intake1" data-category="sexual-health"/);
+  assert.doesNotMatch(campaign, /\bED\b|หย่อนสมรรถภาพ/, "commercial campaign copy should stay indirect");
+  assert.match(css, /\.confidence-campaign__video\{[^}]*object-fit:cover/);
+  assert.match(css, /\.confidence-campaign__cta\{[\s\S]*background:#fff;[\s\S]*color:var\(--landing-navy\)/);
+  assert.match(css, /@media\(max-width:520px\)\{[\s\S]*\.confidence-campaign\{min-height:590px/);
+  assert.match(script, /if \(reducedMotionQuery\.matches\) confidenceVideo\.pause\(\)/);
+  await assert.doesNotReject(access(path.join(publicRoot, "assets/landing/beach.mp4")));
+});
+
 test("landing navigation opens condition guides while care CTAs start category intake", async () => {
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const detail = await readFile(path.join(publicRoot, "b2c/condition-detail.html"), "utf8");
