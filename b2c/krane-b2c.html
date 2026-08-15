@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260815-bottomnav-consistency-v1";
+    const release = "20260816-treatment-history-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,13 +37,13 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260815-bottomnav-consistency-v1">
-<link rel="stylesheet" href="components.css?v=20260815-bottomnav-consistency-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260815-bottomnav-consistency-v1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260815-bottomnav-consistency-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260816-treatment-history-v1">
+<link rel="stylesheet" href="components.css?v=20260816-treatment-history-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260816-treatment-history-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260816-treatment-history-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260815-bottomnav-consistency-v1" defer></script>
-<script src="i18n.js?v=20260815-bottomnav-consistency-v1" defer></script>
+<script src="custom-select.js?v=20260816-treatment-history-v1" defer></script>
+<script src="i18n.js?v=20260816-treatment-history-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -477,10 +477,10 @@
         </div><div class="rail-error-menu">
           <a class="is-exception" data-go="empty-activities"><span class="rail-error-tag">Error case</span>No activity yet</a>
         </div></details>
-        <details class="rail-page" open><summary>Medical history</summary><div class="rail-sub">
+        <details class="rail-page" open><summary>Past treatments</summary><div class="rail-sub">
           <a data-go="history">Default</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-go="empty-history"><span class="rail-error-tag">Error case</span>No medical history yet</a>
+          <a class="is-exception" data-go="empty-history"><span class="rail-error-tag">Error case</span>No past treatments yet</a>
         </div></details>
         <a data-go="notifications">Notifications</a>
         <a data-go="account">Personal details</a>
@@ -2008,8 +2008,8 @@
     </nav>
   </section>
 
-  <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: orders + consultations)
-       Client (5 Jul): order cards belong here, not on the profile. ===================== -->
+  <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
+       Completed consultation and order events are one treatment record. ===================== -->
   <section class="screen screen--web" id="activity">
     <div class="screen__top"><span class="ttl">Activity</span></div>
     <div class="screen__body stack-5">
@@ -2026,17 +2026,14 @@
           <div class="order-meta"><span>Melatonin 5mg</span><span>Next-day</span></div>
         </div>
 
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Past orders</div><span class="badge badge--line">2</span></div>
-        <div class="card card--pad-sm order-card order-card--past" data-go="history">
-          <div class="order-top"><div><div class="order-id">#KR-10170</div><div class="order-title">Hair loss treatment</div></div><span class="badge badge--line">Delivered</span></div>
-          <div class="order-meta"><span>12 May 2026</span><span>Same-day · completed</span></div>
-        </div>
-
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Consultations</div><span class="badge badge--line">1</span></div>
-        <div class="card card--pad-sm order-card order-card--past" data-go="history">
-          <div class="order-top"><div><div class="order-id">Dr. Narin · licence 12345</div><div class="order-title">Hair loss consultation</div></div><span class="badge badge--line">Completed</span></div>
-          <div class="order-meta"><span>12 May 2026</span><span>Plan accepted · 3 refills</span></div>
-        </div>
+        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Past treatments</div><span class="badge badge--line">1</span></div>
+        <button class="card card--pad-sm order-card order-card--past treatment-history-card" type="button" data-go="history" aria-label="Open past hair loss treatment">
+          <div class="history-card__summary">
+            <div><div class="order-id">#KR-10170</div><div class="order-title">Hair loss treatment</div></div>
+            <div class="history-card__side"><span class="badge badge--line">Completed</span><span class="history-card__chevron" aria-hidden="true">›</span></div>
+          </div>
+          <div class="order-meta"><span>12 May 2026 · Dr. Narin</span><span>Diagnosis and prescription available</span></div>
+        </button>
       </div>
     </div>
     <nav class="bottomnav">
@@ -2047,29 +2044,39 @@
     </nav>
   </section>
 
-  <!-- ===================== MEDICAL HISTORY (KRANE-F05 · Activity Tab) ===================== -->
+  <!-- ===================== PAST TREATMENT DETAIL (KRANE-F05 · Activity Tab) ===================== -->
   <section class="screen screen--web" id="history">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Past treatment</span></div>
     <div class="screen__body stack-5">
-      <div class="stack-2">
-        <div class="section-label">Active treatment</div>
-        <div class="card card--pad-sm stack-2">
-          <div class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></div>
-          <div class="hint">Loratadine 10 mg · Paracetamol 500 mg · เริ่ม 12 พ.ค. 2026</div>
-          <div class="row"><button class="btn btn--secondary btn--sm" data-go="plan">View plan</button><button class="btn btn--ghost btn--sm" data-go="tracking">Last order</button></div>
+      <div class="past-treatment-heading stack-2">
+        <div class="between">
+          <div class="order-id">#KR-10170</div>
+          <span class="badge badge--line">Completed</span>
         </div>
+        <h2 class="h1">Hair loss treatment</h2>
+        <div class="order-meta"><span>12 May 2026</span><span>Dr. Narin · licence 12345</span></div>
       </div>
-      <div class="web-cols-2">
-      <div class="stack-2">
-        <div class="section-label">Past consultations</div>
-        <div class="list-row" data-go="plan"><span class="avatar avatar--brand" style="width:36px;height:36px">Dr</span><div class="grow"><strong>Hair loss review</strong><div class="hint">12 May 2026 · Dr. assigned</div></div><span class="muted">›</span></div>
-        <div class="list-row" data-go="plan"><span class="avatar avatar--brand" style="width:36px;height:36px">Dr</span><div class="grow"><strong>Initial consultation</strong><div class="hint">2 Apr 2026 · Dr. assigned</div></div><span class="muted">›</span></div>
+
+      <div class="card card--pad-sm stack-3">
+        <div class="section-label">Diagnosis</div>
+        <strong class="history-diagnosis">Androgenetic alopecia</strong>
+        <p class="muted">Early-stage hereditary hair loss with thinning around the frontal hairline.</p>
+        <div class="divider" style="margin:0"></div>
+        <div class="between"><span class="hint">Consulting doctor</span><strong>Dr. Narin</strong></div>
       </div>
-      <div class="stack-2">
-        <div class="section-label">Prescriptions</div>
-        <div class="list-row"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><strong>Loratadine 10 mg</strong><div class="hint">วันละ 1 เม็ด · รีฟิลใน 24 วัน</div></div><span class="muted">›</span></div>
-        <div class="list-row"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><strong>Paracetamol 500 mg</strong><div class="hint">เมื่อมีอาการ · รีฟิลใน 24 วัน</div></div><span class="muted">›</span></div>
+
+      <div class="card card--pad-sm stack-3" data-history-prescription>
+        <div class="between"><div class="section-label" style="margin:0">Previous prescription</div><span class="badge badge--line">RX-2026-10170</span></div>
+        <div class="between"><span class="hint">Issued date</span><strong>12 May 2026</strong></div>
+        <div class="treatment-medications" role="list" aria-label="Previously prescribed medicines">
+          <div class="treatment-medication" role="listitem"><span>Finasteride 1 mg</span><span>Take 1 tablet once daily</span></div>
+          <div class="treatment-medication" role="listitem"><span>Minoxidil 5%</span><span>Apply to the scalp twice daily</span></div>
+        </div>
+        <div class="between"><span class="hint">Prescribed by</span><strong>Dr. Narin · licence 12345</strong></div>
       </div>
+
+      <div class="card card--flat card--pad-sm" data-history-no-prescription hidden>
+        <div class="hint">No prescription was issued for this treatment.</div>
       </div>
     </div>
     <nav class="bottomnav">
@@ -2168,15 +2175,15 @@
     </nav>
   </section>
 
-  <!-- ===================== HISTORY · EMPTY (edge state) ===================== -->
+  <!-- ===================== PAST TREATMENTS · EMPTY (edge state) ===================== -->
   <section class="screen" id="empty-history">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Past treatments</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No consultation history">
+      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No past treatments yet">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-empty-history"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">No consultation history</h2><p class="muted">Consultations and prescriptions will appear here.</p></div>
+      <div class="state-view__copy"><h2 class="h1">No past treatments yet</h2><p class="muted">Diagnoses and prescriptions will appear here after treatment.</p></div>
       <button class="btn btn--primary state-view__cta" data-go="conditions">Start consultation</button>
     </div>
   </section>
@@ -6608,7 +6615,7 @@
     'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
     'intake-concern':   { id:'KRANE-F04', name:'Health Intake, General / Partner Concern Details', stories:['Partner entry and General consultation record free-form symptoms, duration, attempted relief and optional photos on a dedicated page','Specialty banner journeys skip this page because their condition-specific intake already captures the concern','US-F04.4: Concern details are surfaced to the doctor before the session'] },
     'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared General Health', stories:['Every consultation completes general health on a separate final intake page','Captures conditions, allergies, medicine, supplements, height and weight in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
-    'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
+    'activity':         { id:'KRANE-F05', name:'Activity Tab, Active Orders + Past Treatments', stories:['Active delivery orders remain separate for tracking','Completed consultation and order events are merged into one treatment episode','Tapping a past treatment opens its diagnosis and previous prescription when available'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
@@ -6637,12 +6644,12 @@
     'feedbackdone':     { id:'none', name:'Post-Consultation Feedback, Thanks state', stories:[] },
     'refill':           { id:'KRANE-F22', name:'Refill Flow', stories:['US-F22.1: See eligible prescriptions and request a refill in one action','US-F22.2: Refill goes straight to delivery/payment when doctor-set allowance remains','US-F22.3: Expired or used-up prescriptions route to a new consultation'] },
     'profile':          { id:'KRANE-F05', name:'Patient Profile (4-Tab), Tab 1: Profile', stories:['US-F05.1: Active consultation/condition shown with Refill button','US-F05.8: Multiple orders are grouped as needing action, active, and past','US-F05.5: Bottom nav includes Profile as a permanent tab'] },
-    'history':          { id:'KRANE-F05', name:'Patient Profile, Tab 2: Activity (Medical History)', stories:['US-F05.3: Order history and consultation history visible here','US-F05.4: Delivery tracking visible from Activity tab'] },
+    'history':          { id:'KRANE-F05', name:'Past Treatment Detail', stories:['A completed treatment is represented once instead of duplicating its consultation and order','The detail shows the diagnosis and the previous prescription when one was issued'] },
     'notifications':    { id:'KRANE-F05 + KRANE-F12', name:'Patient Profile, Tab 3: Notifications + Appointment Alerts', stories:['US-F05.6: All platform alerts shown in the Notifications tab','US-F12.1: Booking confirmation, time-change, and cancellation notifications','US-F12.2: Reminder X hours before appointment (configurable)'] },
     'settings':         { id:'KRANE-F05', name:'Patient Profile, Tab 4: Settings', stories:['US-F05.7: Account, payment methods, notification prefs, help, log out'] },
     'account':          { id:'KRANE-F05', name:'Personal Details, Editable + Audit Trail', stories:['Client v3: name, phone, email, and card are editable and cannot be empty','Client v3: every edit is stored with a timestamp (audit trail)'] },
     'empty-activities': { id:'KRANE-F34', name:'Empty State, No Active Orders', stories:['US-F34.1: Graceful empty state for no orders / no consultation history','US-F34.2: CTA to start a consultation shown in empty state'] },
-    'empty-history':    { id:'KRANE-F34', name:'Empty State, No Medical History', stories:['US-F34.1: Graceful empty state for no past consultations or prescriptions'] },
+    'empty-history':    { id:'KRANE-F34', name:'Empty State, No Past Treatments', stories:['US-F34.1: Graceful empty state before any completed treatment, diagnosis or prescription exists'] },
   };
 
   // Feature tag = one floating toast on top, updated on navigation (not inside the page card)
