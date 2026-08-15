@@ -1043,6 +1043,24 @@ test("landing adds an indirect men's confidence video campaign with a working co
   await assert.doesNotReject(access(path.join(publicRoot, "assets/landing/beach.mp4")));
 });
 
+test("landing medical team mirrors an advisor directory with crawlable profiles and an in-page side sheet", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+  const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
+  const experts = html.match(/<section class="experts[\s\S]*?<\/section>/)?.[0] || "";
+
+  assert.match(experts, /class="experts__intro"/);
+  assert.match(experts, /class="experts__principles"/);
+  assert.equal((experts.match(/data-expert-open/g) || []).length, 4);
+  for (const id of [1, 2, 3, 4]) assert.match(experts, new RegExp(`href="doctor-detail\\.html\\?doctor=${id}"`));
+  assert.match(html, /<dialog class="expert-dialog"[\s\S]*data-expert-detail-link/);
+  assert.match(css, /\.experts\{[\s\S]*grid-template-columns:minmax\(300px,\.72fr\) minmax\(0,1\.68fr\)/);
+  assert.match(css, /\.expert-dialog\{[\s\S]*margin:0 0 0 auto;[\s\S]*height:100dvh/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*\.expert-dialog\{width:100%;height:100dvh\}/);
+  assert.match(script, /expertDialog\.showModal\(\)/);
+  assert.match(script, /expertDialogReturnFocus\?\.focus\(\)/);
+});
+
 test("landing navigation opens condition guides while care CTAs start category intake", async () => {
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const detail = await readFile(path.join(publicRoot, "b2c/condition-detail.html"), "utf8");

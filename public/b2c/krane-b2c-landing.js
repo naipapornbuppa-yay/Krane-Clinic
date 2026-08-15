@@ -143,7 +143,19 @@
       standardsLine: "International Standard powered by INET · ISO/IEC 27001:2022 · ISO/IEC 27018 · ISO/IEC 20000-1 · ISO 22301 · CSA STAR",
       ourGuarantee: "Our guarantee",
       expertsKicker: "Licensed doctors",
-      expertsTitle: "Our medical team",
+      expertsTitle: "The medical team<br>behind every decision",
+      expertsLead: "Krane care is designed and reviewed by specialist doctors, so every plan begins with your real health information.",
+      expertsPrinciple1Title: "Specialist doctors",
+      expertsPrinciple1Body: "Care within specialties recognised by the Medical Council of Thailand.",
+      expertsPrinciple2Title: "Personalised plans",
+      expertsPrinciple2Body: "Built around your health history, goals and clinical suitability.",
+      expertsPrinciple3Title: "Ongoing follow-up",
+      expertsPrinciple3Body: "Your doctor can adjust the plan as your health information changes.",
+      expertsJump: "Meet our medical team",
+      expertDialogKicker: "Krane medical team",
+      expertDialogSpecialty: "Specialty",
+      expertDialogEducation: "Education and training",
+      expertDialogFullProfile: "Open full profile page",
       reviewsTrust: "95% love their care experience",
       reviewsMembers: "users",
       reviewsQuote: "“Excellent care and service”",
@@ -610,6 +622,82 @@
   }, { passive: true });
   window.addEventListener("resize", syncExpertCarousel, { passive: true });
   syncExpertCarousel();
+
+  const expertProfiles = {
+    "1": {
+      name: "นพ. ไพรัช เกตุรัตนกุล ว.",
+      role: "ผู้อำนวยการแพทย์",
+      specialty: "อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ",
+      education: "แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย",
+      bio: "ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน"
+    },
+    "2": {
+      name: "พญ. กรผกา ขันติโกสุม ว.",
+      role: "แพทย์ที่ปรึกษา Krane · เส้นผมและผิวหนัง",
+      specialty: "ตจวิทยา (ผิวหนัง)",
+      education: "ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",
+      bio: "ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน"
+    },
+    "3": {
+      name: "อ.นพ. พหล สโรจวิสุทธิ์ ว.",
+      role: "แพทย์ที่ปรึกษา Krane · การลดน้ำหนัก",
+      specialty: "อายุรศาสตร์ · อนุสาขาโภชนศาสตร์คลินิก",
+      education: "ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",
+      bio: "ให้คำปรึกษาด้านการควบคุมน้ำหนักและโภชนศาสตร์คลินิก โดยทบทวนปัจจัยสุขภาพ เป้าหมาย และความเหมาะสมก่อนวางแผนร่วมกับผู้รับบริการ"
+    },
+    "4": {
+      name: "อ.นพ. ชวลิต หงส์เลิศสกุล ว.",
+      role: "แพทย์ที่ปรึกษา Krane · สุขภาพทางเพศ",
+      specialty: "ศัลยศาสตร์ยูโรวิทยา",
+      education: "ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",
+      bio: "ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์"
+    }
+  };
+  const expertDialog = document.querySelector("[data-expert-dialog]");
+  const expertDialogClose = document.querySelector("[data-expert-close]");
+  const expertDialogMedia = document.querySelector("[data-expert-dialog-media]");
+  const expertDialogName = document.querySelector("[data-expert-dialog-name]");
+  const expertDialogRole = document.querySelector("[data-expert-dialog-role]");
+  const expertDialogBio = document.querySelector("[data-expert-dialog-bio]");
+  const expertDialogSpecialty = document.querySelector("[data-expert-dialog-specialty]");
+  const expertDialogEducation = document.querySelector("[data-expert-dialog-education]");
+  const expertDetailLink = document.querySelector("[data-expert-detail-link]");
+  let expertDialogReturnFocus = null;
+
+  function openExpertDialog(card) {
+    if (!expertDialog || typeof expertDialog.showModal !== "function") return;
+    const id = card.dataset.doctorId;
+    const profile = expertProfiles[id];
+    const media = card.querySelector(".expert-card__media");
+    if (!profile || !media) return;
+    expertDialogReturnFocus = card;
+    expertDialogMedia.replaceChildren(media.cloneNode(true));
+    expertDialogName.textContent = profile.name;
+    expertDialogRole.textContent = profile.role;
+    expertDialogBio.textContent = profile.bio;
+    expertDialogSpecialty.textContent = profile.specialty;
+    expertDialogEducation.textContent = profile.education;
+    expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
+    document.body.classList.add("expert-open");
+    expertDialog.showModal();
+    requestAnimationFrame(() => expertDialogClose?.focus());
+  }
+
+  document.querySelectorAll("[data-expert-open]").forEach((card) => {
+    card.addEventListener("click", (event) => {
+      if (!expertDialog || typeof expertDialog.showModal !== "function") return;
+      event.preventDefault();
+      openExpertDialog(card);
+    });
+  });
+  expertDialogClose?.addEventListener("click", () => expertDialog?.close());
+  expertDialog?.addEventListener("click", (event) => {
+    if (event.target === expertDialog) expertDialog.close();
+  });
+  expertDialog?.addEventListener("close", () => {
+    document.body.classList.remove("expert-open");
+    expertDialogReturnFocus?.focus();
+  });
 
   const reviewDialog = document.querySelector("[data-review-dialog]");
   const reviewDialogImage = document.querySelector("[data-review-dialog-image]");
