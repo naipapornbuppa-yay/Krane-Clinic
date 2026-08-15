@@ -307,6 +307,13 @@
       try {
         if (window.parent && window.parent !== window) {
           event.preventDefault();
+          // Category-specific care must reload the parent app so an already-open
+          // tab cannot keep an older intake mapping in memory. The versioned href
+          // also makes the category part of the canonical fallback URL.
+          if (link.dataset.route === "intake1" && link.dataset.category) {
+            window.top.location.assign(link.href);
+            return;
+          }
           window.parent.postMessage({
             krane: "nav",
             to: link.dataset.route,
