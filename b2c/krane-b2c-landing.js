@@ -407,7 +407,7 @@
   const productSlides = [
     {
       id: "injectors",
-      src: null,
+      src: "assets/product-hero/krane-oral-injection-cluster-v1.png",
       alt: {
         th: "ปากกาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
         en: "Injection pens that may be prescribed as part of a treatment plan"
