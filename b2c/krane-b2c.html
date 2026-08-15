@@ -37,11 +37,15 @@
   /* prototype chrome only (not part of the product) */
   body{max-width:100%;background:var(--gradient-teal-soft);overflow-x:hidden}
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;overflow-x:hidden}
-  .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
-  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) var(--sp-2) var(--sp-4);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
+  .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
+  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
   .rail-head .logo{display:flex;align-items:center;margin:0}
   .rail-logo{display:block;width:96px;height:auto;max-height:25px;object-fit:contain;object-position:left center}
   .rail-head__label{font-size:11px;font-weight:var(--fw-semibold);color:var(--color-ink-3);text-transform:uppercase;letter-spacing:0}
+  .rail-toggle{position:absolute;top:50%;right:4px;width:30px;height:30px;display:grid;place-items:center;padding:0;border:1px solid var(--color-line);border-radius:10px;background:var(--color-surface);color:var(--color-ink);cursor:pointer;transform:translateY(-50%);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .rail-toggle:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
+  .rail-toggle:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+  .rail-toggle__icon{width:8px;height:8px;border-left:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg);transition:transform .22s ease}
   .rail details,.rail details>summary,.rail-group__body,.rail-page,.rail-sub,.rail a{max-width:100%;min-width:0}
   .rail details>summary{list-style:none;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
   .rail details>summary::-webkit-details-marker{display:none}
@@ -79,7 +83,16 @@
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
   .rail a.is-exception.current{background:var(--color-danger-ink);color:#fff;font-weight:var(--fw-semibold)}
   .rail a.is-exception.current .rail-state{color:inherit}
-  .stage{width:calc(100% - 286px);min-width:0;max-width:calc(100vw - 286px);flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);overflow-x:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-7)}
+  .stage{width:calc(100% - 286px);min-width:0;max-width:calc(100vw - 286px);flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);overflow-x:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-7);transition:width .22s ease,max-width .22s ease}
+  body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
+  body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
+  body.rail-is-collapsed .rail-head .logo,
+  body.rail-is-collapsed .rail-head__label,
+  body.rail-is-collapsed .rail-legend,
+  body.rail-is-collapsed .rail>.rail-group{display:none}
+  body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
+  body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
+  body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
   .screen{display:none;min-width:0}
   .screen.active{display:flex}
   .note-bar{display:none}
@@ -332,8 +345,8 @@
 <div class="proto">
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
-  <nav class="rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span></div>
+  <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
     <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
@@ -2596,6 +2609,22 @@
   });
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
   const railGroups = [...document.querySelectorAll('.rail > .rail-group')];
+  const prototypeRail = document.querySelector('#prototype-rail');
+  const railToggle = prototypeRail?.querySelector('.rail-toggle');
+  const railCollapseStorageKey = 'krane-prototype-rail-collapsed';
+  function setPrototypeRailCollapsed(collapsed, persist = true){
+    document.body.classList.toggle('rail-is-collapsed', collapsed);
+    if(railToggle){
+      railToggle.setAttribute('aria-expanded', String(!collapsed));
+      railToggle.setAttribute('aria-label', collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง');
+      railToggle.title = collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง';
+    }
+    if(persist){
+      try{ window.localStorage.setItem(railCollapseStorageKey, collapsed ? '1' : '0'); }catch(error){}
+    }
+  }
+  try{ setPrototypeRailCollapsed(window.localStorage.getItem(railCollapseStorageKey) === '1', false); }catch(error){ setPrototypeRailCollapsed(false, false); }
+  railToggle?.addEventListener('click', () => setPrototypeRailCollapsed(!document.body.classList.contains('rail-is-collapsed')));
   document.querySelectorAll('.rail a[data-go],.rail a[data-screen-ref]').forEach(link => {
     if(link.querySelector('.rail-screen-id')) return;
     const screenId=link.dataset.go || link.dataset.screenRef;
