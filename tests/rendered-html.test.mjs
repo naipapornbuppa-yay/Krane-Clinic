@@ -1136,6 +1136,20 @@ test("doctor cards open matching responsive profiles instead of a placeholder te
   assert.match(legacy, /location\.replace\("b2c\/doctor-detail\.html" \+ location\.search \+ location\.hash\)/);
 });
 
+test("doctor profile explains how Krane clinicians shape and follow care", async () => {
+  const detail = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/detail-pages.css"), "utf8");
+
+  assert.match(detail, /class="doctor-work"/);
+  assert.match(detail, /ทีมแพทย์ร่วมออกแบบ/);
+  assert.equal((detail.match(/class="doctor-work__story(?: doctor-work__story--reverse)?"/g) || []).length, 3);
+  assert.match(detail, /เริ่มจากเรื่องที่คุณกังวล/);
+  assert.match(detail, /ทบทวนทางเลือกอย่างมีเหตุผล/);
+  assert.match(detail, /ติดตามและปรับแผนต่อเนื่อง/);
+  assert.match(css, /\.doctor-work__story\{display:grid;grid-template-columns:/);
+  assert.match(css, /@media\(max-width:860px\)\{[\s\S]*\.doctor-work__story,.doctor-work__story--reverse\{grid-template-columns:1fr/);
+});
+
 test("all canonical B2C brand placements use the new Krane wordmark without clinic", async () => {
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
