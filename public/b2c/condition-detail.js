@@ -27,7 +27,7 @@
     weight: {
       category: "weight",
       tone: "weight",
-      image: "assets/product-hero/weight-injection-landscape-v2.png",
+      image: "assets/product-hero/weight-injection-macro-no-hand-v5.png",
       kicker: "ดูแลน้ำหนักกับแพทย์",
       title: "การดูแลน้ำหนักที่เริ่มจากสุขภาพของคุณ",
       lead: "ทำความเข้าใจทางเลือก ขั้นตอน และสิ่งที่แพทย์จะประเมิน ก่อนเริ่มแผนดูแลที่เหมาะกับคุณ",

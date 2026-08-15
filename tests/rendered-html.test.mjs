@@ -759,6 +759,7 @@ test("public login and legal routes bypass intake while consent acceptance still
 test("Figma landing keeps every client access route and responsive menu contract", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+  const navCss = await readFile(path.join(publicRoot, "b2c/site-header.css"), "utf8");
   const script = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.js"), "utf8");
 
   for (const route of ["login", "articles", "consent-terms"]) {
@@ -780,13 +781,15 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /assets\/product-hero\/weight-injection-landscape-v2\.png/);
+  assert.match(html, /assets\/product-hero\/weight-injection-macro-no-hand-v5\.png/);
+  assert.match(html, /class="care-banner__motion"[\s\S]*weight-injection-macro-zoom-v5\.mp4/);
   assert.match(html, /class="care-banner care-banner--weight"/);
   assert.match(html, /class="care-banner care-banner--ed"/);
   assert.match(html, /class="care-banner care-banner--hair"/);
   assert.match(html, /condition-detail\.html\?condition=skin/);
   assert.match(html, /condition-detail\.html\?condition=sleep-stress/);
-  assert.match(css, /Compact navigation:[\s\S]*\.site-header\{/);
+  assert.match(html, /site-header\.css\?v=20260815-site-nav-v1/);
+  assert.match(navCss, /Shared public-site navigation contract/);
   assert.match(css, /@media\(max-width:700px\)/);
   // Everything below this point documents the superseded July landing asset
   // contract. The current care-card, compact-nav and face-free image contracts
@@ -938,10 +941,11 @@ test("landing first viewport exposes the three priority care banners with direct
   }
   assert.match(script, /bannerEdProducts: "Sildenafil · Tadalafil\*"/);
   assert.match(script, /link\.dataset\.route === "intake1" && link\.dataset\.category[\s\S]*window\.top\.location\.assign\(link\.href\)/);
-  assert.equal((banners.match(/>เริ่มปรึกษา</g) || []).length, 3, "priority CTAs must use one consistent label");
-  assert.match(html, /ดูแลตัวเอง<br>ให้ไปได้ไกลกว่าเดิม/);
+  assert.equal((banners.match(/>เริ่มตอนนี้</g) || []).length, 3, "priority CTAs must use one consistent label");
+  assert.match(html, /สุขภาพที่มั่นใจ<br>ผ่านการดูแลกับ Krane/);
   assert.doesNotMatch(html, /<div class="hero__signals"/, "the slogan must not be repeated by a credential row");
-  assert.match(banners, /weight-injection-landscape-v2\.png/);
+  assert.match(banners, /weight-injection-macro-no-hand-v5\.png/);
+  assert.match(banners, /weight-injection-macro-zoom-v5\.mp4/);
   assert.match(banners, /ed-care-couple-short-sleepwear-bed-pills-v13\.png/);
   assert.match(banners, /hair-care-vanity-v10-left-hand\.png/);
   assert.match(css, /grid-template-columns:minmax\(0,1\.45fr\) minmax\(280px,\.82fr\)/);
@@ -953,19 +957,36 @@ test("landing first viewport exposes the three priority care banners with direct
   assert.match(css, /\.care-banner>img\.care-banner__photo\{[\s\S]*object-fit:cover;[\s\S]*transform-origin:center;/, "care-card advertising photos must fill each card");
   assert.match(css, /\.care-banner:hover>img\.care-banner__photo,\.care-banner:focus-visible>img\.care-banner__photo\{[\s\S]*transform:scale\(1\.055\)/, "care-card photos should grow slightly on hover");
   assert.match(css, /prefers-reduced-motion:reduce[\s\S]*\.care-banner>img\.care-banner__photo\{transition:none\}/, "care photo motion must respect reduced-motion preferences");
-  assert.match(css, /Compact navigation:[\s\S]*\.site-header\{[\s\S]*height:60px;[\s\S]*padding:0 32px;/, "the desktop header should use a compact 60px rhythm");
-  assert.match(css, /\.brand img\{width:92px;height:auto\}/, "the Krane wordmark should stay visually restrained");
-  assert.match(css, /\.desktop-nav\{[\s\S]*gap:clamp\(18px,2\.25vw,32px\)/, "desktop navigation should use a consistent responsive spacing scale");
-  assert.match(css, /\.header-login,\.header-access\{[\s\S]*min-height:38px;[\s\S]*padding-inline:16px;/, "header actions should remain compact");
   assert.match(css, /--landing-page-bg:var\(--color-canvas-warm,#f7f5ee\)/);
   assert.match(css, /--landing-blue:var\(--color-accent,#0164ff\)/);
   assert.match(css, /--landing-blue-2:var\(--color-accent-vivid,#1973ff\)/);
   assert.match(css, /--landing-navy:var\(--color-ink,#121824\)/);
   assert.match(css, /@media\(max-width:700px\)\{[\s\S]*scroll-snap-type:x mandatory/);
-  assert.match(html, /class="care-banner__photo"[\s\S]*weight-injection-landscape-v2\.png/);
+  assert.match(html, /class="care-banner__photo"[\s\S]*weight-injection-macro-no-hand-v5\.png/);
   assert.match(css, /\.treatments\{overflow:visible\}/, "treatment shadows must not be clipped by the page section");
   assert.match(css, /\.treatment-grid\{isolation:isolate\}/, "treatment cards need an isolated stacking context");
   assert.match(css, /\.treatment-pill:hover,\.treatment-pill:focus-visible\{z-index:4\}/, "hovered treatment shadow must paint above adjacent cards");
+});
+
+test("public marketing pages share one navigation and wordmark contract", async () => {
+  const sharedHeader = await readFile(path.join(publicRoot, "b2c/site-header.css"), "utf8");
+  for (const page of [
+    "b2c/krane-b2c-landing.html",
+    "b2c/condition-detail.html",
+    "b2c/doctor-detail.html",
+    "b2c/advisor-detail.html"
+  ]) {
+    const html = await readFile(path.join(publicRoot, page), "utf8");
+    assert.match(html, /site-header\.css\?v=20260815-site-nav-v1/, `${page} must consume the shared header contract`);
+  }
+  assert.match(sharedHeader, /--site-nav-height:60px/);
+  assert.match(sharedHeader, /--site-nav-logo-width:92px/);
+  assert.match(sharedHeader, /\.site-header\{[\s\S]*height:var\(--site-nav-height\);[\s\S]*padding:0 var\(--site-nav-padding-inline\)/);
+  assert.match(sharedHeader, /\.site-header \.brand img\{width:var\(--site-nav-logo-width\);height:auto/);
+  assert.match(sharedHeader, /\.site-header \.desktop-nav\{height:36px;gap:clamp\(18px,2\.25vw,32px\)\}/);
+  assert.match(sharedHeader, /\.site-header \.header-login,\.site-header \.header-access\{[\s\S]*min-height:var\(--site-nav-control-height\);[\s\S]*padding-inline:16px/);
+  assert.match(sharedHeader, /\.detail-nav\{min-height:var\(--site-nav-height\);padding:0 24px\}/);
+  assert.match(sharedHeader, /\.detail-logo\{width:var\(--site-nav-logo-width\);height:auto\}/);
 });
 
 test("landing keeps priority cards concise and secondary services responsive", async () => {
@@ -975,13 +996,33 @@ test("landing keeps priority cards concise and secondary services responsive", a
   const services = html.match(/<div class="treatment-grid">[\s\S]*?<\/div>/)?.[0] || "";
 
   assert.doesNotMatch(banners, /care-banner__kicker/, "priority cards should not repeat pill-shaped category labels");
-  assert.match(banners, /มั่นใจอีกครั้ง<br>ในทุกความสัมพันธ์/);
+  assert.match(banners, /มั่นใจขึ้น<br>เรื่องของผู้ชาย \(ED\)/);
   assert.doesNotMatch(banners, /ดูแลภาวะ ED|ยา ED/);
   assert.match(css, /\.care-banner__cta\{[\s\S]*?right:18px;[\s\S]*?bottom:18px;/, "all consultation CTAs need a bottom-right anchor");
   assert.equal((services.match(/<a class="treatment-pill /g) || []).length, 4);
   assert.doesNotMatch(services, /care-card--hair|care-card--sexual/);
   assert.match(css, /@media\(min-width:701px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:700px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+});
+
+test("landing reflects the client-approved trust, privacy, care journey, and medical team content", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.css"), "utf8");
+
+  assert.match(html, /ปรึกษาแพทย์ฟรี ไม่มีค่าใช้จ่าย ถึง 1 มกราคม 2027/);
+  assert.match(html, /id="trust"[\s\S]*คลินิกใบอนุญาตเลขที่ 10101017669[\s\S]*Fascino[\s\S]*ISO\/IEC 27001:2022[\s\S]*ISO\/IEC 27018[\s\S]*CSA STAR/);
+  assert.match(html, /id="privacy"[\s\S]*คุ้มครองตาม PDPA[\s\S]*เห็นได้เฉพาะแพทย์ผู้ดูแล[\s\S]*ไม่แชร์กับบุคคลภายนอก/);
+  const steps = html.match(/<ol class="steps">[\s\S]*?<\/ol>/)?.[0] || "";
+  assert.equal((steps.match(/class="step-number"/g) || []).length, 3);
+  assert.match(steps, /ใช้เวลาเพียง 1–2 นาที/);
+  assert.match(steps, /เร็วสุดภายใน 2 ชั่วโมง/);
+  for (const doctor of ["ไพรัช เกตุรัตนกุล", "กรผกา ขันติโกสุม", "พหล สโรจวิสุทธิ์", "ชวลิต หงส์เลิศสกุล"]) {
+    assert.match(html, new RegExp(doctor));
+  }
+  assert.doesNotMatch(html, /สุรเกียรติ พรอนันต์|พิชญ์สินี เมธาโรจน์|มาร์คัส แวนซ์|สุกัญญา จันทร์เพ็ญ/);
+  assert.match(css, /announcement-promo-scroll/);
+  assert.match(css, /\.trust-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.privacy-section\{[\s\S]*grid-template-columns:minmax\(0,\.8fr\) minmax\(0,1\.2fr\)/);
 });
 
 test("landing navigation opens condition guides while care CTAs start category intake", async () => {
