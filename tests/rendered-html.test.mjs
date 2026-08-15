@@ -132,7 +132,9 @@ test("patient app contains unique screens and the guarded partner journey", asyn
   assert.match(designTokens, /--theme-canvas-inset: #EEE9DD/);
   assert.match(designTokens, /--color-canvas-warm: var\(--theme-canvas\)/);
   assert.match(designTokens, /--color-canvas-warm-deep: var\(--theme-canvas-inset\)/);
-  assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web\{max-width:min\(var\(--desktop-frame\),100%\)\}/);
+  assert.match(components, /\.screen\{[\s\S]*max-width:none[\s\S]*height:100dvh[\s\S]*border:0;border-radius:0[\s\S]*box-shadow:none/);
+  assert.match(components, /@media\(min-width:781px\)\{[\s\S]*\.stage \.screen--web,\.stage \.screen:not\(\.screen--web\)\{width:100%;max-width:none\}/);
+  assert.doesNotMatch(components, /\.stage \.screen:not\(\.screen--web\)\{max-width:var\(--form-frame\)\}/);
   assert.match(components, /\.care-journey__steps\{display:grid;width:100%;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(components, /@media\(max-width:780px\)\{[\s\S]*\.care-journey__current\{display:none\}[\s\S]*\.care-journey__name\{display:block/);
   assert.match(html, /if\(flowConfig\.get\('entry'\)==='direct'\) flowState\.entryChannel='direct'/);
@@ -1093,6 +1095,7 @@ test("prototype rail nests error cases under related happy-flow pages", async ()
   assert.match(patient, /class="rail-toggle"[^>]*aria-controls="prototype-rail"[^>]*aria-expanded="true"/);
   assert.match(patient, /body\.rail-is-collapsed \.rail\{width:56px/);
   assert.match(patient, /body\.rail-is-collapsed \.stage\{width:calc\(100% - 56px\)/);
+  assert.match(patient, /\.stage\{[^}]*height:100dvh[^}]*align-items:stretch[^}]*gap:0[^}]*overflow:hidden[^}]*padding:0/);
   assert.match(patient, /setPrototypeRailCollapsed\(!document\.body\.classList\.contains\('rail-is-collapsed'\)\)/);
   assert.match(patient, /krane-prototype-rail-collapsed/);
   assert.match(patient, /class="rail-legend"[^>]*>[\s\S]*Happy flow[\s\S]*Error case/);
