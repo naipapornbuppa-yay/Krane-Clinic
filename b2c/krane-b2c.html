@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260805hotfix1">
-<link rel="stylesheet" href="components.css?v=20260815-shared-intake-v1">
+<link rel="stylesheet" href="components.css?v=20260815-ink-states-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
 <script src="../krane-golden-fixture.js"></script>
@@ -225,7 +225,14 @@
     }
   </style>
   <style>
-    /* Krane state illustration system: static editorial line art + semantic motion only. */
+    /* Krane state illustration system: monochrome ink cutouts + semantic motion only. */
+    :root{--state-editorial-canvas:#f3f0e6}
+    .screen:has(> .screen__body.state-view),
+    .screen__body.state-view{background:var(--state-editorial-canvas)}
+    .screen:has(> .screen__body.state-view)>.screen__top,
+    .screen:has(> .screen__body.state-view)>.screen__footer{
+      background:color-mix(in srgb,var(--state-editorial-canvas) 92%,transparent)
+    }
     .state-view__visual:has(.krane-state-art){
       width:min(70vw,365px)!important;
       height:auto!important;
@@ -270,10 +277,11 @@
     .krane-state-defs .ks-dot-1,.krane-state-art .ks-dot-1{animation:ks-dot 1.35s 0s ease-in-out infinite}
     .krane-state-defs .ks-dot-2,.krane-state-art .ks-dot-2{animation:ks-dot 1.35s .16s ease-in-out infinite}
     .krane-state-defs .ks-dot-3,.krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
-    /* Rigid vector pieces fold while edge-on, keeping every navy line crisp.
-       The static final crane replaces the animation for reduced motion. */
     .krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
-    .state-view__tile>.krane-paper-crane-static{display:none}
+    .state-view__visual--loading .krane-state-art{
+      transform-origin:center;
+      animation:loading-illustration-float 3.2s var(--ease-inout) infinite
+    }
     @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
     @keyframes ks-draw{0%,18%{stroke-dashoffset:54}45%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:-54}}
@@ -281,10 +289,7 @@
     @keyframes ks-pulse{0%,100%{transform:scale(.94);opacity:.68}50%{transform:scale(1.06);opacity:1}}
     @keyframes ks-dot{0%,65%,100%{transform:translateY(0);opacity:.35}32%{transform:translateY(-7px);opacity:1}}
     @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(75vw,332px)!important}}
-    @media(prefers-reduced-motion:reduce){
-      .state-view__tile>.krane-paper-crane-animated{display:none}
-      .state-view__tile>.krane-paper-crane-static{display:block}
-    }
+    @media(prefers-reduced-motion:reduce){.state-view__visual--loading .krane-state-art{animation:none}}
   </style>
 </head>
 <body class="hide-feat">
@@ -2425,8 +2430,7 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <img class="krane-state-art krane-paper-crane-media krane-paper-crane-animated" src="assets/loading-v8/paper-crane-flipbook-v8.gif" width="560" height="360" alt="">
-          <img class="krane-state-art krane-paper-crane-media krane-paper-crane-static" src="assets/loading-v8/paper-crane-frame-03-v8.png" width="560" height="360" alt="">
+          <img class="krane-state-art krane-paper-crane-media" src="assets/state-editorial-v5-ink/loading-info.png?v=20260815-active-ink-v1" width="560" height="360" alt="">
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -7447,84 +7451,83 @@
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/consult-payment-failed.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/payment-failed.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/payment-success.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/doctor-matching.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/nurse-ready.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/no-slots.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/waiting-room.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/treatment-plan.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/delivery-quote.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/pharmacy-search.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/medicine-preparing.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/pharmacy-confirmed.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/delivery-unavailable.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/order-confirmed.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v3-simple/in-person.png" width="560" height="360" preserveAspectRatio="xMidYMid slice"/>
+      <image href="assets/state-editorial-v5-ink/in-person.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/feedback.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/feedback.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/empty-activities.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/empty-history.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v4-objects/empty-activities.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image class="ks-paper-crane-animated" href="assets/loading-v8/paper-crane-flipbook-v8.gif" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image class="ks-paper-crane-static" href="assets/loading-v8/paper-crane-frame-03-v8.png" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
