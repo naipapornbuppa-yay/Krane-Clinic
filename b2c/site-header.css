@@ -1,0 +1,79 @@
+/* Shared public-site navigation contract.
+   Landing, condition, doctor and advisor pages all consume these dimensions so
+   the header rhythm and Krane wordmark cannot drift between routes. */
+:root{
+  --site-nav-height:60px;
+  --site-nav-padding-inline:32px;
+  --site-nav-logo-width:92px;
+  --site-nav-control-height:38px;
+}
+
+.announcement{height:28px;min-height:28px}
+.announcement__group{min-height:28px;gap:8px;padding-inline:32px}
+.announcement span,.announcement strong{font-size:11px;line-height:1.2}
+
+.site-header{
+  height:var(--site-nav-height);
+  padding:0 var(--site-nav-padding-inline);
+  gap:0;
+  font-family:"Prompt","Noto Sans Thai","Inter",system-ui,sans-serif;
+}
+.site-header .brand{
+  width:auto;
+  min-width:0;
+  height:32px;
+  margin-right:clamp(28px,4vw,64px);
+  padding:0;
+  flex:none;
+}
+.site-header .brand img{width:var(--site-nav-logo-width);height:auto;object-fit:contain;object-position:left center}
+.site-header .desktop-nav{height:36px;gap:clamp(18px,2.25vw,32px)}
+.site-header .nav-menu,.site-header .nav-menu__trigger{height:36px}
+.site-header .nav-menu__trigger{gap:4px;font-size:13px}
+.site-header .nav-menu__trigger svg{width:13px;height:13px}
+.site-header .nav-menu__trigger::after{bottom:-6px}
+.site-header .nav-menu__menu{top:44px}
+.site-header .header-actions{min-width:0;height:36px;gap:8px}
+.site-header .language-control select{min-width:48px;height:36px;padding:0 20px 0 7px;font-size:12px}
+.site-header .header-login,.site-header .header-access{
+  min-height:var(--site-nav-control-height);
+  padding-inline:16px;
+  font-size:12px;
+}
+.site-header .header-login{box-shadow:0 6px 16px rgba(17,27,48,.09)}
+.site-header .menu-toggle{width:var(--site-nav-control-height);height:var(--site-nav-control-height);background:transparent}
+.site-header .menu-toggle svg{width:20px;height:20px}
+
+/* Compact profile pages use a simpler nav, but share the same outer height,
+   logo scale and action scale as the full public-site header. */
+.detail-nav{min-height:var(--site-nav-height);padding:0 24px}
+.detail-logo{width:var(--site-nav-logo-width);height:auto}
+.detail-back{min-height:var(--site-nav-control-height);padding-inline:16px;font-size:12px}
+
+@media(max-width:1220px){
+  :root{--site-nav-padding-inline:24px;--site-nav-logo-width:88px}
+  .site-header .brand{margin-right:24px}
+  .site-header .desktop-nav{gap:14px}
+}
+
+@media(max-width:960px){
+  :root{--site-nav-height:56px;--site-nav-padding-inline:18px;--site-nav-logo-width:86px}
+  .site-header .brand{height:30px;margin-right:18px}
+  .detail-nav{padding-inline:18px}
+}
+
+@media(max-width:880px){
+  .site-header .brand{margin-right:auto}
+}
+
+@media(max-width:700px){
+  :root{--site-nav-padding-inline:16px;--site-nav-logo-width:88px}
+  .announcement{height:26px;min-height:26px}
+  .announcement__group{min-height:26px;padding-inline:16px}
+  .announcement span,.announcement strong{font-size:9px}
+  .site-header{padding-right:12px}
+  .site-header .brand{height:30px;margin-right:auto}
+  .site-header .header-actions{height:38px;gap:6px}
+  .site-header .header-login{min-height:36px;padding-inline:13px;font-size:11px}
+  .detail-nav{padding:0 12px 0 16px}
+}
