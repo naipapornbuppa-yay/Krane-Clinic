@@ -30,7 +30,7 @@
     ed: {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-light-v9.png",
+      image: "assets/product-hero/ed-care-couple-light-v10.png",
       kicker: "ดูแลภาวะ ED อย่างเป็นส่วนตัว",
       title: "คุยเรื่องสมรรถภาพทางเพศได้อย่างตรงไปตรงมา",
       lead: "ภาวะหย่อนสมรรถภาพอาจเกี่ยวข้องกับหลอดเลือด ฮอร์โมน ยาที่ใช้ หรือความเครียด การประเมินช่วยหาทางเลือกที่ปลอดภัยกว่า",
@@ -58,7 +58,7 @@
     "sexual-health": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-light-v9.png",
+      image: "assets/product-hero/ed-care-couple-light-v10.png",
       kicker: "สุขภาพทางเพศแบบเป็นส่วนตัว",
       title: "เริ่มต้นจากการคุยกับแพทย์โดยไม่ถูกตัดสิน",
       lead: "อาการด้านสมรรถภาพ ความต้องการทางเพศ หรือข้อกังวลอื่น ๆ สามารถประเมินออนไลน์อย่างเป็นส่วนตัวได้",
