@@ -1014,6 +1014,10 @@ test("landing navigation opens condition guides while care CTAs start category i
   assert.match(detailCss, /\.product-option-card__photo\{[\s\S]*object-fit:cover/);
   assert.doesNotMatch(detailCss, /\.product-visual__primary|radial-gradient\(circle at 12px 12px/, "product options must use photos instead of CSS medicine drawings");
   assert.match(detailScript, /new URLSearchParams\(location\.search\)\.get\("condition"\)/);
+  assert.match(detail, /class="safety__guide"[\s\S]*warning-guide-man-current-logo-v3\.png/, "every shared condition warning must include the branded advising character");
+  assert.match(detailCss, /\.safety\{[\s\S]*grid-template-columns:minmax\(300px,1\.05fr\)[\s\S]*overflow:hidden/);
+  assert.doesNotMatch(detail, /class="safety__guide-logo"/, "the Krane logo must be drawn into the illustration rather than overlaid as a separate image");
+  await assert.doesNotReject(access(path.join(publicRoot, "b2c/assets/condition-detail/warning-guide-man-current-logo-v3.png")));
   assert.match(detailCss, /@media\(max-width:640px\)/);
   assert.doesNotThrow(() => new vm.Script(detailScript, { filename: "condition-detail.js" }));
 });
