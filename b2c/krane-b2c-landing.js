@@ -30,19 +30,19 @@
       online: "100% private consultations",
       certified: "Licensed doctors",
       discreet: "Discreet delivery nationwide",
-      heroTitle: "Weight · ED · Hair loss<br>Online care with doctors",
+      heroTitle: "Take care of yourself.<br>Go further.",
       bannerWeightKicker: "Weight-loss injections with doctor oversight",
       bannerWeightTitle: "A weight-loss plan<br>made for you",
       bannerWeightProducts: "Mounjaro · Ozempic · Wegovy*",
-      bannerWeightCta: "Start assessment",
+      bannerWeightCta: "Start consultation",
       bannerEdKicker: "ED medication with private care",
       bannerEdTitle: "Treat ED<br>with an online doctor",
       bannerEdProducts: "Sildenafil · Tadalafil*",
-      bannerEdCta: "Start ED care",
+      bannerEdCta: "Start consultation",
       bannerHairKicker: "Medication for hair loss and regrowth",
       bannerHairTitle: "Reduce hair loss<br>and restore growth",
       bannerHairProducts: "Finasteride 1 mg · Minoxidil 5%*",
-      bannerHairCta: "Start hair care",
+      bannerHairCta: "Start consultation",
       bannerSkinKicker: "Skin & healthy ageing",
       bannerSkinTitle: "Start a skin-care plan<br>with a doctor",
       bannerSkinProducts: "Assess acne, dark spots and fine lines*",
@@ -398,7 +398,7 @@
   const productSlides = [
     {
       id: "injectors",
-      src: "assets/landing-573/products/clinical-injectors-v2.png",
+      src: null,
       alt: {
         th: "ปากกาฉีดสำหรับแผนการรักษาที่แพทย์อาจสั่งจ่าย",
         en: "Injection pens that may be prescribed as part of a treatment plan"
@@ -436,6 +436,7 @@
   let activeProduct = 0;
   let productSwapTimer = 0;
   productSlides.forEach((slide) => {
+    if (!slide.src) return;
     const image = new Image();
     image.src = slide.src;
   });
@@ -456,6 +457,13 @@
     renderProductCopy();
     window.clearTimeout(productSwapTimer);
     productImage.style.opacity = "0";
+    if (!slide.src) {
+      if (productIndex) productIndex.textContent = String(activeProduct + 1).padStart(2, "0");
+      productDots.forEach((dot, index) => {
+        dot.style.background = index === activeProduct ? "#0f172a" : "#cbd5e1";
+      });
+      return;
+    }
     productSwapTimer = window.setTimeout(() => {
       productImage.src = slide.src;
       productImage.style.opacity = "1";
@@ -468,6 +476,25 @@
 
   document.addEventListener("krane:languagechange", renderProductCopy);
   renderProductCopy();
+
+  const productScene = document.querySelector("[data-product-scene]");
+  if (productStage && productScene && !reducedMotionQuery.matches) {
+    let productMotionFrame = 0;
+    productStage.addEventListener("pointermove", (event) => {
+      const bounds = productStage.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      window.cancelAnimationFrame(productMotionFrame);
+      productMotionFrame = window.requestAnimationFrame(() => {
+        productScene.style.setProperty("--scene-x", x.toFixed(3));
+        productScene.style.setProperty("--scene-y", y.toFixed(3));
+      });
+    });
+    productStage.addEventListener("pointerleave", () => {
+      productScene.style.setProperty("--scene-x", "0");
+      productScene.style.setProperty("--scene-y", "0");
+    });
+  }
 
   document.querySelectorAll("[data-product-direction]").forEach((button) => {
     button.addEventListener("click", () => {

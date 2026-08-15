@@ -61,8 +61,9 @@
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
   .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
   .rail a.current .rail-screen-id,.rail a.is-exception.current .rail-screen-id{color:inherit;opacity:.68}
-  .rail-legend{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
+  .rail-legend{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
   .rail-legend span{display:inline-flex;align-items:center;gap:5px}
+  .rail-legend .rail-legend__screen-id{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;opacity:.82}
   .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
   .rail-legend .is-error{color:var(--color-danger-ink)}
   .rail-legend .is-error i{background:var(--color-danger-ink)}
@@ -323,7 +324,7 @@
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" aria-label="Prototype patient journey">
     <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span></div>
-    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span></div>
+    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
       <summary><span class="rail-step">01</span><span>Start &amp; discover</span></summary>
@@ -379,7 +380,7 @@
         <details class="rail-page" open><summary>Doctor matching</summary><div class="rail-sub">
           <a data-go="matching">Auto-match</a><a data-go="choosedoc">Option · Choose doctor</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nomatch><span class="rail-error-tag">Error case</span>No doctor available now</a>
+          <a class="is-exception" data-demo-nomatch data-screen-ref="matching"><span class="rail-error-tag">Error case</span>No doctor available now</a>
           <a class="is-exception" data-go="noslots"><span class="rail-error-tag">Error case</span>No booking slots</a>
         </div></details>
         <details class="rail-page" open><summary>Consultation payment</summary><div class="rail-sub">
@@ -428,7 +429,7 @@
         <details class="rail-page" open><summary>Pharmacy confirmation</summary><div class="rail-sub">
           <a data-go="pharmacypending">State · Preparing</a><a data-go="pharmacyaccepted">State · Accepted</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nostock><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
+          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
           <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
         </div></details>
         <a data-go="confirm">Order confirmation</a>
@@ -490,7 +491,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-card-shadow-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-hero-slogan-v3" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -644,7 +645,7 @@
     <div class="screen__body stack-4">
       <div class="article-hero"><div class="photo-graphic photo-graphic--warm"><span class="photo-graphic__signal"><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i></span></div></div>
       <div class="stack-2"><h2 class="h1">Does finasteride really work?</h2>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="avatar" style="width:28px;height:28px"></span><div class="hint">Dr. Anong S., Dermatology · reviewed Jun 2026 · 4 min read</div></div></div>
+        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="avatar" style="width:28px;height:28px"></span><div class="hint">Dr. A., Dermatology · reviewed Jun 2026 · 4 min read</div></div></div>
       <p class="muted">Finasteride is a once-daily tablet that lowers the hormone linked to male-pattern hair loss. Most people notice results after 3-6 months of consistent use.</p>
       <p class="muted">This article is for education only and isn't a substitute for a consultation. Talk to a Krane doctor about what's right for you.</p>
       <div class="row" style="gap:var(--sp-2);flex-wrap:wrap;align-items:center"><span class="hint">Tags:</span><button class="btn btn--ghost btn--sm" data-go="articles">Finasteride</button><button class="btn btn--ghost btn--sm" data-go="articles">Hair loss</button></div>
@@ -893,7 +894,7 @@
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลและดำเนินการต่อ</button></div>
   </section>
 
-<!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
+  <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
   <section class="screen" id="intake-edu">
     <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">Almost done</span></div>
     <div class="screen__body edu-body">
@@ -1256,7 +1257,7 @@
 
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="avatar" style="width:32px;height:32px">N</span><div class="grow"><div class="ttl">Dr. Narin</div><div class="hint">in room · licensed doctor</div></div></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="avatar" style="width:32px;height:32px">N</span><div class="grow"><div class="ttl">Dr. Narin</div><div class="hint">in room · licence 12345</div></div></div>
     <div class="screen__body chat-body" style="background:var(--color-bg);position:relative">
       <!-- F13: chat and the call are one session; this bar appears while a call runs in the background -->
       <button class="callbar" data-callbar data-go="video" hidden><span class="cb-dot"></span><span class="grow" style="text-align:left">Call in progress · chat stays open</span><strong>Return to call</strong></button>
@@ -1269,7 +1270,7 @@
       <button class="callbar" data-rx-bar data-go="rx-writing"><span class="cb-dot"></span><span class="grow" style="text-align:left">Dr. Narin is writing your prescription</span><strong>View status</strong></button>
       <div class="card card--pad-sm stack-3" style="align-self:stretch" data-plan-card data-wait-hidden>
         <div class="between"><span class="badge badge--ok">ตัวอย่างรายการยา</span><span class="hint">จากแพทย์</span></div>
-        <div class="hint" data-plan-preview-summary>Draft only, 4 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.</div>
+        <div class="hint" data-plan-preview-summary>Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.</div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/tusspac-15-100-130.jpg" width="600" height="338" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan HBr 15 mg + Glyceryl Guaiacolate 100 mg + Terpin Hydrate 130 mg</div><div class="hint plan-item__gist">ลดอาการไอ ขับเสมหะ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint plan-item__gist">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</div></div><span class="price">฿ 94 · 1 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint plan-item__gist">แก้ปวด ลดไข้</div></div><span class="price">฿ 40 · 2 แผง</span></div>
@@ -1444,7 +1445,6 @@
         <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
         <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
       </div>
-      <p class="hint">ดึงชื่อและเบอร์โทรจากบัญชีของคุณแล้ว แก้ไขได้หากผู้รับเป็นคนอื่น</p>
 
       <div class="field-row">
         <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
@@ -1900,7 +1900,7 @@
       <p class="muted">Eligible refills go straight to delivery and medication payment. A new consultation is only needed when the prescription has expired or no refills remain.</p>
       <div class="stack-3">
         <div class="card card--pad-sm stack-3">
-          <div class="between"><div><strong>Hair loss</strong><div class="hint">Prescribed by Dr. Narin T. · 12 May 2026</div></div><span class="badge badge--line">2 refills left</span></div>
+          <div class="between"><div><strong>Hair loss</strong><div class="hint">Prescribed by Dr. A · 12 May 2026</div></div><span class="badge badge--line">2 refills left</span></div>
           <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div></div><span class="price">฿ 590</span></div>
           <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div></div><span class="price">฿ 450</span></div>
           <div class="card card--flat card--pad-sm stack-2" style="background:var(--color-bg-soft)">
@@ -1912,7 +1912,7 @@
           <button class="btn btn--primary btn--sm" style="width:100%" data-go="address">Refill this treatment</button>
         </div>
         <div class="card card--pad-sm stack-3">
-          <div class="between"><div><strong>Skin care</strong><div class="hint">Prescribed by Dr. Anong S. · 2 Apr 2026</div></div><span class="badge badge--line">No refills left</span></div>
+          <div class="between"><div><strong>Skin care</strong><div class="hint">Prescribed by Dr. B · 2 Apr 2026</div></div><span class="badge badge--line">No refills left</span></div>
           <div class="plan-item" style="border:0;padding:0"><span class="thumb med-thumb" data-medicine-photo="tretinoin" aria-hidden="true"><img src="assets/medicine/real-v1/tretinoin-retin-a-0025.jpg" width="640" height="480" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Tretinoin 0.025%</div><div class="hint">Allowance used · needs a new consult</div></div><span class="price">n/a</span></div>
           <div class="card card--flat card--pad-sm stack-2" style="background:var(--color-bg-soft)">
             <div class="between"><span class="hint">Allowed</span><strong>1 total</strong></div>
@@ -2012,7 +2012,7 @@
 
         <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Consultations</div><span class="badge badge--line">1</span></div>
         <div class="card card--pad-sm order-card order-card--past" data-go="history">
-          <div class="order-top"><div><div class="order-id">Dr. Narin · licensed doctor</div><div class="order-title">Hair loss consultation</div></div><span class="badge badge--line">Completed</span></div>
+          <div class="order-top"><div><div class="order-id">Dr. Narin · licence 12345</div><div class="order-title">Hair loss consultation</div></div><span class="badge badge--line">Completed</span></div>
           <div class="order-meta"><span>12 May 2026</span><span>Plan accepted · 3 refills</span></div>
         </div>
       </div>
@@ -2241,7 +2241,7 @@
       <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx" aria-selected="true">Prescription</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">Medical certificate</button></div>
       <div data-doc="rx" class="stack-4">
       <div class="card card--pad-sm stack-3">
-        <div class="between"><div><strong>Krane Clinic · Prescription</strong><div class="hint">Prescribed by Dr. Narin T. · licensed doctor</div></div><span class="badge badge--ok">Valid</span></div>
+        <div class="between"><div><strong>Krane Clinic · Prescription</strong><div class="hint">Prescribed by Dr. Narin T. · licence 12345</div></div><span class="badge badge--ok">Valid</span></div>
         <div class="divider" style="margin:0"></div>
         <div class="kv-list stack-3">
           <div class="between"><span class="muted">Diagnosis</span><strong>Androgenetic alopecia</strong></div>
@@ -2505,15 +2505,93 @@
     if(footer) screen.appendChild(footer);
   });
   const screens = [...document.querySelectorAll('.screen')];
+  // Stable reviewer-facing IDs are separate from the product SCR inventory.
+  // One SID identifies one implemented <section>; repeated rail entries that open
+  // the same section therefore show the same number without redefining SCR scope.
+  const reviewScreenIds=Object.freeze({
+    'landing':'SID-001',
+    'onboard1':'SID-002',
+    'onboard2':'SID-003',
+    'onboard3':'SID-004',
+    'conditions':'SID-005',
+    'articles':'SID-006',
+    'article':'SID-007',
+    'signup':'SID-008',
+    'social-confirm':'SID-009',
+    'login':'SID-010',
+    'otp':'SID-011',
+    'patient-info':'SID-012',
+    'identity':'SID-013',
+    'consent-terms':'SID-014',
+    'intake1':'SID-015',
+    'intake2':'SID-016',
+    'intake3':'SID-017',
+    'intake4':'SID-018',
+    'ineligible':'SID-019',
+    'intake5':'SID-020',
+    'intake-general':'SID-021',
+    'intake-edu':'SID-022',
+    'nurse':'SID-023',
+    'matching':'SID-024',
+    'choosedoc':'SID-025',
+    'noslots':'SID-026',
+    'consultpay':'SID-027',
+    'consultpay-gw':'SID-028',
+    'consultpay-fail':'SID-029',
+    'waitroom':'SID-030',
+    'video':'SID-031',
+    'consult':'SID-032',
+    'rx-writing':'SID-033',
+    'plan':'SID-034',
+    'prescription':'SID-035',
+    'address':'SID-036',
+    'delivery-quote':'SID-037',
+    'pharmacy-search':'SID-038',
+    'insurance':'SID-039',
+    'payment':'SID-040',
+    'payment-gw':'SID-041',
+    'payment-success':'SID-042',
+    'payfail':'SID-043',
+    'pharmacypending':'SID-044',
+    'pharmacyaccepted':'SID-045',
+    'pharmacyissue':'SID-046',
+    'confirm':'SID-047',
+    'tracking':'SID-048',
+    'feedback':'SID-049',
+    'feedbackdone':'SID-050',
+    'profile':'SID-051',
+    'activity':'SID-052',
+    'empty-activities':'SID-053',
+    'history':'SID-054',
+    'empty-history':'SID-055',
+    'notifications':'SID-056',
+    'account':'SID-057',
+    'settings':'SID-058',
+    'refill':'SID-059',
+    'upload-rx':'SID-060',
+    'referral':'SID-061',
+    'partner-patient-info':'SID-062',
+    'partner-insurance':'SID-063',
+    'partner-nurse':'SID-064',
+    'partner-nurse-session':'SID-065',
+    'preloader':'SID-066',
+    'insurance-result':'SID-067',
+    'partner-phr':'SID-068'
+  });
+  screens.forEach(screen => {
+    const reviewId=reviewScreenIds[screen.id];
+    if(reviewId) screen.dataset.reviewScreenId=reviewId;
+  });
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
   const railGroups = [...document.querySelectorAll('.rail > .rail-group')];
-  railLinks.forEach(link => {
+  document.querySelectorAll('.rail a[data-go],.rail a[data-screen-ref]').forEach(link => {
     if(link.querySelector('.rail-screen-id')) return;
-    const screenId=link.dataset.go;
-    if(!screenId) return;
+    const screenId=link.dataset.go || link.dataset.screenRef;
+    const reviewId=reviewScreenIds[screenId];
+    if(!screenId || !reviewId) return;
     const idLabel=document.createElement('span');
     idLabel.className='rail-screen-id';
-    idLabel.textContent=`#${screenId}`;
+    idLabel.textContent=`${reviewId} · #${screenId}`;
     const stateLabel=link.querySelector('.rail-state');
     if(stateLabel) link.insertBefore(idLabel,stateLabel);
     else link.appendChild(idLabel);
@@ -3150,33 +3228,13 @@
     const district=String(address.district || '').trim();
     return district && !primary.includes(district) ? `${primary} · ${district}` : primary;
   }
-  const ADDRESS_FIELD_KEYS={
-    recipientName:'recipientName',recipientPhone:'recipientPhone',
-    addrBuilding:'building',addrFloor:'floor',addrLine:'line',
-    addrSubdistrict:'subdistrict',addrDistrictName:'districtName',
-    addrProvince:'province',addrPostcode:'postcode',addrDistrict:'district',addrNote:'note'
-  };
-  function deliveryRecipientIdentity(){
-    const partner=flowState.entryChannel==='partner';
-    return {
-      recipientName:String(partner ? flowState.partnerName : flowState.patientName || '').trim(),
-      recipientPhone:String(partner ? flowState.partnerPhone : flowState.verifiedPhone || '').trim()
-    };
-  }
+  const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
-    const previous=readDeliveryAddressDraft(screen);
-    const identity=deliveryRecipientIdentity();
     screen.dataset.addressDraft=JSON.stringify({
-      recipientName:String(address.recipientName || previous.recipientName || identity.recipientName || ''),
-      recipientPhone:String(address.recipientPhone || previous.recipientPhone || identity.recipientPhone || ''),
       building:String(address.building || ''),
       floor:String(address.floor || ''),
       line:String(address.line || ''),
-      subdistrict:String(address.subdistrict || ''),
-      districtName:String(address.districtName || ''),
-      province:String(address.province || ''),
-      postcode:String(address.postcode || ''),
       district:String(address.district || ''),
       note:String(address.note || ''),
       km:String(address.km || screen.dataset.selectedKm || '3.2')
@@ -3205,10 +3263,9 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
-    const identity=deliveryRecipientIdentity();
     const values={
-      recipientName:address.recipientName || identity.recipientName,
-      recipientPhone:address.recipientPhone || identity.recipientPhone,
+      recipientName:address.recipientName,
+      recipientPhone:address.recipientPhone,
       addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
@@ -3225,10 +3282,7 @@
       if(input) input.value=value || '';
     });
     screen.dataset.selectedKm=address.km || '3.2';
-    writeDeliveryAddressDraft(screen,Object.assign({},address,identity,{
-      recipientName:address.recipientName || identity.recipientName,
-      recipientPhone:address.recipientPhone || identity.recipientPhone
-    }));
+    writeDeliveryAddressDraft(screen,address);
   }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
      which was only ever written by the fake "pick an address" demo button. That
@@ -3267,7 +3321,6 @@
       return false;
     }
     writeDeliveryAddressDraft(screen,{
-      recipientName:a.recipientName, recipientPhone:a.recipientPhone,
       building:a.building, floor:a.floor, line:a.line,
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district,
@@ -3460,6 +3513,17 @@
       ]
     },
     {
+      id:'hormone',
+      title:'Hormones & TRT',
+      description:'Energy, hormone symptoms and doctor-led TRT assessment.',
+      icon:'pulse',
+      status:'Launch',
+      next:'conditions',
+      conditions:[
+        { id:'hormone-assessment', title:'Hormone & TRT assessment', titleTh:'ประเมินฮอร์โมนและ TRT', description:'Review symptoms, health history, medicines and relevant lab results before considering treatment.', descriptionTh:'ทบทวนอาการ ประวัติสุขภาพ ยาที่ใช้ และผลตรวจที่เกี่ยวข้องก่อนพิจารณาการรักษา', status:'Launch', next:'intake1' }
+      ]
+    },
+    {
       id:'general',
       title:'General / Not sure',
       description:'Not sure where to start? Talk to a doctor without choosing a disease path.',
@@ -3621,6 +3685,36 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">I have not tried a structured plan</span></span><span class="opt-check"></span></button>
         </div>`
     },
+    hormone:{
+      intake1:`
+        <div><h2 class="h1">อาการใดที่ทำให้คุณอยากประเมินฮอร์โมน</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">อ่อนเพลียหรือพลังงานลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ความต้องการทางเพศหรือสมรรถภาพลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มวลกล้ามเนื้อหรือความแข็งแรงลดลง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">อารมณ์ สมาธิ หรือคุณภาพการนอนเปลี่ยน</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีผลตรวจฮอร์โมนและต้องการให้แพทย์ช่วยประเมิน</span></span><span class="opt-check"></span></button>
+        </div>
+        ${intakeDurationControl({label:'มีอาการมานานเท่าไร?',thai:true})}`,
+      intake2:`
+        <div><h2 class="h1">ข้อมูลสุขภาพที่เกี่ยวข้อง</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีโรคหัวใจ ความดัน เบาหวาน หรือไขมันสูง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีปัญหาต่อมลูกหมากหรือการปัสสาวะ</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีภาวะหยุดหายใจขณะหลับหรือกรนมาก</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ต้องการมีบุตรในอนาคต</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มีข้อใดตรง</span></span><span class="opt-check"></span></button>
+        </div>`,
+      intake3:`
+        <div><h2 class="h1">เคยตรวจหรือใช้ฮอร์โมนมาก่อนหรือไม่</h2></div>
+        <div class="stack-3">
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ยังไม่เคยตรวจหรือรักษา</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">มีผลตรวจฮอร์โมนในช่วง 6 เดือนที่ผ่านมา</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">เคยใช้ TRT ภายใต้การดูแลของแพทย์</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">เคยใช้ฮอร์โมนหรือสารเสริมเอง</span></span><span class="opt-check"></span></button>
+          <button class="option" data-multi><span class="opt-body"><span class="opt-title">ใช้ยา อาหารเสริม หรือสารกระตุ้นเป็นประจำ</span></span><span class="opt-check"></span></button>
+        </div>`
+    },
     general:{
       intake1:`
         <div><h2 class="h1">What can we help with today?</h2></div>
@@ -3757,6 +3851,10 @@
   };
 
   const intakeBaseMarkup = {};
+  /* Specialty care keeps one clinical question per page. General consultation
+     is intentionally compact: its concern, description and duration belong on
+     one screen, and the shared health profile is one complete form just like
+     the insurance journey. */
   const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
   function intakeQuestionPageState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
@@ -4131,21 +4229,21 @@
 
   function renderIntakeQuestions(){
     // One question set per access path. General keeps the broad screening set.
-    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+    const byCategory = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
     const key = selectedCategory().general ? 'general' : (byCategory[selectedCategoryId] || 'hair');
     if(renderedIntakeContext === key) return;
     // Template coverage per concern (verified 2026-08-04):
-    //   skin / sexual / sleep -> own intake1, intake2, intake3
+    //   weight / skin / sexual / sleep -> own intake1, intake2, intake3
     //   hair                  -> own intake1, intake2; intake3 falls back to the
     //                            authored base, which is the generic "previous
     //                            care or treatment" set and is concern-appropriate
-    //   general               -> own intake1, intake2; intake3 is SKIPPED entirely
-    //                            by the routing rule above (EC-011), so it never
-    //                            renders the concern-specific treatment history
+    //   general               -> own intake1 is shown as one compact screen;
+    //                            intake2 and intake3 are SKIPPED by EC-011 so the
+    //                            journey moves directly to urgent screening
     // A missing template therefore falls back to the authored base markup only
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
-    // INTAKE_SKIPPED_BY_GENERAL.
+    // GENERAL_COMPACT_SKIPPED_SCREENS.
     ['intake1','intake2','intake3'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
@@ -4424,25 +4522,17 @@
         const input=group.querySelector('input');
         if(input && hasDetails) input.value=value;
       });
-    }
-    syncPartnerHistoryFields();
-  }
-  function restoreSharedConcernFields(){
-    const text=document.getElementById('partner-concern-text');
-    if(text && flowState.partnerConcern) text.value=flowState.partnerConcern;
-    const duration=String(flowState.partnerConcernDuration || '').trim().match(/^(\d+)\s+(.+)$/);
-    const amount=document.getElementById('partner-concern-duration-value');
-    if(amount && duration) amount.value=duration[1];
-    if(duration){
-      document.querySelectorAll('#intake-general [data-partner-duration-unit]').forEach(option => {
-        option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===duration[2]));
-      });
-    }
-    if(flowState.partnerConcernRelief){
+      const durationUnit=(String(flowState.partnerConcernDuration || '').match(/\s(วัน|เดือน|ปี)$/) || [])[1];
+      if(durationUnit){
+        document.querySelectorAll('#intake-general [data-partner-duration-unit]').forEach(option => {
+          option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===durationUnit));
+        });
+      }
       document.querySelectorAll('#intake-general [data-partner-relief-value]').forEach(option => {
         option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
       });
     }
+    syncPartnerHistoryFields();
   }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
@@ -4499,9 +4589,7 @@
     if(!REQUIRED_CARE_TARGETS.has(target)) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
-      patientInfoComplete:true,identityVerified:true,
-      patientName:flowState.patientName || 'มะลิ ส.',
-      verifiedPhone:flowState.verifiedPhone || '081-234-5678'
+      patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
     });
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
@@ -4784,16 +4872,18 @@
      concern" set, and intakeTemplates only defines it for skin, sexual and
      sleep. hair and general have no intake3 of their own, so both previously
      fell through to the authored base markup and rendered another concern's
-     question set. Both now skip it.
+     question set. Both now skip it. General consultation also keeps its concern
+     details together on intake1 and moves directly to urgent screening, so its
+     separate severity/pattern screen is skipped rather than stretching the
+     same concern across another page.
 
-     The rule is derived from template coverage rather than a hardcoded concern
-     list, so adding an intake3 template for hair or general automatically stops
-     the skip and no second place needs editing. Kept as routing rather than
-     markup so it survives the innerHTML round-trip renderIntakeQuestions
-     performs (the same round-trip that previously broke the custom selects). */
+     Specialty intake3 skipping is derived from template coverage, while the
+     deliberately shorter general route is explicit. Both stay in routing so
+     they survive the innerHTML round-trip renderIntakeQuestions performs (the
+     same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
   const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3'];
-  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep' };
+  const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
     catch(e){ return 'hair'; }
@@ -4868,30 +4958,23 @@
     const concern = condition && !cat.general
       ? (thai ? (condition.titleTh || summary.th) : condition.title)
       : (thai ? summary.th : summary.en);
-    const sharedGeneralConcern=cat.general && flowState.partnerConcernComplete;
-    const symptoms = sharedGeneralConcern
-      ? flowState.partnerConcern
-      : selectedOptionTitles(
-          '#intake1 .option[data-multi][aria-selected="true"]',
-          thai ? summary.symTh : summary.symEn
-        );
+    const symptoms = selectedOptionTitles(
+      '#intake1 .option[data-multi][aria-selected="true"]',
+      thai ? summary.symTh : summary.symEn
+    );
     const durationValue = document.querySelector('#intake1 input[data-intake-role="duration"]')?.value;
     const durationUnit = document.querySelector('#intake1 [data-intake-duration-unit][aria-selected="true"]')?.dataset.intakeDurationUnit;
-    const duration = sharedGeneralConcern
-      ? flowState.partnerConcernDuration
-      : (durationValue && durationUnit
-          ? `${durationValue} ${durationUnit}`
-          : selectedOptionTitles(
-              '#intake1 select[data-intake-role="duration"], #intake1 .option[data-select][aria-selected="true"]',
-              thai ? summary.durationTh : summary.durationEn,
-              1
-            ));
-    const detail = sharedGeneralConcern
-      ? (thai ? `สิ่งที่ลองทำแล้ว: ${flowState.partnerConcernRelief}` : `Relief tried: ${flowState.partnerConcernRelief}`)
+    const duration = durationValue && durationUnit
+      ? `${durationValue} ${durationUnit}`
       : selectedOptionTitles(
-          '#intake2 .option[aria-selected="true"], #intake2 select[data-intake-select]',
-          thai ? summary.detailTh : summary.detailEn
+          '#intake1 select[data-intake-role="duration"], #intake1 .option[data-select][aria-selected="true"]',
+          thai ? summary.durationTh : summary.durationEn,
+          1
         );
+    const detail = selectedOptionTitles(
+      '#intake2 .option[aria-selected="true"], #intake2 select[data-intake-select]',
+      thai ? summary.detailTh : summary.detailEn
+    );
     const treatment = selectedOptionTitles(
       '#intake3 .option[aria-selected="true"], #intake3 select[data-intake-select]',
       thai ? 'ไม่ได้ระบุการรักษาก่อนหน้า' : 'No previous treatment reported'
@@ -4940,7 +5023,7 @@
       measurementsEl.textContent = `${height} ซม. · ${weight} กก.`;
     }
     if(photosEl){
-      const thumbs = [...document.querySelectorAll(sharedGeneralConcern ? '#intake-general .up-thumb img' : '#intake5 .up-thumb img')];
+      const thumbs = [...document.querySelectorAll('#intake5 .up-thumb img')];
       const count = thumbs.length;
       photosEl.textContent = count
         ? (thai ? `เพิ่มแล้ว ${count} รูป` : `${count} photo${count === 1 ? '' : 's'} added`)
@@ -4960,7 +5043,7 @@
     }
     if(photoRow) photoRow.hidden = !categoryNeedsPhotos();
     if(photoDivider) photoDivider.hidden = !categoryNeedsPhotos();
-    if(concernEdit) concernEdit.dataset.go = cat.general ? 'intake-general' : 'conditions';
+    if(concernEdit) concernEdit.dataset.go = cat.general ? 'concern' : 'conditions';
     const matchingCopy = document.querySelector('[data-matching-copy]');
     if(matchingCopy) matchingCopy.textContent = thai
       ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern} โดยปกติใช้เวลาไม่เกิน 10 วินาที`
@@ -5126,6 +5209,9 @@
       setSelectedCategory('general');
       return 'intake-general';
     }
+    // The former partner concern and partner health-profile routes asked for the
+    // same clinical record on two consecutive screens. Keep old links working,
+    // but resolve both to the shared one-page intake.
     if(target==='partner-concern' || target==='partner-intake') return 'intake-general';
     return document.getElementById(target) ? target : 'landing';
   }
@@ -5144,7 +5230,6 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (id==='intake-general' && flowState.entryChannel==='partner')) restorePartnerFields();
-    if(id==='intake-general') restoreSharedConcernFields();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -5802,8 +5887,8 @@
         if(paymentMethod==='insurance') insuranceEntry='partner';
         else setSelectedCategory('general');
         // Paying out of pocket changes who settles the bill, not which intake
-        // this entry uses. Both branches keep the compact SCR-002 concern
-        // screen; only the insurance branch detours through the check first.
+        // this entry uses. Both branches join the same one-page symptom and
+        // general-health screen; insurance only adds the entitlement detour.
         show(paymentMethod==='insurance' ? 'insurance' : 'intake-general');
       });
       return;
