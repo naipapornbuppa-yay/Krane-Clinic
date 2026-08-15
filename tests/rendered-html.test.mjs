@@ -907,20 +907,20 @@ test("Figma landing keeps every client access route and responsive menu contract
 
   const reviewHashes = new Set();
   for (const image of [
-    "product-hero/ed-care-couple-light-v10.png",
-    "product-hero/weight-injection-landscape-v2.png",
-    "treatment-editorial/sleep-hands-winddown-editorial-v2.png",
-    "product-hero/hair-care-vanity-v10-left-hand.png",
-    "treatment-editorial/skin-hands-cream-editorial-v2.png",
-    "treatment-editorial/hormone-hands-consult-editorial-v2.png"
+    "landing-573/reviews-asian/telehealth-review.png",
+    "landing-573/reviews-asian/weight-progress.png",
+    "landing-573/reviews-asian/focus-review.png",
+    "landing-573/reviews-asian/hair-progress.png",
+    "landing-573/reviews-asian/skin-progress.png",
+    "landing-573/reviews-asian/mens-health-review.png"
   ]) {
     assert.match(html, new RegExp(`assets/${image.replaceAll(".", "\\.")}`));
     const reviewPath = path.join(publicRoot, `b2c/assets/${image}`);
     await assert.doesNotReject(access(reviewPath));
     reviewHashes.add(createHash("sha256").update(await readFile(reviewPath)).digest("hex"));
   }
-  assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct face-free treatment images");
-  assert.doesNotMatch(html, /assets\/landing-573\/reviews-asian\//, "generated full-face review portraits must not appear on customer-facing pages");
+  assert.equal(reviewHashes.size, 6, "review reel thumbnails must be six distinct member mockup portraits");
+  assert.equal((html.match(/assets\/landing-573\/reviews-asian\//g) || []).length, 8, "only the member review mockup carousel may use the portrait set");
 });
 
 test("landing first viewport exposes the three priority care banners with direct intake routes", async () => {
@@ -1018,15 +1018,15 @@ test("landing navigation opens condition guides while care CTAs start category i
   assert.doesNotThrow(() => new vm.Script(detailScript, { filename: "condition-detail.js" }));
 });
 
-test("customer-facing generated imagery avoids full faces outside doctor mockups", async () => {
+test("customer-facing generated imagery limits full faces to doctor and member-review mockups", async () => {
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const detailScript = await readFile(path.join(publicRoot, "b2c/condition-detail.js"), "utf8");
   const readme = await readFile(path.join(publicRoot, "b2c/README.md"), "utf8");
 
-  assert.doesNotMatch(landing, /assets\/landing-573\/reviews-asian\//, "generated portrait reviews cannot appear in the public landing page");
+  assert.match(landing, /assets\/landing-573\/reviews-asian\/telehealth-review\.png/, "member-review mockups may use the approved portrait set");
   assert.doesNotMatch(detailScript, /skin-healthy-aging-editorial-v1\.jpg|hormone-trt-editorial-v1\.jpg|reviews-asian\/focus-review\.png/);
   assert.match(readme, /AI-generated imagery must not show a full or recognizable human face/);
-  assert.match(readme, /Doctor-profile mockups are the sole exception/);
+  assert.match(readme, /Doctor-profile mockups and the clearly presented member-review mockup carousel are the only exceptions/);
 
   for (const image of [
     "skin-hands-cream-editorial-v2.png",

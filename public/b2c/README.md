@@ -13,7 +13,7 @@ Use Git history for superseded versions. The former workspace copy was archived 
 
 ## Customer-facing AI imagery policy
 
-- AI-generated imagery must not show a full or recognizable human face in any customer-facing surface.
+- AI-generated imagery must not show a full or recognizable human face in customer-facing advertising and care-detail photography.
 - Prefer hands, skin macro details, hair/scalp crops without a face, body crops without a head, products, and treatment objects.
 - A full face is allowed only for an authentic person photo supplied by the client with confirmed provenance.
-- Doctor-profile mockups are the sole exception to the generated-face restriction.
+- Doctor-profile mockups and the clearly presented member-review mockup carousel are the only exceptions to the generated-face restriction.
