@@ -22,6 +22,35 @@
    ============================================================ */
 
 :root {
+  /* ---- Approved core theme, 15 Aug 2026 -------------------------------
+     This is the canonical palette for every B2C screen. Components consume
+     the semantic --color-* aliases below; use these primitives only when
+     defining or revising the theme itself.
+
+       canvas        warm cream page background
+       surface       clean white cards and controls
+       ink           near-black navy text and primary actions
+       accent        royal blue emphasis (vivid is display/graphic only)
+
+     The cool clinical canvas remains available as an explicit opt-in for
+     unusually dense screens, but it is no longer the default B2C canvas. */
+  --theme-canvas: #F7F5EE;
+  --theme-canvas-inset: #EEE9DD;
+  --theme-canvas-clinical: #F4F6F8;
+  --theme-canvas-clinical-inset: #E8ECF1;
+  --theme-surface: #FFFFFF;
+  --theme-ink: #121824;
+  --theme-ink-muted: #495366;
+  --theme-ink-subtle: #5C6479;
+  --theme-line: #DEDCD4;
+  --theme-line-strong: #C9C5B9;
+  --theme-accent-vivid: #1973FF;
+  --theme-accent: #0164FF;
+  --theme-accent-hover: #0054D6;
+  --theme-action: #121824;
+  --theme-action-hover: #0F172A;
+  --theme-on-dark: #FFFFFF;
+
   /* ---- Brand / accent ---- Client Teal & Navy palette, 26 Jul. ---- */
   --color-brand-teal: #00B4B4;
   --color-brand-teal-deep: #009090;
@@ -97,14 +126,14 @@
      lightness until small text clears 4.5:1, so every existing call site stays
      accessible without auditing each one. Use -vivid deliberately, not by
      habit: headline-scale text, icons 24px and up, chart strokes, plate fills. */
-  --preset-blue-accent-vivid: #1973FF;              /* Figma source hex, 3.93:1 on canvas -- large/graphic only */
-  --preset-blue-accent: #0164FF;                    /* 4.54:1 on canvas, 4.92:1 on white -- safe for small text */
-  --preset-blue-accent-hover: #0054D6;              /* 5.98:1 on canvas */
-  --preset-blue-accent-mark: #0054D6;
+  --preset-blue-accent-vivid: var(--theme-accent-vivid); /* Figma source hex, display/graphic only */
+  --preset-blue-accent: var(--theme-accent);         /* AA-safe for small text on canvas and white */
+  --preset-blue-accent-hover: var(--theme-accent-hover);
+  --preset-blue-accent-mark: var(--theme-accent-hover);
   --preset-blue-accent-soft: #DBE4F2;               /* from the Figma file */
   --preset-blue-accent-soft-2: #E1E8F0;             /* from the Figma file */
-  --preset-blue-accent-ink: #0164FF;                /* same safe shade as accent */
-  --preset-blue-on-accent: #FFFFFF;                 /* white on --accent = 4.92:1; on -vivid it is 4.25:1, large text only */
+  --preset-blue-accent-ink: var(--theme-accent);     /* same safe shade as accent */
+  --preset-blue-on-accent: var(--theme-on-dark);     /* white on --accent = 4.92:1; on -vivid it is 4.25:1, large text only */
   --preset-blue-gradient: radial-gradient(circle at 84% 12%,rgba(25,115,255,.28),transparent 40%),radial-gradient(circle at 14% 88%,rgba(19,86,191,.24),transparent 44%),linear-gradient(145deg,#14213B 0%,#1B2A4A 60%,#26395D 100%);
   --preset-blue-gradient-soft: radial-gradient(circle at 86% 4%,rgba(25,115,255,.18),transparent 36%),radial-gradient(circle at 8% 92%,rgba(19,86,191,.08),transparent 40%),linear-gradient(145deg,#FFFFFF 0%,#F6F8FA 58%,#F0F2F5 100%);
   /* Deep surfaces, also lifted from the Figma file: #111B30 and #1A1F2E are the
@@ -141,8 +170,8 @@
      adjacent surface and the bright teal only reaches ~2.3:1 on white. */
   --color-focus: var(--color-accent-ink);
   --color-on-accent: var(--preset-blue-on-accent);   /* text/icons on the accent fill */
-  --color-on-dark: #FFFFFF;     /* text/icons on ink, gradient-teal, and status (warning/danger/success/info) surfaces */
-  --color-ink-strong: #121824;   /* highest-contrast CTAs/headings, Figma */
+  --color-on-dark: var(--theme-on-dark);     /* text/icons on ink, gradient-teal, and status (warning/danger/success/info) surfaces */
+  --color-ink-strong: var(--theme-ink);      /* highest-contrast CTAs/headings */
   --gradient-teal: var(--preset-blue-gradient);
   --gradient-teal-soft: var(--preset-blue-gradient-soft);
   /* Deep marketing surfaces, consumed by the landing hero, journey steps and
@@ -159,21 +188,20 @@
   --color-surface-scrim-light: var(--preset-blue-surface-scrim-light);
   --color-surface-bright: var(--preset-blue-surface-bright);   /* accent text/marks ON deep surfaces */
 
-  /* ---- Neutrals ---- Sourced from the "Krane Clinic Working" Figma file.
-     Its ink is a near-black with a slight cool cast (#121824), not the navy
-     this file used to carry, and its canvas is #F4F6F8 over a #E2E8F0 hairline.
-     Contrast on that canvas: ink 16.4:1, ink-2 7.2:1, ink-3 5.5:1 -- all AA. */
-  --color-ink: #121824;   /* primary text, Figma */
-  --color-ink-2: #495366;   /* secondary text, Figma */
-  --color-ink-3: #5C6479;   /* muted / hints, Figma */
-  --color-line: #E2E8F0;   /* standard hairline, Figma */
-  --color-line-strong: #CBD5E1;
-  --color-surface: #FFFFFF;   /* clinical card / sheet */
-  --color-bg: #F4F6F8;   /* app canvas, Figma */
-  --color-bg-2: #E8ECF1;   /* sunken sections / skeletons */
-  --color-bg-soft: rgba(244,246,248,.70);
-  --color-canvas-warm: #F7F5EE;   /* marketing/editorial canvas */
-  --color-canvas-warm-deep: #EEE9DD;   /* warm inset cards and quiet bands */
+  /* ---- Semantic neutrals ---- Approved warm editorial theme. */
+  --color-ink: var(--theme-ink);
+  --color-ink-2: var(--theme-ink-muted);
+  --color-ink-3: var(--theme-ink-subtle);
+  --color-line: var(--theme-line);
+  --color-line-strong: var(--theme-line-strong);
+  --color-surface: var(--theme-surface);
+  --color-bg: var(--theme-canvas);
+  --color-bg-2: var(--theme-canvas-inset);
+  --color-bg-soft: rgba(247,245,238,.72);
+  --color-canvas-warm: var(--theme-canvas);
+  --color-canvas-warm-deep: var(--theme-canvas-inset);
+  --color-canvas-clinical: var(--theme-canvas-clinical);
+  --color-canvas-clinical-deep: var(--theme-canvas-clinical-inset);
   --color-slate: #1B2A4A;
   --color-slate-2: #495366;
 
@@ -183,16 +211,16 @@
   --color-blue-soft: #E1E8F0;   /* Figma */
   --color-powder: #DBE4F2;   /* Figma */
   --color-on-blue: #FFFFFF;
-  --color-schedule: #F4F6F8;
-  --color-schedule-hover: #E8ECF1;
+  --color-schedule: var(--color-bg);
+  --color-schedule-hover: var(--color-bg-2);
   --color-schedule-ink: #495366;
 
   /* ---- Primary button ---- The Figma file keeps the primary CTA a near-black
      plate rather than the accent, so the one blue on screen stays the link
      colour. White on #121824 is 17.8:1. ---- */
-  --btn-primary-bg: #121824;
-  --btn-primary-bg-hover: #0F172A;
-  --btn-primary-ink: #FFFFFF;
+  --btn-primary-bg: var(--theme-action);
+  --btn-primary-bg-hover: var(--theme-action-hover);
+  --btn-primary-ink: var(--theme-on-dark);
 
   /* ---- Semantic ---- */
   --color-success: #2A6152;
