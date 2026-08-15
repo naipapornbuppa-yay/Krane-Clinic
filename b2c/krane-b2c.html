@@ -1112,9 +1112,7 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__countdown" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที">
-        <strong data-matching-countdown-value>10</strong><span data-matching-countdown-unit>วินาที</span>
-      </div>
+      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที" data-matching-countdown-value>00:10</div>
     </div>
   </section>
 
@@ -1185,7 +1183,7 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-<div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+<div class="screen__footer stack-2"><p class="hint" style="text-align:center">นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</p><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1270,7 +1268,7 @@
       <div class="state-view__copy">
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
-        <p class="hint" data-wait-note>อย่าลืมอนุญาตให้ใช้กล้องและไมค์ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอด</p>
+        <p class="hint" data-wait-note>กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ</p>
       </div>
       <div class="state-view__timer" data-wait-timer>About 2 to 3 min</div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
@@ -1390,7 +1388,7 @@
         <h2 class="h1">ใกล้เสร็จแล้ว</h2>
         <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> กำลังสรุปผลวินิจฉัย แผนการรักษา และรายการยาให้อยู่ อาจใช้เวลาสักพักเพื่อยืนยันแผนการรักษาที่เหมาะกับคุณ</p>
       </div>
-      <div class="state-view__timer">ประมาณ 3 ถึง 5 นาที</div>
+      <div class="state-view__timer" data-rx-timer>05:00</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="plan">View treatment plan</button></div>
   </section>
@@ -3316,8 +3314,12 @@
     const screen=document.getElementById('address');
     if(!screen) return;
     const values={
-      recipientName:address.recipientName,
-      recipientPhone:address.recipientPhone,
+      // The recipient defaults to the account holder until the patient
+      // explicitly edits it for this order, so a fresh address always opens
+      // prefilled with the name and phone captured at signup, no matter which
+      // screen sent the patient here.
+      recipientName:address.recipientName || flowState.patientName || '',
+      recipientPhone:address.recipientPhone || flowState.verifiedPhone || '',
       addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
@@ -4362,7 +4364,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -5487,12 +5489,9 @@
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
       const countdown=mScr.querySelector('[data-matching-countdown]');
-      const countdownValue=mScr.querySelector('[data-matching-countdown-value]');
-      const countdownUnit=mScr.querySelector('[data-matching-countdown-unit]');
       let secondsRemaining=10;
       const syncMatchingCountdown=() => {
-        if(countdownValue) countdownValue.textContent='00:'+String(secondsRemaining).padStart(2,'0');
-        if(countdownUnit) countdownUnit.textContent='';
+        if(countdown) countdown.textContent='00:'+String(secondsRemaining).padStart(2,'0');
         if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
           ? `เหลือ ${secondsRemaining} วินาที`
           : `${secondsRemaining} seconds remaining`);
@@ -5588,8 +5587,21 @@
       syncConsultationSummaryUnread(false);
     }
     clearTimeout(rxTimer);
+    clearInterval(rxCountdownTimer);
     if(id==='rx-writing'){
+      const rxScr=document.getElementById('rx-writing');
+      const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
+      let rxSecondsRemaining=5*60;
+      paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+      rxCountdownTimer=setInterval(() => {
+        if(!rxScr?.classList.contains('active')){ clearInterval(rxCountdownTimer); return; }
+        rxSecondsRemaining=Math.max(0,rxSecondsRemaining-1);
+        paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+        if(rxSecondsRemaining===0) clearInterval(rxCountdownTimer);
+      },1000);
       rxTimer=setTimeout(() => {
+        if(!rxScr?.classList.contains('active')) return;
+        clearInterval(rxCountdownTimer);
         if(document.getElementById('rx-writing')?.classList.contains('active')) replaceCurrent('plan');
       },reduceMotion ? 500 : 3400);
     }
@@ -5604,6 +5616,7 @@
     const covered=Math.max(0,CONSULTATION_FEE_BAHT-balance);
       // The medical certificate is free, so ticking it never changes the amount.
       const amount=balance;
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
     const row = document.querySelector('#consultpay [data-cert-row]');
     if(row) row.hidden = !on;
     const base=document.querySelector('#consultpay [data-consult-base-amount]');
@@ -5661,7 +5674,7 @@
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
     if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
     const note = w.querySelector('[data-wait-note]');
-    if(note) note.textContent = 'อย่าลืมอนุญาตให้ใช้กล้องและไมค์ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอด';
+    if(note) note.textContent = 'กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ';
     clearInterval(waitCountdownTimer);
     let remainingSeconds = queuePos * 3 * 60;
     paintWaitCountdown(timer,remainingSeconds);

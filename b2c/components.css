@@ -959,8 +959,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @media(prefers-reduced-motion:reduce){.waitpulse .wp-ring{animation:none;opacity:.4}}
 
 /* ---------- Doctor preparing the treatment plan ---------- */
-#rx-writing{background:#fff}
-#rx-writing .screen__top{background:#fff}
 .rx-waiting{display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:0;padding-top:22px;padding-bottom:22px}
 .rx-waiting__illustration{position:relative;width:min(100%,320px);margin:0 auto}
 .rx-waiting__illustration svg{display:block;width:100%;height:auto}
@@ -1010,7 +1008,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 
 .screen__top{
   display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4);
-  position:relative;width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);min-height:56px;flex:none;
+  position:relative;width:100%;min-width:0;max-width:100%;border-bottom:0;min-height:56px;flex:none;
   background:color-mix(in srgb,var(--color-surface) 88%,transparent);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
@@ -1997,7 +1995,10 @@ body.lang-th *{letter-spacing:normal}
 /* Compact care progress: a quiet segmented track with one readable current-step
    caption. This keeps the full journey and accessible labels without the generic
    numbered-node stepper treatment. */
-.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:var(--color-bg-soft)}
+.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:var(--color-bg-soft);border-bottom:0}
+/* The header and the journey stepper below it read as one panel, not two
+   bars stacked on a seam: same background, no dividing rule between them. */
+.screen__top:has(+ .care-journey){background:var(--color-bg-soft);-webkit-backdrop-filter:none;backdrop-filter:none}
 .care-journey__steps{order:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .care-journey__step{position:relative;display:block;height:4px;min-height:0;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-line);box-shadow:none;overflow:hidden}
 .care-journey__step::before,.care-journey__dot,.care-journey__name{display:none}
