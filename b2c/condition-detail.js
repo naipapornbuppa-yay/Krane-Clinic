@@ -49,12 +49,12 @@
       medicalNote: "Semaglutide และ tirzepatide เป็นยาที่ต้องประเมินข้อบ่งใช้ ข้อห้ามใช้ และติดตามผลโดยแพทย์ ไม่เหมาะสำหรับทุกคน",
       productsTitle: "ตัวเลือกการดูแลน้ำหนัก",
       productsLead: "แพทย์อาจพิจารณารูปแบบยาต่างกันตามข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพ",
-      products: [["pen", "ปากกาฉีด GLP-1", "เช่น semaglutide หรือ tirzepatide*"], ["bottle", "ทางเลือกอื่นตามข้อบ่งใช้", "แพทย์เลือกตามความเหมาะสมรายบุคคล*"]]
+      products: [["pen", "ปากกาฉีด GLP-1", "เช่น semaglutide หรือ tirzepatide*", "assets/product-hero/weight-care-studio-v4.jpg"], ["bottle", "ทางเลือกอื่นตามข้อบ่งใช้", "แพทย์เลือกตามความเหมาะสมรายบุคคล*", "assets/product-hero/weight-care-prep-v5.png"]]
     },
     ed: {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-couple-light-v10.png",
+      image: "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png",
       kicker: "ดูแลภาวะ ED อย่างเป็นส่วนตัว",
       title: "คุยเรื่องสมรรถภาพทางเพศได้อย่างตรงไปตรงมา",
       lead: "ภาวะหย่อนสมรรถภาพอาจเกี่ยวข้องกับหลอดเลือด ฮอร์โมน ยาที่ใช้ หรือความเครียด การประเมินช่วยหาทางเลือกที่ปลอดภัยกว่า",
@@ -76,13 +76,13 @@
       medicalNote: "ห้ามใช้ sildenafil หรือ tadalafil ร่วมกับยากลุ่ม nitrate และยาทั้งสองอาจไม่เหมาะกับผู้มีภาวะหัวใจบางชนิด แพทย์ต้องประเมินก่อนสั่งใช้",
       productsTitle: "ตัวเลือกดูแลภาวะ ED",
       productsLead: "รูปแบบยา ระยะเวลาออกฤทธิ์ และขนาดยาต้องเลือกจากสุขภาพและยาที่ใช้อยู่",
-      products: [["blister", "ยากลุ่ม PDE5", "ตัวอย่าง sildenafil หรือ tadalafil*"], ["bottle", "แผนติดตามอาการ", "ทบทวนผลและความปลอดภัยกับแพทย์*"]],
+      products: [["blister", "ยากลุ่ม PDE5", "ตัวอย่าง sildenafil หรือ tadalafil*", "assets/product-hero/ed-care-product-closeup-v5.jpg"], ["bottle", "แผนติดตามอาการ", "ทบทวนผลและความปลอดภัยกับแพทย์*", "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png"]],
       safety: "หากมีอาการเจ็บหน้าอก หายใจไม่ออก อ่อนแรงเฉียบพลัน หรือการแข็งตัวนานเกิน 4 ชั่วโมง ให้ไปห้องฉุกเฉินหรือโทร 1669 ทันที"
     },
     "sexual-health": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-couple-light-v10.png",
+      image: "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png",
       kicker: "สุขภาพทางเพศแบบเป็นส่วนตัว",
       title: "เริ่มต้นจากการคุยกับแพทย์โดยไม่ถูกตัดสิน",
       lead: "อาการด้านสมรรถภาพ ความต้องการทางเพศ หรือข้อกังวลอื่น ๆ สามารถประเมินออนไลน์อย่างเป็นส่วนตัวได้",
@@ -95,7 +95,7 @@
       medicalNote: "แนวทางและยาที่เหมาะสมแตกต่างกันตามอาการ สาเหตุ และข้อห้ามใช้ แพทย์ต้องประเมินเป็นรายบุคคล",
       productsTitle: "ทางเลือกดูแลสุขภาพทางเพศ",
       productsLead: "แพทย์เริ่มจากสาเหตุและความปลอดภัยก่อนพิจารณายา การตรวจ หรือการส่งต่อ",
-      products: [["blister", "ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้*"], ["bottle", "การดูแลตามสาเหตุ", "อาจรวมคำแนะนำ การตรวจ และการติดตาม*"]]
+      products: [["blister", "ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้*", "assets/product-hero/ed-care-product-closeup-v5.jpg"], ["bottle", "การดูแลตามสาเหตุ", "อาจรวมคำแนะนำ การตรวจ และการติดตาม*", "assets/treatment-editorial/sexual-performance-editorial-v6.jpg"]]
     },
     "hair-loss": {
       category: "hair-skin",
@@ -113,7 +113,7 @@
       medicalNote: "Finasteride และ minoxidil มีข้อควรระวังและผลข้างเคียงต่างกัน ผลลัพธ์ต้องใช้เวลาและไม่เหมือนกันในแต่ละคน",
       productsTitle: "ตัวเลือกดูแลผมร่วง",
       productsLead: "มีทั้งยาทาและยารับประทาน โดยต้องเลือกให้ตรงกับรูปแบบผมร่วงและข้อควรระวัง",
-      products: [["pump", "ยาทาหนังศีรษะ", "ตัวอย่าง minoxidil*"], ["bottle", "ยารับประทาน", "ตัวอย่าง finasteride เมื่อแพทย์เห็นว่าเหมาะสม*"]]
+      products: [["pump", "ยาทาหนังศีรษะ", "ตัวอย่าง minoxidil*", "assets/product-hero/hair-serum-scalp-v2.png"], ["bottle", "ยารับประทาน", "ตัวอย่าง finasteride เมื่อแพทย์เห็นว่าเหมาะสม*", "assets/product-hero/hair-care-vanity-v10-left-hand.png"]]
     },
     skin: {
       category: "skin",
@@ -131,7 +131,7 @@
       medicalNote: "ยาทาบางชนิดรวมถึง retinoids มีข้อควรระวัง โดยเฉพาะระหว่างตั้งครรภ์หรือวางแผนตั้งครรภ์ ควรให้แพทย์ประเมินก่อนใช้",
       productsTitle: "ตัวเลือกดูแลผิว",
       productsLead: "เนื้อยา ความเข้มข้น และความถี่ต้องเหมาะกับปัญหาและความไวของผิว",
-      products: [["tube", "ยาทาเฉพาะที่", "เลือกสารออกฤทธิ์ตามปัญหาผิว*"], ["pump", "ผลิตภัณฑ์สนับสนุนผิว", "จัดกิจวัตรให้ใช้ร่วมกับแผนแพทย์ได้*"]]
+      products: [["tube", "ยาทาเฉพาะที่", "เลือกสารออกฤทธิ์ตามปัญหาผิว*", "assets/medicine/real-v1/tretinoin-retin-a-0025.jpg"], ["pump", "ผลิตภัณฑ์สนับสนุนผิว", "จัดกิจวัตรให้ใช้ร่วมกับแผนแพทย์ได้*", "assets/treatment-editorial/skin-hands-cream-editorial-v2.png"]]
     },
     hormone: {
       category: "hormone",
@@ -149,7 +149,7 @@
       medicalNote: "TRT ไม่ใช่ผลิตภัณฑ์ชะลอวัยทั่วไป ต้องมีการวินิจฉัยที่เหมาะสมและติดตามความปลอดภัยโดยแพทย์",
       productsTitle: "รูปแบบการรักษาที่ต้องวินิจฉัยก่อน",
       productsLead: "TRT พิจารณาเฉพาะผู้ที่มีอาการและผลตรวจสอดคล้องกัน พร้อมแผนติดตามความปลอดภัย",
-      products: [["vial", "ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน*"], ["bottle", "การดูแลปัจจัยร่วม", "การนอน น้ำหนัก ยาที่ใช้ และสุขภาพเมตาบอลิก*"]]
+      products: [["vial", "ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน*", "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png"], ["bottle", "การดูแลปัจจัยร่วม", "การนอน น้ำหนัก ยาที่ใช้ และสุขภาพเมตาบอลิก*", "assets/product-hero/weight-care-prep-v5.png"]]
     },
     "sleep-stress": {
       category: "sleep-stress",
@@ -167,7 +167,7 @@
       medicalNote: "ยานอนหลับไม่ใช่ทางเลือกแรกสำหรับทุกคน และอาจมีความเสี่ยง แพทย์จะประเมินสาเหตุและทางเลือกอื่นก่อน",
       productsTitle: "ทางเลือกดูแลการนอนและความเครียด",
       productsLead: "การรักษาเริ่มจากรูปแบบอาการและสาเหตุ ไม่ได้เริ่มจากยานอนหลับเสมอไป",
-      products: [["bottle", "การดูแลตามสาเหตุ", "แพทย์เลือกแนวทางให้เหมาะกับความเสี่ยง*"], ["pump", "แผนปรับพฤติกรรม", "ติดตามการนอน ความเครียด และกิจวัตร*"]]
+      products: [["bottle", "การดูแลตามสาเหตุ", "แพทย์เลือกแนวทางให้เหมาะกับความเสี่ยง*", "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png"], ["pump", "แผนปรับพฤติกรรม", "ติดตามการนอน ความเครียด และกิจวัตร*", "assets/treatment-editorial/sleep-hands-winddown-editorial-v2.png"]]
     }
   };
 
@@ -216,9 +216,9 @@
   if (assessment) assessment.innerHTML = data.assessment.map((item) => `<li>${item}</li>`).join("");
 
   const products = document.querySelector("[data-products]");
-  if (products) products.innerHTML = (data.products || []).map(([kind, title, body]) => `
+  if (products) products.innerHTML = (data.products || []).map(([kind, title, body, photo]) => `
     <article class="product-option-card" data-product-kind="${kind}">
-      <div class="product-option-card__visual" aria-hidden="true"><span class="product-visual__primary"></span><span class="product-visual__secondary"></span></div>
+      <div class="product-option-card__visual"><img class="product-option-card__photo" src="${photo}" width="1600" height="900" loading="lazy" decoding="async" alt=""></div>
       <div class="product-option-card__copy"><i>แพทย์ประเมินก่อนใช้</i><strong>${title}</strong><p>${body}</p></div>
     </article>
   `).join("");
