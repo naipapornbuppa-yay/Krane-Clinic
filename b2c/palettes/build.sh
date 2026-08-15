@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerates the three teal palette variants from the base landing page.
 # Run after any edit to krane-b2c-landing.html so the variants stay in sync.
-# Usage: bash palettes/build.sh   (run from Output/05_Design/b2c/)
+# Usage: bash palettes/build.sh   (run from Krane-Clinic/public/b2c/)
 set -e
 BASE="krane-b2c-landing.html"
 for P in a b c; do

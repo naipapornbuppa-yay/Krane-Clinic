@@ -73,17 +73,6 @@
       startConsultation: "Consult now",
       heroLegal: "*Treatment and medication options depend on a doctor's assessment",
       treatmentTitle: "Explore more care",
-      differenceKicker: "Why Krane",
-      differenceTitle: "More than an online consultation",
-      differenceLead: "Care that connects your doctor, treatment plan, medication, and follow-up in one place.",
-      differenceAccountTitle: "Manage every health goal in one place",
-      differenceAccountBody: "Your history, care plans, appointments, and follow-ups.",
-      differenceContinuityTitle: "Continuous care without starting over",
-      differenceContinuityBody: "Your information and care plan stay connected at every visit.",
-      differenceMedicineTitle: "Authentic medicine, prescribed for you",
-      differenceMedicineBody: "Doctor prescribed and pharmacist dispensed through Fascino.",
-      differenceDeliveryTitle: "Private delivery to your door, nationwide",
-      differenceDeliveryBody: "Plain packaging with nothing outside to reveal what is inside.",
       complianceTitle: "Standards you can trust",
       hair: "Restore your hair",
       sexual: "Sexual performance",
@@ -341,10 +330,29 @@
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  const careHeroArt = document.querySelector("[data-care-hero-art]");
+  const careHeroCard = careHeroArt?.closest(".care-banner--weight");
+  if (careHeroCard && careHeroArt && !reducedMotionQuery.matches && window.matchMedia("(pointer: fine)").matches) {
+    let careHeroMotionFrame = 0;
+    careHeroCard.addEventListener("pointermove", (event) => {
+      const bounds = careHeroCard.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      window.cancelAnimationFrame(careHeroMotionFrame);
+      careHeroMotionFrame = window.requestAnimationFrame(() => {
+        careHeroArt.style.setProperty("--art-x", x.toFixed(3));
+        careHeroArt.style.setProperty("--art-y", y.toFixed(3));
+      });
+    });
+    careHeroCard.addEventListener("pointerleave", () => {
+      careHeroArt.style.setProperty("--art-x", "0");
+      careHeroArt.style.setProperty("--art-y", "0");
+    });
+  }
+
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
     [".treatments .treatment-pill", 55, "scale"],
-    [".difference__heading > *, .difference-card", 65, "scale"],
     [".compliance__group:first-child > div", 55, "scale"],
     [".steps > li", 75, ""],
     [".protocol__heading > *", 90, ""],

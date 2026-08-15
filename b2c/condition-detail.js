@@ -1,4 +1,28 @@
 (() => {
+  const NAV_TRANSLATIONS = {
+    navWeight: "Weight",
+    navMen: "Men's health",
+    navHairSkin: "Hair & skin",
+    navMore: "More",
+    menuWeightStart: "Start a weight-loss plan",
+    menuWeightGlp1: "GLP-1 options",
+    menuWeightCheck: "Check your eligibility",
+    menuEd: "Erectile dysfunction (ED)",
+    menuSexual: "Sexual health",
+    menuHormone: "Hormones & TRT",
+    menuHair: "Hair loss & scalp",
+    menuSkin: "Skin & acne",
+    menuSkinAge: "Skin & healthy ageing",
+    menuSleep: "Sleep & stress",
+    navHow: "How it works",
+    navDoctors: "Our doctors",
+    healthArticles: "Health articles",
+    login: "Log in",
+    chooseCare: "Choose your care",
+    language: "Language",
+    partnerAccess: "Partner access"
+  };
+
   const CONDITIONS = {
     weight: {
       category: "weight",
@@ -25,10 +49,7 @@
       medicalNote: "Semaglutide และ tirzepatide เป็นยาที่ต้องประเมินข้อบ่งใช้ ข้อห้ามใช้ และติดตามผลโดยแพทย์ ไม่เหมาะสำหรับทุกคน",
       productsTitle: "ตัวเลือกการดูแลน้ำหนัก",
       productsLead: "แพทย์อาจพิจารณารูปแบบยาต่างกันตามข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพ",
-      products: [
-        ["pen", "ปากกาฉีด GLP-1", "ตัวอย่าง semaglutide; แพทย์เป็นผู้ประเมินชนิดยาและขนาดยา*", "assets/medicine/condition-real-v1/wegovy-pens-official.png", "ปากกาฉีด Wegovy หลายขนาดจากผู้ผลิต", "studio"],
-        ["care", "ติดตามแผนกับแพทย์", "ทบทวนผลข้างเคียง ความคืบหน้า และปรับแผนรายบุคคล*", "assets/consultation/doctor-video-live.jpg", "แพทย์ให้คำปรึกษาออนไลน์", "editorial"]
-      ]
+      products: [["pen", "ปากกาฉีด GLP-1", "เช่น semaglutide หรือ tirzepatide*"], ["bottle", "ทางเลือกอื่นตามข้อบ่งใช้", "แพทย์เลือกตามความเหมาะสมรายบุคคล*"]]
     },
     ed: {
       category: "sexual-health",
@@ -55,10 +76,7 @@
       medicalNote: "ห้ามใช้ sildenafil หรือ tadalafil ร่วมกับยากลุ่ม nitrate และยาทั้งสองอาจไม่เหมาะกับผู้มีภาวะหัวใจบางชนิด แพทย์ต้องประเมินก่อนสั่งใช้",
       productsTitle: "ตัวเลือกดูแลภาวะ ED",
       productsLead: "รูปแบบยา ระยะเวลาออกฤทธิ์ และขนาดยาต้องเลือกจากสุขภาพและยาที่ใช้อยู่",
-      products: [
-        ["blister", "ยากลุ่ม PDE5", "ตัวอย่าง sildenafil; ชนิดและขนาดยาขึ้นอยู่กับการประเมิน*", "assets/medicine/condition-real-v1/viagra-tablet-doses-official.png", "ยา Viagra ขนาด 25, 50 และ 100 มิลลิกรัมจากผู้ผลิต", "studio-wide"],
-        ["care", "แผนติดตามอาการ", "ทบทวนผลและความปลอดภัยกับแพทย์*", "assets/product-hero/ed-care-lap-v7.png", "การดูแลสุขภาพทางเพศอย่างเป็นส่วนตัว", "editorial"]
-      ],
+      products: [["blister", "ยากลุ่ม PDE5", "ตัวอย่าง sildenafil หรือ tadalafil*"], ["bottle", "แผนติดตามอาการ", "ทบทวนผลและความปลอดภัยกับแพทย์*"]],
       safety: "หากมีอาการเจ็บหน้าอก หายใจไม่ออก อ่อนแรงเฉียบพลัน หรือการแข็งตัวนานเกิน 4 ชั่วโมง ให้ไปห้องฉุกเฉินหรือโทร 1669 ทันที"
     },
     "sexual-health": {
@@ -77,10 +95,7 @@
       medicalNote: "แนวทางและยาที่เหมาะสมแตกต่างกันตามอาการ สาเหตุ และข้อห้ามใช้ แพทย์ต้องประเมินเป็นรายบุคคล",
       productsTitle: "ทางเลือกดูแลสุขภาพทางเพศ",
       productsLead: "แพทย์เริ่มจากสาเหตุและความปลอดภัยก่อนพิจารณายา การตรวจ หรือการส่งต่อ",
-      products: [
-        ["blister", "ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการ ยาที่ใช้อยู่ และข้อห้ามใช้*", "assets/medicine/condition-real-v1/viagra-tablet-doses-official.png", "ตัวอย่างยา sildenafil จากผู้ผลิต", "studio-wide"],
-        ["care", "การดูแลตามสาเหตุ", "อาจรวมคำแนะนำ การตรวจ และการติดตาม*", "assets/consultation/doctor-video-live.jpg", "แพทย์ให้คำปรึกษาออนไลน์", "editorial"]
-      ]
+      products: [["blister", "ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้*"], ["bottle", "การดูแลตามสาเหตุ", "อาจรวมคำแนะนำ การตรวจ และการติดตาม*"]]
     },
     "hair-loss": {
       category: "hair-skin",
@@ -98,15 +113,12 @@
       medicalNote: "Finasteride และ minoxidil มีข้อควรระวังและผลข้างเคียงต่างกัน ผลลัพธ์ต้องใช้เวลาและไม่เหมือนกันในแต่ละคน",
       productsTitle: "ตัวเลือกดูแลผมร่วง",
       productsLead: "มีทั้งยาทาและยารับประทาน โดยต้องเลือกให้ตรงกับรูปแบบผมร่วงและข้อควรระวัง",
-      products: [
-        ["pump", "ยาทาหนังศีรษะ", "ตัวอย่าง minoxidil 5% สำหรับผู้ชาย*", "assets/medicine/condition-real-v1/rogaine-bottle-official.png", "ขวด Men's Rogaine 5% Minoxidil Topical Solution", "editorial"],
-        ["bottle", "ยารับประทาน", "ตัวอย่าง finasteride 1 mg เมื่อแพทย์เห็นว่าเหมาะสม*", "assets/medicine/condition-real-v1/propecia-bottle-current.jpg", "ขวด Propecia finasteride 1 มิลลิกรัม", "studio"]
-      ]
+      products: [["pump", "ยาทาหนังศีรษะ", "ตัวอย่าง minoxidil*"], ["bottle", "ยารับประทาน", "ตัวอย่าง finasteride เมื่อแพทย์เห็นว่าเหมาะสม*"]]
     },
     skin: {
       category: "skin",
       tone: "skin",
-      image: "assets/treatment-editorial/skin-healthy-aging-editorial-v1.jpg",
+      image: "assets/treatment-editorial/skin-hands-cream-editorial-v2.png",
       kicker: "ผิวพรรณ & ชะลอวัย",
       title: "ดูแลปัญหาผิวด้วยแผนที่เหมาะกับผิวของคุณ",
       lead: "สิว รอยดำ ความไวของผิว และริ้วรอยมีหลายปัจจัย แพทย์จะประเมินอาการและผลิตภัณฑ์ที่ใช้อยู่ก่อนแนะนำแผน",
@@ -119,15 +131,12 @@
       medicalNote: "ยาทาบางชนิดรวมถึง retinoids มีข้อควรระวัง โดยเฉพาะระหว่างตั้งครรภ์หรือวางแผนตั้งครรภ์ ควรให้แพทย์ประเมินก่อนใช้",
       productsTitle: "ตัวเลือกดูแลผิว",
       productsLead: "เนื้อยา ความเข้มข้น และความถี่ต้องเหมาะกับปัญหาและความไวของผิว",
-      products: [
-        ["tube", "ยาทาเฉพาะที่", "ตัวอย่าง tretinoin; ความเข้มข้นและความถี่ต้องให้แพทย์ประเมิน*", "assets/medicine/condition-real-v1/retin-a-official.webp", "หลอด Retin-A tretinoin จากผู้ผลิต", "editorial"],
-        ["care", "กิจวัตรสนับสนุนผิว", "จัดผลิตภัณฑ์พื้นฐานให้ใช้ร่วมกับแผนแพทย์ได้*", "assets/treatment-editorial/skin-healthy-aging-editorial-v1.jpg", "ภาพการดูแลผิวในชีวิตประจำวัน", "editorial"]
-      ]
+      products: [["tube", "ยาทาเฉพาะที่", "เลือกสารออกฤทธิ์ตามปัญหาผิว*"], ["pump", "ผลิตภัณฑ์สนับสนุนผิว", "จัดกิจวัตรให้ใช้ร่วมกับแผนแพทย์ได้*"]]
     },
     hormone: {
       category: "hormone",
       tone: "hormone",
-      image: "assets/treatment-editorial/hormone-trt-editorial-v1.jpg",
+      image: "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
       kicker: "ฮอร์โมน & TRT",
       title: "อาการคล้ายฮอร์โมนต่ำต้องประเมินให้ครบก่อน",
       lead: "ความเหนื่อยล้า สมรรถภาพลดลง หรือมวลกล้ามเนื้อเปลี่ยน อาจมีหลายสาเหตุ จึงไม่ควรเริ่ม TRT จากอาการอย่างเดียว",
@@ -140,15 +149,12 @@
       medicalNote: "TRT ไม่ใช่ผลิตภัณฑ์ชะลอวัยทั่วไป ต้องมีการวินิจฉัยที่เหมาะสมและติดตามความปลอดภัยโดยแพทย์",
       productsTitle: "รูปแบบการรักษาที่ต้องวินิจฉัยก่อน",
       productsLead: "TRT พิจารณาเฉพาะผู้ที่มีอาการและผลตรวจสอดคล้องกัน พร้อมแผนติดตามความปลอดภัย",
-      products: [
-        ["pump", "ฮอร์โมนตามใบสั่งแพทย์", "ตัวอย่าง testosterone gel; ใช้เฉพาะเมื่อวินิจฉัยชัดเจน*", "assets/medicine/condition-real-v1/androgel-bottle-official.png", "ขวดปั๊ม Androgel testosterone gel จากผู้ผลิต", "studio"],
-        ["care", "ติดตามปัจจัยร่วม", "ทบทวนการนอน น้ำหนัก ยาที่ใช้ และสุขภาพเมตาบอลิก*", "assets/consultation/doctor-video-live.jpg", "แพทย์ให้คำปรึกษาออนไลน์", "editorial"]
-      ]
+      products: [["vial", "ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน*"], ["bottle", "การดูแลปัจจัยร่วม", "การนอน น้ำหนัก ยาที่ใช้ และสุขภาพเมตาบอลิก*"]]
     },
     "sleep-stress": {
       category: "sleep-stress",
       tone: "mind",
-      image: "assets/landing-573/reviews-asian/focus-review.png",
+      image: "assets/treatment-editorial/sleep-hands-winddown-editorial-v2.png",
       kicker: "การนอนและความเครียด",
       title: "ดูแลการนอนและใจจากรูปแบบชีวิตจริงของคุณ",
       lead: "ปัญหาการนอน สมาธิ และความเครียดอาจเชื่อมโยงกัน การประเมินช่วยหาสัญญาณที่ควรปรับพฤติกรรม รักษา หรือส่งต่อ",
@@ -161,10 +167,7 @@
       medicalNote: "ยานอนหลับไม่ใช่ทางเลือกแรกสำหรับทุกคน และอาจมีความเสี่ยง แพทย์จะประเมินสาเหตุและทางเลือกอื่นก่อน",
       productsTitle: "ทางเลือกดูแลการนอนและความเครียด",
       productsLead: "การรักษาเริ่มจากรูปแบบอาการและสาเหตุ ไม่ได้เริ่มจากยานอนหลับเสมอไป",
-      products: [
-        ["care", "การดูแลตามสาเหตุ", "แพทย์เลือกแนวทางให้เหมาะกับอาการและความเสี่ยง*", "assets/consultation/doctor-video-live.jpg", "แพทย์ให้คำปรึกษาออนไลน์", "editorial"],
-        ["care", "แผนปรับพฤติกรรม", "ติดตามการนอน ความเครียด และกิจวัตร*", "assets/landing-573/reviews-asian/focus-review.png", "ภาพผู้ใช้ทบทวนแผนดูแลสมาธิและความเครียด", "editorial"]
-      ]
+      products: [["bottle", "การดูแลตามสาเหตุ", "แพทย์เลือกแนวทางให้เหมาะกับความเสี่ยง*"], ["pump", "แผนปรับพฤติกรรม", "ติดตามการนอน ความเครียด และกิจวัตร*"]]
     }
   };
 
@@ -192,7 +195,10 @@
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
   document.querySelectorAll("[data-intake-link]").forEach((link) => {
-    link.href = `krane-b2c.html#intake1?category=${encodeURIComponent(data.category)}`;
+    // A condition detail is always a Krane-direct entry. Carry that context in
+    // the deep link so a previous Partner session cannot hide the intake
+    // progress UI when this page opens the specialty questionnaire.
+    link.href = `krane-b2c.html?v=20260815-intake-progress-v1#intake1?category=${encodeURIComponent(data.category)}&entry=direct`;
     link.dataset.category = data.category;
   });
 
@@ -210,14 +216,139 @@
   if (assessment) assessment.innerHTML = data.assessment.map((item) => `<li>${item}</li>`).join("");
 
   const products = document.querySelector("[data-products]");
-  if (products) products.innerHTML = (data.products || []).map(([kind, title, body, src, alt, media = "studio"]) => `
+  if (products) products.innerHTML = (data.products || []).map(([kind, title, body]) => `
     <article class="product-option-card" data-product-kind="${kind}">
-      <div class="product-option-card__visual" data-media="${media}">
-        <img class="product-option-card__image" src="${src}" alt="${alt}" loading="lazy" decoding="async">
-      </div>
+      <div class="product-option-card__visual" aria-hidden="true"><span class="product-visual__primary"></span><span class="product-visual__secondary"></span></div>
       <div class="product-option-card__copy"><i>แพทย์ประเมินก่อนใช้</i><strong>${title}</strong><p>${body}</p></div>
     </article>
   `).join("");
+
+  const mobileMenu = document.querySelector("#mobile-menu");
+  const menuOpen = document.querySelector("[data-menu-open]");
+  const menuClose = document.querySelector("[data-menu-close]");
+  const mobileQuery = window.matchMedia("(max-width: 880px)");
+
+  function mobileMenuIsOpen() {
+    return mobileMenu && (mobileMenu.open || mobileMenu.hasAttribute("open"));
+  }
+
+  function openMobileMenu() {
+    if (!mobileMenu || mobileMenuIsOpen()) return;
+    document.body.classList.add("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "true");
+    if (typeof mobileMenu.showModal === "function") mobileMenu.showModal();
+    else mobileMenu.setAttribute("open", "");
+    requestAnimationFrame(() => mobileMenu.querySelector("nav summary, nav > a")?.focus());
+  }
+
+  function closeMobileMenu({ restoreFocus = false } = {}) {
+    if (!mobileMenu || !mobileMenuIsOpen()) return;
+    if (typeof mobileMenu.close === "function") mobileMenu.close();
+    else mobileMenu.removeAttribute("open");
+    document.body.classList.remove("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "false");
+    if (restoreFocus) menuOpen?.focus();
+  }
+
+  menuOpen?.addEventListener("click", openMobileMenu);
+  menuClose?.addEventListener("click", () => closeMobileMenu({ restoreFocus: true }));
+  mobileMenu?.addEventListener("click", (event) => {
+    if (event.target === mobileMenu) closeMobileMenu({ restoreFocus: true });
+  });
+  mobileMenu?.addEventListener("close", () => {
+    document.body.classList.remove("menu-open");
+    menuOpen?.setAttribute("aria-expanded", "false");
+  });
+  mobileMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => closeMobileMenu()));
+  mobileQuery.addEventListener("change", (event) => {
+    if (!event.matches) closeMobileMenu();
+  });
+
+  const navMenus = [...document.querySelectorAll("[data-nav-menu]")];
+  const hoverNavQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  let navCloseTimer = 0;
+
+  function setNavMenu(activeMenu) {
+    window.clearTimeout(navCloseTimer);
+    navMenus.forEach((navMenu) => {
+      const open = navMenu === activeMenu;
+      navMenu.classList.toggle("is-open", open);
+      navMenu.querySelector("[data-nav-menu-trigger]")?.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+
+  function queueNavClose() {
+    window.clearTimeout(navCloseTimer);
+    navCloseTimer = window.setTimeout(() => setNavMenu(null), 140);
+  }
+
+  navMenus.forEach((navMenu) => {
+    const trigger = navMenu.querySelector("[data-nav-menu-trigger]");
+    trigger?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const alreadyOpen = navMenu.classList.contains("is-open");
+      const toggleCloses = alreadyOpen && (!hoverNavQuery.matches || event.detail === 0);
+      setNavMenu(toggleCloses ? null : navMenu);
+    });
+    trigger?.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown") return;
+      event.preventDefault();
+      setNavMenu(navMenu);
+      navMenu.querySelector(".nav-menu__menu a")?.focus();
+    });
+    if (hoverNavQuery.matches) {
+      navMenu.addEventListener("pointerenter", () => setNavMenu(navMenu));
+      navMenu.addEventListener("pointerleave", queueNavClose);
+    }
+    navMenu.addEventListener("focusout", (event) => {
+      if (!navMenu.contains(event.relatedTarget)) queueNavClose();
+    });
+    navMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setNavMenu(null)));
+  });
+
+  document.querySelectorAll("[data-mobile-nav-section]").forEach((section, _, sections) => {
+    section.addEventListener("toggle", () => {
+      if (!section.open) return;
+      sections.forEach((sibling) => {
+        if (sibling !== section) sibling.open = false;
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest("[data-nav-menu]")) setNavMenu(null);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const openNavMenu = navMenus.find((navMenu) => navMenu.classList.contains("is-open"));
+    if (!openNavMenu) return;
+    setNavMenu(null);
+    openNavMenu.querySelector("[data-nav-menu-trigger]")?.focus();
+  });
+
+  const languageSelects = [...document.querySelectorAll("[data-language]")];
+  function setNavigationLanguage(language) {
+    const lang = language === "en" ? "en" : "th";
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-nav-i18n]").forEach((element) => {
+      if (!element.dataset.navTh) element.dataset.navTh = element.innerHTML;
+      element.innerHTML = lang === "en" ? NAV_TRANSLATIONS[element.dataset.navI18n] || element.dataset.navTh : element.dataset.navTh;
+    });
+    languageSelects.forEach((select) => { select.value = lang; });
+    menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
+    menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
+    try { localStorage.setItem("krane_lang", lang); } catch (_) {}
+  }
+
+  languageSelects.forEach((select) => select.addEventListener("change", () => setNavigationLanguage(select.value)));
+  let initialLanguage = "th";
+  try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
+  setNavigationLanguage(initialLanguage);
+
+  const siteHeader = document.querySelector("[data-site-header]");
+  const updateHeader = () => siteHeader?.classList.toggle("is-scrolled", window.scrollY > 24);
+  updateHeader();
+  window.addEventListener("scroll", updateHeader, { passive: true });
 
   window.lucide?.createIcons({ attrs: { "stroke-width": 1.8 } });
 })();

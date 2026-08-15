@@ -25,12 +25,12 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260815-core-palette-v2">
-<link rel="stylesheet" href="components.css?v=20260815-ink-states-v1">
+<link rel="stylesheet" href="components.css?v=20260815-matching-countdown-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260804selectfix1" defer></script>
-<script src="i18n.js?v=20260815-shared-intake-v1" defer></script>
+<script src="i18n.js?v=20260815-split-intake-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -391,7 +391,8 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-general">6 · อาการที่ต้องการปรึกษา <span class="rail-state">อาการ + ข้อมูลสุขภาพในหน้าเดียว</span></a>
+        <a data-go="intake-concern" data-category="general">6 · อาการที่ต้องการปรึกษา <span class="rail-state">เฉพาะปรึกษาทั่วไป · อาการ ระยะเวลา และสิ่งที่ลองทำแล้ว</span></a>
+        <a data-go="intake-general">7 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">ประวัติสุขภาพและข้อมูลร่างกาย</span></a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -493,7 +494,8 @@
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
         <a data-go="partner-insurance">สิทธิ์และการชำระเงิน</a>
-        <a data-go="intake-general" data-entry-channel="partner">อาการที่ต้องการปรึกษา <span class="rail-state">อาการ + ข้อมูลสุขภาพในหน้าเดียว</span></a>
+        <a data-go="intake-concern" data-entry-channel="partner">อาการที่ต้องการปรึกษา</a>
+        <a data-go="intake-general" data-entry-channel="partner">ข้อมูลสุขภาพทั่วไป</a>
         <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
           <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
           <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
@@ -514,7 +516,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-protocol-product-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-sage-couple-v4" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -832,11 +834,11 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="intake-general">Continue</button><button class="btn btn--ghost btn--sm" data-go="intake-general">Skip for now</button></div>
   </section>
 
-  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (penultimate for every service) ===================== -->
-  <section class="screen" id="intake-general">
+  <!-- ===================== INTAKE · SHARED CONCERN DETAILS ===================== -->
+  <section class="screen" id="intake-concern">
     <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
-      <div class="stack-2"><h2 class="h1">อาการที่ต้องการปรึกษา</h2><p class="muted">กรอกรายละเอียดอาการและข้อมูลสุขภาพทั่วไปในหน้าเดียว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น</p></div>
+      <div class="stack-2"><h2 class="h1">อาการที่ต้องการปรึกษา</h2><p class="muted">กรอกรายละเอียดอาการ ระยะเวลา และสิ่งที่ลองทำแล้ว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น</p></div>
       <div class="card card--pad-sm shared-concern-card" data-shared-concern>
         <div class="shared-concern-grid">
           <div class="field"><label for="partner-concern-text">อาการเป็นอย่างไรบ้าง?</label><textarea class="textarea partner-concern-textarea" id="partner-concern-text" placeholder="เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด"></textarea></div>
@@ -876,7 +878,15 @@
           <div class="up-thumbs shared-concern-grid__wide" data-partner-photo-thumbs aria-live="polite"></div>
         </div>
       </div>
-      <div class="shared-health-intake__heading"><h3>ข้อมูลสุขภาพทั่วไป</h3><p class="muted">ใช้ข้อมูลชุดเดียวกันทั้งการเข้าทาง Krane และสิทธิ์ประกัน</p></div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
+  </section>
+
+  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (final for every service) ===================== -->
+  <section class="screen" id="intake-general">
+    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
+    <div class="screen__body partner-health-compact shared-health-intake">
+      <div><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2></div>
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
@@ -1098,7 +1108,9 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__timer">Usually under 10 seconds</div>
+      <div class="state-view__countdown" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที">
+        <strong data-matching-countdown-value>10</strong><span data-matching-countdown-unit>วินาที</span>
+      </div>
     </div>
   </section>
 
@@ -1143,36 +1155,23 @@
   <section class="screen" id="consultpay" data-screen-code="SCR-008" data-checkout-mode="consultation">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pay consultation fee</span></div>
     <div class="screen__body stack-4">
-      <div class="alert"><span class="a-ic">i</span><div><div class="a-title" data-consult-checkout-title>ค่าปรึกษาแพทย์</div><div class="hint" data-consult-checkout-copy>ตรวจสอบยอดก่อนดำเนินการต่อ</div></div></div>
+      <!-- Restored from the approved 5 Aug SCR-008: one card, with no separate
+           fee banner and no second detail card repeating the same information. -->
       <div class="card card--pad-sm stack-3">
-        <div class="between"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span> รับเคสแล้ว · พร้อมให้คำปรึกษา</strong></div>
+        <div class="row">
+          <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260805bill3" alt="" width="40" height="40">
+          <div class="between grow"><span class="muted">คุณหมอที่รับเคส</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
+        </div>
+        <div class="between"><span class="muted">เลขใบประกอบวิชาชีพ</span><strong>12345</strong></div>
+        <div class="divider" style="margin:0"></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
-        <div class="between"><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
-        <div class="divider" style="margin:0"></div>
-        <div class="between"><span class="muted">Pay now</span><span class="amt" data-pay-amt>฿ 350</span></div>
-      </div>
-
-      <!-- SCR-008 detail block (04/08 deck): what the consultation includes, as
-           its own section under the price summary. The fee mirrors the summary
-           above rather than restating a number, so the two cannot disagree. -->
-      <div class="card card--pad-sm stack-3" data-consult-details>
-        <div class="section-label">รายละเอียดการปรึกษา</div>
-        <div class="consult-detail">
-          <div class="consult-detail__row">
-            <span>ค่าปรึกษาแพทย์</span>
-            <span><s data-consult-detail-was hidden>฿ 350</s> <strong data-consult-detail-fee>฿ 350</strong></span>
-          </div>
-          <p class="hint" data-consult-detail-fee-note hidden>คุ้มครองโดยประกัน</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ใช้เวลาในการปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
-          <p class="hint">คุยกับคุณหมอได้เต็มที่</p>
-        </div>
-        <div class="consult-detail">
-          <div class="consult-detail__row"><span>ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
-          <p class="hint">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
-        </div>
+        <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
+        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <div class="between" data-consult-total-row><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
+        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
+        <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
       <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>ขอใบรับรองแพทย์ · ฟรี</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
@@ -1182,10 +1181,6 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-            <!-- Q1 (pending): insurance coverage shown as a deduction line, the way
-             Health at Home do it, rather than rewriting the price. Hidden until
-             KRANE_FLAGS.coverageLine is true. -->
-        <div class="between" data-coverage-row hidden><span class="muted">สิทธิ์ครอบคลุมการรักษาครั้งนี้</span><strong data-coverage-amount>- ฿ 350</strong></div>
 <div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
@@ -2384,7 +2379,7 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong data-partner-policy-delivery>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake-general">Noted</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake-concern">Noted</button></div>
   </section>
 
   <section class="screen" id="partner-nurse" data-screen-code="SCR-004">
@@ -2601,7 +2596,8 @@
     'partner-nurse-session':'SID-065',
     'preloader':'SID-066',
     'insurance-result':'SID-067',
-    'partner-phr':'SID-068'
+    'partner-phr':'SID-068',
+    'intake-concern':'SID-069'
   });
   screens.forEach(screen => {
     const reviewId=reviewScreenIds[screen.id];
@@ -2641,6 +2637,10 @@
   let selectedCategoryId = 'hair-skin';
   // Insurance is claimable only on the general health path. Specialty paths are self-pay.
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
+  // The free-form concern page is reserved for Partner entry and General consultation.
+  // Specialty banners already capture the concern in their condition-specific intake.
+  function sharedConcernRequired(){ return flowState.entryChannel === 'partner' || isGeneralPath(); }
+  function finalIntakeTarget(){ return sharedConcernRequired() ? 'intake-concern' : 'intake-general'; }
 
   let selectedConditionId = 'hair-loss';
   let isAuthenticated = false;
@@ -2649,7 +2649,7 @@
   // opens Log in from the nav or from "ดูแลต่อเนื่อง" has not answered อาการ yet,
   // so the 5-step care stepper must NOT show อาการ as done for them.
   let journeyActive = false;
-  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-general'];
+  const JOURNEY_INTAKE = ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general'];
   const JOURNEY_AUTH = ['signup','login','social-confirm','otp','consent-terms','patient-info','identity'];
   // The public walkthrough starts clean. Existing-case protection is enabled only
   // after the demo enters the returning-patient profile state.
@@ -3095,7 +3095,7 @@
   const careJourneyLabels = ['อาการที่ปรึกษา','รายละเอียดผู้รับบริการ','การชำระเงิน','การปรึกษาแพทย์','การสั่งยาและจัดส่ง'];
   const careJourneyShort  = ['Concern','Details','Payment','Doctor','Order'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-general':1,
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,'intake-general':1,
     signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
     matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
     plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
@@ -3570,7 +3570,7 @@
       description:'Not sure where to start? Talk to a doctor without choosing a disease path.',
       icon:'chat',
       status:'General',
-      next:'intake-general',
+      next:'intake-concern',
       general:true,
       conditions:[]
     }
@@ -4351,7 +4351,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -4565,11 +4565,11 @@
       });
       const durationUnit=(String(flowState.partnerConcernDuration || '').match(/\s(วัน|เดือน|ปี)$/) || [])[1];
       if(durationUnit){
-        document.querySelectorAll('#intake-general [data-partner-duration-unit]').forEach(option => {
+        document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(option => {
           option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===durationUnit));
         });
       }
-      document.querySelectorAll('#intake-general [data-partner-relief-value]').forEach(option => {
+      document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(option => {
         option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===flowState.partnerConcernRelief));
       });
     }
@@ -4580,9 +4580,9 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','intake-general','matching'];
+    const order=['consent-terms','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
     let targetIndex=order.indexOf(target);
-    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=5;
+    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0){
@@ -4602,8 +4602,9 @@
         flowState.coverage={provider:'แผนสุขภาพออนไลน์',policyId:'online-care',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000};
       }
     }
-    if(targetIndex>3) flowState.partnerHealthComplete=true;
-    if(targetIndex>4) flowState.partnerReviewComplete=true;
+    if(targetIndex>3) flowState.partnerConcernComplete=true;
+    if(targetIndex>4) flowState.partnerHealthComplete=true;
+    if(targetIndex>5) flowState.partnerReviewComplete=true;
     if(target==='partner-phr'){
       flowState.partnerNurseComplete=true;
       flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
@@ -4733,7 +4734,7 @@
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
     concern:'landing', conditions:'concern', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
-    intake5:'intake4', 'intake-general':'intake5',
+    intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
@@ -4941,6 +4942,7 @@
   function intakeStepOrder(){
     const seq = ['intake1','intake2','intake3','intake4'];
     try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
+    if(sharedConcernRequired()) seq.push('intake-concern');
     seq.push('intake-general');
     return seq.filter(id => !intakeSkipped(id));
   }
@@ -4968,10 +4970,13 @@
       visited.add(current);
       path.unshift(current);
       const skipped=skipBackFrom(current);
-      const partnerParent=current==='intake-general' && flowState.entryChannel==='partner'
+      const partnerParent=current==='intake-concern' && flowState.entryChannel==='partner'
         ? (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-patient-info')
         : null;
-      current = skipped !== null ? skipped : (partnerParent || directEntryParent[current]);
+      const healthParent=current==='intake-general'
+        ? (sharedConcernRequired() ? 'intake-concern' : (categoryNeedsPhotos() ? 'intake5' : 'intake4'))
+        : null;
+      current = skipped !== null ? skipped : (partnerParent || healthParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -5087,10 +5092,10 @@
     if(concernEdit) concernEdit.dataset.go = cat.general ? 'concern' : 'conditions';
     const matchingCopy = document.querySelector('[data-matching-copy]');
     if(matchingCopy) matchingCopy.textContent = thai
-      ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern} โดยปกติใช้เวลาไม่เกิน 10 วินาที`
-      : `Matching you with a licensed doctor for ${concern.toLowerCase()} who is available now. Usually under 10 seconds.`;
+      ? `กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่อง${concern}`
+      : `Matching you with a licensed doctor for ${concern.toLowerCase()} who is available now.`;
   }
-  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-general'];
+  const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general'];
   function saveIntakeDraft(){
     const fields={};
     INTAKE_DRAFT_SCREENS.forEach(screenId => {
@@ -5112,8 +5117,8 @@
       compactHistory[group.dataset.directHistory]=group.querySelector('[data-direct-history-choice][aria-checked="true"]')?.dataset.directHistoryChoice || 'none';
     });
     const sharedConcern={
-      durationUnit:document.querySelector('#intake-general [data-partner-duration-unit][aria-selected="true"]')?.dataset.partnerDurationUnit || 'วัน',
-      relief:document.querySelector('#intake-general [data-partner-relief-value][aria-selected="true"]')?.dataset.partnerReliefValue || ''
+      durationUnit:document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]')?.dataset.partnerDurationUnit || 'วัน',
+      relief:document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]')?.dataset.partnerReliefValue || ''
     };
     writeSessionJson(DRAFT_KEY,{
       selectedCategoryId,selectedConditionId,fields,options,compactHistory,sharedConcern,
@@ -5141,10 +5146,10 @@
       const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
       if(group) setDirectHistoryChoice(group,value==='yes');
     });
-    document.querySelectorAll('#intake-general [data-partner-duration-unit]').forEach(option => {
+    document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(option => {
       option.setAttribute('aria-selected',String(option.dataset.partnerDurationUnit===(draft.sharedConcern?.durationUnit || 'วัน')));
     });
-    document.querySelectorAll('#intake-general [data-partner-relief-value]').forEach(option => {
+    document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(option => {
       option.setAttribute('aria-selected',String(option.dataset.partnerReliefValue===(draft.sharedConcern?.relief || '')));
     });
     flowState.draftReady=Boolean(flowState.draftReady || draft.complete);
@@ -5200,6 +5205,7 @@
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
     if(intakeSkipped(target)) target = skipForwardFrom(target);
+    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake-general';
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -5209,6 +5215,7 @@
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
       if(['partner-insurance','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'intake-concern';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
@@ -5248,12 +5255,12 @@
     // for the same reason.
     if(target==='concern'){
       setSelectedCategory('general');
-      return 'intake-general';
+      return 'intake-concern';
     }
-    // The former partner concern and partner health-profile routes asked for the
-    // same clinical record on two consecutive screens. Keep old links working,
-    // but resolve both to the shared one-page intake.
-    if(target==='partner-concern' || target==='partner-intake') return 'intake-general';
+    // Keep legacy partner bookmarks working while routing each old page name to
+    // the matching step in the now-separated clinical intake.
+    if(target==='partner-concern') return 'intake-concern';
+    if(target==='partner-intake') return 'intake-general';
     return document.getElementById(target) ? target : 'landing';
   }
   function show(id, push=true){
@@ -5270,7 +5277,7 @@
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
-    if(id==='partner-patient-info' || (id==='intake-general' && flowState.entryChannel==='partner')) restorePartnerFields();
+    if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -5355,7 +5362,7 @@
       orderActions.forEach(btn => { btn.hidden = isSetup; });
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
-    if(id === 'matching' || id === 'intake1' || id === 'intake-general') updateSelectedCare();
+    if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -5462,10 +5469,33 @@
         scheduleConsultationSummary();
       }
     }
-    // Matching is a short automatic state; the visual carries the progress cue.
+    // Matching is a short automatic state. The frameless numeric countdown is
+    // the only time cue and reaches zero at the same moment the handoff occurs.
     clearTimeout(matchTimer);
+    clearInterval(matchCountdownTimer);
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
+      const countdown=mScr.querySelector('[data-matching-countdown]');
+      const countdownValue=mScr.querySelector('[data-matching-countdown-value]');
+      const countdownUnit=mScr.querySelector('[data-matching-countdown-unit]');
+      let secondsRemaining=10;
+      const syncMatchingCountdown=() => {
+        if(countdownValue) countdownValue.textContent=String(secondsRemaining);
+        if(countdownUnit) countdownUnit.textContent=document.documentElement.lang==='th' ? 'วินาที' : (secondsRemaining===1 ? 'second' : 'seconds');
+        if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
+          ? `เหลือ ${secondsRemaining} วินาที`
+          : `${secondsRemaining} seconds remaining`);
+      };
+      syncMatchingCountdown();
+      matchCountdownTimer=setInterval(() => {
+        if(!mScr.classList.contains('active')){
+          clearInterval(matchCountdownTimer);
+          return;
+        }
+        secondsRemaining=Math.max(0,secondsRemaining-1);
+        syncMatchingCountdown();
+        if(secondsRemaining===0) clearInterval(matchCountdownTimer);
+      },1000);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> availability page to pick a slot, where the same gate runs on continue.
@@ -5476,7 +5506,7 @@
            consultationHandoffTarget() skipped straight to the waiting room in
            that case, which is what hid the fee summary. */
         replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
-      }, 3400);
+      }, 10000);
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
@@ -5570,15 +5600,8 @@
     const coverageRow=document.querySelector('#consultpay [data-consult-coverage-row]');
     const coverageAmount=document.querySelector('#consultpay [data-consult-coverage-amount]');
     if(coverageRow) coverageRow.hidden=covered<=0;
-    if(coverageAmount) coverageAmount.textContent='- '+baht(covered);
-    /* Mirror the summary into the detail block: strike the original only when
-       partner coverage genuinely brings it down. */
-    const dWas=document.querySelector('[data-consult-detail-was]');
-    const dFee=document.querySelector('[data-consult-detail-fee]');
-    const dNote=document.querySelector('[data-consult-detail-fee-note]');
-    if(dFee) dFee.textContent=baht(balance);
-    if(dWas){ dWas.hidden=covered<=0; dWas.textContent=baht(CONSULTATION_FEE_BAHT); }
-    if(dNote) dNote.hidden=covered<=0;
+    if(coverageAmount) coverageAmount.textContent=fullyCovered ? 'ครอบคลุมเต็มจำนวน' : '- '+baht(covered);
+    document.querySelectorAll('#consultpay [data-consult-total-row]').forEach(el => { el.hidden=fullyCovered; });
     const amt = baht(amount);
     const a = document.querySelector('#consultpay [data-pay-amt]');
     const b = document.querySelector('#consultpay [data-pay-btn-amt]');
@@ -5596,14 +5619,13 @@
     const noticeMode=flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid;
     screen.dataset.checkoutMode=noticeMode ? 'fee-notice' : 'consultation-payment';
     screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode; });
-    const title=screen.querySelector('[data-consult-checkout-title]');
-    const copy=screen.querySelector('[data-consult-checkout-copy]');
+    const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    if(title) title.textContent=noticeMode ? 'มีค่าปรึกษาแพทย์ ฿ 350' : 'ชำระค่าปรึกษาแพทย์';
-    if(copy) copy.textContent=noticeMode ? 'ยอดนี้จะชำระพร้อมค่ายาหลังจบการปรึกษา' : 'ชำระก่อนเข้าห้องพบแพทย์';
-    if(label) label.textContent=noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
-    if(amount) amount.hidden=noticeMode;
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
+    if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
+    if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
+    if(amount) amount.hidden=noticeMode || fullyCovered;
   }
   document.body.addEventListener('change', e => {
     const c = e.target.closest('[data-cert-check]');
@@ -5636,10 +5658,19 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-general','partner-intake':'intake-general'};
+    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
+      // Hash deep links can arrive from a standalone condition-detail page in
+      // the same browser that previously used a Partner flow. Resolve the entry
+      // channel before seeding history or showing the screen; show() uses it to
+      // decide whether the direct-care progress bar is visible.
+      const entry = hashParams.get('entry');
+      if(entry==='direct' || entry==='partner'){
+        flowState.entryChannel=entry;
+        persistFlowState();
+      }
       if(guardActiveCase(id)){
         history=['landing'];
         show('landing',false);
@@ -5928,9 +5959,9 @@
         if(paymentMethod==='insurance') insuranceEntry='partner';
         else setSelectedCategory('general');
         // Paying out of pocket changes who settles the bill, not which intake
-        // this entry uses. Both branches join the same one-page symptom and
-        // general-health screen; insurance only adds the entitlement detour.
-        show(paymentMethod==='insurance' ? 'insurance' : 'intake-general');
+        // this entry uses. Both branches start with concern details, then move
+        // to general health; insurance only adds the entitlement detour.
+        show(paymentMethod==='insurance' ? 'insurance' : 'intake-concern');
       });
       return;
     }
@@ -5955,7 +5986,7 @@
         : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
       persistFlowState();
       if(partnerPayment.dataset.go==='intake1') setSelectedCategory('general');
-      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'intake-general'));
+      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'intake-concern'));
       return;
     }
     const intakeDurationStep=e.target.closest('[data-intake-duration-step]');
@@ -6393,6 +6424,7 @@
           flowState.entryChannel='partner';
           persistFlowState();
         }
+        if(go.dataset.category) setSelectedCategory(go.dataset.category);
         seedPartnerStage(go.dataset.go);
         seedClinicalDemoStage(go.dataset.go);
         history = seededHistory(go.dataset.go);
@@ -6417,7 +6449,7 @@
         show(go.dataset.flagGo); return;
       }
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
-        show('intake-general'); return;
+        show(finalIntakeTarget()); return;
       }
       if(go.dataset.go === 'consultpay'){
         show(consultationHandoffTarget());
@@ -6555,7 +6587,8 @@
     'intake3':          { id:'KRANE-F04', name:'Health Intake, Q3 Previous Care', stories:['US-F04.9: Prior treatment and its outcome are captured for the current concern','US-F04.4: Answers are surfaced to the doctor before the session'] },
     'intake4':          { id:'KRANE-F04', name:'Health Intake, Q4 Urgent Safety', stories:['US-F04.9: Warning signs are screened before online care continues','US-F04.7: Ineligible patients can be routed to in-person care'] },
     'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
-    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared Penultimate General Health', stories:['Client request 15 Jul: every consultation completes this as the penultimate question step','Captures conditions, allergies, medicine, supplements, height, weight and lifestyle in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
+    'intake-concern':   { id:'KRANE-F04', name:'Health Intake, General / Partner Concern Details', stories:['Partner entry and General consultation record free-form symptoms, duration, attempted relief and optional photos on a dedicated page','Specialty banner journeys skip this page because their condition-specific intake already captures the concern','US-F04.4: Concern details are surfaced to the doctor before the session'] },
+    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared General Health', stories:['Every consultation completes general health on a separate final intake page','Captures conditions, allergies, medicine, supplements, height and weight in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
@@ -6898,11 +6931,11 @@
     if(!intakeComplete) return;
     const intakeQuestionScreen=intakeComplete.closest('.screen');
     if(intakeQuestionScreen && INTAKE_ONE_QUESTION_SCREENS.includes(intakeQuestionScreen.id) && advanceIntakeQuestionPage(intakeQuestionScreen)) return;
-    if(intakeComplete.closest('#intake-general')){
+    if(intakeComplete.closest('#intake-concern')){
       const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
       const amount=Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
-      const unitOn=document.querySelector('#intake-general [data-partner-duration-unit][aria-selected="true"]');
-      const reliefOn=document.querySelector('#intake-general [data-partner-relief-value][aria-selected="true"]');
+      const unitOn=document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]');
+      const reliefOn=document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]');
       if(concern.length<5){
         showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning');
         document.getElementById('partner-concern-text')?.focus();
@@ -6917,6 +6950,17 @@
         showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning');
         return;
       }
+      flowState.partnerConcern=concern;
+      flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
+      flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
+      flowState.partnerConcernComplete=true;
+      flowState.lastRequiredScreen='intake-general';
+      persistFlowState();
+      saveIntakeDraft();
+      show('intake-general');
+      return;
+    }
+    if(intakeComplete.closest('#intake-general')){
       const dob=document.getElementById('intake-dob');
       if(!dob?.value){
         showActionToast('กรุณาเลือกวันเกิด','warning');
@@ -6933,10 +6977,6 @@
         incompleteHistory.querySelector('input')?.focus();
         return;
       }
-      flowState.partnerConcern=concern;
-      flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
-      flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
-      flowState.partnerConcernComplete=true;
     }
     flowState.draftReady=true;
     if(flowState.entryChannel==='partner'){
@@ -6961,7 +7001,7 @@
       flowState.lastRequiredScreen='intake-general';
       persistFlowState();
       saveIntakeDraft();
-      showActionToast('บันทึกอาการและข้อมูลสุขภาพแล้ว กำลังจับคู่แพทย์','success');
+      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กำลังจับคู่แพทย์','success');
       show(partnerClinicalStartTarget());
       return;
     }
@@ -7114,10 +7154,10 @@
     });
   }
 
-  // Shared concern controls live inside #intake-general for both Krane-direct
-  // and insurance entry. Completion is handled by the one shared footer action.
+  // Shared concern controls live on their own page for both Krane-direct and
+  // insurance entry. General health follows as the next screen.
   document.body.addEventListener('click', e => {
-    const step = e.target.closest('#intake-general [data-partner-duration-step]');
+    const step = e.target.closest('#intake-concern [data-partner-duration-step]');
     if(step){
       const input = document.getElementById('partner-concern-duration-value');
       if(input) input.value = String(Math.min(99, Math.max(1,
@@ -7125,16 +7165,16 @@
       saveIntakeDraft();
       return;
     }
-    const unit = e.target.closest('#intake-general [data-partner-duration-unit]');
+    const unit = e.target.closest('#intake-concern [data-partner-duration-unit]');
     if(unit){
-      document.querySelectorAll('#intake-general [data-partner-duration-unit]').forEach(o =>
+      document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(o =>
         o.setAttribute('aria-selected', String(o === unit)));
       saveIntakeDraft();
       return;
     }
-    const relief = e.target.closest('#intake-general [data-partner-relief-value]');
+    const relief = e.target.closest('#intake-concern [data-partner-relief-value]');
     if(relief){
-      document.querySelectorAll('#intake-general [data-partner-relief-value]').forEach(o =>
+      document.querySelectorAll('#intake-concern [data-partner-relief-value]').forEach(o =>
         o.setAttribute('aria-selected', String(o === relief)));
       saveIntakeDraft();
     }
@@ -7564,8 +7604,8 @@
       <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image class="krane-crane-animated" href="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image class="krane-crane-static" href="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" class="krane-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1" class="krane-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
