@@ -910,7 +910,7 @@ test("Figma landing keeps every client access route and responsive menu contract
     "product-hero/ed-care-couple-light-v10.png",
     "product-hero/weight-injection-landscape-v2.png",
     "treatment-editorial/sleep-hands-winddown-editorial-v2.png",
-    "product-hero/hair-care-vanity-v9.png",
+    "product-hero/hair-care-vanity-v10-left-hand.png",
     "treatment-editorial/skin-hands-cream-editorial-v2.png",
     "treatment-editorial/hormone-hands-consult-editorial-v2.png"
   ]) {
@@ -942,8 +942,8 @@ test("landing first viewport exposes the three priority care banners with direct
   assert.match(html, /ดูแลตัวเอง<br>ให้ไปได้ไกลกว่าเดิม/);
   assert.doesNotMatch(html, /<div class="hero__signals"/, "the slogan must not be repeated by a credential row");
   assert.match(banners, /weight-injection-landscape-v2\.png/);
-  assert.match(banners, /ed-care-couple-light-v10\.png/);
-  assert.match(banners, /hair-care-vanity-v9\.png/);
+  assert.match(banners, /ed-care-couple-short-sleepwear-bed-pills-v13\.png/);
+  assert.match(banners, /hair-care-vanity-v10-left-hand\.png/);
   assert.match(css, /grid-template-columns:minmax\(0,1\.45fr\) minmax\(280px,\.82fr\)/);
   assert.match(css, /\.care-banner--weight\{grid-row:1 \/ span 2\}/);
   assert.match(css, /\.care-banner--ed \.care-banner__copy,[\s\S]*\.care-banner--hair \.care-banner__copy\{width:100%/);
@@ -1008,6 +1008,11 @@ test("landing navigation opens condition guides while care CTAs start category i
     await assert.doesNotReject(access(path.join(publicRoot, `b2c/assets/treatment-editorial/${image}`)));
   }
   assert.doesNotMatch(detailScript, /skin-healthy-aging-editorial-v1\.jpg|hormone-trt-editorial-v1\.jpg|reviews-asian\/focus-review\.png/, "generated full-face condition photography must not return to customer-facing pages");
+  assert.equal((detailScript.match(/assets\/(?:product-hero|treatment-editorial|medicine\/real-v1)\/[a-z0-9-]+\.(?:png|jpg)"\]/g) || []).length, 14, "every product option across all seven conditions must have a real photo");
+  assert.match(detailScript, /class="product-option-card__photo"/);
+  assert.doesNotMatch(detailScript, /product-visual__primary|product-visual__secondary/, "CSS-drawn medicine placeholders must not return");
+  assert.match(detailCss, /\.product-option-card__photo\{[\s\S]*object-fit:cover/);
+  assert.doesNotMatch(detailCss, /\.product-visual__primary|radial-gradient\(circle at 12px 12px/, "product options must use photos instead of CSS medicine drawings");
   assert.match(detailScript, /new URLSearchParams\(location\.search\)\.get\("condition"\)/);
   assert.match(detailCss, /@media\(max-width:640px\)/);
   assert.doesNotThrow(() => new vm.Script(detailScript, { filename: "condition-detail.js" }));
