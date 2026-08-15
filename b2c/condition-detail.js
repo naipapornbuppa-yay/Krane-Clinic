@@ -100,7 +100,7 @@
     "hair-loss": {
       category: "hair-skin",
       tone: "hair",
-      image: "assets/product-hero/hair-care-vanity-v9.png",
+      image: "assets/product-hero/hair-care-vanity-v10-left-hand.png",
       kicker: "ฟื้นฟูเส้นผม",
       title: "หาสาเหตุผมร่วงก่อนเลือกวิธีดูแล",
       lead: "รูปแบบผมร่วง หนังศีรษะ ประวัติครอบครัว สุขภาพ และความเครียด ช่วยให้แพทย์แนะนำทางเลือกได้ตรงจุดขึ้น",
