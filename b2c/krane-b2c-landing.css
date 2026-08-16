@@ -2786,3 +2786,93 @@ body.expert-open{overflow:hidden}
   color:#fff;
   text-shadow:0 2px 14px rgba(0,0,0,.32);
 }
+
+/* Weight now stands alone as the featured banner; ED and hair moved into the services grid below. */
+.care-banner-grid{grid-template-columns:1fr}
+.care-banner--weight{height:340px}
+
+/* Services grid: ED and hair reuse real photography; skin/hormone/mind/general use a
+   tinted panel with the existing ink icon (inverted to white) since no photography
+   exists for them yet. All six now share the same photo/white-text language as the
+   featured weight banner instead of mixing two card styles. */
+.service-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.service-tile{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:flex-end;
+  height:180px;
+  overflow:hidden;
+  border-radius:26px;
+  padding:18px;
+  color:#fff;
+}
+.service-tile__bg{
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .4s ease;
+}
+.service-tile__shade{
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  background:linear-gradient(0deg,rgba(11,20,35,.88) 0%,rgba(11,20,35,.22) 62%,rgba(11,20,35,.05) 100%);
+}
+.service-tile__label{
+  position:relative;
+  z-index:1;
+  max-width:68%;
+  font:600 19px/1.28 "Prompt","Noto Sans Thai",sans-serif;
+  text-shadow:0 2px 12px rgba(0,0,0,.28);
+}
+.service-tile>svg,.service-tile>i{
+  position:absolute;
+  z-index:2;
+  right:14px;
+  bottom:14px;
+  width:34px;
+  height:34px;
+  padding:9px;
+  border-radius:50%;
+  background:#fff;
+  color:var(--landing-navy);
+  transition:transform .2s ease;
+}
+.service-tile:hover>svg,.service-tile:focus-visible>svg{transform:translateX(3px)}
+.service-tile:hover .service-tile__bg,.service-tile:focus-visible .service-tile__bg{transform:scale(1.05)}
+
+.service-tile--tint{background:var(--landing-navy)}
+.service-tile--skin{background:#6f5f52}
+.service-tile--hormone{background:#33506a}
+.service-tile--mind{background:#48543f}
+.service-tile--general{background:#40495c}
+.service-tile--tint .service-tile__icon{
+  position:absolute;
+  z-index:0;
+  right:-8px;
+  bottom:-8px;
+  width:120px;
+  height:120px;
+  object-fit:contain;
+  filter:invert(1) brightness(1.7);
+  opacity:.92;
+}
+
+@media(max-width:860px){
+  .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .care-banner--weight{height:300px}
+}
+@media(max-width:520px){
+  .service-tile{height:154px;padding:15px;border-radius:22px}
+  .service-tile__label{font-size:17px}
+  .service-tile--tint .service-tile__icon{width:104px;height:104px}
+  .care-banner--weight{height:280px}
+}
