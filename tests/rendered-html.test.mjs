@@ -1019,7 +1019,9 @@ test("landing keeps priority cards concise and secondary services responsive", a
   assert.match(css, /\.care-banner__cta\{[\s\S]*?right:18px;[\s\S]*?bottom:18px;/, "all consultation CTAs need a bottom-right anchor");
   assert.equal((services.match(/<a class="treatment-pill /g) || []).length, 4);
   assert.doesNotMatch(services, /care-card--hair|care-card--sexual/);
+  assert.match(html, /krane-b2c-landing\.css\?v=20260816-secondary-services-row-v1/);
   assert.match(css, /@media\(min-width:701px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(min-width:961px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:700px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
 });
 
