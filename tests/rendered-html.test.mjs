@@ -781,8 +781,8 @@ test("Figma landing keeps every client access route and responsive menu contract
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
   assert.match(script, /mobileQuery\.addEventListener\("change"/);
   assert.match(script, /window\.parent\.postMessage\(\{\s*krane: "nav"/);
-  assert.match(html, /assets\/product-hero\/weight-injection-macro-no-hand-v5\.png/);
-  assert.match(html, /class="care-banner__motion"[\s\S]*weight-injection-macro-zoom-v5\.mp4/);
+  assert.match(html, /assets\/product-hero\/weight-care-prep-v5\.png/);
+  assert.doesNotMatch(html, /class="care-banner__motion"/);
   assert.match(html, /class="care-banner care-banner--weight"/);
   assert.match(html, /class="care-banner care-banner--ed"/);
   assert.match(html, /class="care-banner care-banner--hair"/);
@@ -944,8 +944,8 @@ test("landing first viewport exposes the three priority care banners with direct
   assert.equal((banners.match(/>เริ่มตอนนี้</g) || []).length, 3, "priority CTAs must use one consistent label");
   assert.match(html, /สุขภาพที่มั่นใจ<br>ผ่านการดูแลกับ Krane/);
   assert.doesNotMatch(html, /<div class="hero__signals"/, "the slogan must not be repeated by a credential row");
-  assert.match(banners, /weight-injection-macro-no-hand-v5\.png/);
-  assert.match(banners, /weight-injection-macro-zoom-v5\.mp4/);
+  assert.match(banners, /weight-care-prep-v5\.png/);
+  assert.doesNotMatch(banners, /weight-injection-macro-zoom-v5\.mp4/);
   assert.match(banners, /ed-care-couple-short-sleepwear-bed-pills-v13\.png/);
   assert.match(banners, /hair-care-vanity-v10-left-hand\.png/);
   assert.match(css, /grid-template-columns:minmax\(0,1\.45fr\) minmax\(280px,\.82fr\)/);
@@ -962,7 +962,8 @@ test("landing first viewport exposes the three priority care banners with direct
   assert.match(css, /--landing-blue-2:var\(--color-accent-vivid,#1973ff\)/);
   assert.match(css, /--landing-navy:var\(--color-ink,#121824\)/);
   assert.match(css, /@media\(max-width:700px\)\{[\s\S]*scroll-snap-type:x mandatory/);
-  assert.match(html, /class="care-banner__photo"[\s\S]*weight-injection-macro-no-hand-v5\.png/);
+  assert.match(html, /class="care-banner__photo"[\s\S]*weight-care-prep-v5\.png/);
+  assert.match(css, /\.care-banner--weight \.care-banner__shade\{[\s\S]*rgba\(0,0,0,\.20\)/, "weight card should use only a very light black veil");
   assert.match(css, /\.treatments\{overflow:visible\}/, "treatment shadows must not be clipped by the page section");
   assert.match(css, /\.treatment-grid\{isolation:isolate\}/, "treatment cards need an isolated stacking context");
   assert.match(css, /\.treatment-pill:hover,\.treatment-pill:focus-visible\{z-index:4\}/, "hovered treatment shadow must paint above adjacent cards");
