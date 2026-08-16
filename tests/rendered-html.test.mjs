@@ -18,15 +18,22 @@ const canonicalPages = [
   "ui-inventory/ui-components.html"
 ];
 
-test("doctor navigation opens a dedicated, complete medical-team directory", async () => {
+test("doctor directory opens complete profiles in an accessible slide-over with crawlable fallbacks", async () => {
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const doctors = await readFile(path.join(publicRoot, "b2c/doctors.html"), "utf8");
+  const doctorScript = await readFile(path.join(publicRoot, "b2c/doctors.js"), "utf8");
   const detail = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
 
   assert.equal((landing.match(/href="doctors\.html"/g) || []).length, 3, "desktop, mobile and section CTA must open the directory");
   assert.doesNotMatch(landing, /class="experts__jump" href="#doctor-1"/);
   assert.match(doctors, /id="doctor-directory"/);
   assert.equal((doctors.match(/href="doctor-detail\.html\?doctor=[1-4]"/g) || []).length, 5, "featured doctor plus four directory cards");
+  assert.equal((doctors.match(/data-doctor-open data-doctor-id="[1-4]"/g) || []).length, 5, "all doctor cards must open the slide-over");
+  assert.match(doctors, /<dialog class="doctor-profile-dialog" data-doctor-dialog/);
+  assert.match(doctors, /data-doctor-dialog-(?:name|role|bio|specialty|education)/);
+  assert.match(doctorScript, /event\.preventDefault\(\)/);
+  assert.match(doctorScript, /dialog\.showModal\(\)/);
+  assert.match(doctorScript, /returnFocus\?\.focus\(\)/);
   assert.match(doctors, /วิธีที่ทีมแพทย์ร่วมออกแบบการดูแล/);
   assert.match(detail, /class="detail-back" href="doctors\.html"/);
   assert.match(doctors, /class="doctors-featured" href="doctor-detail\.html\?doctor=2"[\s\S]*client-doctor-ploy\.png/);
