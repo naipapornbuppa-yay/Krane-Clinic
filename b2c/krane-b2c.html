@@ -3153,6 +3153,15 @@
       const count = top.querySelector('.hint');
       if(count) count.remove();
     }
+    // Consultation-fee screens sit inside the "Doctor" stage, but the fee is paid
+    // before the visit starts: label the step and its next-preview for what
+    // actually happens here instead of the generic stage names used elsewhere.
+    if(id==='consultpay' || id==='consultpay-gw' || id==='consultpay-fail'){
+      const label = journey.querySelector('.care-journey__current strong');
+      const next = journey.querySelector('.care-journey__current small');
+      if(label) label.textContent='ปรึกษาแพทย์';
+      if(next) next.innerHTML='<i>ถัดไป</i> ชำระเงิน';
+    }
   });
   // Photo upload on the intake photo step: real file picker, live thumbnails,
   // remove with the × button. Demo only, nothing leaves the browser.

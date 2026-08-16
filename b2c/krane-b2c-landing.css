@@ -2787,17 +2787,33 @@ body.expert-open{overflow:hidden}
   text-shadow:0 2px 14px rgba(0,0,0,.32);
 }
 
-/* Weight now stands alone as the featured banner; ED and hair moved into the services grid below. */
-.care-banner-grid{grid-template-columns:1fr}
-.care-banner--weight{height:340px}
+/* Weight, ED and hair form one banner cluster right under the H1 so all three stay
+   together and fit within the first screen without scrolling; the "other services"
+   heading now sits below this cluster, ahead of the remaining 4 tint tiles. */
+.care-banner-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-rows:auto;
+  grid-auto-flow:row;
+  grid-auto-columns:auto;
+  gap:10px;
+  overflow-x:visible;
+  overscroll-behavior-inline:auto;
+  scroll-snap-type:none;
+}
+.care-banner-grid .care-banner{grid-row:auto;scroll-snap-align:none}
+.care-banner-grid .care-banner--weight{grid-column:1/-1}
+.care-banner--weight{height:220px}
+.care-banner-grid__sub{height:136px;border-radius:22px;padding:14px}
+.care-banner-grid__sub .service-tile__label{max-width:82%;font-size:16px}
+.care-banner-grid__sub>svg,.care-banner-grid__sub>i{width:30px;height:30px;padding:8px;right:12px;bottom:12px}
 
-/* Services grid: ED and hair reuse real photography; skin/hormone/mind/general use a
-   tinted panel with the existing ink icon (inverted to white) since no photography
-   exists for them yet. All six now share the same photo/white-text language as the
-   featured weight banner instead of mixing two card styles. */
+/* Services grid now holds only the 4 tint tiles (skin/hormone/mind/general);
+   ED and hair reuse real photography above, tint tiles use the existing ink icon
+   (inverted to white) since no photography exists for them yet. All tiles share the
+   same photo/white-text language as the featured weight banner. */
 .service-grid{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:12px;
 }
 .service-tile{
@@ -2867,12 +2883,14 @@ body.expert-open{overflow:hidden}
 }
 
 @media(max-width:860px){
-  .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .care-banner--weight{height:300px}
+  .care-banner--weight{height:210px}
 }
 @media(max-width:520px){
   .service-tile{height:154px;padding:15px;border-radius:22px}
   .service-tile__label{font-size:17px}
   .service-tile--tint .service-tile__icon{width:104px;height:104px}
-  .care-banner--weight{height:280px}
+  .care-banner--weight{height:190px}
+  .care-banner-grid__sub{height:118px;padding:12px;border-radius:18px}
+  .care-banner-grid__sub .service-tile__label{font-size:14px}
+  .care-banner-grid__sub>svg,.care-banner-grid__sub>i{width:26px;height:26px;padding:6px;right:10px;bottom:10px}
 }
