@@ -10,12 +10,26 @@ const root = path.resolve(import.meta.dirname, "..");
 const publicRoot = path.join(root, "public");
 const canonicalPages = [
   "b2c/krane-b2c-landing.html",
+  "b2c/doctors.html",
   "b2c/condition-detail.html",
   "b2c/krane-b2c.html",
   "cms/cms-doctor.html",
   "cms/cms-admin.html",
   "ui-inventory/ui-components.html"
 ];
+
+test("doctor navigation opens a dedicated, complete medical-team directory", async () => {
+  const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
+  const doctors = await readFile(path.join(publicRoot, "b2c/doctors.html"), "utf8");
+  const detail = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
+
+  assert.equal((landing.match(/href="doctors\.html"/g) || []).length, 3, "desktop, mobile and section CTA must open the directory");
+  assert.doesNotMatch(landing, /class="experts__jump" href="#doctor-1"/);
+  assert.match(doctors, /id="doctor-directory"/);
+  assert.equal((doctors.match(/href="doctor-detail\.html\?doctor=[1-4]"/g) || []).length, 5, "featured doctor plus four directory cards");
+  assert.match(doctors, /วิธีที่ทีมแพทย์ร่วมออกแบบการดูแล/);
+  assert.match(detail, /class="detail-back" href="doctors\.html"/);
+});
 
 function assetFile(fromFile, reference) {
   const clean = reference.split(/[?#]/, 1)[0];
@@ -775,7 +789,7 @@ test("Figma landing keeps every client access route and responsive menu contract
   }
   assert.match(html, /<dialog class="mobile-menu"/);
   assert.match(html, /id="experts"/);
-  assert.match(html, /href="#experts" data-i18n="navDoctors"/);
+  assert.match(html, /href="doctors\.html" data-i18n="navDoctors"/);
   assert.match(css, /@media\s*\(max-width:\s*700px\)/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?overflow:\s*auto/);
