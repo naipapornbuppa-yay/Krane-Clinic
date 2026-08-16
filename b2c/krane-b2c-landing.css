@@ -5,6 +5,10 @@
   --landing-line:var(--color-line,#e2e8f0);
   --landing-canvas:var(--color-canvas-warm,var(--color-bg,#f5f5f4));
   --landing-blue:var(--color-accent,#0164ff);
+  /* Light grey with a blue cast for the page, and one step deeper for the
+     surfaces that sit on it. Same hue family as --landing-blue. */
+  --landing-page-tint:#EDF1F8;
+  --landing-surface-tint:#E1E9F6;
   --landing-blue-2:var(--color-accent-vivid,#1973ff);
   --landing-navy:var(--color-ink,#121824);
   --page-gutter:40px;
@@ -201,6 +205,9 @@ button{color:inherit}
 .mobile-menu nav{display:flex;flex-direction:column;padding:12px 0}
 .mobile-menu nav a{min-height:54px;display:flex;align-items:center;border-bottom:1px solid var(--landing-line);font-size:18px;font-weight:500}
 .mobile-treatment-menu{border-bottom:1px solid var(--landing-line)}
+/* The mobile menu is a flat list now: same row metrics the <summary> had, so
+   the sheet keeps its rhythm without the disclosure chrome. */
+.mobile-nav-link{display:flex;align-items:center;min-height:54px;border-bottom:1px solid var(--landing-line);color:var(--landing-ink);font-size:18px;font-weight:500;text-decoration:none}
 .mobile-treatment-menu summary{display:flex;align-items:center;justify-content:space-between;min-height:54px;font-size:18px;font-weight:500;cursor:pointer;list-style:none}
 .mobile-treatment-menu summary::-webkit-details-marker{display:none}
 .mobile-treatment-menu summary svg{width:18px;height:18px;transition:transform .2s ease}
@@ -2165,7 +2172,7 @@ body{
 .treatment-grid .treatment-pill>svg:last-child{background:var(--landing-navy);color:#fff}
 
 /* System-led marketing canvas and edge-aligned CTAs for the compact care cards. */
-:root{--landing-page-bg:var(--color-canvas-warm,#f5f5f4)}
+:root{--landing-page-bg:var(--landing-page-tint)}
 body{background:var(--landing-page-bg)}
 @media(max-width:700px){body{background:var(--landing-page-bg)}}
 
@@ -2388,7 +2395,7 @@ body{background:var(--landing-page-bg)}
   align-items:center;
   min-height:28px;
   padding:5px 10px;
-  border:1px solid rgba(255,255,255,.72);
+  border:0;
   border-radius:999px;
   background:rgba(247,245,238,.9);
   color:var(--landing-navy);
@@ -2962,18 +2969,18 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   min-height:112px;
   overflow:hidden;
   padding:16px;
-  border:1px solid rgba(25,49,77,.12);
+  border:0;
   border-radius:22px;
-  background:linear-gradient(135deg,#f1f5fa 0%,#e5edf6 100%);
+  background:var(--landing-surface-tint);
   color:var(--landing-ink);
   scroll-snap-align:start;
   box-shadow:0 2px 5px rgba(22,42,64,.06);
   transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
-.service-card--general{background:linear-gradient(135deg,#eef4fb 0%,#dce9f6 100%)}
-.service-card--skin{background:linear-gradient(135deg,#f5f1ea 0%,#e9e1d4 100%)}
-.service-card--hormone{background:linear-gradient(135deg,#edf3f4 0%,#d9e7e9 100%)}
-.service-card--mind{background:linear-gradient(135deg,#f1f0f7 0%,#e2e0ee 100%)}
+/* One shared surface across the row: the per-service tints are gone on the
+   client's call, so the cards read as one set rather than four colours. */
+.service-card--general,.service-card--skin,
+.service-card--hormone,.service-card--mind{background:var(--landing-surface-tint)}
 .service-card__title{
   position:relative;
   z-index:2;
@@ -3101,7 +3108,6 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   text-shadow:none;
 }
 .care-banner--weight .care-banner__badges em{
-  border-color:rgba(17,27,48,.14);
   background:rgba(255,255,255,.82);
 }
 a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:70% center}
@@ -3143,12 +3149,20 @@ a[data-category="hair-skin"].care-banner-grid__sub{
    mix-blend-mode:luminosity, which drops the photo's own color and repaints it
    in the card background's hue — that is what turned this one sepia. Only the
    card background color differs between these tiles now. */
+/* Client: crop past both faces. The source frames the couple from the head
+   down, so the tile scales in and anchors low, leaving the torsos and the
+   joined hands. transform-origin keeps the hover scale working from the same
+   point instead of drifting back up to the faces. */
 a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
-  object-position:62% 55%;
+  object-position:66% 100%;
+  transform:scale(1.62);
+  transform-origin:66% 100%;
   opacity:1;
   filter:none;
   mix-blend-mode:normal;
 }
+a[data-category="sexual-health"].care-banner-grid__sub:hover .service-tile__bg,
+a[data-category="sexual-health"].care-banner-grid__sub:focus-visible .service-tile__bg{transform:scale(1.7)}
 a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:79% center}
 .care-banner--weight .care-banner__shade{
   background:linear-gradient(90deg,rgba(45,51,68,.68) 0%,rgba(45,51,68,.24) 54%,transparent 78%);
@@ -3164,7 +3178,6 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   text-shadow:0 2px 16px rgba(12,22,31,.2);
 }
 .care-banner--weight .care-banner__badges em{
-  border-color:rgba(255,255,255,.3);
   background:rgba(255,255,255,.14);
   color:#fff;
   backdrop-filter:blur(7px);
