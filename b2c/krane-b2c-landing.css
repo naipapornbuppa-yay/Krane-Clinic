@@ -2417,7 +2417,7 @@ body{background:var(--landing-page-bg)}
   font:600 clamp(36px,4.8vw,66px)/1.1 "Prompt","Noto Sans Thai",sans-serif;
   letter-spacing:-.035em;
 }
-.trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:1260px;margin:0 auto 52px}
+.trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;justify-items:center;max-width:1260px;margin:0 auto 52px}
 /* Client 16 Aug: the seal is the credential, so each row is just the logo and
    one supporting line beside it. No card surface, no plate behind the logo, and
    the long headings are gone from the markup. */
@@ -2496,7 +2496,7 @@ body{background:var(--landing-page-bg)}
 .expert-card--identity>div:last-child{padding:20px}
 
 @media(max-width:960px){
-  .trust-grid{grid-template-columns:1fr}
+  .trust-grid{grid-template-columns:1fr;justify-items:center;max-width:420px}
   .privacy-section{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .steps li{min-height:0}
@@ -3165,7 +3165,7 @@ a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
 }
 a[data-category="sexual-health"].care-banner-grid__sub:hover .service-tile__bg,
 a[data-category="sexual-health"].care-banner-grid__sub:focus-visible .service-tile__bg{transform:scale(1.7)}
-a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:79% center}
+a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:72% center}
 .care-banner--weight .care-banner__shade{
   background:linear-gradient(90deg,rgba(88,42,30,.56) 0%,rgba(88,42,30,.2) 54%,transparent 78%);
 }
@@ -3188,8 +3188,26 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   background:var(--landing-navy);
   color:#fff;
 }
-@media(max-width:520px){
+/* Narrow tiles crop hard, so the desktop zoom is eased right down here: at
+   phone width 1.62x cut the ED couple in half. The hair source keeps all of its
+   subject in the right third of the frame, so anchoring near 58% showed mostly
+   empty gradient; it pulls right to sit the hair against the label. */
+@media(max-width:780px){
   .care-banner--weight>img.care-banner__photo{object-position:72% center}
-  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:68% 55%}
-  a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:58% center}
+  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
+    object-position:70% 92%;
+    transform:scale(1.12);
+    transform-origin:70% 92%;
+  }
+  a[data-category="sexual-health"].care-banner-grid__sub:hover .service-tile__bg,
+  a[data-category="sexual-health"].care-banner-grid__sub:focus-visible .service-tile__bg{transform:scale(1.16)}
+  a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:76% center}
+}
+@media(max-width:520px){
+  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
+    object-position:72% 94%;
+    transform:scale(1.05);
+    transform-origin:72% 94%;
+  }
+  a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:80% center}
 }
