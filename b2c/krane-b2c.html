@@ -4368,14 +4368,25 @@
     renderedIntakeContext = key;
   }
 
+  /* Screens that only exist after every intake question is answered (account
+     creation through the last stage-1 gate before matching). intakeStepOrder()
+     doesn't count these as steps, so without an explicit width here the fill
+     bar for stage 1 was left at its default 0%, i.e. invisible, even though
+     the intake portion of that stage is already done. */
+  const POST_INTAKE_STAGE1_SCREENS = ['signup','login','social-confirm','identity','otp','consent-terms','patient-info','insurance-result'];
+
   function updateIntakeProgress(id){
     /* Derived from the Direct F02 route only. A concern that skips an optional
        detail or photo still reaches 100% before account creation. SCR-DIR-02E
        is a separate F05 gate and therefore never extends this progress run. */
     const order = intakeStepOrder();
     const index = order.indexOf(id);
-    if(index < 0) return;
     const screen = document.getElementById(id);
+    if(index < 0){
+      const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
+      if(fill) fill.style.width = POST_INTAKE_STAGE1_SCREENS.includes(id) ? '100%' : '0%';
+      return;
+    }
     const questionPage=intakeQuestionPageState(screen);
     const screenFraction=questionPage.total ? (questionPage.index+1)/questionPage.total : 1;
     const pct = Math.round(((index + screenFraction) / order.length) * 100);
