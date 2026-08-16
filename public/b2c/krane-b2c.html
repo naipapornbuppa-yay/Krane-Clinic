@@ -25,7 +25,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260815-core-palette-v2">
-<link rel="stylesheet" href="components.css?v=20260816-payment-deadline-v1">
+<link rel="stylesheet" href="components.css?v=20260816-payment-deadline-1h-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
 <script src="../krane-golden-fixture.js"></script>
@@ -1523,8 +1523,8 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
     <div class="payment-deadline" data-payment-deadline role="status" aria-live="polite">
       <span class="payment-deadline__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg></span>
-      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 2 ชั่วโมง</strong><small data-payment-deadline-copy>ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ</small></span>
-      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT2H">02:00:00</time>
+      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 1 ชั่วโมง</strong><small data-payment-deadline-copy>ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ</small></span>
+      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT1H">01:00:00</time>
       <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
     </div>
     <div class="screen__body stack-4">
@@ -1713,8 +1713,8 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">หน้าชำระเงินของธนาคาร</span></div>
     <div class="payment-deadline" data-payment-deadline role="status" aria-live="polite">
       <span class="payment-deadline__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg></span>
-      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 2 ชั่วโมง</strong><small data-payment-deadline-copy>เวลาที่เหลือสำหรับออเดอร์นี้</small></span>
-      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT2H">02:00:00</time>
+      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 1 ชั่วโมง</strong><small data-payment-deadline-copy>เวลาที่เหลือสำหรับออเดอร์นี้</small></span>
+      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT1H">01:00:00</time>
       <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
     </div>
     <div class="screen__body stack-4">
@@ -4808,11 +4808,15 @@
     flowState.orderState.stockLocked=false;
     flowState.orderState.paymentExpiresAt=null;
   }
-  const PAYMENT_WINDOW_MS=2*60*60*1000;
+  const PAYMENT_WINDOW_MS=60*60*1000;
   let paymentDeadlineTimer=null;
   function ensurePaymentDeadline(){
     const expiresAt=Number(flowState.orderState.paymentExpiresAt);
-    if(Number.isFinite(expiresAt) && expiresAt>0) return expiresAt;
+    if(Number.isFinite(expiresAt) && expiresAt>0){
+      const oneHourLimit=Date.now()+PAYMENT_WINDOW_MS;
+      if(expiresAt>oneHourLimit){ flowState.orderState.paymentExpiresAt=oneHourLimit; persistFlowState(); return oneHourLimit; }
+      return expiresAt;
+    }
     flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
     persistFlowState();
     return flowState.orderState.paymentExpiresAt;
@@ -4838,7 +4842,7 @@
       const copy=deadline.querySelector('[data-payment-deadline-copy]');
       const time=deadline.querySelector('[data-payment-deadline-time]');
       const retry=deadline.querySelector('[data-payment-deadline-retry]');
-      if(title) title.textContent=expired ? 'หมดเวลาชำระเงินแล้ว' : 'กรุณาชำระเงินภายใน 2 ชั่วโมง';
+      if(title) title.textContent=expired ? 'หมดเวลาชำระเงินแล้ว' : 'กรุณาชำระเงินภายใน 1 ชั่วโมง';
       if(copy) copy.textContent=expired ? 'ให้ร้านยายืนยันสต็อกและยอดอีกครั้งก่อนชำระเงิน' : 'ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ';
       if(time){ time.textContent=formatPaymentCountdown(remaining); time.setAttribute('datetime',expired ? 'PT0S' : `PT${Math.ceil(remaining/1000)}S`); }
       if(retry) retry.hidden=!expired;

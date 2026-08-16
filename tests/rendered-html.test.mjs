@@ -453,16 +453,16 @@ test("payment totals and pharmacy fallback remain consistent across edge states"
   assert.doesNotMatch(fallbackHandler[1], /show\('refund'\)|show\('pharmacy-search'\)|show\('pharmacypending'\)/);
 });
 
-test("medication payment holds the order for two hours with one persistent countdown", async () => {
+test("medication payment holds the order for one hour with one persistent countdown", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
   const payment = screenFragment(html, "payment");
   const gateway = screenFragment(html, "payment-gw");
 
-  assert.match(payment, /data-payment-deadline[\s\S]*กรุณาชำระเงินภายใน 2 ชั่วโมง[\s\S]*02:00:00/, "checkout must show the two-hour window above its content");
-  assert.match(gateway, /data-payment-deadline[\s\S]*กรุณาชำระเงินภายใน 2 ชั่วโมง[\s\S]*02:00:00/, "the hosted payment step must retain the same deadline");
+  assert.match(payment, /data-payment-deadline[\s\S]*กรุณาชำระเงินภายใน 1 ชั่วโมง[\s\S]*01:00:00/, "checkout must show the one-hour window above its content");
+  assert.match(gateway, /data-payment-deadline[\s\S]*กรุณาชำระเงินภายใน 1 ชั่วโมง[\s\S]*01:00:00/, "the hosted payment step must retain the same deadline");
   assert.equal((html.match(/data-payment-deadline role="status"/g) || []).length, 2, "only the two payment screens should own deadline banners");
-  assert.match(html, /const PAYMENT_WINDOW_MS=2\*60\*60\*1000/);
+  assert.match(html, /const PAYMENT_WINDOW_MS=60\*60\*1000/);
   assert.match(html, /paymentExpiresAt=Date\.now\(\)\+PAYMENT_WINDOW_MS[\s\S]*persistFlowState\(\)/, "the order deadline must persist instead of resetting on refresh");
   assert.match(html, /setInterval\(renderPaymentDeadline,1000\)/, "the visible timer must update once per second");
   assert.match(html, /if\(paymentDeadlineExpired\(\)\)[\s\S]*หมดเวลาชำระเงิน/, "expired orders must be blocked before the gateway and payment submission");
