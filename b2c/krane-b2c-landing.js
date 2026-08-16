@@ -103,7 +103,7 @@
       trustClinicEyebrow: "Licensed clinic",
       trustClinicTitle: "Private 1-to-1 telemedicine",
       trustClinicBody: "Telemedicine services are provided by licensed doctors.",
-      trustClinicSeal: "Endorsed by the Medical Council of Thailand",
+      trustClinicSeal: "Endorsed by the Ministry of Public Health",
       trustClinicLicense: "Clinic licence no. 10101017669",
       trustMedicineEyebrow: "Authentic medicine, delivered home",
       trustMedicineTitle: "Medicine and delivery assurance",
