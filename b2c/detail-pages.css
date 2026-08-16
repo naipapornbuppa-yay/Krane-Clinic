@@ -114,6 +114,34 @@ a{color:inherit;text-decoration:none}
 .doctors-closing{margin-top:16px;padding:72px 48px;border:1px solid var(--color-line);border-radius:40px;background:var(--color-bg-soft);text-align:center}
 .doctors-closing h2{max-width:780px;margin:14px auto 0;font-size:clamp(36px,5vw,62px);font-weight:500;line-height:1.12;letter-spacing:-.04em}
 .doctors-closing .detail-cta{margin-inline:auto}
+body.doctor-dialog-open{overflow:hidden}
+.doctor-profile-dialog{
+  width:min(720px,49vw);max-width:none;height:100vh;height:100dvh;max-height:none;margin:0 0 0 auto;padding:0;
+  overflow:auto;border:0;border-radius:0;background:#f6f2ec;color:var(--color-ink);box-shadow:-28px 0 80px rgba(11,20,35,.2);
+  animation:doctor-dialog-enter .34s cubic-bezier(.2,.8,.2,1) both
+}
+.doctor-profile-dialog::backdrop{background:rgba(10,17,29,.56);backdrop-filter:blur(1px);animation:doctor-backdrop-enter .24s ease both}
+.doctor-profile-dialog__panel{min-height:100%;background:#f6f2ec}
+.doctor-profile-dialog__close{position:fixed;top:24px;right:24px;z-index:4;display:grid;width:52px;height:52px;place-items:center;padding:0;border:1px solid rgba(17,35,60,.18);border-radius:50%;background:rgba(255,255,255,.92);color:var(--color-ink);cursor:pointer;backdrop-filter:blur(12px)}
+.doctor-profile-dialog__close svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.doctor-profile-dialog__media{height:min(50vh,500px);overflow:hidden;background:#e9e5df}
+.doctor-profile-dialog__media>img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 12%}
+.doctor-profile-dialog__media--identity{display:grid;place-items:center;background:linear-gradient(145deg,#dce7f4,#eef2f5)}
+.doctor-profile-dialog__identity{display:grid;gap:16px;text-align:center}
+.doctor-profile-dialog__identity b{font-size:88px;font-weight:500;letter-spacing:-.07em}
+.doctor-profile-dialog__identity small{max-width:28ch;color:var(--color-ink-2);font-size:15px;line-height:1.5}
+.doctor-profile-dialog__content{padding:clamp(32px,4vw,58px)}
+.doctor-profile-dialog__content h2{margin:10px 0 0;font-size:clamp(34px,3.5vw,50px);font-weight:500;line-height:1.18;letter-spacing:-.035em}
+.doctor-profile-dialog__role{margin:8px 0 0;color:#2f394b;font-size:17px;font-weight:600;line-height:1.5}
+.doctor-profile-dialog__bio{max-width:54ch;margin:28px 0 0;color:#344054;font-size:17px;line-height:1.75}
+.doctor-profile-dialog__facts{display:grid;gap:0;margin:34px 0 0}
+.doctor-profile-dialog__facts>div{padding:20px 0;border-top:1px solid rgba(17,35,60,.14)}
+.doctor-profile-dialog__facts dt{color:#667186;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.doctor-profile-dialog__facts dd{margin:7px 0 0;color:#263147;font-size:15px;line-height:1.65}
+.doctor-profile-dialog__cta{display:inline-flex;min-height:54px;align-items:center;gap:28px;margin-top:18px;padding:0 22px;border-radius:999px;background:#111b30;color:#fff;font-weight:600}
+.doctor-profile-dialog__cta svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes doctor-dialog-enter{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes doctor-backdrop-enter{from{opacity:0}to{opacity:1}}
 :where(a,button):focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
 @media(hover:hover){
   .detail-back:hover{background:var(--color-bg-soft)}
@@ -135,6 +163,7 @@ a{color:inherit;text-decoration:none}
   .doctors-featured{min-height:520px}
   .doctor-directory{padding:48px 24px}
   .doctor-directory__grid{grid-template-columns:1fr}
+  .doctor-profile-dialog{width:min(760px,72vw)}
 }
 @media(max-width:520px){
   body{padding:16px}
@@ -175,4 +204,12 @@ a{color:inherit;text-decoration:none}
   .doctor-directory-card__body>strong{font-size:20px}
   .doctors-closing{margin-top:12px;padding:48px 20px;border-radius:28px}
   .doctors-closing h2{font-size:36px}
+  .doctor-profile-dialog{width:100%;height:100dvh}
+  .doctor-profile-dialog__close{top:14px;right:14px;width:46px;height:46px}
+  .doctor-profile-dialog__media{height:43vh;min-height:310px}
+  .doctor-profile-dialog__content{padding:28px 22px 44px}
+  .doctor-profile-dialog__content h2{font-size:33px}
+  .doctor-profile-dialog__bio{font-size:15px}
+  .doctor-profile-dialog__cta{width:100%;justify-content:space-between}
 }
+@media(prefers-reduced-motion:reduce){.doctor-profile-dialog,.doctor-profile-dialog::backdrop{animation:none}}
