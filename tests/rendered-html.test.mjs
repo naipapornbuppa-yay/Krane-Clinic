@@ -29,6 +29,9 @@ test("doctor navigation opens a dedicated, complete medical-team directory", asy
   assert.equal((doctors.match(/href="doctor-detail\.html\?doctor=[1-4]"/g) || []).length, 5, "featured doctor plus four directory cards");
   assert.match(doctors, /วิธีที่ทีมแพทย์ร่วมออกแบบการดูแล/);
   assert.match(detail, /class="detail-back" href="doctors\.html"/);
+  assert.match(doctors, /class="doctors-featured" href="doctor-detail\.html\?doctor=2"[\s\S]*client-doctor-ploy\.png/);
+  assert.match(doctors, /class="doctor-directory__grid">\s*<a class="doctor-directory-card" href="doctor-detail\.html\?doctor=2"/);
+  assert.match(detail, /"2": \{[\s\S]*image: "assets\/landing-573\/doctors\/client-doctor-ploy\.png"/);
 });
 
 function assetFile(fromFile, reference) {
