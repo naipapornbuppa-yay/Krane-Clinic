@@ -5359,10 +5359,19 @@
       enterTimer = setTimeout(() => scr.classList.remove('is-entering'), 1600);
     }
     if(id === 'consent-terms'){
-      // Reading and checkbox progress survives Back/forward navigation. Accepted
-      // consent is never cleared merely because a user re-verifies a phone number.
+      // Client (16 Aug): every visit requires a fresh scroll-through, never a
+      // continue button that's already enabled from a previous pass.
+      consentRead.pdpa = false; consentRead.telemedicine = false;
+      consentChecked.pdpa = false; consentChecked.telemedicine = false;
+      flowState.consentRead = Object.assign({},consentRead);
+      flowState.consentChecked = Object.assign({},consentChecked);
+      persistFlowState();
       Object.keys(consentRead).forEach(renderConsentReadState);
       syncConsentContinue();
+      const cue=document.querySelector('[data-consent-scroll-cue]');
+      if(cue) cue.hidden=false;
+      const scrollBox=document.querySelector('[data-consent-page-scroll]');
+      if(scrollBox) scrollBox.scrollTop=0;
     }
     if(id === 'patient-info'){
       // Direct Krane visitors self-pay by default. Keep an explicit insurance

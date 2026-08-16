@@ -384,9 +384,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .steps li::before{content:"";position:absolute;top:40px;bottom:0;left:20px;width:1px;background:var(--landing-navy);transform-origin:top}
 .step-number{position:relative;z-index:1;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--landing-navy);color:#fff;font-size:16px;font-weight:600}
 .motion-enabled .steps li.reveal-item::before{opacity:0;transform:scaleY(0);transition:transform .82s cubic-bezier(.65,0,.35,1),opacity .24s ease-in-out;transition-delay:calc(var(--reveal-delay,0ms) + 140ms)}
-.motion-enabled .steps li.reveal-item .step-number{transform:scale(.82);transition:transform .62s cubic-bezier(.34,1.56,.64,1);transition-delay:calc(var(--reveal-delay,0ms) + 60ms)}
 .motion-enabled .steps li.is-revealed::before{opacity:1;transform:scaleY(1)}
-.motion-enabled .steps li.is-revealed .step-number{transform:none}
 .steps h3{font-size:23px;font-weight:400;line-height:1.45;color:#1b2a4a}
 .steps p{margin-top:12px;color:#1b2a4a;font-size:15px;line-height:1.5}
 
@@ -650,7 +648,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   .how{min-height:auto;padding:64px 42px 0;gap:48px}
   .steps{height:auto;min-height:260px;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 24px}
   .steps li{grid-template-columns:36px minmax(0,1fr);gap:14px}
-  .steps li::before{top:36px;left:18px}
+  .steps li::before{top:36px;left:44px}
   .step-number{width:36px;height:36px}
   .steps h3{font-size:23px}
   .protocol{min-height:auto;padding:64px 24px;border-radius:var(--section-radius)}
@@ -2412,19 +2410,20 @@ body{background:var(--landing-page-bg)}
 }
 .trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:1260px;margin:0 auto 52px}
 .trust-card{
-  min-height:350px;
-  padding:30px;
-  border:1px solid rgba(17,35,60,.1);
+  display:flex;
+  align-items:flex-start;
+  gap:18px;
+  min-height:0;
+  padding:26px;
+  border:0;
   border-radius:36px;
-  background:#fff;
-  box-shadow:0 20px 55px rgba(17,35,60,.06);
+  background:#F0EEE6;
+  box-shadow:none;
 }
-.trust-card--clinic{background:#e9f2ee}
-.trust-card--medicine{background:#f4efe8}
-.trust-card--security{background:#e8eef9}
-.trust-card__icon{display:grid;width:54px;height:54px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy)}
+.trust-card__icon{flex:0 0 auto;display:grid;width:54px;height:54px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy)}
 .trust-card__icon svg{width:25px;height:25px}
-.trust-card__eyebrow{margin:54px 0 8px;color:#56637a;font:600 14px/1.5 "Prompt","Noto Sans Thai",sans-serif}
+.trust-card__body{min-width:0}
+.trust-card__eyebrow{margin:0 0 8px;color:#56637a;font:600 14px/1.5 "Prompt","Noto Sans Thai",sans-serif}
 .trust-card h3{color:var(--landing-navy);font:600 clamp(24px,2.2vw,34px)/1.25 "Prompt","Noto Sans Thai",sans-serif;letter-spacing:-.025em}
 .trust-card>p:last-of-type{max-width:34ch;margin-top:12px;color:#536078;font-size:15px;line-height:1.65}
 .trust-card__license,.trust-card__wordmark{display:inline-flex;align-items:center;margin-top:20px;border-radius:999px;background:#fff;color:var(--landing-navy);font-weight:700}
@@ -2450,17 +2449,23 @@ body{background:var(--landing-page-bg)}
 .privacy-list p{margin-top:4px;color:#59657a;font-size:15px;line-height:1.6}
 
 .steps{height:auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
-.steps li{min-height:270px;padding:26px;border-radius:28px;background:#f5f7fa;grid-template-columns:40px minmax(0,1fr)}
-.steps li::before{bottom:26px}
+.steps li{min-height:270px;padding:26px;border-radius:28px;background:transparent;grid-template-columns:40px minmax(0,1fr)}
+.steps li::before{bottom:26px;left:46px}
 .steps h3{font-weight:600}
 .steps p{line-height:1.7}
 .how__note{max-width:760px;margin:22px 0 0 auto;color:#667186;font-size:12px;line-height:1.6;text-align:right}
 /* The card grid above is a wide-viewport layout that was never scoped to a
    min-width query, so its bottom:26px was quietly cutting the connector
    line short on the stacked mobile layout below. Restore the line that
-   reaches into the gap toward the next step on narrow screens. */
+   reaches into the gap toward the next step on narrow screens.
+   left is padding-left + half the circle's width at each breakpoint (the
+   line's left offset is relative to the padding edge, not the content edge,
+   so it must include the card's own padding to land on the circle's center). */
+@media(max-width:960px){
+  .steps li::before{left:44px}
+}
 @media(max-width:700px){
-  .steps li::before{bottom:-24px}
+  .steps li::before{bottom:-24px;left:39px}
 }
 
 .expert-card--identity{display:flex;flex-direction:column}
@@ -2481,8 +2486,6 @@ body{background:var(--landing-page-bg)}
 
 @media(max-width:960px){
   .trust-grid{grid-template-columns:1fr}
-  .trust-card{min-height:290px}
-  .trust-card__eyebrow{margin-top:34px}
   .privacy-section{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .steps li{min-height:0}
@@ -2495,8 +2498,7 @@ body{background:var(--landing-page-bg)}
   .trust-section,.privacy-section{padding-block:56px}
   .trust-section__heading{margin-bottom:28px;text-align:left}
   .trust-grid{gap:10px;margin-bottom:34px}
-  .trust-card{min-height:260px;padding:24px;border-radius:28px}
-  .trust-card__eyebrow{margin-top:30px}
+  .trust-card{padding:20px;border-radius:24px;gap:14px}
   .privacy-list li{grid-template-columns:44px 1fr;padding:19px;border-radius:22px}
   .privacy-list>li>svg{width:44px;height:44px;padding:12px}
   .steps{gap:10px}
@@ -2563,7 +2565,7 @@ body{background:var(--landing-page-bg)}
   min-height:58px;
   align-items:center;
   justify-content:center;
-  gap:10px;
+  gap:6px;
   margin-top:30px;
   padding:0 24px;
   border-radius:999px;
@@ -2657,8 +2659,8 @@ body.expert-open{overflow:hidden}
   width:clamp(286px,24vw,360px);
   height:auto;
   min-height:650px;
-  overflow:visible;
-  border-radius:0;
+  overflow:hidden;
+  border-radius:32px;
   background:transparent;
   scroll-snap-align:start;
   transition:transform .28s var(--ease);
@@ -2865,7 +2867,7 @@ body.expert-open{overflow:hidden}
 .service-tile:hover>svg,.service-tile:focus-visible>svg{transform:translateX(3px)}
 .service-tile:hover .service-tile__bg,.service-tile:focus-visible .service-tile__bg{transform:scale(1.05)}
 a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:38% center}
-a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:24% center}
+a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:80% center}
 
 /* Client (16 Aug): one card color, not four unrelated hues, and it should read
    as the same family as the page background rather than a bold color block. */
