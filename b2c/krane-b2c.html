@@ -1528,7 +1528,7 @@
         <h2 class="h1">Pharmacist reviewing your order</h2>
         <p class="muted">A licensed pharmacist is confirming the prescription, stock and final price before payment.</p>
       </div>
-      <div class="state-view__timer">Usually under 5 minutes</div>
+      <div class="state-view__timer" data-ph-countdown>00:10</div>
     </div>
   </section>
 
@@ -4383,7 +4383,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -5532,13 +5532,14 @@
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
-    clearTimeout(phTimer); clearTimeout(phFailTimer);
+    clearTimeout(phTimer); clearTimeout(phFailTimer); clearInterval(phCountdownTimer);
     const pScr = document.getElementById('pharmacy-search');
     if(id === 'pharmacy-search' && pScr){
       const thai=document.documentElement.lang==='th';
       const heading = pScr.querySelector('[data-ph-heading] .h1');
       const hint = pScr.querySelector('[data-ph-heading] .muted');
       const graphic = pScr.querySelector('[data-ph-graphic]');
+      const phCountdown = pScr.querySelector('[data-ph-countdown]');
       if(graphic){
         graphic.classList.remove('state-view__visual--danger');
         graphic.classList.add('state-view__visual--loading');
@@ -5550,6 +5551,16 @@
       if(hint) hint.textContent = pharmacyRetryCount
         ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.')
         : (thai ? 'เภสัชกรกำลังตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน' : 'Checking the prescription, stock and final price before payment.');
+      // Same 10-second hold as matching: a live countdown that reaches zero at
+      // the same moment the pharmacist handoff happens, instead of a static estimate.
+      let phSecondsRemaining=10;
+      paintWaitCountdown(phCountdown,phSecondsRemaining);
+      phCountdownTimer=setInterval(() => {
+        if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
+        phSecondsRemaining=Math.max(0,phSecondsRemaining-1);
+        paintWaitCountdown(phCountdown,phSecondsRemaining);
+        if(phSecondsRemaining===0) clearInterval(phCountdownTimer);
+      },1000);
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
         if(pharmacyForceDecline){
@@ -5586,7 +5597,7 @@
         persistFlowState();
         replaceCurrent('payment');
         showActionToast('ร้านยายืนยันสต็อก สาขา และราคาสุทธิแล้ว','success');
-      }, 3600);
+      }, 10000);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
     clearTimeout(waitTimer);
