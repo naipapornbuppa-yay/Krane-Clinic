@@ -4364,7 +4364,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -5439,19 +5439,12 @@
       refreshMedicationCheckout();
     }
     if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
-    clearTimeout(paymentSuccessTimer);
-    if(id==='payment-success'){
-      syncPaymentOutcome();
-      paymentSuccessTimer=setTimeout(() => {
-        if(!document.getElementById('payment-success')?.classList.contains('active')) return;
-        if(hasFulfillableItems()) replaceCurrent('pharmacypending');
-        else {
-          flowState.documentsUnlocked=true;
-          persistFlowState();
-          replaceCurrent('prescription');
-        }
-      },reduceMotion ? 450 : 2200);
-    }
+    /* Pharmacy verification (stock, prescription, final price) now runs before
+       payment, not after: pharmacy-search confirms fulfilment and returns to
+       #payment already locked in, so nothing is left to check once payment
+       succeeds. Paying ends here — the patient continues on their own via
+       "ติดตามคำสั่งซื้อ" or "ดูใบเสร็จ", not on an automatic timer into
+       #pharmacypending/#prescription. */
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
