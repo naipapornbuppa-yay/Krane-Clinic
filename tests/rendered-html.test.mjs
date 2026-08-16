@@ -471,6 +471,21 @@ test("medication payment holds the order for one hour with one persistent countd
   assert.match(css, /\.payment-deadline\[data-expired="true"\]/);
 });
 
+test("medication checkout supports delivery and free store pickup", async () => {
+  const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
+  const css = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
+  const payment = screenFragment(html, "payment");
+
+  assert.match(payment, /role="tablist" aria-label="วิธีรับยา"[\s\S]*data-fulfillment-mode-option="delivery"[\s\S]*data-fulfillment-mode-option="pickup"/, "checkout must expose an accessible delivery/pickup switch");
+  assert.match(payment, /data-fulfillment-panel="delivery"[\s\S]*data-fulfillment-panel="pickup"[\s\S]*ร้านยาฟาสซิโน สาขาใกล้คุณ/, "each fulfilment mode must own a distinct detail panel");
+  assert.match(html, /fulfillmentMode:'delivery'/, "delivery remains the safe default for existing orders");
+  assert.match(html, /const pickup=flowState\.orderState\.fulfillmentMode==='pickup'[\s\S]*if\(!pickup && !\(flowState\.orderState\.addressConfirmed/, "pickup must not require a delivery address");
+  assert.match(html, /function deliveryFeeFor\([\s\S]*fulfillmentMode==='pickup'\) return 0/, "store pickup must have no delivery fee");
+  assert.match(html, /const fulfillmentModeChoice=e\.target\.closest\('\[data-fulfillment-mode-option\]'\)[\s\S]*invalidateFulfillmentQuote\(\)[\s\S]*refreshMedicationCheckout\(\)/, "changing fulfilment mode must invalidate and recalculate the pharmacy quote");
+  assert.match(html, /paidDeliveryMethod=flowState\.orderState\.fulfillmentMode==='pickup' \? 'pickup'/, "the paid order must retain pickup as its outcome");
+  assert.match(css, /\.checkout-fulfillment-switch\{[\s\S]*\.checkout-pickup-row\{/);
+});
+
 test("post-consultation checkout carries the accepted order into delivery and payment outcomes", async () => {
   const html = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const plan = screenFragment(html, "plan");
@@ -496,7 +511,7 @@ test("post-consultation checkout carries the accepted order into delivery and pa
   assert.doesNotMatch(quote, /ยืนยันการชำระเงินแล้ว|payment is confirmed/i, "the pre-payment quote must not claim that payment already happened");
   assert.match(html, /id==='delivery-quote'[\s\S]*invalidateFulfillmentQuote\(\)[\s\S]*replaceCurrent\('pharmacy-search'\)/, "the delivery estimate must continue to pharmacy review without unlocking payment");
   assert.match(html, /id === 'pharmacy-search'[\s\S]*deliveryQuoteStatus='accepted'[\s\S]*stockLocked=true[\s\S]*replaceCurrent\('payment'\)/, "pharmacy review must lock stock and final price before checkout");
-  assert.match(html, /const lockedDeliveryFee=flowState\.orderState\.deliveryMethod==='same-day' \? calculatedSameDayDeliveryFee\(\) : 0;[\s\S]*deliveryQuoteStatus='accepted';[\s\S]*deliveryQuoteAmount=lockedDeliveryFee/, "the final delivery fee must be calculated before the quote becomes accepted");
+  assert.match(html, /const lockedDeliveryFee=flowState\.orderState\.fulfillmentMode==='pickup' \? 0 : \(flowState\.orderState\.deliveryMethod==='same-day' \? calculatedSameDayDeliveryFee\(\) : 0\);[\s\S]*deliveryQuoteStatus='accepted';[\s\S]*deliveryQuoteAmount=lockedDeliveryFee/, "the final delivery or pickup fee must be calculated before the quote becomes accepted");
   assert.match(html, /const SIM_PLACES = \[[\s\S]*subdistrict:[\s\S]*districtName:[\s\S]*province:[\s\S]*postcode:[\s\S]*function applyAddress\(place\)[\s\S]*set\('addrSubdistrict',place\.subdistrict\)[\s\S]*set\('addrPostcode',place\.postcode\)/, "mock map selection must prefill every structured address field");
 
   const planItems = [...plan.matchAll(/data-order-item="([^"]+)"/g)].map((match) => match[1]);
