@@ -3954,7 +3954,7 @@
     const counter=state.body.querySelector('[data-intake-question-count]');
     if(counter){
       const thai=document.documentElement.lang==='th';
-      counter.textContent=thai ? `คำถาม ${nextIndex+1} / ${state.total}` : `Question ${nextIndex+1} of ${state.total}`;
+      counter.textContent=`${nextIndex+1} / ${state.total}`;
     }
     const continueButton=state.screen.querySelector('.screen__footer .btn--primary[data-go]');
     if(continueButton){
@@ -3995,11 +3995,14 @@
     });
     let counter=titleBlock?.querySelector('[data-intake-question-count]');
     if(titleBlock && questions.length>1 && !counter){
-      counter=document.createElement('p');
+      // Sits inline after the heading itself, not appended below the hint text.
+      counter=document.createElement('span');
       counter.className='intake-question-count';
       counter.dataset.intakeQuestionCount='';
       counter.setAttribute('aria-live','polite');
-      titleBlock.appendChild(counter);
+      const heading=titleBlock.querySelector('.h1');
+      if(heading) heading.appendChild(counter);
+      else titleBlock.appendChild(counter);
     }
     if(counter) counter.hidden=questions.length<=1;
     if(reset || body.dataset.intakeQuestionIndex===undefined) body.dataset.intakeQuestionIndex='0';
