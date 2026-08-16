@@ -3101,13 +3101,17 @@
   // once there is something to save, so "หัวข้อปรึกษา" is step 1 and the account plus
   // health record is step 2. If the client wants ข้อมูลผู้รับบริการ back at step 1,
   // swap the first two entries here and move patient-info ahead of concern.
-  const careJourneyLabels = ['อาการที่ปรึกษา','รายละเอียดผู้รับบริการ','การชำระเงิน','การปรึกษาแพทย์','การสั่งยาและจัดส่ง'];
-  const careJourneyShort  = ['Concern','Details','Payment','Doctor','Order'];
+  /* Five underlying stages, shown as three grouped segments: intake+account
+     (1+2), consultation fee through the doctor visit (3+4), and fulfilment
+     (5) stand alone. Grouping only changes what's drawn here; every screen
+     still maps to its own specific stage below. */
+  const careJourneyLabels = ['ข้อมูลเบื้องต้น','พบแพทย์','การสั่งยาและจัดส่ง'];
+  const careJourneyShort  = ['Start','Doctor','Order'];
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,'intake-general':1,
-    signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
-    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
-    plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
+    signup:1,login:1,'social-confirm':1,identity:1,otp:1,'consent-terms':1,'patient-info':1,'insurance-result':1,
+    matching:2,choosedoc:2,noslots:2,consultpay:2,'consultpay-gw':2,'consultpay-fail':2,waitroom:2,consult:2,video:2,'rx-writing':2,
+    plan:3,address:3,'delivery-quote':3,'pharmacy-search':3,payment:3,'payment-gw':3,'payment-success':3,payfail:3,pharmacypending:3,pharmacyaccepted:3,pharmacyissue:3,confirm:3,tracking:3
   };
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
