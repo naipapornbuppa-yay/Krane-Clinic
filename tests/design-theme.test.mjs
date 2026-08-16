@@ -10,8 +10,8 @@ test("B2C design system uses the approved cream, navy and royal-blue theme", asy
   const tokens = await readFile(path.join(b2cRoot, "design-tokens.css"), "utf8");
 
   for (const declaration of [
-    "--theme-canvas: #F7F5EE",
-    "--theme-canvas-inset: #EEE9DD",
+    "--theme-canvas: #F7F9FB",
+    "--theme-canvas-inset: #EFF3F7",
     "--theme-surface: #FFFFFF",
     "--theme-ink: #121824",
     "--theme-ink-muted: #495366",
@@ -32,7 +32,7 @@ test("B2C design system uses the approved cream, navy and royal-blue theme", asy
 test("primary B2C documents expose the approved browser chrome colour and cache key", async () => {
   for (const file of ["krane-b2c.html", "krane-b2c-landing.html", "condition-detail.html"]) {
     const html = await readFile(path.join(b2cRoot, file), "utf8");
-    assert.match(html, /<meta name="theme-color" content="#F7F5EE">/);
-    assert.match(html, /design-tokens\.css\?v=20260815-core-palette-v2/);
+    assert.match(html, /<meta name="theme-color" content="#F7F9FB">/);
+    assert.match(html, /design-tokens\.css\?v=20260816-sections-idcard-v8/);
   }
 });

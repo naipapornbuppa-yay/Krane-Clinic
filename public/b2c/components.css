@@ -199,7 +199,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-duration-units button:active{transform:scale(.97)}
 .intake-duration-field{gap:8px}
 .intake-duration-control{max-width:620px}
-.intake-question-count{margin:6px 0 0;color:var(--color-ink-3);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.4}
+/* Sits inline at the end of the heading itself instead of on its own line below it. */
+.h1:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.intake-question-count{flex:none;margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.4;white-space:nowrap}
 [data-intake-question][hidden]{display:none!important}
 
 /* Compact delivery confirmation: the three decisions stay readable without
@@ -405,7 +407,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .state-view__visual--icon{width:auto;height:auto;min-height:0}
 .state-view__stage{
   width:140px;height:140px;display:grid;place-items:center;flex:none;
-  border-radius:50%;background:var(--color-bg-2);box-shadow:none;
+  border-radius:50%;background:transparent;box-shadow:none;
   animation:stage-float 3.6s var(--ease-inout) infinite
 }
 @keyframes stage-float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(4px)}}
@@ -478,11 +480,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   line-height:1.55;text-wrap:pretty
 }
 .state-view__timer{
-  min-width:72px;min-height:42px;max-width:100%;display:inline-block;
-  padding:10px 13px;border:1px solid var(--color-line);border-radius:var(--radius-pill);
-  background:var(--color-surface);color:var(--color-ink);
-  font-size:var(--fs-sm);font-weight:var(--fw-semibold);line-height:1.35;
-  font-variant-numeric:tabular-nums;text-align:center;box-shadow:var(--shadow-sm)
+  min-width:72px;max-width:100%;display:inline-block;
+  padding:0;border:0;border-radius:0;
+  background:transparent;color:var(--color-ink);
+  font-size:var(--fs-lg);font-weight:var(--fw-semibold);line-height:1.35;
+  font-variant-numeric:tabular-nums;text-align:center;box-shadow:none
 }
 /* A stage that ends clears this readout, which used to leave an empty pill sitting
    under the copy. Nothing to say means nothing to show. */
@@ -985,8 +987,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @media(prefers-reduced-motion:reduce){.waitpulse .wp-ring{animation:none;opacity:.4}}
 
 /* ---------- Doctor preparing the treatment plan ---------- */
-#rx-writing{background:#fff}
-#rx-writing .screen__top{background:#fff}
 .rx-waiting{display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:0;padding-top:22px;padding-bottom:22px}
 .rx-waiting__illustration{position:relative;width:min(100%,320px);margin:0 auto}
 .rx-waiting__illustration svg{display:block;width:100%;height:auto}
@@ -1036,7 +1036,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 
 .screen__top{
   display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4);
-  position:relative;width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);min-height:56px;flex:none;
+  position:relative;width:100%;min-width:0;max-width:100%;border-bottom:0;min-height:56px;flex:none;
   background:color-mix(in srgb,var(--color-surface) 88%,transparent);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
@@ -1060,6 +1060,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    use overlay scrollbars, so this costs them nothing. */
 .screen__body{width:100%;min-width:0;max-width:100%;min-height:0;flex:1;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable both-edges;padding:var(--sp-5) var(--sp-4)}
 .screen__body>*{min-width:0;max-width:100%}
+/* .screen__body>* lands later in this file than .state-view__copy and carries the
+   same specificity, so its max-width:100% was silently winning and the state copy
+   stretched to the full width of a tablet or desktop frame instead of holding a
+   readable measure. Restated here with enough specificity to stick. */
+.screen__body>.state-view__copy{max-width:34ch}
 .screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Safari composites a -webkit-backdrop-filter element above later content no matter
    what the z-index says, so the blurred header and footer painted over any overlay
@@ -1094,19 +1099,18 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .action-toast--danger .action-toast__icon{background:rgba(147,69,58,.12);color:var(--color-danger)}
 
 /* bottom nav (Profile / Activities / Notifications / Settings) */
-.bottomnav{position:absolute;left:var(--sp-4);right:var(--sp-4);bottom:var(--sp-4);z-index:5;
-  display:flex;gap:4px;padding:4px;border-radius:var(--radius-lg);overflow:hidden;
-  background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.74);
+.bottomnav{position:absolute;left:0;right:0;bottom:0;z-index:5;
+  display:flex;gap:0;padding:5px 8px max(5px,env(safe-area-inset-bottom));border:0;border-top:1px solid var(--color-line);border-radius:0;overflow:hidden;
+  background:rgba(255,255,255,.94);
   -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
-  box-shadow:0 12px 30px rgba(17,19,24,.12)}
-.screen:has(.bottomnav) .screen__body{padding-bottom:104px}
-.bottomnav a{flex:1;min-width:0;text-align:center;padding:8px 4px 7px;border-radius:var(--radius-sm);color:var(--color-ink-3);font-size:11px;text-decoration:none;font-weight:var(--fw-medium);display:flex;flex-direction:column;align-items:center;gap:3px}
-.bottomnav a .ic{width:24px;height:24px;display:grid;place-items:center}
-.bottomnav a svg{width:21px;height:21px}
+  box-shadow:0 -8px 22px rgba(17,19,24,.07)}
+.screen:has(.bottomnav) .screen__body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+.bottomnav a{flex:1;min-width:0;text-align:center;padding:5px 3px 3px;border-radius:0;background:transparent!important;color:var(--color-ink-3);font-size:10.5px;line-height:1.1;text-decoration:none;font-weight:var(--fw-medium);display:flex;flex-direction:column;align-items:center;gap:2px}
+.bottomnav a .ic{width:21px;height:21px;display:grid;place-items:center}
+.bottomnav a svg{width:19px;height:19px}
 .bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
-/* Active state fills the complete tab, rather than a small pill behind the icon. */
 .bottomnav a{transition:color var(--dur-micro) var(--ease-out),background var(--dur-base) var(--ease-out)}
-.bottomnav a[aria-current="page"]{background:var(--color-powder);color:var(--color-surface-deep);font-weight:var(--fw-semibold)}
+.bottomnav a[aria-current="page"]{color:var(--color-accent);font-weight:var(--fw-semibold)}
 /* motion: the active icon pops with a spring each time you land on the tab */
 .screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:check-pop var(--dur-base) var(--ease-spring)}
 @media(prefers-reduced-motion:reduce){
@@ -1175,7 +1179,7 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
    portrait above it. */
 .video-call-top{position:relative;justify-content:center;background:var(--color-surface);color:var(--color-ink)}
 .video-call-top .transition-stage__close{right:14px}
-#video .callstage--live{background:#405570}
+#video .callstage--live{background:#000}
 #video .callstage--live::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 20%,rgba(255,255,255,.09),transparent 38%),linear-gradient(180deg,rgba(30,45,65,.08),rgba(22,34,50,.25));pointer-events:none}
 #video .call-remote--video{position:absolute;inset:138px 0 auto;aspect-ratio:16/9;height:auto;display:block;padding:0;overflow:hidden;border:0;border-radius:0;background:#6d82a0;box-shadow:0 18px 46px rgba(16,28,43,.28);text-align:left}
 #video .call-remote__video{width:100%;height:100%;border-radius:0;aspect-ratio:auto;object-fit:cover;object-position:center center;mix-blend-mode:normal;filter:saturate(.96) contrast(1.01) brightness(.97)}
@@ -1268,6 +1272,18 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .order-card--action .status-dot{background:var(--color-warning)}
 .order-card--past{box-shadow:none}
 .order-card--past .status-dot{background:var(--color-line-strong)}
+.history-card__summary{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+.history-card__side{display:flex;align-items:center;gap:var(--sp-2);flex:none}
+.history-card__chevron{display:grid;place-items:center;width:24px;height:24px;color:var(--color-ink-3);font-size:22px;line-height:1}
+.treatment-history-card{width:100%;appearance:none;font:inherit;text-align:left;color:inherit}
+.treatment-history-card:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.past-treatment-heading .h1{margin:0}
+.past-treatment-heading .order-meta{display:flex;flex-wrap:wrap;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--color-ink-3)}
+.history-diagnosis{font-size:var(--fs-lg);line-height:var(--lh-tight)}
+@media(max-width:480px){
+  #history .treatment-medication{grid-template-columns:minmax(0,1fr);gap:3px}
+  #history .treatment-medication span:last-child{white-space:normal}
+}
 
 /* Active-treatment actions: one clear next step, then equal secondary paths. */
 .treatment-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-2)}
@@ -1953,12 +1969,28 @@ body.lang-th *{letter-spacing:normal}
 /* True phone viewport: the product shell fills the visible app area while only
    the content region scrolls. The primary action and bottom navigation therefore
    keep one stable baseline across short and long screens. */
+@container screen (max-width:780px){
+  /* The directory rail can make the product surface phone-width while the outer
+     browser is still desktop-width. Mirror the phone gutter from the component's
+     own width so review mode and a real handset stay visually identical. */
+  .screen__top,.screen__body,.screen__footer{inline-size:100%;max-inline-size:100%;margin-inline:0}
+  .screen__top{padding-inline:16px}
+  .screen__body{padding-inline:16px}
+  .screen__footer{padding-inline:16px}
+  .screen__body>.screen__footer{inline-size:calc(100% + 32px);max-inline-size:none;margin-inline:-16px}
+}
 @media(max-width:780px){
   :root{--fs-base:16px;--fs-sm:14px;--fs-xs:13px}
+  /* A phone screen must own the whole stage. Older cached frame rules used a
+     capped screen width, which left the unused width on the right when the
+     browser crossed into the phone breakpoint. Keep every shared screen and
+     its chrome explicitly full-width, then use one symmetric gutter. */
+  .stage>.screen{inline-size:100%;max-inline-size:100%;margin-inline:0}
+  .screen__top,.screen__body,.screen__footer{inline-size:100%;max-inline-size:100%;margin-inline:0}
   .screen__top{min-height:56px;padding:8px 16px}
   .screen__body{padding:16px}
   .screen__footer{padding:12px 16px max(12px,env(safe-area-inset-bottom))}
-  .screen__body>.screen__footer{width:calc(100% + 32px);margin-left:-16px}
+  .screen__body>.screen__footer{inline-size:calc(100% + 32px);max-inline-size:none;margin-inline:-16px}
   .partner-health-grid{grid-template-columns:minmax(0,1fr);gap:16px}
   #intake-general .partner-health-grid{grid-template-columns:minmax(0,1fr);gap:12px}
   #intake-general .partner-clinical-grid{grid-template-columns:minmax(0,1fr);gap:12px}
@@ -1988,12 +2020,6 @@ body.lang-th *{letter-spacing:normal}
   #consent-terms{height:100%;max-height:100%}
   #consent-terms .screen__footer{padding-top:10px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 
-  .bottomnav{left:0;right:0;bottom:0;gap:0;padding:5px 8px max(5px,env(safe-area-inset-bottom));border:0;border-top:1px solid var(--color-line);border-radius:0;background:rgba(255,255,255,.94);box-shadow:0 -8px 22px rgba(17,19,24,.07)}
-  .screen:has(.bottomnav) .screen__body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-  .bottomnav a{padding:5px 3px 3px;border-radius:0;background:transparent!important;font-size:10.5px;line-height:1.1;gap:2px}
-  .bottomnav a .ic{width:21px;height:21px}
-  .bottomnav a svg{width:19px;height:19px}
-  .bottomnav a[aria-current="page"]{color:var(--color-accent)}
   .photo-graphic.payment-state-graphic{min-height:132px}
   #payment .checkout-order__note,#payment .checkout-row__label,#payment .checkout-calc{font-size:13px}
 }
@@ -2007,9 +2033,13 @@ body.lang-th *{letter-spacing:normal}
 /* Compact care progress: a quiet segmented track with one readable current-step
    caption. This keeps the full journey and accessible labels without the generic
    numbered-node stepper treatment. */
-.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:var(--color-surface)}
-.care-journey__steps{order:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-.care-journey__step{position:relative;display:block;height:4px;min-height:0;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-line);box-shadow:none;overflow:hidden}
+.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:transparent;border-bottom:0}
+/* The header and the journey stepper below it read as one panel, not two
+   bars stacked on a seam: no background on either, so both just show the
+   screen behind them. */
+.screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.care-journey__steps{order:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.care-journey__step{position:relative;display:block;height:6px;min-height:0;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-line);box-shadow:none;overflow:hidden}
 .care-journey__step::before,.care-journey__dot,.care-journey__name{display:none}
 .care-journey__step.is-done{background:var(--color-accent)}
 /* The current stage is a track; its fill grows with the sub-steps. Done stages
@@ -2127,3 +2157,35 @@ body.lang-th *{letter-spacing:normal}
    avatar used where a doctor is one option among several to pick. */
 .consult-doctor-photo{width:40px;height:40px;flex:none;border-radius:50%;
   object-fit:cover;object-position:50% 22%}
+
+/* Intake screens sit on the app canvas rather than the default white surface,
+   on the screen and its answer cards alike. Client 16 Aug: cool grey, so these
+   read from the same tokens as every other screen instead of a warm hardcode. */
+#intake1,#intake2,#intake3,#intake4,#intake5,#intake-concern,#intake-general{
+  --intake-cream:var(--color-bg);
+  background:var(--intake-cream);
+}
+#intake1 .screen__top,#intake2 .screen__top,#intake3 .screen__top,#intake4 .screen__top,#intake5 .screen__top,#intake-concern .screen__top,#intake-general .screen__top,
+#intake1 .care-journey,#intake2 .care-journey,#intake3 .care-journey,#intake4 .care-journey,#intake5 .care-journey,#intake-concern .care-journey,#intake-general .care-journey,
+#intake1 .screen__body,#intake2 .screen__body,#intake3 .screen__body,#intake4 .screen__body,#intake5 .screen__body,#intake-concern .screen__body,#intake-general .screen__body{
+  background:var(--intake-cream);
+}
+#intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option,#intake-concern .option,#intake-general .option{
+  background:var(--color-bg-2);
+}
+/* The ไม่มี/มี toggle's selected state used the site-wide dark-navy
+   "selected" treatment, which read as too heavy against the grey
+   intake screens. One step darker than the option cards keeps the same soft
+   palette, now in the cool family rather than a warm hardcode. */
+#intake-general .partner-binary__option[aria-checked="true"]{
+  background:var(--color-line-strong);
+  color:var(--color-ink);
+  box-shadow:none;
+}
+/* Consultation-fee summary cards read as two stacked white-on-white outlined
+   boxes. Flatten them to a solid tinted panel instead of a bordered/shadowed card. */
+#consultpay .card,#consultpay-gw .card,#consultpay-fail .card{
+  background:var(--color-bg-2);
+  border:0;
+  box-shadow:none;
+}

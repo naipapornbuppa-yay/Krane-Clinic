@@ -1,7 +1,7 @@
 (() => {
   const translations = {
     en: {
-      announcementPromo: "Special offer: Free doctor consultation through 1 January 2027",
+      announcementPromo: "Special offer: Free doctor consultation through <strong>1 January 2027</strong>",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",
@@ -375,6 +375,10 @@
   });
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // iOS Safari only applies the :active pseudo-class once a touch listener is
+  // bound somewhere in the document, so tap micro-interactions need this.
+  document.addEventListener("touchstart", () => {}, { passive: true });
   const confidenceVideo = document.querySelector(".confidence-campaign__video");
   const syncConfidenceVideoMotion = () => {
     if (!confidenceVideo) return;
@@ -406,7 +410,7 @@
 
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
-    [".treatments .treatment-pill", 55, "scale"],
+    [".treatments .service-card", 55, "scale"],
     [".compliance__group:first-child > div", 55, "scale"],
     [".steps > li", 75, ""],
     [".protocol__heading > *", 90, ""],
@@ -900,18 +904,17 @@
     scrollFrame = 0;
     if (!mobileCta || !hero || !closing) return;
     header?.classList.toggle("is-scrolled", window.scrollY > 24);
-    const allowParallax = !reducedMotionQuery.matches
-      && !window.matchMedia("(max-width: 700px)").matches
-      && !window.matchMedia("(pointer: coarse)").matches;
-    if (allowParallax) {
-      const heroRect = hero.getBoundingClientRect();
-      const parallax = Math.max(0, Math.min(22, -heroRect.top * 0.06));
+    const heroRect = hero.getBoundingClientRect();
+    if (!reducedMotionQuery.matches) {
+      const isTouch = window.matchMedia("(pointer: coarse)").matches;
+      const strength = isTouch ? 0.035 : 0.06;
+      const cap = isTouch ? 14 : 22;
+      const parallax = Math.max(0, Math.min(cap, -heroRect.top * strength));
       hero.style.setProperty("--hero-parallax", `${parallax.toFixed(2)}px`);
     } else {
       hero.style.setProperty("--hero-parallax", "0px");
     }
     const mobile = window.matchMedia("(max-width: 700px)").matches;
-    const heroRect = hero.getBoundingClientRect();
     const closingRect = closing.getBoundingClientRect();
     mobileCta.classList.toggle("is-visible", mobile && heroRect.bottom < 90 && closingRect.top > window.innerHeight * 0.72);
   }

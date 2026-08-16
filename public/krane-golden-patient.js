@@ -35,16 +35,14 @@
   function applyFixture() {
     demo.replaceText(document.body, pairs);
     if (isThai()) demo.replaceText(document.body, thaiPairs);
-    const building = document.getElementById("addrBuilding");
-    const floor = document.getElementById("addrFloor");
-    const line = document.getElementById("addrLine");
-    const district = document.getElementById("addrDistrict");
-    if (building) building.value = "เดอะ เบส พาร์ค เวสต์ ห้อง 22/418";
-    if (floor) floor.value = "22";
-    if (line) line.value = "ซอยสุขุมวิท 77 แขวงพระโขนงเหนือ";
-    if (district) district.value = "เขตวัฒนา กรุงเทพฯ 10110";
-    const paymentAddress = document.querySelector("[data-payment-address]");
-    if (paymentAddress) paymentAddress.textContent = f.order.shortAddress;
+    /* The delivery address is not written here any more, on the checkout summary
+       row any more than on the form inputs. This unconditionally overwrote
+       [data-payment-address] with a fixed demo string regardless of whether an
+       address had actually been confirmed, so the row read as filled while the
+       checkout CTA and delivery-fee estimate correctly still read as unconfirmed
+       — a patient could see a delivery address before choosing one. The app owns
+       that row: syncDeliveryAddress() already renders it from the real
+       addressConfirmed state. */
     updateTracking();
   }
 

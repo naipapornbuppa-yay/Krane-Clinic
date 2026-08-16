@@ -3,9 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+  (() => {
+    const release = "20260816-sections-idcard-v8";
+    const url = new URL(window.location.href);
+    if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
+      url.searchParams.set("v", release);
+      window.location.replace(url.href);
+    }
+  })();
+</script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
-<meta name="theme-color" content="#F7F5EE">
+<meta name="theme-color" content="#F7F9FB">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Krane Clinic">
 <meta property="og:title" content="Krane Clinic · Online Care">
@@ -24,13 +37,13 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260815-core-palette-v2">
-<link rel="stylesheet" href="components.css?v=20260816-scrollbar-gutter-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260804selectfix1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260814-editorial-hairline-v7">
+<link rel="stylesheet" href="design-tokens.css?v=20260816-sections-idcard-v8">
+<link rel="stylesheet" href="components.css?v=20260816-sections-idcard-v8">
+<link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260804selectfix1" defer></script>
-<script src="i18n.js?v=20260815-split-intake-v1" defer></script>
+<script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
+<script src="i18n.js?v=20260816-delivery-pickup-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -230,7 +243,7 @@
   </style>
   <style>
     /* Krane state illustration system: monochrome ink cutouts + semantic motion only. */
-    :root{--state-editorial-canvas:#f3f0e6}
+    :root{--state-editorial-canvas:#f4f4f3}
     .screen:has(> .screen__body.state-view),
     .screen__body.state-view{background:var(--state-editorial-canvas)}
     .screen:has(> .screen__body.state-view)>.screen__top,
@@ -260,6 +273,13 @@
     .state-view__tile:has(.krane-state-art)::before{content:none!important}
     .state-view__visual:has(.krane-state-art)>.state-view__badge{display:none!important}
     .krane-state-art{display:block;width:100%;height:100%;overflow:visible;color:#101722}
+    /* 2026-08-16: these PNGs used to be flattened with an opaque cream canvas
+       baked in, approximated away with mix-blend-mode:multiply. That never
+       fully cancelled the cream (only true white multiplies to nothing), so a
+       faint yellow plate still showed on the grey page background. The source
+       PNGs are now punched out to real alpha transparency, so no blend hack
+       is needed any more; normal blending renders them correctly everywhere,
+       including on non-neutral backdrops like .doctor-work__media--ink. */
     .krane-state-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
     /* Styles must also target the source nodes inside <defs>. SVG <use> keeps
        those computed styles when it creates the rendered instance; styling
@@ -282,7 +302,19 @@
     .krane-state-defs .ks-dot-2,.krane-state-art .ks-dot-2{animation:ks-dot 1.35s .16s ease-in-out infinite}
     .krane-state-defs .ks-dot-3,.krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
     .krane-paper-crane-picture,.krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
-    .krane-crane-static{display:none}
+    .krane-crane-flipbook{position:relative;filter:grayscale(1) saturate(0) contrast(3) brightness(.86)}
+    .krane-crane-frame{opacity:0;filter:grayscale(1) saturate(0) contrast(3) brightness(.86)}
+    img.krane-crane-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:none}
+    .krane-crane-frame--1{animation:krane-crane-frame-1 1.8s steps(1,end) infinite}
+    .krane-crane-frame--2{animation:krane-crane-frame-2 1.8s steps(1,end) infinite}
+    .krane-crane-frame--3{animation:krane-crane-frame-3 1.8s steps(1,end) infinite}
+    .krane-crane-frame--4{animation:krane-crane-frame-4 1.8s steps(1,end) infinite}
+    .krane-crane-frame--5{animation:krane-crane-frame-5 1.8s steps(1,end) infinite}
+    @keyframes krane-crane-frame-1{0%,19.999%,100%{opacity:1}20%,99.999%{opacity:0}}
+    @keyframes krane-crane-frame-2{0%,19.999%,40%,100%{opacity:0}20%,39.999%{opacity:1}}
+    @keyframes krane-crane-frame-3{0%,39.999%,60%,100%{opacity:0}40%,59.999%{opacity:1}}
+    @keyframes krane-crane-frame-4{0%,59.999%,80%,100%{opacity:0}60%,79.999%{opacity:1}}
+    @keyframes krane-crane-frame-5{0%,79.999%,100%{opacity:0}80%,99.999%{opacity:1}}
     .state-view__visual--loading .krane-state-art{
       transform-origin:center;
       animation:loading-illustration-float 3.2s var(--ease-inout) infinite
@@ -296,8 +328,8 @@
     @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(75vw,332px)!important}}
     @media(prefers-reduced-motion:reduce){
       .state-view__visual--loading .krane-state-art{animation:none}
-      .krane-crane-animated{display:none}
-      .krane-crane-static{display:inline}
+      .krane-crane-frame{animation:none;opacity:0}
+      .krane-crane-frame--3{opacity:1}
     }
   </style>
 </head>
@@ -337,7 +369,7 @@
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
     <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
@@ -382,8 +414,6 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-concern" data-category="general">6 · อาการที่ต้องการปรึกษา <span class="rail-state">เฉพาะปรึกษาทั่วไป · อาการ ระยะเวลา และสิ่งที่ลองทำแล้ว</span></a>
-        <a data-go="intake-general">7 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">ประวัติสุขภาพและข้อมูลร่างกาย</span></a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -403,6 +433,7 @@
         </div><div class="rail-error-menu">
           <a class="is-exception" data-go="consultpay-fail"><span class="rail-error-tag">Error case</span>Consultation payment failed</a>
         </div></details>
+        <a data-go="intake-general">ยืนยันข้อมูลสุขภาพ <span class="rail-state">Direct gate · ทุกครั้งก่อนเข้าห้องรอ</span></a>
         <a data-go="waitroom">Waiting room</a>
       </div>
     </details>
@@ -420,12 +451,17 @@
     </details>
 
     <details class="rail-group">
-      <summary><span class="rail-step">06</span><span>Checkout</span></summary>
+      <summary><span class="rail-step">06</span><span>Pharmacy &amp; checkout</span></summary>
       <div class="rail-group__body">
         <a data-go="address">Edit saved delivery address</a>
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
           <a data-go="delivery-quote">Before payment · Delivery quote</a>
           <a data-go="pharmacy-search">Before payment · Stock &amp; price review</a>
+          <a data-go="pharmacyaccepted">Before payment · Accepted &amp; reserved</a>
+          <a data-go="pharmacypending">Before payment · Prepared &amp; ready</a>
+        </div><div class="rail-error-menu">
+          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
+          <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Standard-delivery fallback</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
           <a data-go="insurance">ตรวจสอบสิทธิ์ประกัน</a>
@@ -439,15 +475,8 @@
     </details>
 
     <details class="rail-group">
-      <summary><span class="rail-step">07</span><span>Fulfillment</span></summary>
+      <summary><span class="rail-step">07</span><span>Dispatch &amp; tracking</span></summary>
       <div class="rail-group__body">
-        <details class="rail-page" open><summary>Pharmacy confirmation</summary><div class="rail-sub">
-          <a data-go="pharmacypending">State · Preparing</a><a data-go="pharmacyaccepted">State · Accepted</a>
-        </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
-          <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
-        </div></details>
-        <a data-go="confirm">Order confirmation</a>
         <a data-go="tracking">Delivery tracking</a>
       </div>
     </details>
@@ -464,10 +493,10 @@
         </div><div class="rail-error-menu">
           <a class="is-exception" data-go="empty-activities"><span class="rail-error-tag">Error case</span>No activity yet</a>
         </div></details>
-        <details class="rail-page" open><summary>Medical history</summary><div class="rail-sub">
+        <details class="rail-page" open><summary>Past treatments</summary><div class="rail-sub">
           <a data-go="history">Default</a>
         </div><div class="rail-error-menu">
-          <a class="is-exception" data-go="empty-history"><span class="rail-error-tag">Error case</span>No medical history yet</a>
+          <a class="is-exception" data-go="empty-history"><span class="rail-error-tag">Error case</span>No past treatments yet</a>
         </div></details>
         <a data-go="notifications">Notifications</a>
         <a data-go="account">Personal details</a>
@@ -482,6 +511,7 @@
       <summary><span class="rail-step">09</span><span>เข้าผ่านประกัน</span></summary>
       <div class="rail-group__body">
         <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
+        <a data-go="partner-idcard">ถ่ายบัตรประชาชน <span class="rail-state">SCR-002A</span></a>
         <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
         <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
         <a data-go="partner-insurance">สิทธิ์และการชำระเงิน</a>
@@ -505,9 +535,9 @@
   <!-- ===================== LANDING (KRANE-F01) =====================
        The production-oriented landing lives beside this file as "krane-b2c-landing.html".
        It is embedded here so landing CTAs route into the same patient flow.
-       Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
+       Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-desktop-priority-mosaic-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-sections-idcard-v8" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -668,11 +698,10 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="conditions">Consult a doctor</button><button class="btn btn--ghost" data-go="articles">Back to guide</button></div>
   </section>
 
-  <!-- ===================== INTAKE Q1 (KRANE-F04 · symptoms + duration) =====================
-       F04 update (client 15 Jul): the first questions branch by entry service, then both paths
-       converge on urgent safety, universal health and insurance before review. -->
-  <section class="screen" id="intake1" data-screen-code="SCR-002">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
+  <!-- ===================== DIRECT INTAKE Q1 (KRANE-F02 · SCR-DIR-02) =====================
+       Direct services branch here, converge on safety and optional photo, then save before F03. -->
+  <section class="screen" id="intake1" data-screen-code="SCR-DIR-02">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
     <div class="screen__body stack-5">
       <div><h2 class="h1">What are you noticing right now?</h2></div>
       <div class="stack-3">
@@ -703,7 +732,7 @@
 
   <!-- ===================== INTAKE Q2 (concern detail, adapted per service) ===================== -->
   <section class="screen" id="intake2">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:29%"></span></div></div><span class="hint">2 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:29%"></span></div></div><span class="hint">2 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Tell us more about this concern</h2></div>
       <div class="common-group">
@@ -730,7 +759,7 @@
 
   <!-- ===================== INTAKE Q3 (previous care for this concern) ===================== -->
   <section class="screen" id="intake3">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:43%"></span></div></div><span class="hint">3 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:43%"></span></div></div><span class="hint">3 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">What have you tried for this concern?</h2></div>
       <div class="common-group">
@@ -760,7 +789,7 @@
 
   <!-- ===================== INTAKE Q4 (urgent warning signs) ===================== -->
   <section class="screen" id="intake4">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:57%"></span></div></div><span class="hint">4 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:57%"></span></div></div><span class="hint">4 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Do any urgent warning signs apply today?</h2><p class="hint">If symptoms are severe or life-threatening, seek emergency care now.</p></div>
       <div class="common-group">
@@ -778,7 +807,7 @@
 
   <!-- ===================== INTAKE Q5 (optional photo, condition-specific services only) ===================== -->
   <section class="screen" id="intake5">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Add a photo of the area you're concerned about</h2></div>
 
@@ -793,7 +822,7 @@
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v2.png?v=20260815-mascot-photo-guide-v2" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3.png?v=20260815-crown-shirt-v3" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">กลางศีรษะ</span>
           </li>
@@ -822,12 +851,12 @@
       <div class="up-thumbs" data-photo-thumbs>
         <p class="up-empty hint" data-photo-empty>ยังไม่มีรูปที่เพิ่ม แตะด้านบนเพื่อถ่ายหรือเลือกรูป</p>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="intake-general">Continue</button><button class="btn btn--ghost btn--sm" data-go="intake-general">Skip for now</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-direct-intake-complete>Continue</button><button class="btn btn--ghost btn--sm" data-direct-intake-complete>Skip for now</button></div>
   </section>
 
   <!-- ===================== INTAKE · SHARED CONCERN DETAILS ===================== -->
   <section class="screen" id="intake-concern">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
       <div class="stack-2"><h2 class="h1">อาการที่ต้องการปรึกษา</h2><p class="muted">กรอกรายละเอียดอาการ ระยะเวลา และสิ่งที่ลองทำแล้ว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น</p></div>
       <div class="card card--pad-sm shared-concern-card" data-shared-concern>
@@ -873,11 +902,11 @@
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
   </section>
 
-  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (final for every service) ===================== -->
+  <!-- ===================== SHARED GENERAL HEALTH · Partner SCR-003 / Direct SCR-DIR-02E ===================== -->
   <section class="screen" id="intake-general">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl" data-general-health-title>ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
-      <div><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2></div>
+      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
@@ -915,7 +944,7 @@
         </div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลและดำเนินการต่อ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching" data-general-health-submit>ยืนยันข้อมูลและดำเนินการต่อ</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -1099,9 +1128,7 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__countdown" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที">
-        <strong data-matching-countdown-value>10</strong><span data-matching-countdown-unit>วินาที</span>
-      </div>
+      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที" data-matching-countdown-value>00:10</div>
     </div>
   </section>
 
@@ -1172,7 +1199,7 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-<div class="screen__footer"><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+<div class="screen__footer stack-2"><p class="hint" style="text-align:center">นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</p><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1257,7 +1284,7 @@
       <div class="state-view__copy">
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
-        <p class="hint" data-wait-note>อย่าลืมอนุญาตให้ใช้กล้องและไมค์ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอด</p>
+        <p class="hint" data-wait-note>กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ</p>
       </div>
       <div class="state-view__timer" data-wait-timer>About 2 to 3 min</div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
@@ -1377,7 +1404,7 @@
         <h2 class="h1">ใกล้เสร็จแล้ว</h2>
         <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> กำลังสรุปผลวินิจฉัย แผนการรักษา และรายการยาให้อยู่ อาจใช้เวลาสักพักเพื่อยืนยันแผนการรักษาที่เหมาะกับคุณ</p>
       </div>
-      <div class="state-view__timer">ประมาณ 3 ถึง 5 นาที</div>
+      <div class="state-view__timer" data-rx-timer>05:00</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="plan">View treatment plan</button></div>
   </section>
@@ -1483,7 +1510,7 @@
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
-    <div class="screen__top transition-stage__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="กำลังคำนวณการจัดส่ง">
         <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-delivery-quote"></use></svg></span>
@@ -1503,7 +1530,7 @@
     <div class="screen__top transition-stage__top"><span class="ttl">Pharmacy review</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" data-ph-graphic role="status" aria-label="Pharmacist reviewing your order">
-        <!-- Exact white wordmark from landing-573/latest/hero-krane-wordmark.svg is composited into this cutout. -->
+        <!-- Editorial pharmacy-review illustration. -->
         <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-search"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -1511,7 +1538,7 @@
         <h2 class="h1">Pharmacist reviewing your order</h2>
         <p class="muted">A licensed pharmacist is confirming the prescription, stock and final price before payment.</p>
       </div>
-      <div class="state-view__timer">Usually under 5 minutes</div>
+      <div class="state-view__timer" data-ph-countdown>00:10</div>
     </div>
   </section>
 
@@ -1777,16 +1804,17 @@
     <div class="screen__footer"><button class="btn btn--primary" data-payment-submit>ยืนยันการชำระ <span data-payment-total>฿ 558</span></button></div>
   </section>
 
-  <section class="screen" id="payment-success">
+  <section class="screen" id="payment-success" data-screen-code="SCR-016D">
     <div class="screen__top transition-stage__top"><span class="ttl">Payment</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Payment successful">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Your payment is confirmed. The pharmacy can start preparing your order.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Payment is confirmed. Your prepared order is moving to dispatch and tracking.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1825,33 +1853,32 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-payment-retry>Try payment again</button><button class="btn btn--ghost" data-payment-alternate-method>Use a different method</button></div>
   </section>
 
-  <!-- ===================== FULFILMENT, PREPARING (KRANE-F21, simplified) =====================
-       F34/F21 update (client 20 Jun): keep this simple. The patient just sees that the medicine
-       is being prepared. The reroute/issue noise is gone; if preparation exceeds the SLA, a
-       fallback choice appears (switch to next-day + pay difference, or refund). -->
-  <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
+  <!-- ===================== PHARMACY ACCEPTED + STOCK RESERVED (PRE-PAYMENT) ===================== -->
+  <section class="screen" id="pharmacyaccepted" data-screen-code="SCR-017A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ร้านยายืนยันรายการ</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your medicine">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Preparing your medicine</h2><p class="muted">You can leave, we'll notify you when it ships.</p></div>
-      <div class="state-view__timer">About 15 to 25 min</div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="pharmacyaccepted">ดูสถานะร้านยา</button></div>
-  </section>
-
-  <!-- ===================== PHARMACY ACCEPTED (POST-PAYMENT STATUS) ===================== -->
-  <section class="screen" id="pharmacyaccepted">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pharmacy accepted</span></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy accepted your paid order">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy accepted and reserved stock">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-confirmed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์ที่ชำระแล้ว</h2><p class="muted">ยืนยันการชำระเงินแล้ว รายการถูกส่งเข้า POS เพื่อจัดยาและเตรียมส่ง</p></div>
-      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-delivery>Same day · by 6pm</span></div>
-    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>ดูการยืนยันออเดอร์</button></div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์และสำรองสต็อกแล้ว</h2><p class="muted">เภสัชกรตรวจใบสั่งยา สินค้า สาขา และราคาสุทธิครบแล้ว โดยยังไม่มีการเรียกเก็บเงิน</p></div>
+      <div class="state-view__timer">สำรองสินค้าไว้ 1 ชั่วโมง</div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>ดำเนินการจัดเตรียมยา</button></div>
+  </section>
+
+  <!-- ===================== PHARMACY PREPARED + READY TO DISPATCH (PRE-PAYMENT) ===================== -->
+  <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พร้อมจัดส่ง</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Medicine prepared and ready to dispatch">
+        <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
+        <span class="state-view__badge"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยาจัดเตรียมยาเรียบร้อย</h2><p class="muted">รายการพร้อมส่งทันทีหลังชำระเงิน ตรวจสอบยอดสุดท้ายก่อนเข้าสู่ระบบชำระเงินที่ปลอดภัย</p></div>
+      <div class="state-view__timer"><span data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</span></div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-prepared-continue>ตรวจสอบยอดและชำระเงิน</button></div>
   </section>
 
   <!-- Same SCR-014 status flow. The patient explicitly accepts postal fallback before checkout. -->
@@ -1868,28 +1895,16 @@
     <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
   </section>
 
-  <!-- ===================== CONFIRMATION ===================== -->
-  <section class="screen" id="confirm">
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Order confirmed">
-        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-order-confirmed"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Order confirmed</h2><p class="muted">Expected by 6pm today.</p></div>
-      <div class="state-view__timer">#KR-10293 · <strong data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-delivery>Same day</span></div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="tracking">Track order</button><button class="btn btn--ghost" data-go="profile">Go to home</button></div>
-  </section>
-
   <!-- ===================== TRACKING ===================== -->
-  <section class="screen" id="tracking">
+  <section class="screen" id="tracking" data-screen-code="SCR-048">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Order #KR-10293</span></div>
     <div class="screen__body stack-5">
       <div class="timeline">
         <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
+        <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
+        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div></div>
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:20</div></div>
-        <div class="step done"><strong>Pharmacy accepted order</strong><div class="hint">Today, 11:22</div></div>
-        <div class="step active"><strong>Preparing medicine</strong><div class="hint">Fascino Ari · estimated 15-25 min</div></div>
-        <div class="step"><strong>Rider pickup</strong><div class="hint">Next</div></div>
+        <div class="step active"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step"><strong>Delivered</strong><div class="hint">Pending</div></div>
       </div>
@@ -1967,7 +1982,7 @@
 
   <!-- ===================== PROFILE (home, bottom nav) ===================== -->
   <section class="screen screen--web" id="profile">
-    <div class="screen__top"><img class="brand-logo" src="../assets/krane-review-wordmark.svg?v=20260730logo1" width="509" height="128" alt="Krane"><span class="grow"></span><span class="avatar" style="width:32px;height:32px">P</span></div>
+    <div class="screen__top"><img class="brand-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"><span class="grow"></span><span class="avatar" style="width:32px;height:32px">P</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Hi, Mali</h2></div>
       <div class="quick-row">
@@ -2021,8 +2036,8 @@
     </nav>
   </section>
 
-  <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: orders + consultations)
-       Client (5 Jul): order cards belong here, not on the profile. ===================== -->
+  <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
+       Completed consultation and order events are one treatment record. ===================== -->
   <section class="screen screen--web" id="activity">
     <div class="screen__top"><span class="ttl">Activity</span></div>
     <div class="screen__body stack-5">
@@ -2039,17 +2054,14 @@
           <div class="order-meta"><span>Melatonin 5mg</span><span>Next-day</span></div>
         </div>
 
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Past orders</div><span class="badge badge--line">2</span></div>
-        <div class="card card--pad-sm order-card order-card--past" data-go="history">
-          <div class="order-top"><div><div class="order-id">#KR-10170</div><div class="order-title">Hair loss treatment</div></div><span class="badge badge--line">Delivered</span></div>
-          <div class="order-meta"><span>12 May 2026</span><span>Same-day · completed</span></div>
-        </div>
-
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Consultations</div><span class="badge badge--line">1</span></div>
-        <div class="card card--pad-sm order-card order-card--past" data-go="history">
-          <div class="order-top"><div><div class="order-id">Dr. Narin · licence 12345</div><div class="order-title">Hair loss consultation</div></div><span class="badge badge--line">Completed</span></div>
-          <div class="order-meta"><span>12 May 2026</span><span>Plan accepted · 3 refills</span></div>
-        </div>
+        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Past treatments</div><span class="badge badge--line">1</span></div>
+        <button class="card card--pad-sm order-card order-card--past treatment-history-card" type="button" data-go="history" aria-label="Open past hair loss treatment">
+          <div class="history-card__summary">
+            <div><div class="order-id">#KR-10170</div><div class="order-title">Hair loss treatment</div></div>
+            <div class="history-card__side"><span class="badge badge--line">Completed</span><span class="history-card__chevron" aria-hidden="true">›</span></div>
+          </div>
+          <div class="order-meta"><span>12 May 2026 · Dr. Narin</span><span>Diagnosis and prescription available</span></div>
+        </button>
       </div>
     </div>
     <nav class="bottomnav">
@@ -2060,29 +2072,39 @@
     </nav>
   </section>
 
-  <!-- ===================== MEDICAL HISTORY (KRANE-F05 · Activity Tab) ===================== -->
+  <!-- ===================== PAST TREATMENT DETAIL (KRANE-F05 · Activity Tab) ===================== -->
   <section class="screen screen--web" id="history">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Past treatment</span></div>
     <div class="screen__body stack-5">
-      <div class="stack-2">
-        <div class="section-label">Active treatment</div>
-        <div class="card card--pad-sm stack-2">
-          <div class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></div>
-          <div class="hint">Loratadine 10 mg · Paracetamol 500 mg · เริ่ม 12 พ.ค. 2026</div>
-          <div class="row"><button class="btn btn--secondary btn--sm" data-go="plan">View plan</button><button class="btn btn--ghost btn--sm" data-go="tracking">Last order</button></div>
+      <div class="past-treatment-heading stack-2">
+        <div class="between">
+          <div class="order-id">#KR-10170</div>
+          <span class="badge badge--line">Completed</span>
         </div>
+        <h2 class="h1">Hair loss treatment</h2>
+        <div class="order-meta"><span>12 May 2026</span><span>Dr. Narin · licence 12345</span></div>
       </div>
-      <div class="web-cols-2">
-      <div class="stack-2">
-        <div class="section-label">Past consultations</div>
-        <div class="list-row" data-go="plan"><span class="avatar avatar--brand" style="width:36px;height:36px">Dr</span><div class="grow"><strong>Hair loss review</strong><div class="hint">12 May 2026 · Dr. assigned</div></div><span class="muted">›</span></div>
-        <div class="list-row" data-go="plan"><span class="avatar avatar--brand" style="width:36px;height:36px">Dr</span><div class="grow"><strong>Initial consultation</strong><div class="hint">2 Apr 2026 · Dr. assigned</div></div><span class="muted">›</span></div>
+
+      <div class="card card--pad-sm stack-3">
+        <div class="section-label">Diagnosis</div>
+        <strong class="history-diagnosis">Androgenetic alopecia</strong>
+        <p class="muted">Early-stage hereditary hair loss with thinning around the frontal hairline.</p>
+        <div class="divider" style="margin:0"></div>
+        <div class="between"><span class="hint">Consulting doctor</span><strong>Dr. Narin</strong></div>
       </div>
-      <div class="stack-2">
-        <div class="section-label">Prescriptions</div>
-        <div class="list-row"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><strong>Loratadine 10 mg</strong><div class="hint">วันละ 1 เม็ด · รีฟิลใน 24 วัน</div></div><span class="muted">›</span></div>
-        <div class="list-row"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><strong>Paracetamol 500 mg</strong><div class="hint">เมื่อมีอาการ · รีฟิลใน 24 วัน</div></div><span class="muted">›</span></div>
+
+      <div class="card card--pad-sm stack-3" data-history-prescription>
+        <div class="between"><div class="section-label" style="margin:0">Previous prescription</div><span class="badge badge--line">RX-2026-10170</span></div>
+        <div class="between"><span class="hint">Issued date</span><strong>12 May 2026</strong></div>
+        <div class="treatment-medications" role="list" aria-label="Previously prescribed medicines">
+          <div class="treatment-medication" role="listitem"><span>Finasteride 1 mg</span><span>Take 1 tablet once daily</span></div>
+          <div class="treatment-medication" role="listitem"><span>Minoxidil 5%</span><span>Apply to the scalp twice daily</span></div>
+        </div>
+        <div class="between"><span class="hint">Prescribed by</span><strong>Dr. Narin · licence 12345</strong></div>
       </div>
+
+      <div class="card card--flat card--pad-sm" data-history-no-prescription hidden>
+        <div class="hint">No prescription was issued for this treatment.</div>
       </div>
     </div>
     <nav class="bottomnav">
@@ -2181,15 +2203,15 @@
     </nav>
   </section>
 
-  <!-- ===================== HISTORY · EMPTY (edge state) ===================== -->
+  <!-- ===================== PAST TREATMENTS · EMPTY (edge state) ===================== -->
   <section class="screen" id="empty-history">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Medical history</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Past treatments</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No consultation history">
+      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No past treatments yet">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-empty-history"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">No consultation history</h2><p class="muted">Consultations and prescriptions will appear here.</p></div>
+      <div class="state-view__copy"><h2 class="h1">No past treatments yet</h2><p class="muted">Diagnoses and prescriptions will appear here after treatment.</p></div>
       <button class="btn btn--primary state-view__cta" data-go="conditions">Start consultation</button>
     </div>
   </section>
@@ -2302,7 +2324,7 @@
           <div class="between"><span class="muted">ค่าธรรมเนียม</span><strong>ฟรี</strong></div>
           <div class="hint">Issued after doctor review, usually within 24 hours.</div>
         </div>
-        <button class="btn btn--secondary" data-go="confirm">Request certificate</button>
+        <button class="btn btn--secondary" data-demo-action="ส่งคำขอใบรับรองแพทย์แล้ว">Request certificate</button>
       </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="plan">Download PDF</button></div>
   </section>
@@ -2345,6 +2367,37 @@
   </section>
 
   <!-- Full-page pre-loader overlay -->
+  <!-- SCR-002A (client 16 Aug): the card is captured before the details screen so
+       the name can be read off it, rather than typed twice. Demo only: nothing is
+       uploaded anywhere and only the name is carried forward. -->
+  <section class="screen" id="partner-idcard" data-screen-code="SCR-002A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ยืนยันตัวตน</span></div>
+    <div class="screen__body stack-4">
+      <div class="stack-2">
+        <h2 class="h1">ถ่ายบัตรประชาชน</h2>
+        <p class="muted">เราจะดึงชื่อจากบัตรมากรอกให้ในหน้าถัดไป ตรวจสอบและแก้ไขได้ก่อนยืนยัน</p>
+      </div>
+      <label class="upload" for="partner-idcard-input">
+        <span class="up-ic"><i data-lucide="id-card" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
+        <span class="up-sub">JPG หรือ PNG · ไม่เกิน 10 MB</span>
+      </label>
+      <input id="partner-idcard-input" class="sr-only" type="file" accept="image/*" data-idcard-input>
+      <div class="up-thumbs" data-idcard-thumbs aria-live="polite">
+        <p class="up-empty hint" data-idcard-empty>ยังไม่มีรูปบัตร แตะด้านบนเพื่อถ่ายหรือเลือกรูป</p>
+      </div>
+      <div class="card card--pad-sm stack-2" data-idcard-read hidden>
+        <div class="section-label">ข้อมูลที่อ่านจากบัตร</div>
+        <div class="between"><span class="muted">ชื่อและนามสกุล</span><strong data-idcard-name></strong></div>
+        <p class="hint">แก้ไขได้ในหน้าถัดไป</p>
+      </div>
+    </div>
+    <div class="screen__footer stack-2">
+      <button class="btn btn--primary" data-idcard-continue>ยืนยันและไปต่อ</button>
+      <button class="btn btn--ghost btn--sm" data-idcard-skip>กรอกข้อมูลเอง</button>
+    </div>
+  </section>
+
   <section class="screen" id="partner-patient-info" data-screen-code="SCR-003">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
     <div class="screen__body stack-4">
@@ -2460,10 +2513,7 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <picture class="krane-paper-crane-picture">
-            <source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1">
-            <img class="krane-state-art krane-paper-crane-media" src="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" width="560" height="360" alt="">
-          </picture>
+          <span class="krane-state-art krane-paper-crane-media krane-crane-flipbook" aria-hidden="true"><img class="krane-crane-frame krane-crane-frame--1" src="assets/loading-v8/paper-crane-frame-01-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--2" src="assets/loading-v8/paper-crane-frame-02-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--3" src="assets/loading-v8/paper-crane-frame-03-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--4" src="assets/loading-v8/paper-crane-frame-04-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--5" src="assets/loading-v8/paper-crane-frame-05-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""></span>
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -2589,10 +2639,9 @@
     'payment-gw':'SID-041',
     'payment-success':'SID-042',
     'payfail':'SID-043',
-    'pharmacypending':'SID-044',
-    'pharmacyaccepted':'SID-045',
+    'pharmacyaccepted':'SID-044',
+    'pharmacypending':'SID-045',
     'pharmacyissue':'SID-046',
-    'confirm':'SID-047',
     'tracking':'SID-048',
     'feedback':'SID-049',
     'feedbackdone':'SID-050',
@@ -2607,6 +2656,7 @@
     'refill':'SID-059',
     'upload-rx':'SID-060',
     'referral':'SID-061',
+    'partner-idcard':'SID-070',
     'partner-patient-info':'SID-062',
     'partner-insurance':'SID-063',
     'partner-nurse':'SID-064',
@@ -2654,10 +2704,9 @@
   let selectedCategoryId = 'hair-skin';
   // Insurance is claimable only on the general health path. Specialty paths are self-pay.
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
-  // The free-form concern page is reserved for Partner entry and General consultation.
-  // Specialty banners already capture the concern in their condition-specific intake.
-  function sharedConcernRequired(){ return flowState.entryChannel === 'partner' || isGeneralPath(); }
-  function finalIntakeTarget(){ return sharedConcernRequired() ? 'intake-concern' : 'intake-general'; }
+  // SCR-002/SCR-003 are the approved compact Partner intake. Direct entry never
+  // uses them: every Direct concern starts at SCR-DIR-02 (#intake1).
+  function sharedConcernRequired(){ return flowState.entryChannel === 'partner'; }
 
   let selectedConditionId = 'hair-loss';
   let isAuthenticated = false;
@@ -2778,6 +2827,7 @@
     consultationPaymentTiming:'after',
     consultationFeeAcknowledged:false,
     consultationPaid:false,
+    directGeneralHealthComplete:false,
     paymentResolution:'',
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
@@ -2795,12 +2845,15 @@
       paymentMethod:'qr',
       amountDue:558,
       stockLocked:false,
+      pharmacyAccepted:false,
+      pharmacyPrepared:false,
       paymentExpiresAt:null,
       paidAmount:null,
       paidMethod:'',
       paidDeliveryMethod:''
     },
     partnerConsentComplete:false,
+    partnerIdStepDone:false,
     partnerInfoComplete:false,
     partnerPaymentChosen:false,
     partnerHealthComplete:false,
@@ -2831,7 +2884,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2864,17 +2917,20 @@
     // already passed an older checkout migration.
     flowState.orderState.address=Object.assign({},MALI_SAVED_ADDRESS);
     flowState.orderState.addressConfirmed=true;
-    flowState.orderState.deliveryQuoteStatus='accepted';
-    flowState.orderState.deliveryQuoteAmount=120;
-    flowState.orderState.stockLocked=true;
-    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
-  } else if(flowState.orderState.checkoutFlowVersion!=='structured-address-checkout-v3'){
-    flowState.orderState.address={};
-    flowState.orderState.addressConfirmed=false;
     flowState.orderState.deliveryQuoteStatus='pending';
     flowState.orderState.deliveryQuoteAmount=null;
     flowState.orderState.stockLocked=false;
-    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
+    flowState.orderState.checkoutFlowVersion='pharmacy-precheckout-v4';
+  } else if(flowState.orderState.checkoutFlowVersion!=='pharmacy-precheckout-v4'){
+    flowState.orderState.deliveryQuoteStatus='pending';
+    flowState.orderState.deliveryQuoteAmount=null;
+    flowState.orderState.stockLocked=false;
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
+    flowState.orderState.paymentExpiresAt=null;
+    flowState.orderState.checkoutFlowVersion='pharmacy-precheckout-v4';
   }
   function readSessionJson(key){
     try { return JSON.parse(sessionStorage.getItem(key) || '{}'); } catch(error) { return {}; }
@@ -2892,10 +2948,10 @@
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',documentsUnlocked:false,
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
-      partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
@@ -3111,13 +3167,17 @@
   // once there is something to save, so "หัวข้อปรึกษา" is step 1 and the account plus
   // health record is step 2. If the client wants ข้อมูลผู้รับบริการ back at step 1,
   // swap the first two entries here and move patient-info ahead of concern.
-  const careJourneyLabels = ['อาการที่ปรึกษา','รายละเอียดผู้รับบริการ','การชำระเงิน','การปรึกษาแพทย์','การสั่งยาและจัดส่ง'];
-  const careJourneyShort  = ['Concern','Details','Payment','Doctor','Order'];
+  /* Five underlying stages, shown as three grouped segments: intake+account
+     (1+2), consultation fee through the doctor visit (3+4), and fulfilment
+     (5) stand alone. Grouping only changes what's drawn here; every screen
+     still maps to its own specific stage below. */
+  const careJourneyLabels = ['ข้อมูลเบื้องต้น','พบแพทย์','การสั่งยาและจัดส่ง'];
+  const careJourneyShort  = ['Start','Doctor','Order'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,'intake-general':1,
-    signup:2,login:2,'social-confirm':2,identity:2,otp:2,'consent-terms':2,'patient-info':2,'insurance-result':2,
-    matching:3,choosedoc:3,noslots:3,consultpay:3,'consultpay-gw':3,'consultpay-fail':3,waitroom:4,consult:4,video:4,'rx-writing':4,
-    plan:5,address:5,'delivery-quote':5,'pharmacy-search':5,payment:5,'payment-gw':5,'payment-success':5,payfail:5,pharmacypending:5,pharmacyaccepted:5,pharmacyissue:5,confirm:5,tracking:5
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,
+    signup:1,login:1,'social-confirm':1,identity:1,otp:1,'consent-terms':1,'patient-info':1,'insurance-result':1,
+    matching:2,choosedoc:2,noslots:2,consultpay:2,'consultpay-gw':2,'consultpay-fail':2,'intake-general':2,waitroom:2,consult:2,video:2,'rx-writing':2,
+    plan:3,address:3,'delivery-quote':3,'pharmacy-search':3,pharmacyaccepted:3,pharmacypending:3,payment:3,'payment-gw':3,'payment-success':3,payfail:3,pharmacyissue:3,tracking:3
   };
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
@@ -3158,6 +3218,15 @@
       track.remove();
       const count = top.querySelector('.hint');
       if(count) count.remove();
+    }
+    // Consultation-fee screens sit inside the "Doctor" stage, but the fee is paid
+    // before the visit starts: label the step and its next-preview for what
+    // actually happens here instead of the generic stage names used elsewhere.
+    if(id==='consultpay' || id==='consultpay-gw' || id==='consultpay-fail'){
+      const label = journey.querySelector('.care-journey__current strong');
+      const next = journey.querySelector('.care-journey__current small');
+      if(label) label.textContent='ปรึกษาแพทย์';
+      if(next) next.innerHTML='<i>ถัดไป</i> ชำระเงิน';
     }
   });
   // Photo upload on the intake photo step: real file picker, live thumbnails,
@@ -3324,8 +3393,12 @@
     const screen=document.getElementById('address');
     if(!screen) return;
     const values={
-      recipientName:address.recipientName,
-      recipientPhone:address.recipientPhone,
+      // The recipient defaults to the account holder until the patient
+      // explicitly edits it for this order, so a fresh address always opens
+      // prefilled with the name and phone captured at signup, no matter which
+      // screen sent the patient here.
+      recipientName:address.recipientName || flowState.patientName || '',
+      recipientPhone:address.recipientPhone || flowState.verifiedPhone || '',
       addrSearch:address.building,
       addrBuilding:address.building,
       addrFloor:address.floor,
@@ -3416,7 +3489,7 @@
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
     const net=paid;
     const method=PAYMENT_METHOD_LABELS[flowState.orderState.paidMethod || flowState.orderState.paymentMethod] || 'Original payment method';
-    ['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm'].forEach(id => {
+    ['payfail','payment-success','pharmacypending','pharmacyaccepted'].forEach(id => {
       const screen=document.getElementById(id);
       if(!screen) return;
       screen.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(net); });
@@ -3432,7 +3505,7 @@
     const successCopy=success?.querySelector('[data-payment-success-copy]');
     if(successTitle) successTitle.textContent=hasFulfillableItems() ? 'ชำระเงินสำเร็จ' : 'ชำระค่าปรึกษาสำเร็จ';
     if(successCopy) successCopy.textContent=hasFulfillableItems()
-      ? 'ร้านยายืนยันรายการไว้แล้ว และกำลังเริ่มจัดเตรียมคำสั่งซื้อของคุณ'
+      ? 'ร้านยาจัดเตรียมรายการพร้อมแล้ว กำลังเปิดสถานะจัดส่งและเอกสารของคุณ'
       : 'ไม่มีรายการจัดส่ง เอกสารจากการปรึกษาพร้อมให้เปิดดูแล้ว';
   }
   function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
@@ -3847,16 +3920,16 @@
     },
     sexual:{
       intake1:`
-        <div><h2 class="h1">คุณต้องการปรึกษาเรื่องใด</h2></div>
+        <div><h2 class="h1">อาการที่ต้องการปรึกษา</h2></div>
         <div class="common-group"><div class="section-label">อาการที่พบ</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวไม่เต็มที่</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวได้แต่ไม่นานพอ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลั่งเร็วกว่าที่ต้องการ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความต้องการทางเพศลดลง</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group">${intakeDurationControl({label:'เป็นมานานเท่าไร?',thai:true})}</div>
       `,
       intake2:`
         <div class="stack-2"><h2 class="h1">ลักษณะของอาการ</h2></div>
         <div class="common-group"><div class="section-label">เกิดขึ้นบ่อยแค่ไหน</div>
           <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">เป็นบางครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นเกือบทุกครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นทุกครั้ง</span></span><span class="opt-check"></span></button></div>
+          ${intakeDurationControl({label:'เป็นมานานเท่าไร?',thai:true})}
         </div>
         <div class="common-group"><div class="section-label">ข้อมูลเพิ่มเติม</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยังแข็งตัวได้ตอนตื่นนอน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มแบบค่อยเป็นค่อยไป</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มขึ้นทันทีทันใด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">มีความเครียดหรือกังวลร่วมด้วย</span></span><span class="opt-check"></span></button></div>
@@ -3944,7 +4017,7 @@
     const counter=state.body.querySelector('[data-intake-question-count]');
     if(counter){
       const thai=document.documentElement.lang==='th';
-      counter.textContent=thai ? `คำถาม ${nextIndex+1} / ${state.total}` : `Question ${nextIndex+1} of ${state.total}`;
+      counter.textContent=`${nextIndex+1} / ${state.total}`;
     }
     const continueButton=state.screen.querySelector('.screen__footer .btn--primary[data-go]');
     if(continueButton){
@@ -3985,11 +4058,14 @@
     });
     let counter=titleBlock?.querySelector('[data-intake-question-count]');
     if(titleBlock && questions.length>1 && !counter){
-      counter=document.createElement('p');
+      // Sits inline after the heading itself, not appended below the hint text.
+      counter=document.createElement('span');
       counter.className='intake-question-count';
       counter.dataset.intakeQuestionCount='';
       counter.setAttribute('aria-live','polite');
-      titleBlock.appendChild(counter);
+      const heading=titleBlock.querySelector('.h1');
+      if(heading) heading.appendChild(counter);
+      else titleBlock.appendChild(counter);
     }
     if(counter) counter.hidden=questions.length<=1;
     if(reset || body.dataset.intakeQuestionIndex===undefined) body.dataset.intakeQuestionIndex='0';
@@ -4300,9 +4376,8 @@
     //   hair                  -> own intake1, intake2; intake3 falls back to the
     //                            authored base, which is the generic "previous
     //                            care or treatment" set and is concern-appropriate
-    //   general               -> own intake1 is shown as one compact screen;
-    //                            intake2 and intake3 are SKIPPED by EC-011 so the
-    //                            journey moves directly to urgent screening
+    //   general               -> own intake1 and intake2 are shown; intake3 is
+    //                            skipped, then the journey moves to urgent safety
     // A missing template therefore falls back to the authored base markup only
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
@@ -4328,15 +4403,25 @@
     renderedIntakeContext = key;
   }
 
+  /* Screens that only exist after every intake question is answered (account
+     creation through the last stage-1 gate before matching). intakeStepOrder()
+     doesn't count these as steps, so without an explicit width here the fill
+     bar for stage 1 was left at its default 0%, i.e. invisible, even though
+     the intake portion of that stage is already done. */
+  const POST_INTAKE_STAGE1_SCREENS = ['signup','login','social-confirm','identity','otp','consent-terms','patient-info','insurance-result'];
+
   function updateIntakeProgress(id){
-    /* Derived from intakeStepOrder(), so a concern that skips a step still
-       reaches 100% on its last sub-step: general and hair run 1/4..4/4 and the
-       final one fills the segment completely, rather than stopping at 4/5 of
-       the way across. */
+    /* Derived from the Direct F02 route only. A concern that skips an optional
+       detail or photo still reaches 100% before account creation. SCR-DIR-02E
+       is a separate F05 gate and therefore never extends this progress run. */
     const order = intakeStepOrder();
     const index = order.indexOf(id);
-    if(index < 0) return;
     const screen = document.getElementById(id);
+    if(index < 0){
+      const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
+      if(fill) fill.style.width = POST_INTAKE_STAGE1_SCREENS.includes(id) ? '100%' : '0%';
+      return;
+    }
     const questionPage=intakeQuestionPageState(screen);
     const screenFraction=questionPage.total ? (questionPage.index+1)/questionPage.total : 1;
     const pct = Math.round(((index + screenFraction) / order.length) * 100);
@@ -4373,7 +4458,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, typingTimer, rxTimer, paymentSuccessTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -4597,12 +4682,21 @@
     }
     syncPartnerHistoryFields();
   }
+  function syncGeneralHealthContext(){
+    const direct=flowState.entryChannel==='direct';
+    const title=document.querySelector('#intake-general [data-general-health-title]');
+    const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
+    const submit=document.querySelector('#intake-general [data-general-health-submit]');
+    if(title) title.textContent=direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ';
+    if(hint) hint.hidden=!direct;
+    if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
+  }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
+    const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
     let targetIndex=order.indexOf(target);
     if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
@@ -4650,11 +4744,19 @@
       syncConsentContinue();
       return;
     }
-    if(!REQUIRED_CARE_TARGETS.has(target)) return;
+    const directGate=target==='intake-general' && flowState.entryChannel==='direct';
+    if(!REQUIRED_CARE_TARGETS.has(target) && !directGate) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
       patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
     });
+    if(directGate){
+      flowState.consultationFeeAcknowledged=true;
+      flowState.directGeneralHealthComplete=false;
+    } else if(flowState.entryChannel==='direct' && ['waitroom','consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search','pharmacyaccepted','pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue','tracking','feedback','feedbackdone','refill','prescription','upload-rx'].includes(target)){
+      flowState.consultationFeeAcknowledged=true;
+      flowState.directGeneralHealthComplete=true;
+    }
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
     })));
@@ -4754,7 +4856,7 @@
   // screens the person visited.
   const directEntryParent = Object.freeze({
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
-    concern:'landing', conditions:'concern', articles:'landing', article:'articles',
+    concern:'landing', conditions:'landing', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
     intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
     'intake-edu':'intake-general', ineligible:'intake4',
@@ -4763,25 +4865,26 @@
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', plan:'consult',
-    address:'plan', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', payment:'pharmacy-search',
+    address:'plan', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', pharmacyaccepted:'pharmacy-search',
+    pharmacypending:'pharmacyaccepted', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
-    pharmacypending:'payment-success', pharmacyaccepted:'pharmacypending',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
-    confirm:'pharmacyaccepted', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
+    tracking:'payment-success', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
-    'partner-patient-info':'consent-terms',
+    'partner-idcard':'consent-terms',
+    'partner-patient-info':'partner-idcard',
     'partner-insurance':'partner-patient-info',
     'partner-nurse':'intake-general', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance',
+  const PARTNER_SCREENS = ['partner-idcard','partner-patient-info','partner-insurance',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
@@ -4824,6 +4927,8 @@
     flowState.orderState.deliveryQuoteStatus='pending';
     flowState.orderState.deliveryQuoteAmount=null;
     flowState.orderState.stockLocked=false;
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
     flowState.orderState.paymentExpiresAt=null;
   }
   const PAYMENT_WINDOW_MS=60*60*1000;
@@ -4900,7 +5005,7 @@
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
     if(!pickup && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
-    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked) return 'quote-required';
+    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked || !flowState.orderState.pharmacyAccepted || !flowState.orderState.pharmacyPrepared) return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
   }
@@ -4997,25 +5102,24 @@
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
-    if(consultationBalanceDue()<=0) return 'waitroom';
-    return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
+    const preDoctorTarget=flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete ? 'intake-general' : 'waitroom';
+    if(consultationBalanceDue()<=0) return preDoctorTarget;
+    return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : preDoctorTarget;
   }
   /* EC-011: a consultation must not be asked condition-specific questions that
      do not belong to its concern. #intake3 is the "what have you tried for this
      concern" set, and intakeTemplates only defines it for skin, sexual and
      sleep. hair and general have no intake3 of their own, so both previously
      fell through to the authored base markup and rendered another concern's
-     question set. Both now skip it. General consultation also keeps its concern
-     details together on intake1 and moves directly to urgent screening, so its
-     separate severity/pattern screen is skipped rather than stretching the
-     same concern across another page.
+     question set. Both now skip it. General consultation has authored symptom
+     and detail screens, so it follows SCR-DIR-02 then SCR-DIR-02A before safety.
 
      Specialty intake3 skipping is derived from template coverage, while the
      deliberately shorter general route is explicit. Both stay in routing so
      they survive the innerHTML round-trip renderIntakeQuestions performs (the
      same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3'];
+  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake3'];
   const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
@@ -5031,11 +5135,30 @@
      intake steps reads from here so the progress label can never disagree with
      the routing. */
   function intakeStepOrder(){
+    if(flowState.entryChannel==='partner') return ['intake-concern','intake-general'];
     const seq = ['intake1','intake2','intake3','intake4'];
     try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
-    if(sharedConcernRequired()) seq.push('intake-concern');
-    seq.push('intake-general');
     return seq.filter(id => !intakeSkipped(id));
+  }
+  function finishDirectF02(){
+    // Partner never enters F02, but keep an explicit escape hatch so a stale
+    // Partner bookmark cannot mutate its locked SCR-002/SCR-003 state.
+    if(flowState.entryChannel==='partner'){
+      show('intake-concern');
+      return;
+    }
+    Object.assign(flowState,{
+      draftReady:true,
+      directGeneralHealthComplete:false,
+      consultationFeeAcknowledged:false,
+      consultationPaid:false,
+      paymentResolution:'',
+      lastRequiredScreen:'signup'
+    });
+    persistFlowState();
+    saveIntakeDraft();
+    postAuthNext='matching';
+    show('signup');
   }
   function skipForwardFrom(id){
     const seq = ['intake1','intake2','intake3','intake4'];
@@ -5065,9 +5188,15 @@
         ? (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-patient-info')
         : null;
       const healthParent=current==='intake-general'
-        ? (sharedConcernRequired() ? 'intake-concern' : (categoryNeedsPhotos() ? 'intake5' : 'intake4'))
+        ? (flowState.entryChannel==='partner' ? 'intake-concern' : 'consultpay')
         : null;
-      current = skipped !== null ? skipped : (partnerParent || healthParent || directEntryParent[current]);
+      const signupParent=current==='signup' && flowState.entryChannel==='direct'
+        ? (categoryNeedsPhotos() ? 'intake5' : 'intake4')
+        : null;
+      const waitroomParent=current==='waitroom' && flowState.entryChannel==='direct'
+        ? 'intake-general'
+        : null;
+      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || waitroomParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -5289,14 +5418,15 @@
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
-    'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
-    'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
+    'pharmacyaccepted','pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
+    'tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
+  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['waitroom','consult','video','rx-writing','plan']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
     if(intakeSkipped(target)) target = skipForwardFrom(target);
-    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake-general';
+    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake1';
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -5304,22 +5434,32 @@
     }
     if(PARTNER_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
-      if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
+      if(target!=='partner-idcard' && !flowState.partnerIdStepDone) return 'partner-idcard';
+      if(!['partner-idcard','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
       if(['partner-insurance','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'intake-concern';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
-    if(target==='signup' && !flowState.draftReady) return 'concern';
-    if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'concern';
+    if(target==='intake-general' && flowState.entryChannel==='direct'){
+      if(!flowState.draftReady) return 'intake1';
+      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.otpVerified) return 'otp';
+      if(!flowState.consentsComplete) return 'consent-terms';
+      if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
+      if(!flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
+      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
+    }
+    if(target==='signup' && !flowState.draftReady) return 'intake1';
+    if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
     if(target==='patient-info'){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
     }
     if(target==='identity'){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -5329,12 +5469,16 @@
     // contexts open this identity check before the ordinary clinical guard.
     if(target==='insurance' && ['profile','partner'].includes(insuranceEntry)) return target;
     if(REQUIRED_CARE_TARGETS.has(target) && !flowState.identityVerified && !flowState.returningIdentityValid){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete) return 'patient-info';
       return 'identity';
+    }
+    if(flowState.entryChannel==='direct' && DIRECT_PRE_DOCTOR_GATE_TARGETS.has(target) && !flowState.directGeneralHealthComplete){
+      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
+      return 'intake-general';
     }
     return target;
   }
@@ -5346,7 +5490,7 @@
     // for the same reason.
     if(target==='concern'){
       setSelectedCategory('general');
-      return 'intake-concern';
+      return 'intake1';
     }
     // Keep legacy partner bookmarks working while routing each old page name to
     // the matching step in the now-separated clinical intake.
@@ -5369,6 +5513,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
+    if(id==='intake-general') syncGeneralHealthContext();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -5418,10 +5563,19 @@
       enterTimer = setTimeout(() => scr.classList.remove('is-entering'), 1600);
     }
     if(id === 'consent-terms'){
-      // Reading and checkbox progress survives Back/forward navigation. Accepted
-      // consent is never cleared merely because a user re-verifies a phone number.
+      // Client (16 Aug): every visit requires a fresh scroll-through, never a
+      // continue button that's already enabled from a previous pass.
+      consentRead.pdpa = false; consentRead.telemedicine = false;
+      consentChecked.pdpa = false; consentChecked.telemedicine = false;
+      flowState.consentRead = Object.assign({},consentRead);
+      flowState.consentChecked = Object.assign({},consentChecked);
+      persistFlowState();
       Object.keys(consentRead).forEach(renderConsentReadState);
       syncConsentContinue();
+      const cue=document.querySelector('[data-consent-scroll-cue]');
+      if(cue) cue.hidden=false;
+      const scrollBox=document.querySelector('[data-consent-page-scroll]');
+      if(scrollBox) scrollBox.scrollTop=0;
     }
     if(id === 'patient-info'){
       // Direct Krane visitors self-pay by default. Keep an explicit insurance
@@ -5459,7 +5613,7 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address','delivery-quote','payment','payment-success','pharmacy-search','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
+    if(['address','delivery-quote','pharmacy-search','pharmacyaccepted','pharmacypending','payment','payment-success','tracking'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       // Some desktop browsers restore remembered address values just after the
       // screen becomes visible. Re-apply the persisted order address after that
@@ -5522,19 +5676,15 @@
     }
     if(id==='payment' || id==='payment-gw') startPaymentDeadlineTimer();
     else stopPaymentDeadlineTimer();
-    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
+    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','tracking'].includes(id)) syncPaymentOutcome();
+    /* Pharmacy verification, acceptance/reservation and preparation all run
+       before payment. SCR-016D therefore releases documents and hands straight
+       to SCR-048 tracking; no pharmacy state is repeated after payment. */
     clearTimeout(paymentSuccessTimer);
-    if(id==='payment-success'){
-      syncPaymentOutcome();
+    if(id==='payment-success' && hasFulfillableItems()){
       paymentSuccessTimer=setTimeout(() => {
-        if(!document.getElementById('payment-success')?.classList.contains('active')) return;
-        if(hasFulfillableItems()) replaceCurrent('pharmacypending');
-        else {
-          flowState.documentsUnlocked=true;
-          persistFlowState();
-          replaceCurrent('prescription');
-        }
-      },reduceMotion ? 450 : 2200);
+        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('tracking');
+      },reduceMotion ? 450 : 1800);
     }
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
@@ -5573,12 +5723,9 @@
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
       const countdown=mScr.querySelector('[data-matching-countdown]');
-      const countdownValue=mScr.querySelector('[data-matching-countdown-value]');
-      const countdownUnit=mScr.querySelector('[data-matching-countdown-unit]');
       let secondsRemaining=10;
       const syncMatchingCountdown=() => {
-        if(countdownValue) countdownValue.textContent=String(secondsRemaining);
-        if(countdownUnit) countdownUnit.textContent=document.documentElement.lang==='th' ? 'วินาที' : (secondsRemaining===1 ? 'second' : 'seconds');
+        if(countdown) countdown.textContent='00:'+String(secondsRemaining).padStart(2,'0');
         if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
           ? `เหลือ ${secondsRemaining} วินาที`
           : `${secondsRemaining} seconds remaining`);
@@ -5607,13 +5754,14 @@
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
-    clearTimeout(phTimer); clearTimeout(phFailTimer);
+    clearTimeout(phTimer); clearTimeout(phFailTimer); clearInterval(phCountdownTimer);
     const pScr = document.getElementById('pharmacy-search');
     if(id === 'pharmacy-search' && pScr){
       const thai=document.documentElement.lang==='th';
       const heading = pScr.querySelector('[data-ph-heading] .h1');
       const hint = pScr.querySelector('[data-ph-heading] .muted');
       const graphic = pScr.querySelector('[data-ph-graphic]');
+      const phCountdown = pScr.querySelector('[data-ph-countdown]');
       if(graphic){
         graphic.classList.remove('state-view__visual--danger');
         graphic.classList.add('state-view__visual--loading');
@@ -5625,6 +5773,16 @@
       if(hint) hint.textContent = pharmacyRetryCount
         ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.')
         : (thai ? 'เภสัชกรกำลังตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน' : 'Checking the prescription, stock and final price before payment.');
+      // Same 10-second hold as matching: a live countdown that reaches zero at
+      // the same moment the pharmacist handoff happens, instead of a static estimate.
+      let phSecondsRemaining=10;
+      paintWaitCountdown(phCountdown,phSecondsRemaining);
+      phCountdownTimer=setInterval(() => {
+        if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
+        phSecondsRemaining=Math.max(0,phSecondsRemaining-1);
+        paintWaitCountdown(phCountdown,phSecondsRemaining);
+        if(phSecondsRemaining===0) clearInterval(phCountdownTimer);
+      },1000);
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
         if(pharmacyForceDecline){
@@ -5658,11 +5816,13 @@
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
+        flowState.orderState.pharmacyAccepted=true;
+        flowState.orderState.pharmacyPrepared=false;
         flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
         persistFlowState();
-        replaceCurrent('payment');
-        showActionToast('ร้านยายืนยันสต็อก สาขา และราคาสุทธิแล้ว','success');
-      }, 3600);
+        replaceCurrent('pharmacyaccepted');
+        showActionToast('ร้านยายืนยันและสำรองสต็อกแล้ว','success');
+      }, 10000);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
     clearTimeout(waitTimer);
@@ -5675,8 +5835,21 @@
       syncConsultationSummaryUnread(false);
     }
     clearTimeout(rxTimer);
+    clearInterval(rxCountdownTimer);
     if(id==='rx-writing'){
+      const rxScr=document.getElementById('rx-writing');
+      const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
+      let rxSecondsRemaining=5*60;
+      paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+      rxCountdownTimer=setInterval(() => {
+        if(!rxScr?.classList.contains('active')){ clearInterval(rxCountdownTimer); return; }
+        rxSecondsRemaining=Math.max(0,rxSecondsRemaining-1);
+        paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+        if(rxSecondsRemaining===0) clearInterval(rxCountdownTimer);
+      },1000);
       rxTimer=setTimeout(() => {
+        if(!rxScr?.classList.contains('active')) return;
+        clearInterval(rxCountdownTimer);
         if(document.getElementById('rx-writing')?.classList.contains('active')) replaceCurrent('plan');
       },reduceMotion ? 500 : 3400);
     }
@@ -5691,6 +5864,7 @@
     const covered=Math.max(0,CONSULTATION_FEE_BAHT-balance);
       // The medical certificate is free, so ticking it never changes the amount.
       const amount=balance;
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
     const row = document.querySelector('#consultpay [data-cert-row]');
     if(row) row.hidden = !on;
     const base=document.querySelector('#consultpay [data-consult-base-amount]');
@@ -5731,6 +5905,12 @@
     syncConsultationPaymentAmount();
   });
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
+  function paintWaitCountdown(timer,remainingSeconds){
+    if(!timer) return;
+    const mm=String(Math.floor(remainingSeconds/60)).padStart(2,'0');
+    const ss=String(remainingSeconds%60).padStart(2,'0');
+    timer.textContent=mm+':'+ss;
+  }
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
     const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
@@ -5740,12 +5920,21 @@
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
-    if(timer) timer.textContent = `ประมาณ ${queuePos * 3} นาที`;
     if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
     const note = w.querySelector('[data-wait-note]');
-    if(note) note.textContent = 'อย่าลืมอนุญาตให้ใช้กล้องและไมค์ ระหว่างปรึกษา ถ้าไม่สะดวกวิดีโอ เปลี่ยนไปคุยแบบแชทได้ตลอด';
+    if(note) note.textContent = 'กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ';
+    clearInterval(waitCountdownTimer);
+    let remainingSeconds = queuePos * 3 * 60;
+    paintWaitCountdown(timer,remainingSeconds);
+    waitCountdownTimer = setInterval(() => {
+      if(!w.classList.contains('active')){ clearInterval(waitCountdownTimer); return; }
+      remainingSeconds = Math.max(0,remainingSeconds-1);
+      paintWaitCountdown(timer,remainingSeconds);
+      if(remainingSeconds===0) clearInterval(waitCountdownTimer);
+    }, 1000);
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
+      clearInterval(waitCountdownTimer);
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
       if(timer) timer.textContent = '';
@@ -6197,7 +6386,11 @@
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
     if(patientInfoContinue){
       const name=document.getElementById('patient-full-name').value.trim();
-      const paymentChoice=document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '';
+      // Off the general path the choice is not rendered, so self-pay stands in
+      // rather than blocking on a question the patient was never asked.
+      const paymentChoice=isGeneralPath()
+        ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
+        : 'self-pay';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
       if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
       submitOnce('patient-info',patientInfoContinue,() => {
@@ -6249,7 +6442,7 @@
         // finish those steps, and only returning (already-verified) patients straight
         // to matching, since patient-info/identity were skipped for them earlier.
         const consentNext = consentSource==='partner'
-          ? 'partner-patient-info'
+          ? 'partner-idcard'
           : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
         persistFlowState();
@@ -6439,13 +6632,15 @@
       flowState.orderState.deliveryQuoteStatus='accepted';
       flowState.orderState.deliveryQuoteAmount=0;
       flowState.orderState.stockLocked=true;
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=false;
       flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
       persistFlowState();
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
       refreshMedicationCheckout();
-      show('payment');
-      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ตรวจสอบยอดก่อนชำระเงินได้เลย','success');
+      show('pharmacyaccepted');
+      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ร้านยาสำรองสต็อกให้แล้ว','success');
       return;
     }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
@@ -6522,6 +6717,11 @@
       showActionToast(demoAction.dataset.demoAction || 'เรียบร้อยแล้ว');
       return;
     }
+    const directIntakeComplete=e.target.closest('[data-direct-intake-complete]');
+    if(directIntakeComplete){
+      finishDirectF02();
+      return;
+    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -6559,7 +6759,9 @@
         show(go.dataset.flagGo); return;
       }
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
-        show(finalIntakeTarget()); return;
+        if(flowState.entryChannel==='partner') show('intake-concern');
+        else finishDirectF02();
+        return;
       }
       if(go.dataset.go === 'consultpay'){
         show(consultationHandoffTarget());
@@ -6692,14 +6894,14 @@
     'article':          { id:'KRANE-F37', name:'Health Article, Read View', stories:['US-F37.1: Educational content with clear author and review date','US-F37.2: Tags link to related topics'] },
     'nurse':            { id:'KRANE-F38', name:'Nurse Pre-Screening Flow', stories:['US-F38.1: Patient consults a nurse before doctor referral (when required)','US-F38.2: Admin enables/disables the nurse step per partner','US-F38.3: Nurse screens and refers to the right doctor'] },
     'insurance':        { id:'KRANE-F35', name:'Insurance Demand-Side Intake & Claim', stories:['Enter ID/passport, DOB, policy number','Choose "Check entitlement" or "Pay myself"','Edit copay vs credit-limit split','Claim connects to back-office claim system'] },
-    'intake1':          { id:'KRANE-F04', name:'Health Intake, Q1 Branched Symptoms & Duration', stories:['Specific services ask condition-relevant symptoms first; General consultation asks for the main concern without assuming a disease','US-F04.2: Structured single-select and multi-select answers adapt to the selected entry path'] },
-    'intake2':          { id:'KRANE-F04', name:'Health Intake, Q2 Branched Severity & Pattern', stories:['Hair care asks about hair-change pattern; General consultation asks broad severity and symptom pattern','US-F04.9: Follow-up questions adapt to the service selected on the landing page'] },
-    'intake3':          { id:'KRANE-F04', name:'Health Intake, Q3 Previous Care', stories:['US-F04.9: Prior treatment and its outcome are captured for the current concern','US-F04.4: Answers are surfaced to the doctor before the session'] },
-    'intake4':          { id:'KRANE-F04', name:'Health Intake, Q4 Urgent Safety', stories:['US-F04.9: Warning signs are screened before online care continues','US-F04.7: Ineligible patients can be routed to in-person care'] },
-    'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
-    'intake-concern':   { id:'KRANE-F04', name:'Health Intake, General / Partner Concern Details', stories:['Partner entry and General consultation record free-form symptoms, duration, attempted relief and optional photos on a dedicated page','Specialty banner journeys skip this page because their condition-specific intake already captures the concern','US-F04.4: Concern details are surfaced to the doctor before the session'] },
-    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared General Health', stories:['Every consultation completes general health on a separate final intake page','Captures conditions, allergies, medicine, supplements, height and weight in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
-    'activity':         { id:'KRANE-F05', name:'Activity Tab, Orders + Consultations', stories:['Client 5 Jul: order cards live on the Activity tab, not the profile','US-F05.3: Tab 2 shows order history and consultation history','Tapping an order opens its tracking; past items open history'] },
+    'intake1':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02 Symptoms & Duration', stories:['Every Direct service, including General consultation, starts its clinical intake here','Questions adapt to the selected service'] },
+    'intake2':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02A Detail', stories:['Captures severity and concern-specific pattern before safety screening'] },
+    'intake3':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02B Previous Care (conditional)', stories:['Prior treatment appears only when the selected service has an authored question set'] },
+    'intake4':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02C Urgent Safety', stories:['Warning signs are screened before online care continues','Ineligible patients route to in-person care'] },
+    'intake5':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02D Photo (optional)', stories:['Photo upload appears only where an image materially helps assessment','Completing or skipping saves F02 and continues to F03'] },
+    'intake-concern':   { id:'KRANE-F04', name:'Partner Entry, SCR-002 Concern Details', stories:['Locked Partner entry records free-form symptoms, duration and attempted relief','Direct entry never uses this compact Partner screen'] },
+    'intake-general':   { id:'KRANE-F04 + KRANE-F05', name:'Shared UI, Partner SCR-003 / Direct SCR-DIR-02E', stories:['Partner keeps its approved compact-health order unchanged','Direct confirms or updates general health after fee handling and immediately before the waiting room','The same health fields are reused without sharing route logic'] },
+    'activity':         { id:'KRANE-F05', name:'Activity Tab, Active Orders + Past Treatments', stories:['Active delivery orders remain separate for tracking','Completed consultation and order events are merged into one treatment episode','Tapping a past treatment opens its diagnosis and previous prescription when available'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
@@ -6718,22 +6920,21 @@
     'address':          { id:'KRANE-F18', name:'Delivery Address, Search / Missing Address', stories:['US-F18.8: Patient searches condo, building, landmark or address, or pins location on a map','US-F18.9: Same-day delivery is disabled until a valid address exists'] },
     'payment':          { id:'KRANE-F18', name:'Medication Payment, Hosted Gateway', stories:['US-F18.10: Payment appears as a familiar third-party hosted KBank-style gateway','US-F18.5: Medicine and delivery costs shown separately; total summarised','Prototype assumption: this is Payment 2 after the consultation and prescription acceptance'] },
     'payfail':          { id:'KRANE-F18', name:'Medication Payment, Failed (edge state)', stories:['US-F18.6: Patient can retry or choose a different payment method','US-F18.7: Treatment plan is preserved; no data lost on failure'] },
-    'pharmacypending':  { id:'KRANE-F21', name:'Fulfilment, Preparing Confirmed Order', stories:['The pharmacy receives payment only after prescription, stock and price confirmation','Patient sees that the confirmed order is being prepared'] },
-    'pharmacyaccepted': { id:'KRANE-F21', name:'Fulfilment, Pharmacy Accepted / POS Pick-Pack', stories:['After payment, the patient sees that the paid order was accepted into pharmacy fulfilment','Accepted order moves into pharmacy POS, pick and pack, then rider dispatch','Admin status updates are reflected in patient tracking'] },
+    'pharmacyaccepted': { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacy Acceptance & Stock Reservation (SCR-017A)', stories:['After prescription and stock verification, the pharmacy accepts the order and reserves stock before checkout','No payment has been taken at this point'] },
+    'pharmacypending':  { id:'KRANE-F21', name:'Pre-payment Pharmacy Preparation (SCR-017)', stories:['The pharmacy prepares the reserved medicine before checkout','The prepared order is ready to dispatch immediately after payment'] },
     'pharmacyissue':    { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Standard-delivery Fallback', stories:['Repeated nearby-branch declines offer standard delivery before any charge','The fallback locks stock and recalculates the final amount before checkout reopens'] },
     'refund':           { id:'KRANE-F21', name:'Fulfilment, Refund Confirmed', stories:['US-F21.6: Refund confirmation: amount, card, and reference shown clearly','US-F21.7: Consultation fee is separate and unaffected by a medication refund'] },
-    'confirm':          { id:'KRANE-F21', name:'Order Tracking, Confirmation', stories:['US-F21.1: Order confirmation shown after pharmacy acceptance, not immediately after medication payment','US-F21.3: Confirmation email with consultation + order summary sent to patient'] },
-    'tracking':         { id:'KRANE-F21', name:'Order Tracking', stories:['US-F21.1: Real-time status: payment confirmed → pharmacy accepted → preparing → rider pickup → delivered','US-F21.2: Admin can manually update status at any stage (visible here)'] },
+    'tracking':         { id:'KRANE-F21', name:'Dispatch & Order Tracking (SCR-048)', stories:['Payment success releases documents and opens tracking directly','Real-time status preserves the completed pharmacy checks and continues with rider pickup through delivery','Admin status updates are reflected in patient tracking'] },
     'feedback':         { id:'none', name:'Post-Consultation Feedback (not in Phase 1 feature scope)', stories:['Proposed: consultation satisfaction rating for care quality','Note: no KRANE-F## assigned, flag for next feature list update'] },
     'feedbackdone':     { id:'none', name:'Post-Consultation Feedback, Thanks state', stories:[] },
     'refill':           { id:'KRANE-F22', name:'Refill Flow', stories:['US-F22.1: See eligible prescriptions and request a refill in one action','US-F22.2: Refill goes straight to delivery/payment when doctor-set allowance remains','US-F22.3: Expired or used-up prescriptions route to a new consultation'] },
     'profile':          { id:'KRANE-F05', name:'Patient Profile (4-Tab), Tab 1: Profile', stories:['US-F05.1: Active consultation/condition shown with Refill button','US-F05.8: Multiple orders are grouped as needing action, active, and past','US-F05.5: Bottom nav includes Profile as a permanent tab'] },
-    'history':          { id:'KRANE-F05', name:'Patient Profile, Tab 2: Activity (Medical History)', stories:['US-F05.3: Order history and consultation history visible here','US-F05.4: Delivery tracking visible from Activity tab'] },
+    'history':          { id:'KRANE-F05', name:'Past Treatment Detail', stories:['A completed treatment is represented once instead of duplicating its consultation and order','The detail shows the diagnosis and the previous prescription when one was issued'] },
     'notifications':    { id:'KRANE-F05 + KRANE-F12', name:'Patient Profile, Tab 3: Notifications + Appointment Alerts', stories:['US-F05.6: All platform alerts shown in the Notifications tab','US-F12.1: Booking confirmation, time-change, and cancellation notifications','US-F12.2: Reminder X hours before appointment (configurable)'] },
     'settings':         { id:'KRANE-F05', name:'Patient Profile, Tab 4: Settings', stories:['US-F05.7: Account, payment methods, notification prefs, help, log out'] },
     'account':          { id:'KRANE-F05', name:'Personal Details, Editable + Audit Trail', stories:['Client v3: name, phone, email, and card are editable and cannot be empty','Client v3: every edit is stored with a timestamp (audit trail)'] },
     'empty-activities': { id:'KRANE-F34', name:'Empty State, No Active Orders', stories:['US-F34.1: Graceful empty state for no orders / no consultation history','US-F34.2: CTA to start a consultation shown in empty state'] },
-    'empty-history':    { id:'KRANE-F34', name:'Empty State, No Medical History', stories:['US-F34.1: Graceful empty state for no past consultations or prescriptions'] },
+    'empty-history':    { id:'KRANE-F34', name:'Empty State, No Past Treatments', stories:['US-F34.1: Graceful empty state before any completed treatment, diagnosis or prescription exists'] },
   };
 
   // Feature tag = one floating toast on top, updated on navigation (not inside the page card)
@@ -6797,7 +6998,7 @@
     if(document.getElementById('consultpay')?.dataset.checkoutMode==='fee-notice'){
       flowState.consultationFeeAcknowledged=true;
       persistFlowState();
-      show('waitroom');
+      show(consultationHandoffTarget());
       return;
     }
     const sel = document.querySelector('#consultpay .option[aria-selected="true"]');
@@ -6812,7 +7013,7 @@
       flowState.consultationPaid=true;
       flowState.paymentResolution='consultation-paid';
       persistFlowState();
-      show('waitroom');
+      show(consultationHandoffTarget());
       return;
     }
     if(event.target.closest('[data-consult-payment-retry]')){
@@ -7009,8 +7210,22 @@
     activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
   });
   document.body.addEventListener('click', e => {
-    if(!e.target.closest('[data-pharmacy-accepted-continue]')) return;
-    show('confirm');
+    if(e.target.closest('[data-pharmacy-accepted-continue]')){
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=false;
+      persistFlowState();
+      show('pharmacypending');
+      return;
+    }
+    if(e.target.closest('[data-pharmacy-prepared-continue]')){
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=true;
+      ensurePaymentDeadline();
+      persistFlowState();
+      refreshMedicationCheckout();
+      show('payment');
+      return;
+    }
   });
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-payment-deadline-retry]')){
@@ -7102,6 +7317,16 @@
         incompleteHistory.querySelector('input')?.focus();
         return;
       }
+      if(flowState.entryChannel==='direct'){
+        flowState.draftReady=true;
+        flowState.directGeneralHealthComplete=true;
+        flowState.lastRequiredScreen='waitroom';
+        persistFlowState();
+        saveIntakeDraft();
+        showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
+        show('waitroom');
+        return;
+      }
     }
     flowState.draftReady=true;
     if(flowState.entryChannel==='partner'){
@@ -7136,11 +7361,69 @@
     postAuthNext='matching';
     show('signup');
   });
+  // SCR-002A. The card is read for one field only: the name, which lands on the
+  // next screen where it stays editable. Nothing is uploaded; the preview is a
+  // local object URL and the "read" value comes from the demo fixture.
+  (function partnerIdCard(){
+    const input = document.querySelector('[data-idcard-input]');
+    const thumbs = document.querySelector('[data-idcard-thumbs]');
+    if(!input || !thumbs) return;
+    const empty = thumbs.querySelector('[data-idcard-empty]');
+    const readout = document.querySelector('[data-idcard-read]');
+    const nameOut = document.querySelector('[data-idcard-name]');
+    const CARD_NAME = 'มะลิ สุธิดา';
+    input.addEventListener('change', () => {
+      const file = (input.files || [])[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      if(file.size > 10 * 1024 * 1024){ showActionToast('ไฟล์ใหญ่เกิน 10 MB','warning'); return; }
+      thumbs.querySelectorAll('.up-thumb').forEach(el => el.remove());
+      const fig = document.createElement('span');
+      fig.className = 'up-thumb';
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.alt = 'ตัวอย่างบัตรประชาชนที่อัปโหลด';
+      img.addEventListener('load', () => URL.revokeObjectURL(img.src));
+      fig.appendChild(img);
+      thumbs.appendChild(fig);
+      if(empty) empty.hidden = true;
+      if(nameOut) nameOut.textContent = CARD_NAME;
+      if(readout) readout.hidden = false;
+      flowState.partnerName = CARD_NAME;
+      persistFlowState();
+      showActionToast('อ่านชื่อจากบัตรแล้ว','success');
+    });
+    document.body.addEventListener('click', e => {
+      const skip = e.target.closest('[data-idcard-skip]');
+      const go = e.target.closest('[data-idcard-continue]');
+      if(!skip && !go) return;
+      if(go && !thumbs.querySelector('.up-thumb')){
+        showActionToast('กรุณาถ่ายหรืออัปโหลดรูปบัตรก่อน','warning');
+        return;
+      }
+      flowState.partnerIdStepDone = true;
+      persistFlowState();
+      show('partner-patient-info');
+    });
+  })();
+
   function applyInsuranceVisibility(){
     const general = isGeneralPath();
     // Checkout: the insurance row is only offered on the general path.
     const payIns = document.querySelector('#payment [data-payment-insurance-row]');
     if(payIns) payIns.hidden = !general;
+    // Client 16 Aug: an insurance choice is only ever offered on two routes, the
+    // partner entry (which has its own screen) and general consultation. Every
+    // condition-specific direct path is self-pay, so the question never appears
+    // and the stored preference is forced back rather than left dangling.
+    const directChoice = document.querySelector('#patient-info [data-patient-payment-choice]');
+    if(directChoice){
+      directChoice.hidden = !general;
+      if(!general && flowState.paymentPreference !== 'self-pay'){
+        flowState.paymentPreference = 'self-pay';
+        flowState.coverage = {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
+        persistFlowState();
+      }
+    }
   }
 
   // Ticking QR expiry. On the medication gateway an expired active QR becomes the
@@ -7653,84 +7936,87 @@
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260815-clean-payment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260815-role-alignment-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260815-active-ink-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-v1.webp?v=20260815-ink-crane-motion-v1" class="krane-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image href="assets/state-editorial-v5-ink/loading-info.png?v=20260815-ink-crane-motion-v1" class="krane-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/loading-v8/paper-crane-frame-01-v8.png?v=20260816-transparent-bg-v1" class="krane-crane-frame krane-crane-frame--1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/loading-v8/paper-crane-frame-02-v8.png?v=20260816-transparent-bg-v1" class="krane-crane-frame krane-crane-frame--2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/loading-v8/paper-crane-frame-03-v8.png?v=20260816-transparent-bg-v1" class="krane-crane-frame krane-crane-frame--3" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/loading-v8/paper-crane-frame-04-v8.png?v=20260816-transparent-bg-v1" class="krane-crane-frame krane-crane-frame--4" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/loading-v8/paper-crane-frame-05-v8.png?v=20260816-transparent-bg-v1" class="krane-crane-frame krane-crane-frame--5" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
