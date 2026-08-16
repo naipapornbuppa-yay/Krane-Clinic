@@ -1521,6 +1521,12 @@
        building its own card system. Card details never touch Krane's servers. -->
   <section class="screen" id="payment" data-screen-code="SCR-015" data-checkout-mode="final">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
+    <div class="payment-deadline" data-payment-deadline role="status" aria-live="polite">
+      <span class="payment-deadline__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg></span>
+      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 2 ชั่วโมง</strong><small data-payment-deadline-copy>ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ</small></span>
+      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT2H">02:00:00</time>
+      <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
+    </div>
     <div class="screen__body stack-4">
 
       <!-- 1. Order summary. The patient may still reduce or decline items before
@@ -1705,6 +1711,12 @@
   <!-- Bank-hosted gateway, opened only after the patient confirms the checkout above -->
   <section class="screen" id="payment-gw" data-screen-code="SCR-016">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">หน้าชำระเงินของธนาคาร</span></div>
+    <div class="payment-deadline" data-payment-deadline role="status" aria-live="polite">
+      <span class="payment-deadline__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg></span>
+      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน 2 ชั่วโมง</strong><small data-payment-deadline-copy>เวลาที่เหลือสำหรับออเดอร์นี้</small></span>
+      <time class="payment-deadline__time" data-payment-deadline-time datetime="PT2H">02:00:00</time>
+      <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
+    </div>
     <div class="screen__body stack-4">
 <div class="gateway" data-gw>
         <div class="gw-head">
@@ -2768,6 +2780,7 @@
       paymentMethod:'qr',
       amountDue:558,
       stockLocked:false,
+      paymentExpiresAt:null,
       paidAmount:null,
       paidMethod:'',
       paidDeliveryMethod:''
@@ -2803,7 +2816,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2866,7 +2879,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -4793,7 +4806,60 @@
     flowState.orderState.deliveryQuoteStatus='pending';
     flowState.orderState.deliveryQuoteAmount=null;
     flowState.orderState.stockLocked=false;
+    flowState.orderState.paymentExpiresAt=null;
   }
+  const PAYMENT_WINDOW_MS=2*60*60*1000;
+  let paymentDeadlineTimer=null;
+  function ensurePaymentDeadline(){
+    const expiresAt=Number(flowState.orderState.paymentExpiresAt);
+    if(Number.isFinite(expiresAt) && expiresAt>0) return expiresAt;
+    flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
+    persistFlowState();
+    return flowState.orderState.paymentExpiresAt;
+  }
+  function paymentDeadlineExpired(){
+    const expiresAt=Number(flowState.orderState.paymentExpiresAt);
+    return Number.isFinite(expiresAt) && expiresAt>0 && expiresAt<=Date.now();
+  }
+  function formatPaymentCountdown(milliseconds){
+    const totalSeconds=Math.max(0,Math.ceil(milliseconds/1000));
+    const hours=Math.floor(totalSeconds/3600);
+    const minutes=Math.floor((totalSeconds%3600)/60);
+    const seconds=totalSeconds%60;
+    return [hours,minutes,seconds].map(value=>String(value).padStart(2,'0')).join(':');
+  }
+  function renderPaymentDeadline(){
+    const expiresAt=ensurePaymentDeadline();
+    const remaining=Math.max(0,expiresAt-Date.now());
+    const expired=remaining<=0;
+    document.querySelectorAll('[data-payment-deadline]').forEach(deadline=>{
+      deadline.dataset.expired=String(expired);
+      const title=deadline.querySelector('[data-payment-deadline-title]');
+      const copy=deadline.querySelector('[data-payment-deadline-copy]');
+      const time=deadline.querySelector('[data-payment-deadline-time]');
+      const retry=deadline.querySelector('[data-payment-deadline-retry]');
+      if(title) title.textContent=expired ? 'หมดเวลาชำระเงินแล้ว' : 'กรุณาชำระเงินภายใน 2 ชั่วโมง';
+      if(copy) copy.textContent=expired ? 'ให้ร้านยายืนยันสต็อกและยอดอีกครั้งก่อนชำระเงิน' : 'ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ';
+      if(time){ time.textContent=formatPaymentCountdown(remaining); time.setAttribute('datetime',expired ? 'PT0S' : `PT${Math.ceil(remaining/1000)}S`); }
+      if(retry) retry.hidden=!expired;
+    });
+    document.querySelectorAll('#payment [data-payment-go],#payment-gw [data-payment-submit]').forEach(button=>{
+      if(expired){ button.disabled=true; button.setAttribute('aria-disabled','true'); }
+      else if(button.closest('#payment-gw')){ button.disabled=false; button.setAttribute('aria-disabled','false'); }
+    });
+    if(expired){
+      const label=document.querySelector('#payment [data-payment-cta-label]');
+      if(label) label.textContent='หมดเวลาชำระเงิน';
+      clearInterval(paymentDeadlineTimer);
+      paymentDeadlineTimer=null;
+    }
+  }
+  function startPaymentDeadlineTimer(){
+    clearInterval(paymentDeadlineTimer);
+    renderPaymentDeadline();
+    if(!paymentDeadlineExpired()) paymentDeadlineTimer=setInterval(renderPaymentDeadline,1000);
+  }
+  function stopPaymentDeadlineTimer(){ clearInterval(paymentDeadlineTimer); paymentDeadlineTimer=null; }
   function calculatedSameDayDeliveryFee(){
     const km=Math.max(0,Number(flowState.orderState.address?.km || 0));
     return Math.max(80,Math.ceil((80 + km * 10) / 10) * 10);
@@ -5416,6 +5482,8 @@
       syncDeliveryAddress();
       refreshMedicationCheckout();
     }
+    if(id==='payment' || id==='payment-gw') startPaymentDeadlineTimer();
+    else stopPaymentDeadlineTimer();
     if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
     clearTimeout(paymentSuccessTimer);
     if(id==='payment-success'){
@@ -5552,6 +5620,7 @@
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
+        flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
         persistFlowState();
         replaceCurrent('payment');
         showActionToast('ร้านยายืนยันสต็อก สาขา และราคาสุทธิแล้ว','success');
@@ -6321,6 +6390,7 @@
       flowState.orderState.deliveryQuoteStatus='accepted';
       flowState.orderState.deliveryQuoteAmount=0;
       flowState.orderState.stockLocked=true;
+      flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
       persistFlowState();
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
@@ -6858,6 +6928,10 @@
       return;
     }
     if(!e.target.closest('[data-payment-go]')) return;
+    if(paymentDeadlineExpired()){
+      showActionToast('หมดเวลาชำระเงิน กรุณาให้ร้านยายืนยันสต็อกและยอดอีกครั้ง','warning');
+      return;
+    }
     const checkoutState=checkoutActionState();
     if(checkoutState==='quote-required'){
       if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
@@ -6890,10 +6964,21 @@
     show('confirm');
   });
   document.body.addEventListener('click',event => {
+    if(event.target.closest('[data-payment-deadline-retry]')){
+      invalidateFulfillmentQuote();
+      persistFlowState();
+      show('pharmacy-search');
+      return;
+    }
     if(event.target.closest('[data-payment-submit]')){
+      if(paymentDeadlineExpired()){
+        showActionToast('หมดเวลาชำระเงิน กรุณาให้ร้านยายืนยันสต็อกและยอดอีกครั้ง','warning');
+        return;
+      }
       flowState.orderState.paidAmount=currentMedicationDue();
       flowState.orderState.paidMethod=paymentMethod;
       flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
+      flowState.orderState.paymentExpiresAt=null;
       flowState.consultationPaid=true;
       flowState.paymentResolution='final-paid';
       flowState.documentsUnlocked=true;
