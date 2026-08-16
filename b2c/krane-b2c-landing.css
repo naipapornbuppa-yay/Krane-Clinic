@@ -2937,36 +2937,89 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   .trust-strip__group[aria-hidden="true"]{display:none}
 }
 
-/* Secondary services: plain pills instead of illustrated tiles, one
-   horizontally-scrolling row instead of a grid. */
-.pill-row{
-  display:flex;
+/* Secondary services: compact editorial cards. Three fit in the desktop
+   viewport; the fourth remains discoverable without turning the row into CTA pills. */
+.service-card-row{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:calc((100% - 44px)/3);
   gap:12px;
   overflow-x:auto;
+  overflow-y:hidden;
   scroll-snap-type:x proximity;
+  scroll-padding-inline:10px;
+  scrollbar-width:none;
   -webkit-overflow-scrolling:touch;
-  padding-bottom:4px;
+  margin:-10px -10px -18px;
+  padding:10px 10px 18px;
 }
-.pill-row::-webkit-scrollbar{display:none}
-.pill-btn{
-  flex:none;
+.service-card-row::-webkit-scrollbar{display:none}
+.service-card{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  min-width:0;
+  min-height:112px;
+  overflow:hidden;
+  padding:16px;
+  border:1px solid rgba(25,49,77,.12);
+  border-radius:22px;
+  background:linear-gradient(135deg,#f1f5fa 0%,#e5edf6 100%);
+  color:var(--landing-ink);
   scroll-snap-align:start;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  min-height:56px;
-  padding:0 24px;
-  border-radius:999px;
-  background:linear-gradient(135deg,#7f8da3,#66748b);
-  color:#fff;
-  font:500 15px/1.3 "Prompt","Noto Sans Thai",sans-serif;
-  white-space:nowrap;
-  transition:transform .2s ease,box-shadow .2s ease;
+  box-shadow:0 2px 5px rgba(22,42,64,.06);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
-.pill-btn svg{width:16px;height:16px;flex:none}
-.pill-btn:hover,.pill-btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px rgba(60,75,95,.28)}
+.service-card--general{background:linear-gradient(135deg,#eef4fb 0%,#dce9f6 100%)}
+.service-card--skin{background:linear-gradient(135deg,#f5f1ea 0%,#e9e1d4 100%)}
+.service-card--hormone{background:linear-gradient(135deg,#edf3f4 0%,#d9e7e9 100%)}
+.service-card--mind{background:linear-gradient(135deg,#f1f0f7 0%,#e2e0ee 100%)}
+.service-card__title{
+  position:relative;
+  z-index:2;
+  max-width:66%;
+  font:600 clamp(14px,1.35vw,17px)/1.3 "Prompt","Noto Sans Thai",sans-serif;
+}
+.service-card__art{
+  position:absolute;
+  z-index:1;
+  right:-8px;
+  bottom:-17px;
+  width:52%;
+  height:auto;
+  opacity:.96;
+  pointer-events:none;
+  transition:transform .25s ease;
+}
+.service-card__arrow{
+  position:absolute;
+  z-index:3;
+  right:12px;
+  bottom:12px;
+  display:grid;
+  width:34px;
+  height:34px;
+  place-items:center;
+  border-radius:50%;
+  background:var(--landing-navy);
+  color:#fff;
+}
+.service-card__arrow svg{width:15px;height:15px}
+.service-card:hover,.service-card:focus-visible{
+  z-index:2;
+  transform:translateY(-3px);
+  border-color:rgba(25,49,77,.24);
+  box-shadow:0 10px 20px -12px rgba(22,42,64,.42);
+}
+.service-card:hover .service-card__art,.service-card:focus-visible .service-card__art{transform:translate3d(-3px,-2px,0) scale(1.03)}
+@media(max-width:860px){
+  .service-card-row{grid-auto-columns:calc((100% - 32px)/2)}
+}
 @media(max-width:520px){
-  .pill-btn{min-height:50px;padding:0 18px;font-size:14px;gap:8px}
+  .service-card-row{grid-auto-columns:min(78%,260px)}
+  .service-card{min-height:104px;padding:14px;border-radius:20px}
+  .service-card__title{max-width:68%;font-size:14px}
+  .service-card__arrow{right:10px;bottom:10px;width:32px;height:32px}
 }
 
 /* Desktop priority mosaic: the weight campaign anchors the left column while
@@ -2993,7 +3046,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
    Safari, so touch users got none of the desktop lift/scale feedback above —
    this mirrors it as a press-down :active state instead. */
 .button:active,
-.pill-btn:active,
+.service-card:active,
 .treatment-pill:active,
 .hero-care-card:active,
 .care-banner:active,
@@ -3008,7 +3061,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
 }
 @media(prefers-reduced-motion:reduce){
   .button:active,
-  .pill-btn:active,
+  .service-card:active,
   .treatment-pill:active,
   .hero-care-card:active,
   .care-banner:active,

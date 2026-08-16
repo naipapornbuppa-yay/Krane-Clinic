@@ -410,7 +410,7 @@
 
   const header = document.querySelector("[data-site-header]");
   const revealGroups = [
-    [".treatments .treatment-pill", 55, "scale"],
+    [".treatments .service-card", 55, "scale"],
     [".compliance__group:first-child > div", 55, "scale"],
     [".steps > li", 75, ""],
     [".protocol__heading > *", 90, ""],
