@@ -273,6 +273,12 @@
     .state-view__tile:has(.krane-state-art)::before{content:none!important}
     .state-view__visual:has(.krane-state-art)>.state-view__badge{display:none!important}
     .krane-state-art{display:block;width:100%;height:100%;overflow:visible;color:#101722}
+    /* These illustrations are flattened PNGs with an opaque white canvas baked in.
+       Multiply-blending them onto the page removes that white plate and leaves
+       only the ink linework, so the art reads straight onto the cream background.
+       Targeting the <defs> source node too: SVG <use> instances keep the computed
+       style of the original node, not selectors matching the outer .krane-state-art. */
+    .krane-state-defs image,.krane-state-art image{mix-blend-mode:multiply}
     .krane-state-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
     /* Styles must also target the source nodes inside <defs>. SVG <use> keeps
        those computed styles when it creates the rendered instance; styling
