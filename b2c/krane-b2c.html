@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260816-cool-grey-v7";
+    const release = "20260816-sections-idcard-v8";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260816-cool-grey-v7">
-<link rel="stylesheet" href="components.css?v=20260816-cool-grey-v7">
+<link rel="stylesheet" href="design-tokens.css?v=20260816-sections-idcard-v8">
+<link rel="stylesheet" href="components.css?v=20260816-sections-idcard-v8">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -536,7 +536,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-cool-grey-v7" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-sections-idcard-v8" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -2366,6 +2366,37 @@
   </section>
 
   <!-- Full-page pre-loader overlay -->
+  <!-- SCR-002A (client 16 Aug): the card is captured before the details screen so
+       the name can be read off it, rather than typed twice. Demo only: nothing is
+       uploaded anywhere and only the name is carried forward. -->
+  <section class="screen" id="partner-idcard" data-screen-code="SCR-002A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ยืนยันตัวตน</span></div>
+    <div class="screen__body stack-4">
+      <div class="stack-2">
+        <h2 class="h1">ถ่ายบัตรประชาชน</h2>
+        <p class="muted">เราจะดึงชื่อจากบัตรมากรอกให้ในหน้าถัดไป ตรวจสอบและแก้ไขได้ก่อนยืนยัน</p>
+      </div>
+      <label class="upload" for="partner-idcard-input">
+        <span class="up-ic"><i data-lucide="id-card" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="up-title">ถ่ายรูปหรืออัปโหลด</span>
+        <span class="up-sub">JPG หรือ PNG · ไม่เกิน 10 MB</span>
+      </label>
+      <input id="partner-idcard-input" class="sr-only" type="file" accept="image/*" data-idcard-input>
+      <div class="up-thumbs" data-idcard-thumbs aria-live="polite">
+        <p class="up-empty hint" data-idcard-empty>ยังไม่มีรูปบัตร แตะด้านบนเพื่อถ่ายหรือเลือกรูป</p>
+      </div>
+      <div class="card card--pad-sm stack-2" data-idcard-read hidden>
+        <div class="section-label">ข้อมูลที่อ่านจากบัตร</div>
+        <div class="between"><span class="muted">ชื่อและนามสกุล</span><strong data-idcard-name></strong></div>
+        <p class="hint">แก้ไขได้ในหน้าถัดไป</p>
+      </div>
+    </div>
+    <div class="screen__footer stack-2">
+      <button class="btn btn--primary" data-idcard-continue>ยืนยันและไปต่อ</button>
+      <button class="btn btn--ghost btn--sm" data-idcard-skip>กรอกข้อมูลเอง</button>
+    </div>
+  </section>
+
   <section class="screen" id="partner-patient-info" data-screen-code="SCR-003">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
     <div class="screen__body stack-4">
@@ -2820,6 +2851,7 @@
       paidDeliveryMethod:''
     },
     partnerConsentComplete:false,
+    partnerIdStepDone:false,
     partnerInfoComplete:false,
     partnerPaymentChosen:false,
     partnerHealthComplete:false,
@@ -2917,7 +2949,7 @@
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
       orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
-      partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
+      partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
@@ -4662,7 +4694,7 @@
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
+    const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
     let targetIndex=order.indexOf(target);
     if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
@@ -4842,14 +4874,15 @@
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
-    'partner-patient-info':'consent-terms',
+    'partner-idcard':'consent-terms',
+    'partner-patient-info':'partner-idcard',
     'partner-insurance':'partner-patient-info',
     'partner-nurse':'intake-general', 'partner-nurse-session':'partner-nurse',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
-  const PARTNER_SCREENS = ['partner-patient-info','partner-insurance',
+  const PARTNER_SCREENS = ['partner-idcard','partner-patient-info','partner-insurance',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
@@ -5399,7 +5432,8 @@
     }
     if(PARTNER_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
-      if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
+      if(target!=='partner-idcard' && !flowState.partnerIdStepDone) return 'partner-idcard';
+      if(!['partner-idcard','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
       if(['partner-insurance','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'intake-concern';
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
@@ -6350,7 +6384,11 @@
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
     if(patientInfoContinue){
       const name=document.getElementById('patient-full-name').value.trim();
-      const paymentChoice=document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '';
+      // Off the general path the choice is not rendered, so self-pay stands in
+      // rather than blocking on a question the patient was never asked.
+      const paymentChoice=isGeneralPath()
+        ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
+        : 'self-pay';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
       if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
       submitOnce('patient-info',patientInfoContinue,() => {
@@ -6402,7 +6440,7 @@
         // finish those steps, and only returning (already-verified) patients straight
         // to matching, since patient-info/identity were skipped for them earlier.
         const consentNext = consentSource==='partner'
-          ? 'partner-patient-info'
+          ? 'partner-idcard'
           : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
         persistFlowState();
@@ -7321,11 +7359,69 @@
     postAuthNext='matching';
     show('signup');
   });
+  // SCR-002A. The card is read for one field only: the name, which lands on the
+  // next screen where it stays editable. Nothing is uploaded; the preview is a
+  // local object URL and the "read" value comes from the demo fixture.
+  (function partnerIdCard(){
+    const input = document.querySelector('[data-idcard-input]');
+    const thumbs = document.querySelector('[data-idcard-thumbs]');
+    if(!input || !thumbs) return;
+    const empty = thumbs.querySelector('[data-idcard-empty]');
+    const readout = document.querySelector('[data-idcard-read]');
+    const nameOut = document.querySelector('[data-idcard-name]');
+    const CARD_NAME = 'มะลิ สุธิดา';
+    input.addEventListener('change', () => {
+      const file = (input.files || [])[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      if(file.size > 10 * 1024 * 1024){ showActionToast('ไฟล์ใหญ่เกิน 10 MB','warning'); return; }
+      thumbs.querySelectorAll('.up-thumb').forEach(el => el.remove());
+      const fig = document.createElement('span');
+      fig.className = 'up-thumb';
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.alt = 'ตัวอย่างบัตรประชาชนที่อัปโหลด';
+      img.addEventListener('load', () => URL.revokeObjectURL(img.src));
+      fig.appendChild(img);
+      thumbs.appendChild(fig);
+      if(empty) empty.hidden = true;
+      if(nameOut) nameOut.textContent = CARD_NAME;
+      if(readout) readout.hidden = false;
+      flowState.partnerName = CARD_NAME;
+      persistFlowState();
+      showActionToast('อ่านชื่อจากบัตรแล้ว','success');
+    });
+    document.body.addEventListener('click', e => {
+      const skip = e.target.closest('[data-idcard-skip]');
+      const go = e.target.closest('[data-idcard-continue]');
+      if(!skip && !go) return;
+      if(go && !thumbs.querySelector('.up-thumb')){
+        showActionToast('กรุณาถ่ายหรืออัปโหลดรูปบัตรก่อน','warning');
+        return;
+      }
+      flowState.partnerIdStepDone = true;
+      persistFlowState();
+      show('partner-patient-info');
+    });
+  })();
+
   function applyInsuranceVisibility(){
     const general = isGeneralPath();
     // Checkout: the insurance row is only offered on the general path.
     const payIns = document.querySelector('#payment [data-payment-insurance-row]');
     if(payIns) payIns.hidden = !general;
+    // Client 16 Aug: an insurance choice is only ever offered on two routes, the
+    // partner entry (which has its own screen) and general consultation. Every
+    // condition-specific direct path is self-pay, so the question never appears
+    // and the stored preference is forced back rather than left dangling.
+    const directChoice = document.querySelector('#patient-info [data-patient-payment-choice]');
+    if(directChoice){
+      directChoice.hidden = !general;
+      if(!general && flowState.paymentPreference !== 'self-pay'){
+        flowState.paymentPreference = 'self-pay';
+        flowState.coverage = {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
+        persistFlowState();
+      }
+    }
   }
 
   // Ticking QR expiry. On the medication gateway an expired active QR becomes the
