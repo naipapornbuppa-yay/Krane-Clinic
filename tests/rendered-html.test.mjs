@@ -1059,7 +1059,8 @@ test("landing keeps priority cards concise and secondary services responsive", a
   assert.match(css, /\.care-banner__cta\{[\s\S]*?right:18px;[\s\S]*?bottom:18px;/, "all consultation CTAs need a bottom-right anchor");
   assert.equal((services.match(/<a class="treatment-pill /g) || []).length, 4);
   assert.doesNotMatch(services, /care-card--hair|care-card--sexual/);
-  assert.match(html, /krane-b2c-landing\.css\?v=20260816-secondary-services-row-v1/);
+  assert.match(html, /krane-b2c-landing\.css\?v=20260816-desktop-priority-mosaic-v1/);
+  assert.match(css, /@media\(min-width:861px\)\{[\s\S]*\.care-banner-grid\{[\s\S]*grid-template-columns:minmax\(0,1\.45fr\) minmax\(280px,\.82fr\)[\s\S]*\.care-banner-grid \.care-banner--weight\{[\s\S]*grid-column:1;[\s\S]*grid-row:1 \/ span 2;[\s\S]*\.care-banner-grid__sub\{[\s\S]*grid-column:2;/, "desktop must keep weight on the left and stack ED/hair on the right");
   assert.match(css, /@media\(min-width:701px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(min-width:961px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:700px\)\{\s*\.treatment-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
