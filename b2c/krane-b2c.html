@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260816-payment-deadline-1h-v1";
+    const release = "20260816-delivery-pickup-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,13 +37,13 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260816-payment-deadline-1h-v1">
-<link rel="stylesheet" href="components.css?v=20260816-payment-deadline-1h-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260816-payment-deadline-1h-v1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260816-payment-deadline-1h-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260816-delivery-pickup-v1">
+<link rel="stylesheet" href="components.css?v=20260816-delivery-pickup-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260816-payment-deadline-1h-v1" defer></script>
-<script src="i18n.js?v=20260816-payment-deadline-1h-v1" defer></script>
+<script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
+<script src="i18n.js?v=20260816-delivery-pickup-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -1605,9 +1605,14 @@
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
 
+      <div class="checkout-fulfillment-switch" data-fulfillment-section role="tablist" aria-label="วิธีรับยา">
+        <button type="button" role="tab" aria-selected="true" data-fulfillment-mode-option="delivery">จัดส่ง</button>
+        <button type="button" role="tab" aria-selected="false" data-fulfillment-mode-option="pickup">รับที่ร้าน</button>
+      </div>
+
       <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
            step first; a returning patient can review or change the saved result. -->
-      <div class="stack-2" data-fulfillment-section>
+      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="delivery">
         <span class="section-label">การจัดส่ง</span>
         <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
@@ -1620,7 +1625,7 @@
       <!-- 3. Delivery options. Krane runs one same-day service, so this is a single
            selected card rather than a tier list. The card shape is kept so more
            services can be added later without changing the layout. -->
-      <div class="stack-2" data-fulfillment-section>
+      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="delivery">
         <div class="checkout-head">
           <span class="section-label">ตัวเลือกการจัดส่ง</span>
           <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
@@ -1640,6 +1645,15 @@
           </span>
           <span class="checkout-order__price">ฟรี</span>
         </button>
+      </div>
+
+      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="pickup" hidden>
+        <span class="section-label">จุดรับยา</span>
+        <div class="checkout-row checkout-pickup-row" role="group" aria-label="จุดรับยาที่เลือก">
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.2-5H5.2L4 10Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2S21.6 11.2 21.6 10"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap">ร้านยาฟาสซิโน สาขาใกล้คุณ</span><span class="hint">ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก</span></span>
+          <span class="checkout-row__tag">ฟรี</span>
+        </div>
       </div>
 
       <!-- 4. How it is paid. -->
@@ -2794,6 +2808,7 @@
     orderState:{
       quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},
       deliveryMethod:'same-day',
+      fulfillmentMode:'delivery',
       address:{},
       addressConfirmed:false,
       deliveryQuoteStatus:'pending',
@@ -2840,7 +2855,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2903,7 +2918,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -3434,6 +3449,7 @@
   }
   function deliveryOutcomeLabel(method=flowState.orderState.paidDeliveryMethod || flowState.orderState.deliveryMethod){
     const thai=document.documentElement.lang==='th';
+    if(method==='pickup') return thai ? 'รับที่ร้าน · ระบบจะแจ้งเมื่อพร้อมรับ' : 'Store pickup · we will notify you when ready';
     if(method==='same-day') return thai ? 'ภายในวันนี้ · ก่อน 18:00 น.' : 'Same day · by 6pm';
     return thai ? `ส่งพรุ่งนี้ · คาดว่าจะถึง ${tomorrowLabel()}` : `Ships tomorrow · arrives ${tomorrowLabel()}`;
   }
@@ -3471,7 +3487,7 @@
     const slaNotice = payment.querySelector('[data-payment-sla-notice]');
     if(slaNotice) slaNotice.hidden = true;
     const deliveryLabel = payment.querySelector('[data-payment-delivery-label]');
-    if(deliveryLabel) deliveryLabel.textContent = method === 'same-day' ? 'ค่าจัดส่งภายในวัน' : 'ค่าจัดส่งทางไปรษณีย์';
+    if(deliveryLabel) deliveryLabel.textContent = flowState.orderState.fulfillmentMode==='pickup' ? 'รับยาที่ร้าน' : (method === 'same-day' ? 'ค่าจัดส่งภายในวัน' : 'ค่าจัดส่งทางไปรษณีย์');
     const subtotalEl = payment.querySelector('[data-payment-subtotal]');
     const addonRow = payment.querySelector('[data-payment-addon-row]');
     const addonEl = payment.querySelector('[data-payment-addon]');
@@ -3505,7 +3521,9 @@
     if(calcTime) calcTime.textContent = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
     // Carry the distance the address screen worked out, if the patient set one.
     const kmTarget = payment.querySelector('[data-payment-km]');
-    if(kmTarget) kmTarget.textContent = flowState.orderState.addressConfirmed
+    if(kmTarget) kmTarget.textContent = flowState.orderState.fulfillmentMode==='pickup'
+      ? 'ไม่คิดค่าจัดส่ง'
+      : flowState.orderState.addressConfirmed
       ? `${flowState.orderState.address.km || '3.2'} กม.`
       : 'คำนวณหลังใส่ที่อยู่';
     // Savings are stated plainly. No celebration copy and no emoji (DESIGN.md 7c).
@@ -4913,6 +4931,7 @@
     return Math.max(80,Math.ceil((80 + km * 10) / 10) * 10);
   }
   function deliveryFeeFor(method=flowState.orderState.deliveryMethod){
+    if(flowState.orderState.fulfillmentMode==='pickup') return 0;
     if(method!=='same-day') return 0;
     const quoted=Number(flowState.orderState.deliveryQuoteAmount);
     return flowState.orderState.deliveryQuoteStatus==='accepted' && Number.isFinite(quoted)
@@ -4922,8 +4941,9 @@
   function checkoutActionState(){
     const address=flowState.orderState.address || {};
     if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
-    if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
-    if(!flowState.orderState.deliveryMethod) return 'delivery-method-required';
+    const pickup=flowState.orderState.fulfillmentMode==='pickup';
+    if(!pickup && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
+    if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
     if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked) return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
@@ -4949,10 +4969,11 @@
   }
   function refreshMedicationCheckout(){
     deliveryMethod=flowState.orderState.deliveryMethod || 'same-day';
+    const pickup=flowState.orderState.fulfillmentMode==='pickup';
     const subtotal=medicineSubtotal();
     const addon=selectedAddOnTotal();
     const fulfillable=hasFulfillableItems();
-    const delivery=fulfillable ? deliveryFeeFor(deliveryMethod) : 0;
+    const delivery=fulfillable && !pickup ? deliveryFeeFor(deliveryMethod) : 0;
     // Medicine benefits never silently pay for delivery or optional retail add-ons.
     const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
     const consultationDue=consultationBalanceDue();
@@ -4969,6 +4990,13 @@
     if(consultationRow) consultationRow.hidden=consultationDue<=0;
     if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
+    document.querySelectorAll('#payment [data-fulfillment-mode-option]').forEach(option => {
+      const selected=option.dataset.fulfillmentModeOption===(pickup ? 'pickup' : 'delivery');
+      option.setAttribute('aria-selected',String(selected));
+    });
+    document.querySelectorAll('#payment [data-fulfillment-panel]').forEach(panel => {
+      panel.hidden=!fulfillable || panel.dataset.fulfillmentPanel!==(pickup ? 'pickup' : 'delivery');
+    });
     const noFulfillmentNotice=document.querySelector('#payment [data-no-fulfillment-notice]');
     if(noFulfillmentNotice) noFulfillmentNotice.hidden=fulfillable;
     const medicineRow=document.querySelector('#payment [data-payment-medicine-row]');
@@ -4976,10 +5004,12 @@
     const deliveryRow=document.querySelector('#payment [data-payment-delivery-row]');
     if(deliveryRow) deliveryRow.hidden=!fulfillable;
     const calc=document.querySelector('#payment .checkout-calc');
-    if(calc) calc.hidden=!fulfillable;
+    if(calc) calc.hidden=!fulfillable || pickup;
     const assurance=document.querySelector('#payment [data-checkout-assurance]');
     if(assurance) assurance.textContent=fulfillable
-      ? (flowState.orderState.stockLocked ? 'ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะให้ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน')
+      ? (pickup
+        ? (flowState.orderState.stockLocked ? 'ร้านยายืนยันสาขารับยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะยืนยันสาขารับยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน')
+        : (flowState.orderState.stockLocked ? 'ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะให้ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน'))
       : 'ไม่มีรายการจัดส่ง คุณสามารถจบขั้นตอนและเปิดดูเอกสารได้ทันที';
     syncCheckoutReadiness();
   }
@@ -5516,16 +5546,20 @@
       invalidateFulfillmentQuote();
       persistFlowState();
       quoteScreen.dataset.quoteState='estimating';
-      if(title) title.textContent='กำลังคำนวณการจัดส่ง';
-      if(copy) copy.textContent='ตรวจสอบพื้นที่และค่าจัดส่งโดยประมาณ ก่อนส่งรายการให้ร้านยายืนยัน';
+      const pickupMode=flowState.orderState.fulfillmentMode==='pickup';
+      if(title) title.textContent=pickupMode ? 'กำลังค้นหาสาขารับยา' : 'กำลังคำนวณการจัดส่ง';
+      if(copy) copy.textContent=pickupMode ? 'ตรวจสอบสาขาใกล้คุณ ก่อนส่งรายการให้ร้านยายืนยันสต็อก' : 'ตรวจสอบพื้นที่และค่าจัดส่งโดยประมาณ ก่อนส่งรายการให้ร้านยายืนยัน';
       if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
       deliveryQuoteTimer=setTimeout(() => {
         if(!quoteScreen?.classList.contains('active')) return;
-        const sameDay=flowState.orderState.deliveryMethod==='same-day';
+        const pickup=flowState.orderState.fulfillmentMode==='pickup';
+        const sameDay=!pickup && flowState.orderState.deliveryMethod==='same-day';
         const estimate=sameDay ? calculatedSameDayDeliveryFee() : 0;
         quoteScreen.dataset.quoteState='estimated';
-        if(title) title.textContent=sameDay ? 'ตรวจสอบพื้นที่จัดส่งแล้ว' : 'เลือกจัดส่งมาตรฐานแล้ว';
-        if(copy) copy.textContent=sameDay
+        if(title) title.textContent=pickup ? 'กำลังยืนยันสาขารับยา' : (sameDay ? 'ตรวจสอบพื้นที่จัดส่งแล้ว' : 'เลือกจัดส่งมาตรฐานแล้ว');
+        if(copy) copy.textContent=pickup
+          ? 'ไม่มีค่าจัดส่ง · ร้านยาจะยืนยันสาขา สต็อก และเวลารับในขั้นตอนถัดไป'
+          : sameDay
           ? `ค่าจัดส่งโดยประมาณ ${baht(estimate)} · ร้านยาจะยืนยันยอดจริงในขั้นตอนถัดไป`
           : 'จัดส่ง 1 ถึง 3 วัน · ร้านยาจะยืนยันสต็อกและยอดจริงในขั้นตอนถัดไป';
         if(timer) timer.textContent='กำลังส่งรายการให้เภสัชกรตรวจสอบ';
@@ -5674,7 +5708,7 @@
         }
         pharmacyRetryCount = 0;
         if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
-        const lockedDeliveryFee=flowState.orderState.deliveryMethod==='same-day' ? calculatedSameDayDeliveryFee() : 0;
+        const lockedDeliveryFee=flowState.orderState.fulfillmentMode==='pickup' ? 0 : (flowState.orderState.deliveryMethod==='same-day' ? calculatedSameDayDeliveryFee() : 0);
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
@@ -6424,10 +6458,20 @@
       show('delivery-quote',false);
       return;
     }
+    const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
+    if(fulfillmentModeChoice){
+      const nextMode=fulfillmentModeChoice.dataset.fulfillmentModeOption;
+      if(flowState.orderState.fulfillmentMode!==nextMode) invalidateFulfillmentQuote();
+      flowState.orderState.fulfillmentMode=nextMode==='pickup' ? 'pickup' : 'delivery';
+      persistFlowState();
+      refreshMedicationCheckout();
+      return;
+    }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
     if(deliveryChoice){
       const nextDeliveryMethod=deliveryChoice.dataset.deliveryValue;
       if(flowState.orderState.deliveryMethod!==nextDeliveryMethod) invalidateFulfillmentQuote();
+      flowState.orderState.fulfillmentMode='delivery';
       flowState.orderState.deliveryMethod=nextDeliveryMethod;
       deliveryMethod=flowState.orderState.deliveryMethod;
       persistFlowState();
@@ -6474,6 +6518,7 @@
     if(pharmacyIssueAction){
       deliveryMethod='postal';
       flowState.orderState.deliveryMethod=deliveryMethod;
+      flowState.orderState.fulfillmentMode='delivery';
       flowState.orderState.deliveryQuoteStatus='accepted';
       flowState.orderState.deliveryQuoteAmount=0;
       flowState.orderState.stockLocked=true;
@@ -7033,7 +7078,7 @@
     if(due<=0){
       flowState.orderState.paidAmount=0;
       flowState.orderState.paidMethod='covered';
-      flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
+      flowState.orderState.paidDeliveryMethod=flowState.orderState.fulfillmentMode==='pickup' ? 'pickup' : flowState.orderState.deliveryMethod;
       flowState.consultationPaid=true;
       flowState.paymentResolution='covered';
       flowState.documentsUnlocked=true;
@@ -7064,7 +7109,7 @@
       }
       flowState.orderState.paidAmount=currentMedicationDue();
       flowState.orderState.paidMethod=paymentMethod;
-      flowState.orderState.paidDeliveryMethod=flowState.orderState.deliveryMethod;
+      flowState.orderState.paidDeliveryMethod=flowState.orderState.fulfillmentMode==='pickup' ? 'pickup' : flowState.orderState.deliveryMethod;
       flowState.orderState.paymentExpiresAt=null;
       flowState.consultationPaid=true;
       flowState.paymentResolution='final-paid';
