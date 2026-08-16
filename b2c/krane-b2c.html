@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260816-delivery-pickup-v1";
+    const release = "20260816-client-flow-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -413,8 +413,6 @@
           <a class="is-exception" data-go="ineligible"><span class="rail-error-tag">Error case</span>In-person care required</a>
         </div></details>
         <a data-go="intake5">5 · Photo <span class="rail-state">condition-specific · optional</span></a>
-        <a data-go="intake-concern" data-category="general">6 · อาการที่ต้องการปรึกษา <span class="rail-state">เฉพาะปรึกษาทั่วไป · อาการ ระยะเวลา และสิ่งที่ลองทำแล้ว</span></a>
-        <a data-go="intake-general">7 · ข้อมูลสุขภาพทั่วไป <span class="rail-state">ประวัติสุขภาพและข้อมูลร่างกาย</span></a>
         <details class="rail-page"><summary>Supporting content</summary><div class="rail-sub"><a data-go="intake-edu">Hair education interstitial</a></div></details>
       </div>
     </details>
@@ -434,6 +432,7 @@
         </div><div class="rail-error-menu">
           <a class="is-exception" data-go="consultpay-fail"><span class="rail-error-tag">Error case</span>Consultation payment failed</a>
         </div></details>
+        <a data-go="intake-general">ยืนยันข้อมูลสุขภาพ <span class="rail-state">Direct gate · ทุกครั้งก่อนเข้าห้องรอ</span></a>
         <a data-go="waitroom">Waiting room</a>
       </div>
     </details>
@@ -451,12 +450,17 @@
     </details>
 
     <details class="rail-group">
-      <summary><span class="rail-step">06</span><span>Checkout</span></summary>
+      <summary><span class="rail-step">06</span><span>Pharmacy &amp; checkout</span></summary>
       <div class="rail-group__body">
         <a data-go="address">Edit saved delivery address</a>
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
           <a data-go="delivery-quote">Before payment · Delivery quote</a>
           <a data-go="pharmacy-search">Before payment · Stock &amp; price review</a>
+          <a data-go="pharmacyaccepted">Before payment · Accepted &amp; reserved</a>
+          <a data-go="pharmacypending">Before payment · Prepared &amp; ready</a>
+        </div><div class="rail-error-menu">
+          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
+          <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Standard-delivery fallback</a>
         </div></details>
         <details class="rail-page" open><summary>Insurance checkout</summary><div class="rail-sub">
           <a data-go="insurance">ตรวจสอบสิทธิ์ประกัน</a>
@@ -470,15 +474,8 @@
     </details>
 
     <details class="rail-group">
-      <summary><span class="rail-step">07</span><span>Fulfillment</span></summary>
+      <summary><span class="rail-step">07</span><span>Dispatch &amp; tracking</span></summary>
       <div class="rail-group__body">
-        <details class="rail-page" open><summary>Pharmacy confirmation</summary><div class="rail-sub">
-          <a data-go="pharmacypending">State · Preparing</a><a data-go="pharmacyaccepted">State · Accepted</a>
-        </div><div class="rail-error-menu">
-          <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
-          <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Fulfilment SLA issue</a>
-        </div></details>
-        <a data-go="confirm">Order confirmation</a>
         <a data-go="tracking">Delivery tracking</a>
       </div>
     </details>
@@ -536,9 +533,9 @@
   <!-- ===================== LANDING (KRANE-F01) =====================
        The production-oriented landing lives beside this file as "krane-b2c-landing.html".
        It is embedded here so landing CTAs route into the same patient flow.
-       Its CTAs ("start your consultation") link into this prototype's app flow (#concern / #signup). -->
+       Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260815-mobile-centering-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-client-flow-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -699,10 +696,9 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="conditions">Consult a doctor</button><button class="btn btn--ghost" data-go="articles">Back to guide</button></div>
   </section>
 
-  <!-- ===================== INTAKE Q1 (KRANE-F04 · symptoms + duration) =====================
-       F04 update (client 15 Jul): the first questions branch by entry service, then both paths
-       converge on urgent safety, universal health and insurance before review. -->
-  <section class="screen" id="intake1" data-screen-code="SCR-002">
+  <!-- ===================== DIRECT INTAKE Q1 (KRANE-F02 · SCR-DIR-02) =====================
+       Direct services branch here, converge on safety and optional photo, then save before F03. -->
+  <section class="screen" id="intake1" data-screen-code="SCR-DIR-02">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
     <div class="screen__body stack-5">
       <div><h2 class="h1">What are you noticing right now?</h2></div>
@@ -853,7 +849,7 @@
       <div class="up-thumbs" data-photo-thumbs>
         <p class="up-empty hint" data-photo-empty>ยังไม่มีรูปที่เพิ่ม แตะด้านบนเพื่อถ่ายหรือเลือกรูป</p>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="intake-general">Continue</button><button class="btn btn--ghost btn--sm" data-go="intake-general">Skip for now</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-direct-intake-complete>Continue</button><button class="btn btn--ghost btn--sm" data-direct-intake-complete>Skip for now</button></div>
   </section>
 
   <!-- ===================== INTAKE · SHARED CONCERN DETAILS ===================== -->
@@ -904,11 +900,11 @@
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
   </section>
 
-  <!-- ===================== INTAKE · UNIVERSAL GENERAL HEALTH (final for every service) ===================== -->
+  <!-- ===================== SHARED GENERAL HEALTH · Partner SCR-003 / Direct SCR-DIR-02E ===================== -->
   <section class="screen" id="intake-general">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl" data-general-health-title>ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
-      <div><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2></div>
+      <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
@@ -946,7 +942,7 @@
         </div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">ยืนยันข้อมูลและดำเนินการต่อ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching" data-general-health-submit>ยืนยันข้อมูลและดำเนินการต่อ</button></div>
   </section>
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
@@ -1806,16 +1802,17 @@
     <div class="screen__footer"><button class="btn btn--primary" data-payment-submit>ยืนยันการชำระ <span data-payment-total>฿ 558</span></button></div>
   </section>
 
-  <section class="screen" id="payment-success">
+  <section class="screen" id="payment-success" data-screen-code="SCR-016D">
     <div class="screen__top transition-stage__top"><span class="ttl">Payment</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Payment successful">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Your payment is confirmed. The pharmacy can start preparing your order.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Payment is confirmed. Your prepared order is moving to dispatch and tracking.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1854,33 +1851,32 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-payment-retry>Try payment again</button><button class="btn btn--ghost" data-payment-alternate-method>Use a different method</button></div>
   </section>
 
-  <!-- ===================== FULFILMENT, PREPARING (KRANE-F21, simplified) =====================
-       F34/F21 update (client 20 Jun): keep this simple. The patient just sees that the medicine
-       is being prepared. The reroute/issue noise is gone; if preparation exceeds the SLA, a
-       fallback choice appears (switch to next-day + pay difference, or refund). -->
-  <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Your order</span></div>
+  <!-- ===================== PHARMACY ACCEPTED + STOCK RESERVED (PRE-PAYMENT) ===================== -->
+  <section class="screen" id="pharmacyaccepted" data-screen-code="SCR-017A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ร้านยายืนยันรายการ</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Preparing your medicine">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Preparing your medicine</h2><p class="muted">You can leave, we'll notify you when it ships.</p></div>
-      <div class="state-view__timer">About 15 to 25 min</div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="pharmacyaccepted">ดูสถานะร้านยา</button></div>
-  </section>
-
-  <!-- ===================== PHARMACY ACCEPTED (POST-PAYMENT STATUS) ===================== -->
-  <section class="screen" id="pharmacyaccepted">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pharmacy accepted</span></div>
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy accepted your paid order">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy accepted and reserved stock">
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-pharmacy-confirmed"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์ที่ชำระแล้ว</h2><p class="muted">ยืนยันการชำระเงินแล้ว รายการถูกส่งเข้า POS เพื่อจัดยาและเตรียมส่ง</p></div>
-      <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-delivery>Same day · by 6pm</span></div>
-    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>ดูการยืนยันออเดอร์</button></div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์และสำรองสต็อกแล้ว</h2><p class="muted">เภสัชกรตรวจใบสั่งยา สินค้า สาขา และราคาสุทธิครบแล้ว โดยยังไม่มีการเรียกเก็บเงิน</p></div>
+      <div class="state-view__timer">สำรองสินค้าไว้ 1 ชั่วโมง</div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-accepted-continue>ดำเนินการจัดเตรียมยา</button></div>
+  </section>
+
+  <!-- ===================== PHARMACY PREPARED + READY TO DISPATCH (PRE-PAYMENT) ===================== -->
+  <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พร้อมจัดส่ง</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Medicine prepared and ready to dispatch">
+        <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
+        <span class="state-view__badge"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยาจัดเตรียมยาเรียบร้อย</h2><p class="muted">รายการพร้อมส่งทันทีหลังชำระเงิน ตรวจสอบยอดสุดท้ายก่อนเข้าสู่ระบบชำระเงินที่ปลอดภัย</p></div>
+      <div class="state-view__timer"><span data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</span></div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-prepared-continue>ตรวจสอบยอดและชำระเงิน</button></div>
   </section>
 
   <!-- Same SCR-014 status flow. The patient explicitly accepts postal fallback before checkout. -->
@@ -1897,28 +1893,16 @@
     <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
   </section>
 
-  <!-- ===================== CONFIRMATION ===================== -->
-  <section class="screen" id="confirm">
-    <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Order confirmed">
-        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-order-confirmed"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="badge-check" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Order confirmed</h2><p class="muted">Expected by 6pm today.</p></div>
-      <div class="state-view__timer">#KR-10293 · <strong data-payment-outcome-amount>฿ 558</strong> · <span data-payment-outcome-delivery>Same day</span></div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="tracking">Track order</button><button class="btn btn--ghost" data-go="profile">Go to home</button></div>
-  </section>
-
   <!-- ===================== TRACKING ===================== -->
-  <section class="screen" id="tracking">
+  <section class="screen" id="tracking" data-screen-code="SCR-048">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Order #KR-10293</span></div>
     <div class="screen__body stack-5">
       <div class="timeline">
         <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
+        <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
+        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div></div>
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:20</div></div>
-        <div class="step done"><strong>Pharmacy accepted order</strong><div class="hint">Today, 11:22</div></div>
-        <div class="step active"><strong>Preparing medicine</strong><div class="hint">Fascino Ari · estimated 15-25 min</div></div>
-        <div class="step"><strong>Rider pickup</strong><div class="hint">Next</div></div>
+        <div class="step active"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step"><strong>Delivered</strong><div class="hint">Pending</div></div>
       </div>
@@ -2338,7 +2322,7 @@
           <div class="between"><span class="muted">ค่าธรรมเนียม</span><strong>ฟรี</strong></div>
           <div class="hint">Issued after doctor review, usually within 24 hours.</div>
         </div>
-        <button class="btn btn--secondary" data-go="confirm">Request certificate</button>
+        <button class="btn btn--secondary" data-demo-action="ส่งคำขอใบรับรองแพทย์แล้ว">Request certificate</button>
       </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="plan">Download PDF</button></div>
   </section>
@@ -2622,10 +2606,9 @@
     'payment-gw':'SID-041',
     'payment-success':'SID-042',
     'payfail':'SID-043',
-    'pharmacypending':'SID-044',
-    'pharmacyaccepted':'SID-045',
+    'pharmacyaccepted':'SID-044',
+    'pharmacypending':'SID-045',
     'pharmacyissue':'SID-046',
-    'confirm':'SID-047',
     'tracking':'SID-048',
     'feedback':'SID-049',
     'feedbackdone':'SID-050',
@@ -2687,10 +2670,9 @@
   let selectedCategoryId = 'hair-skin';
   // Insurance is claimable only on the general health path. Specialty paths are self-pay.
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
-  // The free-form concern page is reserved for Partner entry and General consultation.
-  // Specialty banners already capture the concern in their condition-specific intake.
-  function sharedConcernRequired(){ return flowState.entryChannel === 'partner' || isGeneralPath(); }
-  function finalIntakeTarget(){ return sharedConcernRequired() ? 'intake-concern' : 'intake-general'; }
+  // SCR-002/SCR-003 are the approved compact Partner intake. Direct entry never
+  // uses them: every Direct concern starts at SCR-DIR-02 (#intake1).
+  function sharedConcernRequired(){ return flowState.entryChannel === 'partner'; }
 
   let selectedConditionId = 'hair-loss';
   let isAuthenticated = false;
@@ -2811,6 +2793,7 @@
     consultationPaymentTiming:'after',
     consultationFeeAcknowledged:false,
     consultationPaid:false,
+    directGeneralHealthComplete:false,
     paymentResolution:'',
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
@@ -2828,6 +2811,8 @@
       paymentMethod:'qr',
       amountDue:558,
       stockLocked:false,
+      pharmacyAccepted:false,
+      pharmacyPrepared:false,
       paymentExpiresAt:null,
       paidAmount:null,
       paidMethod:'',
@@ -2864,7 +2849,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -2897,17 +2882,20 @@
     // already passed an older checkout migration.
     flowState.orderState.address=Object.assign({},MALI_SAVED_ADDRESS);
     flowState.orderState.addressConfirmed=true;
-    flowState.orderState.deliveryQuoteStatus='accepted';
-    flowState.orderState.deliveryQuoteAmount=120;
-    flowState.orderState.stockLocked=true;
-    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
-  } else if(flowState.orderState.checkoutFlowVersion!=='structured-address-checkout-v3'){
-    flowState.orderState.address={};
-    flowState.orderState.addressConfirmed=false;
     flowState.orderState.deliveryQuoteStatus='pending';
     flowState.orderState.deliveryQuoteAmount=null;
     flowState.orderState.stockLocked=false;
-    flowState.orderState.checkoutFlowVersion='structured-address-checkout-v3';
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
+    flowState.orderState.checkoutFlowVersion='pharmacy-precheckout-v4';
+  } else if(flowState.orderState.checkoutFlowVersion!=='pharmacy-precheckout-v4'){
+    flowState.orderState.deliveryQuoteStatus='pending';
+    flowState.orderState.deliveryQuoteAmount=null;
+    flowState.orderState.stockLocked=false;
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
+    flowState.orderState.paymentExpiresAt=null;
+    flowState.orderState.checkoutFlowVersion='pharmacy-precheckout-v4';
   }
   function readSessionJson(key){
     try { return JSON.parse(sessionStorage.getItem(key) || '{}'); } catch(error) { return {}; }
@@ -2925,9 +2913,9 @@
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,paymentResolution:'',documentsUnlocked:false,
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'structured-address-checkout-v3',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -3151,10 +3139,10 @@
   const careJourneyLabels = ['ข้อมูลเบื้องต้น','พบแพทย์','การสั่งยาและจัดส่ง'];
   const careJourneyShort  = ['Start','Doctor','Order'];
   const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,'intake-general':1,
+    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,
     signup:1,login:1,'social-confirm':1,identity:1,otp:1,'consent-terms':1,'patient-info':1,'insurance-result':1,
-    matching:2,choosedoc:2,noslots:2,consultpay:2,'consultpay-gw':2,'consultpay-fail':2,waitroom:2,consult:2,video:2,'rx-writing':2,
-    plan:3,address:3,'delivery-quote':3,'pharmacy-search':3,payment:3,'payment-gw':3,'payment-success':3,payfail:3,pharmacypending:3,pharmacyaccepted:3,pharmacyissue:3,confirm:3,tracking:3
+    matching:2,choosedoc:2,noslots:2,consultpay:2,'consultpay-gw':2,'consultpay-fail':2,'intake-general':2,waitroom:2,consult:2,video:2,'rx-writing':2,
+    plan:3,address:3,'delivery-quote':3,'pharmacy-search':3,pharmacyaccepted:3,pharmacypending:3,payment:3,'payment-gw':3,'payment-success':3,payfail:3,pharmacyissue:3,tracking:3
   };
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
@@ -3466,7 +3454,7 @@
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
     const net=paid;
     const method=PAYMENT_METHOD_LABELS[flowState.orderState.paidMethod || flowState.orderState.paymentMethod] || 'Original payment method';
-    ['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm'].forEach(id => {
+    ['payfail','payment-success','pharmacypending','pharmacyaccepted'].forEach(id => {
       const screen=document.getElementById(id);
       if(!screen) return;
       screen.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(net); });
@@ -3482,7 +3470,7 @@
     const successCopy=success?.querySelector('[data-payment-success-copy]');
     if(successTitle) successTitle.textContent=hasFulfillableItems() ? 'ชำระเงินสำเร็จ' : 'ชำระค่าปรึกษาสำเร็จ';
     if(successCopy) successCopy.textContent=hasFulfillableItems()
-      ? 'ร้านยายืนยันรายการไว้แล้ว และกำลังเริ่มจัดเตรียมคำสั่งซื้อของคุณ'
+      ? 'ร้านยาจัดเตรียมรายการพร้อมแล้ว กำลังเปิดสถานะจัดส่งและเอกสารของคุณ'
       : 'ไม่มีรายการจัดส่ง เอกสารจากการปรึกษาพร้อมให้เปิดดูแล้ว';
   }
   function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
@@ -4353,9 +4341,8 @@
     //   hair                  -> own intake1, intake2; intake3 falls back to the
     //                            authored base, which is the generic "previous
     //                            care or treatment" set and is concern-appropriate
-    //   general               -> own intake1 is shown as one compact screen;
-    //                            intake2 and intake3 are SKIPPED by EC-011 so the
-    //                            journey moves directly to urgent screening
+    //   general               -> own intake1 and intake2 are shown; intake3 is
+    //                            skipped, then the journey moves to urgent safety
     // A missing template therefore falls back to the authored base markup only
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
@@ -4382,10 +4369,9 @@
   }
 
   function updateIntakeProgress(id){
-    /* Derived from intakeStepOrder(), so a concern that skips a step still
-       reaches 100% on its last sub-step: general and hair run 1/4..4/4 and the
-       final one fills the segment completely, rather than stopping at 4/5 of
-       the way across. */
+    /* Derived from the Direct F02 route only. A concern that skips an optional
+       detail or photo still reaches 100% before account creation. SCR-DIR-02E
+       is a separate F05 gate and therefore never extends this progress run. */
     const order = intakeStepOrder();
     const index = order.indexOf(id);
     if(index < 0) return;
@@ -4426,7 +4412,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
+  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -4650,6 +4636,15 @@
     }
     syncPartnerHistoryFields();
   }
+  function syncGeneralHealthContext(){
+    const direct=flowState.entryChannel==='direct';
+    const title=document.querySelector('#intake-general [data-general-health-title]');
+    const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
+    const submit=document.querySelector('#intake-general [data-general-health-submit]');
+    if(title) title.textContent=direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ';
+    if(hint) hint.hidden=!direct;
+    if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
+  }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
@@ -4703,11 +4698,19 @@
       syncConsentContinue();
       return;
     }
-    if(!REQUIRED_CARE_TARGETS.has(target)) return;
+    const directGate=target==='intake-general' && flowState.entryChannel==='direct';
+    if(!REQUIRED_CARE_TARGETS.has(target) && !directGate) return;
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
       patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
     });
+    if(directGate){
+      flowState.consultationFeeAcknowledged=true;
+      flowState.directGeneralHealthComplete=false;
+    } else if(flowState.entryChannel==='direct' && ['waitroom','consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search','pharmacyaccepted','pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue','tracking','feedback','feedbackdone','refill','prescription','upload-rx'].includes(target)){
+      flowState.consultationFeeAcknowledged=true;
+      flowState.directGeneralHealthComplete=true;
+    }
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
     })));
@@ -4807,7 +4810,7 @@
   // screens the person visited.
   const directEntryParent = Object.freeze({
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
-    concern:'landing', conditions:'concern', articles:'landing', article:'articles',
+    concern:'landing', conditions:'landing', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
     intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
     'intake-edu':'intake-general', ineligible:'intake4',
@@ -4816,12 +4819,12 @@
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', plan:'consult',
-    address:'plan', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', payment:'pharmacy-search',
+    address:'plan', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', pharmacyaccepted:'pharmacy-search',
+    pharmacypending:'pharmacyaccepted', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
-    pharmacypending:'payment-success', pharmacyaccepted:'pharmacypending',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
-    confirm:'pharmacyaccepted', tracking:'confirm', feedback:'consult', feedbackdone:'feedback',
+    tracking:'payment-success', feedback:'consult', feedbackdone:'feedback',
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
@@ -4877,6 +4880,8 @@
     flowState.orderState.deliveryQuoteStatus='pending';
     flowState.orderState.deliveryQuoteAmount=null;
     flowState.orderState.stockLocked=false;
+    flowState.orderState.pharmacyAccepted=false;
+    flowState.orderState.pharmacyPrepared=false;
     flowState.orderState.paymentExpiresAt=null;
   }
   const PAYMENT_WINDOW_MS=60*60*1000;
@@ -4953,7 +4958,7 @@
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
     if(!pickup && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
-    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked) return 'quote-required';
+    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked || !flowState.orderState.pharmacyAccepted || !flowState.orderState.pharmacyPrepared) return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
   }
@@ -5050,25 +5055,24 @@
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
-    if(consultationBalanceDue()<=0) return 'waitroom';
-    return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : 'waitroom';
+    const preDoctorTarget=flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete ? 'intake-general' : 'waitroom';
+    if(consultationBalanceDue()<=0) return preDoctorTarget;
+    return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : preDoctorTarget;
   }
   /* EC-011: a consultation must not be asked condition-specific questions that
      do not belong to its concern. #intake3 is the "what have you tried for this
      concern" set, and intakeTemplates only defines it for skin, sexual and
      sleep. hair and general have no intake3 of their own, so both previously
      fell through to the authored base markup and rendered another concern's
-     question set. Both now skip it. General consultation also keeps its concern
-     details together on intake1 and moves directly to urgent screening, so its
-     separate severity/pattern screen is skipped rather than stretching the
-     same concern across another page.
+     question set. Both now skip it. General consultation has authored symptom
+     and detail screens, so it follows SCR-DIR-02 then SCR-DIR-02A before safety.
 
      Specialty intake3 skipping is derived from template coverage, while the
      deliberately shorter general route is explicit. Both stay in routing so
      they survive the innerHTML round-trip renderIntakeQuestions performs (the
      same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3'];
+  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake3'];
   const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
@@ -5084,11 +5088,30 @@
      intake steps reads from here so the progress label can never disagree with
      the routing. */
   function intakeStepOrder(){
+    if(flowState.entryChannel==='partner') return ['intake-concern','intake-general'];
     const seq = ['intake1','intake2','intake3','intake4'];
     try { if(categoryNeedsPhotos()) seq.push('intake5'); } catch(e){}
-    if(sharedConcernRequired()) seq.push('intake-concern');
-    seq.push('intake-general');
     return seq.filter(id => !intakeSkipped(id));
+  }
+  function finishDirectF02(){
+    // Partner never enters F02, but keep an explicit escape hatch so a stale
+    // Partner bookmark cannot mutate its locked SCR-002/SCR-003 state.
+    if(flowState.entryChannel==='partner'){
+      show('intake-concern');
+      return;
+    }
+    Object.assign(flowState,{
+      draftReady:true,
+      directGeneralHealthComplete:false,
+      consultationFeeAcknowledged:false,
+      consultationPaid:false,
+      paymentResolution:'',
+      lastRequiredScreen:'signup'
+    });
+    persistFlowState();
+    saveIntakeDraft();
+    postAuthNext='matching';
+    show('signup');
   }
   function skipForwardFrom(id){
     const seq = ['intake1','intake2','intake3','intake4'];
@@ -5118,9 +5141,15 @@
         ? (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-patient-info')
         : null;
       const healthParent=current==='intake-general'
-        ? (sharedConcernRequired() ? 'intake-concern' : (categoryNeedsPhotos() ? 'intake5' : 'intake4'))
+        ? (flowState.entryChannel==='partner' ? 'intake-concern' : 'consultpay')
         : null;
-      current = skipped !== null ? skipped : (partnerParent || healthParent || directEntryParent[current]);
+      const signupParent=current==='signup' && flowState.entryChannel==='direct'
+        ? (categoryNeedsPhotos() ? 'intake5' : 'intake4')
+        : null;
+      const waitroomParent=current==='waitroom' && flowState.entryChannel==='direct'
+        ? 'intake-general'
+        : null;
+      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || waitroomParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -5342,14 +5371,15 @@
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','plan','address','delivery-quote','pharmacy-search',
-    'payment','payment-gw','payment-success','insurance','payfail','pharmacypending','pharmacyaccepted','pharmacyissue',
-    'confirm','tracking','feedback','feedbackdone','refill','prescription','upload-rx'
+    'pharmacyaccepted','pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
+    'tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
+  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['waitroom','consult','video','rx-writing','plan']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
     if(intakeSkipped(target)) target = skipForwardFrom(target);
-    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake-general';
+    if(target==='intake-concern' && !sharedConcernRequired()) return 'intake1';
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(!flowState.partnerInfoComplete || !flowState.partnerPaymentChosen) return 'partner-patient-info';
@@ -5363,16 +5393,25 @@
       if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
-    if(target==='signup' && !flowState.draftReady) return 'concern';
-    if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'concern';
+    if(target==='intake-general' && flowState.entryChannel==='direct'){
+      if(!flowState.draftReady) return 'intake1';
+      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.otpVerified) return 'otp';
+      if(!flowState.consentsComplete) return 'consent-terms';
+      if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
+      if(!flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
+      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
+    }
+    if(target==='signup' && !flowState.draftReady) return 'intake1';
+    if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
     if(target==='patient-info'){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
     }
     if(target==='identity'){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -5382,12 +5421,16 @@
     // contexts open this identity check before the ordinary clinical guard.
     if(target==='insurance' && ['profile','partner'].includes(insuranceEntry)) return target;
     if(REQUIRED_CARE_TARGETS.has(target) && !flowState.identityVerified && !flowState.returningIdentityValid){
-      if(!flowState.draftReady) return 'concern';
+      if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete) return 'patient-info';
       return 'identity';
+    }
+    if(flowState.entryChannel==='direct' && DIRECT_PRE_DOCTOR_GATE_TARGETS.has(target) && !flowState.directGeneralHealthComplete){
+      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
+      return 'intake-general';
     }
     return target;
   }
@@ -5399,7 +5442,7 @@
     // for the same reason.
     if(target==='concern'){
       setSelectedCategory('general');
-      return 'intake-concern';
+      return 'intake1';
     }
     // Keep legacy partner bookmarks working while routing each old page name to
     // the matching step in the now-separated clinical intake.
@@ -5422,6 +5465,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
+    if(id==='intake-general') syncGeneralHealthContext();
     if(id==='partner-phr') syncPartnerReview();
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
@@ -5521,7 +5565,7 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address','delivery-quote','payment','payment-success','pharmacy-search','confirm','tracking','pharmacyaccepted','pharmacypending'].includes(id)) hasActiveCase = true;
+    if(['address','delivery-quote','pharmacy-search','pharmacyaccepted','pharmacypending','payment','payment-success','tracking'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       // Some desktop browsers restore remembered address values just after the
       // screen becomes visible. Re-apply the persisted order address after that
@@ -5584,13 +5628,16 @@
     }
     if(id==='payment' || id==='payment-gw') startPaymentDeadlineTimer();
     else stopPaymentDeadlineTimer();
-    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','confirm','tracking'].includes(id)) syncPaymentOutcome();
-    /* Pharmacy verification (stock, prescription, final price) now runs before
-       payment, not after: pharmacy-search confirms fulfilment and returns to
-       #payment already locked in, so nothing is left to check once payment
-       succeeds. Paying ends here — the patient continues on their own via
-       "ติดตามคำสั่งซื้อ" or "ดูใบเสร็จ", not on an automatic timer into
-       #pharmacypending/#prescription. */
+    if(['payfail','payment-success','pharmacypending','pharmacyaccepted','tracking'].includes(id)) syncPaymentOutcome();
+    /* Pharmacy verification, acceptance/reservation and preparation all run
+       before payment. SCR-016D therefore releases documents and hands straight
+       to SCR-048 tracking; no pharmacy state is repeated after payment. */
+    clearTimeout(paymentSuccessTimer);
+    if(id==='payment-success' && hasFulfillableItems()){
+      paymentSuccessTimer=setTimeout(() => {
+        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('tracking');
+      },reduceMotion ? 450 : 1800);
+    }
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
@@ -5721,10 +5768,12 @@
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
+        flowState.orderState.pharmacyAccepted=true;
+        flowState.orderState.pharmacyPrepared=false;
         flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
         persistFlowState();
-        replaceCurrent('payment');
-        showActionToast('ร้านยายืนยันสต็อก สาขา และราคาสุทธิแล้ว','success');
+        replaceCurrent('pharmacyaccepted');
+        showActionToast('ร้านยายืนยันและสำรองสต็อกแล้ว','success');
       }, 10000);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
@@ -6531,13 +6580,15 @@
       flowState.orderState.deliveryQuoteStatus='accepted';
       flowState.orderState.deliveryQuoteAmount=0;
       flowState.orderState.stockLocked=true;
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=false;
       flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
       persistFlowState();
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
       refreshMedicationCheckout();
-      show('payment');
-      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ตรวจสอบยอดก่อนชำระเงินได้เลย','success');
+      show('pharmacyaccepted');
+      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ร้านยาสำรองสต็อกให้แล้ว','success');
       return;
     }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
@@ -6614,6 +6665,11 @@
       showActionToast(demoAction.dataset.demoAction || 'เรียบร้อยแล้ว');
       return;
     }
+    const directIntakeComplete=e.target.closest('[data-direct-intake-complete]');
+    if(directIntakeComplete){
+      finishDirectF02();
+      return;
+    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -6651,7 +6707,9 @@
         show(go.dataset.flagGo); return;
       }
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
-        show(finalIntakeTarget()); return;
+        if(flowState.entryChannel==='partner') show('intake-concern');
+        else finishDirectF02();
+        return;
       }
       if(go.dataset.go === 'consultpay'){
         show(consultationHandoffTarget());
@@ -6784,13 +6842,13 @@
     'article':          { id:'KRANE-F37', name:'Health Article, Read View', stories:['US-F37.1: Educational content with clear author and review date','US-F37.2: Tags link to related topics'] },
     'nurse':            { id:'KRANE-F38', name:'Nurse Pre-Screening Flow', stories:['US-F38.1: Patient consults a nurse before doctor referral (when required)','US-F38.2: Admin enables/disables the nurse step per partner','US-F38.3: Nurse screens and refers to the right doctor'] },
     'insurance':        { id:'KRANE-F35', name:'Insurance Demand-Side Intake & Claim', stories:['Enter ID/passport, DOB, policy number','Choose "Check entitlement" or "Pay myself"','Edit copay vs credit-limit split','Claim connects to back-office claim system'] },
-    'intake1':          { id:'KRANE-F04', name:'Health Intake, Q1 Branched Symptoms & Duration', stories:['Specific services ask condition-relevant symptoms first; General consultation asks for the main concern without assuming a disease','US-F04.2: Structured single-select and multi-select answers adapt to the selected entry path'] },
-    'intake2':          { id:'KRANE-F04', name:'Health Intake, Q2 Branched Severity & Pattern', stories:['Hair care asks about hair-change pattern; General consultation asks broad severity and symptom pattern','US-F04.9: Follow-up questions adapt to the service selected on the landing page'] },
-    'intake3':          { id:'KRANE-F04', name:'Health Intake, Q3 Previous Care', stories:['US-F04.9: Prior treatment and its outcome are captured for the current concern','US-F04.4: Answers are surfaced to the doctor before the session'] },
-    'intake4':          { id:'KRANE-F04', name:'Health Intake, Q4 Urgent Safety', stories:['US-F04.9: Warning signs are screened before online care continues','US-F04.7: Ineligible patients can be routed to in-person care'] },
-    'intake5':          { id:'KRANE-F04', name:'Health Intake, Condition-specific Photo (optional)', stories:['US-F04.10: Photo upload appears only where an image materially helps assessment; General consultation skips it','Photos are optional and can be added later'] },
-    'intake-concern':   { id:'KRANE-F04', name:'Health Intake, General / Partner Concern Details', stories:['Partner entry and General consultation record free-form symptoms, duration, attempted relief and optional photos on a dedicated page','Specialty banner journeys skip this page because their condition-specific intake already captures the concern','US-F04.4: Concern details are surfaced to the doctor before the session'] },
-    'intake-general':   { id:'KRANE-F04', name:'Health Intake, Shared General Health', stories:['Every consultation completes general health on a separate final intake page','Captures conditions, allergies, medicine, supplements, height and weight in one reusable block','US-F04.4: Universal safety answers are surfaced to the doctor before the session'] },
+    'intake1':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02 Symptoms & Duration', stories:['Every Direct service, including General consultation, starts its clinical intake here','Questions adapt to the selected service'] },
+    'intake2':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02A Detail', stories:['Captures severity and concern-specific pattern before safety screening'] },
+    'intake3':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02B Previous Care (conditional)', stories:['Prior treatment appears only when the selected service has an authored question set'] },
+    'intake4':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02C Urgent Safety', stories:['Warning signs are screened before online care continues','Ineligible patients route to in-person care'] },
+    'intake5':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02D Photo (optional)', stories:['Photo upload appears only where an image materially helps assessment','Completing or skipping saves F02 and continues to F03'] },
+    'intake-concern':   { id:'KRANE-F04', name:'Partner Entry, SCR-002 Concern Details', stories:['Locked Partner entry records free-form symptoms, duration and attempted relief','Direct entry never uses this compact Partner screen'] },
+    'intake-general':   { id:'KRANE-F04 + KRANE-F05', name:'Shared UI, Partner SCR-003 / Direct SCR-DIR-02E', stories:['Partner keeps its approved compact-health order unchanged','Direct confirms or updates general health after fee handling and immediately before the waiting room','The same health fields are reused without sharing route logic'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Active Orders + Past Treatments', stories:['Active delivery orders remain separate for tracking','Completed consultation and order events are merged into one treatment episode','Tapping a past treatment opens its diagnosis and previous prescription when available'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
     'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
@@ -6810,12 +6868,11 @@
     'address':          { id:'KRANE-F18', name:'Delivery Address, Search / Missing Address', stories:['US-F18.8: Patient searches condo, building, landmark or address, or pins location on a map','US-F18.9: Same-day delivery is disabled until a valid address exists'] },
     'payment':          { id:'KRANE-F18', name:'Medication Payment, Hosted Gateway', stories:['US-F18.10: Payment appears as a familiar third-party hosted KBank-style gateway','US-F18.5: Medicine and delivery costs shown separately; total summarised','Prototype assumption: this is Payment 2 after the consultation and prescription acceptance'] },
     'payfail':          { id:'KRANE-F18', name:'Medication Payment, Failed (edge state)', stories:['US-F18.6: Patient can retry or choose a different payment method','US-F18.7: Treatment plan is preserved; no data lost on failure'] },
-    'pharmacypending':  { id:'KRANE-F21', name:'Fulfilment, Preparing Confirmed Order', stories:['The pharmacy receives payment only after prescription, stock and price confirmation','Patient sees that the confirmed order is being prepared'] },
-    'pharmacyaccepted': { id:'KRANE-F21', name:'Fulfilment, Pharmacy Accepted / POS Pick-Pack', stories:['After payment, the patient sees that the paid order was accepted into pharmacy fulfilment','Accepted order moves into pharmacy POS, pick and pack, then rider dispatch','Admin status updates are reflected in patient tracking'] },
+    'pharmacyaccepted': { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacy Acceptance & Stock Reservation (SCR-017A)', stories:['After prescription and stock verification, the pharmacy accepts the order and reserves stock before checkout','No payment has been taken at this point'] },
+    'pharmacypending':  { id:'KRANE-F21', name:'Pre-payment Pharmacy Preparation (SCR-017)', stories:['The pharmacy prepares the reserved medicine before checkout','The prepared order is ready to dispatch immediately after payment'] },
     'pharmacyissue':    { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Standard-delivery Fallback', stories:['Repeated nearby-branch declines offer standard delivery before any charge','The fallback locks stock and recalculates the final amount before checkout reopens'] },
     'refund':           { id:'KRANE-F21', name:'Fulfilment, Refund Confirmed', stories:['US-F21.6: Refund confirmation: amount, card, and reference shown clearly','US-F21.7: Consultation fee is separate and unaffected by a medication refund'] },
-    'confirm':          { id:'KRANE-F21', name:'Order Tracking, Confirmation', stories:['US-F21.1: Order confirmation shown after pharmacy acceptance, not immediately after medication payment','US-F21.3: Confirmation email with consultation + order summary sent to patient'] },
-    'tracking':         { id:'KRANE-F21', name:'Order Tracking', stories:['US-F21.1: Real-time status: payment confirmed → pharmacy accepted → preparing → rider pickup → delivered','US-F21.2: Admin can manually update status at any stage (visible here)'] },
+    'tracking':         { id:'KRANE-F21', name:'Dispatch & Order Tracking (SCR-048)', stories:['Payment success releases documents and opens tracking directly','Real-time status preserves the completed pharmacy checks and continues with rider pickup through delivery','Admin status updates are reflected in patient tracking'] },
     'feedback':         { id:'none', name:'Post-Consultation Feedback (not in Phase 1 feature scope)', stories:['Proposed: consultation satisfaction rating for care quality','Note: no KRANE-F## assigned, flag for next feature list update'] },
     'feedbackdone':     { id:'none', name:'Post-Consultation Feedback, Thanks state', stories:[] },
     'refill':           { id:'KRANE-F22', name:'Refill Flow', stories:['US-F22.1: See eligible prescriptions and request a refill in one action','US-F22.2: Refill goes straight to delivery/payment when doctor-set allowance remains','US-F22.3: Expired or used-up prescriptions route to a new consultation'] },
@@ -6889,7 +6946,7 @@
     if(document.getElementById('consultpay')?.dataset.checkoutMode==='fee-notice'){
       flowState.consultationFeeAcknowledged=true;
       persistFlowState();
-      show('waitroom');
+      show(consultationHandoffTarget());
       return;
     }
     const sel = document.querySelector('#consultpay .option[aria-selected="true"]');
@@ -6904,7 +6961,7 @@
       flowState.consultationPaid=true;
       flowState.paymentResolution='consultation-paid';
       persistFlowState();
-      show('waitroom');
+      show(consultationHandoffTarget());
       return;
     }
     if(event.target.closest('[data-consult-payment-retry]')){
@@ -7101,8 +7158,22 @@
     activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
   });
   document.body.addEventListener('click', e => {
-    if(!e.target.closest('[data-pharmacy-accepted-continue]')) return;
-    show('confirm');
+    if(e.target.closest('[data-pharmacy-accepted-continue]')){
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=false;
+      persistFlowState();
+      show('pharmacypending');
+      return;
+    }
+    if(e.target.closest('[data-pharmacy-prepared-continue]')){
+      flowState.orderState.pharmacyAccepted=true;
+      flowState.orderState.pharmacyPrepared=true;
+      ensurePaymentDeadline();
+      persistFlowState();
+      refreshMedicationCheckout();
+      show('payment');
+      return;
+    }
   });
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-payment-deadline-retry]')){
@@ -7192,6 +7263,16 @@
         const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
         showActionToast(`กรุณาระบุ${label}`,'warning');
         incompleteHistory.querySelector('input')?.focus();
+        return;
+      }
+      if(flowState.entryChannel==='direct'){
+        flowState.draftReady=true;
+        flowState.directGeneralHealthComplete=true;
+        flowState.lastRequiredScreen='waitroom';
+        persistFlowState();
+        saveIntakeDraft();
+        showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
+        show('waitroom');
         return;
       }
     }
