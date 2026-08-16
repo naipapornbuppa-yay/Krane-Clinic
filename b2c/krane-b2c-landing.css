@@ -2100,10 +2100,13 @@ body{
   }
   .care-banner-grid::-webkit-scrollbar{display:none}
   .care-banner{height:132px;border-radius:20px;scroll-snap-align:none}
-  .care-banner__copy{width:68%;padding:12px 14px}
+  /* Width stayed on the whole copy panel so the CTA - absolutely positioned
+     inside it - never reached the card's own right edge, only the panel's.
+     Give the panel the full card and cap just the text instead. */
+  .care-banner__copy{width:100%;padding:12px 14px}
   .care-banner__kicker{margin-bottom:auto;padding:4px 7px;font-size:8px}
-  .care-banner__copy>strong{font-size:19px;line-height:1.08}
-  .care-banner__copy>small{margin-top:3px;font-size:8px}
+  .care-banner__copy>strong{max-width:68%;font-size:19px;line-height:1.08}
+  .care-banner__copy>small{max-width:68%;margin-top:3px;font-size:8px}
   .care-banner__cta{position:absolute;right:10px;bottom:10px;min-height:30px;margin-top:0;padding-inline:10px;font-size:10px}
   .care-banner--weight>img{object-position:70% center}
   .care-banner--ed>img{object-position:68% center}
@@ -2350,19 +2353,22 @@ body{background:var(--landing-page-bg)}
   color:var(--campaign-banner-ink,rgba(255,255,255,.92));
 }
 .announcement--promo .announcement__track{
-  width:max-content;
+  width:100%;
   min-width:100%;
-  justify-content:flex-start;
-  animation:announcement-promo-scroll 42s linear infinite;
-  will-change:transform;
+  justify-content:center;
+  animation:none;
 }
 .announcement--promo .announcement__group{
   flex:none;
   min-width:max-content;
-  justify-content:flex-start;
+  justify-content:center;
   gap:0;
   padding-inline:0;
 }
+/* Static, centered banner: the second .announcement__group is only there
+   to make the marquee loop seamlessly, so it has nothing to do once the
+   scroll animation is off. */
+.announcement--promo .announcement__group[aria-hidden="true"]{display:none}
 .announcement--promo .announcement__group>*{
   display:inline-flex;
   align-items:center;
