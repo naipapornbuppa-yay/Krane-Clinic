@@ -734,6 +734,14 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Grab-style itemised order summary on the checkout screen: one card, a line
    per prescribed item. No header of its own any more, client's call. */
 .checkout-order{border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);overflow:hidden}
+/* 9811190 dropped the rules for the attribution line but left its markup, so
+   "ใบสั่งยาโดย ..." rendered as unstyled inline text flush against the card edge
+   and the rounded border clipped its first character. It keeps the item padding
+   so it lines up with the medicines, and stays a plain line: the grey header bar
+   this used to have is gone on the client's call and is not coming back. */
+.checkout-order__head{padding:var(--sp-3) var(--sp-4) 0}
+.checkout-order__by{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;min-width:0;font-size:var(--fs-sm);font-weight:var(--fw-regular);color:var(--color-ink-2)}
+.checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
 .checkout-order__item+.checkout-order__item{border-top:1px solid var(--color-line)}
 .checkout-order__thumb{width:52px;height:52px;flex:none;border:1px solid var(--color-line);border-radius:var(--radius-md);background:#fff;display:grid;place-items:center;overflow:hidden}
@@ -1045,7 +1053,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* min-height:0 overrides the flex default of "at least as tall as my content",
    which otherwise stops this from shrinking/scrolling inside a height-bound
    .screen (see .screen:has(.chat-body)) and pushes the footer off-frame instead. */
-.screen__body{width:100%;min-width:0;max-width:100%;min-height:0;flex:1;overflow-x:hidden;overflow-y:auto;padding:var(--sp-5) var(--sp-4)}
+/* On desktop the scrollbar is a classic 15px one that eats into the right side
+   only, so a screen tall enough to scroll sat 15px left of centre while a short
+   one was centred, and content shifted sideways between screens. Reserving the
+   gutter on both edges keeps every screen optically centred either way. Phones
+   use overlay scrollbars, so this costs them nothing. */
+.screen__body{width:100%;min-width:0;max-width:100%;min-height:0;flex:1;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable both-edges;padding:var(--sp-5) var(--sp-4)}
 .screen__body>*{min-width:0;max-width:100%}
 .screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Safari composites a -webkit-backdrop-filter element above later content no matter
