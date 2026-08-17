@@ -12,7 +12,6 @@
   --landing-blue-2:var(--color-accent-vivid,#4A66A8);
   --landing-navy:var(--color-ink,#1A1E28);
   --page-gutter:40px;
-  --notch-surface:var(--landing-blue);
   --section-radius:80px;
   --campaign-weight-surface:#B87565;
   --campaign-sexual-surface:#b9dced;
@@ -82,13 +81,15 @@ button{color:inherit}
 .announcement{
   position:relative;
   z-index:60;
-  height:40px;
-  min-height:40px;
+  /* The band grows into the status-bar inset so the notch reads as part of it
+     rather than as a white strip above it. height:auto lets the padding add. */
+  height:auto;
+  min-height:calc(40px + env(safe-area-inset-top, 0px));
   display:flex;
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  padding:0;
+  padding:env(safe-area-inset-top, 0px) 0 0;
   background:var(--campaign-banner-surface);
   color:var(--campaign-banner-ink);
   text-decoration:none;
@@ -2187,7 +2188,7 @@ body{
 .treatment-grid .treatment-pill>svg:last-child{background:var(--landing-navy);color:#fff}
 
 /* System-led marketing canvas and edge-aligned CTAs for the compact care cards. */
-:root{--landing-page-bg:var(--landing-page-tint)}
+:root{--landing-page-bg:var(--surface-page)}
 body{background:var(--landing-page-bg)}
 @media(max-width:700px){body{background:var(--landing-page-bg)}}
 
@@ -2367,7 +2368,7 @@ body{background:var(--landing-page-bg)}
 }
 
 /* 2026-08-16: client-approved landing content architecture. */
-:root{--landing-page-bg:#fcfbf8}
+
 .announcement--promo{
   min-height:40px;
   overflow:hidden;
@@ -2497,36 +2498,42 @@ body{background:var(--landing-page-bg)}
 }
 .trust-section .compliance__logos{max-width:1260px;margin-inline:auto;padding-block:18px;border-block:1px solid rgba(17,35,60,.09)}
 
-/* Privacy, rebuilt 17 Aug: a filled, rounded block inset from the page rather
-   than a full-bleed cream band, so it reads as one object you scroll past. The
-   copy drifts against the list as it passes (see [data-parallax] in the landing
-   script) — the block's own overflow clipping is what keeps that drift from
-   spilling into the sections either side. */
-.privacy-section{
+/* ---- Section blocks -----------------------------------------------------
+   Client (17 Aug): the page is built from card pieces. Every content section
+   is a filled, rounded block inset from the page rather than a full-bleed
+   band, and each one drifts slightly as it passes (see [data-parallax] in the
+   landing script) so the stack reads as separate pieces rather than one sheet.
+   The fill is the quiet card token, so it stays a whisper against the page
+   instead of a slab. */
+.section-block{
   position:relative;
+  margin-inline:var(--page-gutter);
+  padding-inline:clamp(20px,4vw,56px);
+  border-radius:var(--radius-2xl,32px);
+  background:var(--surface-card-quiet);
+  will-change:transform;
+}
+.section-block + .section-block{margin-top:14px}
+.motion-enabled .section-block[data-parallax]{transform:translate3d(0,var(--parallax-y,0),0)}
+@media(prefers-reduced-motion:reduce){
+  .motion-enabled .section-block[data-parallax]{transform:none}
+}
+.privacy-section{
   display:grid;
   grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
   gap:clamp(36px,6vw,92px);
   align-items:center;
-  margin-inline:var(--page-gutter);
-  padding:clamp(48px,7vw,92px) clamp(28px,4.5vw,64px);
-  border-radius:var(--radius-2xl,32px);
+  padding-block:clamp(48px,7vw,92px);
   overflow:hidden;
-  background:var(--surface-card-quiet);
 }
-.privacy-section__copy{position:relative;will-change:transform}
+.privacy-section__copy{position:relative}
 .privacy-section__copy>p:last-child{max-width:55ch;margin-top:22px;color:var(--landing-ink-2);font-size:17px;line-height:1.75}
-.privacy-list{display:grid;gap:12px;margin:0;padding:0;list-style:none;position:relative;will-change:transform}
+.privacy-list{display:grid;gap:12px;margin:0;padding:0;list-style:none;position:relative}
 .privacy-list li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;padding:24px;border:0;border-radius:26px;background:var(--surface-card)}
 .privacy-list>li>svg{width:52px;height:52px;padding:14px;border-radius:50%;background:var(--surface-sunken);color:var(--landing-navy)}
 .privacy-list h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
 .privacy-list p{margin-top:4px;color:var(--landing-ink-2);font-size:15px;line-height:1.6}
-/* Parallax is opt-in and motion-safe: the script only sets --parallax-y when
-   the user has not asked for reduced motion. */
-.motion-enabled .privacy-section [data-parallax]{transform:translate3d(0,var(--parallax-y,0),0)}
-@media(prefers-reduced-motion:reduce){
-  .motion-enabled .privacy-section [data-parallax]{transform:none}
-}
+
 
 .steps{height:auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 .steps li{min-height:270px;padding:26px;border-radius:28px;background:transparent;grid-template-columns:40px minmax(0,1fr)}
@@ -2828,8 +2835,7 @@ body.expert-open{overflow:hidden}
 }
 
 /* High-key priority-care art: bright product photography with a soft white copy scrim. */
-:root{--landing-page-bg:#fff}
-.hero.hero--campaign{background:#fff}
+.hero.hero--campaign{background:var(--surface-card)}
 .care-banner{
   border-color:transparent;
   background:#faf9f6;

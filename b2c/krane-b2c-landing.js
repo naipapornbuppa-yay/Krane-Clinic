@@ -939,8 +939,8 @@
      Reduced motion opts out entirely rather than merely shortening it. */
   const parallaxNodes = [...document.querySelectorAll("[data-parallax]")].map((node) => ({
     node,
-    speed: Number(node.dataset.parallaxSpeed || 0.08),
-    host: node.closest("section") || node.parentElement
+    speed: Number(node.dataset.parallaxSpeed || 0.022),
+    host: node
   }));
 
   function updateParallax() {

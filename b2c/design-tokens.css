@@ -257,8 +257,19 @@
      Interactive surfaces also carry -hover / -active so a press has somewhere
      to go without inventing a colour at the call site. */
   --surface-page: var(--theme-canvas);
-  --surface-section: #EDEDED;
-  --surface-card-quiet: #EDEDED;
+  /* One relative ladder. Every step below the page is an ink wash, so a
+     surface keeps the SAME relationship to whatever contains it wherever it is
+     used. Fixed hexes could not do this: #EDEDED reads as a heavy slab on a
+     near-white landing page and disappears entirely on the grey app canvas —
+     it was correct in neither place, only in the one it was picked against.
+
+       quiet    3%   a whisper: the seam is visible, the box has no weight
+       section  5%   a band that separates chapters
+       sunken   8%   a well you can type into
+       hover   11%   / active 15%   pressed states of the same well
+  */
+  --surface-section: color-mix(in srgb, var(--color-ink) 5%, transparent);
+  --surface-card-quiet: color-mix(in srgb, var(--color-ink) 3%, transparent);
   --surface-card: var(--theme-surface);
   --surface-card-hover: #FAFAFA;
   --surface-card-raised: var(--theme-surface);
@@ -268,7 +279,7 @@
      and reads as a heavy slab inside white. As an ink wash it darkens its own
      parent by a constant amount, so a field looks like the same field wherever
      it is used. */
-  --surface-sunken: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  --surface-sunken: color-mix(in srgb, var(--color-ink) 8%, transparent);
   --surface-sunken-hover: color-mix(in srgb, var(--color-ink) 11%, transparent);
   --surface-sunken-active: color-mix(in srgb, var(--color-ink) 15%, transparent);
   /* Opaque equivalent, for the few places that composite over an image or need
@@ -533,21 +544,11 @@ html[lang="en"] {
 /* Brand loader ring. */
 :root{--loader-size:112px;--loader-track:2px}
 
-/* ---- Notch strip ----------------------------------------------------------
-   With viewport-fit=cover the page paints under the status bar, so that strip
-   shows whatever the document background happens to be — which is why a blue
-   promo band still sat under a white notch. Each page sets --notch-surface to
-   whatever actually sits directly beneath the strip; the default is the page.
-   Fixed and non-interactive, so it never covers a control. */
-:root{--notch-surface:var(--surface-page,#F2F2F2)}
-body::before{
-  content:"";
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  z-index:200;
-  height:env(safe-area-inset-top,0px);
-  background:var(--notch-surface);
-  pointer-events:none;
-}
+/* ---- Safe area -----------------------------------------------------------
+   With viewport-fit=cover the page paints under the status bar. The strip up
+   there shows the BODY background, because a body background propagates to the
+   canvas — which is why a white body left a white notch over a grey app. So
+   each page sets its body to whatever should appear there, and pages whose top
+   element is coloured (the landing promo band) grow that element into the
+   inset instead. No overlay: an overlay cannot colour the rubber-band area on
+   overscroll, and a fixed one risks being clipped by an ancestor. */
