@@ -686,7 +686,8 @@
     expertDialogBio.textContent = profile.bio;
     expertDialogSpecialty.textContent = profile.specialty;
     expertDialogEducation.textContent = profile.education;
-    expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
+    // The sheet no longer carries a CTA; keep the link in sync if one returns.
+    if (expertDetailLink) expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
     document.body.classList.add("expert-open");
     expertDialog.showModal();
     requestAnimationFrame(() => expertDialogClose?.focus());

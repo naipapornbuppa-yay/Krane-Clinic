@@ -205,3 +205,40 @@ body.menu-open{overflow:hidden}
 .site-header .header-login{background:var(--landing-navy);color:#fff;box-shadow:none}
 .site-header .header-access{border-color:currentColor;background:transparent;color:var(--landing-navy)}
 .site-header .menu-toggle{background:transparent;color:var(--landing-ink)}
+
+/* ---- Drawer ---------------------------------------------------------------
+   One contract for every right-edge sheet on the public site: the nav drawer,
+   the landing doctor sheet and the doctors-page doctor sheet. They were three
+   separate implementations with three widths, two surfaces and two close
+   buttons — the two doctor sheets are the same component and now say so.
+   Consumers keep their own content styles; only the shell lives here. */
+.drawer{
+  width:min(420px,88%);
+  max-width:none;
+  height:100vh;
+  height:100dvh;
+  max-height:none;
+  margin:0 0 0 auto;
+  padding:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  border:0;
+  border-radius:0;
+  background:var(--surface-card);
+  color:var(--landing-ink);
+  box-shadow:-18px 0 60px rgba(18,24,36,.22);
+}
+.drawer[open]{display:block;animation:menu-enter .32s var(--ease) both}
+.drawer::backdrop{background:rgba(17,27,48,.42);backdrop-filter:blur(6px)}
+.drawer[open]::backdrop{animation:backdrop-enter .24s ease both}
+.drawer__panel{min-height:100%;background:var(--surface-card)}
+.drawer__close{
+  position:fixed;top:18px;right:18px;z-index:4;
+  display:grid;width:44px;height:44px;place-items:center;padding:0;
+  border:0;border-radius:50%;
+  background:var(--surface-sunken);color:var(--landing-ink);cursor:pointer;
+}
+.drawer__close svg{width:22px;height:22px}
+@media(min-width:861px){
+  .drawer{width:min(560px,46vw)}
+}
