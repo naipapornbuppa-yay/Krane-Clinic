@@ -69,9 +69,9 @@
   --theme-ink-subtle: #5E6678;
   --theme-line: #E0E0E0;
   --theme-line-strong: #C9C9C9;
-  --theme-accent-vivid: #4A66A8;
-  --theme-accent: #3A548F;
-  --theme-accent-hover: #2C4172;
+  --theme-accent-vivid: #4E6DBC;
+  --theme-accent: #395AA4;
+  --theme-accent-hover: #2E4A8B;
   --theme-action: #1A1E28;
   --theme-action-hover: #0F172A;
   --theme-on-dark: #FFFFFF;
@@ -262,9 +262,18 @@
   --surface-card: var(--theme-surface);
   --surface-card-hover: #FAFAFA;
   --surface-card-raised: var(--theme-surface);
-  --surface-sunken: var(--theme-canvas-inset);
-  --surface-sunken-hover: #E0E0E0;
-  --surface-sunken-active: #D8D8D8;
+  /* A well is defined RELATIVE to whatever contains it, not as a fixed grey.
+     A fixed hex cannot be correct in two places at once: the same #E7E7E7 that
+     reads as a recessed field on a white card almost vanishes on the grey page,
+     and reads as a heavy slab inside white. As an ink wash it darkens its own
+     parent by a constant amount, so a field looks like the same field wherever
+     it is used. */
+  --surface-sunken: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  --surface-sunken-hover: color-mix(in srgb, var(--color-ink) 11%, transparent);
+  --surface-sunken-active: color-mix(in srgb, var(--color-ink) 15%, transparent);
+  /* Opaque equivalent, for the few places that composite over an image or need
+     a real colour rather than a wash. */
+  --surface-sunken-solid: var(--theme-canvas-inset);
   --shadow-card-raised: 0 1px 2px rgba(18,24,36,.05), 0 6px 16px rgba(18,24,36,.05);
 
   /* ---- Notice surface ----------------------------------------------------
@@ -273,8 +282,8 @@
      entirely, which is what makes it read at a glance without shouting like a
      danger colour. Its icon and text are ink: the plate carries the emphasis,
      so nothing inside needs a second signal colour. */
-  --surface-notice: #EAE8CF;
-  --surface-notice-strong: #E0DDBC;
+  --surface-notice: #F1EEC8;
+  --surface-notice-strong: #E9E5B4;
   --surface-notice-ink: #3A3722;
 
   /* ---- Chat surfaces -----------------------------------------------------
@@ -523,3 +532,22 @@ html[lang="en"] {
 
 /* Brand loader ring. */
 :root{--loader-size:112px;--loader-track:2px}
+
+/* ---- Notch strip ----------------------------------------------------------
+   With viewport-fit=cover the page paints under the status bar, so that strip
+   shows whatever the document background happens to be — which is why a blue
+   promo band still sat under a white notch. Each page sets --notch-surface to
+   whatever actually sits directly beneath the strip; the default is the page.
+   Fixed and non-interactive, so it never covers a control. */
+:root{--notch-surface:var(--surface-page,#F2F2F2)}
+body::before{
+  content:"";
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:200;
+  height:env(safe-area-inset-top,0px);
+  background:var(--notch-surface);
+  pointer-events:none;
+}

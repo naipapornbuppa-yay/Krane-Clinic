@@ -12,6 +12,7 @@
   --landing-blue-2:var(--color-accent-vivid,#4A66A8);
   --landing-navy:var(--color-ink,#1A1E28);
   --page-gutter:40px;
+  --notch-surface:var(--landing-blue);
   --section-radius:80px;
   --campaign-weight-surface:#B87565;
   --campaign-sexual-surface:#b9dced;
@@ -109,7 +110,7 @@ button{color:inherit}
   padding:16px;
   border:0;
   border-radius:40px;
-  background:var(--surface-page);
+  background:var(--surface-card);
   box-shadow:0 2px 8px rgba(0,0,0,.06);
   backdrop-filter:none;
   transition:background .3s ease,box-shadow .3s ease,border-color .3s ease;
@@ -1132,11 +1133,11 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   border:0;
   border-bottom:1px solid transparent;
   border-radius:0;
-  background:var(--surface-page);
+  background:var(--surface-card);
   box-shadow:none;
   backdrop-filter:none;
 }
-.site-header.is-scrolled{border-color:transparent;background:var(--surface-page);box-shadow:0 10px 26px rgba(18,24,36,.07);backdrop-filter:none}
+.site-header.is-scrolled{border-color:transparent;background:var(--surface-card);box-shadow:0 10px 26px rgba(18,24,36,.07);backdrop-filter:none}
 main{gap:28px;margin-top:0}
 .hero.hero--campaign{margin-inline:clamp(24px,5.2vw,106px)}
 .hero--campaign .hero__intro{
@@ -2496,20 +2497,36 @@ body{background:var(--landing-page-bg)}
 }
 .trust-section .compliance__logos{max-width:1260px;margin-inline:auto;padding-block:18px;border-block:1px solid rgba(17,35,60,.09)}
 
+/* Privacy, rebuilt 17 Aug: a filled, rounded block inset from the page rather
+   than a full-bleed cream band, so it reads as one object you scroll past. The
+   copy drifts against the list as it passes (see [data-parallax] in the landing
+   script) — the block's own overflow clipping is what keeps that drift from
+   spilling into the sections either side. */
 .privacy-section{
+  position:relative;
   display:grid;
   grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
   gap:clamp(36px,6vw,92px);
   align-items:center;
-  padding-block:clamp(72px,9vw,124px);
-  background:#fcfaf7;
+  margin-inline:var(--page-gutter);
+  padding:clamp(48px,7vw,92px) clamp(28px,4.5vw,64px);
+  border-radius:var(--radius-2xl,32px);
+  overflow:hidden;
+  background:var(--surface-card-quiet);
 }
-.privacy-section__copy>p:last-child{max-width:55ch;margin-top:22px;color:#5b667a;font-size:17px;line-height:1.75}
-.privacy-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}
-.privacy-list li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;padding:24px;border:1px solid rgba(17,35,60,.09);border-radius:26px;background:rgba(255,255,255,.86)}
-.privacy-list>li>svg{width:52px;height:52px;padding:14px;border-radius:50%;background:#e5edf9;color:var(--landing-navy)}
+.privacy-section__copy{position:relative;will-change:transform}
+.privacy-section__copy>p:last-child{max-width:55ch;margin-top:22px;color:var(--landing-ink-2);font-size:17px;line-height:1.75}
+.privacy-list{display:grid;gap:12px;margin:0;padding:0;list-style:none;position:relative;will-change:transform}
+.privacy-list li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;padding:24px;border:0;border-radius:26px;background:var(--surface-card)}
+.privacy-list>li>svg{width:52px;height:52px;padding:14px;border-radius:50%;background:var(--surface-sunken);color:var(--landing-navy)}
 .privacy-list h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
-.privacy-list p{margin-top:4px;color:#59657a;font-size:15px;line-height:1.6}
+.privacy-list p{margin-top:4px;color:var(--landing-ink-2);font-size:15px;line-height:1.6}
+/* Parallax is opt-in and motion-safe: the script only sets --parallax-y when
+   the user has not asked for reduced motion. */
+.motion-enabled .privacy-section [data-parallax]{transform:translate3d(0,var(--parallax-y,0),0)}
+@media(prefers-reduced-motion:reduce){
+  .motion-enabled .privacy-section [data-parallax]{transform:none}
+}
 
 .steps{height:auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 .steps li{min-height:270px;padding:26px;border-radius:28px;background:transparent;grid-template-columns:40px minmax(0,1fr)}
@@ -2976,7 +2993,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   overflow:hidden;
   margin:0;
   padding:8px 0;
-  background:var(--surface-page);
+  background:var(--surface-card);
 }
 .trust-strip__track{
   display:flex;
@@ -3143,7 +3160,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
 .care-banner--weight,
 .care-banner-grid__sub{
   border-color:transparent;
-  background:var(--surface-sunken);
+  background:var(--surface-sunken-solid);
   box-shadow:0 10px 26px rgba(17,27,48,.08);
 }
 .care-banner--weight>img.care-banner__photo,
@@ -3294,7 +3311,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
 .article-card:hover,.article-card:focus-visible{transform:translateY(-2px)}
 /* These are product renders on a clean plate, not photographs: contain them
    on a tint so the object reads whole instead of being cropped. */
-.article-card__thumb{display:block;aspect-ratio:16/10;overflow:hidden;padding:14px;background:var(--surface-sunken)}
+.article-card__thumb{display:block;aspect-ratio:16/10;overflow:hidden;padding:14px;background:var(--surface-sunken-solid)}
 .article-card__thumb img{width:100%;height:100%;display:block;object-fit:contain}
 .article-card__body{display:flex;flex-direction:column;gap:6px;padding:16px 18px 20px}
 .article-card__tags{display:flex;align-items:center;gap:8px}
@@ -3348,4 +3365,26 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   flex:none;
   width:var(--tile-cta-size);
   height:var(--tile-cta-size);
+}
+
+
+/* ---- Doctor carousel on a phone -----------------------------------------
+   Client (17 Aug): one card filled the viewport, so the row did not read as
+   scrollable at all. Sized to show two cards plus the edge of a third, which
+   is the affordance. Placed last, and scoped through .experts, because the
+   BEM rules above out-specify a bare .expert-card selector. */
+@media(max-width:700px){
+  /* Sized so two cards sit fully in view and the third is visibly cropped —
+     the crop is the scroll affordance. Track gap is tightened to match. */
+  .experts .expert-track{gap:12px;padding-right:16px}
+  .experts .expert-card{width:min(37vw,142px);height:auto;min-height:0;border-radius:18px}
+  .experts .expert-card__media{height:142px}
+  .experts .expert-card__media>svg{right:8px;bottom:8px;width:22px;height:22px;padding:4px}
+  .experts .expert-card__media--identity b{width:74px;height:74px;font-size:24px}
+  .experts .expert-card__media--identity small{margin-top:10px;font-size:11px}
+  .experts .expert-card__body{padding:12px 2px 0}
+  .experts .expert-card h3{min-height:0;font-size:14.5px;line-height:1.35}
+  .experts .expert-card strong{min-height:0;margin-top:3px;font-size:11.5px;line-height:1.4}
+  .experts .expert-card p{display:none}
+  .experts .expert-card__bio-link{margin-top:10px;font-size:12px}
 }

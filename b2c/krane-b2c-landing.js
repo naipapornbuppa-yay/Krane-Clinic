@@ -932,6 +932,44 @@
   window.addEventListener("resize", requestMobileCtaUpdate, { passive: true });
   updateMobileCta();
 
+  /* Section parallax. Each [data-parallax] drifts by its own speed against the
+     section's progress through the viewport, so the copy and the list separate
+     slightly as you scroll past. Progress is measured from the section, not the
+     page, so the drift is zero at the edges and never leaves the rounded block.
+     Reduced motion opts out entirely rather than merely shortening it. */
+  const parallaxNodes = [...document.querySelectorAll("[data-parallax]")].map((node) => ({
+    node,
+    speed: Number(node.dataset.parallaxSpeed || 0.08),
+    host: node.closest("section") || node.parentElement
+  }));
+
+  function updateParallax() {
+    parallaxFrame = null;
+    if (reducedMotionQuery.matches) {
+      parallaxNodes.forEach(({ node }) => node.style.removeProperty("--parallax-y"));
+      return;
+    }
+    const viewport = window.innerHeight || 1;
+    parallaxNodes.forEach(({ node, speed, host }) => {
+      const rect = host.getBoundingClientRect();
+      if (rect.bottom < -200 || rect.top > viewport + 200) return;
+      // -1 .. 1 across the pass, 0 when the section is centred.
+      const progress = (rect.top + rect.height / 2 - viewport / 2) / (viewport / 2 + rect.height / 2);
+      node.style.setProperty("--parallax-y", `${(progress * speed * rect.height).toFixed(1)}px`);
+    });
+  }
+
+  let parallaxFrame = null;
+  function requestParallax() {
+    if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateParallax);
+  }
+  if (parallaxNodes.length) {
+    window.addEventListener("scroll", requestParallax, { passive: true });
+    window.addEventListener("resize", requestParallax, { passive: true });
+    reducedMotionQuery.addEventListener?.("change", requestParallax);
+    updateParallax();
+  }
+
   if (window.lucide) {
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
   }

@@ -229,7 +229,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    its two lines almost touching, so the pinned address read as an offcut of the
    map rather than its own line of information. It gets room on all four sides
    and its lines get room from each other. */
-.address-readout{display:flex;flex-direction:column;gap:5px;margin:0;padding:var(--sp-1) 0 var(--sp-2)}
+.address-readout{display:flex;flex-direction:column;gap:5px;margin:0;padding:var(--sp-4) 0 var(--sp-3)}
 .address-readout strong{font-size:var(--fs-base);line-height:1.4;color:var(--color-ink)}
 .address-readout span{font-size:var(--fs-sm);line-height:1.5;color:var(--color-ink-2)}
 /* Two fields per row, each free to shrink; min-width:0 stops a long Thai label
@@ -256,7 +256,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   will-change:transform}
 .sim-map--full{position:relative;height:clamp(260px,46vh,420px);border-radius:var(--radius-md);overflow:hidden}
 .sim-map__crosshair{position:absolute;left:50%;top:50%;z-index:2;display:grid;place-items:center;width:38px;height:38px;
-  transform:translate(-50%,-100%);color:var(--color-accent-ink);pointer-events:none;filter:drop-shadow(0 6px 8px rgba(23,46,81,.28))}
+  transform:translate(-50%,-100%);color:var(--color-accent);pointer-events:none;filter:drop-shadow(0 6px 8px rgba(23,46,81,.28))}
+.sim-map__crosshair svg{fill:currentColor;stroke:currentColor;stroke-width:1.2}
+/* Keep the dot in the head readable once the body is filled. */
+.sim-map__crosshair svg circle{fill:var(--color-surface);stroke:none}
 .sim-map__crosshair .ui-icon{width:38px;height:38px}
 .sim-map__zoom{position:absolute;right:var(--sp-3);top:var(--sp-3);z-index:3;display:grid;gap:1px;border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow-sm)}
 .sim-map__zoom button{width:36px;height:36px;border:0;background:var(--color-surface);color:var(--color-ink);font-size:18px;line-height:1;cursor:pointer}
@@ -787,7 +790,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @media(max-width:340px){.checkout-pay{gap:var(--sp-3)}.checkout-pay__amount strong{font-size:var(--fs-md)}.checkout-pay .btn{font-size:var(--fs-sm)}}
 /* Client 16 Aug: a thin strip, not a card. The icon plate and the second copy
    line are gone; title and clock sit on one row. */
-.payment-deadline{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) var(--sp-4) 0;padding:8px 14px;border:0;border-radius:var(--radius-pill);background:var(--surface-notice);color:var(--surface-notice-ink);flex:none}
+.payment-deadline{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) var(--sp-4) var(--sp-3);padding:8px 14px;border:0;border-radius:var(--radius-pill);background:var(--surface-notice);color:var(--surface-notice-ink);flex:none}
 .payment-deadline__icon{width:18px;height:18px;flex:none;display:grid;place-items:center;color:var(--surface-notice-ink);background:none;box-shadow:none}
 .payment-deadline__icon svg{width:16px;height:16px}
 .payment-deadline__copy{min-width:0;flex:1;display:flex;align-items:baseline;gap:6px;line-height:1.3;overflow:hidden}
@@ -795,6 +798,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .payment-deadline__copy small{display:none}
 .payment-deadline__time{padding:0;border-radius:0;background:none;color:inherit;font-size:inherit;font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .payment-deadline__time[hidden]{display:none}
+#payment>.screen__body{
+  padding-top:var(--sp-2);
+  scroll-padding-top:var(--sp-4);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 14px);
+}
 .payment-deadline__retry{flex:none;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--surface-notice-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
 .payment-deadline[data-expired="true"]{border:0;background:var(--color-danger-soft);color:var(--color-danger-ink)}
 .payment-deadline[data-expired="true"] .payment-deadline__icon{color:var(--color-danger-ink)}
