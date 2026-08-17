@@ -728,6 +728,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    the confirm button, so this block carries no emphasised total of its own. */
 .checkout-bill{padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface)}
 .checkout-bill__row{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-block:var(--sp-2);color:var(--color-ink-2);font-size:var(--fs-sm)}
+/* The total had no rule of its own, so label and amount collapsed together
+   instead of sitting at opposite ends like every row above it. */
+.checkout-bill__total{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-block:var(--sp-2);color:var(--color-ink);font-size:var(--fs-base);font-weight:var(--fw-semibold)}
+.checkout-bill__total strong{font-variant-numeric:tabular-nums}
 .checkout-bill__row strong{color:var(--color-ink);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
 .checkout-bill__row--credit strong{color:var(--color-success)}
 
@@ -774,14 +778,16 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-pay__amount strong{color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;line-height:1.1}
 .checkout-pay .btn{flex:1;min-width:0;min-height:var(--control-h);height:auto;padding-inline:var(--sp-3)}
 @media(max-width:340px){.checkout-pay{gap:var(--sp-3)}.checkout-pay__amount strong{font-size:var(--fs-md)}.checkout-pay .btn{font-size:var(--fs-sm)}}
-.payment-deadline{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);margin:var(--sp-3) var(--sp-4) 0;padding:12px 14px;border:1px solid color-mix(in srgb,var(--color-accent) 24%,var(--color-line));border-radius:var(--radius-lg);background:color-mix(in srgb,var(--color-accent-soft) 72%,var(--color-surface));color:var(--color-ink);flex:none}
-.payment-deadline__icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--color-surface);color:var(--color-accent);box-shadow:0 4px 12px rgba(17,31,54,.06)}
-.payment-deadline__icon svg{width:20px;height:20px}
-.payment-deadline__copy{min-width:0;display:flex;flex-direction:column;gap:2px;line-height:1.3}
+/* Client 16 Aug: a thin strip, not a card. The icon plate and the second copy
+   line are gone; title and clock sit on one row. */
+.payment-deadline{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) var(--sp-4) 0;padding:7px 12px;border:1px solid color-mix(in srgb,var(--color-accent) 20%,var(--color-line));border-radius:var(--radius-pill);background:color-mix(in srgb,var(--color-accent-soft) 60%,var(--color-surface));color:var(--color-ink);flex:none}
+.payment-deadline__icon{width:18px;height:18px;flex:none;display:grid;place-items:center;color:var(--color-accent);background:none;box-shadow:none}
+.payment-deadline__icon svg{width:16px;height:16px}
+.payment-deadline__copy{min-width:0;flex:1;display:flex;align-items:baseline;gap:6px;line-height:1.3;overflow:hidden}
 .payment-deadline__copy strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
-.payment-deadline__copy small{color:var(--color-ink-3);font-size:var(--fs-xs)}
-.payment-deadline__time{min-width:82px;padding:8px 10px;border-radius:var(--radius-md);background:var(--color-ink);color:var(--color-surface);font-size:15px;font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;letter-spacing:.04em;text-align:center}
-.payment-deadline__retry{grid-column:2 / -1;justify-self:start;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--color-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.payment-deadline__copy small{display:none}
+.payment-deadline__time{flex:none;min-width:0;padding:2px 8px;border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-surface);font-size:var(--fs-xs);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.payment-deadline__retry{flex:none;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--color-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
 .payment-deadline[data-expired="true"]{border-color:color-mix(in srgb,var(--color-danger) 34%,var(--color-line));background:color-mix(in srgb,var(--color-danger) 9%,var(--color-surface))}
 .payment-deadline[data-expired="true"] .payment-deadline__icon{color:var(--color-danger)}
 .payment-deadline[data-expired="true"] .payment-deadline__time{background:var(--color-danger)}

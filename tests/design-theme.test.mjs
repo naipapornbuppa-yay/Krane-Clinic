@@ -33,6 +33,6 @@ test("primary B2C documents expose the approved browser chrome colour and cache 
   for (const file of ["krane-b2c.html", "krane-b2c-landing.html", "condition-detail.html"]) {
     const html = await readFile(path.join(b2cRoot, file), "utf8");
     assert.match(html, /<meta name="theme-color" content="#F7F9FB">/);
-    assert.match(html, /design-tokens\.css\?v=20260816-sections-idcard-v8/);
+    assert.match(html, /design-tokens\.css\?v=20260816-checkout-strip-v9/);
   }
 });
