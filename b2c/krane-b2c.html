@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260817-periwinkle-v1";
+    const release = "20260817-neutral-system-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260817-periwinkle-v1">
-<link rel="stylesheet" href="components.css?v=20260817-periwinkle-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260817-neutral-system-v1">
+<link rel="stylesheet" href="components.css?v=20260817-neutral-system-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -243,12 +243,14 @@
   </style>
   <style>
     /* Krane state illustration system: monochrome ink cutouts + semantic motion only. */
-    :root{--state-editorial-canvas:#f4f4f3}
+    /* Waiting states sit on the page colour, not a warm stone of their own, and
+       their chrome matches it exactly so no band shows at the top or bottom. */
+    :root{--state-editorial-canvas:var(--color-bg)}
     .screen:has(> .screen__body.state-view),
     .screen__body.state-view{background:var(--state-editorial-canvas)}
     .screen:has(> .screen__body.state-view)>.screen__top,
     .screen:has(> .screen__body.state-view)>.screen__footer{
-      background:color-mix(in srgb,var(--state-editorial-canvas) 92%,transparent)
+      background:var(--state-editorial-canvas)
     }
     .state-view__visual:has(.krane-state-art){
       width:min(70vw,365px)!important;
@@ -1293,7 +1295,7 @@
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="avatar" style="width:32px;height:32px">N</span><div class="grow"><div class="ttl">Dr. Narin</div><div class="hint">in room · licence 12345</div></div></div>
-    <div class="screen__body chat-body" style="background:var(--color-bg);position:relative">
+    <div class="screen__body chat-body" style="position:relative">
       <!-- F13: chat and the call are one session; this bar appears while a call runs in the background -->
       <button class="callbar" data-callbar data-go="video" hidden><span class="cb-dot"></span><span class="grow" style="text-align:left">Call in progress · chat stays open</span><strong>Return to call</strong></button>
       <div class="bubble bubble--in bubble--lbl" data-from="Dr. Narin">Hi, I've reviewed your intake. A couple of quick questions before I recommend a plan.</div>
@@ -1405,7 +1407,7 @@
       </div>
       <div class="state-view__timer" data-rx-timer>05:00</div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-rx-to-checkout>ตรวจสอบและชำระเงิน</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-rx-to-checkout disabled aria-disabled="true">ตรวจสอบและชำระเงิน</button></div>
   </section>
 
 
@@ -3134,12 +3136,21 @@
      does — answer the questionnaire, see the doctor, pay. */
   const careJourneyLabels = ['แบบสอบถาม','ปรึกษาแพทย์','ชำระเงิน'];
   const careJourneyShort  = ['แบบสอบถาม','ปรึกษาแพทย์','ชำระเงิน'];
-  const careJourneyScreens = {
-    concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,
-    signup:1,login:1,'social-confirm':1,identity:1,otp:1,'consent-terms':1,'patient-info':1,'insurance-result':1,
-    matching:2,choosedoc:2,noslots:2,consultpay:2,'consultpay-gw':2,'consultpay-fail':2,'intake-general':2,waitroom:2,consult:2,video:2,'rx-writing':2,
-    address:3,'delivery-quote':3,'pharmacy-search':3,pharmacyaccepted:3,pharmacypending:3,payment:3,'payment-gw':3,'payment-success':3,payfail:3,pharmacyissue:3,tracking:3
+  /* Declared in ROUTE ORDER, not in any convenient grouping: the progress fill
+     is the screen's index in its stage, so a key listed out of sequence makes
+     the bar run backwards. Screens that are detours off the main route (login,
+     social-confirm, insurance-result, the pharmacy fallbacks) sit where the
+     patient reaches them so a forward step is never a smaller index. */
+  const careJourneyStageOrder = {
+    1: ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern',
+        'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
+    2: ['intake-general','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail',
+        'waitroom','consult','video','rx-writing'],
+    3: ['address','delivery-quote','pharmacy-search','pharmacyaccepted','pharmacypending','pharmacyissue',
+        'payment','payment-gw','payfail','payment-success','tracking']
   };
+  const careJourneyScreens = Object.entries(careJourneyStageOrder)
+    .reduce((acc,[stage,ids]) => { ids.forEach(id => { acc[id]=Number(stage); }); return acc; },{});
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
     const nextStep=current<total ? careJourneyShort[current] : '';
@@ -4358,9 +4369,8 @@
      only, so any screen outside it fell to a 0% branch — which meant stage 2
      and stage 3 segments never filled at all, however far through them you
      were. Progress is now measured within whichever stage the screen belongs
-     to, using the flow order already declared in careJourneyScreens. */
-  const careJourneyStageScreens = Object.entries(careJourneyScreens)
-    .reduce((acc,[screenId,stage]) => { (acc[stage] = acc[stage] || []).push(screenId); return acc; },{});
+     to, using the route order declared in careJourneyStageOrder. */
+  const careJourneyStageScreens = careJourneyStageOrder;
 
   function updateIntakeProgress(id){
     const stage = careJourneyScreens[id];
@@ -5795,6 +5805,8 @@
     clearInterval(rxCountdownTimer);
     if(id==='rx-writing'){
       const rxScr=document.getElementById('rx-writing');
+      const rxCta=rxScr?.querySelector('[data-rx-to-checkout]');
+      if(rxCta){ rxCta.disabled=true; rxCta.setAttribute('aria-disabled','true'); }
       const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
       let rxSecondsRemaining=5*60;
       paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
@@ -5808,6 +5820,7 @@
         if(!rxScr?.classList.contains('active')) return;
         clearInterval(rxCountdownTimer);
         if(document.getElementById('rx-writing')?.classList.contains('active')){
+          if(rxCta){ rxCta.disabled=false; rxCta.removeAttribute('aria-disabled'); }
           refreshMedicationCheckout();
           replaceCurrent('payment');
         }
