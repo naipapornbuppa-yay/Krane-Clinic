@@ -238,7 +238,8 @@
     menuOpen?.setAttribute("aria-expanded", "true");
     if (typeof mobileMenu.showModal === "function") mobileMenu.showModal();
     else mobileMenu.setAttribute("open", "");
-    requestAnimationFrame(() => mobileMenu.querySelector("nav summary, nav > a")?.focus());
+    // Focus the panel, not the first link — see krane-b2c-landing.js.
+    requestAnimationFrame(() => mobileMenu.querySelector(".mobile-menu__head")?.focus());
   }
 
   function closeMobileMenu({ restoreFocus = false } = {}) {

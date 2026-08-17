@@ -197,7 +197,10 @@
     menuOpen?.setAttribute("aria-expanded", "true");
     if (typeof menu.showModal === "function") menu.showModal();
     else menu.setAttribute("open", "");
-    requestAnimationFrame(() => menu.querySelector("nav summary, nav > a")?.focus());
+    // Focus the panel, not the first link: focusing a link painted a focus ring
+    // on it every time the drawer opened, which read as a stuck selection.
+    // Screen readers still enter the dialog, and Tab goes to the links from here.
+    requestAnimationFrame(() => menu.querySelector(".mobile-menu__head")?.focus());
   }
 
   function closeMenu({ restoreFocus = false } = {}) {

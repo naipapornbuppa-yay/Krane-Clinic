@@ -184,18 +184,31 @@ button{color:inherit}
 .header-access{border:1px solid var(--landing-line);background:#fff;color:var(--landing-navy)}
 .menu-toggle{display:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--landing-canvas);align-items:center;justify-content:center;cursor:pointer}
 .menu-toggle svg{width:22px;height:22px}
+/* Right-edge drawer, not a floating card: full height, flush to the right, so
+   it slides in from off-screen rather than fading in over the middle. */
 .mobile-menu{
-  width:min(420px,calc(100% - 24px));
-  max-height:calc(100dvh - 24px);
-  margin:auto 12px auto auto;
+  width:min(380px,86%);
+  max-width:none;
+  height:100dvh;
+  max-height:100dvh;
+  margin:0 0 0 auto;
   padding:20px;
+  display:flex;
+  flex-direction:column;
   overflow:auto;
+  overscroll-behavior:contain;
   border:0;
-  border-radius:32px;
+  border-radius:0;
   background:#fff;
   color:var(--landing-ink);
-  box-shadow:0 28px 90px rgba(18,24,36,.24);
+  box-shadow:-18px 0 60px rgba(18,24,36,.22);
 }
+/* The dialog autofocuses its first focusable child on open, which painted a
+   focus ring around the first menu link on every tap. Focus the panel itself
+   instead, and keep visible rings for keyboard users only. */
+.mobile-menu__head[tabindex="-1"]:focus{outline:none}
+.mobile-menu :focus:not(:focus-visible){outline:none}
+.mobile-menu :focus-visible{outline:2px solid var(--landing-blue);outline-offset:2px;border-radius:6px}
 .mobile-menu[open]{animation:menu-enter .32s var(--ease) both}
 .mobile-menu[open]::backdrop{animation:backdrop-enter .24s ease both}
 .mobile-menu::backdrop{background:rgba(17,27,48,.42);backdrop-filter:blur(6px)}
@@ -219,7 +232,7 @@ button{color:inherit}
 .mobile-menu__actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:16px}
 .mobile-menu__actions .button{padding:0 14px}
 .partner-access-link{grid-column:1/-1;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--landing-blue);font-size:14px;font-weight:600}
-@keyframes menu-enter{from{opacity:0;transform:translateX(28px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes menu-enter{from{transform:translateX(100%)}to{transform:translateX(0)}}
 @keyframes backdrop-enter{from{opacity:0}to{opacity:1}}
 
 /* Shared section geometry */
