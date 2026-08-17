@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260817-nav-surface-v1";
+    const release = "20260817-chat-room-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260817-nav-surface-v1">
-<link rel="stylesheet" href="components.css?v=20260817-nav-surface-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260817-chat-room-v1">
+<link rel="stylesheet" href="components.css?v=20260817-chat-room-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -1294,10 +1294,10 @@
 
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="avatar" style="width:32px;height:32px">N</span><div class="grow"><div class="ttl">Dr. Narin</div><div class="hint">in room · licence 12345</div></div></div>
+    <div class="screen__top screen__top--chat"><button class="back" data-back>‹</button><span class="ttl">ห้องปรึกษา</span><button class="live-pill" type="button" data-live-pill data-go="video" hidden><i class="live-pill__dot" aria-hidden="true"></i><span data-live-pill-text>อยู่ในสาย</span></button></div>
     <div class="screen__body chat-body" style="position:relative">
-      <!-- F13: chat and the call are one session; this bar appears while a call runs in the background -->
-      <button class="callbar" data-callbar data-go="video" hidden><span class="cb-dot"></span><span class="grow" style="text-align:left">Call in progress · chat stays open</span><strong>Return to call</strong></button>
+      <!-- F13: chat and the call are one session. The live state now shows as a
+           blinking pill beside the screen title, not as a bar inside the thread. -->
       <div class="bubble bubble--in bubble--lbl" data-from="Dr. Narin">Hi, I've reviewed your intake. A couple of quick questions before I recommend a plan.</div>
       <div class="bubble bubble--out bubble--lbl" data-from="You">Sure, go ahead.</div>
       <div class="bubble bubble--in">Have you tried any hair loss treatment before?</div>
@@ -5669,8 +5669,8 @@
       scheduleConsultationSummary();
     }
     if(id === 'consult'){
-      const cb = document.querySelector('#consult [data-callbar]');
-      if(cb){ cb.hidden = !callActive; cb.dataset.go = lastCall; }
+      const pill = document.querySelector('#consult [data-live-pill]');
+      if(pill){ pill.hidden = !callActive; pill.dataset.go = lastCall; }
       syncConsultationSummaryUnread(false);
       const plan=document.querySelector('#consult [data-plan-card]');
       if(plan?.dataset.shown){
