@@ -415,6 +415,8 @@
   const revealGroups = [
     [".treatments .service-card", 55, "scale"],
     [".compliance__group:first-child > div", 55, "scale"],
+    // Trust cards arrive one at a time, so each credential is read on its own.
+    [".trust-card", 150, ""],
     [".steps > li", 75, ""],
     [".protocol__heading > *", 90, ""],
     [".product-stage, .protocol .carousel-footer", 90, "scale"],

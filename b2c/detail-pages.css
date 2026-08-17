@@ -2,9 +2,13 @@
 
 *{box-sizing:border-box}
 html{background:var(--color-bg);color:var(--color-ink);font-family:var(--font-base);scroll-behavior:smooth}
-body{margin:0;padding:24px;background:var(--color-bg)}
+/* The page gutter lives on the content, never on <body>. A padded body inset the
+   sticky header too, so it floated as a detached white bar instead of reading as
+   the same full-bleed nav the landing page uses. */
+:root{--page-gutter:clamp(20px,5vw,48px)}
+body{margin:0;padding:0;background:var(--color-bg)}
 a{color:inherit;text-decoration:none}
-.detail-page{width:min(1180px,100%);margin-inline:auto}
+.detail-page{width:min(1180px,100%);margin-inline:auto;padding:24px var(--page-gutter) 40px}
 .detail-nav{
   position:sticky;top:0;z-index:50;
   min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px;
@@ -41,7 +45,7 @@ a{color:inherit;text-decoration:none}
 .detail-facts strong{display:block;font-size:16px;font-weight:500;line-height:1.55}
 .detail-cta{
   width:fit-content;min-height:52px;display:inline-flex;align-items:center;justify-content:center;gap:24px;
-  margin-top:32px;padding:0 22px;border-radius:999px;background:#111b30;color:#fff;font-size:15px;font-weight:600
+  margin-top:32px;padding:0 22px;border-radius:999px;background:var(--color-ink);color:#fff;font-size:15px;font-weight:600
 }
 .detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
 .detail-card{min-height:220px;padding:28px;border:1px solid var(--color-line);border-radius:28px;background:var(--color-surface)}
@@ -104,53 +108,70 @@ a{color:inherit;text-decoration:none}
 .doctors-closing__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px}
 .doctors-closing__actions .detail-cta{margin:0}
 .detail-cta--ghost{border:1px solid var(--color-line-strong);background:transparent;color:var(--color-ink)}
-.doctor-directory{scroll-margin-top:24px;margin-top:16px;padding:64px 48px;border:1px solid var(--color-line);border-radius:40px;background:var(--color-surface)}
-.doctor-directory__header{max-width:720px}
-.doctor-directory__header h2{margin:12px 0 0;font-size:clamp(36px,5vw,60px);font-weight:500;line-height:1.1;letter-spacing:-.04em}
-.doctor-directory__header>p:last-child{margin:16px 0 0;color:var(--color-ink-2);font-size:17px;line-height:1.65}
-.doctor-directory__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:40px}
-.doctor-directory-card{display:grid;grid-template-columns:minmax(190px,.76fr) minmax(0,1.24fr);min-height:320px;overflow:hidden;border:1px solid var(--color-line);border-radius:30px;background:var(--color-bg-soft);transition:transform .2s ease,box-shadow .2s ease}
-.doctor-directory-card__media{display:block;min-height:320px;overflow:hidden;background:var(--color-bg-2)}
+/* No wrapper card here: a card of cards read as a second frame around the grid.
+   The doctor cards are the section. */
+.doctor-directory{scroll-margin-top:24px;margin-top:32px}
+.doctor-directory__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.doctor-directory-card{display:grid;grid-template-columns:minmax(150px,.7fr) minmax(0,1.3fr);overflow:hidden;border:0;border-radius:26px;background:var(--color-surface);box-shadow:var(--shadow-card);transition:transform .2s ease,box-shadow .2s ease}
+.doctor-directory-card__media{display:block;overflow:hidden;background:var(--color-bg-2)}
 .doctor-directory-card__media>img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 10%}
-.doctor-directory-card__media--identity{display:grid;place-content:center;gap:10px;text-align:center;background:linear-gradient(145deg,#dce7f4,#eef2f5)}
-.doctor-directory-card__media--identity b{font-size:56px;font-weight:500;letter-spacing:-.06em}
-.doctor-directory-card__media--identity small{color:var(--color-ink-2);font-size:13px}
-.doctor-directory-card__body{display:flex;flex-direction:column;padding:28px}
-.doctor-directory-card__body>strong{font-size:22px;line-height:1.35}
-.doctor-directory-card__body>small{margin-top:8px;color:var(--color-accent);font-size:14px;font-weight:600;line-height:1.5}
-.doctor-directory-card__body>p{margin:18px 0 0;color:var(--color-ink-2);font-size:15px;line-height:1.65}
-.doctor-directory-card__body>em{margin-top:auto;padding-top:20px;font-size:14px;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:4px}
+.doctor-directory-card__media--identity{display:grid;place-content:center;gap:8px;text-align:center;background:linear-gradient(145deg,var(--color-accent-soft),var(--color-accent-soft-2))}
+.doctor-directory-card__media--identity b{font-size:40px;font-weight:500;letter-spacing:-.06em}
+.doctor-directory-card__media--identity small{color:var(--color-ink-2);font-size:12px}
+.doctor-directory-card__body{display:flex;flex-direction:column;padding:22px}
+.doctor-directory-card__body>strong{font-size:19px;line-height:1.35}
+.doctor-directory-card__body>small{margin-top:6px;color:var(--color-accent);font-size:13px;font-weight:600;line-height:1.5}
+.doctor-directory-card__body>p{margin:12px 0 0;color:var(--color-ink-2);font-size:14px;line-height:1.6}
+.doctor-directory-card__body>em{margin-top:auto;padding-top:16px;font-size:13px;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:4px}
 .doctors-closing{margin-top:16px;padding:72px 48px;border:1px solid var(--color-line);border-radius:40px;background:var(--color-bg-soft);text-align:center}
 .doctors-closing h2{max-width:780px;margin:14px auto 0;font-size:clamp(36px,5vw,62px);font-weight:500;line-height:1.12;letter-spacing:-.04em}
 .doctors-closing .detail-cta{margin-inline:auto}
 body.doctor-dialog-open{overflow:hidden}
 .doctor-profile-dialog{
   width:min(720px,49vw);max-width:none;height:100vh;height:100dvh;max-height:none;margin:0 0 0 auto;padding:0;
-  overflow:auto;border:0;border-radius:0;background:#f6f2ec;color:var(--color-ink);box-shadow:-28px 0 80px rgba(11,20,35,.2);
+  overflow:auto;border:0;border-radius:0;background:var(--color-surface);color:var(--color-ink);box-shadow:-28px 0 80px rgba(11,20,35,.2);
   animation:doctor-dialog-enter .34s cubic-bezier(.2,.8,.2,1) both
 }
-.doctor-profile-dialog::backdrop{background:rgba(10,17,29,.56);backdrop-filter:blur(1px);animation:doctor-backdrop-enter .24s ease both}
-.doctor-profile-dialog__panel{min-height:100%;background:#f6f2ec}
+.doctor-profile-dialog::backdrop{background:rgba(21,26,40,.56);backdrop-filter:blur(1px);animation:doctor-backdrop-enter .24s ease both}
+.doctor-profile-dialog__panel{min-height:100%;background:var(--color-surface)}
 .doctor-profile-dialog__close{position:fixed;top:24px;right:24px;z-index:4;display:grid;width:52px;height:52px;place-items:center;padding:0;border:1px solid rgba(17,35,60,.18);border-radius:50%;background:rgba(255,255,255,.92);color:var(--color-ink);cursor:pointer;backdrop-filter:blur(12px)}
 .doctor-profile-dialog__close svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
-.doctor-profile-dialog__media{height:min(50vh,500px);overflow:hidden;background:#e9e5df}
+.doctor-profile-dialog__media{height:min(50vh,500px);overflow:hidden;background:var(--color-bg-2)}
 .doctor-profile-dialog__media>img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 12%}
-.doctor-profile-dialog__media--identity{display:grid;place-items:center;background:linear-gradient(145deg,#dce7f4,#eef2f5)}
+.doctor-profile-dialog__media--identity{display:grid;place-items:center;background:linear-gradient(145deg,var(--color-accent-soft),var(--color-accent-soft-2))}
 .doctor-profile-dialog__identity{display:grid;gap:16px;text-align:center}
 .doctor-profile-dialog__identity b{font-size:88px;font-weight:500;letter-spacing:-.07em}
 .doctor-profile-dialog__identity small{max-width:28ch;color:var(--color-ink-2);font-size:15px;line-height:1.5}
 .doctor-profile-dialog__content{padding:clamp(32px,4vw,58px)}
 .doctor-profile-dialog__content h2{margin:10px 0 0;font-size:clamp(34px,3.5vw,50px);font-weight:500;line-height:1.18;letter-spacing:-.035em}
-.doctor-profile-dialog__role{margin:8px 0 0;color:#2f394b;font-size:17px;font-weight:600;line-height:1.5}
-.doctor-profile-dialog__bio{max-width:54ch;margin:28px 0 0;color:#344054;font-size:17px;line-height:1.75}
+.doctor-profile-dialog__role{margin:8px 0 0;color:var(--color-ink-2);font-size:17px;font-weight:600;line-height:1.5}
+.doctor-profile-dialog__bio{max-width:54ch;margin:28px 0 0;color:var(--color-ink-2);font-size:17px;line-height:1.75}
 .doctor-profile-dialog__facts{display:grid;gap:0;margin:34px 0 0}
 .doctor-profile-dialog__facts>div{padding:20px 0;border-top:1px solid rgba(17,35,60,.14)}
-.doctor-profile-dialog__facts dt{color:#667186;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.doctor-profile-dialog__facts dd{margin:7px 0 0;color:#263147;font-size:15px;line-height:1.65}
-.doctor-profile-dialog__cta{display:inline-flex;min-height:54px;align-items:center;gap:28px;margin-top:18px;padding:0 22px;border-radius:999px;background:#111b30;color:#fff;font-weight:600}
+.doctor-profile-dialog__facts dt{color:var(--color-ink-3,var(--color-ink-2));font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.doctor-profile-dialog__facts dd{margin:7px 0 0;color:var(--color-ink);font-size:15px;line-height:1.65}
+.doctor-profile-dialog__cta{display:inline-flex;min-height:54px;align-items:center;gap:28px;margin-top:18px;padding:0 22px;border-radius:999px;background:var(--color-ink);color:#fff;font-weight:600}
 .doctor-profile-dialog__cta svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @keyframes doctor-dialog-enter{from{transform:translateX(100%)}to{transform:translateX(0)}}
 @keyframes doctor-backdrop-enter{from{opacity:0}to{opacity:1}}
+
+/* Swipe right to dismiss, same gesture as the nav drawer. While a drag is live
+   the enter animation has to be off, otherwise it keeps overwriting the
+   transform the pointer is setting. */
+.doctor-profile-dialog__grab{
+  position:absolute;top:12px;left:50%;z-index:5;width:44px;height:4px;
+  border-radius:999px;background:var(--color-line-strong);transform:translateX(-50%);
+  pointer-events:none;opacity:0
+}
+.doctor-profile-dialog.is-dragging{animation:none;transition:none;touch-action:pan-y}
+.doctor-profile-dialog.is-settling{animation:none;transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.doctor-profile-dialog.is-dismissing{animation:none;transition:transform .22s ease-in;transform:translateX(100%)}
+@media(max-width:520px){
+  .doctor-profile-dialog__grab{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .doctor-profile-dialog.is-settling,.doctor-profile-dialog.is-dismissing{transition:none}
+}
 :where(a,button):focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
 @media(hover:hover){
   .detail-back:hover{background:var(--color-bg-soft)}
@@ -158,7 +179,6 @@ body.doctor-dialog-open{overflow:hidden}
   .doctor-directory-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(17,27,48,.08)}
 }
 @media(max-width:860px){
-  body{padding:16px}
   .detail-hero{grid-template-columns:1fr;gap:24px;padding:0}
   .detail-media{min-height:360px;max-height:520px}
   .detail-grid{grid-template-columns:1fr}
@@ -168,12 +188,10 @@ body.doctor-dialog-open{overflow:hidden}
   .doctor-work__story,.doctor-work__story--reverse{grid-template-columns:1fr;gap:24px}
   .doctor-work__story--reverse .doctor-work__media,.doctor-work__story--reverse .doctor-work__copy{grid-column:auto;grid-row:auto}
   .doctor-work__copy{max-width:none}
-  .doctor-directory{padding:48px 24px}
   .doctor-directory__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .doctor-profile-dialog{width:min(760px,72vw)}
 }
 @media(max-width:520px){
-  body{padding:16px}
   .detail-nav{min-height:64px;padding:10px 12px}
   .detail-logo{width:112px}
   .detail-back{width:44px;min-width:44px;padding:0}
@@ -198,12 +216,19 @@ body.doctor-dialog-open{overflow:hidden}
   .doctor-work__copy h3{margin-top:18px;font-size:30px}
   .doctor-work__copy p{margin-top:14px;font-size:16px}
   .doctors-intro h1{font-size:38px}
-  .doctor-directory{margin-top:12px;padding:36px 16px;border-radius:28px}
-  .doctor-directory__grid{gap:12px;margin-top:28px}
-  .doctor-directory-card{grid-template-columns:1fr;min-height:0;border-radius:24px}
-  .doctor-directory-card__media{min-height:0;height:76vw;max-height:320px}
-  .doctor-directory-card__body{min-height:250px;padding:22px}
-  .doctor-directory-card__body>strong{font-size:20px}
+  .doctor-directory{margin-top:20px}
+  .doctor-directory__grid{gap:12px}
+  /* Two cards per row on a phone: size the portrait off the card, not the
+     viewport, so a half-width card does not get a full-width-tall photo. */
+  .doctor-directory-card{grid-template-columns:1fr;min-height:0;border-radius:20px}
+  .doctor-directory-card__media{min-height:0;height:auto;max-height:none;aspect-ratio:1/1}
+  .doctor-directory-card__media--identity b{font-size:32px}
+  .doctor-directory-card__media--identity small{display:none}
+  .doctor-directory-card__body{min-height:0;padding:12px 13px 14px}
+  .doctor-directory-card__body>strong{font-size:15px;line-height:1.3}
+  .doctor-directory-card__body>small{margin-top:4px;font-size:11.5px;line-height:1.4}
+  .doctor-directory-card__body>p{display:none}
+  .doctor-directory-card__body>em{padding-top:10px;font-size:12px}
   .doctors-closing{margin-top:12px;padding:48px 20px;border-radius:28px}
   .doctors-closing h2{font-size:36px}
   .doctor-profile-dialog{width:100%;height:100dvh}

@@ -22,5 +22,59 @@
   document.querySelectorAll("[data-doctor-open]").forEach((trigger)=>{trigger.addEventListener("click",(event)=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(!dialog||typeof dialog.showModal!=="function")return;event.preventDefault();openProfile(trigger);});});
   closeButton?.addEventListener("click",()=>dialog?.close());
   dialog?.addEventListener("click",(event)=>{if(event.target===dialog)dialog.close();});
-  dialog?.addEventListener("close",()=>{document.body.classList.remove("doctor-dialog-open");returnFocus?.focus();});
+  dialog?.addEventListener("close",()=>{document.body.classList.remove("doctor-dialog-open");resetDrag();returnFocus?.focus();});
+
+  /* Swipe right to dismiss. The panel scrolls vertically, so a gesture only
+     becomes a dismissal once it is clearly horizontal — otherwise a normal
+     scroll would drag the sheet sideways. */
+  let dragId=null,startX=0,startY=0,dx=0,axis="";
+  function resetDrag(){
+    dragId=null;dx=0;axis="";
+    if(!dialog) return;
+    dialog.classList.remove("is-dragging","is-settling","is-dismissing");
+    dialog.style.transform="";
+  }
+  function settle(){
+    if(!dialog) return;
+    dialog.classList.remove("is-dragging");
+    const width=dialog.getBoundingClientRect().width || 1;
+    if(dx > Math.min(120,width*0.28)){
+      dialog.classList.add("is-dismissing");
+      dialog.style.transform="";
+      const done=()=>{dialog.removeEventListener("transitionend",done);dialog.close();};
+      dialog.addEventListener("transitionend",done);
+      window.setTimeout(done,320);
+      return;
+    }
+    dialog.classList.add("is-settling");
+    dialog.style.transform="translateX(0)";
+    const clear=()=>{dialog.removeEventListener("transitionend",clear);dialog.classList.remove("is-settling");dialog.style.transform="";};
+    dialog.addEventListener("transitionend",clear);
+    window.setTimeout(clear,320);
+    dragId=null;axis="";dx=0;
+  }
+  dialog?.addEventListener("pointerdown",(event)=>{
+    if(event.pointerType==="mouse" || dragId!==null) return;
+    if(event.target.closest("a,button")) return;
+    dragId=event.pointerId;startX=event.clientX;startY=event.clientY;dx=0;axis="";
+  });
+  dialog?.addEventListener("pointermove",(event)=>{
+    if(event.pointerId!==dragId) return;
+    const moveX=event.clientX-startX, moveY=event.clientY-startY;
+    if(!axis){
+      if(Math.abs(moveX)<8 && Math.abs(moveY)<8) return;
+      axis=Math.abs(moveX)>Math.abs(moveY)*1.3 ? "x" : "y";
+      if(axis==="y"){dragId=null;return;}
+      dialog.classList.add("is-dragging");
+    }
+    dx=Math.max(0,moveX);
+    dialog.style.transform="translateX("+dx+"px)";
+  });
+  ["pointerup","pointercancel"].forEach((type)=>{
+    dialog?.addEventListener(type,(event)=>{
+      if(event.pointerId!==dragId) return;
+      if(axis!=="x"){dragId=null;axis="";return;}
+      settle();
+    });
+  });
 }());
