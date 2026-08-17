@@ -3170,8 +3170,10 @@
      (1+2), consultation fee through the doctor visit (3+4), and fulfilment
      (5) stand alone. Grouping only changes what's drawn here; every screen
      still maps to its own specific stage below. */
-  const careJourneyLabels = ['ข้อมูลเบื้องต้น','พบแพทย์','การสั่งยาและจัดส่ง'];
-  const careJourneyShort  = ['Start','Doctor','Order'];
+  /* Client (17 Aug): the three steps are named for what the patient actually
+     does — answer the questionnaire, see the doctor, pay. */
+  const careJourneyLabels = ['แบบสอบถาม','ปรึกษาแพทย์','ชำระเงิน'];
+  const careJourneyShort  = ['แบบสอบถาม','ปรึกษาแพทย์','ชำระเงิน'];
   const careJourneyScreens = {
     concern:1,conditions:1,intake1:1,intake2:1,intake3:1,intake4:1,intake5:1,'intake-concern':1,
     signup:1,login:1,'social-confirm':1,identity:1,otp:1,'consent-terms':1,'patient-info':1,'insurance-result':1,
@@ -3206,7 +3208,6 @@
     // Order on every screen: back bar (top) -> main 5-step stepper -> sub bar.
     // The stepper is always inserted right under the back/title bar.
     top.insertAdjacentHTML('afterend', careJourneyMarkup(current));
-    const journey = top.nextElementSibling;
     // The second thin bar is gone. It measured sub-steps while the stepper above
     // measured stages, and both rendered as "1 / 5" a few pixels apart. The
     // current stage's segment now fills as the sub-steps complete, so one
@@ -3218,15 +3219,10 @@
       const count = top.querySelector('.hint');
       if(count) count.remove();
     }
-    // Consultation-fee screens sit inside the "Doctor" stage, but the fee is paid
-    // before the visit starts: label the step and its next-preview for what
-    // actually happens here instead of the generic stage names used elsewhere.
-    if(id==='consultpay' || id==='consultpay-gw' || id==='consultpay-fail'){
-      const label = journey.querySelector('.care-journey__current strong');
-      const next = journey.querySelector('.care-journey__current small');
-      if(label) label.textContent='ปรึกษาแพทย์';
-      if(next) next.innerHTML='<i>ถัดไป</i> ชำระเงิน';
-    }
+    // The consultation-fee screens used to override the step name and its
+    // next-preview here, because the generic stage names ("Doctor" / "Order")
+    // did not describe them. Stage 2 is now literally ปรึกษาแพทย์ and stage 3
+    // ชำระเงิน, so the override would only restate what the stepper says.
   });
   // Photo upload on the intake photo step: real file picker, live thumbnails,
   // remove with the × button. Demo only, nothing leaves the browser.
