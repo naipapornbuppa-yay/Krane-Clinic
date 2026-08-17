@@ -3151,21 +3151,17 @@ a[data-category="hair-skin"].care-banner-grid__sub{
    mix-blend-mode:luminosity, which drops the photo's own color and repaints it
    in the card background's hue — that is what turned this one sepia. Only the
    card background color differs between these tiles now. */
-/* Client: crop past both faces. The source frames the couple from the head
-   down, so the tile scales in and anchors low, leaving the torsos and the
-   joined hands. transform-origin keeps the hover scale working from the same
-   point instead of drifting back up to the faces. */
+/* Client: no faces on either tile. Both sources are now pre-cropped to
+   face-free framing (ed-care-no-face-v1 keeps the torsos and joined hands,
+   hair-care-no-face-v1 keeps the hairline over a white tee), so these only
+   need to anchor on the subject — no transform zoom to scale past a face. */
 a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
-  object-position:66% 100%;
-  transform:scale(1.62);
-  transform-origin:66% 100%;
+  object-position:74% center;
   opacity:1;
   filter:none;
   mix-blend-mode:normal;
 }
-a[data-category="sexual-health"].care-banner-grid__sub:hover .service-tile__bg,
-a[data-category="sexual-health"].care-banner-grid__sub:focus-visible .service-tile__bg{transform:scale(1.7)}
-a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:72% center}
+a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:center 16%}
 .care-banner--weight .care-banner__shade{
   background:linear-gradient(90deg,rgba(88,42,30,.56) 0%,rgba(88,42,30,.2) 54%,transparent 78%);
 }
@@ -3188,28 +3184,14 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   background:var(--landing-navy);
   color:#fff;
 }
-/* Narrow tiles crop hard, so the desktop zoom is eased right down here: at
-   phone width 1.62x cut the ED couple in half. The hair source keeps all of its
-   subject in the right third of the frame, so anchoring near 58% showed mostly
-   empty gradient; it pulls right to sit the hair against the label. */
+/* Narrow tiles crop harder horizontally, so the ED couple is pulled further
+   right to stay in frame beside the label. */
 @media(max-width:780px){
   .care-banner--weight>img.care-banner__photo{object-position:72% center}
-  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
-    object-position:70% 92%;
-    transform:scale(1.12);
-    transform-origin:70% 92%;
-  }
-  a[data-category="sexual-health"].care-banner-grid__sub:hover .service-tile__bg,
-  a[data-category="sexual-health"].care-banner-grid__sub:focus-visible .service-tile__bg{transform:scale(1.16)}
-  a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:76% center}
+  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:80% center}
 }
 @media(max-width:520px){
-  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
-    object-position:72% 94%;
-    transform:scale(1.05);
-    transform-origin:72% 94%;
-  }
-  a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-position:80% center}
+  a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:84% center}
 }
 
 /* ---- Before/after progress, and the article row that precedes the video
