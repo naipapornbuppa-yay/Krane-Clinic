@@ -512,7 +512,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   gap:60px;
   padding:80px;
   border-radius:var(--section-radius);
-  background:#fff;
+  background:transparent;
 }
 .expert-viewport{width:calc(100% + 120px);height:547px;overflow:hidden;scroll-behavior:smooth}
 .expert-track{width:max-content;height:100%;display:flex;gap:40px}
@@ -2510,7 +2510,10 @@ body{background:var(--landing-page-bg)}
   margin-inline:var(--page-gutter);
   padding-inline:clamp(20px,4vw,56px);
   border-radius:var(--radius-2xl,32px);
-  background:var(--surface-card-quiet);
+  /* Client (17 Aug): no tint. The inset, the radius and the drift are what make
+     a section read as its own piece; the fill only muddied the page. A section
+     that needs one opts in. */
+  background:transparent;
   will-change:transform;
 }
 .section-block + .section-block{margin-top:14px}
@@ -2721,7 +2724,7 @@ body.expert-open{overflow:hidden}
   align-items:start;
   padding:clamp(64px,7vw,102px) 0 clamp(58px,7vw,94px) clamp(30px,4vw,64px);
   border-radius:0;
-  background:#fff;
+  background:transparent;
 }
 .experts__intro{padding-right:8px}
 .experts__seal{width:42px;height:42px;margin-bottom:48px;color:var(--landing-navy)}
@@ -3031,7 +3034,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   padding:16px;
   border:0;
   border-radius:22px;
-  background:var(--landing-surface-tint);
+  background:var(--color-accent-soft);
   color:var(--landing-ink);
   scroll-snap-align:start;
   box-shadow:0 2px 5px rgba(22,42,64,.06);
@@ -3040,7 +3043,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
 /* One shared surface across the row: the per-service tints are gone on the
    client's call, so the cards read as one set rather than four colours. */
 .service-card--general,.service-card--skin,
-.service-card--hormone,.service-card--mind{background:var(--landing-surface-tint)}
+.service-card--hormone,.service-card--mind{background:var(--color-accent-soft)}
 .service-card__title{
   position:relative;
   z-index:2;
@@ -3377,42 +3380,44 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   .experts .expert-card__bio-link{margin-top:10px;font-size:12px}
 }
 
-/* ---- Section visuals -----------------------------------------------------
-   Client (17 Aug): the run from "วางใจในทุกขั้นตอน" to the doctor list was four
-   text stacks in a row. Each of those blocks now leads with, or carries, an
-   image so the eye has somewhere to rest between paragraphs. Photography for
-   the two trust blocks; the app's own ink illustration set for the three-step
-   flow, because a monochrome line drawing sits beside a photo without
-   competing with it. */
-.trust-section__visual{
-  margin:0 0 clamp(28px,4vw,44px);
-  overflow:hidden;
-  border-radius:var(--radius-xl,26px);
-  background:var(--surface-sunken);
-}
-.trust-section__visual img{width:100%;height:clamp(180px,30vw,320px);display:block;object-fit:cover;object-position:center 38%}
+/* ---- Step illustrations --------------------------------------------------
+   Client (17 Aug): the two section photos are out. The three-step flow keeps
+   its illustrations from the app's own ink set, now larger, with the numeral
+   dropped to a small marker that shares the heading's line instead of floating
+   a row above it.
 
-.privacy-section__visual{
-  margin:clamp(24px,3vw,34px) 0 0;
-  overflow:hidden;
-  border-radius:var(--radius-xl,26px);
-  background:var(--surface-sunken);
+   Layout: art spans the full width on row 1; the numeral and the copy share
+   row 2, so the numeral lines up with the title. The timeline connector is
+   drawn from the numeral downward (and clipped by the item) because the art
+   above it has no fixed height to offset against. */
+.steps li{grid-template-columns:26px minmax(0,1fr);gap:14px;overflow:hidden}
+.steps li::before{display:none}
+.steps li>.step-art{grid-column:1 / -1;grid-row:1}
+.steps li>.step-number{grid-column:1;grid-row:2}
+.steps li>div{grid-column:2;grid-row:2}
+.step-number{width:26px;height:26px;font-size:13px;align-self:start;margin-top:2px}
+.steps li:not(:last-child) .step-number::after{
+  content:"";position:absolute;top:calc(100% + 8px);left:50%;
+  width:1px;height:1000px;background:var(--landing-navy);transform:translateX(-50%);
 }
-.privacy-section__visual img{width:100%;height:clamp(170px,26vw,260px);display:block;object-fit:cover;object-position:center 42%}
-
-/* The step is a 2-col grid (numeral | content). Both the art and the copy
-   belong in the content column, or the copy wraps back under the numeral. */
-.steps li>.step-art,.steps li>div{grid-column:2}
-.step-art{display:block;margin:0 0 4px}
-.step-art img{width:100%;max-width:210px;height:auto;display:block;opacity:.9}
+.step-art{display:block;margin:0 0 16px}
+.step-art img{width:100%;max-width:320px;height:auto;display:block;opacity:.9}
 
 @media(max-width:700px){
-  .trust-section__visual{margin-bottom:22px;border-radius:20px}
-  .trust-section__visual img{height:168px}
-  .privacy-section__visual{margin-top:20px;border-radius:20px}
-  .privacy-section__visual img{height:160px}
-  /* The steps stack on a phone, so the art sits beside the copy instead of
-     above it — otherwise each step becomes another full-width block to scroll. */
-  .step-art{margin:0}
-  .step-art img{max-width:88px}
+  .steps li{gap:12px}
+  .step-art{margin-bottom:12px}
+  .step-art img{max-width:210px}
 }
+
+
+/* ---- Reviews -------------------------------------------------------------
+   Client (17 Aug): no frame, no fill — the portraits are the section. The
+   collage also drifts on its own rather than waiting to be swiped; the track
+   is duplicated so the loop has no visible seam, and it pauses on hover and
+   for anyone who asked for reduced motion. */
+.reviews{background:transparent;border:0;box-shadow:none}
+.review-collage::before,.review-collage::after{display:none}
+.review-collage{overflow:hidden}
+/* The columns are display:contents, so there is no track element to translate —
+   the drift is driven by scrollLeft in the landing script instead. */
+.review-collage{overflow-x:auto;scroll-behavior:auto}

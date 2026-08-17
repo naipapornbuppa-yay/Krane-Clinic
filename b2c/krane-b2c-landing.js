@@ -437,6 +437,35 @@
     });
   });
 
+  /* Reviews drift on their own instead of waiting to be swiped. Driven by
+     scrollLeft because the columns are display:contents and there is no track
+     element to translate. Pauses while the pointer is down or hovering, and
+     never starts for reduced motion. */
+  (function autoScrollReviews() {
+    const collage = document.querySelector(".review-collage");
+    if (!collage || reducedMotionQuery.matches) return;
+    let paused = false;
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    ["pointerenter", "pointerdown", "focusin"].forEach((e) => collage.addEventListener(e, pause));
+    ["pointerleave", "pointerup", "focusout"].forEach((e) => collage.addEventListener(e, resume));
+
+    let last = 0;
+    const SPEED = 22; // px per second
+    function step(now) {
+      const dt = last ? (now - last) / 1000 : 0;
+      last = now;
+      const max = collage.scrollWidth - collage.clientWidth;
+      if (!paused && max > 4) {
+        let next = collage.scrollLeft + SPEED * dt;
+        if (next >= max - 0.5) next = 0;
+        collage.scrollLeft = next;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  })();
+
   document.body.classList.add("motion-enabled");
   requestAnimationFrame(() => document.body.classList.add("motion-loaded"));
 
