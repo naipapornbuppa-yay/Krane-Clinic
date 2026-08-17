@@ -50,14 +50,14 @@
      itself stays periwinkle. White is reserved for cards that must lift off the
      page; fields and outline buttons no longer carry a white fill (see
      --color-field below), so they read as recessed rather than as more cards. */
-  --theme-canvas: #F2F3F5;
-  --theme-canvas-inset: #E8EAEE;
-  --theme-canvas-clinical: #F0F1F4;
-  --theme-canvas-clinical-inset: #E4E6EB;
+  --theme-canvas: #F6F7F9;
+  --theme-canvas-inset: #EDEFF3;
+  --theme-canvas-clinical: #F4F5F8;
+  --theme-canvas-clinical-inset: #E9EBF0;
   --theme-surface: #FFFFFF;
   /* Fields and outline buttons: a tint of the canvas, never white. */
-  --theme-field: #E9EBEF;
-  --theme-field-hover: #E2E5EA;
+  --theme-field: #ECEEF2;
+  --theme-field-hover: #E4E7ED;
   --theme-ink: #1A1E28;
   --theme-ink-muted: #4B5263;
   --theme-ink-subtle: #5E6678;
@@ -221,6 +221,45 @@
   --color-field-hover: var(--theme-field-hover);
   --color-bg: var(--theme-canvas);
   --color-bg-2: var(--theme-canvas-inset);
+
+  /* ---- Semantic surfaces -------------------------------------------------
+     Pick a surface by what the box IS, not by how dark you want it. The three
+     jobs need three different amounts of contrast against the page, and mixing
+     them is what made the trust cards read as heavy grey slabs:
+
+       --surface-page        the page itself.
+       --surface-section     a band that divides the page into chapters. Purely
+                             structural, nothing in it is pressable, so it sits
+                             a hair off the page — enough to see the seam, not
+                             enough to look like an object.
+       --surface-card-quiet  a box whose only job is to divide space. It sits
+                             ON the page, so it can only be seen by being
+                             slightly darker than it — a white card on a
+                             near-white page has no edge at all. Keep it light:
+                             the seam is the point, weight is not.
+       --surface-card        content grouped into a box that lifts off the page.
+                             White, flat. Use inside a section band, where white
+                             actually reads (stat blocks, spec rows).
+       --surface-card-raised same white, plus the card shadow. Use when the box
+                             is pressable — a tile, a link card, a menu row —
+                             so a tap target never looks identical to a static
+                             grouping.
+       --surface-sunken      a well INSIDE a card or page: fields, outline
+                             buttons, thumbnails, product plates. Recessed, so
+                             it must be darker than whatever contains it.
+
+     Interactive surfaces also carry -hover / -active so a press has somewhere
+     to go without inventing a colour at the call site. */
+  --surface-page: var(--theme-canvas);
+  --surface-section: #F1F2F6;
+  --surface-card-quiet: #F1F2F6;
+  --surface-card: var(--theme-surface);
+  --surface-card-hover: #FAFBFC;
+  --surface-card-raised: var(--theme-surface);
+  --surface-sunken: var(--theme-canvas-inset);
+  --surface-sunken-hover: #E5E8EE;
+  --surface-sunken-active: #DDE1E9;
+  --shadow-card-raised: 0 1px 2px rgba(18,24,36,.05), 0 6px 16px rgba(18,24,36,.05);
   --color-bg-soft: rgba(242,243,245,.72);
   --color-canvas-warm: var(--theme-canvas);
   --color-canvas-warm-deep: var(--theme-canvas-inset);

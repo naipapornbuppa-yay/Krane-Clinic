@@ -61,8 +61,8 @@ img{max-width:100%}
 .btn--primary:hover{background:var(--btn-primary-bg-hover);box-shadow:var(--shadow-md)}
 .btn:disabled,.btn.is-disabled,.btn[aria-disabled="true"]{background:var(--color-line-strong);border-color:transparent;color:var(--color-ink-3);box-shadow:none;cursor:not-allowed;transform:none}
 .btn.is-disabled:hover,.btn[aria-disabled="true"]:hover{background:var(--color-line-strong);box-shadow:none;transform:none}
-.btn--secondary{background:var(--color-field);color:var(--color-ink);border-color:transparent}
-.btn--secondary:hover{background:var(--color-field-hover)}
+.btn--secondary{background:var(--surface-sunken);color:var(--color-ink);border-color:transparent}
+.btn--secondary:hover{background:var(--surface-sunken-hover)}
 .btn--ghost{background:transparent;color:var(--color-ink-2);width:auto;padding:0 var(--sp-3)}
 .btn--danger{background:transparent;color:var(--color-danger);border-color:color-mix(in srgb,var(--color-danger) 40%,transparent)}
 .btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-field))}
@@ -95,7 +95,7 @@ img{max-width:100%}
 .input,.select,.textarea{
   width:100%;min-width:0;max-width:100%;height:var(--control-h);padding:0 var(--sp-4);
   border:1px solid transparent;border-radius:var(--control-radius);
-  background:var(--color-field);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
+  background:var(--surface-sunken);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
@@ -582,7 +582,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Client (17 Aug): the page is the darker tone and the card is the lighter one
    sitting on it — the reverse of before, where a grey card sat on a white
    screen. No outline; separation comes from the tone step plus a faint lift. */
-.card{background:var(--color-surface);border:0;border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-card)}
+.card{background:var(--surface-card);border:0;border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:none}
 .card--flat{box-shadow:none}
 .card--filled{background:var(--color-bg-soft);border-color:transparent}
 .card--pad-sm{padding:var(--sp-4)}
@@ -592,14 +592,16 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   display:flex;align-items:center;gap:var(--sp-4);width:100%;text-align:left;cursor:pointer;
   /* Options are card-like, so they take the lighter surface like cards do —
      the old translucent near-white disappeared against the darker page. */
-  background:var(--color-surface);border:1px solid transparent;border-radius:var(--radius-md);
-  padding:var(--sp-4);box-shadow:var(--shadow-card);min-height:68px;font:inherit;color:var(--color-ink);
+  background:var(--surface-card-raised);border:1px solid transparent;border-radius:var(--radius-md);
+  padding:var(--sp-4);box-shadow:var(--shadow-card-raised);min-height:68px;font:inherit;color:var(--color-ink);
   transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
 /* inline option chips (e.g. time slots) opt out of the uniform list height */
 .option[style*="width:auto"]{min-height:0}
-.option:hover{border-color:transparent;background:var(--color-bg-2);transform:translateY(-1px);box-shadow:none}
-.option:active{transform:scale(.985)}
+@media(hover:hover){
+  .option:hover{border-color:transparent;background:var(--surface-card-hover);transform:translateY(-1px);box-shadow:var(--shadow-card-raised)}
+}
+.option:active{background:var(--surface-sunken-active);transform:scale(.985)}
 /* selected: sleek single hairline in the brand colour + a faint tint (no double ring, no bulk) */
 .option[aria-selected="true"]{border-color:transparent;background:var(--color-accent-soft)}
 /* focus: clean brand ring (replaces the browser's default orange outline) */
@@ -859,7 +861,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* doctor = white bubble, bordered, left */
 .bubble--in{background:var(--color-surface);color:var(--color-ink);border:0;border-bottom-left-radius:var(--radius-xs);align-self:flex-start}
 /* you = navy bubble, right */
-.bubble--out{background:var(--color-bg-2);color:var(--color-ink);border:0;border-bottom-right-radius:var(--radius-xs);align-self:flex-end}
+.bubble--out{background:var(--surface-sunken);color:var(--color-ink);border:0;border-bottom-right-radius:var(--radius-xs);align-self:flex-end}
 /* tiny sender label above the first bubble of a run */
 .bubble--lbl::before{content:attr(data-from);position:absolute;top:-16px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-3);letter-spacing:.02em}
 .bubble--in.bubble--lbl::before{left:4px}
@@ -1016,7 +1018,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   width:100%;max-width:none;min-width:0;height:100vh;height:100dvh;min-height:100vh;min-height:100dvh;max-height:100dvh;margin:0;
   /* One page tone for the whole screen, chrome included, so no band shows where
      the top bar or footer meets the body. */
-  background:var(--color-bg);border:0;border-radius:0;
+  background:var(--surface-page);border:0;border-radius:0;
   box-shadow:none;overflow:hidden;display:flex;flex-direction:column;position:relative;
   container-type:inline-size;container-name:screen;   /* enables @container layout below */
 }
@@ -1052,7 +1054,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   position:relative;width:100%;min-width:0;max-width:100%;border-bottom:0;min-height:56px;flex:none;
   /* Chrome is the page, not a band on top of it: same colour as the screen so
      no edge shows where the bar ends. */
-  background:var(--color-bg);
+  background:var(--surface-page);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
 .screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
@@ -1080,7 +1082,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    stretched to the full width of a tablet or desktop frame instead of holding a
    readable measure. Restated here with enough specificity to stick. */
 .screen__body>.state-view__copy{max-width:34ch}
-.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:0;flex:none;background:var(--color-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:0;flex:none;background:var(--surface-page);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Safari composites a -webkit-backdrop-filter element above later content no matter
    what the z-index says, so the blurred header and footer painted over any overlay
    anchored to the viewport: it swallowed the last option of the select sheet and can
@@ -2177,7 +2179,7 @@ body.lang-th *{letter-spacing:normal}
    on the screen and its answer cards alike. Client 16 Aug: cool grey, so these
    read from the same tokens as every other screen instead of a warm hardcode. */
 #intake1,#intake2,#intake3,#intake4,#intake5,#intake-concern,#intake-general{
-  --intake-cream:var(--color-bg);
+  --intake-cream:var(--surface-page);
   background:var(--intake-cream);
 }
 #intake1 .screen__top,#intake2 .screen__top,#intake3 .screen__top,#intake4 .screen__top,#intake5 .screen__top,#intake-concern .screen__top,#intake-general .screen__top,
@@ -2186,7 +2188,7 @@ body.lang-th *{letter-spacing:normal}
   background:var(--intake-cream);
 }
 #intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option,#intake-concern .option,#intake-general .option{
-  background:var(--color-bg-2);
+  background:var(--surface-card-raised);
 }
 /* The ไม่มี/มี toggle's selected state used the site-wide dark-navy
    "selected" treatment, which read as too heavy against the grey
