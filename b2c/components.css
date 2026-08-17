@@ -579,7 +579,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 }
 
 /* ---------- Card ---------- */
-.card{background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-sm)}
+/* Client (17 Aug): the page is the darker tone and the card is the lighter one
+   sitting on it — the reverse of before, where a grey card sat on a white
+   screen. No outline; separation comes from the tone step plus a faint lift. */
+.card{background:var(--color-surface);border:0;border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-card)}
 .card--flat{box-shadow:none}
 .card--filled{background:var(--color-bg-soft);border-color:transparent}
 .card--pad-sm{padding:var(--sp-4)}
@@ -587,8 +590,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* ---------- Selectable option (intake / concern / delivery) ---------- */
 .option{
   display:flex;align-items:center;gap:var(--sp-4);width:100%;text-align:left;cursor:pointer;
-  background:var(--color-bg-soft);border:1px solid transparent;border-radius:var(--radius-md);
-  padding:var(--sp-4);box-shadow:none;min-height:68px;font:inherit;color:var(--color-ink);
+  /* Options are card-like, so they take the lighter surface like cards do —
+     the old translucent near-white disappeared against the darker page. */
+  background:var(--color-surface);border:1px solid transparent;border-radius:var(--radius-md);
+  padding:var(--sp-4);box-shadow:var(--shadow-card);min-height:68px;font:inherit;color:var(--color-ink);
   transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
 /* inline option chips (e.g. time slots) opt out of the uniform list height */
@@ -1009,7 +1014,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    ============================================================ */
 .screen{
   width:100%;max-width:none;min-width:0;height:100vh;height:100dvh;min-height:100vh;min-height:100dvh;max-height:100dvh;margin:0;
-  background:var(--color-surface);border:0;border-radius:0;
+  background:var(--color-bg-2);border:0;border-radius:0;
   box-shadow:none;overflow:hidden;display:flex;flex-direction:column;position:relative;
   container-type:inline-size;container-name:screen;   /* enables @container layout below */
 }
@@ -1043,7 +1048,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__top{
   display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4);
   position:relative;width:100%;min-width:0;max-width:100%;border-bottom:0;min-height:56px;flex:none;
-  background:color-mix(in srgb,var(--color-surface) 88%,transparent);
+  /* Chrome tracks the page tone, not the card tone, so the bar does not read
+     as a lighter band across the top now that the page is the darker surface. */
+  background:color-mix(in srgb,var(--color-bg-2) 88%,transparent);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
 .screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line);background:var(--color-surface);cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
@@ -1071,7 +1078,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    stretched to the full width of a tablet or desktop frame instead of holding a
    readable measure. Restated here with enough specificity to stick. */
 .screen__body>.state-view__copy{max-width:34ch}
-.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-bg-2) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Safari composites a -webkit-backdrop-filter element above later content no matter
    what the z-index says, so the blurred header and footer painted over any overlay
    anchored to the viewport: it swallowed the last option of the select sheet and can
@@ -2190,8 +2197,5 @@ body.lang-th *{letter-spacing:normal}
 }
 /* Consultation-fee summary cards read as two stacked white-on-white outlined
    boxes. Flatten them to a solid tinted panel instead of a bordered/shadowed card. */
-#consultpay .card,#consultpay-gw .card,#consultpay-fail .card{
-  background:var(--color-bg-2);
-  border:0;
-  box-shadow:none;
-}
+/* Was a grey card on a white screen; the base card is now the lighter surface
+   on a darker page, so this override is no longer needed. */
