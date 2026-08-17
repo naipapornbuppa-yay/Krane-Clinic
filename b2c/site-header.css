@@ -242,3 +242,12 @@ body.menu-open{overflow:hidden}
 @media(min-width:861px){
   .drawer{width:min(560px,46vw)}
 }
+/* The nav drawer has no .drawer__panel to carry an inner gutter, so its content
+   went flush to the shell's edges as soon as .drawer{padding:0} started winning
+   over .mobile-menu{padding:20px}. Give the nav sheet its own gutter — the two
+   doctor sheets keep padding:0 so their hero media stays full-bleed — and
+   restore the column layout that .drawer[open]{display:block} was overriding. */
+.drawer.mobile-menu{
+  padding:calc(20px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) 20px;
+}
+.drawer.mobile-menu[open]{display:flex;flex-direction:column}
