@@ -2430,31 +2430,75 @@ body{background:var(--landing-page-bg)}
   font:600 clamp(36px,4.8vw,66px)/1.1 "Prompt","Noto Sans Thai",sans-serif;
   letter-spacing:-.035em;
 }
-.trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;justify-items:center;max-width:1260px;margin:0 auto 52px}
-/* Client 16 Aug: the seal is the credential, so each row is just the logo and
-   one supporting line beside it. No card surface, no plate behind the logo, and
-   the long headings are gone from the markup. */
+/* Credential rows. Three logos of very different construction (two round
+   seals, one wide wordmark) have to look like one set, so each sits in a
+   fixed-size well and is optically normalised by height rather than by box:
+   round marks fill the well, the wordmark is capped shorter so it does not
+   out-weigh them. The well is a fixed column, which is also what gives every
+   row a shared text left-edge. */
+.trust-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  max-width:760px;
+  margin:0 auto;
+}
 .trust-card{
-  display:flex;
+  display:grid;
+  grid-template-columns:var(--trust-seal-col,84px) minmax(0,1fr);
   align-items:center;
-  gap:20px;
-  min-height:0;
-  padding:0;
+  gap:22px;
+  padding:22px 0;
   border:0;
+  border-top:1px solid rgba(17,35,60,.09);
   border-radius:0;
   background:none;
   box-shadow:none;
 }
+.trust-card:first-child{border-top:0}
+.trust-card__seal{
+  display:grid;
+  place-items:center;
+  width:var(--trust-seal-col,84px);
+  height:56px;
+  margin:0;
+  padding:0;
+  background:none;
+}
+/* Pixel caps, not percentages: a percentage max-height against the grid area
+   was not resolving here and the seals rendered at natural size (447px). */
+.trust-card__seal img{max-width:100%;max-height:56px;width:auto;height:auto;object-fit:contain}
+/* Wordmark reads much heavier than a seal at equal height, so cap it lower. */
+.trust-card__seal img.trust-card__seal-logo--wide{max-height:30px}
 .trust-card__body{min-width:0}
-.trust-card__eyebrow{margin:0 0 4px;color:#56637a;font:600 14px/1.5 "Prompt","Noto Sans Thai",sans-serif}
-.trust-card h3{color:var(--landing-navy);font:600 clamp(24px,2.2vw,34px)/1.25 "Prompt","Noto Sans Thai",sans-serif;letter-spacing:-.025em}
-.trust-card__body>p:last-of-type{max-width:38ch;margin:0;color:#536078;font-size:15px;line-height:1.65}
-/* 2026-08-16: the logo/seal is the credential now, so it stands alone —
-   no icon, no restating its name in text next to it. */
-.trust-card__seal{display:inline-flex;flex:none;align-items:center;justify-content:center;width:104px;height:72px;margin:0;padding:0;border-radius:0;background:none}
-.trust-card__seal img{width:100%;height:100%;flex:none;object-fit:contain}
-.trust-card__seal img.trust-card__seal-logo--wide{width:100%;height:100%;max-width:none}
-.trust-card__caption{display:block;margin-top:10px;color:#56637a;font:600 12px/1.4 "Inter",sans-serif}
+.trust-card__eyebrow{
+  margin:0;
+  color:var(--landing-navy);
+  font:600 16px/1.4 "Prompt","Noto Sans Thai",sans-serif;
+  letter-spacing:-.01em;
+}
+.trust-card__line{
+  max-width:44ch;
+  margin:5px 0 0;
+  color:#5b6678;
+  font:400 14px/1.6 "Prompt","Noto Sans Thai",sans-serif;
+}
+@media(min-width:861px){
+  /* Wide: three columns, each stacked and centred, split by hairlines. */
+  .trust-grid{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1120px}
+  .trust-card{
+    grid-template-columns:minmax(0,1fr);
+    justify-items:center;
+    gap:16px;
+    padding:8px 32px;
+    border-top:0;
+    border-left:1px solid rgba(17,35,60,.09);
+    text-align:center;
+  }
+  .trust-card:first-child{border-left:0}
+  .trust-card__seal{width:100%;height:60px}
+  .trust-card__seal img{max-height:60px}
+  .trust-card__line{max-width:30ch}
+}
 .trust-section .compliance__logos{max-width:1260px;margin-inline:auto;padding-block:18px;border-block:1px solid rgba(17,35,60,.09)}
 
 .privacy-section{
@@ -2509,7 +2553,6 @@ body{background:var(--landing-page-bg)}
 .expert-card--identity>div:last-child{padding:20px}
 
 @media(max-width:960px){
-  .trust-grid{grid-template-columns:1fr;justify-items:center;max-width:420px}
   .privacy-section{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .steps li{min-height:0}
@@ -2521,9 +2564,12 @@ body{background:var(--landing-page-bg)}
   .care-banner__badges em{min-height:24px;padding:4px 8px;font-size:10px}
   .trust-section,.privacy-section{padding-block:56px}
   .trust-section__heading{margin-bottom:28px;text-align:left}
-  .trust-grid{gap:10px;margin-bottom:34px}
-  .trust-card{padding:0;border-radius:0;gap:14px}
-  .trust-card__seal{padding:0;width:78px;height:56px}
+  .trust-grid{--trust-seal-col:68px}
+  .trust-card{gap:18px;padding:18px 0}
+  .trust-card__seal{height:48px}
+  .trust-card__seal img{max-height:48px}
+  .trust-card__eyebrow{font-size:15px}
+  .trust-card__line{font-size:13.5px}
   .privacy-list li{grid-template-columns:44px 1fr;padding:19px;border-radius:22px}
   .privacy-list>li>svg{width:44px;height:44px;padding:12px}
   .steps{gap:10px}
