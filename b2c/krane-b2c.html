@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-soon-services-v1";
+    const release = "20260818-safety-dialog-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-soon-services-v1">
-<link rel="stylesheet" href="components.css?v=20260818-soon-services-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-safety-dialog-v1">
+<link rel="stylesheet" href="components.css?v=20260818-safety-dialog-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-soon-services-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-safety-dialog-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -921,32 +921,6 @@
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-height">ส่วนสูง (ซม.)</label><input class="input" id="intake-height" inputmode="numeric" placeholder="เช่น 175"></div>
           <div class="field grow"><label for="intake-weight">น้ำหนัก (กก.)</label><input class="input" id="intake-weight" inputmode="numeric" placeholder="เช่น 70"></div>
-        </div>
-        <div class="partner-clinical-grid">
-          <fieldset class="partner-history-field" data-direct-history="conditions">
-            <legend>โรคประจำตัว</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="โรคประจำตัว">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-conditions">ระบุโรคประจำตัว</label><input class="input" id="intake-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off" disabled></div>
-          </fieldset>
-          <fieldset class="partner-history-field" data-direct-history="medications">
-            <legend>ยาที่ใช้ประจำ</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="ยาที่ใช้ประจำ">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-medications">ระบุยาที่ใช้ประจำ</label><input class="input" id="intake-medications" placeholder="ระบุชื่อยา" autocomplete="off" disabled></div>
-          </fieldset>
-          <fieldset class="partner-history-field" data-direct-history="allergies">
-            <legend>ประวัติแพ้ยา</legend>
-            <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา">
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
-              <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
-            </div>
-            <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-allergies">ระบุประวัติแพ้ยา</label><input class="input" id="intake-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off" disabled></div>
-          </fieldset>
         </div>
       </div>
     </div>
@@ -2490,6 +2464,44 @@
     <p id="active-case-description">คุณมีเคสที่ยังรอการดำเนินการอยู่ เพื่อไม่ให้ข้อมูลการรักษาซ้ำกัน กรุณากลับไปดูเคสเดิมก่อนเริ่มเรื่องใหม่</p>
     <div class="modal-dialog__case"><strong>#KR-10293 · ผมร่วงและหนังศีรษะ</strong><span>กำลังรอแผนการรักษาจาก Dr. Narin</span></div>
     <div class="modal-dialog__actions"><button class="btn btn--ghost btn--sm" type="button" data-active-case-close>อยู่หน้าเดิม</button><button class="btn btn--primary btn--sm" type="button" data-active-case-resume>ดูเคสเดิม</button></div>
+  </section>
+</div>
+
+<!-- Safety history is the last thing confirmed before a doctor sees the case, so
+     it is asked here rather than left as three toggles to scroll past. -->
+<div class="modal-layer" id="health-history-modal" hidden aria-hidden="true">
+  <button class="modal-layer__scrim" type="button" data-health-history-close aria-label="ปิดหน้าต่าง"></button>
+  <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="health-history-title" aria-describedby="health-history-description">
+    <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
+    <h2 id="health-history-title">ยืนยันข้อมูลความปลอดภัย</h2>
+    <p id="health-history-description">สามข้อนี้จำเป็นต่อความปลอดภัยในการสั่งยา แพทย์จะเห็นก่อนเริ่มปรึกษา</p>
+    <div class="partner-clinical-grid">
+            <fieldset class="partner-history-field" data-direct-history="conditions">
+              <legend>โรคประจำตัว</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="โรคประจำตัว">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+              </div>
+              <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-conditions">ระบุโรคประจำตัว</label><input class="input" id="intake-conditions" placeholder="ระบุโรคประจำตัว" autocomplete="off" disabled></div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-direct-history="medications">
+              <legend>ยาที่ใช้ประจำ</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ยาที่ใช้ประจำ">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+              </div>
+              <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-medications">ระบุยาที่ใช้ประจำ</label><input class="input" id="intake-medications" placeholder="ระบุชื่อยา" autocomplete="off" disabled></div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-direct-history="allergies">
+              <legend>ประวัติแพ้ยา</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
+              </div>
+              <div class="partner-history-detail" data-direct-history-detail hidden><label class="sr-only" for="intake-allergies">ระบุประวัติแพ้ยา</label><input class="input" id="intake-allergies" placeholder="ระบุยาที่แพ้และอาการ" autocomplete="off" disabled></div>
+            </fieldset>
+          </div>
+    <div class="modal-dialog__actions"><button class="btn btn--ghost btn--sm" type="button" data-health-history-close>ย้อนกลับ</button><button class="btn btn--primary btn--sm" type="button" data-health-history-confirm>ยืนยันและไปต่อ</button></div>
   </section>
 </div>
 
@@ -4603,7 +4615,7 @@
     return group.querySelector('input')?.value.trim() || '';
   }
   function directHistoryValue(key){
-    const group=document.querySelector(`#intake-general [data-direct-history="${key}"]`);
+    const group=document.querySelector(`#health-history-modal [data-direct-history="${key}"]`);
     const selected=group?.querySelector('[data-direct-history-choice][aria-checked="true"]');
     if(!group || selected?.dataset.directHistoryChoice!=='yes') return 'ไม่มี';
     return group.querySelector('input')?.value.trim() || '';
@@ -4647,7 +4659,7 @@
     });
     if(flowState.entryChannel==='partner'){
       Object.entries(flowState.partnerHealth || {}).forEach(([key,value]) => {
-        const group=document.querySelector(`#intake-general [data-direct-history="${key}"]`);
+        const group=document.querySelector(`#health-history-modal [data-direct-history="${key}"]`);
         if(!group || !['conditions','medications','allergies'].includes(key)) return;
         const hasDetails=Boolean(value && value!=='ไม่มี');
         setDirectHistoryChoice(group,hasDetails);
@@ -5252,7 +5264,7 @@
       thai ? 'ผ่านเกณฑ์ปรึกษาออนไลน์' : 'Clear for online review'
     );
     const compactHistoryValue=(name,emptyValue) => {
-      const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
+      const group=document.querySelector(`#health-history-modal [data-direct-history="${name}"]`);
       const selected=group?.querySelector('[data-direct-history-choice][aria-checked="true"]');
       if(selected?.dataset.directHistoryChoice!=='yes') return emptyValue;
       return group?.querySelector('input')?.value.trim() || (thai ? 'มี · ยังไม่ระบุรายละเอียด' : 'Yes · details not provided');
@@ -5335,7 +5347,7 @@
       options[screenId]=[...screen.querySelectorAll('.option[aria-selected]')].map(option => option.getAttribute('aria-selected'));
     });
     const compactHistory={};
-    document.querySelectorAll('#intake-general [data-direct-history]').forEach(group => {
+    document.querySelectorAll('#health-history-modal [data-direct-history]').forEach(group => {
       compactHistory[group.dataset.directHistory]=group.querySelector('[data-direct-history-choice][aria-checked="true"]')?.dataset.directHistoryChoice || 'none';
     });
     const sharedConcern={
@@ -5365,7 +5377,7 @@
       states.forEach((value,index) => { if(options[index]) options[index].setAttribute('aria-selected',value); });
     });
     Object.entries(draft.compactHistory || {}).forEach(([name,value]) => {
-      const group=document.querySelector(`#intake-general [data-direct-history="${name}"]`);
+      const group=document.querySelector(`#health-history-modal [data-direct-history="${name}"]`);
       if(group) setDirectHistoryChoice(group,value==='yes');
     });
     document.querySelectorAll('#intake-concern [data-partner-duration-unit]').forEach(option => {
@@ -7347,26 +7359,28 @@
         dob?.focus();
         return;
       }
-      const incompleteHistory=[...document.querySelectorAll('#intake-general [data-direct-history]')].find(group => {
-        const selected=group.querySelector('[data-direct-history-choice][aria-checked="true"]');
-        return selected?.dataset.directHistoryChoice==='yes' && !group.querySelector('input')?.value.trim();
-      });
-      if(incompleteHistory){
-        const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
-        showActionToast(`กรุณาระบุ${label}`,'warning');
-        incompleteHistory.querySelector('input')?.focus();
-        return;
-      }
-      if(flowState.entryChannel==='direct'){
-        flowState.draftReady=true;
-        flowState.directGeneralHealthComplete=true;
-        flowState.lastRequiredScreen='waitroom';
-        persistFlowState();
-        saveIntakeDraft();
-        showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
-        show('waitroom');
-        return;
-      }
+      /* The three safety answers decide whether it is safe to prescribe, so
+         they are confirmed in their own dialog at the moment of submission
+         rather than sitting mid-page where they are scrolled past. */
+      openHealthHistoryModal();
+      return;
+    }
+    completeSharedHealthIntake(false);
+  });
+
+  /* Everything that happens once the shared health intake is confirmed. Split
+     out so the general-health route can run it from the safety dialog while
+     the other entries still run it inline. */
+  function completeSharedHealthIntake(fromGeneralHealth){
+    if(fromGeneralHealth && flowState.entryChannel==='direct'){
+      flowState.draftReady=true;
+      flowState.directGeneralHealthComplete=true;
+      flowState.lastRequiredScreen='waitroom';
+      persistFlowState();
+      saveIntakeDraft();
+      showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
+      show('waitroom');
+      return;
     }
     flowState.draftReady=true;
     if(flowState.entryChannel==='partner'){
@@ -7400,7 +7414,47 @@
     saveIntakeDraft();
     postAuthNext='matching';
     show('signup');
-  });
+  }
+
+  const healthHistoryModal = document.getElementById('health-history-modal');
+  function openHealthHistoryModal(){
+    if(!healthHistoryModal){ completeSharedHealthIntake(true); return; }
+    healthHistoryModal.hidden = false;
+    healthHistoryModal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    healthHistoryModal.querySelector('[data-direct-history-choice][aria-checked="true"]')?.focus();
+  }
+  function closeHealthHistoryModal(){
+    if(!healthHistoryModal) return;
+    healthHistoryModal.hidden = true;
+    healthHistoryModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+  if(healthHistoryModal){
+    healthHistoryModal.addEventListener('click', event => {
+      if(event.target.closest('[data-health-history-close]')){
+        closeHealthHistoryModal();
+        document.querySelector('#intake-general [data-general-health-submit]')?.focus();
+        return;
+      }
+      if(!event.target.closest('[data-health-history-confirm]')) return;
+      const incompleteHistory=[...healthHistoryModal.querySelectorAll('[data-direct-history]')].find(group => {
+        const selected=group.querySelector('[data-direct-history-choice][aria-checked="true"]');
+        return selected?.dataset.directHistoryChoice==='yes' && !group.querySelector('input')?.value.trim();
+      });
+      if(incompleteHistory){
+        const label=incompleteHistory.querySelector('legend')?.textContent.trim() || 'ข้อมูลสุขภาพ';
+        showActionToast(`กรุณาระบุ${label}`,'warning');
+        incompleteHistory.querySelector('input')?.focus();
+        return;
+      }
+      closeHealthHistoryModal();
+      completeSharedHealthIntake(true);
+    });
+    document.addEventListener('keydown', event => {
+      if(event.key==='Escape' && !healthHistoryModal.hidden) closeHealthHistoryModal();
+    });
+  }
   // SCR-002A. The card is read for one field only: the name, which lands on the
   // next screen where it stays editable. Nothing is uploaded; the preview is a
   // local object URL and the "read" value comes from the demo fixture.
