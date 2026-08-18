@@ -209,6 +209,14 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .intake-duration-control{max-width:620px}
 /* Sits inline at the end of the heading itself instead of on its own line below it. */
 .h1:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+/* One page, one question — so the question itself is the heading. The screen
+   title used to stay huge over every page while the actual question sat in a
+   small grey label, which read as backwards importance (client, 18 Aug). */
+/* Specific enough to outrank .section-label and .field>label, which both come
+   later in this file and would otherwise keep the heading at 13px. */
+[data-intake-question] .intake-question__title{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:var(--fw-bold);line-height:1.3;
+  letter-spacing:0;text-transform:none;color:var(--color-ink);margin:0 0 var(--sp-4);display:block}
+[data-intake-question] .intake-question__title:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .intake-question-count{flex:none;margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.4;white-space:nowrap}
 [data-intake-question][hidden]{display:none!important}
 
@@ -277,6 +285,13 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:13px;font-weight:var(--fw-semibold);cursor:pointer;box-shadow:var(--shadow-sm)}
 .sim-map__locate .ui-icon{width:16px;height:16px}
 .sim-map.is-panning .sim-map__plane{transition:none}
+/* A precondition for the tap, not a paragraph to read: one line, on the
+   button, in the app's own blue (client, 18 Aug). */
+.info-chip{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;
+  padding:10px var(--sp-3);border-radius:var(--control-radius);
+  background:color-mix(in srgb,var(--color-accent) 9%,var(--color-surface));
+  color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.35}
+.info-chip .ui-icon{flex:none;width:16px;height:16px}
 /* ---- In-app map modal ---- */
 .map-modal{position:absolute;inset:0;z-index:40;display:grid;place-items:end center}
 .map-modal__backdrop{position:absolute;inset:0;background:rgba(23,46,81,.42)}
@@ -285,6 +300,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .map-modal__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
 .map-modal__close{width:var(--tap-target-min,44px);height:var(--tap-target-min,44px);border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:15px;cursor:pointer}
 .map-modal__foot{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+/* Confirm sheets follow the same action stack as every dialog in the app: the
+   action full width, the way out under it (client, 18 Aug). Side by side, the
+   ghost label wrapped onto three lines on a 390px screen. */
+.endcall-modal .map-modal__foot{display:grid;grid-template-columns:1fr;gap:var(--sp-2)}
+.endcall-modal .map-modal__foot .btn{width:100%;height:var(--control-h)}
+.endcall-modal .map-modal__foot .btn--ghost{order:2}
 .map-modal__readout{min-width:0}
 .map-modal__readout strong{display:block;font-size:14px}
 /* ---- Recipient inline edit ---- */
@@ -639,6 +660,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .option .opt-soon{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-3);background:var(--color-bg-2);border:1px solid var(--color-line-strong);padding:3px 9px;border-radius:var(--radius-pill);flex:none}
 .common-group{display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
 .common-group:first-of-type{padding-top:0;border-top:0}
+/* One question per page: the group rule has nothing left to separate. */
+[data-intake-question].common-group{padding-top:0;border-top:0}
 
 /* ---------- Badge / pill ---------- */
 /* One consistent badge: soft-filled pill, no borders/outlines. Tints stay in-palette. */
@@ -1588,12 +1611,16 @@ body.modal-open{overflow:hidden}
 .payment-method-list{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-5)}
 .payment-method-option{min-height:var(--control-h-lg)}
 .payment-method-option .opt-icon{background:var(--color-surface);border:0}
-.payment-method-option[aria-selected="true"] .opt-check{display:grid}
+/* The tap commits the choice and closes the sheet, so the tick has nothing
+   left to say — the filled row is the selection (client, 18 Aug). */
+.payment-method-option .opt-check{display:none}
+.payment-method-option{padding-right:var(--sp-4)}
+/* Header icon carries the brand tone the other sheets use, not the grey-teal
+   info default. */
+.payment-method-dialog .modal-dialog__icon{background:color-mix(in srgb,var(--color-accent) 12%,var(--color-surface));color:var(--color-accent)}
 @media(max-width:36rem){
   .modal-layer{align-items:end;padding:0}
   .payment-method-dialog{width:100%;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:var(--sp-5)}
-  .payment-method-dialog .modal-dialog__actions{display:grid;grid-template-columns:1fr 1fr}
-  .payment-method-dialog .modal-dialog__actions .btn{width:100%}
 }
 
 /* PDPA review: concise consent stays in the care form; the full notice is read here. */

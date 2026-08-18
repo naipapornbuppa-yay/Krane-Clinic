@@ -1269,11 +1269,16 @@
       <div class="state-view__copy">
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
-        <p class="hint" data-wait-note>กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ</p>
       </div>
       <div class="state-view__timer" data-wait-timer>About 2 to 3 min</div>
-    <!-- The room opens in video. Chat is where the room falls back to, not where it starts. -->
-    <div class="screen__footer stack-2"><button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button></div>
+    <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
+         The camera/mic note used to be a two-line paragraph under the copy; it is
+         a one-line info chip on the button now (client, 18 Aug) — it is a
+         precondition for the tap, not a second paragraph to read. -->
+    <div class="screen__footer stack-2">
+      <p class="info-chip" data-wait-note><i data-lucide="info" class="ui-icon" aria-hidden="true"></i><span>เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้</span></p>
+      <button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button>
+    </div>
   </section>
 
   <!-- ===================== CONSULT ROOM ===================== -->
@@ -1296,7 +1301,7 @@
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint plan-item__gist">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</div></div><span class="price">฿ 94 · 1 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint plan-item__gist">แก้ปวด ลดไข้</div></div><span class="price">฿ 40 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Naproxen 250 mg</div><div class="hint plan-item__gist">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</div></div><span class="price">฿ 134 · 1 แผง</span></div>
-        <div class="alert plan-edit-callout"><span class="a-ic">i</span><div><div class="a-title">ต้องการแก้ไขรายการยา</div><div class="hint">แจ้งแพทย์ในแชทได้เลย ก่อนกดยอมรับรายการยา</div></div></div>
+        <div class="alert plan-edit-callout"><span class="a-ic">i</span><div><div class="a-title">ต้องการแก้ไขรายการยา?</div><div class="hint">แจ้งแพทย์ในแชทก่อนกดยอมรับ</div></div></div>
         <button class="btn btn--primary btn--sm" style="width:100%" data-accept-plan>ยอมรับรายการยา</button>
       </div>
       <button class="chat-fab" data-go="video" data-demo-icon="video" title="Start video call" aria-label="Start video call"></button>
@@ -2715,7 +2720,6 @@
         <span class="opt-body"><span class="opt-title">โมบายล์แบงกิ้ง</span><span class="opt-sub">เปิดแอปธนาคารเพื่อยืนยันการชำระ</span></span><span class="opt-check"></span>
       </button>
     </div>
-    <div class="modal-dialog__actions"><button class="btn btn--ghost btn--sm" type="button" data-payment-method-close>ยกเลิก</button><button class="btn btn--primary btn--sm" type="button" data-payment-method-confirm>ใช้วิธีนี้</button></div>
   </section>
 </div>
 
@@ -4238,11 +4242,21 @@
       const nestedQuestions=[...group.querySelectorAll('[data-intake-question]')];
       if(nestedQuestions.length) group.hidden=!nestedQuestions.some(question => !question.hidden);
     });
+    /* One page, one heading. Where the question carries its own label that
+       label is the heading, and the screen title stands down rather than
+       shouting the same words over every page. */
+    const activeQuestion=state.questions[nextIndex];
+    const promoted=state.total>1 && activeQuestion?.dataset.intakeQuestionTitled
+      ? activeQuestion.querySelector('.intake-question__title')
+      : null;
+    const titleBlock=[...state.body.children].find(child => child.querySelector('.h1'));
     const counter=state.body.querySelector('[data-intake-question-count]');
     if(counter){
-      const thai=document.documentElement.lang==='th';
       counter.textContent=`${nextIndex+1} / ${state.total}`;
+      const host=promoted || titleBlock?.querySelector('.h1');
+      if(host && counter.parentElement!==host) host.appendChild(counter);
     }
+    if(titleBlock) titleBlock.hidden=Boolean(promoted);
     const autoAdvance=intakeQuestionIsSingleChoice(state.questions[nextIndex]);
     state.body.toggleAttribute('data-intake-auto-advance',autoAdvance);
     const footer=state.screen.querySelector('.screen__footer');
@@ -4283,6 +4297,23 @@
     const questions=remaining.filter(child => child!==titleBlock);
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
+    });
+    /* The screen title stayed huge on every page while the question itself sat
+       in a small grey label — the hierarchy read backwards (client, 18 Aug).
+       When a page carries exactly one labelled question, that label becomes the
+       page heading and the screen title steps aside. A page that folds two
+       prompts together (a description and its "how long") keeps the shared
+       title, because neither label speaks for the whole page. */
+    questions.forEach(question => {
+      question.querySelectorAll('.intake-question__title')
+        .forEach(node => node.classList.remove('intake-question__title'));
+      const labels=[...question.querySelectorAll('.section-label,.field>label,legend')];
+      if(labels.length===1){
+        labels[0].classList.add('intake-question__title');
+        question.dataset.intakeQuestionTitled='1';
+      } else {
+        delete question.dataset.intakeQuestionTitled;
+      }
     });
     let counter=titleBlock?.querySelector('[data-intake-question-count]');
     if(titleBlock && questions.length>1 && !counter){
@@ -6264,8 +6295,6 @@
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
     if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
-    const note = w.querySelector('[data-wait-note]');
-    if(note) note.textContent = 'กรุณาเปิดสิทธิ์กล้องและไมโครโฟนก่อนเริ่มปรึกษา หากไม่สะดวกใช้วิดีโอ สามารถสลับเป็นแชทได้ทุกเมื่อ';
     clearInterval(waitCountdownTimer);
     let remainingSeconds = queuePos * 3 * 60;
     paintWaitCountdown(timer,remainingSeconds);
@@ -7441,16 +7470,12 @@
   if(paymentMethodModal){
     paymentMethodModal.addEventListener('click', event => {
       const option = event.target.closest('[data-method-option]');
+      /* Picking a method IS the answer — the sheet used to ask for a second
+         press on "ใช้วิธีนี้" (client, 18 Aug). Same rule the single-choice
+         intake pages follow: the tap commits and the sheet closes. */
       if(option){
         pendingPaymentMethod = option.dataset.methodOption;
         syncPaymentMethodOptions();
-        return;
-      }
-      if(event.target.closest('[data-payment-method-close]')){
-        closePaymentMethodModal();
-        return;
-      }
-      if(event.target.closest('[data-payment-method-confirm]')){
         paymentMethod = pendingPaymentMethod;
         flowState.orderState.paymentMethod=paymentMethod;
         persistFlowState();
@@ -7458,6 +7483,11 @@
         if(label) label.textContent = paymentMethodNames[paymentMethod];
         syncCheckoutReadiness();
         closePaymentMethodModal();
+        return;
+      }
+      if(event.target.closest('[data-payment-method-close]')){
+        closePaymentMethodModal();
+        return;
       }
     });
   }
