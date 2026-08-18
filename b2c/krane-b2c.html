@@ -542,8 +542,8 @@
        The production-oriented landing lives beside this file as "krane-b2c-landing.html".
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
-  <section class="screen active screen--web" id="landing" style="padding:0">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260816-sections-idcard-v8" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+  <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-soon-services-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -4377,6 +4377,17 @@
      to, using the route order declared in careJourneyStageOrder. */
   const careJourneyStageScreens = careJourneyStageOrder;
 
+  /* The landing is an embedded frame, so the status-bar strip is painted by
+     THIS document, not by the banner inside it. Keep the browser chrome on the
+     banner blue while that screen is up and on the app tone everywhere else. */
+  const THEME_COLOR_APP='#F7F7F7';
+  const THEME_COLOR_LANDING='#395AA4';
+  function syncThemeColor(id){
+    const meta=document.querySelector('meta[name="theme-color"]');
+    if(!meta) return;
+    meta.setAttribute('content', id==='landing' ? THEME_COLOR_LANDING : THEME_COLOR_APP);
+  }
+
   function updateIntakeProgress(id){
     const stage = careJourneyScreens[id];
     if(!stage) return;
@@ -5605,6 +5616,7 @@
       if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
     }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
+    syncThemeColor(id);
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
