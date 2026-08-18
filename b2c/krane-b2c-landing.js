@@ -466,6 +466,55 @@
     requestAnimationFrame(step);
   })();
 
+  /* Privacy rail: the row of assurance cards is tied to the page scroll, so it
+     travels left as the section rises through the viewport and right again on
+     the way back up. Driven by scrollLeft rather than a transform so the rail
+     stays a real scroller you can still swipe; the lerp means a manual swipe
+     is reclaimed smoothly instead of snapping. The icons carry a second,
+     faster drift so the row reads as two planes. */
+  (function privacyRailParallax() {
+    const rail = document.querySelector("[data-privacy-rail]");
+    if (!rail || reducedMotionQuery.matches) return;
+    const section = rail.closest(".privacy-section");
+    if (!section) return;
+    const icons = Array.from(rail.querySelectorAll(".privacy-card__icon"));
+
+    let paused = false;
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    ["pointerdown", "touchstart", "focusin"].forEach((e) => rail.addEventListener(e, pause, { passive: true }));
+    ["pointerup", "pointercancel", "touchend", "focusout"].forEach((e) => rail.addEventListener(e, resume, { passive: true }));
+
+    let frameId = 0;
+    function schedule() { if (!frameId) frameId = requestAnimationFrame(tick); }
+    function tick() {
+      frameId = 0;
+      const rect = section.getBoundingClientRect();
+      const span = window.innerHeight + rect.height;
+      if (span <= 0) return;
+      // 0 as the section enters from the bottom, 1 once it has left past the top.
+      const progress = Math.min(1, Math.max(0, (window.innerHeight - rect.top) / span));
+      const max = rail.scrollWidth - rail.clientWidth;
+      const drift = (progress - 0.5) * -30;
+      icons.forEach((icon, index) => {
+        icon.style.setProperty("--icon-drift", `${(drift * (1 + index * 0.4)).toFixed(2)}px`);
+      });
+      if (paused || max <= 4) return;
+      const target = progress * max;
+      const delta = target - rail.scrollLeft;
+      if (Math.abs(delta) < 0.5) {
+        rail.scrollLeft = target;
+        return;
+      }
+      rail.scrollLeft += delta * 0.16;
+      schedule();
+    }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    schedule();
+  })();
+
   document.body.classList.add("motion-enabled");
   requestAnimationFrame(() => document.body.classList.add("motion-loaded"));
 

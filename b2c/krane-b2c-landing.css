@@ -2521,25 +2521,71 @@ body{background:var(--landing-page-bg)}
 @media(prefers-reduced-motion:reduce){
   .motion-enabled .section-block[data-parallax]{transform:none}
 }
+/* Client (18 Aug): the three assurances read as a horizontal rail instead of a
+   stacked column — swipeable on touch, and drifting sideways as the section
+   travels through the viewport, so the row parallaxes against the page scroll.
+   The copy sits above the rail at every width; a two-column split would have
+   left the rail too narrow to be worth scrolling. */
 .privacy-section{
-  display:grid;
-  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
-  gap:clamp(36px,6vw,92px);
-  align-items:center;
+  display:block;
   padding-block:clamp(48px,7vw,92px);
   overflow:hidden;
 }
-.privacy-section__copy{position:relative}
+.privacy-section__copy{position:relative;max-width:660px}
 .privacy-section__copy>p:last-child{max-width:55ch;margin-top:22px;color:var(--landing-ink-2);font-size:17px;line-height:1.75}
-.privacy-list{display:grid;gap:12px;margin:0;padding:0;list-style:none;position:relative}
-.privacy-list li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;padding:24px;border:0;border-radius:26px;background:var(--surface-card)}
-.privacy-list>li>svg{width:52px;height:52px;padding:14px;border-radius:50%;background:var(--surface-sunken);color:var(--landing-navy)}
-.privacy-list h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
-.privacy-list p{margin-top:4px;color:var(--landing-ink-2);font-size:15px;line-height:1.6}
+.privacy-rail{
+  margin-top:clamp(28px,4vw,44px);
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+  /* No snap: the rail is driven by the page scroll, and a snap point would
+     pull it back to the first card on every frame. */
+  scroll-snap-type:none;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.privacy-rail::-webkit-scrollbar{display:none}
+.privacy-list{
+  width:max-content;
+  display:flex;
+  gap:clamp(12px,1.6vw,20px);
+  margin:0;
+  padding:0 clamp(30px,4vw,64px) 0 0;
+  list-style:none;
+}
+.privacy-card{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:20px;
+  width:clamp(250px,30vw,420px);
+  min-height:250px;
+  padding:28px;
+  border:0;
+  border-radius:28px;
+  background:var(--surface-card);
+}
+.privacy-card__icon{
+  display:grid;
+  width:52px;
+  height:52px;
+  place-items:center;
+  border-radius:50%;
+  background:var(--surface-sunken);
+  color:var(--landing-navy);
+}
+.privacy-card__icon svg{width:24px;height:24px}
+.privacy-card h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
+.privacy-card p{margin-top:8px;color:var(--landing-ink-2);font-size:15px;line-height:1.6}
+/* The icons ride at their own rate, so the row reads as two planes sliding
+   past each other rather than one block moving sideways. */
+.motion-enabled .privacy-card__icon{transform:translate3d(var(--icon-drift,0px),0,0);will-change:transform}
+@media(prefers-reduced-motion:reduce){
+  .motion-enabled .privacy-card__icon{transform:none}
+}
 
 
-.steps{height:auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
-.steps li{min-height:270px;padding:26px;border-radius:28px;background:transparent;grid-template-columns:40px minmax(0,1fr)}
+.steps{height:auto;grid-template-columns:repeat(3,minmax(0,1fr));--steps-gap:28px;--steps-pad:26px;gap:var(--steps-gap)}
+.steps li{min-height:270px;padding:var(--steps-pad);border-radius:28px;background:transparent;grid-template-columns:40px minmax(0,1fr)}
 .steps li::before{bottom:26px;left:46px}
 .steps h3{font-weight:600}
 .steps p{line-height:1.7}
@@ -2575,7 +2621,6 @@ body{background:var(--landing-page-bg)}
 .expert-card--identity>div:last-child{padding:20px}
 
 @media(max-width:960px){
-  .privacy-section{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .steps li{min-height:0}
 }
@@ -2590,10 +2635,11 @@ body{background:var(--landing-page-bg)}
   .trust-card{gap:16px;padding:18px 18px;border-radius:20px}
   .trust-card__eyebrow{font-size:15px}
   .trust-card__line{font-size:13.5px}
-  .privacy-list li{grid-template-columns:44px 1fr;padding:19px;border-radius:22px}
-  .privacy-list>li>svg{width:44px;height:44px;padding:12px}
-  .steps{gap:10px}
-  .steps li{padding:20px;border-radius:22px}
+  .privacy-card{gap:16px;min-height:226px;padding:22px;border-radius:22px}
+  .privacy-card__icon{width:44px;height:44px}
+  .privacy-card__icon svg{width:21px;height:21px}
+  .steps{--steps-gap:10px;--steps-pad:20px}
+  .steps li{padding:var(--steps-pad);border-radius:22px}
   .how__note{text-align:left}
 }
 @media(prefers-reduced-motion:reduce){
@@ -3386,26 +3432,52 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
    dropped to a small marker that shares the heading's line instead of floating
    a row above it.
 
-   Layout: art spans the full width on row 1; the numeral and the copy share
-   row 2, so the numeral lines up with the title. The timeline connector is
-   drawn from the numeral downward (and clipped by the item) because the art
-   above it has no fixed height to offset against. */
-.steps li{grid-template-columns:26px minmax(0,1fr);gap:14px;overflow:hidden}
+   Layout: the numeral and the copy share row 1 so the numeral lines up with
+   the title, and the art sits below the copy in the same column. That keeps
+   the numeral column clear all the way down, which is what lets the timeline
+   connector run unbroken from one step's numeral to the next instead of
+   dead-ending under the copy (client, 18 Aug). */
+.steps li{grid-template-columns:26px minmax(0,1fr);gap:14px;overflow:visible}
 .steps li::before{display:none}
-.steps li>.step-art{grid-column:1 / -1;grid-row:1}
-.steps li>.step-number{grid-column:1;grid-row:2}
-.steps li>div{grid-column:2;grid-row:2}
+.steps li>.step-number{grid-column:1;grid-row:1}
+.steps li>div{grid-column:2;grid-row:1}
+.steps li>.step-art{grid-column:2;grid-row:2}
 .step-number{width:26px;height:26px;font-size:13px;align-self:start;margin-top:2px}
-.steps li:not(:last-child) .step-number::after{
-  content:"";position:absolute;top:calc(100% + 8px);left:50%;
-  width:1px;height:1000px;background:var(--landing-navy);transform:translateX(-50%);
+.steps li:not(:last-child) .step-number::after{display:none}
+.steps li:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  /* numeral top (item padding + its 2px nudge) + numeral height + a 6px breath */
+  top:calc(var(--steps-pad,26px) + 34px);
+  bottom:var(--steps-pad,26px);
+  left:calc(var(--steps-pad,26px) + 13px);
+  width:1px;
+  background:color-mix(in srgb, var(--landing-navy) 30%, transparent);
+  transform-origin:top;
 }
-.step-art{display:block;margin:0 0 16px}
+/* Stacked layout only: carry the line across the gap into the next numeral.
+   In the three-across desktop layout the steps sit side by side, so each
+   line stops at its own item. */
+@media(max-width:960px){
+  .steps li:not(:last-child)::after{
+    bottom:calc(-1 * (var(--steps-gap,28px) + var(--steps-pad,26px) + 2px));
+  }
+}
+.motion-enabled .steps li.reveal-item::after{
+  opacity:0;transform:scaleY(0);
+  transition:transform .82s cubic-bezier(.65,0,.35,1),opacity .24s ease-in-out;
+  transition-delay:calc(var(--reveal-delay,0ms) + 140ms);
+}
+.motion-enabled .steps li.is-revealed::after{opacity:1;transform:scaleY(1)}
+@media(prefers-reduced-motion:reduce){
+  .motion-enabled .steps li::after{opacity:1!important;transform:none!important;transition:none!important}
+}
+.step-art{display:block;margin:18px 0 0}
 .step-art img{width:100%;max-width:320px;height:auto;display:block;opacity:.9}
 
 @media(max-width:700px){
   .steps li{gap:12px}
-  .step-art{margin-bottom:12px}
+  .step-art{margin-top:14px}
   .step-art img{max-width:210px}
 }
 
