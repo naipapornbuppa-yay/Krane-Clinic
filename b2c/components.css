@@ -1478,6 +1478,8 @@ body.modal-open{overflow:hidden}
    weight for the receipt and the certificate — those are the two things people
    come back to this screen for. Each is its own row with a visible action. */
 .doc-section{display:flex;flex-direction:column;gap:var(--sp-2)}
+.doc-summary-list{margin:0;padding-left:1.15em;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.65}
+.doc-summary-list li+li{margin-top:4px}
 .doc-row{
   width:100%;display:flex;align-items:center;gap:var(--sp-3);
   padding:var(--sp-3) var(--sp-4);
@@ -1507,6 +1509,38 @@ body.modal-open{overflow:hidden}
 /* Milestone dialog: the illustration leads, then the news, then one way on. */
 /* Clear button inside a field. Sized to the tap-target minimum and sitting on
    the input's own centre line, so the label above it is not thrown off. */
+/* ---- Address search -----------------------------------------------------
+   The form opens on a search box, not a slab of map: naming the place is the
+   fast path, and the map is one tap away for when you cannot. */
+.address-search{position:relative;display:flex;flex-direction:column;gap:var(--sp-2)}
+.address-search__field{position:relative}
+.address-search__field .input{padding-left:42px}
+.address-search__icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:grid;place-items:center;color:var(--color-ink-3);pointer-events:none}
+.address-search__icon .ui-icon{width:17px;height:17px}
+.address-search__map{width:100%}
+.address-suggestions{
+  position:absolute;z-index:5;top:calc(var(--control-h) + 6px);left:0;right:0;
+  margin:0;padding:var(--sp-1);list-style:none;
+  border-radius:var(--radius-md);background:var(--color-surface);
+  box-shadow:0 2px 6px rgba(18,24,36,.06),0 14px 34px rgba(18,24,36,.14);
+  max-height:288px;overflow:auto;
+}
+.address-suggestions[hidden]{display:none}
+.address-suggestion{
+  width:100%;display:flex;align-items:flex-start;gap:var(--sp-3);
+  padding:var(--sp-3);border:0;border-radius:var(--radius-sm);
+  background:transparent;color:var(--color-ink);text-align:left;cursor:pointer;
+}
+.address-suggestion:hover,.address-suggestion:focus-visible{background:var(--surface-sunken)}
+.address-suggestion__icon{flex:none;display:grid;width:28px;height:28px;place-items:center;border-radius:50%;background:var(--surface-sunken);color:var(--color-ink-2)}
+.address-suggestion__body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.address-suggestion__body strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.address-suggestion__body span{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.4}
+/* Map screen: the map is the content, so it takes the height it is given. */
+.address-map-body{display:flex;flex-direction:column;gap:var(--sp-4)}
+.address-map--full{flex:1;height:auto;min-height:320px;max-height:none}
+.address-map--full .sim-map{height:100%}
+
 .field--clearable{position:relative}
 .field--clearable>input.input{padding-right:42px}
 .field__clear{

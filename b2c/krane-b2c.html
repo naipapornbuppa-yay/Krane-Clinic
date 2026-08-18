@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-pickup-address-v1";
+    const release = "20260818-consult-summary-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-pickup-address-v1">
-<link rel="stylesheet" href="components.css?v=20260818-pickup-address-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-consult-summary-v1">
+<link rel="stylesheet" href="components.css?v=20260818-consult-summary-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-pickup-address-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-consult-summary-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1405,21 +1405,20 @@
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ที่อยู่จัดส่ง</span></div>
     <div class="screen__body address-body stack-4">
-      <!-- Simulated map. In-app only: nothing here navigates out to Google. -->
-      <div class="address-map" data-address-map>
-        <div class="sim-map" data-sim-map data-sim-role="hero">
-          <div class="sim-map__plane" data-sim-plane></div>
-          <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-          <div class="sim-map__zoom">
-            <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
-            <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
-          </div>
-          <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
+      <div class="address-search" data-address-search-wrap>
+        <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
+        <div class="address-search__field">
+          <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
+          <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน" data-address-search>
         </div>
+        <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
+        <button class="btn btn--secondary address-search__map" type="button" data-go="address-map">
+          <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
+        </button>
       </div>
       <p class="address-readout" data-address-summary role="status" aria-live="polite">
         <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
-        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
+        <span data-address-preview-detail>ค้นหาที่อยู่ หรือเลือกจากแผนที่ แล้วเรากรอกให้อัตโนมัติ</span>
       </p>
 
       <div class="field-row">
@@ -1454,6 +1453,31 @@
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
+  <!-- The map is the fallback route to an address, so it gets the whole screen
+       rather than a slab at the top of a form. Confirming returns to the form
+       with the pin applied. -->
+  <section class="screen" id="address-map">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">เลือกตำแหน่งบนแผนที่</span></div>
+    <div class="screen__body address-map-body">
+      <div class="address-map address-map--full" data-address-map>
+        <div class="sim-map" data-sim-map data-sim-role="hero">
+          <div class="sim-map__plane" data-sim-plane></div>
+          <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+          <div class="sim-map__zoom">
+            <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
+            <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
+          </div>
+          <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
+        </div>
+      </div>
+      <p class="address-readout" role="status" aria-live="polite">
+        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
+        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
+      </p>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ใช้ตำแหน่งนี้</button></div>
+  </section>
+
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
     <div class="screen__body state-view center">
@@ -1851,6 +1875,11 @@
       </div>
       <div class="doc-section">
         <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
+        <button class="doc-row" type="button" data-doc-open="summary">
+          <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>สรุปผลการปรึกษา</strong><span class="hint">CS-2026-10293 · 30 มิ.ย. 2026</span></span>
+          <span class="doc-row__action">ดู</span>
+        </button>
         <button class="doc-row" type="button" data-doc-open="receipt">
           <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
           <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293 · <span data-payment-outcome-amount>฿ 558</span></span></span>
@@ -1973,6 +2002,25 @@
             <button class="btn btn--secondary btn--sm" data-go="refill">Refill now</button>
             <button class="btn btn--secondary btn--sm" data-go="matching" data-category="hair-skin">Consult now</button>
           </div>
+        </div>
+
+        <div class="doc-section">
+          <div class="section-label">เอกสารจากการปรึกษาล่าสุด</div>
+          <button class="doc-row" type="button" data-doc-open="summary">
+            <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
+            <span class="doc-row__body"><strong>สรุปผลการปรึกษา</strong><span class="hint">CS-2026-10293 · 30 มิ.ย. 2026</span></span>
+            <span class="doc-row__action">ดู</span>
+          </button>
+          <button class="doc-row" type="button" data-doc-open="cert">
+            <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+            <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">MC-2026-10293 · ฟรี</span></span>
+            <span class="doc-row__action">ดู</span>
+          </button>
+          <button class="doc-row" type="button" data-doc-open="receipt">
+            <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
+            <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293</span></span>
+            <span class="doc-row__action">ดู</span>
+          </button>
         </div>
 
         <!-- Client (5 Jul): orders live on the Activity tab, not the profile -->
@@ -2260,8 +2308,40 @@
   <section class="screen" id="prescription" data-screen-code="SCR-018">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Documents</span></div>
     <div class="screen__body stack-4">
-      <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx" aria-selected="true">ใบสั่งยา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">ใบรับรองแพทย์</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="receipt">ใบเสร็จ</button></div>
-      <div data-doc="rx" class="stack-4">
+      <div class="row" style="gap:var(--sp-2);flex-wrap:wrap"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="summary" aria-selected="true">สรุปผลการปรึกษา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx">ใบสั่งยา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">ใบรับรองแพทย์</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="receipt">ใบเสร็จ</button></div>
+      <!-- The consultation summary: what was discussed, what the doctor concluded and
+           what happens next, in the patient's own words rather than clinical shorthand. -->
+      <div data-doc="summary" class="stack-4">
+        <div class="card card--pad-sm stack-3 doc-sheet">
+          <div class="between"><div><strong>Krane Clinic · สรุปผลการปรึกษา</strong><div class="hint">ปรึกษาแพทย์ทางไกล · 30 มิ.ย. 2026</div></div><span class="badge badge--ok">เสร็จสิ้น</span></div>
+          <div class="divider"></div>
+          <div class="kv-list stack-3">
+            <div class="between"><span class="muted">ผู้รับการตรวจ</span><strong data-certificate-name>มะลิ สุธิดา</strong></div>
+            <div class="between"><span class="muted">แพทย์ผู้ดูแล</span><strong>นพ. นรินทร์ ต.</strong></div>
+            <div class="between"><span class="muted">เลขที่การปรึกษา</span><strong>CS-2026-10293</strong></div>
+          </div>
+          <div class="divider"></div>
+          <div class="section-label">อาการที่มาปรึกษา</div>
+          <p class="muted" style="margin:0">ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน ไม่เคยรักษามาก่อน</p>
+          <div class="divider"></div>
+          <div class="section-label">การประเมินของแพทย์</div>
+          <p class="muted" style="margin:0">เข้าได้กับภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้</p>
+          <div class="divider"></div>
+          <div class="section-label">แผนการรักษา</div>
+          <ul class="doc-summary-list">
+            <li>เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน</li>
+            <li>ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน</li>
+            <li>ถ่ายรูปบริเวณที่กังวลทุกเดือนเพื่อเทียบผล</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="section-label">สิ่งที่ควรทำต่อ</div>
+          <ul class="doc-summary-list">
+            <li>นัดติดตามครั้งถัดไป 26 ส.ค. 2026</li>
+            <li>หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์</li>
+          </ul>
+        </div>
+      </div>
+      <div data-doc="rx" class="stack-4" hidden>
       <div class="card card--pad-sm stack-3 doc-sheet">
         <div class="between"><div><strong>Krane Clinic · Prescription</strong><div class="hint">Prescribed by Dr. Narin T. · licence 12345</div></div><span class="badge badge--ok">Valid</span></div>
         <div class="divider"></div>
@@ -4404,6 +4484,62 @@
     simApplyTransform(); simUpdateReadout();
     showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว และกรอกที่อยู่ให้แล้ว','success');
   }
+  /* Typing is the fast path to an address; the map is for when you cannot name
+     the place. Suggestions come from the same SIM_PLACES the map reverse-geocodes
+     to, so both routes fill the form from one source. */
+  function addressSuggestionsFor(query){
+    const q=query.trim().toLowerCase();
+    if(q.length<1) return [];
+    return SIM_PLACES.filter(place =>
+      [place.title,place.line,place.district].join(' ').toLowerCase().includes(q)
+    ).slice(0,5);
+  }
+  function renderAddressSuggestions(query){
+    const list=document.querySelector('[data-address-suggestions]');
+    const input=document.querySelector('[data-address-search]');
+    if(!list) return;
+    const matches=addressSuggestionsFor(query);
+    list.innerHTML=matches.map((place,index) => `
+      <li role="option" aria-selected="false">
+        <button type="button" class="address-suggestion" data-address-suggestion="${index}">
+          <span class="address-suggestion__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon ui-icon--sm"></i></span>
+          <span class="address-suggestion__body"><strong>${place.title}</strong><span>${place.detail}</span></span>
+        </button>
+      </li>`).join('');
+    list.dataset.matchCount=String(matches.length);
+    list.hidden=!matches.length;
+    if(input) input.setAttribute('aria-expanded',String(Boolean(matches.length)));
+    if(window.krane_normalizeIcons) window.krane_normalizeIcons();
+  }
+  function closeAddressSuggestions(){
+    const list=document.querySelector('[data-address-suggestions]');
+    const input=document.querySelector('[data-address-search]');
+    if(list) list.hidden=true;
+    if(input) input.setAttribute('aria-expanded','false');
+  }
+  function setupAddressSearch(){
+    const input=document.querySelector('[data-address-search]');
+    const list=document.querySelector('[data-address-suggestions]');
+    if(!input || !list || input.dataset.searchBound==='true') return;
+    input.dataset.searchBound='true';
+    input.addEventListener('input',() => renderAddressSuggestions(input.value));
+    input.addEventListener('focus',() => { if(input.value) renderAddressSuggestions(input.value); });
+    input.addEventListener('keydown',event => { if(event.key==='Escape') closeAddressSuggestions(); });
+    list.addEventListener('click',event => {
+      const option=event.target.closest('[data-address-suggestion]');
+      if(!option) return;
+      const place=addressSuggestionsFor(input.value)[Number(option.dataset.addressSuggestion)];
+      if(!place) return;
+      applyAddress(place);
+      input.value=place.title;
+      closeAddressSuggestions();
+      showActionToast('กรอกที่อยู่จากผลการค้นหาแล้ว','success');
+    });
+    document.addEventListener('click',event => {
+      if(!event.target.closest('[data-address-search-wrap]')) closeAddressSuggestions();
+    });
+  }
+
   function applyAddress(place){
     simState.picked=true;
     const set=(id,v)=>{ const el=document.getElementById(id); if(el && el.value!==v){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); } };
@@ -4411,10 +4547,8 @@
     set('addrSubdistrict',place.subdistrict); set('addrDistrictName',place.districtName);
     set('addrProvince',place.province); set('addrPostcode',place.postcode);
     syncComposedDistrict();
-    const t=document.querySelector('[data-address-preview-title]');
-    const d=document.querySelector('[data-address-preview-detail]');
-    if(t) t.textContent=place.title;
-    if(d) d.textContent=place.detail;
+    document.querySelectorAll('[data-address-preview-title]').forEach(el => { el.textContent=place.title; });
+    document.querySelectorAll('[data-address-preview-detail]').forEach(el => { el.textContent=place.detail; });
     const prev=document.querySelector('[data-address-map]');
     if(prev) prev.classList.add('is-pin-selected');
   }
@@ -6771,6 +6905,12 @@
       simApplyTransform(); return;
     }
     if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
+    if(e.target.closest('[data-address-map-confirm]')){
+      // The pin has already filled the form; this just takes you back to it.
+      if(!simState.picked) simUpdateReadout();
+      show('address');
+      return;
+    }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
@@ -7865,6 +8005,7 @@
   // initialise now that featureMap + toast exist (honours deep-link hash, else current screen)
   renderConsultationCatalog();
   setupClearableFields();
+  setupAddressSearch();
   restoreIntakeDraft();
   restorePartnerFields();
   enhancePatientDateFields();
