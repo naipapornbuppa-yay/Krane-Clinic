@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-tap-to-advance-v1";
+    const release = "20260818-documents-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-tap-to-advance-v1">
-<link rel="stylesheet" href="components.css?v=20260818-tap-to-advance-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-documents-v1">
+<link rel="stylesheet" href="components.css?v=20260818-documents-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-tap-to-advance-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-documents-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1751,7 +1751,7 @@
       <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Payment is confirmed. Your prepared order is moving to dispatch and tracking.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button><div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost" data-doc-open="receipt">ดูใบเสร็จ</button><button class="btn btn--ghost" data-doc-open="cert">ใบรับรองแพทย์</button></div></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1843,6 +1843,8 @@
         <div class="step"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step"><strong>Delivered</strong><div class="hint">Pending</div></div>
       </div>
+      <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
+      <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost" data-doc-open="receipt">ดูใบเสร็จ</button><button class="btn btn--ghost" data-doc-open="cert">ใบรับรองแพทย์</button></div>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
@@ -2227,7 +2229,7 @@
   <section class="screen" id="prescription" data-screen-code="SCR-018">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Documents</span></div>
     <div class="screen__body stack-4">
-      <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx" aria-selected="true">Prescription</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">Medical certificate</button></div>
+      <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx" aria-selected="true">ใบสั่งยา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">ใบรับรองแพทย์</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="receipt">ใบเสร็จ</button></div>
       <div data-doc="rx" class="stack-4">
       <div class="card card--pad-sm stack-3">
         <div class="between"><div><strong>Krane Clinic · Prescription</strong><div class="hint">Prescribed by Dr. Narin T. · licence 12345</div></div><span class="badge badge--ok">Valid</span></div>
@@ -2258,7 +2260,29 @@
         </div>
         <button class="btn btn--secondary" data-demo-action="ส่งคำขอใบรับรองแพทย์แล้ว">Request certificate</button>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="payment">Download PDF</button></div>
+      <!-- Receipt: the same tabbed document surface, so the patient has one
+           place to find every paper the visit produced. -->
+      <div data-doc="receipt" class="stack-4" hidden>
+        <div class="card card--pad-sm stack-3">
+          <div class="between"><div><strong>Krane Clinic · ใบเสร็จรับเงิน</strong><div class="hint">ออกโดย Krane Clinic · เลขประจำตัวผู้เสียภาษี 0-1055-xxxxx-xx</div></div><span class="badge badge--ok">ชำระแล้ว</span></div>
+          <div class="divider" style="margin:0"></div>
+          <div class="kv-list stack-3">
+            <div class="between"><span class="muted">เลขที่ใบเสร็จ</span><strong>RC-2026-10293</strong></div>
+            <div class="between"><span class="muted">คำสั่งซื้อ</span><strong>#KR-10293</strong></div>
+            <div class="between"><span class="muted">วันที่ชำระ</span><strong data-receipt-date>30 มิ.ย. 2026</strong></div>
+            <div class="between"><span class="muted">วิธีชำระเงิน</span><strong data-payment-outcome-method>QR / PromptPay</strong></div>
+          </div>
+          <div class="divider" style="margin:0"></div>
+          <div class="section-label">รายการ</div>
+          <div class="kv-list stack-3">
+            <div class="between"><span class="muted">ค่ายาและค่าจัดส่ง</span><strong data-payment-outcome-amount>฿ 558</strong></div>
+            <div class="between"><span class="muted">ใบรับรองแพทย์</span><strong>ฟรี</strong></div>
+          </div>
+          <div class="divider" style="margin:0"></div>
+          <div class="between"><strong>ยอดที่ชำระ</strong><strong data-payment-outcome-amount style="font-size:var(--fs-lg)">฿ 558</strong></div>
+        </div>
+      </div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-demo-action="กำลังดาวน์โหลดเอกสาร PDF">ดาวน์โหลด PDF</button></div>
   </section>
 
   <!-- Medical certificate request -->
@@ -3456,11 +3480,23 @@
     if(method==='same-day') return thai ? 'ภายในวันนี้ · ก่อน 18:00 น.' : 'Same day · by 6pm';
     return thai ? `ส่งพรุ่งนี้ · คาดว่าจะถึง ${tomorrowLabel()}` : `Ships tomorrow · arrives ${tomorrowLabel()}`;
   }
+  function setDocumentTab(name){
+    const screen=document.getElementById('prescription');
+    if(!screen) return;
+    const tab=screen.querySelector(`[data-doc-tab="${name}"]`);
+    if(!tab) return;
+    screen.querySelectorAll('[data-doc-tab]').forEach(button => {
+      button.setAttribute('aria-selected',String(button===tab));
+    });
+    screen.querySelectorAll('[data-doc]').forEach(block => { block.hidden = block.dataset.doc !== name; });
+    screen.querySelector('.screen__body').scrollTop=0;
+  }
+
   function syncPaymentOutcome(){
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
     const net=paid;
     const method=PAYMENT_METHOD_LABELS[flowState.orderState.paidMethod || flowState.orderState.paymentMethod] || 'Original payment method';
-    ['payfail','payment-success','pharmacypending','pharmacyaccepted'].forEach(id => {
+    ['payfail','payment-success','pharmacypending','pharmacyaccepted','prescription'].forEach(id => {
       const screen=document.getElementById(id);
       if(!screen) return;
       screen.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(net); });
@@ -6902,6 +6938,15 @@
       syncIntakeDropdownContinue(multi.closest('.screen'));
     }
     // segmented toggles (ID/passport, article filters): single-select within parent group
+    /* Receipt and certificate are reached from wherever the patient happens to
+       be looking for them, so the caller names the tab and the documents
+       screen opens on it. */
+    const docOpen = e.target.closest('[data-doc-open]');
+    if(docOpen){
+      show('prescription');
+      setDocumentTab(docOpen.dataset.docOpen);
+      return;
+    }
     const tog = e.target.closest('[data-toggle]');
     if(tog){
       [...tog.parentElement.querySelectorAll('[data-toggle]')].forEach(o => o.setAttribute('aria-selected', o===tog));
