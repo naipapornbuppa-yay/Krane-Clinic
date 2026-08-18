@@ -639,7 +639,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 
 /* ---------- Badge / pill ---------- */
 /* One consistent badge: soft-filled pill, no borders/outlines. Tints stay in-palette. */
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:4px 10px;border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:4px 10px;border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2);white-space:nowrap}
+.between>.badge{flex:none}
 .badge--line{background:var(--color-bg-2);border:0;color:var(--color-ink-2)}
 .badge--warn{background:var(--state-attention);color:var(--state-attention-ink)}
 
@@ -1418,6 +1419,30 @@ body.modal-open{overflow:hidden}
    left to communicate — the row itself is the answer. */
 [data-intake-auto-advance] .option[data-select] .opt-check{display:none}
 [data-intake-auto-advance] .option[data-select]{padding-right:var(--sp-4)}
+
+/* Issued documents carry the wordmark as a watermark, the way a printed
+   certificate or receipt does — set behind the content, never over it. */
+.doc-sheet{position:relative;overflow:hidden}
+.doc-sheet::before{
+  content:"";
+  position:absolute;
+  top:50%;left:50%;
+  width:132%;
+  aspect-ratio:1059/280;
+  background:url("../assets/krane-logo-16aug26-2.svg") center/contain no-repeat;
+  transform:translate(-50%,-50%) rotate(-22deg);
+  opacity:.06;
+  pointer-events:none;
+}
+.doc-sheet>*{position:relative;z-index:1}
+/* The header row keeps its status chip whole: the title shrinks, the pill does
+   not, so "ชำระแล้ว" cannot break across two lines. */
+.doc-sheet>.between>div:first-child{min-width:0}
+/* Field rows read as label then value. The label is short and fixed, so it
+   never breaks mid-word to make room — the value wraps instead. */
+.doc-sheet .kv-list .between{align-items:flex-start;gap:var(--sp-5)}
+.doc-sheet .kv-list .between>.muted{flex:none;white-space:nowrap}
+.doc-sheet .kv-list .between>strong{min-width:0;text-align:right}
 
 /* ---- Order documents ----------------------------------------------------
    Ghost text links under the timeline read as fine print, which is the wrong
