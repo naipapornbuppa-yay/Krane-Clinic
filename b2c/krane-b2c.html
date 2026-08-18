@@ -1426,25 +1426,38 @@
         <span data-address-preview-detail>ค้นหาที่อยู่ หรือเลือกจากแผนที่ แล้วเรากรอกให้อัตโนมัติ</span>
       </p>
 
-      <div class="field-row">
-        <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
-        <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
-      </div>
+      <!-- Nine fields in one flat run read as a wall (client, 18 Aug). Same
+           fields, grouped by what they are about: who receives it, where it
+           goes, and how to find the door. -->
+      <section class="form-group">
+        <h3 class="form-group__title">ผู้รับพัสดุ</h3>
+        <div class="field-row">
+          <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
+          <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
+        </div>
+      </section>
 
-      <div class="field-row">
-        <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
-        <div class="field field--narrow"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div>
-      </div>
-      <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
-      <div class="field-row">
-        <div class="field grow"><label for="addrSubdistrict">แขวง / ตำบล</label><input class="input" id="addrSubdistrict" autocomplete="off" placeholder="แขวงหรือตำบล" required></div>
-        <div class="field grow"><label for="addrDistrictName">เขต / อำเภอ</label><input class="input" id="addrDistrictName" autocomplete="off" placeholder="เขตหรืออำเภอ" required></div>
-      </div>
-      <div class="field-row">
-        <div class="field grow"><label for="addrProvince">จังหวัด</label><input class="input" id="addrProvince" autocomplete="off" placeholder="จังหวัด" required></div>
-        <div class="field field--narrow"><label for="addrPostcode">รหัสไปรษณีย์</label><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder="10110" required></div>
-      </div>
-      <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+      <section class="form-group">
+        <h3 class="form-group__title">ที่อยู่จัดส่ง</h3>
+        <div class="field-row">
+          <div class="field grow"><label for="addrBuilding">บ้านเลขที่ / อาคาร</label><input class="input" id="addrBuilding" autocomplete="off" placeholder="บ้านเลขที่หรือชื่ออาคาร" required></div>
+          <div class="field field--narrow"><label for="addrFloor">ชั้น</label><input class="input" id="addrFloor" autocomplete="off" placeholder="ชั้น"></div>
+        </div>
+        <div class="field"><label for="addrLine">ถนน / ซอย</label><input class="input" id="addrLine" autocomplete="off" placeholder="ถนนหรือซอย" required></div>
+        <div class="field-row">
+          <div class="field grow"><label for="addrSubdistrict">แขวง / ตำบล</label><input class="input" id="addrSubdistrict" autocomplete="off" placeholder="แขวงหรือตำบล" required></div>
+          <div class="field grow"><label for="addrDistrictName">เขต / อำเภอ</label><input class="input" id="addrDistrictName" autocomplete="off" placeholder="เขตหรืออำเภอ" required></div>
+        </div>
+        <div class="field-row">
+          <div class="field grow"><label for="addrProvince">จังหวัด</label><input class="input" id="addrProvince" autocomplete="off" placeholder="จังหวัด" required></div>
+          <div class="field field--narrow"><label for="addrPostcode">รหัสไปรษณีย์</label><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder="10110" required></div>
+        </div>
+      </section>
+
+      <section class="form-group">
+        <h3 class="form-group__title">รายละเอียดสำหรับไรเดอร์ <span class="form-group__optional">(ไม่บังคับ)</span></h3>
+        <div class="field"><label class="sr-only" for="addrNote">หมายเหตุถึงไรเดอร์</label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
+      </section>
 
       <!-- addrDistrict is kept as the composed string the payment summary and the
            km lookup already read. Never edited directly, always derived. -->
@@ -1464,16 +1477,25 @@
   <section class="screen" id="address-map">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">เลือกตำแหน่งบนแผนที่</span></div>
     <div class="screen__body address-map-body">
+      <!-- Real geography: OpenStreetMap raster tiles, panned directly, with
+           Nominatim reverse geocoding on every idle so the form is always
+           filled from the pin (client, 18 Aug). No map SDK — tiles are plain
+           images, which keeps the page dependency-free. The CSS street grid
+           below stays as the offline fallback. -->
       <div class="address-map address-map--full" data-address-map>
+        <div class="osm-map" data-osm-map hidden>
+          <div class="osm-map__plane" data-osm-plane></div>
+          <span class="osm-map__credit">© OpenStreetMap</span>
+        </div>
         <div class="sim-map" data-sim-map data-sim-role="hero">
           <div class="sim-map__plane" data-sim-plane></div>
-          <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-          <div class="sim-map__zoom">
-            <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
-            <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
-          </div>
-          <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
         </div>
+        <span class="sim-map__crosshair" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+        <div class="sim-map__zoom">
+          <button type="button" data-sim-zoom="1" aria-label="ขยายแผนที่">+</button>
+          <button type="button" data-sim-zoom="-1" aria-label="ย่อแผนที่">−</button>
+        </div>
+        <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
       </div>
       <p class="address-readout" role="status" aria-live="polite">
         <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
@@ -3631,24 +3653,68 @@
     };
   }
 
+  /* An invalid field says so where it went wrong — red outline and a line of
+     help under the field — instead of only firing a toast the reader has to
+     map back onto a form (client, 18 Aug). */
+  function clearFieldError(input){
+    const field=input?.closest('.field');
+    if(!field) return;
+    field.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
+  }
+  function setFieldError(input,message){
+    const field=input?.closest('.field');
+    if(!field) return;
+    if(!message){ clearFieldError(input); return; }
+    let error=field.querySelector('.field__error');
+    if(!error){
+      error=document.createElement('p');
+      error.className='field__error';
+      error.setAttribute('role','alert');
+      field.appendChild(error);
+    }
+    error.textContent=message;
+    field.classList.add('is-invalid');
+    input.setAttribute('aria-invalid','true');
+    if(input.dataset.errorBound!=='true'){
+      input.dataset.errorBound='true';
+      ['input','change'].forEach(type => input.addEventListener(type,() => clearFieldError(input)));
+    }
+  }
   function saveDeliveryAddress(){
     const screen=document.getElementById('address');
     if(!screen) return false;
     const a=readAddressInputs();
-    /* Name the field that is actually missing and focus it, rather than one
-       generic message that leaves you hunting. */
+    /* Mark every field that is missing, not just the first — one pass through
+       the form is enough to see all of it. */
     const required=[
       ['recipientName','ชื่อผู้รับ'], ['recipientPhone','เบอร์โทรศัพท์'],
       ['addrBuilding','บ้านเลขที่ / อาคาร'], ['addrLine','ถนน / ซอย'],
       ['addrSubdistrict','แขวง / ตำบล'], ['addrDistrictName','เขต / อำเภอ'],
       ['addrProvince','จังหวัด'], ['addrPostcode','รหัสไปรษณีย์']
     ];
+    let firstMissing=null;
     for(const [id,label] of required){
       const el=document.getElementById(id);
-      if(!el || el.value.trim()) continue;
-      showActionToast('กรุณากรอก'+label,'warning');
-      el.focus();
-      try{ el.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
+      if(!el) continue;
+      if(el.value.trim()){ clearFieldError(el); continue; }
+      setFieldError(el,'กรุณากรอก'+label);
+      if(!firstMissing) firstMissing=el;
+    }
+    const phone=document.getElementById('recipientPhone');
+    if(phone && phone.value.trim() && phone.value.replace(/\D/g,'').length<9){
+      setFieldError(phone,'เบอร์โทรศัพท์ไม่ครบ กรอกให้ครบ 10 หลัก');
+      if(!firstMissing) firstMissing=phone;
+    }
+    const postcode=document.getElementById('addrPostcode');
+    if(postcode && postcode.value.trim() && !/^\d{5}$/.test(postcode.value.trim())){
+      setFieldError(postcode,'รหัสไปรษณีย์ต้องเป็นตัวเลข 5 หลัก');
+      if(!firstMissing) firstMissing=postcode;
+    }
+    if(firstMissing){
+      showActionToast('ยังกรอกข้อมูลไม่ครบ ดูช่องที่ไฮไลต์ไว้','warning');
+      firstMissing.focus();
+      try{ firstMissing.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
       return false;
     }
     writeDeliveryAddressDraft(screen,{
@@ -4510,14 +4576,191 @@
     map.addEventListener('pointerleave', end);
   }
   function simLocate(){
-    // FAKE. Production: navigator.geolocation.getCurrentPosition().
+    if(!osmView.failed && navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          osmSetView(position.coords.latitude,position.coords.longitude,17);
+          showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว กำลังกรอกที่อยู่ให้','success');
+        },
+        () => showActionToast('เปิดสิทธิ์ตำแหน่งไม่ได้ ลองเลื่อนแผนที่เพื่อปักหมุดแทน','warning'),
+        {enableHighAccuracy:true,timeout:8000}
+      );
+      return;
+    }
+    // Offline fallback: a fixed Bangkok point on the drawn grid.
     simState.x=0; simState.y=0; simState.z=1.35;
     simApplyTransform(); simUpdateReadout();
     showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว และกรอกที่อยู่ให้แล้ว','success');
   }
+  /* ======================================================================
+     REAL ADDRESSES — OpenStreetMap
+     Search and reverse geocoding go to Nominatim; the picker draws OSM raster
+     tiles directly. Both are free and need no key. Both are also best effort:
+     when the network is unavailable the sample list and the CSS street grid
+     still drive the same applyAddress() contract, so the walkthrough never
+     dead-ends offline.
+     ====================================================================== */
+  const OSM_ENDPOINT='https://nominatim.openstreetmap.org';
+  const OSM_TILES='https://tile.openstreetmap.org';
+  function placeFromOsm(result){
+    const a=result.address || {};
+    const displayHead=(result.display_name || '').split(',')[0].trim();
+    const name=result.name || displayHead;
+    const road=a.road || a.pedestrian || a.neighbourhood || '';
+    const houseNumber=a.house_number || '';
+    const building=[name && name!==road ? name : '', houseNumber].filter(Boolean).join(' ');
+    const place={
+      title:name || road || 'ตำแหน่งที่เลือก',
+      building:building || houseNumber || name || road,
+      floor:'',
+      line:road,
+      subdistrict:a.suburb || a.quarter || a.village || a.town || '',
+      districtName:a.city_district || a.district || a.county || a.state_district || '',
+      province:a.province || a.state || a.city || '',
+      postcode:a.postcode || '',
+      lat:Number(result.lat), lon:Number(result.lon)
+    };
+    place.district=composeDistrict(place);
+    place.detail=[road,place.district].filter(Boolean).join(' · ') || (result.display_name || '');
+    return place;
+  }
+  async function osmFetch(path,params){
+    const url=new URL(OSM_ENDPOINT+path);
+    Object.entries({format:'jsonv2',addressdetails:'1','accept-language':'th',...params})
+      .forEach(([key,value]) => url.searchParams.set(key,value));
+    const response=await fetch(url,{headers:{Accept:'application/json'}});
+    if(!response.ok) throw new Error('geocoder '+response.status);
+    return response.json();
+  }
+  async function osmSearch(query){
+    try{
+      const results=await osmFetch('/search',{q:query,countrycodes:'th',limit:'6'});
+      return (Array.isArray(results) ? results : []).map(placeFromOsm);
+    }catch(err){ return null; }
+  }
+  async function osmReverse(lat,lon){
+    try{
+      const result=await osmFetch('/reverse',{lat:String(lat),lon:String(lon),zoom:'18'});
+      return result && result.address ? placeFromOsm(result) : null;
+    }catch(err){ return null; }
+  }
+
+  /* ---- Slippy map, hand-rolled ---- */
+  const OSM_TILE_SIZE=256;
+  const osmView={lat:13.7308,lon:100.5698,zoom:16,ready:false,failed:false};
+  let osmReverseToken=0, osmReverseTimer=0;
+  const osmLonToX=(lon,z) => (lon+180)/360*Math.pow(2,z);
+  const osmLatToY=(lat,z) => {
+    const rad=lat*Math.PI/180;
+    return (1-Math.log(Math.tan(rad)+1/Math.cos(rad))/Math.PI)/2*Math.pow(2,z);
+  };
+  const osmXToLon=(x,z) => x/Math.pow(2,z)*360-180;
+  const osmYToLat=(y,z) => {
+    const n=Math.PI-2*Math.PI*y/Math.pow(2,z);
+    return 180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n)));
+  };
+  function renderOsmTiles(){
+    const host=document.querySelector('[data-osm-map]');
+    const plane=host?.querySelector('[data-osm-plane]');
+    if(!host || !plane) return;
+    const width=host.clientWidth || 360, height=host.clientHeight || 320;
+    const z=osmView.zoom, scale=Math.pow(2,z);
+    const originX=osmLonToX(osmView.lon,z)*OSM_TILE_SIZE - width/2;
+    const originY=osmLatToY(osmView.lat,z)*OSM_TILE_SIZE - height/2;
+    const firstX=Math.floor(originX/OSM_TILE_SIZE), lastX=Math.floor((originX+width)/OSM_TILE_SIZE);
+    const firstY=Math.floor(originY/OSM_TILE_SIZE), lastY=Math.floor((originY+height)/OSM_TILE_SIZE);
+    const tiles=[];
+    for(let y=firstY;y<=lastY;y++){
+      if(y<0 || y>=scale) continue;
+      for(let x=firstX;x<=lastX;x++){
+        const wrapped=((x%scale)+scale)%scale;
+        tiles.push(`<img class="osm-map__tile" alt="" aria-hidden="true" loading="eager" src="${OSM_TILES}/${z}/${wrapped}/${y}.png"
+          style="left:${Math.round(x*OSM_TILE_SIZE-originX)}px;top:${Math.round(y*OSM_TILE_SIZE-originY)}px">`);
+      }
+    }
+    plane.style.transform='translate(0,0)';
+    plane.innerHTML=tiles.join('');
+    /* One broken tile means no tile server. Hand the screen back to the
+       offline grid rather than showing a blank rectangle. */
+    plane.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error',() => { osmDisable(); },{once:true});
+    });
+  }
+  function osmDisable(){
+    if(osmView.failed) return;
+    osmView.failed=true;
+    const host=document.querySelector('[data-osm-map]');
+    if(host) host.hidden=true;
+    document.querySelectorAll('[data-sim-map]').forEach(map => { map.hidden=false; });
+  }
+  function scheduleOsmReverse(){
+    window.clearTimeout(osmReverseTimer);
+    osmReverseTimer=window.setTimeout(async () => {
+      const token=++osmReverseToken;
+      const place=await osmReverse(osmView.lat,osmView.lon);
+      if(!place || token!==osmReverseToken) return;
+      // The pin always fills the form — that is the point of picking on a map.
+      applyAddress(place);
+    },420);
+  }
+  function osmSetView(lat,lon,zoom){
+    osmView.lat=lat; osmView.lon=lon;
+    if(zoom) osmView.zoom=Math.min(19,Math.max(4,zoom));
+    renderOsmTiles();
+    scheduleOsmReverse();
+  }
+  function osmBindPan(host){
+    if(host.dataset.osmBound==='true') return;
+    host.dataset.osmBound='true';
+    let active=false, sx=0, sy=0, dx=0, dy=0;
+    const plane=host.querySelector('[data-osm-plane]');
+    host.addEventListener('pointerdown',event => {
+      if(event.target.closest('[data-sim-zoom],[data-sim-locate]')) return;
+      active=true; sx=event.clientX; sy=event.clientY; dx=0; dy=0;
+      host.classList.add('is-panning');
+      if(host.setPointerCapture) try{ host.setPointerCapture(event.pointerId) }catch(err){}
+    });
+    host.addEventListener('pointermove',event => {
+      if(!active) return;
+      dx=event.clientX-sx; dy=event.clientY-sy;
+      plane.style.transform=`translate(${dx}px,${dy}px)`;
+    });
+    const end=() => {
+      if(!active) return;
+      active=false;
+      host.classList.remove('is-panning');
+      const z=osmView.zoom;
+      const centreX=osmLonToX(osmView.lon,z)-dx/OSM_TILE_SIZE;
+      const centreY=osmLatToY(osmView.lat,z)-dy/OSM_TILE_SIZE;
+      osmSetView(osmYToLat(centreY,z),osmXToLon(centreX,z));
+    };
+    host.addEventListener('pointerup',end);
+    host.addEventListener('pointercancel',end);
+    host.addEventListener('pointerleave',end);
+  }
+  function setupAddressMap(){
+    const host=document.querySelector('[data-osm-map]');
+    if(!host || osmView.failed) return;
+    host.hidden=false;
+    document.querySelectorAll('[data-sim-map]').forEach(map => { map.hidden=true; });
+    osmBindPan(host);
+    renderOsmTiles();
+    if(!osmView.ready){
+      osmView.ready=true;
+      scheduleOsmReverse();
+    }
+  }
+  function osmZoomBy(step){
+    if(osmView.failed) return false;
+    osmView.zoom=Math.min(19,Math.max(4,osmView.zoom+step));
+    renderOsmTiles();
+    scheduleOsmReverse();
+    return true;
+  }
+
   /* Typing is the fast path to an address; the map is for when you cannot name
-     the place. Suggestions come from the same SIM_PLACES the map reverse-geocodes
-     to, so both routes fill the form from one source. */
+     the place. Suggestions come from Nominatim, falling back to the built-in
+     Bangkok samples, so both routes fill the form from one shape of object. */
   function addressSuggestionsFor(query){
     const q=query.trim().toLowerCase();
     if(q.length<1) return [];
@@ -4525,11 +4768,19 @@
       [place.title,place.line,place.district].join(' ').toLowerCase().includes(q)
     ).slice(0,5);
   }
-  function renderAddressSuggestions(query){
+  let addressSuggestions=[];
+  function renderAddressSuggestions(matches,{allowEmptyMessage=false}={}){
     const list=document.querySelector('[data-address-suggestions]');
     const input=document.querySelector('[data-address-search]');
     if(!list) return;
-    const matches=addressSuggestionsFor(query);
+    addressSuggestions=matches;
+    /* A search that finds nothing says so. Silence reads as a broken field. */
+    if(!matches.length && allowEmptyMessage){
+      list.innerHTML='<li class="address-suggestions__empty" role="option" aria-selected="false" aria-disabled="true">ไม่พบที่อยู่นี้ ลองพิมพ์ชื่ออาคาร ถนน หรือย่าน</li>';
+      list.hidden=false;
+      if(input) input.setAttribute('aria-expanded','true');
+      return;
+    }
     list.innerHTML=matches.map((place,index) => `
       <li role="option" aria-selected="false">
         <button type="button" class="address-suggestion" data-address-suggestion="${index}">
@@ -4548,18 +4799,36 @@
     if(list) list.hidden=true;
     if(input) input.setAttribute('aria-expanded','false');
   }
+  /* Local samples answer the first keystroke instantly; the real geocoder
+     replaces them a beat later. Typing "The Line" used to return nothing at
+     all, because the sample list is Thai only (client, 18 Aug). */
+  let addressSearchTimer=0, addressSearchToken=0;
+  function scheduleAddressSearch(query){
+    window.clearTimeout(addressSearchTimer);
+    const text=query.trim();
+    if(text.length<2){ closeAddressSuggestions(); return; }
+    renderAddressSuggestions(addressSuggestionsFor(text));
+    addressSearchTimer=window.setTimeout(async () => {
+      const token=++addressSearchToken;
+      const remote=await osmSearch(text);
+      if(token!==addressSearchToken) return;
+      const input=document.querySelector('[data-address-search]');
+      if(!input || input.value.trim()!==text) return;
+      renderAddressSuggestions(remote && remote.length ? remote : addressSuggestionsFor(text),{allowEmptyMessage:true});
+    },350);
+  }
   function setupAddressSearch(){
     const input=document.querySelector('[data-address-search]');
     const list=document.querySelector('[data-address-suggestions]');
     if(!input || !list || input.dataset.searchBound==='true') return;
     input.dataset.searchBound='true';
-    input.addEventListener('input',() => renderAddressSuggestions(input.value));
-    input.addEventListener('focus',() => { if(input.value) renderAddressSuggestions(input.value); });
+    input.addEventListener('input',() => scheduleAddressSearch(input.value));
+    input.addEventListener('focus',() => { if(input.value) scheduleAddressSearch(input.value); });
     input.addEventListener('keydown',event => { if(event.key==='Escape') closeAddressSuggestions(); });
     list.addEventListener('click',event => {
       const option=event.target.closest('[data-address-suggestion]');
       if(!option) return;
-      const place=addressSuggestionsFor(input.value)[Number(option.dataset.addressSuggestion)];
+      const place=addressSuggestions[Number(option.dataset.addressSuggestion)];
       if(!place) return;
       applyAddress(place);
       input.value=place.title;
@@ -5359,10 +5628,14 @@
     button.disabled=!actionable;
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    /* The CTA keeps one name ("ชำระเงิน") through every blocked state so the
-       button never reads like a different action while it is disabled; the
-       reason it is blocked is carried by the checkout rows themselves. */
-    if(!actionable) label.textContent='ชำระเงิน';
+    /* A blocked CTA names its blocker (client, 18 Aug). "ชำระเงิน", greyed out
+       with no explanation, left the reader hunting for what was missing. */
+    const blockedLabels={
+      'address-required':'เลือกที่อยู่ก่อน',
+      'delivery-method-required':'เลือกวิธีจัดส่งก่อน',
+      'payment-method-required':'เลือกวิธีชำระเงินก่อน'
+    };
+    if(!actionable) label.textContent=blockedLabels[actionState] || 'ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent=`ชำระเงิน · ${baht(currentMedicationDue())}`;
@@ -5875,6 +6148,7 @@
     }
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
+    if(id==='address-map') window.setTimeout(setupAddressMap,0);
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='intake-general') syncGeneralHealthContext();
@@ -6932,6 +7206,7 @@
     const simZoom=e.target.closest('[data-sim-zoom]');
     if(simZoom){
       const dir=parseInt(simZoom.dataset.simZoom,10);
+      if(osmZoomBy(dir)) return;
       simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
       simApplyTransform(); return;
     }

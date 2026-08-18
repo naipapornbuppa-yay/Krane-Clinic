@@ -285,6 +285,13 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:13px;font-weight:var(--fw-semibold);cursor:pointer;box-shadow:var(--shadow-sm)}
 .sim-map__locate .ui-icon{width:16px;height:16px}
 .sim-map.is-panning .sim-map__plane{transition:none}
+/* ---- OpenStreetMap tiles (no SDK: the tiles are plain images) ---- */
+.osm-map{position:absolute;inset:0;z-index:1;overflow:hidden;background:#E8E4DD;touch-action:none;cursor:grab}
+.osm-map.is-panning{cursor:grabbing}
+.osm-map__plane{position:absolute;inset:0;will-change:transform}
+.osm-map__tile{position:absolute;width:256px;height:256px;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.osm-map__credit{position:absolute;right:0;bottom:0;z-index:2;padding:2px 6px;border-radius:var(--radius-sm) 0 0 0;
+  background:rgba(255,255,255,.78);color:var(--color-ink-3);font-size:10px;line-height:1.4}
 /* A precondition for the tap, not a paragraph to read: one line, on the
    button, in the app's own blue (client, 18 Aug). */
 .info-chip{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;
@@ -1555,6 +1562,7 @@ body.modal-open{overflow:hidden}
   background:transparent;color:var(--color-ink);text-align:left;cursor:pointer;
 }
 .address-suggestion:hover,.address-suggestion:focus-visible{background:var(--surface-sunken)}
+.address-suggestions__empty{padding:var(--sp-3);color:var(--color-ink-3);font-size:var(--fs-sm);line-height:1.5}
 .address-suggestion__icon{flex:none;display:grid;width:28px;height:28px;place-items:center;border-radius:50%;background:var(--surface-sunken);color:var(--color-ink-2)}
 .address-suggestion__body{display:flex;flex-direction:column;gap:2px;min-width:0}
 .address-suggestion__body strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
@@ -1571,6 +1579,17 @@ body.modal-open{overflow:hidden}
   display:grid;width:32px;height:32px;place-items:center;padding:0;
   border:0;border-radius:50%;background:transparent;color:var(--color-ink-3);cursor:pointer;
 }
+/* Nine fields in a row read as a wall. Grouping them by subject gives the eye
+   somewhere to rest (client, 18 Aug). */
+.form-group{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);
+  border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:var(--shadow-xs,0 1px 2px rgba(18,24,36,.06))}
+.form-group__title{margin:0;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.form-group__optional{font-weight:var(--fw-regular);color:var(--color-ink-3)}
+/* A field that failed validation says so where it failed, not only in a toast. */
+.field.is-invalid>.input,.field.is-invalid>.textarea,.field.is-invalid>.select{
+  border-color:var(--color-danger);box-shadow:0 0 0 1px var(--color-danger) inset}
+.field__error{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--color-danger);font-size:var(--fs-xs);line-height:1.4}
+.field:not(.is-invalid)>.field__error{display:none}
 .field__clear:hover{background:var(--surface-sunken-hover);color:var(--color-ink-2)}
 .field__clear[hidden]{display:none}
 .field__clear svg{width:15px;height:15px}
