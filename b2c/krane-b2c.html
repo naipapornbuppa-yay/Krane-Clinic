@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-general-paged-v1";
+    const release = "20260818-pickup-address-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-general-paged-v1">
-<link rel="stylesheet" href="components.css?v=20260818-general-paged-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-pickup-address-v1">
+<link rel="stylesheet" href="components.css?v=20260818-pickup-address-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-general-paged-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-pickup-address-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1566,11 +1566,11 @@
 
       <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
            step first; a returning patient can review or change the saved result. -->
-      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="delivery">
-        <span class="section-label">การจัดส่ง</span>
+      <div class="stack-2">
+        <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
         <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
           <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
@@ -1922,7 +1922,7 @@
             <div class="between"><span class="hint">Allowed</span><strong>1 total</strong></div>
             <div class="between"><span class="hint">Expires</span><strong>2 Jul 2026</strong></div>
           </div>
-          <button class="btn btn--secondary btn--sm" style="width:100%" data-go="conditions">Start a quick re-consult</button>
+          <button class="btn btn--secondary btn--sm" style="width:100%" data-go="matching" data-category="skin">Start a quick re-consult</button>
         </div>
       </div>
       <!-- F22 entry (client 5 Jul): the other route to medicine without a new consult -->
@@ -1969,9 +1969,9 @@
           <!-- Client (6 Jul): there is NO messaging service. Talking to a doctor is always
                a booked consult. Two paths: consult now (own fee) vs the scheduled follow-up. -->
           <div class="treatment-actions">
-            <button class="btn btn--primary btn--sm treatment-actions__primary" data-go="matching">Start follow-up</button>
+            <button class="btn btn--primary btn--sm treatment-actions__primary" data-go="matching" data-category="hair-skin">Start follow-up</button>
             <button class="btn btn--secondary btn--sm" data-go="refill">Refill now</button>
-            <button class="btn btn--secondary btn--sm" data-go="matching">Consult now</button>
+            <button class="btn btn--secondary btn--sm" data-go="matching" data-category="hair-skin">Consult now</button>
           </div>
         </div>
 
@@ -3453,6 +3453,39 @@
   function readDeliveryAddressDraft(screen){
     try { return JSON.parse(screen?.dataset.addressDraft || '{}'); } catch(error) { return {}; }
   }
+  /* Address fields arrive prefilled from the map pin, so editing one usually
+     means replacing it rather than appending — holding backspace through a
+     Thai address is the worst part of this form. One clear button per field,
+     added here so the nine fields cannot drift apart in the markup. */
+  function syncFieldClearButtons(){
+    document.querySelectorAll('#address .field__clear').forEach(button => {
+      const input=button.previousElementSibling;
+      button.hidden=!(input && input.value);
+    });
+  }
+  function setupClearableFields(){
+    const scope=document.getElementById('address');
+    if(!scope) return;
+    scope.querySelectorAll('.field > input.input').forEach(input => {
+      const field=input.parentElement;
+      if(field.querySelector('.field__clear')) return;
+      field.classList.add('field--clearable');
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='field__clear';
+      button.setAttribute('aria-label','ล้างข้อมูลในช่องนี้');
+      button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+      button.hidden=!input.value;
+      input.insertAdjacentElement('afterend',button);
+      input.addEventListener('input',() => { button.hidden=!input.value; });
+      button.addEventListener('click',() => {
+        input.value='';
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.focus();
+      });
+    });
+  }
+
   function syncDeliveryAddress({hydrateForm=false}={}){
     const address=flowState.orderState.address;
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
@@ -3551,6 +3584,7 @@
     invalidateFulfillmentQuote();
     persistFlowState();
     syncDeliveryAddress();
+    syncFieldClearButtons();
     return true;
   }
 
@@ -5142,7 +5176,9 @@
     const address=flowState.orderState.address || {};
     if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
-    if(!pickup && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
+    /* Pickup still needs the address: it is what finds the nearest branch. Only
+       the courier method is skipped, because there is no courier. */
+    if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
     if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked || !flowState.orderState.pharmacyAccepted || !flowState.orderState.pharmacyPrepared) return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
@@ -5196,6 +5232,12 @@
     document.querySelectorAll('#payment [data-fulfillment-panel]').forEach(panel => {
       panel.hidden=!fulfillable || panel.dataset.fulfillmentPanel!==(pickup ? 'pickup' : 'delivery');
     });
+    /* Same row, two jobs: it routes the courier on delivery and finds the
+       nearest branch on pickup, so it says which one it is doing. */
+    const addressLabel=document.querySelector('#payment [data-fulfillment-address-label]');
+    const addressTitle=document.querySelector('#payment [data-fulfillment-address-title]');
+    if(addressLabel) addressLabel.textContent=pickup ? 'ที่อยู่ของคุณ' : 'การจัดส่ง';
+    if(addressTitle) addressTitle.textContent=pickup ? 'ที่อยู่สำหรับหาสาขาใกล้คุณ' : 'ที่อยู่จัดส่ง';
     const noFulfillmentNotice=document.querySelector('#payment [data-no-fulfillment-notice]');
     if(noFulfillmentNotice) noFulfillmentNotice.hidden=fulfillable;
     const medicineRow=document.querySelector('#payment [data-payment-medicine-row]');
@@ -5764,6 +5806,7 @@
     }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     syncThemeColor(id);
+    if(id==='address') syncFieldClearButtons();
     updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -6898,12 +6941,14 @@
       if(go.dataset.go === 'matching') doctorAvailable=true;
       if(go.closest('.rail') && go.dataset.go === 'login') postAuthNext = 'profile';
       if(guardActiveCase(go.dataset.go)) return;
+      // Any link may name the concern it is about, not just the prototype rail:
+      // re-consulting from a treatment card must not re-ask which condition.
+      if(go.dataset.category) setSelectedCategory(go.dataset.category);
       if(go.closest('.rail')){
         if(go.dataset.entryChannel==='partner'){
           flowState.entryChannel='partner';
           persistFlowState();
         }
-        if(go.dataset.category) setSelectedCategory(go.dataset.category);
         seedPartnerStage(go.dataset.go);
         seedClinicalDemoStage(go.dataset.go);
         history = seededHistory(go.dataset.go);
@@ -7819,6 +7864,7 @@
 
   // initialise now that featureMap + toast exist (honours deep-link hash, else current screen)
   renderConsultationCatalog();
+  setupClearableFields();
   restoreIntakeDraft();
   restorePartnerFields();
   enhancePatientDateFields();
