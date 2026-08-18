@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-safety-cta-v1";
+    const release = "20260818-doc-section-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-safety-cta-v1">
-<link rel="stylesheet" href="components.css?v=20260818-safety-cta-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-doc-section-v1">
+<link rel="stylesheet" href="components.css?v=20260818-doc-section-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-safety-cta-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-doc-section-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1751,7 +1751,7 @@
       <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Payment is confirmed. Your prepared order is moving to dispatch and tracking.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button><div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost" data-doc-open="receipt">ดูใบเสร็จ</button><button class="btn btn--ghost" data-doc-open="cert">ใบรับรองแพทย์</button></div></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1843,8 +1843,19 @@
         <div class="step"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step"><strong>Delivered</strong><div class="hint">Pending</div></div>
       </div>
-      <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
-      <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost" data-doc-open="receipt">ดูใบเสร็จ</button><button class="btn btn--ghost" data-doc-open="cert">ใบรับรองแพทย์</button></div>
+      <div class="doc-section">
+        <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
+        <button class="doc-row" type="button" data-doc-open="receipt">
+          <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293 · <span data-payment-outcome-amount>฿ 558</span></span></span>
+          <span class="doc-row__action">ดู</span>
+        </button>
+        <button class="doc-row" type="button" data-doc-open="cert">
+          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ · ฟรี</span></span>
+          <span class="doc-row__action">ดู</span>
+        </button>
+      </div>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
