@@ -128,7 +128,7 @@
     "Photo of the front of your Thai ID card.":"รูปด้านหน้าบัตรประชาชนไทย",
     "or":"หรือ",
     "· sent via SMS":"· ส่งทาง SMS",
-    "Today, 11:05":"วันนี้ 11:05",
+    "Today, 11:05":"วันนี้ 11:05","Pharmacist verified prescription and stock":"เภสัชกรตรวจสอบใบสั่งยาและสต็อกแล้ว","Today, 11:12":"วันนี้ 11:12","Stock reserved and medicine prepared":"จองสต็อกและจัดเตรียมยาแล้ว","Fascino Ari · Today, 11:18":"Fascino อารีย์ · วันนี้ 11:18","Arranging rider pickup":"กำลังจัดหาคนขับเข้ารับพัสดุ","Dispatch in progress":"อยู่ระหว่างดำเนินการจัดส่ง",
     "Today, 11:20":"วันนี้ 11:20",
     "Today, 11:22":"วันนี้ 11:22",
     "Noted":"รับทราบ",
