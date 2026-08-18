@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-privacy-rail-v1";
+    const release = "20260818-general-one-page-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-privacy-rail-v1">
-<link rel="stylesheet" href="components.css?v=20260818-privacy-rail-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-general-one-page-v1">
+<link rel="stylesheet" href="components.css?v=20260818-general-one-page-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -733,7 +733,7 @@
         </div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="intake2">Continue</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="intake2" data-flag-go="ineligible">Continue</button></div>
   </section>
 
   <!-- ===================== INTAKE Q2 (concern detail, adapted per service) ===================== -->
@@ -3822,9 +3822,7 @@
           <button class="option" aria-selected="true" data-multi data-general-symptom><span class="opt-body"><span class="opt-title">Other or not sure</span></span><span class="opt-check"></span></button>
         </div>
         <div class="field"><label for="general-description">Briefly describe what is happening</label><textarea class="textarea" id="general-description" placeholder="Main symptom, where you feel it, and anything else the doctor should know"></textarea></div>
-        ${intakeDurationControl({label:'When did it start?'})}`,
-      intake2:`
-        <div class="stack-2"><h2 class="h1">How are you feeling now?</h2></div>
+        ${intakeDurationControl({label:'When did it start?'})}
         <div class="common-group"><div class="section-label">How much is it affecting you?</div><div class="stack-3">
           <button class="option" data-select><span class="opt-body"><span class="opt-title">Mild</span><span class="opt-sub">I can continue normal daily activities</span></span><span class="opt-check"></span></button>
           <button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">Moderate</span><span class="opt-sub">It is affecting sleep, work or normal activities</span></span><span class="opt-check"></span></button>
@@ -3835,7 +3833,17 @@
           <button class="option" aria-selected="true" data-multi><span class="opt-body"><span class="opt-title">It comes and goes</span></span><span class="opt-check"></span></button>
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">It is getting worse</span></span><span class="opt-check"></span></button>
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Several symptoms started together</span></span><span class="opt-check"></span></button>
-        </div></div>`
+        </div></div>
+        <div class="common-group"><div class="section-label">Safety screening</div>
+          <p class="hint">If symptoms are severe or life-threatening, seek emergency care now.</p>
+          <div class="stack-3">
+            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Chest pain, fainting or shortness of breath</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Severe pain, swelling, fever or infection signs</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Sudden major symptom change</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">Currently under specialist care for this issue</span></span><span class="opt-check"></span></button>
+            <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these apply</span></span><span class="opt-check"></span></button>
+          </div>
+        </div>`
     }
   ,
     skin:{
@@ -4335,8 +4343,8 @@
     //   hair                  -> own intake1, intake2; intake3 falls back to the
     //                            authored base, which is the generic "previous
     //                            care or treatment" set and is concern-appropriate
-    //   general               -> own intake1 and intake2 are shown; intake3 is
-    //                            skipped, then the journey moves to urgent safety
+    //   general               -> own intake1 only, and it carries the whole
+    //                            questionnaire; intake2-intake5 are skipped
     // A missing template therefore falls back to the authored base markup only
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
@@ -5091,7 +5099,11 @@
      they survive the innerHTML round-trip renderIntakeQuestions performs (the
      same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake3'];
+  /* General consultation has no disease-specific questionnaire: everything it
+     needs — concern, onset, severity, pattern and the red-flag screening — is
+     merged onto the single #intake1 page, so every other question screen is
+     skipped rather than walked as a step (client, 18 Aug). */
+  const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3','intake4','intake5'];
   const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
     try { return selectedCategory().general ? 'general' : (INTAKE_CATEGORY_KEY[selectedCategoryId] || 'hair'); }
@@ -5137,7 +5149,10 @@
     let i = seq.indexOf(id);
     if(i < 0) return id;
     while(i < seq.length && intakeSkipped(seq[i])) i++;
-    return seq[i] || 'intake4';
+    /* null, not a fallback: on the general route every screen after intake1 is
+       skipped, and falling back to intake4 dropped the patient back into the
+       stepped questionnaire the single page had just replaced. */
+    return seq[i] || null;
   }
   function skipBackFrom(id){
     const seq = ['intake1','intake2','intake3','intake4'];
@@ -5163,12 +5178,16 @@
         ? (flowState.entryChannel==='partner' ? 'intake-concern' : 'consultpay')
         : null;
       const signupParent=current==='signup' && flowState.entryChannel==='direct'
-        ? (categoryNeedsPhotos() ? 'intake5' : 'intake4')
+        ? (intakeStepOrder().slice(-1)[0] || 'intake1')
         : null;
+      /* General skips the condition list (it has no conditions to list), so
+         backing out of its single page returns to the landing page instead of
+         an empty picker. */
+      const generalStartParent=current==='intake1' && isGeneralPath() ? 'landing' : null;
       const waitroomParent=current==='waitroom' && flowState.entryChannel==='direct'
         ? 'intake-general'
         : null;
-      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || waitroomParent || directEntryParent[current]);
+      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || generalStartParent || waitroomParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -5397,7 +5416,13 @@
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   function requiredRouteFor(target){
-    if(intakeSkipped(target)) target = skipForwardFrom(target);
+    if(intakeSkipped(target)){
+      const forward = skipForwardFrom(target);
+      // Deep link into a screen this route never asks: the questionnaire is
+      // already done, so resolve to whatever follows it.
+      if(!forward) return flowState.entryChannel==='partner' ? 'intake-concern' : 'signup';
+      target = forward;
+    }
     if(target==='intake-concern' && !sharedConcernRequired()) return 'intake1';
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
@@ -6740,6 +6765,13 @@
       }
       if(go.dataset.flagGo && scr && scr.querySelector('.option[data-flag][aria-selected="true"]')){
         show(go.dataset.flagGo); return;
+      }
+      // The next question screen may be skipped with nothing behind it — the
+      // single-page general route. That is the end of the questionnaire.
+      if(go.dataset.go && intakeSkipped(go.dataset.go) && !skipForwardFrom(go.dataset.go)){
+        if(flowState.entryChannel==='partner') show('intake-concern');
+        else finishDirectF02();
+        return;
       }
       if(go.dataset.go === 'intake5' && !categoryNeedsPhotos()){
         if(flowState.entryChannel==='partner') show('intake-concern');
