@@ -186,20 +186,24 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 #intake-concern .partner-concern-textarea{min-height:96px}
 #intake-concern .partner-photo-upload{padding:18px 14px}
 .field-label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:var(--sp-2)}
-.partner-duration-row{height:56px;display:flex;align-items:stretch;gap:0;overflow:hidden;border:1px solid transparent;border-radius:var(--control-radius);background:var(--color-field)}
-.partner-duration-stepper,.partner-duration-units{height:100%;display:flex;align-items:center;background:transparent}
-.partner-duration-stepper{flex:0 0 40%;min-width:164px;justify-content:space-between;gap:8px;padding:8px 12px}
+/* Client (18 Aug): the amount and its unit stack instead of splitting one
+   56px bar in two — four units never fit beside a stepper on a phone, and the
+   halves fought for width. The units now use the same segmented treatment as
+   the ไม่มี/มี control: a recessed track with the chosen side raised, rather
+   than one dark half against a flat field that read as disabled. */
+.partner-duration-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;border:0;border-radius:0;background:transparent;overflow:visible;height:auto}
+.partner-duration-stepper,.partner-duration-units{display:flex;align-items:center}
+.partner-duration-stepper{height:56px;flex:none;min-width:0;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:var(--control-radius);background:var(--color-field)}
 .partner-duration-stepper button{width:30px;height:30px;display:inline-grid;place-items:center;flex:0 0 30px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font:inherit;font-size:17px;font-weight:var(--fw-semibold);line-height:1;cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease}
 .partner-duration-stepper button:hover:not(:disabled){background:var(--color-bg-2)}
 .partner-duration-stepper button:active:not(:disabled){transform:scale(.92)}
 .partner-duration-stepper button:disabled{opacity:.35;cursor:not-allowed}
-.partner-duration-stepper input{width:48px;min-width:42px;height:100%;padding:0;border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:20px;font-weight:var(--fw-semibold);text-align:center;-moz-appearance:textfield}
+.partner-duration-stepper input{width:auto;min-width:42px;flex:1;height:100%;padding:0;border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:20px;font-weight:var(--fw-semibold);text-align:center;-moz-appearance:textfield}
 .partner-duration-stepper input::-webkit-inner-spin-button,.partner-duration-stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .partner-duration-stepper input:focus{outline:none}
-.partner-duration-units{flex:1;gap:5px;padding:6px 8px;border-left:1px solid var(--color-line);overflow:hidden}
-.partner-duration-units button{height:42px;min-width:0;flex:1;padding:0 10px;border:1px solid transparent;border-radius:calc(var(--control-radius) - 6px);background:var(--color-field);color:var(--color-ink-2);font:inherit;font-weight:var(--fw-medium);cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease,color .18s ease}
-.partner-duration-units button+button{border-left:1px solid var(--color-line-strong)}
-.partner-duration-units button[aria-selected="true"]{border-color:var(--color-surface-deep);background:var(--color-surface-deep);color:var(--color-on-dark)}
+.partner-duration-units{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;height:52px;gap:4px;padding:4px;border:0;border-radius:var(--control-radius);background:var(--color-field);overflow:hidden}
+.partner-duration-units button{height:100%;min-width:0;padding:0 6px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-3);font:inherit;font-size:14px;font-weight:var(--fw-medium);cursor:pointer;white-space:nowrap;transition:background .18s ease,transform .12s ease,color .18s ease,box-shadow .18s ease}
+.partner-duration-units button[aria-selected="true"]{background:var(--color-surface);color:var(--color-ink);box-shadow:0 1px 2px rgba(18,24,36,.06),0 2px 8px rgba(18,24,36,.08)}
 .partner-duration-units button:active{transform:scale(.97)}
 .intake-duration-field{gap:8px}
 .intake-duration-control{max-width:620px}
@@ -579,9 +583,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-photo-upload .up-sub{max-width:460px;margin-inline:auto;line-height:1.45}
 @media(max-width:360px){
   .partner-concern-hero__visual{width:72px;height:72px}
-  .partner-duration-stepper{flex-basis:38%;min-width:142px;padding-inline:8px}
-  .partner-duration-units{padding-inline:6px}
-  .partner-duration-units button{padding-inline:6px}
+  .partner-duration-stepper{padding-inline:8px}
+  .partner-duration-units button{padding-inline:4px;font-size:13px}
   .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
@@ -856,10 +859,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* the thread is a flex column so each bubble can sit left (doctor) or right (you) */
 .chat-body{display:flex;flex-direction:column;gap:var(--sp-3);background:var(--surface-chat)}
 #consult,#consult .screen__top,#consult .screen__footer,#consult .care-journey{background:var(--surface-chat)}
-/* Watermark sits under the thread, never over it, and never takes a tap. */
-.chat-body::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:url("assets/chat-v1/krane-watermark.svg") 0 0/150px repeat;
+/* Watermark sits under the thread, never over it, and never takes a tap.
+   One wordmark rather than a tile, painted on the scroll pane itself so it
+   stays put while the thread moves over it (default background-attachment on
+   a scroller is fixed to the element, not to its content). */
+.chat-body{
+  background-image:url("assets/chat-v1/krane-wordmark-watermark.svg");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:86% auto;
 }
 .chat-body>*{position:relative;z-index:1}
 .chat-body .alert{align-self:stretch}
@@ -1096,13 +1104,18 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .live-pill{
   display:inline-flex;align-items:center;gap:7px;min-height:28px;flex:none;
   padding:0 12px;border:0;border-radius:var(--radius-pill);
-  background:var(--surface-sunken);color:var(--color-ink);
+  /* Live is a positive state, so it reads from the positive palette and the
+     whole pill pulses — not just the dot — because it is the one thing on this
+     screen announcing the call is still running. */
+  background:var(--state-positive);color:var(--state-positive-ink);
   font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer;
+  animation:live-pulse 1.8s ease-in-out infinite;
 }
 .live-pill[hidden]{display:none}
-.live-pill__dot{width:7px;height:7px;flex:none;border-radius:50%;background:var(--color-accent);animation:live-blink 1.4s ease-in-out infinite}
+.live-pill__dot{width:7px;height:7px;flex:none;border-radius:50%;background:var(--state-positive-ink);animation:live-blink 1.4s ease-in-out infinite}
 @keyframes live-blink{0%,100%{opacity:1}50%{opacity:.25}}
-@media(prefers-reduced-motion:reduce){.live-pill__dot{animation:none}}
+@keyframes live-pulse{0%,100%{opacity:1}50%{opacity:.66}}
+@media(prefers-reduced-motion:reduce){.live-pill,.live-pill__dot{animation:none}}
 .screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 /* Per-question progress lifted out of the top bar to sit under the main
    care stepper on questionnaire screens. Same row layout the top bar used. */
@@ -1245,10 +1258,15 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 #video .call-remote__video{width:100%;height:100%;border-radius:0;aspect-ratio:auto;object-fit:cover;object-position:center center;mix-blend-mode:normal;filter:saturate(.96) contrast(1.01) brightness(.97)}
 #video .callstage--live .call-remote--video::after{background:linear-gradient(180deg,rgba(15,29,47,.04) 0%,transparent 48%,rgba(15,29,47,.7) 100%)}
 #video .call-remote__identity{left:20px;right:20px;bottom:14px}
-#video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:1px solid rgba(255,255,255,.26);border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
+/* Flat tile, no outline: the border read as a stray frame against the video. */
+#video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:0;border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
 #video .call-fab{right:16px;bottom:122px;background:var(--color-accent)}
 #video .callstage--live .call-controls{bottom:48px}
 #video .callstage--live .call-btn{background:rgba(29,43,63,.72)}
+/* Hang up is the one destructive control in the row, so it stays filled red —
+   the id-scoped rule above was quietly painting it the same dark as the rest. */
+#video .callstage--live .call-btn--end{background:var(--color-danger);border-color:transparent;color:#fff}
+#video .callstage--live .call-btn--end:hover{background:var(--color-danger);filter:brightness(1.08)}
 #video .callstage--live .call-hint{bottom:10px;color:rgba(255,255,255,.78)}
 
 /* ---------- Rating (stars) ---------- */
@@ -1996,8 +2014,13 @@ body.modal-open{overflow:hidden}
   transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
 .callbar:hover{background:var(--surface-notice-strong);transform:translateY(-1px)}
 .callbar strong{color:var(--surface-notice-ink);white-space:nowrap}
-.callbar .cb-dot{width:9px;height:9px;border-radius:var(--radius-pill);background:var(--surface-notice-ink);flex:none;animation:cb-pulse 1.6s ease-out infinite}
-@keyframes cb-pulse{0%{box-shadow:0 0 0 0 rgba(47,122,88,.4)}100%{box-shadow:0 0 0 9px rgba(47,122,88,0)}}
+/* One line: the bar is a status, and wrapping it to two made it read as a
+   paragraph sitting in the thread. */
+.callbar>.grow{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* The dot is the live signal, so it is the one bright thing on the cream band
+   rather than the same ink as the text. */
+.callbar .cb-dot{width:9px;height:9px;border-radius:var(--radius-pill);background:#E8B411;flex:none;animation:cb-pulse 1.6s ease-out infinite}
+@keyframes cb-pulse{0%{box-shadow:0 0 0 0 rgba(232,180,17,.55)}100%{box-shadow:0 0 0 9px rgba(232,180,17,0)}}
 /* helper line under the call controls (dark call stage) */
 .call-hint{text-align:center;font-size:var(--fs-xs);color:rgba(255,255,255,.62);margin:var(--sp-2) 0 var(--sp-4)}
 /* Voice is a fallback, so the room says plainly who turned video off and that the
@@ -2167,9 +2190,8 @@ body.lang-th *{letter-spacing:normal}
   #payment .checkout-order__note,#payment .checkout-row__label,#payment .checkout-calc{font-size:13px}
 }
 @media(max-width:480px){
-  .partner-duration-stepper{flex-basis:38%;min-width:142px;padding-inline:8px}
-  .partner-duration-units{padding-inline:6px}
-  .partner-duration-units button{padding-inline:6px}
+  .partner-duration-stepper{padding-inline:8px}
+  .partner-duration-units button{padding-inline:4px;font-size:13px}
   .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 

@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-doctor-row-v1";
+    const release = "20260818-call-chat-duration-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-doctor-row-v1">
-<link rel="stylesheet" href="components.css?v=20260818-doctor-row-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-call-chat-duration-v1">
+<link rel="stylesheet" href="components.css?v=20260818-call-chat-duration-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-doctor-row-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-call-chat-duration-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -727,6 +727,7 @@
           </div>
           <div class="partner-duration-units">
             <button type="button" aria-selected="true" data-intake-duration-unit="day">Day</button>
+            <button type="button" aria-selected="false" data-intake-duration-unit="week">Week</button>
             <button type="button" aria-selected="false" data-intake-duration-unit="month">Month</button>
             <button type="button" aria-selected="false" data-intake-duration-unit="year">Year</button>
           </div>
@@ -878,6 +879,7 @@
               </div>
               <div class="partner-duration-units" aria-label="หน่วยระยะเวลา">
                 <button type="button" aria-selected="true" data-partner-duration-unit="วัน">วัน</button>
+                <button type="button" aria-selected="false" data-partner-duration-unit="สัปดาห์">สัปดาห์</button>
                 <button type="button" aria-selected="false" data-partner-duration-unit="เดือน">เดือน</button>
                 <button type="button" aria-selected="false" data-partner-duration-unit="ปี">ปี</button>
               </div>
@@ -1285,7 +1287,7 @@
       <div class="bubble bubble--out">No, this is my first time.</div>
       <div class="bubble bubble--in">Great. I'm preparing a treatment plan for you now.</div>
       <div class="typing" data-typing aria-label="Dr. Narin is typing"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
-      <button class="callbar" data-rx-bar data-go="rx-writing"><span class="cb-dot"></span><span class="grow" style="text-align:left">Dr. Narin is writing your prescription</span><strong>View status</strong></button>
+      <button class="callbar" data-rx-bar data-go="rx-writing"><span class="cb-dot"></span><span class="grow" style="text-align:left">Dr. Narin is writing your prescription</span></button>
       <div class="card card--pad-sm stack-3" style="align-self:stretch" data-plan-card data-wait-hidden>
         <div class="between"><span class="badge badge--ok">ตัวอย่างรายการยา</span><span class="hint">จากแพทย์</span></div>
         <div class="hint" data-plan-preview-summary>Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.</div>
@@ -3804,8 +3806,8 @@
   }
   function intakeDurationControl({label,thai=false}){
     const units = thai
-      ? [['วัน','วัน'],['เดือน','เดือน'],['ปี','ปี']]
-      : [['day','Day'],['month','Month'],['year','Year']];
+      ? [['วัน','วัน'],['สัปดาห์','สัปดาห์'],['เดือน','เดือน'],['ปี','ปี']]
+      : [['day','Day'],['week','Week'],['month','Month'],['year','Year']];
     return `<div class="field intake-duration-field">
       <label for="intake-duration">${label}</label>
       <div class="partner-duration-row intake-duration-control">
@@ -4129,7 +4131,16 @@
     }
     const children=[...body.children];
     const titleBlock=children.find(child => child.querySelector('.h1')) || children[0];
-    const questions=children.filter(child => child!==titleBlock);
+    /* "How long has this been happening?" is not a question of its own — it
+       qualifies the one above it. Fold it into that question so the pair is
+       answered together instead of splitting one thought across two pages. */
+    children.filter(child => child!==titleBlock && child.classList.contains('intake-duration-field'))
+      .forEach(field => {
+        const previous=field.previousElementSibling;
+        if(previous && previous!==titleBlock) previous.appendChild(field);
+      });
+    const remaining=[...body.children];
+    const questions=remaining.filter(child => child!==titleBlock);
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
     });

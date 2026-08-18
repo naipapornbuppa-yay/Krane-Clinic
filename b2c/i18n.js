@@ -60,7 +60,7 @@
     "Consultations and prescriptions will appear here.":"การปรึกษาและใบสั่งยาจะแสดงที่นี่",
     "Continue to preparation":"ดำเนินการเตรียมยาต่อ",
     "DELIVERY & FOLLOW-UP":"การจัดส่งและการติดตามผล",
-    "Day":"วัน",
+    "Day":"วัน","Week":"สัปดาห์",
     "Month":"เดือน",
     "Year":"ปี",
     "Deliver to":"จัดส่งไปที่",
