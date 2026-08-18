@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-signup-done-v1";
+    const release = "20260818-button-system-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-signup-done-v1">
-<link rel="stylesheet" href="components.css?v=20260818-signup-done-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-button-system-v1">
+<link rel="stylesheet" href="components.css?v=20260818-button-system-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-signup-done-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-button-system-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -659,6 +659,7 @@
       <div class="stack-2">
         <h2 class="h1">What are you particularly concerned about?</h2>
       </div>
+      <div class="choice-grid" data-category-list></div>
       <div class="choice-list" data-condition-list></div>
     </div>
   </section>
@@ -1964,7 +1965,7 @@
           </div>
           <div class="treatment-refill">Next refill in 24 days</div>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
-          <div class="between" style="padding:var(--sp-2) var(--sp-3);background:var(--color-bg-soft);border-radius:var(--radius-xs)"><span class="hint">Next follow-up</span><strong style="font-size:var(--fs-sm)">12 Sep 2026 · Dr. Narin</strong></div>
+          <div class="between followup-row" style="padding:var(--sp-2) var(--sp-3);background:var(--color-bg-soft);border-radius:var(--radius-xs)"><span class="hint">Next follow-up</span><strong style="font-size:var(--fs-sm)">12 Sep 2026 · Dr. Narin</strong></div>
           <!-- Client (6 Jul): there is NO messaging service. Talking to a doctor is always
                a booked consult. Two paths: consult now (own fee) vs the scheduled follow-up. -->
           <div class="treatment-actions">
@@ -2055,6 +2056,20 @@
 
       <div class="card card--flat card--pad-sm" data-history-no-prescription hidden>
         <div class="hint">No prescription was issued for this treatment.</div>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-label">เอกสารของการรักษานี้</div>
+        <button class="doc-row" type="button" data-doc-open="rx">
+          <span class="doc-row__icon"><i data-lucide="file-text" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบสั่งยา</strong><span class="hint">RX-2026-10170 · 12 พ.ค. 2026</span></span>
+          <span class="doc-row__action">ดู</span>
+        </button>
+        <button class="doc-row" type="button" data-doc-open="cert">
+          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ · ฟรี</span></span>
+          <span class="doc-row__action">ดู</span>
+        </button>
       </div>
     </div>
     <nav class="bottomnav">
