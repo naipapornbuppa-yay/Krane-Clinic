@@ -89,6 +89,7 @@
       hormone: "Hormones & TRT",
       mind: "Focus & mind",
       general: "General symptoms / Not sure",
+      comingSoon: "Coming soon",
       confidenceEyebrow: "Private men's health care",
       confidenceTitle: "Feel close again,<br>with confidence",
       confidenceLead: "Consult a doctor privately, one-to-one, with care options tailored to you.",
@@ -489,11 +490,17 @@
     function schedule() { if (!frameId) frameId = requestAnimationFrame(tick); }
     function tick() {
       frameId = 0;
-      const rect = section.getBoundingClientRect();
-      const span = window.innerHeight + rect.height;
+      /* Measured on the rail, not the section: keyed to the section the row had
+         already drifted to the second card by the time it scrolled into view,
+         because most of the section's travel happens while the cards are still
+         below the fold. Zero until the rail has actually arrived — its top has
+         come up past START of the viewport — then one full rail-height plus
+         that distance of scrolling to cross the whole row. */
+      const START = 0.65;
+      const rect = rail.getBoundingClientRect();
+      const span = window.innerHeight * START + rect.height;
       if (span <= 0) return;
-      // 0 as the section enters from the bottom, 1 once it has left past the top.
-      const progress = Math.min(1, Math.max(0, (window.innerHeight - rect.top) / span));
+      const progress = Math.min(1, Math.max(0, (window.innerHeight * START - rect.top) / span));
       const max = rail.scrollWidth - rail.clientWidth;
       const drift = (progress - 0.5) * -30;
       icons.forEach((icon, index) => {
@@ -506,7 +513,7 @@
         rail.scrollLeft = target;
         return;
       }
-      rail.scrollLeft += delta * 0.16;
+      rail.scrollLeft += delta * 0.11;
       schedule();
     }
 

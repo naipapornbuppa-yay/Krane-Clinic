@@ -2526,14 +2526,22 @@ body{background:var(--landing-page-bg)}
    The copy sits above the rail at every width; a two-column split would have
    left the rail too narrow to be worth scrolling. */
 .privacy-section{
+  --privacy-pad:clamp(20px,4vw,48px);
   display:block;
-  padding-block:clamp(48px,7vw,92px);
+  padding:clamp(40px,6vw,72px) var(--privacy-pad);
+  border-radius:var(--section-radius,32px);
+  /* Client (18 Aug): the assurances sit on their own white plate, so the slate
+     cards read as cards on a surface rather than as floating tiles. */
+  background:var(--surface-card);
   overflow:hidden;
 }
 .privacy-section__copy{position:relative;max-width:660px}
 .privacy-section__copy>p:last-child{max-width:55ch;margin-top:22px;color:var(--landing-ink-2);font-size:17px;line-height:1.75}
 .privacy-rail{
   margin-top:clamp(28px,4vw,44px);
+  /* Runs out to the plate's edge: a card clipped by the frame is the only cue
+     that the row scrolls. */
+  margin-right:calc(-1 * var(--privacy-pad));
   overflow-x:auto;
   overscroll-behavior-inline:contain;
   /* No snap: the rail is driven by the page scroll, and a snap point would
@@ -2548,7 +2556,7 @@ body{background:var(--landing-page-bg)}
   display:flex;
   gap:clamp(12px,1.6vw,20px);
   margin:0;
-  padding:0 clamp(30px,4vw,64px) 0 0;
+  padding:0;
   list-style:none;
 }
 .privacy-card{
@@ -2561,7 +2569,7 @@ body{background:var(--landing-page-bg)}
   padding:28px;
   border:0;
   border-radius:28px;
-  background:var(--surface-card);
+  background:var(--color-accent-soft);
 }
 .privacy-card__icon{
   display:grid;
@@ -2569,7 +2577,7 @@ body{background:var(--landing-page-bg)}
   height:52px;
   place-items:center;
   border-radius:50%;
-  background:var(--surface-sunken);
+  background:var(--surface-card);
   color:var(--landing-navy);
 }
 .privacy-card__icon svg{width:24px;height:24px}
@@ -3127,11 +3135,35 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   box-shadow:0 10px 20px -12px rgba(22,42,64,.42);
 }
 .service-card:hover .service-card__art,.service-card:focus-visible .service-card__art{transform:translate3d(-3px,-2px,0) scale(1.03)}
+/* Only the general route is live; the rest are announced, not offered. Muted
+   rather than hidden so the roadmap stays visible, and inert so nothing here
+   looks tappable. */
+.service-card--soon{
+  cursor:default;
+  pointer-events:none;
+  box-shadow:none;
+  opacity:.62;
+}
+.service-card--soon:hover,.service-card--soon:focus-visible{transform:none;box-shadow:none}
+.service-card__soon{
+  position:relative;
+  z-index:3;
+  flex:none;
+  align-self:center;
+  padding:5px 11px;
+  border-radius:999px;
+  background:var(--surface-card);
+  color:var(--landing-ink-2);
+  font:600 11px/1 "Prompt","Noto Sans Thai",sans-serif;
+  white-space:nowrap;
+}
 @media(max-width:860px){
   .service-card-row{grid-auto-columns:calc((100% - 32px)/2)}
 }
 @media(max-width:520px){
-  .service-card-row{grid-auto-columns:min(78%,260px)}
+  /* Run the row out to the section's edge. Stopping inside the gutter made the
+     last card look like the end of the list rather than a row you can push. */
+  .service-card-row{grid-auto-columns:min(78%,260px);margin-right:-14px;padding-right:0}
   .service-card{min-height:104px;padding:14px;border-radius:20px}
   .service-card__title{max-width:68%;font-size:14px}
   .service-card__arrow{right:10px;bottom:10px;width:32px;height:32px}

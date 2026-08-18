@@ -68,9 +68,18 @@
 
 @media(max-width:700px){
   :root{--site-nav-padding-inline:16px;--site-nav-logo-width:74px}
-  .announcement{height:26px;min-height:26px}
-  .announcement__group{min-height:26px;padding-inline:16px}
-  .announcement span,.announcement strong{font-size:9px}
+  /* The band has to keep growing into the status-bar inset here: the landing
+     sheet zeroes its padding at this breakpoint, which left the notch painted
+     as a white strip above the blue instead of reading as part of it. Restored
+     last, where nothing else can clobber it. Copy was also down at 9px, which
+     is below what anyone reads on a phone. */
+  .announcement{
+    height:auto;
+    min-height:calc(30px + env(safe-area-inset-top, 0px));
+    padding:env(safe-area-inset-top, 0px) 0 0;
+  }
+  .announcement__group{min-height:30px;padding-inline:16px}
+  .announcement span,.announcement strong{font-size:12px}
   .site-header{padding-right:12px}
   .site-header .brand{height:30px;margin-right:auto}
   .site-header .header-actions{height:38px;gap:6px}
