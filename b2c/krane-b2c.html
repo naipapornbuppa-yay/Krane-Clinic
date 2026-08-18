@@ -3887,7 +3887,7 @@
       id:'skin',
       title:'Skin & acne',
       description:'Acne, irritation and other skin concerns.',
-      icon:'pulse',
+      icon:'skin',
       status:'Launch',
       next:'conditions',
       conditions:[
@@ -3899,7 +3899,7 @@
       id:'weight',
       title:'Weight care & metabolism',
       description:'Weight goals, metabolic health and doctor-led treatment options.',
-      icon:'pulse',
+      icon:'weight',
       status:'Launch',
       next:'conditions',
       conditions:[
@@ -3935,7 +3935,7 @@
       id:'hormone',
       title:'Hormones & TRT',
       description:'Energy, hormone symptoms and doctor-led TRT assessment.',
-      icon:'pulse',
+      icon:'hormone',
       status:'Launch',
       next:'conditions',
       conditions:[
@@ -3955,12 +3955,17 @@
   ];
 
   function iconSvg(type){
+    /* One glyph per category. Skin, weight and hormones all used to share the
+       sparkle, which made three different services look like the same one. */
     const icons = {
       chat:'message-circle',
       hair:'scissors',
       heart:'heart-pulse',
       moon:'moon-star',
-      pulse:'sparkles'
+      pulse:'sparkles',
+      skin:'sparkles',
+      weight:'chart-no-axes-combined',
+      hormone:'flask-conical'
     };
     return window.kraneIcon(icons[type] || icons.chat, 'ui-icon--md');
   }
@@ -5035,19 +5040,24 @@
     window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
   }
 
+  /* Step two of the picker. It stays empty until a category is tapped: it used
+     to render the previously selected category's conditions on arrival, which
+     read as a stray greyed row under the grid (client, 18 Aug). */
+  let conditionListRevealed = false;
   function renderConditionList(){
     const cat = selectedCategory();
     const thai = document.documentElement.lang === 'th';
     const list = document.querySelector('[data-condition-list]');
     if(!list) return;
     list.className = 'choice-list';
-    if(cat.general){
+    if(cat.general || !conditionListRevealed){
       list.innerHTML = '';
       return;
     }
     const conditions = cat.conditions.length ? cat.conditions : [{ id:`${cat.id}-general`, title:'General consultation', description:'Talk to a doctor about this category.', status:'General', next:'intake1' }];
     // conditions are full-width tap-to-go cards with a status badge, no radio.
-    list.innerHTML = conditions.map(condition => {
+    const heading = `<p class="section-label">${thai ? 'เลือกอาการที่ตรงกับคุณที่สุด' : 'Choose the closest concern'}</p>`;
+    list.innerHTML = heading + conditions.map(condition => {
       const soon = condition.status === 'Soon';
       return `
       <button class="choice-card${soon ? ' choice-card--soon' : ''}" data-condition-card data-condition-id="${condition.id}" ${soon ? 'disabled aria-disabled="true"' : `data-go="${condition.next || 'intake1'}"`}>
@@ -6156,6 +6166,11 @@
     if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
+    // Arriving at the picker fresh shows categories only; step two is a tap away.
+    if(id==='conditions' && prevId!=='conditions'){
+      conditionListRevealed=false;
+      renderConditionList();
+    }
     if(PARTNER_SCREENS.includes(id) || (id==='consent-terms' && flowState.entryChannel==='partner')){
       // Partner access runs its own sequence and skips stage 1, so the five-step
       // B2C care stepper would mis-number it. Keep it off until the flow rejoins
@@ -7112,6 +7127,19 @@
       flowState.partnerMedicineCredit=0;
       persistFlowState();
       setSelectedCategory(catCard.dataset.categoryId);
+      const chosen = selectedCategory();
+      const choices = (chosen.conditions || []).filter(item => item.status !== 'Soon');
+      /* A category with one condition has nothing to choose between — the
+         second card only repeated the first. Go straight to the questionnaire
+         and reveal the list only when there is a real choice. */
+      if(catCard.dataset.go === 'conditions' && choices.length <= 1){
+        conditionListRevealed = false;
+        renderConditionList();
+        if(choices[0]) selectedConditionId = choices[0].id;
+        show(choices[0] ? (choices[0].next || 'intake1') : 'intake1');
+        return;
+      }
+      conditionListRevealed = true;
       renderConditionList();
     }
     const conditionCard = e.target.closest('[data-condition-card]');

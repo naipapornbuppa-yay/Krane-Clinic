@@ -176,6 +176,7 @@
     "What kind of care do you need?":"คุณต้องการการดูแลแบบไหน?","Tap a category to begin. If your concern doesn't fit one, choose General consultation.":"แตะหมวดเพื่อเริ่ม ถ้าไม่ตรงหมวดไหน เลือกปรึกษาทั่วไป",
     "General consultation":"ปรึกษาทั่วไป","General / Not sure":"ปรึกษาทั่วไป / ไม่แน่ใจ","Not sure where to start? Talk to a doctor without choosing a disease path.":"ไม่รู้จะเริ่มตรงไหน? คุยกับแพทย์ได้โดยไม่ต้องเลือกโรค",
     "Hair, skin & appearance":"ผม ผิว และรูปลักษณ์","Hair loss, scalp, skin and appearance-related care.":"ดูแลปัญหาผมร่วง หนังศีรษะ ผิว และรูปลักษณ์","Hair loss & scalp":"ผมร่วงและหนังศีรษะ","Hair thinning, shedding and scalp concerns.":"ผมบาง ผมร่วง และปัญหาหนังศีรษะ","Skin & acne":"ผิวและสิว","Acne, irritation and other skin concerns.":"สิว การระคายเคือง และปัญหาผิว",
+    "Weight care & metabolism":"ดูแลน้ำหนักและระบบเผาผลาญ","Weight goals, metabolic health and doctor-led treatment options.":"เป้าหมายน้ำหนัก สุขภาพเมตาบอลิก และแนวทางรักษาที่แพทย์ดูแล","Hormones & TRT":"ฮอร์โมนและ TRT",
     "Sexual health":"สุขภาพเพศชาย","ED, performance concerns and related men's health questions.":"ปัญหาสมรรถภาพ และเรื่องสุขภาพเพศชายอื่น ๆ",
     "Sleep & stress":"การนอนและความเครียด","Sleep quality, stress, energy and daily functioning.":"คุณภาพการนอน ความเครียด พลังงาน และการใช้ชีวิตประจำวัน",
     "Everyday health":"สุขภาพทั่วไป","General symptoms, wellness checks and care navigation.":"อาการทั่วไป ตรวจสุขภาพ และคำแนะนำการดูแล",

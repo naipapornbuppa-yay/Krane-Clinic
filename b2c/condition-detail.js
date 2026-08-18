@@ -94,7 +94,7 @@
       tone: "weight",
       image: "assets/product-hero/weight-injection-hand-bright-v7.png",
       kicker: "ดูแลน้ำหนักกับแพทย์",
-      hook: "น้ำหนักไม่ใช่เรื่องวินัย แต่เป็นเรื่องสุขภาพ",
+      hook: "ลดน้ำหนักด้วยแผนที่แพทย์ออกให้คุณ",
       lead: "เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ",
       knowledgeTitle: "น้ำหนักมีหลายปัจจัยมากกว่าตัวเลขบนตาชั่ง",
       knowledge:
@@ -121,8 +121,8 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "แพทย์เลือกรูปแบบและขนาดยาจากข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพของคุณ",
       products: [
-        ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/condition-detail/products-diecut-v1/weight-pen.png", "pen"],
-        ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral"]
+        ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/condition-detail/products-diecut-v1/weight-pen.png", "pen", "ใช้ต่อเนื่อง"],
+        ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ใช้ต่อเนื่อง"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
@@ -158,8 +158,8 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "ระยะเวลาออกฤทธิ์และขนาดยาต้องเลือกจากสุขภาพหัวใจและยาที่คุณใช้อยู่",
       products: [
-        ["ยากลุ่ม PDE5", "รับประทานก่อนมีกิจกรรม", "เช่น sildenafil หรือ tadalafil เมื่อไม่มีข้อห้ามใช้", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral"],
-        ["ขนาดต่ำรายวัน", "สำหรับบางกรณีตามการประเมิน", "แพทย์พิจารณาเมื่อเหมาะกับรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral"]
+        ["ยากลุ่ม PDE5", "รับประทานก่อนมีกิจกรรม", "เช่น sildenafil หรือ tadalafil เมื่อไม่มีข้อห้ามใช้", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral", "ใช้เมื่อจำเป็น"],
+        ["ขนาดต่ำรายวัน", "สำหรับบางกรณีตามการประเมิน", "แพทย์พิจารณาเมื่อเหมาะกับรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ใช้ต่อเนื่อง"]
       ],
       safety:
         "หากมีอาการเจ็บหน้าอก หายใจไม่ออก อ่อนแรงเฉียบพลัน หรือการแข็งตัวนานเกิน 4 ชั่วโมง ให้ไปห้องฉุกเฉินหรือโทร 1669 ทันที",
@@ -197,8 +197,8 @@
       productsTitle: "รูปแบบการดูแลที่อาจใช้",
       productsLead: "แพทย์เริ่มจากสาเหตุและความปลอดภัย ก่อนพิจารณายา การตรวจ หรือการส่งต่อ",
       products: [
-        ["ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้", "แพทย์ทบทวนยาที่ใช้อยู่ทุกครั้งก่อนสั่งจ่าย", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral"],
-        ["การดูแลตามสาเหตุ", "คำแนะนำ การตรวจ และการติดตาม", "บางกรณีไม่ต้องใช้ยาเลย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral"]
+        ["ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้", "แพทย์ทบทวนยาที่ใช้อยู่ทุกครั้งก่อนสั่งจ่าย", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral", "ใช้เมื่อจำเป็น"],
+        ["การดูแลตามสาเหตุ", "คำแนะนำ การตรวจ และการติดตาม", "บางกรณีไม่ต้องใช้ยาเลย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุและแผนการดูแลของแพทย์"
     },
@@ -234,9 +234,9 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "มีทั้งยาทาและยารับประทาน โดยต้องเลือกให้ตรงกับรูปแบบผมร่วงและข้อควรระวัง",
       products: [
-        ["ยาทาหนังศีรษะ", "ใช้วันละ 1–2 ครั้ง", "เช่น minoxidil ตามรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical"],
-        ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral"],
-        ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical"]
+        ["ยาทาหนังศีรษะ", "ใช้วันละ 1–2 ครั้ง", "เช่น minoxidil ตามรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical", "ใช้ต่อเนื่อง"],
+        ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral", "ใช้ต่อเนื่อง"],
+        ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical", "ใช้เสริม"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุ ระยะเวลา และความต่อเนื่องในการรักษา"
     },
@@ -272,8 +272,8 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "เนื้อยา ความเข้มข้น และความถี่ต้องเหมาะกับปัญหาและความไวของผิว",
       products: [
-        ["ยาทาเฉพาะที่", "ทาบาง ๆ ก่อนนอน", "เลือกสารออกฤทธิ์ตามปัญหาผิว", "assets/condition-detail/products-diecut-v1/skin-serum.png", "topical"],
-        ["ผลิตภัณฑ์สนับสนุนผิว", "ใช้ร่วมกับแผนแพทย์", "จัดกิจวัตรให้ผิวทนต่อสารออกฤทธิ์ได้", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical"]
+        ["ยาทาเฉพาะที่", "ทาบาง ๆ ก่อนนอน", "เลือกสารออกฤทธิ์ตามปัญหาผิว", "assets/condition-detail/products-diecut-v1/skin-serum.png", "topical", "ใช้ต่อเนื่อง"],
+        ["ผลิตภัณฑ์สนับสนุนผิว", "ใช้ร่วมกับแผนแพทย์", "จัดกิจวัตรให้ผิวทนต่อสารออกฤทธิ์ได้", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical", "ใช้เสริม"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับชนิดของปัญหาผิวและความต่อเนื่อง"
     },
@@ -309,8 +309,8 @@
       productsTitle: "รูปแบบการรักษาที่ต้องวินิจฉัยก่อน",
       productsLead: "TRT พิจารณาเฉพาะผู้ที่มีอาการและผลตรวจสอดคล้องกัน พร้อมแผนติดตามความปลอดภัย",
       products: [
-        ["ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน", "พร้อมแผนติดตามผลเลือดเป็นระยะ", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "injection"],
-        ["การดูแลปัจจัยร่วม", "การนอน น้ำหนัก และยาที่ใช้", "หลายกรณีอาการดีขึ้นโดยไม่ต้องใช้ฮอร์โมน", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral"]
+        ["ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน", "พร้อมแผนติดตามผลเลือดเป็นระยะ", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "injection", "ใช้ต่อเนื่อง"],
+        ["การดูแลปัจจัยร่วม", "การนอน น้ำหนัก และยาที่ใช้", "หลายกรณีอาการดีขึ้นโดยไม่ต้องใช้ฮอร์โมน", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล และต้องอยู่ภายใต้การติดตามของแพทย์"
     },
@@ -346,8 +346,8 @@
       productsTitle: "รูปแบบการดูแลที่อาจใช้",
       productsLead: "การรักษาเริ่มจากรูปแบบอาการและสาเหตุ ไม่ได้เริ่มจากยานอนหลับเสมอไป",
       products: [
-        ["แผนปรับพฤติกรรมการนอน", "ติดตามเป็นสัปดาห์", "แนวทางแรกที่มีหลักฐานรองรับมากที่สุด", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral"],
-        ["ยาเมื่อมีข้อบ่งใช้", "ระยะสั้นภายใต้การดูแล", "แพทย์เลือกเมื่อประเมินความเสี่ยงแล้ว", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "oral"]
+        ["แผนปรับพฤติกรรมการนอน", "ติดตามเป็นสัปดาห์", "แนวทางแรกที่มีหลักฐานรองรับมากที่สุด", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"],
+        ["ยาเมื่อมีข้อบ่งใช้", "ระยะสั้นภายใต้การดูแล", "แพทย์เลือกเมื่อประเมินความเสี่ยงแล้ว", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "oral", "ระยะสั้น"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุและความต่อเนื่องของแผน"
     }
@@ -399,9 +399,11 @@
   if (assessment) assessment.innerHTML = data.assessment.map((item) => `<li>${item}</li>`).join("");
 
   const products = document.querySelector("[data-products]");
-  if (products) products.innerHTML = (data.products || []).map(([title, form, body, photo, kind]) => `
+  /* The sixth field is how the medicine is used over time — continuous, as
+     needed, short course — shown as a tag on the photo (client, 18 Aug). */
+  if (products) products.innerHTML = (data.products || []).map(([title, form, body, photo, kind, tag]) => `
     <article class="product-card" data-product-kind="${kind}">
-      <span class="product-card__stage"><img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt=""></span>
+      <span class="product-card__stage"><img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt="">${tag ? `<span class="product-card__tag">${tag}</span>` : ""}</span>
       <div class="product-card__copy">
         <span class="product-card__form">${form}</span>
         <strong>${title}</strong>
