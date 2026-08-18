@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260818-consult-summary-v1";
+    const release = "20260818-intake-back-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-consult-summary-v1">
-<link rel="stylesheet" href="components.css?v=20260818-consult-summary-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260818-intake-back-v1">
+<link rel="stylesheet" href="components.css?v=20260818-intake-back-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -543,7 +543,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-consult-summary-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260818-intake-back-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -5514,14 +5514,16 @@
       const signupParent=current==='signup' && flowState.entryChannel==='direct'
         ? (intakeStepOrder().slice(-1)[0] || 'intake1')
         : null;
-      /* General skips the condition list (it has no conditions to list), so
-         backing out of its single page returns to the landing page instead of
-         an empty picker. */
-      const generalStartParent=current==='intake1' && isGeneralPath() ? 'landing' : null;
+      /* seededHistory only runs for an entry with no real trail — a deep link
+         or a landing care card. Those all start at the landing page, which is
+         where the concern was picked, so Back returns there rather than to a
+         condition list the patient never saw. Walking home CTA -> conditions
+         -> intake1 in-app records real history and never reaches this. */
+      const intakeStartParent=current==='intake1' && flowState.entryChannel!=='partner' ? 'landing' : null;
       const waitroomParent=current==='waitroom' && flowState.entryChannel==='direct'
         ? 'intake-general'
         : null;
-      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || generalStartParent || waitroomParent || directEntryParent[current]);
+      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || intakeStartParent || waitroomParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
