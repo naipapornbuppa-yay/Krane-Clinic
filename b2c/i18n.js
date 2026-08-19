@@ -1068,7 +1068,9 @@
     "ขั้นตอนที่ 4 จาก 5, doctor consultation":"ขั้นตอนที่ 4 จาก 5, การปรึกษาแพทย์",
     "ขั้นตอนที่ 5 จาก 5, home delivery":"ขั้นตอนที่ 5 จาก 5, การจัดส่งถึงบ้าน",
     "กำลังรอแผนการรักษาจาก Dr. Narin":"กำลังรอแผนการรักษาจากคุณหมอนรินทร์",
-    "ข้อมูลสุขภาพ (prefilled)":"ข้อมูลสุขภาพ (กรอกล่วงหน้าแล้ว)"
+    "ข้อมูลสุขภาพ (prefilled)":"ข้อมูลสุขภาพ (กรอกล่วงหน้าแล้ว)",
+    "No charge was made. Your treatment plan and the pharmacy's confirmed quote are saved.":"ยังไม่มีการตัดเงิน แผนการรักษาและราคาที่ร้านยายืนยันไว้ยังถูกบันทึกอยู่",
+    "Quick safety check · 2 to 3 min":"คัดกรองความปลอดภัย · 2 ถึง 3 นาที"
   };
   for (var _kclient in TH_CLIENT_MOBILE) TH[_kclient] = TH_CLIENT_MOBILE[_kclient];
 
@@ -1507,7 +1509,9 @@
     [/^ครอบคลุม (฿\s?[\d,]+)$/, "$1 covered"],
     [/^สูงสุด (฿\s?[\d,]+)$/, "Up to $1"],
     [/^ชำระ (฿\s?[\d,]+)$/, "Pay $1"],
-    [/^ลด (฿\s?[\d,]+) สำหรับคำสั่งซื้อแรก$/, "$1 off your first order"]
+    [/^ลด (฿\s?[\d,]+) สำหรับคำสั่งซื้อแรก$/, "$1 off your first order"],
+    [/^(\S+) · ลด (฿\s?[\d,]+)$/, "$1 · $2 off"],
+    [/^โค้ด (\S+)$/, "Code $1"]
   ];
   function englishFor(thai) {
     if (EN[thai] !== undefined) return EN[thai];
