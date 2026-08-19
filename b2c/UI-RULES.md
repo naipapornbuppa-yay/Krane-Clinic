@@ -78,7 +78,21 @@ only when the client asks for it, and the reason goes in the commit message.
   dialog, and all three rows are required.
 - Never ask about something that has not happened yet.
 
-## 8. Navigation
+## 8. Language
+
+- **English means English.** Nothing stays Thai when the toggle is on English,
+  and nothing stays English when it is on Thai. Both directions are asserted by
+  `noThaiInEnglish` rules in the contract, on the app and on every marketing page.
+- The app is English-source: new English copy goes in the markup, its Thai in
+  `TH` (`b2c/i18n.js`). The flow screens are Thai-source: new Thai copy goes in
+  the markup, its English in `EN_FROM_TH` in the same file.
+- Marketing pages are Thai-source. English lives in `translations.en`
+  (`data-i18n`) or in `b2c/th-en.js` for anything without a key.
+- A label that carries a calculated amount gets a pattern in `EN_PATTERNS`, not
+  one key per possible number.
+- `?lang=en` works on every page, app and marketing alike.
+
+## 9. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

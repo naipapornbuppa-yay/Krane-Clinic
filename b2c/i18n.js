@@ -1072,6 +1072,451 @@
   };
   for (var _kclient in TH_CLIENT_MOBILE) TH[_kclient] = TH_CLIENT_MOBILE[_kclient];
 
+  /* ---- The other direction ----------------------------------------------
+     The flow has been designed in Thai since 18 Aug, so a growing share of the
+     screens are written in Thai in the markup. Those strings have no English
+     source to fall back to, and English mode kept showing Thai (client audit,
+     19 Aug). EN maps them back the other way. It is keyed on the exact Thai
+     text node, the same way TH is keyed on the exact English one.
+     Anything that is the same in both languages \u2014 prices, codes, dates that
+     are already numeric, brand names \u2014 is deliberately absent. */
+  /* Thai written straight into the markup, mapped back to English. Grouped in
+     screen order so a new screen's strings have an obvious home. */
+  var EN_FROM_TH = {
+    "ที่อยู่จัดส่ง":"Delivery address",
+    "ชำระเงิน":"Payment",
+    "ขั้นตอนที่ 1 จาก 3, แบบสอบถาม":"Step 1 of 3, questionnaire",
+    "ขั้นตอนที่ 2 จาก 3, ปรึกษาแพทย์":"Step 2 of 3, doctor consultation",
+    "ขั้นตอนที่ 3 จาก 3, ชำระเงิน":"Step 3 of 3, payment",
+    "ขั้นตอนการรับบริการ":"Your care steps",
+    "ปรึกษาแพทย์":"Doctor consultation",
+    "แบบสอบถาม":"Questionnaire",
+    "ซักประวัติ":"Health history",
+    "ดำเนินการต่อ":"Continue",
+    "ย้อนกลับ":"Back",
+    "ยกเลิก":"Cancel",
+    "ดู":"View",
+    "เพิ่ม":"Add",
+    "ฟรี":"Free",
+    "ไม่บังคับ":"Optional",
+    "(ไม่บังคับ)":"(optional)",
+    "มี":"Yes",
+    "ไม่มี":"None",
+    "ค้นหาที่อยู่":"Search for an address",
+    "ผู้รับพัสดุ":"Recipient",
+    "ชื่อผู้รับ":"Recipient name",
+    "เบอร์โทรศัพท์":"Phone number",
+    "บ้านเลขที่ / อาคาร":"House number / building",
+    "ชั้น":"Floor",
+    "ถนน / ซอย":"Street / lane",
+    "แขวง / ตำบล":"Sub-district",
+    "เขต / อำเภอ":"District",
+    "จังหวัด":"Province",
+    "รหัสไปรษณีย์":"Postcode",
+    "รายละเอียดสำหรับไรเดอร์":"Details for the rider",
+    "หมายเหตุถึงไรเดอร์":"Note for the rider",
+    "เลือกจากแผนที่":"Choose on the map",
+    "บันทึกและคำนวณค่าจัดส่ง":"Save and calculate delivery",
+    "ค้นหาชื่ออาคาร ถนน หรือย่าน":"Search a building, street or area",
+    "ชื่อและนามสกุล":"First and last name",
+    "บ้านเลขที่หรือชื่ออาคาร":"House number or building name",
+    "ถนนหรือซอย":"Street or lane",
+    "แขวงหรือตำบล":"Sub-district",
+    "เขตหรืออำเภอ":"District",
+    "จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง":"Landmark, door code or how to find the unit",
+    "ล้างข้อมูลในช่องนี้":"Clear this field",
+    "เพิ่มที่อยู่จัดส่ง":"Add a delivery address",
+    "เลือกตำแหน่งบนแผนที่":"Pick a point on the map",
+    "ใช้ตำแหน่งปัจจุบัน":"Use my current location",
+    "ยังไม่ได้เลือกตำแหน่ง":"No point selected yet",
+    "เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ":"Move the map to drop a pin and we fill the address in for you",
+    "ใช้ตำแหน่งนี้":"Use this location",
+    "ขยายแผนที่":"Zoom in",
+    "ย่อแผนที่":"Zoom out",
+    "ค้นหาบทความ ยา หรืออาการ":"Search articles, medicines or symptoms",
+    "ความยินยอม":"Consent",
+    "ความเป็นส่วนตัวและการรักษาความลับ":"Privacy and confidentiality",
+    "เพื่อความสบายใจในการใช้บริการ":"So you can use the service with confidence",
+    "กรุณาอ่านจนจบก่อนกลับไปเลือกให้ความยินยอม":"Please read to the end before going back to give consent",
+    "1. ข้อมูลที่ Krane ใช้":"1. The information Krane uses",
+    "ข้อมูลระบุตัวผู้รับบริการและข้อมูลติดต่อ หัวข้อที่ปรึกษา คำตอบแบบประเมิน ประวัติสุขภาพ โรคประจำตัว ยาและอาหารเสริม การแพ้ยา รวมถึงรูปภาพหรือเอกสารที่คุณแนบ":"Your identifying and contact details, the concern you raise, your questionnaire answers, health history, existing conditions, medicines and supplements, drug allergies, and any photographs or documents you attach.",
+    "2. วัตถุประสงค์":"2. Purpose",
+    "ใช้เพื่อยืนยันตัวตน จัดทำเวชระเบียน ส่งข้อมูลให้แพทย์ที่รับผิดชอบประเมินความเหมาะสม ให้คำปรึกษา ออกแผนการดูแล และประสานการรับยาตามใบสั่งแพทย์เมื่อเกี่ยวข้อง":"Used to verify your identity, keep your medical record, pass information to the treating doctor to assess suitability, give advice, issue a care plan, and arrange dispensing against the prescription where relevant.",
+    "3. ผู้ที่เข้าถึงข้อมูล":"3. Who can see it",
+    "เฉพาะบุคลากรทางการแพทย์และผู้ให้บริการที่จำเป็นต่อเคส ตามบทบาทและขอบเขตที่ได้รับอนุญาต":"Only the clinical staff and service providers your case requires, within the role and scope each is authorised for.",
+    "4. การจัดเก็บและความปลอดภัย":"4. Storage and security",
+    "ข้อมูลจะถูกเก็บตามกฎหมายและมาตรฐานเวชระเบียน พร้อมการควบคุมการเข้าถึง การเข้ารหัส และบันทึกการใช้งาน":"Records are kept as the law and medical-record standards require, with access control, encryption and audit logging.",
+    "5. สิทธิ์ของคุณ":"5. Your rights",
+    "คุณมีสิทธิ์ขอเข้าถึง แก้ไข คัดค้าน จำกัดการใช้ ถอนความยินยอม หรือขอลบข้อมูลเมื่อกฎหมายอนุญาต":"You may request access, correction, objection, restriction, withdrawal of consent, or erasure where the law allows.",
+    "6. การติดต่อ":"6. Contact",
+    "หากมีคำถามเกี่ยวกับข้อมูลส่วนบุคคลหรือการใช้สิทธิ์ โปรดติดต่อ support@krane.clinic":"For questions about your personal data or exercising these rights, contact support@krane.clinic",
+    "ความยินยอมการแพทย์ทางไกล":"Telemedicine consent",
+    "กรุณาอ่านขอบเขตและข้อจำกัดจนจบก่อนกลับไปเลือกให้ความยินยอม":"Please read the scope and limits to the end before going back to give consent",
+    "1. รูปแบบบริการ":"1. How the service works",
+    "การปรึกษาเกิดผ่านระบบออนไลน์ด้วยวิดีโอ เสียง หรือข้อความตามบริการที่เปิดใช้งาน แพทย์จะใช้ข้อมูลที่คุณให้เพื่อประเมินความเหมาะสม":"Consultations happen online by video, audio or message depending on the service enabled. The doctor assesses suitability from the information you provide.",
+    "2. ข้อจำกัด":"2. Limits",
+    "การปรึกษาทางไกลอาจไม่สามารถทดแทนการตรวจร่างกาย การตรวจแล็บ หรือการดูแลฉุกเฉินได้ทุกกรณี":"A remote consultation cannot always replace a physical examination, laboratory tests or emergency care.",
+    "3. เหตุขัดข้องทางเทคนิค":"3. Technical problems",
+    "หากการเชื่อมต่อมีปัญหา ทีมดูแลอาจติดต่อกลับหรือเปลี่ยนช่องทางตามความเหมาะสม โดยไม่รับประกันว่าทุกบริการจะจบผ่านช่องทางอื่นได้":"If the connection fails, the care team may call you back or switch channel as appropriate; not every service can be completed on another channel.",
+    "4. เหตุเร่งด่วน":"4. Urgent situations",
+    "บริการนี้ไม่ใช่บริการฉุกเฉิน หากมีอาการรุนแรงหรือเสี่ยงอันตราย กรุณาติดต่อบริการฉุกเฉินหรือไปโรงพยาบาลใกล้ที่สุด":"This is not an emergency service. If symptoms are severe or dangerous, call emergency services or go to the nearest hospital.",
+    "5. การตัดสินใจทางคลินิก":"5. Clinical decisions",
+    "แพทย์อาจแนะนำให้พบแพทย์ด้วยตนเองหรือขอข้อมูลเพิ่มเติมก่อนให้แผนการรักษา":"The doctor may advise an in-person visit or ask for more information before issuing a treatment plan.",
+    "6. การยืนยัน":"6. Confirmation",
+    "การเลือกยินยอมหมายถึงคุณเข้าใจรูปแบบ ข้อจำกัด และความเสี่ยงของบริการการแพทย์ทางไกล":"Giving consent means you understand the form, limits and risks of telemedicine.",
+    "ยินยอมให้ Krane ใช้ข้อมูลตามวัตถุประสงค์ในการให้บริการและดูแลสุขภาพ":"I consent to Krane using my information for the purposes of providing care.",
+    "กรุณาอ่านเพื่อให้ความยินยอม":"Please read this to give consent",
+    "รับทราบข้อจำกัดและยินยอมรับบริการจากแพทย์ผ่านระบบทางไกล":"I understand the limits and consent to being seen by a doctor remotely.",
+    "เลื่อนไปด้านล่าง":"Scroll to the bottom",
+    "ยอมรับและไปต่อ":"Accept and continue",
+    "รายละเอียดความยินยอม PDPA และการแพทย์ทางไกล":"PDPA and telemedicine consent in full",
+    "ห้องปรึกษา":"Consultation room",
+    "คุณหมอที่รับเคส":"Your doctor",
+    "คุณหมอ":"Dr.",
+    "นรินทร์":"Narin",
+    "เลขใบประกอบวิชาชีพ":"Licence number",
+    "สิทธิ์ประกัน":"Insurance cover",
+    "ครอบคลุมเต็มจำนวน":"Fully covered",
+    "ใช้เวลาปรึกษา":"Consultation length",
+    "ประมาณ 15 นาที":"About 15 minutes",
+    "ส่งยารอบสุดท้าย":"Last dispatch of the day",
+    "21:00 น.":"21:00",
+    "ขอใบรับรองแพทย์ · ฟรี":"Medical certificate on request · free",
+    "นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา":"This is the consultation fee only. Medicine and delivery are paid separately after you see the doctor and receive a prescription.",
+    "รับทราบและไปต่อ":"Got it, continue",
+    "กรอกโค้ดส่วนลด":"Enter a promo code",
+    "ดด / ปป":"MM / YY",
+    "ตามที่ปรากฏบนบัตร":"As printed on the card",
+    "วว / ดด / ปปปป":"DD / MM / YYYY",
+    "กล้องของคุณ":"Your camera",
+    "แชท":"Chat",
+    "วางสาย":"End call",
+    "เปิดแชท":"Open chat",
+    "กำลังรอคิวเข้าห้องปรึกษา":"Waiting to be called in",
+    "คุณอยู่คิวที่ 2 ของคุณหมอนรินทร์":"You are 2nd in Dr. Narin's queue",
+    "เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้":"Turn on camera and microphone before you go in, or switch to chat",
+    "รอเรียกเข้าห้อง…":"Waiting to be called in…",
+    "ใกล้เสร็จแล้ว":"Almost done",
+    "กำลังสรุปผลวินิจฉัย แผนการรักษา และรายการยาให้อยู่ อาจใช้เวลาสักพักเพื่อยืนยันแผนการรักษาที่เหมาะกับคุณ":"Writing up the diagnosis, treatment plan and medicine list. Confirming the plan that suits you can take a moment.",
+    "ซักประวัติเรียบร้อยแล้ว":"Health history complete",
+    "กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องผมร่วงและผมบาง":"Matching you with a licensed doctor for hair loss and thinning",
+    "เหลือ 10 วินาที":"10 seconds left",
+    "สิทธิ์ประกันครอบคลุมค่าปรึกษาแพทย์ ฿ 350 จึงไม่ต้องชำระค่าปรึกษา ณ ขั้นตอนนี้":"Your insurance covers the ฿ 350 consultation fee, so there is nothing to pay at this step.",
+    "ค่าปรึกษาแพทย์":"Consultation fee",
+    "ตรวจสอบพื้นที่จัดส่ง":"Checking the delivery area",
+    "กำลังคำนวณการจัดส่ง":"Calculating delivery",
+    "ตรวจสอบพื้นที่และค่าจัดส่งโดยประมาณ ก่อนส่งรายการให้ร้านยายืนยัน":"Checking the area and the estimated delivery fee before the order goes to the pharmacy.",
+    "โดยปกติใช้เวลาไม่เกิน 10 วินาที":"Usually under 10 seconds",
+    "กำลังค้นหาร้านยาใกล้คุณ":"Finding a pharmacy near you",
+    "ส่งรายการให้ร้านยาที่ใกล้ที่สุดก่อนเปิดการชำระเงิน":"Sending the order to the nearest pharmacy before payment opens.",
+    "ตรวจสอบการจัดส่ง":"Delivery check",
+    "ยังไม่มีร้านใกล้เคียงที่จัดส่งภายในวันได้":"No nearby pharmacy can deliver same day",
+    "เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน ระบบจะคำนวณยอดใหม่ให้ทันที":"Switch to standard delivery before paying and the total is recalculated straight away.",
+    "จัดส่ง 1 ถึง 3 วัน · ไม่มีค่าใช้จ่ายเพิ่ม":"1 to 3 days · no extra charge",
+    "เปลี่ยนเป็นจัดส่งมาตรฐาน":"Switch to standard delivery",
+    "กำลังจัดยา":"Preparing your medicine",
+    "ร้านยารับออเดอร์แล้ว กำลังจัดยา":"The pharmacy has accepted the order and is preparing it",
+    "ภายในวันนี้ · ก่อน 18:00 น.":"Today · before 18:00",
+    "หลังชำระเงิน":"after payment",
+    "เอกสารของการรักษานี้":"Documents for this treatment",
+    "ใบสั่งยา":"Prescription",
+    "RX-2026-10170 · 12 พ.ค. 2026":"RX-2026-10170 · 12 May 2026",
+    "ใบรับรองแพทย์":"Medical certificate",
+    "ออกโดยแพทย์ผู้ตรวจ · ฟรี":"Issued by the treating doctor · free",
+    "ใบเสร็จรับเงิน":"Receipt",
+    "ใบเสร็จ":"Receipt",
+    "สรุปผลการปรึกษา":"Consultation summary",
+    "เอกสารของคำสั่งซื้อนี้":"Documents for this order",
+    "เอกสารจากการปรึกษาล่าสุด":"Documents from your last consultation",
+    "CS-2026-10293 · 30 มิ.ย. 2026":"CS-2026-10293 · 30 Jun 2026",
+    "MC-2026-10293 · ฟรี":"MC-2026-10293 · free",
+    "ตรวจสอบสิทธิ์และชำระ ฿ 160":"Check cover and pay ฿ 160",
+    "ชำระเงินเอง":"Pay for it myself",
+    "ผลการตรวจสอบสิทธิ์":"Cover check result",
+    "สิทธิ์ประกันที่เลือก":"Selected policy",
+    "ผลการตรวจสอบ":"Result",
+    "ผู้ถือสิทธิ์":"Policyholder",
+    "มะลิ สุธิดา":"Mali Sutida",
+    "ผลิตภัณฑ์":"Product",
+    "เฮลท์ แฮปปี้":"Health Happy",
+    "ความคุ้มครอง":"Cover",
+    "ใช้สิทธิ์ได้":"Eligible",
+    "ข้อมูลกรมธรรม์":"Policy details",
+    "เลขที่กรมธรรม์":"Policy number",
+    "วันเริ่มต้นความคุ้มครอง":"Cover starts",
+    "1 ม.ค. 2569":"1 Jan 2026",
+    "วันหมดอายุ":"Cover ends",
+    "31 ธ.ค. 2569":"31 Dec 2026",
+    "วงเงินคงเหลือ":"Remaining limit",
+    "จำนวนครั้งคงเหลือ":"Visits remaining",
+    "2 ครั้ง":"2 visits",
+    "ครอบคลุม ฿ 350":"฿ 350 covered",
+    "เครดิตค่ายา":"Medicine credit",
+    "สูงสุด ฿ 1,000":"Up to ฿ 1,000",
+    "ค่าจัดส่ง":"Delivery fee",
+    "ไม่รวมในสิทธิ์":"Not covered",
+    "ใช้สิทธิ์นี้และไปต่อ":"Use this cover and continue",
+    "ตัวอย่างมุมที่แพทย์ต้องใช้":"The angles the doctor needs",
+    "แนวไรผมด้านหน้า":"Front hairline",
+    "กลางศีรษะ":"Mid-scalp",
+    "ขม่อมด้านหลัง":"Crown, from behind",
+    "ด้านข้างและขมับ":"Side and temples",
+    "ภาพด้านบนเป็นตัวอย่างมุมถ่าย · ถ่ายในที่แสงสว่าง ผมแห้ง ไม่สวมหมวก และถอดที่คาดผมออก ถ้าถ่ายซ้ำเพื่อติดตามผล ให้ใช้มุมและระยะเดิมทุกครั้ง":"The pictures above are example angles · shoot in good light with dry hair, no hat and no headband. If you re-shoot to track progress, use the same angle and distance every time.",
+    "ถ่ายรูปหรืออัปโหลด":"Take a photo or upload",
+    "JPG หรือ PNG · ไม่เกิน 10 MB ต่อรูป":"JPG or PNG · up to 10 MB each",
+    "ยังไม่มีรูปที่เพิ่ม แตะด้านบนเพื่อถ่ายหรือเลือกรูป":"No photos yet. Tap above to take or choose one.",
+    "พร้อมให้คำปรึกษา":"Available now",
+    "แพทย์มีใบอนุญาต":"Licensed doctors",
+    "เป็นส่วนตัวตั้งแต่เริ่ม":"Private from the start",
+    "แผนการดูแลของคุณ":"Your care plan",
+    "คำแนะนำที่ชัดเจน":"Clear advice",
+    "ติดตามผลต่อเนื่อง":"Ongoing follow-up",
+    "แพทย์ตรวจทาน":"Reviewed by a doctor",
+    "เหมาะกับข้อมูลของคุณ":"Matched to your answers",
+    "บรรจุภัณฑ์เป็นส่วนตัว":"Discreet packaging",
+    "ติดตามสถานะได้":"Trackable",
+    "รหัส OTP 6 หลัก":"6-digit OTP",
+    "ยืนยันรหัสและไปต่อ":"Verify and continue",
+    "ตรวจสอบและชำระเงิน":"Review and pay",
+    "กรุณาชำระเงินภายใน":"Please pay within",
+    "สรุปคำสั่งซื้อ":"Order summary",
+    "ใบสั่งยาโดย":"Prescribed by",
+    "คุณหมอนรินทร์ ทานากะ":"Dr. Narin Tanaka",
+    "ลดอาการไอ":"Relieves a cough",
+    "แผง":"strips",
+    "ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก":"Relieves allergy, itching, hives and a runny nose",
+    "แก้ปวด ลดไข้":"Relieves pain and fever",
+    "บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ":"Relieves pain and inflammation in joints, bones and muscles",
+    "จัดส่ง":"Delivery",
+    "รับที่ร้าน":"Pick up in store",
+    "การจัดส่ง":"Delivery",
+    "ยังไม่ได้เลือกที่อยู่จัดส่ง":"No delivery address selected yet",
+    "เพิ่มที่อยู่":"Add address",
+    "เปลี่ยนที่อยู่":"Change address",
+    "ตัวเลือกการจัดส่ง":"Delivery options",
+    "จัดส่งภายในวัน":"Same-day delivery",
+    "ถึงภายใน 18:00 น. วันนี้":"Arrives by 18:00 today",
+    "คำนวณหลังใส่ที่อยู่":"Calculated once you add an address",
+    "จัดส่งทางไปรษณีย์":"Postal delivery",
+    "ส่งพรุ่งนี้ · มีหมายเลขติดตาม":"Ships tomorrow · with tracking",
+    "วิธีชำระเงิน":"Payment method",
+    "ชำระด้วย":"Pay with",
+    "สินค้าเสริมสำหรับการดูแล":"Add-ons for your care",
+    "อาหารเสริม · 30 วัน":"Supplement · 30 days",
+    "กล่องจัดยาแบบพกพา":"Portable pill organiser",
+    "7 ช่อง · ใช้ซ้ำได้":"7 compartments · reusable",
+    "กระเป๋าจัดเก็บผลิตภัณฑ์":"Storage pouch",
+    "ขนาดพกพา · กันละอองน้ำ":"Pocket size · splash-proof",
+    "ส่วนลดและสิทธิ์":"Discounts and cover",
+    "โค้ดส่วนลด":"Promo code",
+    "ใส่โค้ดส่วนลด":"Enter a code",
+    "สรุปยอดชำระ":"Payment summary",
+    "คำนวณค่าจัดส่งเมื่อ":"Delivery calculated at",
+    "น.":"hrs",
+    "ค่ายาตามใบสั่งแพทย์":"Prescribed medicine",
+    "ค่าจัดส่งภายในวัน":"Same-day delivery",
+    "ยอดชำระจริง":"Amount due",
+    "เอกสารที่จะได้รับหลังชำระเงิน":"Documents released once you pay",
+    "สรุปผลการปรึกษาและแผนการรักษา":"Consultation summary and treatment plan",
+    "ระบบจะให้ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน":"The pharmacy confirms the prescription, stock and final price before payment opens.",
+    "ยอดชำระ":"Total",
+    "เลือกที่อยู่ก่อน":"Choose an address first",
+    "ลดจำนวน":"Decrease quantity",
+    "เพิ่มจำนวน":"Increase quantity",
+    "วิธีรับยา":"How to get your medicine",
+    "ผลิตภัณฑ์ที่เพิ่มได้":"Products you can add",
+    "หน้าชำระเงินของธนาคาร":"Your bank's payment page",
+    "ยืนยันการชำระ":"Confirm payment",
+    "ชำระเงินสำเร็จ":"Payment complete",
+    "ชำระค่าปรึกษาสำเร็จ":"Consultation fee paid",
+    "ร้านยาจัดเตรียมรายการพร้อมแล้ว กำลังเปิดสถานะจัดส่งและเอกสารของคุณ":"The pharmacy has your order ready. Opening your delivery status and documents.",
+    "ติดตามการจัดส่ง":"Track delivery",
+    "Krane Clinic · สรุปผลการปรึกษา":"Krane Clinic · consultation summary",
+    "ปรึกษาแพทย์ทางไกล · 30 มิ.ย. 2026":"Telemedicine consultation · 30 Jun 2026",
+    "เสร็จสิ้น":"Completed",
+    "ผู้รับการตรวจ":"Patient",
+    "แพทย์ผู้ดูแล":"Treating doctor",
+    "นพ. นรินทร์ ต.":"Dr. Narin T.",
+    "เลขที่การปรึกษา":"Consultation number",
+    "อาการที่มาปรึกษา":"Presenting concern",
+    "ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน ไม่เคยรักษามาก่อน":"Thinning at the mid-scalp, noticed for about 6 months, never treated.",
+    "การประเมินของแพทย์":"Doctor's assessment",
+    "เข้าได้กับภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้":"Consistent with early androgenetic alopecia. No signs requiring further investigation at this time.",
+    "แผนการรักษา":"Treatment plan",
+    "เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน":"Start the medicine on prescription RX-2026-10293 and take it every day.",
+    "ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน":"Results usually show after 3 to 6 months of continuous use.",
+    "ถ่ายรูปบริเวณที่กังวลทุกเดือนเพื่อเทียบผล":"Photograph the area each month to compare progress.",
+    "สิ่งที่ควรทำต่อ":"What to do next",
+    "นัดติดตามครั้งถัดไป 26 ส.ค. 2026":"Next follow-up 26 Aug 2026",
+    "หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์":"If you get a rash, itching or anything unusual, stop the medicine and contact the doctor.",
+    "ดาวน์โหลด PDF":"Download PDF",
+    "เริ่มปรึกษาแพทย์":"Start a consultation",
+    "เลือกเรื่องที่กังวล ใช้เวลา 5 นาที":"Pick your concern · about 5 minutes",
+    "วันละ 1 เม็ด":"1 tablet daily",
+    "เมื่อมีอาการ ทุก 4 ถึง 6 ชม.":"As needed, every 4 to 6 hours",
+    "สมชาย ร.":"Somchai R.",
+    "อานนท์ พ.":"Anon P.",
+    "มะลิ":"Mali",
+    "ไทย":"Thai",
+    "กำลังเตรียม":"Preparing",
+    "ได้รับของแล้ว":"I have received it",
+    "เล่าให้เราฟังว่าอะไรดี หรืออะไรที่เราทำได้ดีกว่านี้…":"Tell us what went well, or what we could do better…",
+    "คุณยังมีเคสที่กำลังดำเนินการ":"You already have a case in progress",
+    "คุณมีเคสที่ยังรอการดำเนินการอยู่ เพื่อไม่ให้ข้อมูลการรักษาซ้ำกัน กรุณากลับไปดูเคสเดิมก่อนเริ่มเรื่องใหม่":"You have a case still in progress. To avoid duplicating treatment records, please go back to it before starting something new.",
+    "#KR-10293 · ผมร่วงและหนังศีรษะ":"#KR-10293 · hair loss and scalp",
+    "กำลังรอแผนการรักษาจาก Dr. Narin Tanaka":"Waiting for a treatment plan from Dr. Narin Tanaka",
+    "กำลังรอแผนการรักษาจาก Dr. Narin":"Waiting for a treatment plan from Dr. Narin",
+    "กำลังรอแผนการรักษาจากคุณหมอนรินทร์ ทานากะ":"Waiting for a treatment plan from Dr. Narin Tanaka",
+    "กำลังรอแผนการรักษาจากคุณหมอนรินทร์":"Waiting for a treatment plan from Dr. Narin",
+    "ดูเคสเดิม":"Open that case",
+    "อยู่หน้าเดิม":"Stay here",
+    "ยืนยันข้อมูลความปลอดภัย":"Confirm your safety information",
+    "สามข้อนี้จำเป็นต่อความปลอดภัยในการสั่งยา แพทย์จะเห็นก่อนเริ่มปรึกษา":"These three are needed to prescribe safely. The doctor sees them before the consultation starts.",
+    "โรคประจำตัว":"Existing conditions",
+    "ยาที่ใช้ประจำ":"Regular medicines",
+    "ประวัติแพ้ยา":"Drug allergies",
+    "ยืนยันและไปต่อ":"Confirm and continue",
+    "สมัครสมาชิกสำเร็จ":"Registration complete",
+    "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือกรอกข้อมูลผู้รับบริการ":"Your phone number is verified and your Krane account is created. Next, fill in your patient details.",
+    "ให้คะแนนการปรึกษาครั้งนี้":"Rate this consultation",
+    "คำตอบเป็นความลับ":"Your answers are confidential",
+    "คำแนะนำของแพทย์":"The doctor's advice",
+    "การใช้งานแอป":"Using the app",
+    "คุณภาพภาพและเสียง":"Picture and sound quality",
+    "ความเห็นเพิ่มเติม (ไม่บังคับ)":"Anything else (optional)",
+    "ส่งคะแนนและไปต่อ":"Submit and continue",
+    "เลือกวิธีชำระเงิน":"Choose a payment method",
+    "เลือกช่องทางที่ต้องการใช้สำหรับคำสั่งซื้อนี้":"Pick the channel you want to use for this order",
+    "สแกนและชำระผ่านแอปธนาคาร":"Scan and pay in your banking app",
+    "บัตรเครดิต / เดบิต":"Credit / debit card",
+    "Visa, Mastercard และ JCB":"Visa, Mastercard and JCB",
+    "โมบายล์แบงกิ้ง":"Mobile banking",
+    "เปิดแอปธนาคารเพื่อยืนยันการชำระ":"Open your banking app to confirm",
+    "เลือกโค้ดที่มีอยู่ หรือกรอกโค้ดของคุณเอง":"Pick a code you have, or enter your own",
+    "ลด ฿ 100 สำหรับคำสั่งซื้อแรก":"฿ 100 off your first order",
+    "หรือกรอกโค้ดเอง":"Or enter a code",
+    "ใช้โค้ดนี้":"Use this code",
+    "ชื่อวิธีรักษา ใช้มานานเท่าไร และผลเป็นอย่างไร":"What you used, how long for, and how it went",
+    "อาการที่ต้องการปรึกษา":"What you want to discuss",
+    "กรอกรายละเอียดอาการ ระยะเวลา และสิ่งที่ลองทำแล้ว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น":"Describe the symptoms, how long they have lasted and what you have already tried, so the doctor can assess more precisely.",
+    "อาการเป็นอย่างไรบ้าง?":"What are the symptoms?",
+    "เป็นมานานแค่ไหนแล้ว?":"How long has this been going on?",
+    "วัน":"Days",
+    "สัปดาห์":"Weeks",
+    "เดือน":"Months",
+    "ปี":"Years",
+    "ทำอะไรเพื่อบรรเทาอาการไปแล้วบ้าง?":"What have you already done about it?",
+    "ยังไม่ได้ทำ":"Nothing yet",
+    "ทานหรือใช้ยา":"Taken or applied medicine",
+    "พบแพทย์":"Seen a doctor",
+    "อื่น ๆ":"Something else",
+    "มีรูปประกอบอาการหรือยาหรือไม่?":"Any photos of the symptoms or the medicine?",
+    "(ถ้ามี)":"(if you have any)",
+    "สูงสุด 5 รูป · 10 MB ต่อรูป":"Up to 5 photos · 10 MB each",
+    "ถัดไป":"Next",
+    "เช่น ผื่นคันที่แขน บวม แดง หรือมีอาการปวด":"For example: an itchy rash on the arm, swelling, redness or pain",
+    "ลดระยะเวลา":"Decrease the duration",
+    "จำนวนระยะเวลา":"Duration",
+    "เพิ่มระยะเวลา":"Increase the duration",
+    "หน่วยระยะเวลา":"Duration unit",
+    "สิ่งที่ลองทำแล้ว":"What you have tried",
+    "ข้อมูลสุขภาพทั่วไป":"General health information",
+    "เพศกำเนิด":"Sex at birth",
+    "เลือกเพศกำเนิด":"Select sex at birth",
+    "ชาย":"Male",
+    "หญิง":"Female",
+    "วันเกิด":"Date of birth",
+    "ส่วนสูง (ซม.)":"Height (cm)",
+    "น้ำหนัก (กก.)":"Weight (kg)",
+    "ยืนยันข้อมูลและดำเนินการต่อ":"Confirm and continue",
+    "เช่น 175":"e.g. 175",
+    "เช่น 70":"e.g. 70",
+    "ข้อมูลผู้รับบริการ":"Patient details",
+    "ยืนยันชื่อและเบอร์โทรศัพท์":"Confirm your name and phone number",
+    "ข้อมูลส่วนตัว":"Personal details",
+    "เบอร์โทรศัพท์ที่ยืนยันแล้ว":"Verified phone number",
+    "ยืนยันด้วยรหัส OTP แล้ว":"Verified by OTP",
+    "เปลี่ยนเบอร์":"Change number",
+    "ยืนยันข้อมูลและไปต่อ":"Confirm and continue",
+    "ยืนยันตัวตนและไปต่อ":"Verify your identity and continue",
+    "รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ":"One moment — Krane is finding the right doctor for your concern.",
+    "ค่าปรึกษาแพทย์ที่ต้องชำระ":"Consultation fee due",
+    "ชำระครั้งเดียวก่อนเข้าพบแพทย์ หากแพทย์สั่งยา ค่ายาและค่าจัดส่งจะแยกชำระภายหลัง":"Paid once before you see the doctor. If medicine is prescribed, the medicine and delivery are paid separately afterwards.",
+    "ชำระเงินตอนนี้":"Pay now",
+    "ถึงคิวแล้ว!":"It's your turn!",
+    "กดเข้าห้องได้เลย คุณหมอ":"Go in now — Dr.",
+    "พร้อมเจอคุณแล้ว":"is ready to see you",
+    "ยังไม่ได้เพิ่มที่อยู่จัดส่ง":"No delivery address added yet",
+    "ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน":"The pharmacy has confirmed the prescription, the stock and the final price before payment.",
+    "ยืนยันตัวตน":"Identity verification",
+    "ถ่ายบัตรประชาชน":"Photograph your ID card",
+    "เราจะดึงชื่อจากบัตรมากรอกให้ในหน้าถัดไป ตรวจสอบและแก้ไขได้ก่อนยืนยัน":"We read the name off the card and fill it in on the next page. You can check and correct it before confirming.",
+    "JPG หรือ PNG · ไม่เกิน 10 MB":"JPG or PNG · up to 10 MB",
+    "ยังไม่มีรูปบัตร แตะด้านบนเพื่อถ่ายหรือเลือกรูป":"No card photo yet. Tap above to take or choose one.",
+    "กรอกข้อมูลเอง":"Enter it myself",
+    "วิธีชำระค่าปรึกษา":"How to pay the consultation fee",
+    "ใช้สิทธิ์ประกันสุขภาพ":"Use health insurance",
+    "ตรวจสอบสิทธิ์ประกันแล้ว":"Insurance checked",
+    "เลือกผลิตภัณฑ์ประกัน":"Choose your policy",
+    "แผนสุขภาพออนไลน์":"Online health plan",
+    "สวัสดิการสุขภาพพนักงาน":"Employee health benefit",
+    "แผนสุขภาพรายบุคคล":"Individual health plan",
+    "4 ครั้ง":"4 visits",
+    "พยาบาลคัดกรอง":"Triage nurse",
+    "ทีมพยาบาลคัดกรอง":"Nurse triage team",
+    "พยาบาลวิชาชีพของบริษัทประกัน":"Registered nurse from the insurer",
+    "พร้อมรับเคส":"Ready to take your case",
+    "คัดกรองความปลอดภัย · 2 ถึง 3 นาที":"Safety screening · 2 to 3 minutes",
+    "ยืนยันอาการและประวัติสุขภาพ":"Confirm symptoms and health history",
+    "คัดกรองอาการเร่งด่วน":"Screen for urgent symptoms",
+    "พยาบาลเลือกแพทย์ที่ว่างและเหมาะสมให้คุณ":"The nurse picks an available doctor who suits your case",
+    "เริ่มวิดีโอคัดกรอง":"Start the video screening",
+    "วิดีโอเชื่อมต่อแล้ว · 00:42":"Video connected · 00:42",
+    "บริษัทประกัน":"Insurer",
+    "คุณ":"You",
+    "ยืนยันข้อมูลกับพยาบาล":"Confirm the details with the nurse",
+    "มีอาการหายใจลำบาก เจ็บหน้าอก หมดสติ หรือเลือดออกมากตอนนี้หรือไม่?":"Do you have difficulty breathing, chest pain, loss of consciousness or heavy bleeding right now?",
+    "มีอาการดังกล่าว":"Yes, I do",
+    "ควรรับการดูแลฉุกเฉินหรือพบแพทย์ด้วยตนเอง":"You should get emergency care or see a doctor in person",
+    "ข้อมูลอาการและประวัติสุขภาพที่ตรวจทานถูกต้องหรือไม่?":"Are the symptoms and health history as reviewed correct?",
+    "ถูกต้อง":"Correct",
+    "ต้องแก้ไข":"Needs correcting",
+    "สะดวกปรึกษาแพทย์ผ่านวิดีโอหรือแชตหรือไม่?":"Are you able to consult by video or chat?",
+    "สะดวก":"Yes",
+    "ไม่สะดวก":"No",
+    "ยืนยันและพบแพทย์ที่พยาบาลเลือก":"Confirm and see the doctor the nurse selected",
+    "กำลังวิดีโอคอลกับทีมพยาบาลคัดกรอง":"On a video call with the nurse triage team",
+    "บันทึกสุขภาพ":"Health record",
+    "ยืนยันบันทึกสุขภาพ":"Confirm the health record",
+    "ผู้รับบริการ":"Patient",
+    "สิทธิ์":"Cover",
+    "คัดกรองโดยพยาบาล":"Nurse screening",
+    "ผ่าน":"Passed",
+    "ยืนยันและพบแพทย์":"Confirm and see the doctor",
+    "คุณหมอนรินทร์ ทานากะ กำลังเขียนใบสั่งยาของคุณ":"Dr. Narin Tanaka is writing your prescription"
+  };
+  var EN = {}, TH_FROM_EN = {};
+  for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
+  var THAI_RE = /[ก-฾เ-๛]/;
+
+  /* A few labels carry an amount that the screen calculates, so an exact key
+     cannot cover every value they can show. These keep the number and swap the
+     words around it. */
+  var EN_PATTERNS = [
+    [/^ตรวจสอบสิทธิ์และชำระ (฿\s?[\d,]+)$/, "Check cover and pay $1"],
+    [/^ครอบคลุม (฿\s?[\d,]+)$/, "$1 covered"],
+    [/^สูงสุด (฿\s?[\d,]+)$/, "Up to $1"],
+    [/^ชำระ (฿\s?[\d,]+)$/, "Pay $1"],
+    [/^ลด (฿\s?[\d,]+) สำหรับคำสั่งซื้อแรก$/, "$1 off your first order"]
+  ];
+  function englishFor(thai) {
+    if (EN[thai] !== undefined) return EN[thai];
+    for (var i = 0; i < EN_PATTERNS.length; i++) {
+      if (EN_PATTERNS[i][0].test(thai)) return thai.replace(EN_PATTERNS[i][0], EN_PATTERNS[i][1]);
+    }
+    return undefined;
+  }
+
   function swap(th) {
     var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode: function (n) { var p = n.parentNode && n.parentNode.nodeName; return (p === "SCRIPT" || p === "STYLE") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
@@ -1079,14 +1524,47 @@
     var nodes = [], n; while ((n = w.nextNode())) nodes.push(n);
     nodes.forEach(function (node) {
       if (th) {
+        /* A Thai-source node put into English is restored first, or its English
+           text would be looked up as if it were the page's own source. */
+        if (node.__th !== undefined) { node.nodeValue = node.__th; delete node.__th; }
         var key = (node.__en !== undefined ? node.__en : node.nodeValue).trim();
         if (TH[key] !== undefined) { if (node.__en === undefined) node.__en = node.nodeValue; /* Replace inside the remembered English source, never the live value: a TH string that contains its own EN key ("CVV" -> "\u0e23\u0e2b\u0e31\u0e2a CVV") compounded on every screen change. */ node.nodeValue = node.__en.replace(key, TH[key]); }
-      } else if (node.__en !== undefined) { node.nodeValue = node.__en; }
+        else {
+          /* Self-healing: a script can rebuild a node while English is showing,
+             which loses the remembered Thai along with the old node. Anything
+             the English pass could have produced is mapped straight back. */
+          var live = node.nodeValue.trim();
+          if (TH_FROM_EN[live] !== undefined) node.nodeValue = node.nodeValue.replace(live, TH_FROM_EN[live]);
+        }
+      } else {
+        /* A remembered "English source" that still contains Thai is a hybrid: a
+           script substituted a Thai name into an English sentence before the
+           first swap saw it. Restoring that leaves half the line in English, so
+           the Thai is kept and translated whole instead. */
+        if (node.__en !== undefined && !THAI_RE.test(node.__en)) node.nodeValue = node.__en;
+        var thKey = (node.__th !== undefined ? node.__th : node.nodeValue).trim(), thEn = englishFor(thKey);
+        if (thEn !== undefined) { if (node.__th === undefined) node.__th = node.nodeValue; node.nodeValue = node.__th.replace(thKey, thEn); }
+      }
     });
     document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(function (el) {
       var o = el.getAttribute("data-ph-en") || el.getAttribute("placeholder");
-      if (th) { if (TH[(o || "").trim()] !== undefined) { el.setAttribute("data-ph-en", o); el.setAttribute("placeholder", TH[o.trim()]); } }
-      else if (el.getAttribute("data-ph-en")) { el.setAttribute("placeholder", el.getAttribute("data-ph-en")); }
+      if (th) {
+        if (el.getAttribute("data-ph-th")) { el.setAttribute("placeholder", el.getAttribute("data-ph-th")); el.removeAttribute("data-ph-th"); o = el.getAttribute("data-ph-en") || el.getAttribute("placeholder"); }
+        if (TH[(o || "").trim()] !== undefined) { el.setAttribute("data-ph-en", o); el.setAttribute("placeholder", TH[o.trim()]); }
+      } else {
+        if (el.getAttribute("data-ph-en")) el.setAttribute("placeholder", el.getAttribute("data-ph-en"));
+        var ph = (el.getAttribute("placeholder") || "").trim(), phEn = englishFor(ph);
+        if (phEn !== undefined) { el.setAttribute("data-ph-th", el.getAttribute("placeholder")); el.setAttribute("placeholder", phEn); }
+      }
+    });
+    document.querySelectorAll("[aria-label]").forEach(function (el) {
+      var a = (el.getAttribute("aria-label") || "").trim();
+      if (th) {
+        if (el.getAttribute("data-al-th")) { el.setAttribute("aria-label", el.getAttribute("data-al-th")); el.removeAttribute("data-al-th"); }
+      } else if (englishFor(a) !== undefined) {
+        el.setAttribute("data-al-th", el.getAttribute("aria-label"));
+        el.setAttribute("aria-label", englishFor(a));
+      }
     });
   }
 
@@ -1101,8 +1579,10 @@
     });
   }
   function observeOn() {
+    /* Watched in both languages: screens rendered after load carry Thai that
+       English mode has to translate too, not only the reverse. */
     var translationRoot = document.body;
-    if (mo && current && translationRoot) mo.observe(translationRoot, { childList: true, subtree: true, characterData: true });
+    if (mo && translationRoot) mo.observe(translationRoot, { childList: true, subtree: true, characterData: true });
   }
   function observeOff() { if (mo) mo.disconnect(); }
 
@@ -1122,9 +1602,9 @@
   // re-translate content that scripts render after load (catalog, schedule, role switch, new screens)
   if (window.MutationObserver) {
     mo = new MutationObserver(function () {
-      if (!current || pending) return;
+      if (pending) return;
       pending = true;
-      requestAnimationFrame(function () { pending = false; observeOff(); swap(true); observeOn(); });
+      requestAnimationFrame(function () { pending = false; observeOff(); swap(current); observeOn(); });
     });
   }
 

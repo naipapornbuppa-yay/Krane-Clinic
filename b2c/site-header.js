@@ -145,8 +145,12 @@
   }
 
   languageSelects.forEach((select) => select.addEventListener("change", () => setNavigationLanguage(select.value)));
+  /* ?lang=en works on the app, so it has to work here too — a shared link into
+     the English site should not land in Thai (client audit, 19 Aug). */
   let initialLanguage = "th";
   try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
+  if (/[?&#]lang=en\b/.test(location.href)) initialLanguage = "en";
+  else if (/[?&#]lang=th\b/.test(location.href)) initialLanguage = "th";
   setNavigationLanguage(initialLanguage);
 
   const siteHeader = document.querySelector("[data-site-header]");

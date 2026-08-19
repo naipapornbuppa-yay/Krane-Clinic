@@ -188,6 +188,32 @@ for (const rule of contract.rules) {
         .map(button => button.textContent.trim().slice(0, 24)));
       if (pills.length) fail('rule', `${rule.name}: pill-shaped actions — ${pills.join(', ')}`);
     }
+    /* English has to mean English. Thai written straight into the markup has no
+       English source to fall back to, so it used to survive the toggle and left
+       most of a page in Thai (client audit, 19 Aug). Every visible string that
+       is still Thai in English mode is named here. */
+    if (rule.noThaiInEnglish) {
+      const strings = await page.evaluate(() => {
+        const THAI = /[ก-฾เ-๛]/;
+        const found = new Set();
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            const parent = node.parentElement;
+            if (!parent) return NodeFilter.FILTER_REJECT;
+            if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.nodeName)) return NodeFilter.FILTER_REJECT;
+            if (!parent.getClientRects().length) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+        let node;
+        while ((node = walker.nextNode())) {
+          const text = node.nodeValue.trim().replace(/\s+/g, ' ');
+          if (text && THAI.test(text)) found.add(text);
+        }
+        return [...found].slice(0, 8);
+      });
+      if (strings.length) fail('rule', `${rule.name}: still Thai in English — ${strings.map(s => `"${s.slice(0, 40)}"`).join(', ')}`);
+    }
   } catch (error) {
     fail('rule', `${rule.name}: ${error.message}`);
   }
