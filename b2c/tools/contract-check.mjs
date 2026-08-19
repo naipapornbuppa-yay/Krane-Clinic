@@ -144,6 +144,22 @@ for (const rule of contract.rules) {
   try {
     await page.goto(`${base}/b2c/${rule.page}`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500);
+    if (rule.openDrawer) {
+      await page.evaluate(() => document.querySelector('[data-menu-open]')?.click());
+      await page.waitForTimeout(500);
+    }
+    if (rule.fillsParent) {
+      const [sel, ratio] = rule.fillsParent;
+      const measured = await page.evaluate(s => {
+        const el = document.querySelector(s);
+        if (!el) return null;
+        return [el.getBoundingClientRect().width, el.parentElement.getBoundingClientRect().width];
+      }, sel);
+      if (!measured) fail('rule', `${rule.name}: ${sel} not found`);
+      else if (measured[0] < measured[1] * ratio) {
+        fail('rule', `${rule.name}: ${sel} is ${Math.round(measured[0])}px inside ${Math.round(measured[1])}px`);
+      }
+    }
     if (rule.absent) {
       const found = await page.evaluate(s => document.querySelectorAll(s).length, rule.absent);
       if (found) fail('rule', `${rule.name}: ${found} × "${rule.absent}" still on the page`);
