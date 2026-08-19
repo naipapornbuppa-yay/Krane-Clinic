@@ -48,6 +48,9 @@ only when the client asks for it, and the reason goes in the commit message.
 - A precondition for the button is an **info chip** on the button (`.info-chip`), one line,
   icon + text — not a paragraph above it.
 - Question-shaped titles end in `?`.
+- **One medicine per row.** A line item names one active ingredient and its
+  strength. Never "Med A + Med B + Med C" — a fixed-dose combination writes a
+  four-line name into a 52px row and no one reads it.
 - No kicker/eyebrow labels above headings.
 
 ## 5. Colour
