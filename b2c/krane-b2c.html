@@ -4191,7 +4191,7 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">It is getting worse</span></span><span class="opt-check"></span></button>
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Several symptoms started together</span></span><span class="opt-check"></span></button>
         </div></div>
-        <div class="common-group"><div class="section-label">Safety screening</div>
+        <div class="common-group"><div class="section-label">Do you have any of these urgent warning signs?</div>
           <p class="hint">If symptoms are severe or life-threatening, seek emergency care now.</p>
           <div class="stack-3">
             <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Chest pain, fainting or shortness of breath</span></span><span class="opt-check"></span></button>
@@ -4353,7 +4353,7 @@
        label is the heading, and the screen title stands down rather than
        shouting the same words over every page. */
     const activeQuestion=state.questions[nextIndex];
-    const promoted=state.total>1 && activeQuestion?.dataset.intakeQuestionTitled
+    const promoted=activeQuestion?.dataset.intakeQuestionTitled
       ? activeQuestion.querySelector('.intake-question__title')
       : null;
     const titleBlock=[...state.body.children].find(child => child.querySelector('.h1'));
@@ -4427,16 +4427,24 @@
          set without them (client, 19 Aug). */
       question.querySelectorAll('.intake-question__sub')
         .forEach(node => node.classList.remove('intake-question__sub'));
-      if(labels.length){
-        labels[0].classList.add('intake-question__title');
+      /* A folded qualifier — "how long has this been happening?" — is never the
+         page's question. When the block has no label of its own the screen
+         title is the question and stays; the qualifier drops to sub size. It
+         was being promoted over the real question, so the page showed two big
+         headings (client, 19 Aug). */
+      const ownLabels=labels.filter(label => !label.closest('.intake-duration-field'));
+      const heading=ownLabels[0] || null;
+      if(heading){
+        heading.classList.add('intake-question__title');
         question.dataset.intakeQuestionTitled='1';
-        /* Every follow-up prompt on the page is the same component and gets the
-           same look, whether it started life as a section label or a field
-           label (client, 19 Aug). */
-        labels.slice(1).forEach(label => label.classList.add('intake-question__sub'));
       } else {
         delete question.dataset.intakeQuestionTitled;
       }
+      /* Every follow-up prompt on the page is the same component and gets the
+         same look, whether it started life as a section label or a field
+         label. */
+      labels.filter(label => label!==heading)
+        .forEach(label => label.classList.add('intake-question__sub'));
     });
     let counter=titleBlock?.querySelector('[data-intake-question-count]');
     if(titleBlock && questions.length>1 && !counter){
