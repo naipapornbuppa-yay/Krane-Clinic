@@ -1877,20 +1877,19 @@
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์และสำรองสต็อกแล้ว</h2><p class="muted">เภสัชกรตรวจใบสั่งยา สินค้า สาขา และราคาสุทธิครบแล้ว โดยยังไม่มีการเรียกเก็บเงิน</p></div>
-      <div class="state-view__timer">สำรองสินค้าไว้ 1 ชั่วโมง</div>
     </div>
   </section>
 
   <!-- ===================== PHARMACY PREPARED + READY TO DISPATCH (PRE-PAYMENT) ===================== -->
   <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พร้อมจัดส่ง</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">กำลังจัดยา</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Medicine prepared and ready to dispatch">
         <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">ร้านยาจัดเตรียมยาเรียบร้อย</h2><p class="muted">รายการพร้อมส่งทันทีหลังชำระเงิน ตรวจสอบยอดสุดท้ายก่อนเข้าสู่ระบบชำระเงินที่ปลอดภัย</p></div>
-      <div class="state-view__timer"><span data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</span></div>
+      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์แล้ว กำลังจัดยา</h2><p class="muted">จัดส่ง <span data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</span> หลังชำระเงิน</p></div>
+      <div class="state-view__timer" data-prep-countdown>03:00</div>
     </div>
   </section>
 
@@ -5137,7 +5136,7 @@
     `}).join('');
   }
 
-  let connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
+  let phStageTimer, prepCountdownTimer, connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -5544,7 +5543,7 @@
     matching:'patient-info', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult',
-    address:'payment', 'delivery-quote':'address', 'pharmacy-search':'delivery-quote', pharmacyaccepted:'pharmacy-search',
+    address:'payment', 'delivery-quote':'address', 'pharmacy-search':'address', pharmacyaccepted:'pharmacy-search',
     pharmacypending:'pharmacyaccepted', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw',
@@ -6507,7 +6506,7 @@
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
-    clearTimeout(phTimer); clearTimeout(phFailTimer); clearInterval(phCountdownTimer);
+    clearTimeout(phTimer); clearTimeout(phFailTimer); clearTimeout(phStageTimer); clearInterval(phCountdownTimer);
     const pScr = document.getElementById('pharmacy-search');
     if(id === 'pharmacy-search' && pScr){
       const thai=document.documentElement.lang==='th';
@@ -6519,16 +6518,27 @@
         graphic.classList.remove('state-view__visual--danger');
         graphic.classList.add('state-view__visual--loading');
       }
+      /* Two named stages on one clock: finding a pharmacy, then the pharmacist
+         checking the order (client, 19 Aug). A retry re-enters at stage one. */
       const phHeadings = thai
-        ? ['เภสัชกรกำลังตรวจคำสั่งซื้อ','กำลังตรวจสอบร้านยาอื่น','กำลังตรวจสอบร้านยาอื่น']
-        : ['Pharmacist reviewing your order','Checking another pharmacy','Checking another pharmacy'];
+        ? ['กำลังค้นหาร้านยาใกล้คุณ','กำลังตรวจสอบร้านยาอื่น','กำลังตรวจสอบร้านยาอื่น']
+        : ['Finding a pharmacy near you','Checking another pharmacy','Checking another pharmacy'];
       if(heading) heading.textContent = phHeadings[Math.min(pharmacyRetryCount, 2)];
       if(hint) hint.textContent = pharmacyRetryCount
         ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.')
-        : (thai ? 'เภสัชกรกำลังตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน' : 'Checking the prescription, stock and final price before payment.');
-      // Same 10-second hold as matching: a live countdown that reaches zero at
-      // the same moment the pharmacist handoff happens, instead of a static estimate.
-      let phSecondsRemaining=10;
+        : (thai ? 'ส่งรายการให้ร้านยาที่ใกล้ที่สุดก่อนเปิดการชำระเงิน' : 'Sending the order to the nearest pharmacy before payment opens.');
+      if(!pharmacyRetryCount){
+        phStageTimer=setTimeout(() => {
+          if(!pScr.classList.contains('active')) return;
+          if(heading) heading.textContent = thai ? 'เภสัชกรกำลังตรวจสอบรายการ' : 'Pharmacist checking your order';
+          if(hint) hint.textContent = thai
+            ? 'ตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน'
+            : 'Checking the prescription, stock and final price before payment.';
+        }, reduceMotion ? 600 : 4200);
+      }
+      // A five-minute service estimate, counting down live rather than sitting
+      // there as a static number.
+      let phSecondsRemaining=5*60;
       paintWaitCountdown(phCountdown,phSecondsRemaining);
       phCountdownTimer=setInterval(() => {
         if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
@@ -6578,6 +6588,18 @@
       }, 10000);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
+    clearInterval(prepCountdownTimer);
+    if(id === 'pharmacypending'){
+      const prepEl=document.querySelector('#pharmacypending [data-prep-countdown]');
+      let prepSecondsRemaining=3*60;
+      paintWaitCountdown(prepEl,prepSecondsRemaining);
+      prepCountdownTimer=setInterval(() => {
+        if(!document.getElementById('pharmacypending')?.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
+        prepSecondsRemaining=Math.max(0,prepSecondsRemaining-1);
+        paintWaitCountdown(prepEl,prepSecondsRemaining);
+        if(prepSecondsRemaining===0) clearInterval(prepCountdownTimer);
+      },1000);
+    }
     clearTimeout(waitTimer);
     if(id === 'waitroom') resetWaitroom();
     // Leaving the live consultation cancels pending demo messages. Switching
@@ -7384,8 +7406,8 @@
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
-      show('delivery-quote',false);
+      if(history[history.length-1]!=='pharmacy-search') history.push('pharmacy-search');
+      show('pharmacy-search',false);
       return;
     }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
@@ -8042,8 +8064,8 @@
     }
     const checkoutState=checkoutActionState();
     if(checkoutState==='quote-required'){
-      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
-      show('delivery-quote',false);
+      if(history[history.length-1]!=='pharmacy-search') history.push('pharmacy-search');
+      show('pharmacy-search',false);
       return;
     }
     if(checkoutState!=='ready'){
