@@ -496,11 +496,21 @@
          below the fold. Zero until the rail has actually arrived — its top has
          come up past START of the viewport — then one full rail-height plus
          that distance of scrolling to cross the whole row. */
-      const START = 0.65;
+      /* Both ends have to land while the row is on screen: the first card sits
+         flush at the start and the last card flush at the end (client, 19 Aug).
+         Keyed to a window that opens when the rail's top reaches 85% of the
+         viewport and closes when its bottom reaches 15% — before, progress only
+         reached 1 once the rail had scrolled off the top, so the row was always
+         caught mid-travel with a card clipped at each edge. */
+      const ENTER = 0.85, EXIT = 0.15;
       const rect = rail.getBoundingClientRect();
-      const span = window.innerHeight * START + rect.height;
+      const span = window.innerHeight * (ENTER - EXIT) + rect.height;
       if (span <= 0) return;
-      const progress = Math.min(1, Math.max(0, (window.innerHeight * START - rect.top) / span));
+      const raw = Math.min(1, Math.max(0, (window.innerHeight * ENTER - rect.top) / span));
+      /* Reach both ends a little early: the first and last card have to be
+         seen whole, and an exact 0 or 1 only happens at one pixel of scroll. */
+      const PAD = 0.08;
+      const progress = Math.min(1, Math.max(0, (raw - PAD) / (1 - PAD * 2)));
       const max = rail.scrollWidth - rail.clientWidth;
       const drift = (progress - 0.5) * -30;
       icons.forEach((icon, index) => {
@@ -509,7 +519,10 @@
       if (paused || max <= 4) return;
       const target = progress * max;
       const delta = target - rail.scrollLeft;
-      if (Math.abs(delta) < 0.5) {
+      /* Snap inside 1.5px: a sub-pixel step can be rounded away by the scroll
+         container, which left the row parked a few pixels short of the end with
+         the last card clipped. */
+      if (Math.abs(delta) < 1.5) {
         rail.scrollLeft = target;
         return;
       }
@@ -517,6 +530,34 @@
       schedule();
     }
 
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    schedule();
+  })();
+
+  /* The connector line draws downward and each picture lifts in as the reader
+     scrolls past that step, rather than firing once on a timer (client,
+     19 Aug). The CSS reads --step-progress; 1 means fully drawn. */
+  (function stepsScrollProgress() {
+    const items = Array.from(document.querySelectorAll(".steps > li"));
+    if (!items.length) return;
+    if (reducedMotionQuery.matches) {
+      items.forEach((item) => item.style.setProperty("--step-progress", "1"));
+      return;
+    }
+    let frameId = 0;
+    const schedule = () => { if (!frameId) frameId = requestAnimationFrame(tick); };
+    function tick() {
+      frameId = 0;
+      const viewport = window.innerHeight;
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        // Starts as the step's top crosses 88% of the viewport, complete by 40%.
+        const span = viewport * 0.48;
+        const progress = Math.min(1, Math.max(0, (viewport * 0.88 - rect.top) / span));
+        item.style.setProperty("--step-progress", progress.toFixed(3));
+      });
+    }
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     schedule();

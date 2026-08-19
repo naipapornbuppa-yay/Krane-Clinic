@@ -417,8 +417,12 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .steps li{position:relative;min-width:0;display:grid;grid-template-columns:40px minmax(0,1fr);gap:20px}
 .steps li::before{content:"";position:absolute;top:40px;bottom:0;left:20px;width:1px;background:var(--landing-navy);transform-origin:top}
 .step-number{position:relative;z-index:1;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--landing-navy);color:#fff;font-size:16px;font-weight:600}
-.motion-enabled .steps li.reveal-item::before{opacity:0;transform:scaleY(0);transition:transform .82s cubic-bezier(.65,0,.35,1),opacity .24s ease-in-out;transition-delay:calc(var(--reveal-delay,0ms) + 140ms)}
-.motion-enabled .steps li.is-revealed::before{opacity:1;transform:scaleY(1)}
+/* The connector draws downward and the picture lifts in as the reader
+   scrolls, rather than playing once on a timer (client, 19 Aug).
+   --step-progress is set per step by the landing script. */
+.motion-enabled .steps li::before{opacity:1;transform:scaleY(var(--step-progress,1));transition:none}
+.motion-enabled .step-art{opacity:calc(var(--step-progress,1) * 1.15 - .15);
+  transform:translateY(calc((1 - var(--step-progress,1)) * 26px));transition:none;will-change:opacity,transform}
 .steps h3{font-size:23px;font-weight:400;line-height:1.45;color:#1b2a4a}
 .steps p{margin-top:12px;color:#1b2a4a;font-size:15px;line-height:1.5}
 
@@ -990,6 +994,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   .motion-enabled .hero__photo{transform:scaleX(-1)!important}
   .motion-enabled .hero__signals{transform:translateX(-50%)!important}
   .motion-enabled .steps li::before{opacity:1!important;transform:none!important;transition:none!important}
+  .motion-enabled .step-art{opacity:1!important;transform:none!important}
   .motion-enabled .steps li .step-number{transform:none!important;transition:none!important}
   .review-loop-clone,.review-mobile-sequence{display:none!important}
 }
@@ -2586,8 +2591,8 @@ body{background:var(--landing-page-bg)}
   height:52px;
   place-items:center;
   border-radius:50%;
-  background:var(--surface-card);
-  color:var(--landing-navy);
+  background:var(--color-accent,#395AA4);
+  color:#fff;
 }
 .privacy-card__icon svg{width:24px;height:24px}
 .privacy-card h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
@@ -2784,9 +2789,12 @@ body.expert-open{overflow:hidden}
   grid-template-columns:minmax(300px,.72fr) minmax(0,1.68fr);
   gap:clamp(40px,5vw,76px);
   align-items:start;
-  padding:clamp(64px,7vw,102px) 0 clamp(58px,7vw,94px) clamp(30px,4vw,64px);
-  border-radius:0;
-  background:transparent;
+  padding:clamp(64px,7vw,102px) clamp(20px,4vw,48px) clamp(58px,7vw,94px);
+  /* The doctors block sits on its own very light blue plate, so the section
+     reads as a section rather than running into the one above it
+     (client, 19 Aug). Same plate idea as the privacy row, cooler tone. */
+  border-radius:var(--section-radius,32px);
+  background:color-mix(in srgb,var(--color-accent,#395AA4) 6%,#fff);
 }
 .experts__intro{padding-right:8px}
 .experts__seal{width:42px;height:42px;margin-bottom:48px;color:var(--landing-navy)}
@@ -3527,9 +3535,19 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
    collage also drifts on its own rather than waiting to be swiped; the track
    is duplicated so the loop has no visible seam, and it pauses on hover and
    for anyone who asked for reduced motion. */
-.reviews{background:transparent;border:0;box-shadow:none}
+.reviews{border:0;box-shadow:none;
+  padding:clamp(40px,6vw,72px) clamp(20px,4vw,48px);
+  border-radius:var(--section-radius,32px);
+  background:color-mix(in srgb,var(--color-accent,#395AA4) 6%,#fff)}
 .review-collage::before,.review-collage::after{display:none}
 .review-collage{overflow:hidden}
 /* The columns are display:contents, so there is no track element to translate —
    the drift is driven by scrollLeft in the landing script instead. */
 .review-collage{overflow-x:auto;scroll-behavior:auto}
+
+
+/* Doctor names ran onto a second line for a single trailing syllable
+   (client, 19 Aug). Smaller type plus balanced wrapping keeps each name
+   whole. */
+.expert-card__body h3{font-size:clamp(15px,3.9vw,19px);line-height:1.35;text-wrap:balance}
+.expert-dialog__panel h2,#expert-dialog-title{font-size:clamp(19px,5vw,26px);line-height:1.3;text-wrap:balance}
