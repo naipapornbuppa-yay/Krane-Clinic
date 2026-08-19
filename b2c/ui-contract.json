@@ -25,9 +25,7 @@
     { "selector": "#csat-modal [data-csat-advice]", "why": "Doctor advice rating." },
     { "selector": "#csat-modal [data-csat-platform]", "why": "App experience rating." },
     { "selector": "#csat-modal [data-csat-quality]", "why": "Video and sound quality rating." },
-    { "selector": "#delivery-review-modal [data-review-delivery]", "why": "Delivery rating, asked after the medicine arrives." },
-    { "selector": "#delivery-review-modal [data-review-packaging]", "why": "Discreet-packaging rating." },
-    { "selector": "#tracking [data-delivery-confirm]", "why": "Patient confirms receipt; this is what opens the delivery review." },
+    { "selector": "#tracking [data-delivery-confirm]", "why": "Patient confirms receipt on the Delivered step." },
     { "selector": "#health-history-modal", "why": "Three safety questions, asked at confirmation." },
     { "selector": "#signup-done-modal", "why": "Registration-complete confirmation after OTP." },
     { "selector": "#payment-method-modal [data-method-option]", "why": "Payment method sheet, tap to commit." },
@@ -76,16 +74,14 @@
       "assert": [{ "visible": "#csat-modal" }]
     },
     {
-      "name": "Confirming receipt asks for the delivery review",
+      "name": "Tracking offers the receipt confirmation on the Delivered step",
       "enter": "#tracking",
       "seed": {
         "entryChannel": "direct", "draftReady": true, "accountCreated": true, "otpVerified": true,
         "consentsComplete": true, "identityVerified": true, "patientInfoComplete": true,
         "directGeneralHealthComplete": true, "consultationFeeAcknowledged": true, "consultationPaid": true
       },
-      "assertBeforeClick": [{ "activeScreen": "tracking" }, { "visible": "[data-delivery-confirm]" }],
-      "click": "[data-delivery-confirm]",
-      "assert": [{ "visible": "#delivery-review-modal" }]
+      "assert": [{ "activeScreen": "tracking" }, { "visible": "[data-track-step='delivered'] [data-delivery-confirm]" }]
     }
   ],
   "rules": [

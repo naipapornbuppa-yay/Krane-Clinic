@@ -864,7 +864,7 @@
     "Sleep, stress, mood or energy":"การนอน ความเครียด อารมณ์ หรือพลังงาน",
     "Sexual or reproductive health":"สุขภาพทางเพศหรือระบบสืบพันธุ์",
     "Other or not sure":"เรื่องอื่นหรือยังไม่แน่ใจ",
-    "Briefly describe what is happening":"เล่าอาการโดยย่อ",
+    "Briefly describe what is happening":"วันนี้อยากปรึกษาเรื่องอะไร?",
     "Main symptom, where you feel it, and anything else the doctor should know":"อาการหลัก ตำแหน่งที่รู้สึก และข้อมูลอื่นที่แพทย์ควรรู้",
     "When did it start?":"เริ่มมีอาการเมื่อไร?",
     "Select when it started":"เลือกช่วงเวลา",

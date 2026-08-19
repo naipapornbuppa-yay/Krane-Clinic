@@ -1919,11 +1919,10 @@
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:20</div></div>
         <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
-        <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div></div>
+        <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div>
+          <button class="step__action" type="button" data-delivery-confirm hidden>ได้รับของแล้ว</button>
+        </div>
       </div>
-      <!-- Receipt is the patient's to confirm, and it is what opens the
-           delivery review. -->
-      <button class="btn btn--primary" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button>
       <div class="doc-section">
         <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
         <button class="doc-row" type="button" data-doc-open="summary">
@@ -2751,22 +2750,6 @@
   </section>
 </div>
 
-<!-- Second review point: fulfilment. Asked once the patient confirms the
-     medicine arrived, because speed and discreet packaging cannot be judged at
-     checkout (client, 18 Aug). -->
-<div class="modal-layer" id="delivery-review-modal" hidden aria-hidden="true">
-  <div class="modal-layer__scrim" aria-hidden="true"></div>
-  <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="delivery-review-title" aria-describedby="delivery-review-description">
-    <h2 id="delivery-review-title">ได้รับยาแล้วเป็นอย่างไรบ้าง</h2>
-    <p id="delivery-review-description">ให้คะแนนเรื่องการจัดส่ง คำตอบของคุณเป็นความลับ</p>
-    <div class="csat-dialog__rows">
-      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">การจัดส่ง</div><div class="hint">ความเร็วและการติดต่อจากไรเดอร์</div></div><div class="rating" data-rate data-review-delivery><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
-      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">แพ็กเกจและความเป็นส่วนตัว</div><div class="hint">สภาพกล่องและการไม่ระบุชนิดยา</div></div><div class="rating" data-rate data-review-packaging><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
-    </div>
-    <div class="field"><label for="delivery-review-note">อยากบอกอะไรเพิ่มเติมไหม (ไม่บังคับ)</label><textarea class="textarea" id="delivery-review-note" placeholder="เช่น ได้รับเร็วกว่าที่คิด หรือกล่องมีปัญหา…"></textarea></div>
-    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-review-submit>ส่งคะแนน</button></div>
-  </section>
-</div>
 
 <div class="modal-layer" id="payment-method-modal" hidden aria-hidden="true">
   <button class="modal-layer__scrim" type="button" data-payment-method-close aria-label="ปิดตัวเลือกวิธีชำระเงิน"></button>
@@ -3619,7 +3602,8 @@
   function setupClearableFields(){
     const scope=document.getElementById('address');
     if(!scope) return;
-    scope.querySelectorAll('.field > input.input').forEach(input => {
+    // The search box is a field too — it needs the same × (client, 19 Aug).
+    scope.querySelectorAll('.field > input.input, .address-search__field > input.input').forEach(input => {
       const field=input.parentElement;
       if(field.querySelector('.field__clear')) return;
       field.classList.add('field--clearable');
@@ -4223,20 +4207,20 @@
     skin:{
       intake1:`
         <div><h2 class="h1">ตอนนี้ผิวของคุณเป็นอย่างไร</h2></div>
-        <div class="common-group"><div class="section-label">ลักษณะที่พบ</div>
+        <div class="common-group"><div class="section-label">ผิวของคุณมีลักษณะแบบไหน?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">สิวอุดตัน หัวขาวหรือหัวดำ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">สิวอักเสบ แดงและเจ็บ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">สิวหนองหรือสิวซีสต์</span><span class="opt-sub">ก้อนใต้ผิวขนาดใหญ่</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">รอยดำหรือรอยแดงหลังสิว</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ผื่น คัน หรือผิวลอก</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group"><div class="section-label">ตำแหน่งที่เป็น</div>
+        <div class="common-group"><div class="section-label">เป็นบริเวณใดบ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ใบหน้า</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ลำคอหรือกราม</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลังหรือหน้าอก</span></span><span class="opt-check"></span></button></div>
         </div>
         <div class="common-group">${intakeDurationControl({label:'เป็นมานานเท่าไร?',thai:true})}</div>
       `,
       intake2:`
         <div class="stack-2"><h2 class="h1">อาการเป็นแบบไหน</h2></div>
-        <div class="common-group"><div class="section-label">ความรุนแรง</div>
+        <div class="common-group"><div class="section-label">อาการรุนแรงแค่ไหน?</div>
           <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">เล็กน้อย</span><span class="opt-sub">มีสิวเป็นบางจุด</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">ปานกลาง</span><span class="opt-sub">มีสิวหลายจุดและมีรอยตามมา</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">มาก</span><span class="opt-sub">อักเสบเป็นบริเวณกว้างหรือเริ่มมีแผลเป็น</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group"><div class="section-label">สิ่งที่ทำให้เป็นมากขึ้น</div>
+        <div class="common-group"><div class="section-label">อะไรทำให้อาการเป็นมากขึ้น?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ช่วงมีประจำเดือน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความเครียดหรือพักผ่อนน้อย</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">เครื่องสำอางหรือครีมกันแดด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาหารบางชนิด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่แน่ใจ</span></span><span class="opt-check"></span></button></div>
         </div>
         <div class="common-group">${intakeDropdown({
@@ -4248,7 +4232,7 @@
       `,
       intake3:`
         <div class="stack-2"><h2 class="h1">เคยใช้ยาหรือผลิตภัณฑ์อะไรมาก่อน</h2></div>
-        <div class="common-group"><div class="section-label">การรักษาที่เคยใช้</div>
+        <div class="common-group"><div class="section-label">เคยใช้การรักษาใดมาก่อน?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่เคยรักษามาก่อน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาทากลุ่มเรตินอยด์</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาทา Benzoyl peroxide</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาปฏิชีวนะชนิดรับประทาน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยา Isotretinoin</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาคุมกำเนิดเพื่อรักษาสิว</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ทรีตเมนต์ที่คลินิก</span></span><span class="opt-check"></span></button></div>
         </div>
         <div class="common-group">${intakeDropdown({
@@ -4262,29 +4246,29 @@
     sexual:{
       intake1:`
         <div><h2 class="h1">อาการที่ต้องการปรึกษา</h2></div>
-        <div class="common-group"><div class="section-label">อาการที่พบ</div>
+        <div class="common-group"><div class="section-label">คุณมีอาการใดบ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวไม่เต็มที่</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวได้แต่ไม่นานพอ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลั่งเร็วกว่าที่ต้องการ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความต้องการทางเพศลดลง</span></span><span class="opt-check"></span></button></div>
         </div>
       `,
       intake2:`
         <div class="stack-2"><h2 class="h1">ลักษณะของอาการ</h2></div>
-        <div class="common-group"><div class="section-label">เกิดขึ้นบ่อยแค่ไหน</div>
+        <div class="common-group"><div class="section-label">เกิดขึ้นบ่อยแค่ไหน?</div>
           <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">เป็นบางครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นเกือบทุกครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นทุกครั้ง</span></span><span class="opt-check"></span></button></div>
           ${intakeDurationControl({label:'เป็นมานานเท่าไร?',thai:true})}
         </div>
-        <div class="common-group"><div class="section-label">ข้อมูลเพิ่มเติม</div>
+        <div class="common-group"><div class="section-label">มีข้อมูลใดตรงกับคุณบ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยังแข็งตัวได้ตอนตื่นนอน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มแบบค่อยเป็นค่อยไป</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มขึ้นทันทีทันใด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">มีความเครียดหรือกังวลร่วมด้วย</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group"><div class="section-label">โรคประจำตัวที่เกี่ยวข้อง</div>
+        <div class="common-group"><div class="section-label">มีโรคประจำตัวใดบ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มี</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความดันโลหิตสูง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">เบาหวาน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไขมันในเลือดสูง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">โรคหัวใจ</span></span><span class="opt-check"></span></button></div>
         </div>
       `,
       intake3:`
         <div class="stack-2"><h2 class="h1">ยาและการรักษาที่ใช้อยู่</h2><p class="hint">จำเป็นเพื่อความปลอดภัยในการสั่งยา</p></div>
-        <div class="common-group"><div class="section-label">ยาที่ใช้อยู่ประจำ</div>
+        <div class="common-group"><div class="section-label">ตอนนี้ใช้ยาอะไรอยู่บ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่ได้ใช้ยาประจำ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยากลุ่มไนเตรต หรือยาอมใต้ลิ้นแก้เจ็บหน้าอก</span><span class="opt-sub">สำคัญมาก ห้ามใช้ร่วมกับยารักษาอาการนี้บางชนิด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาลดความดันโลหิต</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาต้านเศร้าหรือยาคลายกังวล</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาอื่นๆ</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group"><div class="section-label">เคยรักษาอาการนี้มาก่อนหรือไม่</div>
+        <div class="common-group"><div class="section-label">เคยรักษาอาการนี้มาก่อนหรือไม่?</div>
           <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">ไม่เคย</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เคยใช้ยาที่แพทย์สั่ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เคยซื้อยาใช้เอง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">หยุดใช้เพราะผลข้างเคียง</span></span><span class="opt-check"></span></button></div>
         </div>
       `
@@ -4292,7 +4276,7 @@
     sleep:{
       intake1:`
         <div><h2 class="h1">การนอนของคุณเป็นอย่างไร</h2></div>
-        <div class="common-group"><div class="section-label">ลักษณะที่พบ</div>
+        <div class="common-group"><div class="section-label">ผิวของคุณมีลักษณะแบบไหน?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลับยาก ใช้เวลานานกว่าจะหลับ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ตื่นกลางดึกแล้วหลับต่อยาก</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ตื่นเช้ากว่าที่ต้องการ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลับได้แต่ตื่นมาไม่สดชื่น</span></span><span class="opt-check"></span></button></div>
         </div>
         <div class="common-group">${intakeDurationControl({label:'มีปัญหาการนอนมานานเท่าไร?',thai:true})}</div>
@@ -4305,16 +4289,16 @@
       `,
       intake2:`
         <div class="stack-2"><h2 class="h1">ผลกระทบในเวลากลางวัน</h2></div>
-        <div class="common-group"><div class="section-label">สิ่งที่รู้สึกตอนกลางวัน</div>
+        <div class="common-group"><div class="section-label">ตอนกลางวันคุณรู้สึกอย่างไร?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ง่วงหรือเพลียระหว่างวัน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">สมาธิสั้นลง จำอะไรได้น้อยลง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หงุดหงิดง่ายกว่าปกติ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">กังวลหรือคิดวนไม่หยุด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มีผลกระทบชัดเจน</span></span><span class="opt-check"></span></button></div>
         </div>
-        <div class="common-group"><div class="section-label">พฤติกรรมก่อนนอน</div>
+        <div class="common-group"><div class="section-label">ก่อนนอนคุณทำอะไรบ้าง?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ดื่มกาแฟหรือชาช่วงบ่ายถึงเย็น</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ใช้โทรศัพท์หรือจอก่อนนอน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ทำงานเป็นกะหรือเวลานอนไม่แน่นอน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ดื่มแอลกอฮอล์เพื่อช่วยให้หลับ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มีข้อใดตรง</span></span><span class="opt-check"></span></button></div>
         </div>
       `,
       intake3:`
         <div class="stack-2"><h2 class="h1">เคยใช้อะไรช่วยให้หลับบ้าง</h2></div>
-        <div class="common-group"><div class="section-label">สิ่งที่เคยใช้</div>
+        <div class="common-group"><div class="section-label">เคยใช้อะไรมาก่อน?</div>
           <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่เคยใช้</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยานอนหลับที่แพทย์สั่ง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยานอนหลับที่ซื้อเอง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">เมลาโทนิน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">สมุนไพรหรืออาหารเสริม</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ปรับพฤติกรรมการนอน</span></span><span class="opt-check"></span></button></div>
         </div>
         <div class="common-group">${intakeDropdown({
@@ -4437,9 +4421,20 @@
       question.querySelectorAll('.intake-question__title')
         .forEach(node => node.classList.remove('intake-question__title'));
       const labels=[...question.querySelectorAll('.section-label,.field>label,legend')];
-      if(labels.length===1){
+      /* The first label is the page's question and becomes its heading; any
+         other prompt on the page (a duration, a unit) stays a small field
+         label. Pages used to fall back to the screen title whenever a second
+         label existed, so a set with folded durations looked nothing like a
+         set without them (client, 19 Aug). */
+      question.querySelectorAll('.intake-question__sub')
+        .forEach(node => node.classList.remove('intake-question__sub'));
+      if(labels.length){
         labels[0].classList.add('intake-question__title');
         question.dataset.intakeQuestionTitled='1';
+        /* Every follow-up prompt on the page is the same component and gets the
+           same look, whether it started life as a section label or a field
+           label (client, 19 Aug). */
+        labels.slice(1).forEach(label => label.classList.add('intake-question__sub'));
       } else {
         delete question.dataset.intakeQuestionTitled;
       }
@@ -4665,11 +4660,28 @@
      ====================================================================== */
   const OSM_ENDPOINT='https://nominatim.openstreetmap.org';
   const OSM_TILES='https://tile.openstreetmap.org';
+  /* A point of interest often comes back with a sparse address block, which left
+     the rest of the form empty after picking a suggestion. Whatever the
+     structured fields miss is recovered from the display name, which spells the
+     address out in full (client, 19 Aug). */
+  function partsFromDisplayName(displayName){
+    const parts=String(displayName || '').split(',').map(part => part.trim()).filter(Boolean);
+    const found={line:'',subdistrict:'',districtName:'',province:'',postcode:''};
+    parts.forEach(part => {
+      if(!found.postcode && /^\d{5}$/.test(part)) found.postcode=part;
+      else if(!found.line && /^(ถนน|ซอย|Soi|Road|Thanon)/i.test(part)) found.line=part;
+      else if(!found.subdistrict && /^(แขวง|ตำบล)/.test(part)) found.subdistrict=part;
+      else if(!found.districtName && /^(เขต|อำเภอ)/.test(part)) found.districtName=part;
+      else if(!found.province && /(กรุงเทพมหานคร|จังหวัด)/.test(part)) found.province=part;
+    });
+    return found;
+  }
   function placeFromOsm(result){
     const a=result.address || {};
     const displayHead=(result.display_name || '').split(',')[0].trim();
     const name=result.name || displayHead;
-    const road=a.road || a.pedestrian || a.neighbourhood || '';
+    const fallback=partsFromDisplayName(result.display_name);
+    const road=a.road || a.pedestrian || a.neighbourhood || fallback.line || '';
     const houseNumber=a.house_number || '';
     const building=[name && name!==road ? name : '', houseNumber].filter(Boolean).join(' ');
     const place={
@@ -4677,10 +4689,10 @@
       building:building || houseNumber || name || road,
       floor:'',
       line:road,
-      subdistrict:a.suburb || a.quarter || a.village || a.town || '',
-      districtName:a.city_district || a.district || a.county || a.state_district || '',
-      province:a.province || a.state || a.city || '',
-      postcode:a.postcode || '',
+      subdistrict:a.suburb || a.quarter || a.village || a.town || fallback.subdistrict || '',
+      districtName:a.city_district || a.district || a.county || a.state_district || fallback.districtName || '',
+      province:a.province || a.state || a.city || fallback.province || '',
+      postcode:a.postcode || fallback.postcode || '',
       lat:Number(result.lat), lon:Number(result.lon)
     };
     place.district=composeDistrict(place);
@@ -7536,7 +7548,7 @@
       flowState.orderDelivered=true;
       persistFlowState();
       syncTrackingDelivery();
-      openDeliveryReview();
+      showActionToast('ยืนยันการรับยาแล้ว','success');
       return;
     }
     const go = e.target.closest('[data-go]');
@@ -8282,10 +8294,8 @@
     });
   }
 
-  /* Second review point. Delivery speed and discreet packaging cannot be rated
-     at checkout, so they are asked once the patient confirms the medicine
-     arrived (client, 18 Aug). Same rules as CSAT: once per order, skippable. */
-  const deliveryReviewModal = document.getElementById('delivery-review-modal');
+  /* Tracking marks the order received; the review is asked once, after
+     payment (client, 19 Aug). */
   function syncTrackingDelivery(){
     const screen=document.getElementById('tracking');
     if(!screen) return;
@@ -8303,42 +8313,6 @@
     }
     if(confirmButton) confirmButton.hidden=delivered;
   }
-  function openDeliveryReview(){
-    if(!deliveryReviewModal || flowState.deliveryReviewDone) return;
-    deliveryReviewModal.hidden=false;
-    deliveryReviewModal.setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-    deliveryReviewModal.querySelector('.csat-dialog')?.focus({preventScroll:true});
-  }
-  function closeDeliveryReview(){
-    if(!deliveryReviewModal) return;
-    deliveryReviewModal.hidden=true;
-    deliveryReviewModal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-  }
-  function deliveryScore(group){
-    return deliveryReviewModal?.querySelectorAll(`[data-review-${group}] .star.on`).length || 0;
-  }
-  if(deliveryReviewModal){
-    deliveryReviewModal.addEventListener('click', event => {
-      const submit=event.target.closest('[data-review-submit]');
-      if(!submit) return;
-      if(!deliveryScore('delivery')){
-        showActionToast('กรุณาให้คะแนนการจัดส่ง','warning');
-        return;
-      }
-      flowState.deliveryReview={
-        delivery:deliveryScore('delivery'),
-        packaging:deliveryScore('packaging'),
-        note:document.getElementById('delivery-review-note')?.value.trim() || ''
-      };
-      showActionToast('ขอบคุณสำหรับคะแนน','success');
-      flowState.deliveryReviewDone=true;
-      persistFlowState();
-      closeDeliveryReview();
-    });
-  }
-
   const signupDoneModal = document.getElementById('signup-done-modal');
   let signupDoneTarget = '';
   function openSignupDoneModal(target){

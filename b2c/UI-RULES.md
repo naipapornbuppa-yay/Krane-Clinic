@@ -68,14 +68,11 @@ only when the client asks for it, and the reason goes in the commit message.
 
 ## 7. Reviews
 
-- Two review points, because they measure different things and one cannot answer
-  for the other.
-  - **After the consultation** (at payment success): consultation experience and
-    the doctor. `#csat-modal`.
-  - **After the medicine arrives** (patient confirms receipt on tracking):
-    delivery and discreet packaging. `#delivery-review-modal`.
-- Both are asked once per order and neither can be skipped: the rating is the
-  way past the dialog (client, 19 Aug).
+- **One review, after payment** (`#csat-modal`), rating three things: the
+  doctor's advice, the app, and the video/sound quality. The two-point split
+  tried on 18 Aug was dropped on 19 Aug — delivery is not rated separately.
+- Asked once per order and it cannot be skipped: the rating is the way past the
+  dialog, and all three rows are required.
 - Never ask about something that has not happened yet.
 
 ## 8. Navigation
