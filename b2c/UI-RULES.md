@@ -74,7 +74,8 @@ only when the client asks for it, and the reason goes in the commit message.
     the doctor. `#csat-modal`.
   - **After the medicine arrives** (patient confirms receipt on tracking):
     delivery and discreet packaging. `#delivery-review-modal`.
-- Both are asked once per order, both are skippable, neither blocks the flow.
+- Both are asked once per order and neither can be skipped: the rating is the
+  way past the dialog (client, 19 Aug).
 - Never ask about something that has not happened yet.
 
 ## 8. Navigation

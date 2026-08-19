@@ -1417,14 +1417,7 @@
           <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน" data-address-search>
         </div>
         <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
-        <button class="btn btn--secondary address-search__map" type="button" data-go="address-map">
-          <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
-        </button>
       </div>
-      <p class="address-readout" data-address-summary role="status" aria-live="polite">
-        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
-        <span data-address-preview-detail>ค้นหาที่อยู่ หรือเลือกจากแผนที่ แล้วเรากรอกให้อัตโนมัติ</span>
-      </p>
 
       <!-- Nine fields in one flat run read as a wall (client, 18 Aug). Same
            fields, grouped by what they are about: who receives it, where it
@@ -1463,7 +1456,12 @@
            km lookup already read. Never edited directly, always derived. -->
       <input type="hidden" id="addrDistrict">
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
+    <div class="screen__footer address-footer">
+      <button class="address-map-pill" type="button" data-go="address-map">
+        <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
+      </button>
+      <button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button>
+    </div>
   </section>
   <!-- The map picker modal is gone: the map on #address IS the picker now. -->
 
@@ -2715,17 +2713,19 @@
 <div class="modal-layer" id="csat-modal" hidden aria-hidden="true">
   <div class="modal-layer__scrim" aria-hidden="true"></div>
   <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="csat-title" aria-describedby="csat-description">
+    <img class="csat-dialog__art" src="assets/condition-detail/warning-guide-man-current-logo-v3.png" width="1536" height="1024" alt="" decoding="async">
     <h2 id="csat-title">ให้คะแนนการปรึกษาครั้งนี้</h2>
-    <p id="csat-description">คำตอบของคุณเป็นความลับ และช่วยให้เราดูแลคนไข้ได้ดีขึ้น</p>
+    <p id="csat-description">คำตอบเป็นความลับ</p>
     <div class="csat-dialog__rows">
-      <!-- This runs before anything has shipped, so it asks only about what has
-           already happened. Delivery is rated on its own after the medicine
-           arrives (client, 18 Aug). -->
-      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">ความพึงพอใจการปรึกษา</div><div class="hint">ตั้งแต่ตอบแบบสอบถามจนจบการปรึกษา</div></div><div class="rating" data-rate data-csat-overall><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
-      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">แพทย์ผู้ดูแล</div><div class="hint">การอธิบายและความใส่ใจ</div></div><div class="rating" data-rate data-csat-doctor><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+      <!-- Three things, named plainly and without sub-lines: the care, the app
+           and the call itself (client, 19 Aug). Delivery is rated separately
+           once the medicine arrives. -->
+      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">คำแนะนำของแพทย์</div><div class="rating" data-rate data-csat-advice><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">การใช้งานแอป</div><div class="rating" data-rate data-csat-platform><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">คุณภาพภาพและเสียง</div><div class="rating" data-rate data-csat-quality><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
     </div>
-    <div class="field"><label for="csat-note">อยากบอกอะไรเพิ่มเติมไหม (ไม่บังคับ)</label><textarea class="textarea" id="csat-note" placeholder="อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea></div>
-    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit>ส่งคะแนนและไปต่อ</button><button class="btn btn--ghost" type="button" data-csat-skip>ข้ามไปก่อน</button></div>
+    <div class="field"><label for="csat-note">ความเห็นเพิ่มเติม (ไม่บังคับ)</label><textarea class="textarea" id="csat-note" placeholder="อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea></div>
+    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit>ส่งคะแนนและไปต่อ</button></div>
   </section>
 </div>
 
@@ -2742,7 +2742,7 @@
       <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">แพ็กเกจและความเป็นส่วนตัว</div><div class="hint">สภาพกล่องและการไม่ระบุชนิดยา</div></div><div class="rating" data-rate data-review-packaging><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
     </div>
     <div class="field"><label for="delivery-review-note">อยากบอกอะไรเพิ่มเติมไหม (ไม่บังคับ)</label><textarea class="textarea" id="delivery-review-note" placeholder="เช่น ได้รับเร็วกว่าที่คิด หรือกล่องมีปัญหา…"></textarea></div>
-    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-review-submit>ส่งคะแนน</button><button class="btn btn--ghost" type="button" data-review-skip>ข้ามไปก่อน</button></div>
+    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-review-submit>ส่งคะแนน</button></div>
   </section>
 </div>
 
@@ -6406,13 +6406,27 @@
       if(pill){ pill.hidden = !callActive; pill.dataset.go = lastCall; }
       syncConsultationSummaryUnread(false);
       const plan=document.querySelector('#consult [data-plan-card]');
-      if(plan?.dataset.shown){
+      /* The plan has to arrive in front of the patient: the doctor types, then
+         the list appears. When it was revealed while the patient was still on
+         video, opening the chat replays that moment once instead of showing a
+         list that was already sitting there (client, 19 Aug). */
+      if(plan?.dataset.shown && plan.dataset.seenInChat){
         const typing=document.querySelector('#consult [data-typing]');
         const status=document.querySelector('#consult [data-rx-bar]');
         if(typing) typing.style.display='none';
         if(status) status.style.display='none';
         plan.removeAttribute('data-wait-hidden');
       }else{
+        if(plan?.dataset.shown){
+          delete plan.dataset.shown;
+          plan.classList.remove('reveal-in');
+          plan.setAttribute('data-wait-hidden','');
+          const typing=document.querySelector('#consult [data-typing]');
+          const status=document.querySelector('#consult [data-rx-bar]');
+          if(typing) typing.style.display='';
+          if(status) status.style.display='';
+        }
+        if(plan) plan.dataset.seenInChat='1';
         scheduleConsultationSummary();
       }
     }
@@ -8219,16 +8233,21 @@
   if(csatModal){
     csatModal.addEventListener('click', event => {
       const submit=event.target.closest('[data-csat-submit]');
-      const skip=event.target.closest('[data-csat-skip]');
-      if(!submit && !skip) return;
-      if(submit && !csatScore('overall')){
-        showActionToast('กรุณาให้คะแนนความพึงพอใจโดยรวม','warning');
+      if(!submit) return;
+      // The rating is the way past this dialog; there is no skip.
+      // All three are the review; a partial answer is not one.
+      const missing=['advice','platform','quality'].filter(group => !csatScore(group));
+      if(missing.length){
+        showActionToast('กรุณาให้คะแนนให้ครบทั้ง 3 ข้อ','warning');
         return;
       }
-      if(submit){
-        flowState.csat={overall:csatScore('overall'),doctor:csatScore('doctor'),note:document.getElementById('csat-note')?.value.trim() || ''};
-        showActionToast('ขอบคุณสำหรับคะแนน','success');
-      }
+      flowState.csat={
+        advice:csatScore('advice'),
+        platform:csatScore('platform'),
+        quality:csatScore('quality'),
+        note:document.getElementById('csat-note')?.value.trim() || ''
+      };
+      showActionToast('ขอบคุณสำหรับคะแนน','success');
       flowState.csatDone=true;
       persistFlowState();
       closeCsatModal();
@@ -8276,20 +8295,17 @@
   if(deliveryReviewModal){
     deliveryReviewModal.addEventListener('click', event => {
       const submit=event.target.closest('[data-review-submit]');
-      const skip=event.target.closest('[data-review-skip]');
-      if(!submit && !skip) return;
-      if(submit && !deliveryScore('delivery')){
+      if(!submit) return;
+      if(!deliveryScore('delivery')){
         showActionToast('กรุณาให้คะแนนการจัดส่ง','warning');
         return;
       }
-      if(submit){
-        flowState.deliveryReview={
-          delivery:deliveryScore('delivery'),
-          packaging:deliveryScore('packaging'),
-          note:document.getElementById('delivery-review-note')?.value.trim() || ''
-        };
-        showActionToast('ขอบคุณสำหรับคะแนน','success');
-      }
+      flowState.deliveryReview={
+        delivery:deliveryScore('delivery'),
+        packaging:deliveryScore('packaging'),
+        note:document.getElementById('delivery-review-note')?.value.trim() || ''
+      };
+      showActionToast('ขอบคุณสำหรับคะแนน','success');
       flowState.deliveryReviewDone=true;
       persistFlowState();
       closeDeliveryReview();

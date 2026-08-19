@@ -1304,8 +1304,11 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 /* ---------- Rating (stars) ---------- */
 .rating-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) 0}
 .rating-row+.rating-row{border-top:1px solid var(--color-line)}
-.rating{display:inline-flex;gap:var(--sp-1)}
-.star{width:30px;height:30px;border:0;background:transparent;cursor:pointer;color:var(--color-line-strong);font-size:24px;line-height:1;padding:0}
+.rating{display:inline-flex;gap:0}
+/* 30px squares with gaps between them meant a tap could land on nothing;
+   the whole star row is now made of full-height 44px targets (client, 19 Aug). */
+.star{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;
+  color:var(--color-line-strong);font-size:26px;line-height:1;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .star.on{color:var(--color-accent)}
 
 /* ---------- Toggle switch ---------- */
@@ -1452,7 +1455,7 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 /* ---------- Modal / continuity guard ---------- */
 .modal-layer{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:var(--sp-5)}
 .modal-layer__scrim{position:absolute;inset:0;padding:0;border:0;background:rgba(7,33,31,.58);cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:fade-in var(--dur-base) var(--ease-out) both}
-.modal-dialog{position:relative;width:min(440px,100%);padding:var(--sp-6);border:1px solid var(--color-glass-border);border-radius:var(--radius-xl);background:var(--color-glass-strong);box-shadow:var(--shadow-lg);animation:modal-in var(--dur-page) var(--ease-out) both}
+.modal-dialog{position:relative;z-index:1;width:min(440px,100%);padding:var(--sp-6);border:1px solid var(--color-glass-border);border-radius:var(--radius-xl);background:var(--color-glass-strong);box-shadow:var(--shadow-lg);animation:modal-in var(--dur-page) var(--ease-out) both}
 .modal-dialog__icon{width:48px;height:48px;display:grid;place-items:center;margin-bottom:var(--sp-4);border-radius:var(--radius-md);background:var(--color-info-soft);color:var(--color-info)}
 .modal-dialog__icon .ui-icon{width:24px;height:24px}
 .modal-dialog h2{margin:0;font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-semibold);line-height:1.3}
@@ -1598,7 +1601,14 @@ body.modal-open{overflow:hidden}
 
 .csat-dialog{width:min(460px,100%)}
 .csat-dialog[tabindex="-1"]:focus{outline:none}
+/* A rating dialog asking three questions reads friendlier with a face on it
+   (client, 19 Aug). Same guide figure the service pages use. */
+.csat-dialog__art{display:block;width:150px;height:auto;margin:0 auto var(--sp-2)}
 .csat-dialog__rows{margin-top:var(--sp-4)}
+/* Label above its stars: five 44px targets leave no room for a Thai label
+   beside them, and the label wrapped mid-word. */
+.csat-dialog .rating-row{flex-direction:column;align-items:flex-start;gap:6px}
+.csat-dialog .rating{margin-left:-10px}
 .csat-dialog .field{margin-top:var(--sp-4)}
 .csat-dialog .modal-dialog__actions{display:grid;grid-template-columns:1fr;gap:var(--sp-2);margin-top:var(--sp-5)}
 .csat-dialog .modal-dialog__actions .btn{width:100%;height:var(--control-h)}
@@ -2504,3 +2514,18 @@ body.lang-th *{letter-spacing:normal}
   border-radius:50%;background:rgba(255,255,255,.14);
 }
 .home-cta__go svg{width:19px;height:19px}
+
+/* The map picker rides above the sticky primary action as a floating pill, so
+   it stays reachable while the form scrolls (client, 19 Aug). */
+.address-footer{display:flex;flex-direction:column;gap:var(--sp-2)}
+.address-map-pill{align-self:center;display:inline-flex;align-items:center;gap:8px;
+  min-height:40px;padding:0 var(--sp-4);border:1px solid var(--color-line);
+  border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);
+  font-size:var(--fs-sm);font-weight:var(--fw-semibold);box-shadow:var(--shadow-sm);cursor:pointer}
+.address-map-pill:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
+.address-map-pill .ui-icon{width:16px;height:16px}
+/* An error message under one field must not drag its neighbour's label out of
+   line: the row aligns at the top, not at the baseline of the taller column. */
+.field-row{align-items:flex-start}
+.field-row>.field{display:flex;flex-direction:column}
+.field-row>.field>.input,.field-row>.field>.select{margin-top:auto}
