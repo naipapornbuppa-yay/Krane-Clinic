@@ -1,0 +1,96 @@
+{
+  "_": [
+    "Locked UI contract for the Krane B2C prototype.",
+    "Everything listed here was agreed with the client and must not disappear.",
+    "b2c/tools/contract-check.mjs asserts every line of this file against the",
+    "running page; CI fails the build if something has been removed.",
+    "Adding to this file is normal. Removing from it needs the client to say so,",
+    "and the reason belongs in the commit message."
+  ],
+  "screens": [
+    "account", "activity", "address", "address-map", "article", "articles", "choosedoc",
+    "conditions", "consent-terms", "consult", "consultpay", "consultpay-fail", "consultpay-gw",
+    "delivery-quote", "empty-activities", "empty-history", "feedback", "feedbackdone", "history",
+    "identity", "ineligible", "insurance", "insurance-result", "intake-concern", "intake-edu",
+    "intake-general", "intake1", "intake2", "intake3", "intake4", "intake5", "landing", "login",
+    "matching", "noslots", "notifications", "nurse", "onboard1", "onboard2", "onboard3", "otp",
+    "partner-idcard", "partner-insurance", "partner-nurse", "partner-nurse-session",
+    "partner-patient-info", "partner-phr", "patient-info", "payfail", "payment", "payment-gw",
+    "payment-success", "pharmacy-search", "pharmacyaccepted", "pharmacyissue", "pharmacypending",
+    "preloader", "prescription", "profile", "referral", "refill", "rx-writing", "settings",
+    "signup", "social-confirm", "tracking", "upload-rx", "video", "waitroom"
+  ],
+  "components": [
+    { "selector": "#csat-modal [data-csat-submit]", "why": "Consultation review after payment. Went missing once already." },
+    { "selector": "#csat-modal [data-csat-overall]", "why": "Consultation satisfaction rating." },
+    { "selector": "#csat-modal [data-csat-doctor]", "why": "Doctor rating." },
+    { "selector": "#delivery-review-modal [data-review-delivery]", "why": "Delivery rating, asked after the medicine arrives." },
+    { "selector": "#delivery-review-modal [data-review-packaging]", "why": "Discreet-packaging rating." },
+    { "selector": "#tracking [data-delivery-confirm]", "why": "Patient confirms receipt; this is what opens the delivery review." },
+    { "selector": "#health-history-modal", "why": "Three safety questions, asked at confirmation." },
+    { "selector": "#signup-done-modal", "why": "Registration-complete confirmation after OTP." },
+    { "selector": "#payment-method-modal [data-method-option]", "why": "Payment method sheet, tap to commit." },
+    { "selector": "#prescription [data-doc-tab='summary']", "why": "Consultation summary document." },
+    { "selector": "#prescription [data-doc-tab='rx']", "why": "Prescription document." },
+    { "selector": "#prescription [data-doc-tab='cert']", "why": "Medical certificate." },
+    { "selector": "#prescription [data-doc-tab='receipt']", "why": "Receipt." },
+    { "selector": "#payment-success [data-csat-go]", "why": "Payment success routes through the review." },
+    { "selector": "#tracking [data-doc-open='summary']", "why": "Documents reachable from the order." },
+    { "selector": "#tracking [data-doc-open='receipt']", "why": "Receipt reachable from the order." },
+    { "selector": "#tracking [data-doc-open='cert']", "why": "Certificate reachable from the order." },
+    { "selector": "#address [data-address-search]", "why": "Address search box with suggestions." },
+    { "selector": "#address [data-address-suggestions]", "why": "Suggestion dropdown." },
+    { "selector": "#address [data-go='address-map']", "why": "Map picker entry point." },
+    { "selector": "#address-map [data-osm-map]", "why": "Real OpenStreetMap tiles." },
+    { "selector": "#address-map [data-address-map-confirm]", "why": "Confirming the pin returns to the form." },
+    { "selector": "#address .form-group", "why": "Address fields stay grouped, not one flat run.", "minCount": 3 },
+    { "selector": "#address .field__clear", "why": "Every address field can be cleared.", "minCount": 8 },
+    { "selector": "#conditions [data-category-list]", "why": "Category grid. Its container was dropped once and blanked the screen." },
+    { "selector": "#conditions [data-condition-list]", "why": "Second-step condition list." },
+    { "selector": "#waitroom .info-chip", "why": "Camera/mic precondition as a one-line chip." },
+    { "selector": "#video .call-btn--end", "why": "Hang-up control." },
+    { "selector": "#consult [data-live-pill]", "why": "Live-call pill in chat." },
+    { "selector": "#profile .home-cta", "why": "Home primary action." }
+  ],
+  "flows": [
+    {
+      "name": "General consultation intake paginates one question per page",
+      "enter": "#intake1?entry=direct&category=general",
+      "assert": [
+        { "activeScreen": "intake1" },
+        { "countAtLeast": ["[data-intake-question]", 3] },
+        { "visibleOnly": "[data-intake-question]" }
+      ]
+    },
+    {
+      "name": "Payment success asks for the consultation review",
+      "enter": "#payment-success",
+      "seed": {
+        "entryChannel": "direct", "draftReady": true, "accountCreated": true, "otpVerified": true,
+        "consentsComplete": true, "identityVerified": true, "patientInfoComplete": true,
+        "directGeneralHealthComplete": true, "consultationFeeAcknowledged": true, "consultationPaid": true
+      },
+      "waitBefore": 2600,
+      "assert": [{ "visible": "#csat-modal" }]
+    },
+    {
+      "name": "Confirming receipt asks for the delivery review",
+      "enter": "#tracking",
+      "seed": {
+        "entryChannel": "direct", "draftReady": true, "accountCreated": true, "otpVerified": true,
+        "consentsComplete": true, "identityVerified": true, "patientInfoComplete": true,
+        "directGeneralHealthComplete": true, "consultationFeeAcknowledged": true, "consultationPaid": true
+      },
+      "assertBeforeClick": [{ "activeScreen": "tracking" }, { "visible": "[data-delivery-confirm]" }],
+      "click": "[data-delivery-confirm]",
+      "assert": [{ "visible": "#delivery-review-modal" }]
+    }
+  ],
+  "rules": [
+    { "name": "No eyebrow/kicker labels on the condition page", "page": "condition-detail.html?condition=weight", "absent": ".eyebrow, .condition-hero__kicker" },
+    { "name": "Skip link never takes layout space", "page": "krane-b2c-landing.html", "maxHeight": [".skip-link", 2] },
+    { "name": "Skip link never takes layout space (service pages)", "page": "condition-detail.html?condition=weight", "maxHeight": [".skip-link", 2] },
+    { "name": "Drawer carries exactly one action", "page": "krane-b2c-landing.html", "count": [".mobile-menu__actions .button", 1] },
+    { "name": "Actions are rounded rectangles, never pills", "page": "krane-b2c.html", "noPillButtons": true }
+  ]
+}

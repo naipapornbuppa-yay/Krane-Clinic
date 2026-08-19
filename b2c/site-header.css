@@ -108,8 +108,16 @@ body.menu-open{overflow:hidden}
    markup uses it for the "Language" label, which otherwise renders visibly and
    collides with the logo on any page that does not happen to define it. */
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:10px 14px;border-radius:10px;background:#fff;transform:translateY(-160%)}
-.skip-link:focus{transform:none}
+/* A skip link must never take layout space or paint while unfocused.
+   The transform trick relied on the anchor being transformable and on the
+   fixed rule landing; when either failed the link rendered in flow as a white
+   band above the announcement bar, which is what read as a white notch strip
+   (client, 18 Aug). Clipped-to-nothing cannot fail that way. */
+.skip-link{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
+.skip-link:focus,.skip-link:focus-visible{position:fixed!important;z-index:100;top:10px;left:10px;
+  width:auto;height:auto;margin:0;padding:10px 14px;overflow:visible;clip:auto;clip-path:none;
+  border-radius:10px;background:#fff;color:#121826;box-shadow:0 4px 18px rgba(18,24,36,.18);transform:none}
 
 /* Keep the service-detail navigation identical to the landing-page navigation. */
 .site-header{position:sticky;top:0;z-index:50;height:72px;margin:0;display:flex;align-items:center;gap:16px;padding:12px var(--page-gutter,clamp(20px,5vw,48px));border:0;border-bottom:1px solid transparent;border-radius:0;background:#fff;box-shadow:none;backdrop-filter:none;transition:background .3s ease,box-shadow .3s ease,border-color .3s ease}

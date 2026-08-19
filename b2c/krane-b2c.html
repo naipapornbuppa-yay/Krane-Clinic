@@ -1896,10 +1896,13 @@
         <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
         <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div></div>
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:20</div></div>
-        <div class="step active"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
-        <div class="step"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
-        <div class="step"><strong>Delivered</strong><div class="hint">Pending</div></div>
+        <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
+        <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
+        <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div></div>
       </div>
+      <!-- Receipt is the patient's to confirm, and it is what opens the
+           delivery review. -->
+      <button class="btn btn--primary" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button>
       <div class="doc-section">
         <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
         <button class="doc-row" type="button" data-doc-open="summary">
@@ -2711,14 +2714,34 @@
 <div class="modal-layer" id="csat-modal" hidden aria-hidden="true">
   <div class="modal-layer__scrim" aria-hidden="true"></div>
   <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="csat-title" aria-describedby="csat-description">
-    <h2 id="csat-title">ให้คะแนนการใช้บริการครั้งนี้</h2>
+    <h2 id="csat-title">ให้คะแนนการปรึกษาครั้งนี้</h2>
     <p id="csat-description">คำตอบของคุณเป็นความลับ และช่วยให้เราดูแลคนไข้ได้ดีขึ้น</p>
     <div class="csat-dialog__rows">
-      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">ความพึงพอใจโดยรวม</div><div class="hint">ตั้งแต่เริ่มจนได้รับยา</div></div><div class="rating" data-rate data-csat-overall><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+      <!-- This runs before anything has shipped, so it asks only about what has
+           already happened. Delivery is rated on its own after the medicine
+           arrives (client, 18 Aug). -->
+      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">ความพึงพอใจการปรึกษา</div><div class="hint">ตั้งแต่ตอบแบบสอบถามจนจบการปรึกษา</div></div><div class="rating" data-rate data-csat-overall><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
       <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">แพทย์ผู้ดูแล</div><div class="hint">การอธิบายและความใส่ใจ</div></div><div class="rating" data-rate data-csat-doctor><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
     </div>
     <div class="field"><label for="csat-note">อยากบอกอะไรเพิ่มเติมไหม (ไม่บังคับ)</label><textarea class="textarea" id="csat-note" placeholder="อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea></div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit>ส่งคะแนนและไปต่อ</button><button class="btn btn--ghost" type="button" data-csat-skip>ข้ามไปก่อน</button></div>
+  </section>
+</div>
+
+<!-- Second review point: fulfilment. Asked once the patient confirms the
+     medicine arrived, because speed and discreet packaging cannot be judged at
+     checkout (client, 18 Aug). -->
+<div class="modal-layer" id="delivery-review-modal" hidden aria-hidden="true">
+  <div class="modal-layer__scrim" aria-hidden="true"></div>
+  <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="delivery-review-title" aria-describedby="delivery-review-description">
+    <h2 id="delivery-review-title">ได้รับยาแล้วเป็นอย่างไรบ้าง</h2>
+    <p id="delivery-review-description">ให้คะแนนเรื่องการจัดส่ง คำตอบของคุณเป็นความลับ</p>
+    <div class="csat-dialog__rows">
+      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">การจัดส่ง</div><div class="hint">ความเร็วและการติดต่อจากไรเดอร์</div></div><div class="rating" data-rate data-review-delivery><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+      <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">แพ็กเกจและความเป็นส่วนตัว</div><div class="hint">สภาพกล่องและการไม่ระบุชนิดยา</div></div><div class="rating" data-rate data-review-packaging><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+    </div>
+    <div class="field"><label for="delivery-review-note">อยากบอกอะไรเพิ่มเติมไหม (ไม่บังคับ)</label><textarea class="textarea" id="delivery-review-note" placeholder="เช่น ได้รับเร็วกว่าที่คิด หรือกล่องมีปัญหา…"></textarea></div>
+    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-review-submit>ส่งคะแนน</button><button class="btn btn--ghost" type="button" data-review-skip>ข้ามไปก่อน</button></div>
   </section>
 </div>
 
@@ -6159,6 +6182,7 @@
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(id==='address-map') window.setTimeout(setupAddressMap,0);
+    if(id==='tracking') syncTrackingDelivery();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='intake-general') syncGeneralHealthContext();
@@ -6338,7 +6362,11 @@
     clearTimeout(paymentSuccessTimer);
     if(id==='payment-success' && hasFulfillableItems()){
       paymentSuccessTimer=setTimeout(() => {
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('tracking');
+        /* This screen moves on by itself after a beat, so the review has to be
+           part of that hop. Hanging it off the CTA alone meant only someone who
+           tapped within 1.8s ever saw it — which is why the rating looked like
+           it had been dropped from the build (client, 18 Aug). */
+        if(document.getElementById('payment-success')?.classList.contains('active')) openCsatModal('tracking',{replace:true});
       },reduceMotion ? 450 : 1800);
     }
     clearTimeout(preloaderTimer);
@@ -7408,6 +7436,13 @@
     }
     const csatGo = e.target.closest('[data-csat-go]');
     if(csatGo){ openCsatModal(csatGo.dataset.csatGo); return; }
+    if(e.target.closest('[data-delivery-confirm]')){
+      flowState.orderDelivered=true;
+      persistFlowState();
+      syncTrackingDelivery();
+      openDeliveryReview();
+      return;
+    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -8097,9 +8132,15 @@
      either way the flow carries on to the same place. */
   const csatModal = document.getElementById('csat-modal');
   let csatTarget = 'tracking';
-  function openCsatModal(target){
+  let csatReplaces = false;
+  function leaveCsat(){
+    // The automatic hop replaces the payment screen in history; the CTA pushes.
+    if(csatReplaces) replaceCurrent(csatTarget); else show(csatTarget);
+  }
+  function openCsatModal(target,{replace=false}={}){
     csatTarget = target || 'tracking';
-    if(!csatModal || flowState.csatDone){ show(csatTarget); return; }
+    csatReplaces = replace;
+    if(!csatModal || flowState.csatDone){ leaveCsat(); return; }
     csatModal.hidden = false;
     csatModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
@@ -8130,7 +8171,67 @@
       flowState.csatDone=true;
       persistFlowState();
       closeCsatModal();
-      show(csatTarget);
+      leaveCsat();
+    });
+  }
+
+  /* Second review point. Delivery speed and discreet packaging cannot be rated
+     at checkout, so they are asked once the patient confirms the medicine
+     arrived (client, 18 Aug). Same rules as CSAT: once per order, skippable. */
+  const deliveryReviewModal = document.getElementById('delivery-review-modal');
+  function syncTrackingDelivery(){
+    const screen=document.getElementById('tracking');
+    if(!screen) return;
+    const confirmButton=screen.querySelector('[data-delivery-confirm]');
+    const steps=Object.fromEntries([...screen.querySelectorAll('[data-track-step]')]
+      .map(step => [step.dataset.trackStep,step]));
+    const delivered=Boolean(flowState.orderDelivered);
+    if(steps.out) steps.out.classList.toggle('done',delivered);
+    if(steps.dispatch) steps.dispatch.classList.toggle('active',!delivered);
+    if(steps.dispatch) steps.dispatch.classList.toggle('done',delivered);
+    if(steps.delivered){
+      steps.delivered.classList.toggle('done',delivered);
+      const hint=steps.delivered.querySelector('.hint');
+      if(hint) hint.textContent=delivered ? 'ได้รับแล้ว' : 'Pending';
+    }
+    if(confirmButton) confirmButton.hidden=delivered;
+  }
+  function openDeliveryReview(){
+    if(!deliveryReviewModal || flowState.deliveryReviewDone) return;
+    deliveryReviewModal.hidden=false;
+    deliveryReviewModal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    deliveryReviewModal.querySelector('.csat-dialog')?.focus({preventScroll:true});
+  }
+  function closeDeliveryReview(){
+    if(!deliveryReviewModal) return;
+    deliveryReviewModal.hidden=true;
+    deliveryReviewModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+  function deliveryScore(group){
+    return deliveryReviewModal?.querySelectorAll(`[data-review-${group}] .star.on`).length || 0;
+  }
+  if(deliveryReviewModal){
+    deliveryReviewModal.addEventListener('click', event => {
+      const submit=event.target.closest('[data-review-submit]');
+      const skip=event.target.closest('[data-review-skip]');
+      if(!submit && !skip) return;
+      if(submit && !deliveryScore('delivery')){
+        showActionToast('กรุณาให้คะแนนการจัดส่ง','warning');
+        return;
+      }
+      if(submit){
+        flowState.deliveryReview={
+          delivery:deliveryScore('delivery'),
+          packaging:deliveryScore('packaging'),
+          note:document.getElementById('delivery-review-note')?.value.trim() || ''
+        };
+        showActionToast('ขอบคุณสำหรับคะแนน','success');
+      }
+      flowState.deliveryReviewDone=true;
+      persistFlowState();
+      closeDeliveryReview();
     });
   }
 

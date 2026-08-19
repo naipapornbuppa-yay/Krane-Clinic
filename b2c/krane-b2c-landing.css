@@ -56,8 +56,16 @@ h1,h2,h3,p,figure,blockquote{margin:0}
 button{color:inherit}
 :focus-visible{outline:3px solid rgba(74,102,168,.35);outline-offset:3px}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-.skip-link{position:fixed;z-index:200;top:8px;left:8px;padding:10px 14px;border-radius:12px;background:#fff;box-shadow:0 4px 18px rgba(18,24,36,.18);transform:translateY(-150%);transition:transform .2s ease}
-.skip-link:focus{transform:none}
+/* A skip link must never take layout space or paint while unfocused.
+   The transform trick relied on the anchor being transformable and on the
+   fixed rule landing; when either failed the link rendered in flow as a white
+   band above the announcement bar, which is what read as a white notch strip
+   (client, 18 Aug). Clipped-to-nothing cannot fail that way. */
+.skip-link{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
+.skip-link:focus,.skip-link:focus-visible{position:fixed!important;z-index:200;top:8px;left:8px;
+  width:auto;height:auto;margin:0;padding:10px 14px;overflow:visible;clip:auto;clip-path:none;
+  border-radius:12px;background:#fff;color:#121826;box-shadow:0 4px 18px rgba(18,24,36,.18);transform:none}
 .button{
   min-height:48px;
   display:inline-flex;

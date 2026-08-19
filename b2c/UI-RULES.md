@@ -4,6 +4,12 @@ Rules the client has already asked for once. They apply to every screen from now
 new work is expected to follow them without being told again. Each rule names the
 mechanism in the code so it can be checked, not just remembered.
 
+**These rules are enforced, not just written down.** `b2c/ui-contract.json` lists every
+screen, component and flow that must exist; `npm run check:ui` asserts all of it in a
+real browser, and CI runs it on every push. If something agreed is deleted, the build
+fails with the name of what went missing. Removing a line from the contract is allowed
+only when the client asks for it, and the reason goes in the commit message.
+
 ## 1. Choice inputs
 
 - **Single-choice = tap to commit.** A list where exactly one option can win has no
@@ -60,7 +66,18 @@ mechanism in the code so it can be checked, not just remembered.
 - Address search offers suggestions while typing; picking one prefills the fields.
   Choosing a point on the map prefills them too.
 
-## 7. Navigation
+## 7. Reviews
+
+- Two review points, because they measure different things and one cannot answer
+  for the other.
+  - **After the consultation** (at payment success): consultation experience and
+    the doctor. `#csat-modal`.
+  - **After the medicine arrives** (patient confirms receipt on tracking):
+    delivery and discreet packaging. `#delivery-review-modal`.
+- Both are asked once per order, both are skippable, neither blocks the flow.
+- Never ask about something that has not happened yet.
+
+## 8. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.
