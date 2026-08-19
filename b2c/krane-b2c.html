@@ -4374,7 +4374,12 @@
       ? activeQuestion.querySelector('.intake-question__title')
       : null;
     const titleBlock=[...state.body.children].find(child => child.querySelector('.h1'));
-    const counter=state.body.querySelector('[data-intake-question-count]');
+    /* Re-rendering the screen rebuilds the title block with a fresh counter
+       while the one moved into a promoted question heading survives, so the
+       page ended up showing "4 / 4  4 / 4". Keep exactly one. */
+    const counters=[...state.body.querySelectorAll('[data-intake-question-count]')];
+    counters.slice(1).forEach(extra => extra.remove());
+    const counter=counters[0] || null;
     if(counter){
       counter.textContent=`${nextIndex+1} / ${state.total}`;
       const host=promoted || titleBlock?.querySelector('.h1');

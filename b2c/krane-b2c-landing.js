@@ -496,20 +496,23 @@
          below the fold. Zero until the rail has actually arrived — its top has
          come up past START of the viewport — then one full rail-height plus
          that distance of scrolling to cross the whole row. */
-      /* Both ends have to land while the row is on screen: the first card sits
-         flush at the start and the last card flush at the end (client, 19 Aug).
-         Keyed to a window that opens when the rail's top reaches 85% of the
-         viewport and closes when its bottom reaches 15% — before, progress only
-         reached 1 once the rail had scrolled off the top, so the row was always
-         caught mid-travel with a card clipped at each edge. */
-      const ENTER = 0.85, EXIT = 0.15;
+      /* The heading arrives first, then the row starts moving (client, 19 Aug).
+         Progress opens at the scroll position where the section heading reaches
+         the top of the viewport — under the sticky header — and closes when the
+         rail's bottom rises to a fifth of the way up the screen, so the first
+         card is whole at the start and the last card whole at the end. */
       const rect = rail.getBoundingClientRect();
-      const span = window.innerHeight * (ENTER - EXIT) + rect.height;
+      const heading = section.querySelector(".privacy-section__copy") || section;
+      const headingRect = heading.getBoundingClientRect();
+      const headerHeight = document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
+      const start = headingRect.top + window.scrollY - headerHeight - 12;
+      const end = rect.bottom + window.scrollY - window.innerHeight * 0.2;
+      const span = end - start;
       if (span <= 0) return;
-      const raw = Math.min(1, Math.max(0, (window.innerHeight * ENTER - rect.top) / span));
-      /* Reach both ends a little early: the first and last card have to be
-         seen whole, and an exact 0 or 1 only happens at one pixel of scroll. */
-      const PAD = 0.08;
+      const raw = Math.min(1, Math.max(0, (window.scrollY - start) / span));
+      /* Reach both ends a little early: an exact 0 or 1 only happens at one
+         pixel of scroll. */
+      const PAD = 0.06;
       const progress = Math.min(1, Math.max(0, (raw - PAD) / (1 - PAD * 2)));
       const max = rail.scrollWidth - rail.clientWidth;
       const drift = (progress - 0.5) * -30;
