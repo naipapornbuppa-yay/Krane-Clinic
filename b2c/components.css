@@ -1240,11 +1240,41 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
   left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
   display:flex;align-items:center;justify-content:space-around;gap:2px;
   height:60px;padding:0 6px;
-  border:1px solid color-mix(in srgb,var(--color-line) 70%,transparent);
-  border-radius:30px;overflow:visible;
-  background:color-mix(in srgb,var(--color-surface) 86%,transparent);
-  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
-  box-shadow:0 6px 24px rgba(17,19,24,.12),0 1px 3px rgba(17,19,24,.06)}
+  border:0;border-radius:30px;overflow:visible;
+  /* Glass, not frosted plastic (client, 20 Aug). Three things make it read as
+     glass rather than as a translucent panel: the fill is thin enough to see
+     structure through it, the blur is paired with a saturation and brightness
+     lift so colour behind it blooms the way it does through real glass, and the
+     light is graded top to bottom instead of flat. */
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--color-surface) 74%,transparent) 0%,
+    color-mix(in srgb,var(--color-surface) 60%,transparent) 52%,
+    color-mix(in srgb,var(--color-surface) 68%,transparent) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(210%) brightness(1.06);
+  backdrop-filter:blur(30px) saturate(210%) brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(255,255,255,.35),
+    0 10px 30px rgba(17,19,24,.16),
+    0 2px 6px rgba(17,19,24,.07)}
+/* The specular rim: a 1px gradient edge, bright where light would catch the
+   top-left of a curved surface and fading round the bottom. A plain border
+   cannot vary along its length, so it is masked out of a gradient instead. */
+.bottomnav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(150deg,
+    rgba(255,255,255,.95) 0%,
+    rgba(255,255,255,.35) 34%,
+    color-mix(in srgb,var(--color-line) 55%,transparent) 62%,
+    rgba(255,255,255,.7) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none}
+/* Browsers without backdrop-filter get an opaque capsule rather than a
+   see-through one with unreadable icons. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .bottomnav{background:var(--color-surface)}
+}
 /* Content has to clear a bar that is no longer flush with the bottom. */
 .screen:has(.bottomnav) .screen__body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
 .bottomnav a{flex:1;min-width:0;max-width:84px;
