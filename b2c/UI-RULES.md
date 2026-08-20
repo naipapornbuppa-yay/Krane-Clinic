@@ -71,11 +71,15 @@ only when the client asks for it, and the reason goes in the commit message.
 
 ## 7. Reviews
 
-- **One review, after payment** (`#csat-modal`), rating three things: the
-  doctor's advice, the app, and the video/sound quality. The two-point split
-  tried on 18 Aug was dropped on 19 Aug — delivery is not rated separately.
-- Asked once per order and it cannot be skipped: the rating is the way past the
-  dialog, and all three rows are required.
+- **One review, after the medicine arrives** (`#csat-modal`), rating three
+  things: the doctor's advice, the app, and the video/sound quality. It fires
+  when the patient confirms receipt on the Delivered step. The two-point split
+  tried on 18 Aug was dropped on 19 Aug; the trigger moved off payment on
+  20 Aug, because the review asks about the whole thing and at payment half of
+  it has not happened yet.
+- **It can be closed.** The order is already complete by then, so the review is
+  a request, not a gate: the scrim and "ไว้ทีหลัง" both dismiss it. Submitting
+  still needs all three rows — a partial rating is not a review.
 - Never ask about something that has not happened yet.
 
 ## 8. Language

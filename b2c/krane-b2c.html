@@ -1835,7 +1835,7 @@
       <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Payment is confirmed. Your prepared order is moving to dispatch and tracking.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-csat-go="tracking">ติดตามการจัดส่ง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1974,7 +1974,6 @@
   <section class="screen" id="refill">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Refill a treatment</span></div>
     <div class="screen__body stack-4">
-      <p class="muted">Eligible refills go straight to delivery and medication payment. A new consultation is only needed when the prescription has expired or no refills remain.</p>
       <div class="stack-3">
         <div class="card card--pad-sm stack-3">
           <div class="between"><div><strong>Hair loss</strong><div class="hint">Prescribed by Dr. A · 12 May 2026</div></div><span class="badge badge--line">2 refills left</span></div>
@@ -1985,7 +1984,7 @@
             <div class="between"><span class="hint">Expires</span><strong>12 Dec 2026</strong></div>
             <div class="between"><span class="hint">Next follow-up</span><strong>12 Sep 2026</strong></div>
           </div>
-          <div class="hint">No doctor approval needed. Your doctor set your refill allowance during the consultation.</div>
+          <p class="refill-note"><i data-lucide="badge-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>No doctor approval needed. Your doctor set your refill allowance during the consultation.</span></p>
           <button class="btn btn--primary btn--sm" style="width:100%" data-go="address">Refill this treatment</button>
         </div>
         <div class="card card--pad-sm stack-3">
@@ -2742,7 +2741,7 @@
 </div>
 
 <div class="modal-layer" id="csat-modal" hidden aria-hidden="true">
-  <div class="modal-layer__scrim" aria-hidden="true"></div>
+  <button class="modal-layer__scrim" type="button" data-csat-close aria-label="ปิดหน้าต่างให้คะแนน"></button>
   <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="csat-title" aria-describedby="csat-description">
     <!-- Art beside the heading, not stacked over it: centred it left a hole of
          empty sheet to its right and pushed the first rating below the fold
@@ -2763,7 +2762,7 @@
       <div class="rating-row"><div style="font-weight:var(--fw-semibold)">คุณภาพภาพและเสียง</div><div class="rating" data-rate data-csat-quality><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
     </div>
     <div class="field"><label for="csat-note">ความเห็นเพิ่มเติม (ไม่บังคับ)</label><textarea class="textarea" id="csat-note" placeholder="อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea></div>
-    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit>ส่งคะแนนและไปต่อ</button></div>
+    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit>ส่งคะแนนและไปต่อ</button><button class="btn btn--ghost" type="button" data-csat-close>ไว้ทีหลัง</button></div>
   </section>
 </div>
 
@@ -5776,6 +5775,13 @@
       'payment-method-required':'เลือกวิธีชำระเงินก่อน'
     };
     if(!actionable) label.textContent=blockedLabels[actionState] || 'ชำระเงิน';
+    /* The order still needs a pharmacy to confirm stock and the final price —
+       changing the address or the fulfilment method invalidates the quote and
+       puts checkout back here. The button used to still read "ชำระเงิน · ฿868"
+       and then open the pharmacy search instead of the payment page, which is
+       the button lying about what it does (client, 20 Aug). It names the step
+       it actually takes. */
+    else if(actionState==='quote-required') label.textContent='ยืนยันกับร้านยาก่อน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent=`ชำระเงิน · ${baht(currentMedicationDue())}`;
@@ -6482,7 +6488,7 @@
            part of that hop. Hanging it off the CTA alone meant only someone who
            tapped within 1.8s ever saw it — which is why the rating looked like
            it had been dropped from the build (client, 18 Aug). */
-        if(document.getElementById('payment-success')?.classList.contains('active')) openCsatModal('tracking',{replace:true});
+        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('tracking');
       },reduceMotion ? 450 : 1800);
     }
     clearTimeout(preloaderTimer);
@@ -6734,12 +6740,16 @@
     const screen=document.getElementById('consultpay');
     if(!screen) return;
     const noticeMode=flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid;
+    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
     screen.dataset.checkoutMode=noticeMode ? 'fee-notice' : 'consultation-payment';
-    screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode; });
+    /* Nothing to pay means nothing to choose: a payment method, a discount code
+       and a paid extra are all meaningless when the balance is zero, but they
+       stayed on screen whenever insurance covered the fee in full (client,
+       20 Aug). The screen is an acknowledgement then, so it reads as one. */
+    screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode || fullyCovered; });
     const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    const fullyCovered=consultationBalanceDue()<=0 && CONSULTATION_FEE_BAHT>0;
     if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
     if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
     if(amount) amount.hidden=noticeMode || fullyCovered;
@@ -7700,6 +7710,10 @@
       persistFlowState();
       syncTrackingDelivery();
       showActionToast('ยืนยันการรับยาแล้ว','success');
+      /* The review asks about the whole thing — the advice, the app and the
+         call — so it belongs after the medicine has actually arrived, not at
+         the moment the card is charged (client, 20 Aug). */
+      openCsatModal('tracking');
       return;
     }
     const go = e.target.closest('[data-go]');
@@ -8397,6 +8411,9 @@
   let csatTarget = 'tracking';
   let csatReplaces = false;
   function leaveCsat(){
+    // Asked from the order it is about, the patient is already on the target
+    // screen and there is nowhere to go.
+    if(document.querySelector('.screen.active')?.id === csatTarget) return;
     // The automatic hop replaces the payment screen in history; the CTA pushes.
     if(csatReplaces) replaceCurrent(csatTarget); else show(csatTarget);
   }
@@ -8420,6 +8437,10 @@
   }
   if(csatModal){
     csatModal.addEventListener('click', event => {
+      /* Closeable now (client, 20 Aug): the order is already complete, so the
+         review is a request, not a gate. It is not marked done, so it can be
+         asked again on the next delivery. */
+      if(event.target.closest('[data-csat-close]')){ closeCsatModal(); return; }
       const submit=event.target.closest('[data-csat-submit]');
       if(!submit) return;
       // The rating is the way past this dialog; there is no skip.

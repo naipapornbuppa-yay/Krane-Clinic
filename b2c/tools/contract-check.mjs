@@ -215,6 +215,11 @@ for (const rule of contract.rules) {
       const strings = await page.evaluate(() => {
         const THAI = /[ก-฾เ-๛]/;
         const found = new Set();
+        /* Dialogs are hidden until something opens them, so a leak inside one
+           survived this check twice. They are revealed for the walk and put
+           back exactly as they were. */
+        const reopened = [...document.querySelectorAll('.modal-layer[hidden]')];
+        reopened.forEach(m => { m.hidden = false; });
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
           acceptNode(node) {
             const parent = node.parentElement;
@@ -229,6 +234,7 @@ for (const rule of contract.rules) {
           const text = node.nodeValue.trim().replace(/\s+/g, ' ');
           if (text && THAI.test(text)) found.add(text);
         }
+        reopened.forEach(m => { m.hidden = true; });
         return [...found].slice(0, 8);
       });
       if (strings.length) fail('rule', `${rule.name}: still Thai in English — ${strings.map(s => `"${s.slice(0, 40)}"`).join(', ')}`);

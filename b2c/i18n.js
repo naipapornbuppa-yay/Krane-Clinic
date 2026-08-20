@@ -1500,7 +1500,15 @@
     "จับคู่แพทย์ใหม่อีกครั้ง":"Match me with a doctor again",
     "กลับหน้าหลัก":"Back to home",
     "คิวของคุณกับคุณหมอนรินทร์ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin has been released. You can match again right away — your questionnaire answers are all still here.",
-    "คิวของคุณกับคุณหมอนรินทร์ ทานากะถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin Tanaka has been released. You can match again right away — your questionnaire answers are all still here."
+    "คิวของคุณกับคุณหมอนรินทร์ ทานากะถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin Tanaka has been released. You can match again right away — your questionnaire answers are all still here.",
+    "ยืนยันกับร้านยาก่อน":"Confirm with the pharmacy first",
+    "ไว้ทีหลัง":"Maybe later",
+    "ปิดหน้าต่างให้คะแนน":"Close the rating dialog",
+    "คิวของคุณกับคุณหมอ":"Your slot with Dr. ",
+    "ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":" has been released. You can match again right away — your questionnaire answers are all still here.",
+    "ระบุโรคประจำตัว":"List your existing conditions",
+    "ระบุยาที่ใช้ประจำ":"List the medicines you take regularly",
+    "ระบุประวัติแพ้ยา":"List your drug allergies"
   };
   var EN = {}, TH_FROM_EN = {};
   for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
