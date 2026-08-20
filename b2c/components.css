@@ -1230,26 +1230,46 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .action-toast--warning .action-toast__icon{background:rgba(133,96,28,.12);color:var(--color-warning)}
 .action-toast--danger .action-toast__icon{background:rgba(147,69,58,.12);color:var(--color-danger)}
 
-/* bottom nav (Profile / Activities / Notifications / Settings) */
-.bottomnav{position:absolute;left:0;right:0;bottom:0;z-index:5;
-  display:flex;gap:0;padding:5px 8px max(5px,env(safe-area-inset-bottom));border:0;border-top:1px solid var(--color-line);border-radius:0;overflow:hidden;
-  background:rgba(255,255,255,.94);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
-  box-shadow:0 -8px 22px rgba(17,19,24,.07)}
-.screen:has(.bottomnav) .screen__body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-.bottomnav a{flex:1;min-width:0;text-align:center;padding:5px 3px 3px;border-radius:0;background:transparent!important;color:var(--color-ink-3);font-size:10.5px;line-height:1.1;text-decoration:none;font-weight:var(--fw-medium);display:flex;flex-direction:column;align-items:center;gap:2px}
-.bottomnav a .ic{width:21px;height:21px;display:grid;place-items:center}
-.bottomnav a svg{width:19px;height:19px}
+/* ---------- Floating navigation bar ----------
+   Reference: the Instagram capsule (client, 20 Aug) — the bar lifts off the
+   bottom edge and floats over the content as a rounded capsule instead of
+   sitting docked behind a hairline. Icons only, no labels, with a soft pill
+   behind the one you are on. Everything else in the app is untouched: this
+   uses the app's own tokens, not a new palette. */
+.bottomnav{position:absolute;z-index:5;
+  left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;justify-content:space-around;gap:2px;
+  height:60px;padding:0 6px;
+  border:1px solid color-mix(in srgb,var(--color-line) 70%,transparent);
+  border-radius:30px;overflow:visible;
+  background:color-mix(in srgb,var(--color-surface) 86%,transparent);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  box-shadow:0 6px 24px rgba(17,19,24,.12),0 1px 3px rgba(17,19,24,.06)}
+/* Content has to clear a bar that is no longer flush with the bottom. */
+.screen:has(.bottomnav) .screen__body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+.bottomnav a{flex:1;min-width:0;max-width:84px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0;border-radius:20px;background:transparent!important;text-decoration:none;
+  color:var(--color-ink-2);-webkit-tap-highlight-color:transparent;cursor:pointer;
+  /* label text is off, the icon carries it — same as the reference */
+  font-size:0;line-height:0}
+.bottomnav a .ic{position:relative;display:grid;place-items:center;
+  width:52px;height:40px;border-radius:20px;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.bottomnav a svg{width:24px;height:24px}
 .bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
-.bottomnav a{transition:color var(--dur-micro) var(--ease-out),background var(--dur-base) var(--ease-out)}
-.bottomnav a[aria-current="page"]{color:var(--color-accent);font-weight:var(--fw-semibold)}
-/* motion: the active icon pops with a spring each time you land on the tab */
-.screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:check-pop var(--dur-base) var(--ease-spring)}
+.bottomnav a[aria-current="page"]{color:var(--color-ink)}
+.bottomnav a[aria-current="page"] .ic{background:var(--color-accent-soft)}
+.bottomnav a:active .ic{background:color-mix(in srgb,var(--color-ink) 8%,transparent)}
+.bottomnav a[aria-current="page"]:active .ic{background:var(--color-accent-soft)}
+.bottomnav a:focus-visible .ic{outline:3px solid var(--color-accent);outline-offset:2px}
+/* the pill grows out from under the icon when you land on a tab */
+.screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:nav-pill-in 260ms var(--ease-out)}
+@keyframes nav-pill-in{from{transform:scale(.6);opacity:.4}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){
-  .bottomnav a{transition:none}
+  .bottomnav a .ic{transition:none}
   .screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:none}
 }
-
 
 /* legacy text fallback; product screens use the official vector logo */
 .brandmark{width:32px;height:32px;border-radius:var(--radius-md);background:var(--color-accent);color:var(--color-on-accent);display:grid;place-items:center;font-weight:var(--fw-bold)}

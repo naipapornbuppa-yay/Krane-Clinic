@@ -177,6 +177,25 @@ for (const rule of contract.rules) {
       }, sel);
       if (height > max) fail('rule', `${rule.name}: ${sel} is ${Math.round(height)}px tall unfocused, max ${max}`);
     }
+    /* A component moved onto Material 3 is pinned to the spec's own numbers, so
+       it cannot drift back to the house style by accident (client, 20 Aug). */
+    if (rule.box) {
+      const [sel, want] = rule.box;
+      const got = await page.evaluate(s => {
+        const el = document.querySelector(s);
+        if (!el) return null;
+        const b = el.getBoundingClientRect();
+        return { width: Math.round(b.width), height: Math.round(b.height) };
+      }, sel);
+      if (!got) fail('rule', `${rule.name}: ${sel} not found`);
+      else {
+        for (const key of Object.keys(want)) {
+          if (Math.abs(got[key] - want[key]) > 1) {
+            fail('rule', `${rule.name}: ${sel} ${key} is ${got[key]}px, spec says ${want[key]}px`);
+          }
+        }
+      }
+    }
     if (rule.noPillButtons) {
       const pills = await page.evaluate(() => [...document.querySelectorAll('.btn')]
         .filter(button => {
