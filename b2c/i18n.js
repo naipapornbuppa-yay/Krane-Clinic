@@ -1495,7 +1495,12 @@
     "คัดกรองโดยพยาบาล":"Nurse screening",
     "ผ่าน":"Passed",
     "ยืนยันและพบแพทย์":"Confirm and see the doctor",
-    "คุณหมอนรินทร์ ทานากะ กำลังเขียนใบสั่งยาของคุณ":"Dr. Narin Tanaka is writing your prescription"
+    "คุณหมอนรินทร์ ทานากะ กำลังเขียนใบสั่งยาของคุณ":"Dr. Narin Tanaka is writing your prescription",
+    "คุณไม่ได้เข้าห้องปรึกษาในเวลาที่กำหนด":"You did not enter the consultation room in time",
+    "จับคู่แพทย์ใหม่อีกครั้ง":"Match me with a doctor again",
+    "กลับหน้าหลัก":"Back to home",
+    "คิวของคุณกับคุณหมอนรินทร์ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin has been released. You can match again right away — your questionnaire answers are all still here.",
+    "คิวของคุณกับคุณหมอนรินทร์ ทานากะถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin Tanaka has been released. You can match again right away — your questionnaire answers are all still here."
   };
   var EN = {}, TH_FROM_EN = {};
   for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
@@ -1511,7 +1516,8 @@
     [/^ชำระ (฿\s?[\d,]+)$/, "Pay $1"],
     [/^ลด (฿\s?[\d,]+) สำหรับคำสั่งซื้อแรก$/, "$1 off your first order"],
     [/^(\S+) · ลด (฿\s?[\d,]+)$/, "$1 · $2 off"],
-    [/^โค้ด (\S+)$/, "Code $1"]
+    [/^โค้ด (\S+)$/, "Code $1"],
+    [/^เข้าห้องภายใน (\d{2}:\d{2})$/, "Enter within $1"]
   ];
   function englishFor(thai) {
     if (EN[thai] !== undefined) return EN[thai];

@@ -1270,7 +1270,10 @@
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
       </div>
-      <div class="state-view__timer" data-wait-timer>About 2 to 3 min</div>
+      <!-- Left empty on purpose. The script owns this readout, and a translatable
+           placeholder here meant the i18n pass remembered it as the node's English
+           source and snapped the live countdown back to it on the next tick. -->
+      <div class="state-view__timer" data-wait-timer></div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
          The camera/mic note used to be a two-line paragraph under the copy; it is
          a one-line info chip on the button now (client, 18 Aug) — it is a
@@ -2722,6 +2725,22 @@
 
 <!-- CSAT: asked at the one moment the visit is finished and paid for, as a
      sheet over the success screen rather than a page nobody reaches. -->
+<!-- The doctor is only held for so long. If the patient does not go in, the
+     slot is released and the only useful action left is to match again. -->
+<div class="modal-layer" id="waitroom-expired-modal" hidden aria-hidden="true">
+  <div class="modal-layer__scrim" aria-hidden="true"></div>
+  <section class="modal-dialog waitroom-expired-dialog" role="dialog" aria-modal="true" tabindex="-1"
+           aria-labelledby="waitroom-expired-title" aria-describedby="waitroom-expired-description">
+    <div class="modal-dialog__icon"><i data-lucide="clock-alert" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
+    <h2 id="waitroom-expired-title">คุณไม่ได้เข้าห้องปรึกษาในเวลาที่กำหนด</h2>
+    <p id="waitroom-expired-description">คิวของคุณกับคุณหมอ<span data-doctor-name>นรินทร์</span>ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ</p>
+    <div class="modal-dialog__actions">
+      <button class="btn btn--primary" type="button" data-waitroom-retry>จับคู่แพทย์ใหม่อีกครั้ง</button>
+      <button class="btn btn--ghost" type="button" data-waitroom-expired-home>กลับหน้าหลัก</button>
+    </div>
+  </section>
+</div>
+
 <div class="modal-layer" id="csat-modal" hidden aria-hidden="true">
   <div class="modal-layer__scrim" aria-hidden="true"></div>
   <section class="modal-dialog csat-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="csat-title" aria-describedby="csat-description">
@@ -6644,6 +6663,7 @@
     }
     clearTimeout(waitTimer);
     if(id === 'waitroom') resetWaitroom();
+    else { stopWaitroomEntryWindow(); closeWaitroomExpiredModal(); }
     // Leaving the live consultation cancels pending demo messages. Switching
     // between video and chat does not, because it is still the same session.
     if(!['consult','video'].includes(id)){
@@ -6760,9 +6780,76 @@
       clearInterval(waitCountdownTimer);
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
-      if(timer) timer.textContent = '';
       if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'เข้าห้องปรึกษา'; }
+      startWaitroomEntryWindow(w,timer);
     }, reduceMotion ? 400 : 4200);
+  }
+  /* The doctor is held for five minutes once the room opens (client, 20 Aug).
+     The number on its own does not say what it is counting, so the readout
+     carries a label; when it runs out the slot is gone and the modal offers the
+     only thing left worth doing. */
+  const WAITROOM_ENTRY_WINDOW = 5 * 60;
+  let waitEntryTimer = null;
+  function stopWaitroomEntryWindow(){
+    clearInterval(waitEntryTimer);
+    waitEntryTimer = null;
+  }
+  function startWaitroomEntryWindow(screen,timer){
+    stopWaitroomEntryWindow();
+    let remaining = WAITROOM_ENTRY_WINDOW;
+    const paint = () => {
+      if(!timer) return;
+      const mm=String(Math.floor(remaining/60)).padStart(2,'0');
+      const ss=String(remaining%60).padStart(2,'0');
+      timer.textContent = `เข้าห้องภายใน ${mm}:${ss}`;
+      timer.classList.toggle('state-view__timer--urgent', remaining <= 60);
+    };
+    paint();
+    waitEntryTimer = setInterval(() => {
+      if(!screen.classList.contains('active')){ stopWaitroomEntryWindow(); return; }
+      remaining = Math.max(0, remaining - 1);
+      paint();
+      if(remaining === 0){
+        stopWaitroomEntryWindow();
+        if(timer) timer.textContent = '';
+        openWaitroomExpiredModal();
+      }
+    }, 1000);
+  }
+  /* Looked up on use, not captured at parse time: show() calls the close side of
+     this on every screen change, including ones that run before this line
+     would have executed. */
+  const waitroomExpiredModal = () => document.getElementById('waitroom-expired-modal');
+  function openWaitroomExpiredModal(){
+    const modal = waitroomExpiredModal();
+    if(!modal) return;
+    fillDoctorName(modal);
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    modal.querySelector('.waitroom-expired-dialog')?.focus({preventScroll:true});
+  }
+  function closeWaitroomExpiredModal(){
+    const modal = waitroomExpiredModal();
+    if(!modal || modal.hidden) return;
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+  if(waitroomExpiredModal()){
+    waitroomExpiredModal().addEventListener('click', event => {
+      if(event.target.closest('[data-waitroom-retry]')){
+        closeWaitroomExpiredModal();
+        /* Straight back into matching: the intake answers are untouched, so
+           there is nothing to re-ask. */
+        show('matching');
+        return;
+      }
+      if(event.target.closest('[data-waitroom-expired-home]')){
+        closeWaitroomExpiredModal();
+        show('profile');
+      }
+    });
   }
   // deep link: open a screen directly via URL hash (e.g. prototype.html#concern)
   function applyHash(){
