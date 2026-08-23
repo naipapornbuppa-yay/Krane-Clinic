@@ -196,6 +196,30 @@ for (const rule of contract.rules) {
         }
       }
     }
+    /* Checkout reads in the order a delivery app puts it — where it goes, what
+       is in it, how it is paid, then the bill (client, 20 Aug: "ทำลอก grab
+       มาเลย"). Sections are easy to reshuffle by accident, so the sequence is
+       asserted by document position rather than trusted. */
+    if (rule.order) {
+      const [scope, wanted] = rule.order;
+      const got = await page.evaluate(([s, list]) => {
+        const root = document.querySelector(s);
+        if (!root) return null;
+        return list.map(sel => {
+          const el = root.querySelector(sel);
+          if (!el) return -1;
+          return [...root.querySelectorAll('*')].indexOf(el);
+        });
+      }, [scope, wanted]);
+      if (!got) fail('rule', `${rule.name}: ${scope} not found`);
+      else {
+        const missing = wanted.filter((_, i) => got[i] < 0);
+        if (missing.length) fail('rule', `${rule.name}: missing ${missing.join(', ')}`);
+        else for (let i = 1; i < got.length; i += 1) {
+          if (got[i] < got[i - 1]) fail('rule', `${rule.name}: ${wanted[i]} comes before ${wanted[i - 1]}`);
+        }
+      }
+    }
     if (rule.noPillButtons) {
       const pills = await page.evaluate(() => [...document.querySelectorAll('.btn')]
         .filter(button => {

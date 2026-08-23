@@ -1527,7 +1527,8 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบพื้นที่จัดส่ง</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="กำลังคำนวณการจัดส่ง">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-delivery-quote"></use></svg></span>
+        <!-- The crane the app already flies while it thinks (client, 20 Aug). -->
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><span class="krane-state-art krane-paper-crane-media krane-crane-flipbook" aria-hidden="true"><img class="krane-crane-frame krane-crane-frame--1" src="assets/loading-v8/paper-crane-frame-01-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--2" src="assets/loading-v8/paper-crane-frame-02-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--3" src="assets/loading-v8/paper-crane-frame-03-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--4" src="assets/loading-v8/paper-crane-frame-04-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""><img class="krane-crane-frame krane-crane-frame--5" src="assets/loading-v8/paper-crane-frame-05-v8.png?v=20260816-transparent-bg-v1" width="560" height="360" alt=""></span></span>
         <span class="state-view__badge"><i data-lucide="map-pin-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy" aria-live="polite">
@@ -1569,8 +1570,61 @@
     </div>
     <div class="screen__body stack-4">
 
-      <!-- 1. Order summary. The patient may still reduce or decline items before
-           payment, but can never exceed the doctor's prescribed ceiling. -->
+      <!-- Checkout, in the order a delivery app puts it (client, 20 Aug: "ทำลอก
+           grab มาเลย"): where it goes, what is in it, offers, how it is paid,
+           then the bill. The address used to sit below the basket, which is why
+           the one thing blocking the button was the last thing you saw. -->
+      <!-- The app's segmented control, not a shape of its own (client, 19 Aug). -->
+      <div class="partner-binary partner-binary--accent" data-fulfillment-section role="tablist" aria-label="วิธีรับยา">
+        <button class="partner-binary__option" type="button" role="tab" aria-selected="true" data-fulfillment-mode-option="delivery">จัดส่ง</button>
+        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" data-fulfillment-mode-option="pickup">รับที่ร้าน</button>
+      </div>
+      <!-- The address is the first decision on the page and the one that blocks
+           payment, so it sits at the top rather than three sections down. -->
+      <div class="stack-2">
+        <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <!-- Delivery options. Krane runs one same-day service, so this is a single
+           confirmed choice rather than a picker. -->
+      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="delivery">
+        <div class="checkout-head">
+          <span class="section-label">ตัวเลือกการจัดส่ง</span>
+          <span class="hint" data-payment-km hidden>คำนวณหลังใส่ที่อยู่</span>
+        </div>
+        <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
+          <span class="opt-body">
+            <span class="opt-title">จัดส่งภายในวัน</span>
+            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้</span>
+          </span>
+          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">คำนวณหลังใส่ที่อยู่</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
+          <span class="opt-body">
+            <span class="opt-title">จัดส่งทางไปรษณีย์</span>
+            <span class="opt-sub">ส่งพรุ่งนี้ · มีหมายเลขติดตาม</span>
+          </span>
+          <span class="checkout-order__price">ฟรี</span>
+        </button>
+      </div>
+      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="pickup" hidden>
+        <span class="section-label">จุดรับยา</span>
+        <button class="checkout-row checkout-pickup-row" type="button" data-go="address" aria-label="เลือกที่อยู่เพื่อหาสาขาที่ใกล้ที่สุด">
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.2-5H5.2L4 10Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2S21.6 11.2 21.6 10"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap">ร้านยาฟาสซิโน สาขาใกล้คุณ</span><span class="hint">ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก</span></span>
+          <span class="checkout-row__tag">ฟรี</span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <!-- 2. What is in the order. Grab puts the basket under the delivery
+           details, because where it goes is decided before what it costs
+           (client, 20 Aug). Items stay editable right up to payment. -->
       <div class="stack-2">
         <!-- Who prescribed it belongs on the section line, not as a row of its
              own inside the card (client, 19 Aug). -->
@@ -1626,71 +1680,8 @@
         </div>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
-
-      <!-- The app's segmented control, not a shape of its own (client, 19 Aug). -->
-      <div class="partner-binary partner-binary--accent" data-fulfillment-section role="tablist" aria-label="วิธีรับยา">
-        <button class="partner-binary__option" type="button" role="tab" aria-selected="true" data-fulfillment-mode-option="delivery">จัดส่ง</button>
-        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" data-fulfillment-mode-option="pickup">รับที่ร้าน</button>
-      </div>
-
-      <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
-           step first; a returning patient can review or change the saved result. -->
-      <div class="stack-2">
-        <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
-        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
-          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
-          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
-          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- 3. Delivery options. Krane runs one same-day service, so this is a single
-           selected card rather than a tier list. The card shape is kept so more
-           services can be added later without changing the layout. -->
-      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="delivery">
-        <div class="checkout-head">
-          <span class="section-label">ตัวเลือกการจัดส่ง</span>
-          <span class="hint" data-payment-km hidden>คำนวณหลังใส่ที่อยู่</span>
-        </div>
-        <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
-        <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
-          <span class="opt-body">
-            <span class="opt-title">จัดส่งภายในวัน</span>
-            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้</span>
-          </span>
-          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">คำนวณหลังใส่ที่อยู่</span>
-        </button>
-        <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
-          <span class="opt-body">
-            <span class="opt-title">จัดส่งทางไปรษณีย์</span>
-            <span class="opt-sub">ส่งพรุ่งนี้ · มีหมายเลขติดตาม</span>
-          </span>
-          <span class="checkout-order__price">ฟรี</span>
-        </button>
-      </div>
-
-      <div class="stack-2" data-fulfillment-section data-fulfillment-panel="pickup" hidden>
-        <span class="section-label">จุดรับยา</span>
-        <button class="checkout-row checkout-pickup-row" type="button" data-go="address" aria-label="เลือกที่อยู่เพื่อหาสาขาที่ใกล้ที่สุด">
-          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.2-5H5.2L4 10Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2S21.6 11.2 21.6 10"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap">ร้านยาฟาสซิโน สาขาใกล้คุณ</span><span class="hint">ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก</span></span>
-          <span class="checkout-row__tag">ฟรี</span>
-          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- 4. How it is paid. -->
-      <div class="stack-2" data-payment-required-section>
-        <span class="section-label">วิธีชำระเงิน</span>
-        <button class="checkout-row" data-open-methods>
-          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ชำระด้วย</span><span class="checkout-row__value" data-payment-method>QR / PromptPay</span></span>
-          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- 5. Optional retail add-ons, clearly separated from prescribed medicine. -->
+      <!-- Add more to the basket, the way a food order does. Retail extras stay
+           visibly separate from prescribed medicine. -->
       <div class="stack-2" data-payment-required-section data-payment-addons>
         <div class="checkout-head">
           <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
@@ -1714,8 +1705,7 @@
           </button>
         </div>
       </div>
-
-      <!-- 6. Offers already selected earlier are applied automatically. -->
+      <!-- 3. Offers, between the basket and the payment method. -->
       <div class="stack-2">
         <span class="section-label">ส่วนลดและสิทธิ์</span>
         <button class="checkout-row" data-open-promo data-payment-required-section>
@@ -1729,9 +1719,16 @@
           <span class="badge badge--ok">ใช้แล้ว</span>
         </div>
       </div>
-
-      <!-- 7. Final calculation comes after every editable decision and discount.
-           Delivery quote metadata stays beside the delivery cost it explains. -->
+      <!-- 4. How it is paid, immediately before the bill it settles. -->
+      <div class="stack-2" data-payment-required-section>
+        <span class="section-label">วิธีชำระเงิน</span>
+        <button class="checkout-row" data-open-methods>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">ชำระด้วย</span><span class="checkout-row__value" data-payment-method>QR / PromptPay</span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <!-- 5. Final calculation, after every editable decision above it. -->
       <div class="stack-2 checkout-final-summary">
         <div class="checkout-head">
           <span class="section-label">สรุปยอดชำระ</span>
@@ -1748,7 +1745,6 @@
           <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
         </div>
       </div>
-
       <!-- Client (19 Aug): say plainly that the paperwork is released by
            payment. Same three documents the order carries afterwards, shown
            locked while the bill is outstanding. -->
@@ -1770,7 +1766,6 @@
           <span class="doc-row__action doc-row__action--locked"><i data-lucide="lock" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
         </div>
       </div>
-
       <p class="hint" data-checkout-assurance>ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน</p>
     </div>
     <div class="screen__footer">
@@ -1895,9 +1890,9 @@
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Medicine prepared and ready to dispatch">
         <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="state-view__badge"><i data-prep-badge data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1">ร้านยารับออเดอร์แล้ว กำลังจัดยา</h2><p class="muted">จัดส่ง <span data-payment-outcome-delivery>ภายในวันนี้ · ก่อน 18:00 น.</span> หลังชำระเงิน</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-prep-title>เภสัชกำลังจัดยา</h2><p class="muted" data-prep-copy>เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ</p></div>
       <div class="state-view__timer" data-prep-countdown>03:00</div>
     </div>
   </section>
@@ -2099,14 +2094,28 @@
     <div class="screen__body stack-5">
       <div class="stack-3">
         <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Active orders</div><span class="badge">2</span></div>
-        <div class="card card--pad-sm order-card" data-go="tracking">
+        <!-- The order lands here once the pharmacy has packed it, so the card
+             carries the stage it is at rather than only a badge (client, 20 Aug). -->
+        <div class="card card--pad-sm order-card" data-go="tracking" data-order-progress="dispatched">
           <div class="order-top"><div><div class="order-id">#KR-10293</div><div class="order-title">Hair loss treatment</div></div><span class="badge badge--active">Out for delivery</span></div>
           <div class="order-status"><span class="status-dot"></span><span>Arriving by 6pm today</span></div>
+          <ol class="order-progress" aria-label="สถานะคำสั่งซื้อ">
+            <li class="order-progress__step is-done">ชำระเงินแล้ว</li>
+            <li class="order-progress__step is-done">จัดยาแล้ว</li>
+            <li class="order-progress__step is-current">กำลังจัดส่ง</li>
+            <li class="order-progress__step">ได้รับแล้ว</li>
+          </ol>
           <div class="order-meta"><span>Loratadine · Paracetamol</span><span>Same-day</span></div>
         </div>
-        <div class="card card--pad-sm order-card" data-go="tracking">
+        <div class="card card--pad-sm order-card" data-go="tracking" data-order-progress="preparing">
           <div class="order-top"><div><div class="order-id">#KR-10288</div><div class="order-title">Sleep &amp; stress</div></div><span class="badge badge--progress">Preparing</span></div>
           <div class="order-status"><span class="status-dot"></span><span>Pharmacy accepted · medicine being prepared</span></div>
+          <ol class="order-progress" aria-label="สถานะคำสั่งซื้อ">
+            <li class="order-progress__step is-done">ชำระเงินแล้ว</li>
+            <li class="order-progress__step is-current">กำลังจัดยา</li>
+            <li class="order-progress__step">กำลังจัดส่ง</li>
+            <li class="order-progress__step">ได้รับแล้ว</li>
+          </ol>
           <div class="order-meta"><span>Melatonin 5mg</span><span>Next-day</span></div>
         </div>
 
@@ -5210,7 +5219,8 @@
     `}).join('');
   }
 
-  let phStageTimer, prepCountdownTimer, connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
+  let focusCheckoutDelivery=false;
+  let phStageTimer, phPreparedTimer, prepCountdownTimer, connectTimer, matchTimer, matchCountdownTimer, enterTimer, waitTimer, waitCountdownTimer, typingTimer, rxTimer, rxCountdownTimer, preloaderTimer, paymentSuccessTimer, deliveryQuoteTimer, phTimer, phFailTimer, phCountdownTimer;
   // Pharmacy matching: how many nearby branches have already failed to confirm this
   // order. Resets on a successful match; capped at 3 before falling back to standard
   // delivery instead of continuing to search (same-day SLA is already broken by then).
@@ -5767,7 +5777,10 @@
        the courier method is skipped, because there is no courier. */
     if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
-    if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked || !flowState.orderState.pharmacyAccepted || !flowState.orderState.pharmacyPrepared) return 'quote-required';
+    /* Only the delivery quote gates payment. Stock, acceptance and preparation
+       all happen after the money is taken now (client, 20 Aug), the way a
+       delivery app does it. */
+    if(flowState.orderState.deliveryQuoteStatus!=='accepted') return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
   }
@@ -5795,7 +5808,7 @@
        and then open the pharmacy search instead of the payment page, which is
        the button lying about what it does (client, 20 Aug). It names the step
        it actually takes. */
-    else if(actionState==='quote-required') label.textContent='ยืนยันกับร้านยาก่อน';
+    else if(actionState==='quote-required') label.textContent='คำนวณค่าจัดส่งก่อน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent=`ชำระเงิน · ${baht(currentMedicationDue())}`;
@@ -6481,13 +6494,41 @@
         if(timer) timer.textContent='กำลังส่งรายการให้เภสัชกรตรวจสอบ';
         deliveryQuoteTimer=setTimeout(() => {
           if(!quoteScreen?.classList.contains('active')) return;
-          replaceCurrent('pharmacy-search');
+          /* The quote is the last thing checkout was waiting on, so it is banked
+             here and the patient is put back where they were — on the delivery
+             section they just filled in. */
+          flowState.orderState.deliveryQuoteStatus='accepted';
+          flowState.orderState.deliveryQuoteAmount=pickup ? 0 : estimate;
+          ensurePaymentDeadline();
+          persistFlowState();
+          refreshMedicationCheckout();
+          focusCheckoutDelivery=true;
+          replaceCurrent('payment');
         }, reduceMotion ? 500 : 1600);
       }, reduceMotion ? 500 : 1400);
     }
     if(id==='payment'){
       syncDeliveryAddress();
       refreshMedicationCheckout();
+      if(focusCheckoutDelivery){
+        focusCheckoutDelivery=false;
+        /* Coming back from the quote, the answer the patient is looking for is
+           the address they just entered, not the top of the page. Measured off
+           the rendered rects rather than offsetTop, which still reads the
+           mid-transition offset while the screen is sliding in. */
+        setTimeout(() => {
+          const row=document.querySelector('#payment [data-payment-address-row]');
+          const body=document.querySelector('#payment .screen__body');
+          if(!row || !body) return;
+          /* Scroll to the section, not the row, so the "การจัดส่ง" label above
+             it stays on screen and the row still reads as part of something. */
+          const block=row.closest('.stack-2') || row;
+          const top=body.scrollTop + (block.getBoundingClientRect().top - body.getBoundingClientRect().top) - 12;
+          body.scrollTo({top:Math.max(0,top), behavior:reduceMotion ? 'auto' : 'smooth'});
+          row.classList.add('is-just-set');
+          setTimeout(() => row.classList.remove('is-just-set'), 1800);
+        }, reduceMotion ? 0 : 260);
+      }
     }
     if(id==='payment' || id==='payment-gw') startPaymentDeadlineTimer();
     else stopPaymentDeadlineTimer();
@@ -6502,7 +6543,7 @@
            part of that hop. Hanging it off the CTA alone meant only someone who
            tapped within 1.8s ever saw it — which is why the rating looked like
            it had been dropped from the build (client, 18 Aug). */
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('tracking');
+        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('pharmacypending');
       },reduceMotion ? 450 : 1800);
     }
     clearTimeout(preloaderTimer);
@@ -6670,16 +6711,46 @@
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
     clearInterval(prepCountdownTimer);
+    /* Two stages on one screen, after payment: the pharmacist is packing it,
+       then it is packed. The second stage hands over to Activity, where the
+       order carries its own progress bar from then on (client, 20 Aug). */
+    clearTimeout(phPreparedTimer);
     if(id === 'pharmacypending'){
-      const prepEl=document.querySelector('#pharmacypending [data-prep-countdown]');
+      const scr=document.getElementById('pharmacypending');
+      const prepEl=scr.querySelector('[data-prep-countdown]');
+      const title=scr.querySelector('[data-prep-title]');
+      const copy=scr.querySelector('[data-prep-copy]');
+      const badge=scr.querySelector('[data-prep-badge]');
+      scr.dataset.prepStage='packing';
+      if(title) title.textContent='เภสัชกำลังจัดยา';
+      if(copy) copy.textContent='เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ';
+      if(badge) badge.setAttribute('data-lucide','package');
       let prepSecondsRemaining=3*60;
       paintWaitCountdown(prepEl,prepSecondsRemaining);
       prepCountdownTimer=setInterval(() => {
-        if(!document.getElementById('pharmacypending')?.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
+        if(!scr.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
         prepSecondsRemaining=Math.max(0,prepSecondsRemaining-1);
         paintWaitCountdown(prepEl,prepSecondsRemaining);
         if(prepSecondsRemaining===0) clearInterval(prepCountdownTimer);
       },1000);
+      phPreparedTimer=setTimeout(() => {
+        if(!scr.classList.contains('active')) return;
+        clearInterval(prepCountdownTimer);
+        scr.dataset.prepStage='prepared';
+        flowState.orderState.pharmacyAccepted=true;
+        flowState.orderState.pharmacyPrepared=true;
+        flowState.orderState.stockLocked=true;
+        persistFlowState();
+        if(title) title.textContent='จัดยาสำเร็จแล้ว';
+        if(copy) copy.textContent='ยาของคุณพร้อมส่งแล้ว ติดตามสถานะได้ในหน้ากิจกรรม';
+        if(prepEl) prepEl.textContent='';
+        if(badge) badge.setAttribute('data-lucide','package-check');
+        window.lucide?.createIcons({attrs:{'stroke-width':1.8}});
+        phPreparedTimer=setTimeout(() => {
+          if(!scr.classList.contains('active')) return;
+          replaceCurrent('activity');
+        }, reduceMotion ? 500 : 2200);
+      }, reduceMotion ? 600 : 4200);
     }
     clearTimeout(waitTimer);
     if(id === 'waitroom') resetWaitroom();
@@ -6693,8 +6764,6 @@
     }
     clearTimeout(rxTimer);
     clearInterval(rxCountdownTimer);
-    clearPharmacyStatusTimer();
-    schedulePharmacyStatusAdvance(id);
     if(id==='rx-writing'){
       const rxScr=document.getElementById('rx-writing');
       const rxCta=rxScr?.querySelector('[data-rx-to-checkout]');
@@ -7559,8 +7628,10 @@
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      if(history[history.length-1]!=='pharmacy-search') history.push('pharmacy-search');
-      show('pharmacy-search',false);
+      /* Saving an address hands straight back to checkout via the quote, and the
+         pharmacy now runs after payment (client, 20 Aug). */
+      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
+      show('delivery-quote',false);
       return;
     }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
@@ -8225,8 +8296,8 @@
     }
     const checkoutState=checkoutActionState();
     if(checkoutState==='quote-required'){
-      if(history[history.length-1]!=='pharmacy-search') history.push('pharmacy-search');
-      show('pharmacy-search',false);
+      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
+      show('delivery-quote',false);
       return;
     }
     if(checkoutState!=='ready'){
@@ -8250,31 +8321,9 @@
     resetGatewayAttempt('payment-gw');
     activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
   });
-  function advancePharmacyPrepared(){
-    flowState.orderState.pharmacyAccepted=true;
-    flowState.orderState.pharmacyPrepared=true;
-    ensurePaymentDeadline();
-    persistFlowState();
-    refreshMedicationCheckout();
-    show('payment');
-  }
-  /* SCR-017A/SCR-017 report what the pharmacy did; there is nothing for the
-     patient to decide, so they carry no button and move on by themselves. The
-     dwell is long enough to finish reading the status, and the timer is torn
-     down if the screen is left first so a back-navigation cannot be yanked
-     forward a few seconds later. */
-  const PHARMACY_STATUS_DWELL=5000;
-  let pharmacyStatusTimer=null;
-  function clearPharmacyStatusTimer(){ clearTimeout(pharmacyStatusTimer); pharmacyStatusTimer=null; }
-  function schedulePharmacyStatusAdvance(id){
-    clearPharmacyStatusTimer();
-    const step={pharmacypending:advancePharmacyPrepared}[id];
-    if(!step) return;
-    pharmacyStatusTimer=setTimeout(() => {
-      if(!document.getElementById(id)?.classList.contains('active')) return;
-      step();
-    },PHARMACY_STATUS_DWELL);
-  }
+  /* The pharmacy used to run before payment and hand back to checkout on a
+     5s dwell. It runs after payment now (client, 20 Aug), so SCR-017A owns its
+     own two stages and hands over to Activity; that auto-advance is gone. */
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-payment-deadline-retry]')){
       invalidateFulfillmentQuote();

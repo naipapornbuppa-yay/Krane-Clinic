@@ -96,7 +96,23 @@ only when the client asks for it, and the reason goes in the commit message.
   one key per possible number.
 - `?lang=en` works on every page, app and marketing alike.
 
-## 9. Navigation
+## 9. Checkout and fulfilment
+
+- **Checkout is ordered like a delivery app** (client, 20 Aug: "ทำลอก grab มาเลย"):
+  where it goes → what is in it → offers → how it is paid → the bill → what you
+  get afterwards. The address is near the top, not below the basket. Pinned by
+  the `order` rule in the contract.
+- **Saving an address runs the quote and comes straight back.** The paper-crane
+  loader covers the wait; checkout then scrolls to the address row and pulses it
+  (`.checkout-row.is-just-set`), so the answer is where the patient is looking.
+- **The pharmacy runs after payment, never before it.** Payment is gated on the
+  delivery quote alone. Once paid, `#pharmacypending` plays two stages on one
+  screen — เภสัชกำลังจัดยา, then จัดยาสำเร็จแล้ว — and hands over to Activity,
+  where the order carries its own progress bar.
+- A blocked pay button names the real precondition ("คำนวณค่าจัดส่งก่อน"), and
+  a pay button that says a price goes to the gateway, not somewhere else.
+
+## 10. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

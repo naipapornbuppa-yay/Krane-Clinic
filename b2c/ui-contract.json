@@ -208,6 +208,23 @@
     {
       "selector": "#csat-modal [data-csat-close]",
       "why": "The review is a request after delivery, not a gate — it must be closeable."
+    },
+    {
+      "selector": "#delivery-quote [data-loader='paper-crane']",
+      "why": "Saving an address runs the delivery quote behind the app's own loading animation."
+    },
+    {
+      "selector": "#payment [data-payment-address-row]",
+      "why": "The address the quote returns to. Checkout scrolls to it and pulses it."
+    },
+    {
+      "selector": "#pharmacypending [data-prep-title]",
+      "why": "Post-payment pharmacy screen runs two stages in one heading: packing, then packed."
+    },
+    {
+      "selector": "#activity [data-order-progress] .order-progress__step",
+      "why": "Orders carry their own progress bar in Activity once the pharmacy is done.",
+      "minCount": 4
     }
   ],
   "flows": [
@@ -373,6 +390,22 @@
       "name": "English mode leaves no Thai in the app",
       "page": "krane-b2c.html?lang=en",
       "noThaiInEnglish": true
+    },
+    {
+      "name": "Checkout reads in delivery-app order",
+      "page": "krane-b2c.html#payment",
+      "order": [
+        "#payment .screen__body",
+        [
+          "[data-fulfillment-mode-option]",
+          "[data-payment-address-row]",
+          "[data-delivery-option]",
+          "[data-payment-addons]",
+          "[data-payment-method]",
+          ".checkout-final-summary",
+          "[data-payment-documents]"
+        ]
+      ]
     },
     {
       "name": "Navigation bar stays a floating capsule, not a docked bar",

@@ -1508,7 +1508,17 @@
     "ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":" has been released. You can match again right away — your questionnaire answers are all still here.",
     "ระบุโรคประจำตัว":"List your existing conditions",
     "ระบุยาที่ใช้ประจำ":"List the medicines you take regularly",
-    "ระบุประวัติแพ้ยา":"List your drug allergies"
+    "ระบุประวัติแพ้ยา":"List your drug allergies",
+    "เภสัชกำลังจัดยา":"The pharmacist is packing your medicine",
+    "เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ":"A pharmacist is filling your prescription.",
+    "จัดยาสำเร็จแล้ว":"Your medicine is packed",
+    "ยาของคุณพร้อมส่งแล้ว ติดตามสถานะได้ในหน้ากิจกรรม":"Your medicine is ready to send. Follow it from Activity.",
+    "คำนวณค่าจัดส่งก่อน":"Calculate delivery first",
+    "สถานะคำสั่งซื้อ":"Order status",
+    "ชำระเงินแล้ว":"Paid",
+    "จัดยาแล้ว":"Packed",
+    "กำลังจัดส่ง":"On the way",
+    "ได้รับแล้ว":"Delivered"
   };
   var EN = {}, TH_FROM_EN = {};
   for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
@@ -1525,7 +1535,11 @@
     [/^ลด (฿\s?[\d,]+) สำหรับคำสั่งซื้อแรก$/, "$1 off your first order"],
     [/^(\S+) · ลด (฿\s?[\d,]+)$/, "$1 · $2 off"],
     [/^โค้ด (\S+)$/, "Code $1"],
-    [/^เข้าห้องภายใน (\d{2}:\d{2})$/, "Enter within $1"]
+    [/^เข้าห้องภายใน (\d{2}:\d{2})$/, "Enter within $1"],
+    /* Both are written by the delivery quote after it lands, so neither exists
+       in the markup for the first pass to remember. */
+    [/^ชำระเงิน · (฿\s?[\d,.]+)$/, "Pay $1"],
+    [/^([\d.,]+) กม\.$/, "$1 km"]
   ];
   function englishFor(thai) {
     if (EN[thai] !== undefined) return EN[thai];
