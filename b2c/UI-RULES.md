@@ -40,6 +40,10 @@ only when the client asks for it, and the reason goes in the commit message.
 - **Dialog and sheet actions stack:** primary full width on top, the way out full width
   under it. Never side by side — Thai labels wrap.
 - A blocked primary says *why* in its own label ("เลือกที่อยู่ก่อน"), it does not just grey out.
+- **A blocked primary is still tappable, and the tap answers it.** `disabled`
+  swallows the click, so the one thing a stuck patient tries does nothing.
+  Checkout's is `aria-disabled` + `.btn--blocked`; pressing it scrolls to the
+  blocker and outlines it red (`CHECKOUT_BLOCKERS`).
 
 ## 4. Copy density
 
@@ -102,17 +106,36 @@ only when the client asks for it, and the reason goes in the commit message.
   where it goes → what is in it → offers → how it is paid → the bill → what you
   get afterwards. The address is near the top, not below the basket. Pinned by
   the `order` rule in the contract.
-- **Saving an address runs the quote and comes straight back.** The paper-crane
-  loader covers the wait; checkout then scrolls to the address row and pulses it
-  (`.checkout-row.is-just-set`), so the answer is where the patient is looking.
+- **Saving an address runs the quote and comes straight back.** One loading
+  state with a five-second counter covers the wait; checkout then scrolls to the
+  address row and pulses it (`.checkout-row.is-just-set`), so the answer is
+  where the patient is looking.
 - **The pharmacy runs after payment, never before it.** Payment is gated on the
   delivery quote alone. Once paid, `#pharmacypending` plays two stages on one
-  screen — เภสัชกำลังจัดยา, then จัดยาสำเร็จแล้ว — and hands over to Activity,
-  where the order carries its own progress bar.
+  screen — เภสัชกำลังจัดยา, then จัดยาสำเร็จแล้ว — and hands over to this
+  order's own timeline (`#tracking`), not the list of orders. Activity keeps its
+  progress bars for coming back later.
 - A blocked pay button names the real precondition ("คำนวณค่าจัดส่งก่อน"), and
   a pay button that says a price goes to the gateway, not somewhere else.
 
-## 10. Sign-up
+## 10. Loading and waiting screens
+
+Every `.state-view` screen is the same three things, in this order, and nothing
+else (client, 23 Aug):
+
+1. **One line of title.** If it wraps, it is too long.
+2. **One description, two lines at most.**
+3. **A time counter, only if there really is one.** Prose in the counter slot is
+   a third line of copy pretending to be a number — either it counts or the slot
+   is empty. The dwell and the counter read from the same constant, so the
+   screen cannot say 5 seconds and wait 2.
+
+- **One state per screen.** A loading screen does not rewrite its own heading
+  halfway through: two headings in five seconds reads as two pages.
+- All of them use the house illustration set (`#krane-state-*`) with a badge.
+  The paper-crane flipbook belongs to the app's own boot screen.
+
+## 11. Sign-up
 
 - **Direct access does not ask for an ID card** (client, 23 Aug). Both users in
   the 22 Aug test refused to upload one, and it was the wall they hit before
@@ -123,7 +146,7 @@ only when the client asks for it, and the reason goes in the commit message.
 - The partner channel keeps its own document step (`#partner-idcard`).
   `#identity` stays in the app for the contexts that still need it.
 
-## 11. Navigation
+## 12. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

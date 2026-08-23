@@ -136,7 +136,7 @@
     /* --- Clinical / legal wording: translated conservatively, pending review. --- */
     "A licensed pharmacist checks your prescription before the order is accepted.":"เภสัชกรที่มีใบอนุญาตตรวจสอบใบสั่งยาก่อนรับคำสั่งซื้อ",
     "Photo or PDF from a licensed doctor.":"รูปหรือ PDF จากแพทย์ที่มีใบอนุญาต",
-    "Based on your answers, online care may not be safe. Please see a doctor in person before treatment.":"จากคำตอบของคุณ การรักษาออนไลน์อาจไม่ปลอดภัย กรุณาพบแพทย์ที่สถานพยาบาลก่อนเริ่มการรักษา",
+    "Your answers point to something online care cannot treat safely.":"คำตอบของคุณบ่งชี้อาการที่การดูแลออนไลน์รักษาได้ไม่ปลอดภัย",
     "Coverage & payment":"ความคุ้มครองและการชำระเงิน",
     "Doctor will let you in shortly":"แพทย์จะเปิดให้เข้าห้องในไม่ช้า",
     "We'll notify you when the doctor is ready.":"เราจะแจ้งเมื่อแพทย์พร้อม",
@@ -500,7 +500,7 @@
   /* ---- mobile-first state system · 31 Jul ---- */
   var TH_STATE31 = {
     "You need in-person care":"ควรพบแพทย์ด้วยตนเอง",
-    "Based on your answers, online care may not be safe. Please see a doctor in person before treatment.":"จากคำตอบของคุณ การดูแลออนไลน์อาจไม่ปลอดภัย กรุณาพบแพทย์ด้วยตนเองก่อนรับการรักษา",
+    "Your answers point to something online care cannot treat safely.":"คำตอบของคุณบ่งชี้อาการที่การดูแลออนไลน์รักษาได้ไม่ปลอดภัย",
     "Doctor match":"จับคู่แพทย์",
     "Finding your doctor":"กำลังหาแพทย์ให้คุณ",
     "Checking licensed doctors available for your concern.":"เรากำลังค้นหาแพทย์ที่พร้อมให้คำปรึกษาและเหมาะกับอาการของคุณ",
@@ -528,6 +528,8 @@
     "Finding a pharmacy":"กำลังค้นหาร้านยา",
     "Checking nearby branches that can fulfil your prescription.":"กำลังตรวจสอบร้านยาใกล้เคียงที่จัดยาตามใบสั่งได้",
     "Pharmacist reviewing your order":"เภสัชกรกำลังตรวจคำสั่งซื้อ",
+    "Confirming the prescription, the stock and the final price.":"ตรวจสอบใบสั่งยา สต็อก และราคาสุดท้าย",
+    "Your order is on its way to dispatch.":"คำสั่งซื้อของคุณกำลังเข้าสู่ขั้นตอนจัดส่ง",
     "Checking the prescription and stock before payment.":"กำลังตรวจใบสั่งยาและสต็อกก่อนชำระเงิน",
     "Usually under 5 minutes":"โดยปกติไม่เกิน 5 นาที",
     "Checking another pharmacy":"กำลังตรวจสอบร้านยาแห่งถัดไป",
@@ -1198,8 +1200,8 @@
     "คุณอยู่คิวที่ 2 ของคุณหมอนรินทร์":"You are 2nd in Dr. Narin's queue",
     "เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้":"Turn on camera and microphone before you go in, or switch to chat",
     "รอเรียกเข้าห้อง…":"Waiting to be called in…",
-    "ใกล้เสร็จแล้ว":"Almost done",
-    "กำลังสรุปผลวินิจฉัย แผนการรักษา และรายการยาให้อยู่ อาจใช้เวลาสักพักเพื่อยืนยันแผนการรักษาที่เหมาะกับคุณ":"Writing up the diagnosis, treatment plan and medicine list. Confirming the plan that suits you can take a moment.",
+    "กำลังสรุปแผนการรักษา":"Writing your treatment plan",
+    "กำลังเขียนผลวินิจฉัยและรายการยาให้คุณ":"is writing up your diagnosis and medicines",
     "ซักประวัติเรียบร้อยแล้ว":"Health history complete",
     "กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องผมร่วงและผมบาง":"Matching you with a licensed doctor for hair loss and thinning",
     "เหลือ 10 วินาที":"10 seconds left",
@@ -1212,7 +1214,7 @@
     "กำลังค้นหาร้านยาใกล้คุณ":"Finding a pharmacy near you",
     "ส่งรายการให้ร้านยาที่ใกล้ที่สุดก่อนเปิดการชำระเงิน":"Sending the order to the nearest pharmacy before payment opens.",
     "ตรวจสอบการจัดส่ง":"Delivery check",
-    "ยังไม่มีร้านใกล้เคียงที่จัดส่งภายในวันได้":"No nearby pharmacy can deliver same day",
+    "ไม่มีร้านที่ส่งได้ภายในวัน":"No same-day pharmacy nearby",
     "เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน ระบบจะคำนวณยอดใหม่ให้ทันที":"Switch to standard delivery before paying and the total is recalculated straight away.",
     "จัดส่ง 1 ถึง 3 วัน · ไม่มีค่าใช้จ่ายเพิ่ม":"1 to 3 days · no extra charge",
     "เปลี่ยนเป็นจัดส่งมาตรฐาน":"Switch to standard delivery",
@@ -1354,6 +1356,14 @@
     "ดาวน์โหลด PDF":"Download PDF",
     "เริ่มปรึกษาแพทย์":"Start a consultation",
     "เลือกเรื่องที่กังวล ใช้เวลา 5 นาที":"Pick your concern · about 5 minutes",
+    "ติดตามผลกับคุณหมอ":"Follow up with Dr.",
+    /* Sentences that wrap the doctor-name span: each side of the span is its
+       own text node, so each side needs its own entry or half the line stays
+       Thai in English. */
+    "เมื่อยอมรับแล้ว การปรึกษาจะสิ้นสุด และคุณหมอ":"Accepting ends the consultation, and Dr.",
+    "จะออกใบสั่งยาให้ ถ้ายังอยากแก้ไขรายการยา แจ้งในแชทได้ก่อน":"will issue the prescription. To change anything, say so in chat first.",
+    "ยังอยู่ในห้อง ถ้าวางสายแล้วยังคุยต่อทางแชทได้":"is still in the room. You can keep chatting after you hang up.",
+    "นัดครั้งถัดไป":"Next appointment",
     "วันละ 1 เม็ด":"1 tablet daily",
     "เมื่อมีอาการ ทุก 4 ถึง 6 ชม.":"As needed, every 4 to 6 hours",
     "สมชาย ร.":"Somchai R.",

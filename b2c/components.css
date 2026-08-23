@@ -1468,6 +1468,17 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
   30%{box-shadow:0 0 0 4px color-mix(in srgb,var(--color-accent) 22%,transparent)}
   100%{box-shadow:0 0 0 0 transparent}}
 @media(prefers-reduced-motion:reduce){.checkout-row.is-just-set{animation:none}}
+/* Pressed the blocked pay button: the thing that is blocking it says so, in the
+   same red outline a wrong field uses (client, 23 Aug). */
+.is-blocking{border-color:var(--color-danger) !important;
+  box-shadow:0 0 0 2px var(--color-danger),0 0 0 6px color-mix(in srgb,var(--color-danger) 16%,transparent) !important;
+  animation:checkout-blocker-nudge .5s var(--ease-out)}
+@keyframes checkout-blocker-nudge{0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-4px)}60%{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.is-blocking{animation:none}}
+/* Blocked but still tappable, so the tap can be answered. Reads as dead. */
+.btn--blocked,.btn--blocked:hover{background:var(--color-line);border-color:var(--color-line);
+  color:color-mix(in srgb,var(--color-ink) 55%,transparent);box-shadow:none;cursor:default}
 
 /* ---------- Notification row ---------- */
 .notif{display:flex;gap:var(--sp-3);padding:var(--sp-4) 0;cursor:pointer}
@@ -2630,6 +2641,15 @@ body.lang-th *{letter-spacing:normal}
 .home-cta__copy strong{font-size:var(--fs-md);font-weight:var(--fw-semibold);line-height:1.3}
 .home-cta__go{background:rgba(255,255,255,.18)}
 .home-cta__copy span{color:rgba(255,255,255,.85);font-size:var(--fs-sm);line-height:1.4}
+/* The two banner versions stack in the same grid cell; only one is ever shown.
+   Restated at the same specificity as the rule above so the wrapper itself is
+   not dimmed — only the sub-line inside it is. */
+.home-cta__copy .home-cta__variant{display:grid;gap:3px;color:#fff;font-size:inherit}
+.home-cta__copy .home-cta__variant[hidden]{display:none}
+/* Thai runs คุณหมอนรินทร์ together; English needs the space in "Dr. Narin".
+   The space belongs to the join, not to either string, so the language decides
+   it — every คุณหมอ<span data-doctor-name> in the app read "Dr.Narin" before. */
+html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .home-cta__go{
   display:grid;place-items:center;width:38px;height:38px;flex:none;
   border-radius:50%;background:rgba(255,255,255,.14);
@@ -2644,11 +2664,14 @@ body.lang-th *{letter-spacing:normal}
    scroll now fades into the footer instead of being cut at it. */
 .address-footer::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:20px;pointer-events:none;
   background:linear-gradient(to top,var(--surface-page),color-mix(in srgb,var(--surface-page) 0%,transparent))}
+/* Filled blue, not a white pill on a white form (client, 23 Aug): people were
+   not finding it, which is why so many typed the whole address by hand. */
 .address-map-pill{align-self:center;display:inline-flex;align-items:center;gap:8px;
-  min-height:40px;padding:0 var(--sp-4);border:1px solid var(--color-line);
-  border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);
+  min-height:40px;padding:0 var(--sp-4);border:1px solid var(--color-accent);
+  border-radius:var(--radius-pill);background:var(--color-accent);color:#fff;
   font-size:var(--fs-sm);font-weight:var(--fw-semibold);box-shadow:var(--shadow-sm);cursor:pointer}
-.address-map-pill:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
+.address-map-pill:hover{border-color:var(--color-accent-strong,var(--color-accent));
+  background:color-mix(in srgb,var(--color-accent) 88%,#000)}
 .address-map-pill .ui-icon{width:16px;height:16px}
 /* An error message under one field must not drag its neighbour's label out of
    line: the row aligns at the top, not at the baseline of the taller column. */
