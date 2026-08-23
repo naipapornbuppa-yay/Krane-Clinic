@@ -384,6 +384,33 @@
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  // Hero cards alternate between the human context and the relevant treatment
+  // products. Staggering keeps the page calm and avoids a synchronized flash.
+  const swapBanners = [...document.querySelectorAll("[data-banner-swap]")];
+  const swapTimers = new Set();
+  const clearBannerSwapTimers = () => {
+    swapTimers.forEach((timer) => window.clearTimeout(timer));
+    swapTimers.clear();
+    swapBanners.forEach((banner) => banner.classList.remove("is-product-frame"));
+  };
+  const queueBannerSwap = (banner, delay, showProduct = true) => {
+    const timer = window.setTimeout(() => {
+      swapTimers.delete(timer);
+      if (document.hidden || reducedMotionQuery.matches) return;
+      banner.classList.toggle("is-product-frame", showProduct);
+      queueBannerSwap(banner, 6500, !showProduct);
+    }, delay);
+    swapTimers.add(timer);
+  };
+  const startBannerSwaps = () => {
+    clearBannerSwapTimers();
+    if (document.hidden || reducedMotionQuery.matches) return;
+    swapBanners.forEach((banner, index) => queueBannerSwap(banner, 2800 + index * 900));
+  };
+  startBannerSwaps();
+  reducedMotionQuery.addEventListener?.("change", startBannerSwaps);
+  document.addEventListener("visibilitychange", startBannerSwaps);
+
   // iOS Safari only applies the :active pseudo-class once a touch listener is
   // bound somewhere in the document, so tap micro-interactions need this.
   document.addEventListener("touchstart", () => {}, { passive: true });

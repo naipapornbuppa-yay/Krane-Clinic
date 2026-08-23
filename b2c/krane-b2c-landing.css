@@ -3357,6 +3357,59 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{object-position:84% center}
 }
 
+/* 2026-08-23: slow lifestyle/product crossfade for the three primary paths. */
+[data-banner-swap]{isolation:isolate}
+[data-banner-swap] .banner-swap__image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:1;
+  transform:scale(var(--banner-image-scale,1));
+  transition:opacity 1800ms cubic-bezier(.4,0,.2,1),transform 700ms cubic-bezier(.2,.7,.2,1);
+  will-change:opacity;
+  z-index:0;
+}
+[data-banner-swap] .banner-swap__image--lifestyle{opacity:1!important}
+[data-banner-swap] .banner-swap__image--product{opacity:0!important}
+[data-banner-swap].is-product-frame .banner-swap__image--lifestyle{opacity:0!important}
+[data-banner-swap].is-product-frame .banner-swap__image--product{opacity:1!important}
+[data-banner-swap] .care-banner__shade,
+[data-banner-swap] .service-tile__shade{z-index:1}
+[data-banner-swap] .care-banner__copy,
+[data-banner-swap] .service-tile__label,
+[data-banner-swap]>svg,
+[data-banner-swap]>i{z-index:2}
+.care-banner--weight .banner-swap__image--lifestyle{
+  --banner-image-scale:1.18;
+  object-position:76% 52%;
+}
+.care-banner--weight .banner-swap__image--product{object-position:center!important}
+a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--lifestyle{object-position:74% center}
+a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--product{object-position:center!important}
+a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyle{
+  --banner-image-scale:1;
+  object-position:65% center;
+}
+a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{object-position:center!important}
+[data-banner-swap]:hover .banner-swap__image,
+[data-banner-swap]:focus-visible .banner-swap__image{transform:scale(var(--banner-image-scale,1))}
+@media(max-width:780px){
+  .care-banner--weight .banner-swap__image--lifestyle{--banner-image-scale:1.24;object-position:76% 52%}
+  a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--lifestyle{object-position:80% center}
+  a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyle{object-position:68% center}
+}
+@media(max-width:520px){
+  .care-banner--weight .banner-swap__image--lifestyle{--banner-image-scale:1.3;object-position:78% 52%}
+  a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--lifestyle{object-position:84% center}
+}
+@media(prefers-reduced-motion:reduce){
+  [data-banner-swap] .banner-swap__image{transition:none;will-change:auto}
+  [data-banner-swap] .banner-swap__image--lifestyle{opacity:1!important}
+  [data-banner-swap] .banner-swap__image--product{opacity:0!important}
+}
+
 /* ---- Before/after progress, and the article row that precedes the video
    reviews (client 16 Aug). Both sit on the page canvas and use the same card
    surface as the rest of the landing, so they read as part of the same set. */
