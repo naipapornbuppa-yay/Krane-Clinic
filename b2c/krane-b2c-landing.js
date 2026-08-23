@@ -454,7 +454,7 @@
     [".product-stage, .protocol .carousel-footer", 90, "scale"],
     [".benefits > li", 55, ""],
     [".guarantee__copy", 0, ""],
-    [".experts .section-heading, .expert-card, .experts .carousel-footer", 55, ""],
+    [".experts .section-heading, .expert-card", 55, ""],
     [".review-collage, .reviews__copy", 100, ""],
     [".closing__copy, .footer__main, .footer__bottom", 85, ""]
   ];
@@ -742,55 +742,6 @@
       renderProduct();
     });
   });
-
-  const expertViewport = document.querySelector("[data-expert-viewport]");
-  const expertCards = [...document.querySelectorAll(".expert-card")];
-  const expertButtons = [...document.querySelectorAll("[data-expert-direction]")];
-  const expertIndex = document.querySelector("[data-expert-index]");
-  const expertDots = [...document.querySelectorAll(".experts .carousel-indicator i")];
-  let expertScrollFrame = 0;
-
-  function expertStep() {
-    if (!expertViewport || !expertCards.length) return 0;
-    const track = expertViewport.querySelector(".expert-track");
-    const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
-    return expertCards[0].getBoundingClientRect().width + gap;
-  }
-
-  function syncExpertCarousel() {
-    expertScrollFrame = 0;
-    if (!expertViewport || !expertCards.length) return;
-    const step = expertStep() || 1;
-    const maxIndex = expertCards.length - 1;
-    const current = Math.max(0, Math.min(maxIndex, Math.round(expertViewport.scrollLeft / step)));
-    const maxScroll = Math.max(0, expertViewport.scrollWidth - expertViewport.clientWidth);
-    if (expertIndex) expertIndex.textContent = String(current + 1).padStart(2, "0");
-    expertDots.forEach((dot, index) => {
-      dot.style.background = index === current ? "#0f172a" : "#cbd5e1";
-    });
-    expertButtons.forEach((button) => {
-      const direction = Number(button.dataset.expertDirection);
-      button.disabled = direction < 0 ? expertViewport.scrollLeft <= 2 : expertViewport.scrollLeft >= maxScroll - 2;
-    });
-  }
-
-  expertButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!expertViewport) return;
-      const step = expertStep();
-      const current = Math.round(expertViewport.scrollLeft / (step || 1));
-      const next = Math.max(0, Math.min(expertCards.length - 1, current + Number(button.dataset.expertDirection)));
-      expertViewport.scrollTo({
-        left: next * step,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
-      });
-    });
-  });
-  expertViewport?.addEventListener("scroll", () => {
-    if (!expertScrollFrame) expertScrollFrame = requestAnimationFrame(syncExpertCarousel);
-  }, { passive: true });
-  window.addEventListener("resize", syncExpertCarousel, { passive: true });
-  syncExpertCarousel();
 
   const expertProfiles = {
     "1": {
