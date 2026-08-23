@@ -1,0 +1,88 @@
+/* Cross-platform browser contract for the public site and patient flow.
+   Keep this file small and structural: page-specific visual decisions stay in
+   their existing stylesheets. */
+
+html{
+  min-width:320px;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  scrollbar-gutter:stable;
+}
+
+body{
+  min-width:0;
+  min-height:100vh;
+  min-height:100dvh;
+}
+
+button,input,select,textarea{
+  max-width:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button,[role="button"],select,label[for]{touch-action:manipulation}
+
+img,video,canvas{max-width:100%}
+
+/* Momentum scrolling is still required by older iOS WebViews. Containment
+   prevents a sideways card swipe from moving the entire page on Android. */
+.care-banner-grid,
+.care-discovery__grid,
+.compliance__logos,
+.expert-viewport,
+.review-collage,
+.screen__body,
+.mobile-menu,
+.doctor-profile-dialog{
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+}
+
+/* Keep full-height flows stable as mobile browser chrome expands and contracts.
+   The vh fallback remains first for older embedded browsers. */
+@supports(height:100dvh){
+  .proto,.rail,.stage,.screen{height:100dvh;max-height:100dvh}
+}
+
+@media(max-width:780px){
+  /* iOS zooms focused controls below 16px; Android and desktop preserve the
+     same visual size at this breakpoint. */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea{font-size:16px!important}
+
+  .site-header{
+    margin-left:max(var(--page-gutter,12px),env(safe-area-inset-left));
+    margin-right:max(var(--page-gutter,12px),env(safe-area-inset-right));
+  }
+
+  .mobile-menu{
+    max-height:calc(100dvh - max(16px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));
+    padding-top:max(20px,env(safe-area-inset-top));
+    padding-right:max(20px,env(safe-area-inset-right));
+    padding-bottom:max(20px,env(safe-area-inset-bottom));
+    padding-left:max(20px,env(safe-area-inset-left));
+  }
+
+  .detail-page{padding-bottom:env(safe-area-inset-bottom)}
+  .detail-nav{
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
+  }
+
+  :where(.button,.btn,.header-login,.header-access,.menu-toggle,.detail-back,.detail-cta){min-height:44px}
+}
+
+/* Keep editorial sections composed on large desktop displays instead of
+   stretching cards and reading lines indefinitely. */
+@media(min-width:1720px){
+  .page-section{
+    width:calc(100% - (2 * var(--page-gutter,40px)));
+    max-width:1640px;
+    margin-inline:auto;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
