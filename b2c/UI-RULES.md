@@ -112,7 +112,18 @@ only when the client asks for it, and the reason goes in the commit message.
 - A blocked pay button names the real precondition ("คำนวณค่าจัดส่งก่อน"), and
   a pay button that says a price goes to the gateway, not somewhere else.
 
-## 10. Navigation
+## 10. Sign-up
+
+- **Direct access does not ask for an ID card** (client, 23 Aug). Both users in
+  the 22 Aug test refused to upload one, and it was the wall they hit before
+  they had seen anything the clinic does. The direct chain is intake → account
+  → OTP → consent → patient record → care. `identityRequired()` in
+  `krane-b2c.html` is the single switch; the contract asserts that asking for
+  `#identity` on a direct session lands on the patient record instead.
+- The partner channel keeps its own document step (`#partner-idcard`).
+  `#identity` stays in the app for the contexts that still need it.
+
+## 11. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

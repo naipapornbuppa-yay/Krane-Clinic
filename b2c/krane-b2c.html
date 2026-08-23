@@ -6000,6 +6000,9 @@
       const signupParent=current==='signup' && flowState.entryChannel==='direct'
         ? (intakeStepOrder().slice(-1)[0] || 'intake1')
         : null;
+      /* The direct route has no ID step any more, so Back from the patient
+         record returns to consent rather than to a screen it skipped. */
+      const patientInfoParent=current==='patient-info' && !identityRequired() ? 'consent-terms' : null;
       /* seededHistory only runs for an entry with no real trail — a deep link
          or a landing care card. Those all start at the landing page, which is
          where the concern was picked, so Back returns there rather than to a
@@ -6009,7 +6012,7 @@
       const waitroomParent=current==='waitroom' && flowState.entryChannel==='direct'
         ? 'intake-general'
         : null;
-      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || intakeStartParent || waitroomParent || directEntryParent[current]);
+      current = skipped !== null ? skipped : (partnerParent || healthParent || signupParent || patientInfoParent || intakeStartParent || waitroomParent || directEntryParent[current]);
     }
     return path[0] === 'landing' ? path : ['landing', ...path];
   }
@@ -6237,6 +6240,15 @@
   const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['waitroom','consult','video','rx-writing']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
+  /* Krane direct access no longer asks for an ID card (client, 23 Aug). Both
+     users in the 22 Aug test refused to upload one, and it was the wall they
+     hit before they had seen anything the clinic does. The partner channel
+     keeps its own document step (#partner-idcard); #identity stays in the app
+     for the contexts that still need it, but nothing in the direct route
+     requires it or leads to it. */
+  function identityRequired(){
+    return flowState.entryChannel !== 'direct';
+  }
   function requiredRouteFor(target){
     if(intakeSkipped(target)){
       const forward = skipForwardFrom(target);
@@ -6265,13 +6277,14 @@
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
-      if(!flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
       if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
     }
     if(target==='signup' && !flowState.draftReady) return 'intake1';
     if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
     if(target==='identity'){
+      // Asked for on a route that no longer has this step: send them on.
+      if(!identityRequired()) return flowState.patientInfoComplete ? directClinicalStartTarget() : 'patient-info';
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
@@ -6282,12 +6295,17 @@
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
-      if(!flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
+      if(identityRequired() && !flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
     }
     // Insurance details are shared by profile setup and partner entry. Both
     // contexts open this identity check before the ordinary clinical guard.
     if(target==='insurance' && ['profile','partner'].includes(insuranceEntry)) return target;
-    if(REQUIRED_CARE_TARGETS.has(target) && !flowState.identityVerified && !flowState.returningIdentityValid){
+    /* The last step of the sign-up chain stands in for the whole chain —
+       reaching it means everything before it was done. That used to be
+       identity; on the direct route it is now the patient record. */
+    const signupChainDone = flowState.returningIdentityValid ||
+      (identityRequired() ? flowState.identityVerified : flowState.patientInfoComplete);
+    if(REQUIRED_CARE_TARGETS.has(target) && !signupChainDone){
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
@@ -7030,7 +7048,7 @@
     if(!flowState.consentsComplete) return 'consent-terms';
     if(flowState.returningIdentityValid) return destination || postAuthNext || 'profile';
     if(!flowState.patientInfoComplete) return 'patient-info';
-    if(!flowState.identityVerified) return 'identity';
+    if(identityRequired() && !flowState.identityVerified) return 'identity';
     return destination || postAuthNext || directClinicalStartTarget();
   }
   /* Signing in is signing in, draft or no draft (client, 19 Aug). These flags
@@ -7482,7 +7500,9 @@
         // to matching, since patient-info/identity were skipped for them earlier.
         const consentNext = consentSource==='partner'
           ? 'partner-idcard'
-          : (flowState.returningIdentityValid ? directClinicalStartTarget() : 'identity');
+          : (flowState.returningIdentityValid
+              ? directClinicalStartTarget()
+              : (identityRequired() ? 'identity' : 'patient-info'));
         flowState.lastRequiredScreen=consentNext;
         persistFlowState();
         showActionToast('บันทึกความยินยอมแล้ว','success');
