@@ -37,7 +37,7 @@
       certified: "Licensed doctors",
       discreet: "Discreet delivery nationwide",
       heroTitle: "Confident health,<br>cared for by Krane",
-      bannerWeightTitle: "Lose weight safely<br>with GLP-1s",
+      bannerWeightTitle: "Lose weight safely<br>with GLP-1 pens",
       bannerWeightNew: "Latest generation",
       bannerWeightOffer: "Special price",
       bannerWeightProducts: "Mounjaro · Ozempic · Wegovy*",
