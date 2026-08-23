@@ -2672,7 +2672,6 @@
     if(reviewId) screen.dataset.reviewScreenId=reviewId;
   });
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
-  const railGroups = [...document.querySelectorAll('.rail > .rail-group')];
   const prototypeRail = document.querySelector('#prototype-rail');
   const railToggle = prototypeRail?.querySelector('.rail-toggle');
   const railCollapseStorageKey = 'krane-prototype-rail-collapsed';
@@ -4833,7 +4832,7 @@
     const link = railLinks.find(a => a.dataset.go === id);
     if(!link) return;
     const activeGroup = link.closest('.rail-group');
-    railGroups.forEach(group => { group.open = group === activeGroup; });
+    if(activeGroup) activeGroup.open = true;
     let parent = link.parentElement;
     while(parent && parent !== activeGroup){
       if(parent.matches && parent.matches('details.rail-page')) parent.open = true;
@@ -4841,11 +4840,6 @@
     }
     if(link.scrollIntoView) link.scrollIntoView({ block:'nearest' });
   }
-  document.querySelector('.rail').addEventListener('click', e => {
-    const summary = e.target.closest('.rail-group > summary');
-    if(!summary || summary.parentElement.open) return;
-    railGroups.forEach(group => { if(group !== summary.parentElement) group.open = false; });
-  });
   function replaceCurrent(id){
     if(history.length) history[history.length - 1] = id;
     else history = [id];

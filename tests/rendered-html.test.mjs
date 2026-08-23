@@ -1292,6 +1292,16 @@ test("prototype rail gives every screen a stable reviewer SID", async () => {
   assert.equal(registry.get("intake-concern"), "SID-069");
 });
 
+test("prototype rail keeps independently opened journey groups expanded", async () => {
+  for (const file of ["krane-b2c.html", "krane-b2c-paper-crane-preview.html"]) {
+    const patient = await readFile(path.join(publicRoot, "b2c", file), "utf8");
+
+    assert.match(patient, /if\(activeGroup\) activeGroup\.open = true;/);
+    assert.doesNotMatch(patient, /group\.open = group === activeGroup/);
+    assert.doesNotMatch(patient, /if\(group !== summary\.parentElement\) group\.open = false/);
+  }
+});
+
 test("public QA review gate preserves deep links and uses a signed server cookie", { todo: "re-baseline: the 16 Aug landing/app redesign moved this contract and the assertion still describes the pre-redesign markup" }, async () => {
   const worker = await readFile(path.join(root, "worker/index.ts"), "utf8");
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
