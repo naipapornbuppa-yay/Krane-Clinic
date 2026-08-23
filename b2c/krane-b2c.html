@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260823-banner-product-crossfade-v1";
+    const release = "20260823-full-bleed-mobile-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260818-intake-back-v1">
-<link rel="stylesheet" href="components.css?v=20260818-intake-back-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260823-full-bleed-mobile-v1">
+<link rel="stylesheet" href="components.css?v=20260823-full-bleed-mobile-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <script src="../krane-golden-fixture.js"></script>
@@ -112,12 +112,26 @@
   body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
   .screen{display:none;min-width:0}
   .screen.active{display:flex}
+  /* The web landing is an embedded full-bleed surface, not a phone card. Keep
+     both the screen and iframe on the stage's flex width so an older cached
+     capped-screen rule cannot leave an unused strip on the right. */
+  .stage>.screen--web{
+    width:100%!important;max-width:none!important;min-width:0!important;
+    flex:1 1 auto;align-self:stretch;
+  }
+  .stage>.screen--web>iframe{
+    width:100%!important;max-width:none!important;min-width:0!important;
+    height:100%;flex:1 1 100%;
+  }
   .note-bar{display:none}
   @media(max-width:780px){
     .rail{display:none}.note-bar{left:0}
     .proto{width:100%;min-height:100dvh;height:100dvh;overflow:hidden}
     .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
     .stage .screen{width:100%;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none}
+    html,body,.proto,.stage,.stage>.screen--web,.stage>.screen--web>iframe{
+      width:100%!important;max-width:100%!important;min-width:0!important;
+    }
   }
   /* ── Feature annotation strip (prototype chrome only, not product UI) ── */
   .feat-strip{width:100%;background:var(--color-accent-soft-2);border:1px solid var(--color-accent-soft);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;font-size:11px;line-height:1.4;font-family:var(--font-base)}
@@ -542,7 +556,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260823-banner-product-crossfade-v1" style="flex:1;width:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260823-full-bleed-mobile-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
