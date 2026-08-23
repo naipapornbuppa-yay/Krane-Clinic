@@ -388,6 +388,7 @@
   // products. Staggering keeps the page calm and avoids a synchronized flash.
   const swapBanners = [...document.querySelectorAll("[data-banner-swap]")];
   const swapTimers = new Set();
+  let bannerProductsReady = false;
   const clearBannerSwapTimers = () => {
     swapTimers.forEach((timer) => window.clearTimeout(timer));
     swapTimers.clear();
@@ -404,10 +405,32 @@
   };
   const startBannerSwaps = () => {
     clearBannerSwapTimers();
-    if (document.hidden || reducedMotionQuery.matches) return;
+    if (!bannerProductsReady || document.hidden || reducedMotionQuery.matches) return;
     swapBanners.forEach((banner, index) => queueBannerSwap(banner, 2800 + index * 900));
   };
-  startBannerSwaps();
+  const loadBannerProductImages = () => {
+    const productImages = swapBanners
+      .map((banner) => banner.querySelector("[data-banner-product-src]"))
+      .filter(Boolean);
+    return Promise.all(productImages.map((image) => new Promise((resolve) => {
+      if (image.complete && image.currentSrc) {
+        resolve();
+        return;
+      }
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+      image.src = image.dataset.bannerProductSrc;
+    })));
+  };
+  const hydrateBannerProducts = () => {
+    loadBannerProductImages().then(() => {
+      bannerProductsReady = true;
+      startBannerSwaps();
+    });
+  };
+  const scheduleBannerProductHydration = () => window.setTimeout(hydrateBannerProducts, 250);
+  if (document.readyState === "complete") scheduleBannerProductHydration();
+  else window.addEventListener("load", scheduleBannerProductHydration, { once: true });
   reducedMotionQuery.addEventListener?.("change", startBannerSwaps);
   document.addEventListener("visibilitychange", startBannerSwaps);
 
@@ -415,12 +438,31 @@
   // bound somewhere in the document, so tap micro-interactions need this.
   document.addEventListener("touchstart", () => {}, { passive: true });
   const confidenceVideo = document.querySelector(".confidence-campaign__video");
+  let confidenceVideoLoaded = false;
   const syncConfidenceVideoMotion = () => {
-    if (!confidenceVideo) return;
+    if (!confidenceVideo || !confidenceVideoLoaded) return;
     if (reducedMotionQuery.matches) confidenceVideo.pause();
     else confidenceVideo.play().catch(() => {});
   };
-  syncConfidenceVideoMotion();
+  const loadConfidenceVideo = () => {
+    if (!confidenceVideo || confidenceVideoLoaded) return;
+    const source = confidenceVideo.querySelector("[data-video-src]");
+    if (!source) return;
+    source.src = source.dataset.videoSrc;
+    confidenceVideoLoaded = true;
+    confidenceVideo.load();
+    syncConfidenceVideoMotion();
+  };
+  if (confidenceVideo && "IntersectionObserver" in window) {
+    const confidenceVideoObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      confidenceVideoObserver.disconnect();
+      loadConfidenceVideo();
+    }, { rootMargin: "0px", threshold: 0.1 });
+    confidenceVideoObserver.observe(confidenceVideo);
+  } else if (confidenceVideo) {
+    window.addEventListener("load", loadConfidenceVideo, { once: true });
+  }
   reducedMotionQuery.addEventListener?.("change", syncConfidenceVideoMotion);
 
   const careHeroArt = document.querySelector("[data-care-hero-art]");

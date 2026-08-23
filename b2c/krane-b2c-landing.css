@@ -2488,7 +2488,17 @@ body{background:var(--landing-page-bg)}
    was not resolving here and the seals rendered at natural size (447px). */
 /* Every seal fills the same square, so the three logos read as one set
    instead of three different sizes (client, 19 Aug). */
-.trust-card__seal img{width:100%;height:100%;object-fit:contain}
+.trust-card__seal img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transform-origin:center;
+}
+/* The source marks do not share the same amount of internal canvas. Fascino
+   is optically heavy while the ISO file has roughly 31% transparent padding;
+   normalize the visible circles without distorting either logo. */
+.trust-card:nth-child(2) .trust-card__seal img{transform:scale(.9)}
+.trust-card:nth-child(3) .trust-card__seal img{transform:scale(1.43)}
 .trust-card__body{min-width:0}
 .trust-card__eyebrow{
   margin:0;
