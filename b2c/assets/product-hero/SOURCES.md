@@ -38,6 +38,8 @@ Downloaded for the Krane Clinic landing-page prototype on 2026-08-09.
 - ED care couple light v10: built-in ImageGen lighting edit of the face-free v7 couple composition. A fully clothed adult man and woman sit together on a pale-sage bed with anatomically natural joined hands and a discreet unbranded two-tablet blister nearby. Soft window daylight, warm ivory textiles, and left-side live-copy space replace the prior dark navy bedroom treatment. No faces, logos, text, nudity, explicit content, or medical claim.
 - `protocol-pen-clear-v1.svg`, `protocol-pen-blue-v1.svg`, and `protocol-pen-slate-v1.svg`: original code-native SVG product abstractions drawn for this prototype. They intentionally omit brand-specific shapes, labels, and logos and are composed as independent animated layers in the landing page.
 
+- Weight hero lifestyle frame, 24 Aug: back to `weight-injection-hand-bright-v7.png`, re-encoded as `weight-injection-hand-bright-v7-optimized.webp` (33 KB) for the preload. The die-cut `weight-pen-hand-cutout-v10` tried earlier the same day showed a hand and a pen with no body in frame; the client asked for the skin visible, a darker card and white type, so the full photograph is used under a shade instead. The v10 cut-outs are kept in place, unused.
+
 These images are included for client-review prototyping. Confirm manufacturer permissions, local product registration, indication language, and Thai advertising approval before production publication.
 
 ## Weight-care desktop hover sequence v3
