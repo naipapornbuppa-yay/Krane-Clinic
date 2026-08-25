@@ -40,6 +40,8 @@ Downloaded for the Krane Clinic landing-page prototype on 2026-08-09.
 
 - Weight hero lifestyle frame, 24 Aug: back to `weight-care-cutout-dark-v2-optimized.webp` (52 KB), the original waist shot the client asked for — a person holding the pen against their own midriff. Two alternatives tried the same day are kept in the repo, unused: the `weight-pen-hand-cutout-v10` die-cut (a hand and a pen, no body) and `weight-injection-hand-bright-v7` (hand on skin, no waist). Rendered with object-fit:cover, because this asset carries the studio's own pale backdrop around the figure and letterboxing it onto the dark card leaves a grey rectangle with a visible seam.
 
+- Landing product frames, 24 Aug (client: "รูป item in landing I want something like this not placing on the table"): `weight-product-flat-v14-optimized.webp`, `ed-product-flat-v14-optimized.webp` and `hair-product-flat-v14-optimized.webp`. Each is a close crop of the existing `*-care-product-floating-flat-v3.png` stills, which already show the items floating on a uniform field with no ground plane and no cast shadow — the treatment the client's reference used. Cropping was done locally: the subject is found by colour distance from the source's own corner colour, the window is sized so the items fill about 80% of the frame, and any area outside the source is filled with that same corner colour so the extension is invisible. The `*-product-photo-v1` table-top stills they replace are kept in the repo, unused.
+
 These images are included for client-review prototyping. Confirm manufacturer permissions, local product registration, indication language, and Thai advertising approval before production publication.
 
 ## Weight-care desktop hover sequence v3
