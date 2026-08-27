@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260816-checkout-strip-v9";
+    const release = "20260816-health-after-details-v10";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,8 +37,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260816-checkout-strip-v9">
-<link rel="stylesheet" href="components.css?v=20260816-checkout-strip-v9">
+<link rel="stylesheet" href="design-tokens.css?v=20260816-health-after-details-v10">
+<link rel="stylesheet" href="components.css?v=20260816-health-after-details-v10">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -1100,7 +1100,7 @@
         <div class="between"><span class="muted">ค่าจัดส่ง</span><strong>ไม่รวมในสิทธิ์</strong></div>
       </div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="identity">ใช้สิทธิ์นี้และไปต่อ</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="intake-general">ใช้สิทธิ์นี้และไปต่อ</button></div>
   </section>
 
   <!-- ===================== NURSE PRE-SCREENING (KRANE-F38) ===================== -->
@@ -4853,10 +4853,10 @@
     onboard1:'landing', onboard2:'onboard1', onboard3:'onboard2',
     concern:'landing', conditions:'landing', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
-    intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
+    intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'patient-info',
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
-    otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'patient-info', nurse:'identity',
+    otp:'signup', 'consent-terms':'landing', 'patient-info':'consent-terms', 'insurance-result':'insurance', identity:'intake-general', nurse:'identity',
     matching:'identity', choosedoc:'matching', noslots:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', plan:'consult',
@@ -5442,8 +5442,6 @@
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
-      if(!flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
-      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
     }
     if(target==='signup' && !flowState.draftReady) return 'intake1';
     if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
@@ -5459,6 +5457,7 @@
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
+      if(flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete) return 'intake-general';
     }
     // Insurance details are shared by profile setup and partner entry. Both
     // contexts open this identity check before the ordinary clinical guard.
@@ -6398,7 +6397,7 @@
         if(paymentChoice==='insurance'){
           insuranceEntry='profile';
           show('insurance');
-        } else show('identity');
+        } else show('intake-general');
       });
       return;
     }
@@ -7289,10 +7288,14 @@
       flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
       flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
       flowState.partnerConcernComplete=true;
-      flowState.lastRequiredScreen='intake-general';
+      // Client 16 Aug: the health profile belongs after the name and phone are
+      // confirmed, so the concern screen hands off to the details step. The
+      // route guard still bounces a new patient through signup/OTP/consent
+      // first, exactly as it did before.
+      flowState.lastRequiredScreen='patient-info';
       persistFlowState();
       saveIntakeDraft();
-      show('intake-general');
+      show(flowState.entryChannel==='partner' ? 'intake-general' : 'patient-info');
       return;
     }
     if(intakeComplete.closest('#intake-general')){
@@ -7315,11 +7318,11 @@
       if(flowState.entryChannel==='direct'){
         flowState.draftReady=true;
         flowState.directGeneralHealthComplete=true;
-        flowState.lastRequiredScreen='waitroom';
+        flowState.lastRequiredScreen='identity';
         persistFlowState();
         saveIntakeDraft();
-        showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
-        show('waitroom');
+        showActionToast('บันทึกข้อมูลสุขภาพแล้ว','success');
+        show('identity');
         return;
       }
     }
