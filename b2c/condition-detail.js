@@ -420,7 +420,7 @@
     // A condition detail is always a Krane-direct entry. Carry that context in
     // the deep link so a previous Partner session cannot hide the intake
     // progress UI when this page opens the specialty questionnaire.
-    link.href = `krane-b2c.html?v=20260815-intake-progress-v1#intake1?category=${encodeURIComponent(data.category)}&entry=direct`;
+    link.href = `krane-b2c.html?v=20260827-fresh-intake-v1#intake1?category=${encodeURIComponent(data.category)}&entry=direct&fresh=1`;
     link.dataset.category = data.category;
   });
 

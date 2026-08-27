@@ -542,7 +542,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260824-progress-pairs-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260827-fresh-intake-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -7025,6 +7025,18 @@
     const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
     if(id && document.getElementById(id)){
+      /* A public "start care" link is a new-user testing journey. Reset the
+         prior participant's session-scoped onboarding flags before routing so
+         an OTP completed earlier in the same tab cannot silently skip account
+         creation and expose doctor matching. Internal app navigation omits
+         fresh=1, so a genuinely signed-in patient's active journey is kept. */
+      if(id==='intake1' && hashParams.get('fresh')==='1'){
+        resetRequiredFlow();
+        isAuthenticated=false;
+        journeyActive=false;
+        postAuthNext='intake1';
+        history=['landing'];
+      }
       // Hash deep links can arrive from a standalone condition-detail page in
       // the same browser that previously used a Partner flow. Resolve the entry
       // channel before seeding history or showing the screen; show() uses it to
