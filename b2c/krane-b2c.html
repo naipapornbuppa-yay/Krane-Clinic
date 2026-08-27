@@ -5667,6 +5667,14 @@
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
   const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
+  /* Client, 26 Aug: the height / weight / conditions page belongs immediately
+     after the name-and-phone page, not on the far side of doctor matching and
+     payment. Everything the patient knows about themselves is now asked in one
+     run, and only then does the app go looking for a doctor. */
+  function directNextAfterPatientInfo(){
+    if(flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete) return 'intake-general';
+    return directClinicalStartTarget();
+  }
   function directClinicalStartTarget(){
     if(DIRECT_NURSE_SCREENING_ENABLED) return 'nurse';
     doctorAvailable=true;
@@ -6046,7 +6054,7 @@
         ? (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'partner-patient-info')
         : null;
       const healthParent=current==='intake-general'
-        ? (flowState.entryChannel==='partner' ? 'intake-concern' : 'consultpay')
+        ? (flowState.entryChannel==='partner' ? 'intake-concern' : 'patient-info')
         : null;
       const signupParent=current==='signup' && flowState.entryChannel==='direct'
         ? (intakeStepOrder().slice(-1)[0] || 'intake1')
@@ -6288,7 +6296,10 @@
     'pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
     'tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
-  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['waitroom','consult','video','rx-writing']);
+  /* Everything from doctor matching onwards now sits after the health page,
+     so all of it waits on that page rather than only the waiting room. */
+  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','choosedoc','noslots',
+    'consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
   /* Krane direct access no longer asks for an ID card (client, 23 Aug). Both
@@ -6329,7 +6340,7 @@
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
-      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
+      // The fee no longer gates this page — it now comes before payment.
     }
     if(target==='signup' && !flowState.draftReady) return 'intake1';
     if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
@@ -6365,7 +6376,6 @@
       return 'identity';
     }
     if(flowState.entryChannel==='direct' && DIRECT_PRE_DOCTOR_GATE_TARGETS.has(target) && !flowState.directGeneralHealthComplete){
-      if(!flowState.consultationFeeAcknowledged && !flowState.consultationPaid) return 'consultpay';
       return 'intake-general';
     }
     return target;
@@ -7528,7 +7538,7 @@
         if(paymentChoice==='insurance'){
           insuranceEntry='profile';
           show('insurance');
-        } else show(directClinicalStartTarget());
+        } else show(directNextAfterPatientInfo());
       });
       return;
     }
@@ -8508,11 +8518,15 @@
     if(fromGeneralHealth && flowState.entryChannel==='direct'){
       flowState.draftReady=true;
       flowState.directGeneralHealthComplete=true;
-      flowState.lastRequiredScreen='waitroom';
+      /* The health details sit with the rest of the patient's own information
+         now (client, 26 Aug), so this hands on to the doctor rather than
+         jumping the queue straight into the waiting room. */
+      const next=directClinicalStartTarget();
+      flowState.lastRequiredScreen=next;
       persistFlowState();
       saveIntakeDraft();
-      showActionToast('ยืนยันข้อมูลสุขภาพแล้ว กำลังเข้าห้องรอแพทย์','success');
-      show('waitroom');
+      showActionToast('ยืนยันข้อมูลสุขภาพแล้ว','success');
+      show(next);
       return;
     }
     flowState.draftReady=true;

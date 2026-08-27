@@ -137,10 +137,15 @@ else (client, 23 Aug):
 
 ## 11. Sign-up
 
+- **Order of the chain** (client, 26 Aug): intake → account → OTP → consent →
+  name and phone → **height / weight / conditions** → doctor → payment.
+  Everything the patient knows about themselves is asked in one run, and only
+  then does the app go looking for a doctor. The health page used to sit on the
+  far side of matching and the fee. `directNextAfterPatientInfo()` is the
+  hand-off; `DIRECT_PRE_DOCTOR_GATE_TARGETS` holds everything that waits on it.
 - **Direct access does not ask for an ID card** (client, 23 Aug). Both users in
   the 22 Aug test refused to upload one, and it was the wall they hit before
-  they had seen anything the clinic does. The direct chain is intake → account
-  → OTP → consent → patient record → care. `identityRequired()` in
+  they had seen anything the clinic does. `identityRequired()` in
   `krane-b2c.html` is the single switch; the contract asserts that asking for
   `#identity` on a direct session lands on the patient record instead.
 - The partner channel keeps its own document step (`#partner-idcard`).
