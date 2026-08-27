@@ -1830,16 +1830,53 @@ body{
 /* Hims-inspired first viewport: keep the clinical campaign primary while exposing more care choices. */
 .hero--campaign .hero__intro{
   display:grid;
-  grid-template-columns:max-content minmax(0,1fr);
-  align-items:center;
-  gap:28px;
-  padding:18px 0 20px;
+  grid-template-columns:minmax(0,1.45fr) minmax(300px,.7fr);
+  align-items:end;
+  gap:clamp(32px,5vw,80px);
+  padding:32px 0 30px;
+}
+.hero__intro-copy{max-width:790px}
+.hero__eyebrow{
+  margin-bottom:10px;
+  color:var(--landing-blue);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
 }
 .hero--campaign h1{
-  font-size:clamp(34px,3.4vw,48px);
+  font-size:clamp(38px,4.2vw,62px);
+  line-height:1.08;
+  letter-spacing:-.045em;
   white-space:normal;
   text-wrap:balance;
 }
+.hero__lead{
+  max-width:62ch;
+  margin-top:16px;
+  color:var(--landing-muted);
+  font-size:16px;
+  line-height:1.7;
+}
+.hero__journey{
+  margin:0;
+  padding:0;
+  list-style:none;
+  border-block:1px solid var(--landing-line);
+}
+.hero__journey li{
+  min-height:52px;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--landing-line);
+  color:var(--landing-navy);
+  font-size:14px;
+  font-weight:500;
+}
+.hero__journey li:last-child{border-bottom:0}
+.hero__journey b{color:var(--landing-blue);font:600 11px/1 "Inter",sans-serif;letter-spacing:.08em}
 .hero--campaign .hero__signals{
   width:100%;
   margin-top:0;
@@ -2557,7 +2594,7 @@ body{background:var(--landing-page-bg)}
   .motion-enabled .section-block[data-parallax]{transform:none}
 }
 /* Client (18 Aug): the three assurances read as a horizontal rail instead of a
-   stacked column — swipeable on touch, and drifting sideways as the section
+   stacked column, swipeable on touch, and drifting sideways as the section
    travels through the viewport, so the row parallaxes against the page scroll.
    The copy sits above the rail at every width; a two-column split would have
    left the rail too narrow to be worth scrolling. */
@@ -2664,12 +2701,23 @@ body{background:var(--landing-page-bg)}
 .expert-card--identity>div:last-child{padding:20px}
 
 @media(max-width:960px){
+  .hero--campaign .hero__intro{grid-template-columns:1fr;gap:24px;padding-block:24px}
+  .hero__journey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hero__journey li{min-height:72px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;padding-inline:14px;border-bottom:0;border-right:1px solid var(--landing-line)}
+  .hero__journey li:last-child{border-right:0}
   .steps{grid-template-columns:1fr}
   .steps li{min-height:0}
 }
 @media(max-width:700px){
   .announcement--promo .announcement__group>*::after{margin-inline:14px}
   .hero__intro h1 br{display:none}
+  .hero--campaign .hero__intro{gap:18px;padding:22px 0 20px}
+  .hero__eyebrow{margin-bottom:8px;font-size:10px}
+  .hero--campaign h1{font-size:clamp(30px,9.4vw,40px);line-height:1.12}
+  .hero__lead{margin-top:12px;font-size:14px;line-height:1.65}
+  .hero__journey{grid-template-columns:1fr}
+  .hero__journey li{min-height:44px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;padding-inline:0;border-right:0;border-bottom:1px solid var(--landing-line);font-size:13px}
+  .hero__journey li:last-child{border-bottom:0}
   .care-banner__badges{margin-top:8px}
   .care-banner__badges em{min-height:24px;padding:4px 8px;font-size:10px}
   .trust-section,.privacy-section{padding-block:56px}
@@ -3237,7 +3285,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
 }
 
 /* 2026-08-16: tap micro-interactions. :hover never fires reliably on iOS
-   Safari, so touch users got none of the desktop lift/scale feedback above —
+   Safari, so touch users got none of the desktop lift/scale feedback above.
    this mirrors it as a press-down :active state instead. */
 .button:active,
 .service-card:active,
@@ -3334,12 +3382,12 @@ a[data-category="hair-skin"].care-banner-grid__sub{
 .care-banner--weight>img.care-banner__photo{object-position:72% center}
 /* The photo renders as-shot, same as the hair tile beside it. It used to carry
    mix-blend-mode:luminosity, which drops the photo's own color and repaints it
-   in the card background's hue — that is what turned this one sepia. Only the
+   in the card background's hue. That is what turned this one sepia. Only the
    card background color differs between these tiles now. */
 /* Client: no faces on either tile. Both sources are now pre-cropped to
    face-free framing (ed-care-no-face-v1 keeps the torsos and joined hands,
    hair-care-no-face-v1 keeps the hairline over a white tee), so these only
-   need to anchor on the subject — no transform zoom to scale past a face. */
+   need to anchor on the subject, with no transform zoom to scale past a face. */
 a[data-category="sexual-health"].care-banner-grid__sub .service-tile__bg{
   object-position:74% center;
   opacity:1;
@@ -3552,7 +3600,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
    is the affordance. Placed last, and scoped through .experts, because the
    BEM rules above out-specify a bare .expert-card selector. */
 @media(max-width:700px){
-  /* Sized so two cards sit fully in view and the third is visibly cropped —
+  /* Sized so two cards sit fully in view and the third is visibly cropped.
      the crop is the scroll affordance. Track gap is tightened to match. */
   .experts .expert-track{gap:12px;padding-right:16px}
   .experts .expert-card{width:min(37vw,142px);height:auto;min-height:0;border-radius:18px}
@@ -3625,7 +3673,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
 
 
 /* ---- Reviews -------------------------------------------------------------
-   Client (17 Aug): no frame, no fill — the portraits are the section. The
+   Client (17 Aug): no frame and no fill. The portraits are the section. The
    collage also drifts on its own rather than waiting to be swiped; the track
    is duplicated so the loop has no visible seam, and it pauses on hover and
    for anyone who asked for reduced motion. */
@@ -3635,7 +3683,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
   background:color-mix(in srgb,var(--color-accent,#395AA4) 11%,#fff)}
 .review-collage::before,.review-collage::after{display:none}
 .review-collage{overflow:hidden}
-/* The columns are display:contents, so there is no track element to translate —
+/* The columns are display:contents, so there is no track element to translate.
    the drift is driven by scrollLeft in the landing script instead. */
 .review-collage{overflow-x:auto;scroll-behavior:auto}
 
@@ -3645,7 +3693,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
    whole. */
 .expert-card__body h3{font-size:clamp(15px,3.9vw,19px);line-height:1.35;text-wrap:balance}
 .expert-dialog__panel h2,#expert-dialog-title{font-size:clamp(19px,5vw,26px);line-height:1.3;text-wrap:balance}
-/* 2026-08-24: back to the original waist shot the client asked for — a person
+/* 2026-08-24: back to the original waist shot the client asked for. A person
    holding the pen against their own midriff, cut out, sitting on the dark card
    so the white type reads. The die-cut hand tried earlier the same day showed
    no body at all. Scoped to the lifestyle frame so the product-photo crossfade

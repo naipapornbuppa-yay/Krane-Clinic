@@ -36,7 +36,12 @@
       online: "100% private consultations",
       certified: "Licensed doctors",
       discreet: "Discreet delivery nationwide",
-      heroTitle: "Confident health,<br>cared for by Krane",
+      heroEyebrow: "Online medical clinic",
+      heroTitle: "Consult a doctor online.<br>Continue your care at home.",
+      heroLead: "Start with your concern, speak with a licensed doctor, receive a personal treatment plan and get medicine delivered discreetly.",
+      heroJourneyAssess: "Choose your health concern",
+      heroJourneyConsult: "Consult a doctor online",
+      heroJourneyDeliver: "Continue care at home",
       bannerWeightTitle: "Lose weight safely<br>with GLP-1 pens",
       bannerWeightNew: "Latest generation",
       bannerWeightOffer: "Special price",
@@ -100,7 +105,7 @@
       licensedDoctors: "Licensed doctors",
       howKicker: "How it works",
       trustKicker: "The Krane standard of care",
-      trustTitle: "Confidence at every step",
+      trustTitle: "Real doctors. Authentic medicine. Protected data.",
       trustClinicEyebrow: "Licensed clinic",
       trustClinicTitle: "Private 1-to-1 telemedicine",
       trustClinicBody: "Telemedicine services are provided by licensed doctors.",
@@ -122,7 +127,7 @@
       privacyShareBody: "We do not disclose your data to third parties unless you consent or the law requires it.",
       howTitle: "Start care in three steps",
       step1Title: "Complete a health assessment",
-      step1Body: "Take 1–2 minutes to choose an assessment for your concern and share key information before the consultation.",
+      step1Body: "Take 1 to 2 minutes to choose an assessment for your concern and share key information before the consultation.",
       step2Title: "Consult a doctor online",
       step2Body: "Speak privately 1-to-1 by video. Your doctor will assess your symptoms, explain options and precautions, and build a suitable plan. Switch to voice or chat when convenient.",
       step3Title: "Pay and await home delivery",
@@ -335,7 +340,7 @@
     } catch (_) {}
   }));
 
-  /* ?lang=en works on the app, so it has to work here too — a shared link into
+  /* ?lang=en works on the app, so it has to work here too. A shared link into
      the English site should not land in Thai (client audit, 19 Aug). */
   let initialLanguage = "th";
   try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
@@ -567,12 +572,12 @@
       /* Measured on the rail, not the section: keyed to the section the row had
          already drifted to the second card by the time it scrolled into view,
          because most of the section's travel happens while the cards are still
-         below the fold. Zero until the rail has actually arrived — its top has
-         come up past START of the viewport — then one full rail-height plus
+         below the fold. Zero until the rail has actually arrived, its top has
+         come up past START of the viewport, then one full rail-height plus
          that distance of scrolling to cross the whole row. */
       /* The heading arrives first, then the row starts moving (client, 19 Aug).
          Progress opens at the scroll position where the section heading reaches
-         the top of the viewport — under the sticky header — and closes when the
+         the top of the viewport under the sticky header, and closes when the
          rail's bottom rises to a fifth of the way up the screen, so the first
          card is whole at the start and the last card whole at the end. */
       const rect = rail.getBoundingClientRect();
