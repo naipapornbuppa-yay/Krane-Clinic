@@ -353,8 +353,48 @@
     }
   };
 
+  const SUPPORTING_CONTENT = {
+    weight: {
+      fit: ["ต้องการประเมินน้ำหนักและความเสี่ยงสุขภาพอย่างเป็นระบบ", "เคยลองปรับพฤติกรรมแล้วแต่ผลไม่ต่อเนื่อง", "พร้อมติดตามผลและปรับแผนร่วมกับแพทย์"],
+      consult: ["กำลังตั้งครรภ์ ให้นมบุตร หรือวางแผนตั้งครรภ์", "มีประวัติตับอ่อน ถุงน้ำดี หรือโรคต่อมไทรอยด์บางชนิด", "ใช้ยา หรือมีโรคประจำตัวที่อาจกระทบการรักษา"],
+      faqs: [
+        ["ต้องใช้ยาทุกคนไหม", "ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่"],
+        ["จะรู้ค่าใช้จ่ายเมื่อไร", "ระบบจะแสดงค่าปรึกษา ค่ายา และค่าจัดส่งแยกรายการให้ตรวจสอบก่อนชำระเงิน"],
+        ["ถ้าเริ่มยาแล้วต้องติดตามอย่างไร", "แพทย์จะนัดทบทวนผล อาการข้างเคียง และปรับแผนตามความเหมาะสมของแต่ละคน"]
+      ]
+    },
+    "sexual-health": {
+      fit: ["มีอาการต่อเนื่องหรือเกิดซ้ำจนกระทบความมั่นใจ", "ต้องการคุยกับแพทย์อย่างเป็นส่วนตัว", "ต้องการหาสาเหตุ ไม่ใช่ซื้อยาอย่างเดียว"],
+      consult: ["มีอาการเจ็บหน้าอก เหนื่อยผิดปกติ หรือโรคหัวใจ", "ใช้ยากลุ่ม nitrate หรือยาที่ไม่แน่ใจว่าใช้ร่วมกันได้", "มีอาการฉับพลัน รุนแรง หรือการแข็งตัวนานเกิน 4 ชั่วโมง"],
+      faqs: [
+        ["จำเป็นต้องเปิดกล้องไหม", "แพทย์อาจขอข้อมูลที่จำเป็นต่อการประเมิน แต่คุณสามารถแจ้งข้อกังวลเรื่องความเป็นส่วนตัวก่อนเริ่มได้"],
+        ["แพทย์จะสั่งยาให้เลยไหม", "ไม่เสมอไป แพทย์จะทบทวนสาเหตุ สุขภาพหัวใจ และยาที่ใช้อยู่ก่อนเลือกแนวทาง"],
+        ["ติดตามกับแพทย์คนเดิมได้ไหม", "ระบบออกแบบให้เห็นประวัติและแผนเดิม เพื่อให้ทีมดูแลติดตามต่อจากข้อมูลครั้งก่อน"]
+      ]
+    },
+    "hair-skin": {
+      fit: ["ผมร่วงหรือผมบางต่อเนื่องและอยากรู้สาเหตุ", "ต้องการเปรียบเทียบภาพและติดตามผลเป็นระยะ", "พร้อมใช้แผนอย่างต่อเนื่องตามคำแนะนำ"],
+      consult: ["ผมร่วงฉับพลัน เป็นหย่อม หรือมีแผลบนหนังศีรษะ", "กำลังตั้งครรภ์ ให้นมบุตร หรือวางแผนตั้งครรภ์", "ใช้ยา อาหารเสริม หรือมีโรคประจำตัวที่เกี่ยวข้อง"],
+      faqs: [
+        ["ต้องส่งรูปอะไรบ้าง", "ควรถ่ายแนวไรผม ด้านบน และบริเวณที่กังวลในแสงธรรมชาติ เพื่อให้แพทย์เปรียบเทียบได้ชัด"],
+        ["เห็นผลเร็วแค่ไหน", "แผนดูแลผมส่วนใหญ่มักต้องใช้เวลาหลายเดือน แพทย์จะกำหนดจุดติดตามที่เหมาะกับสาเหตุและแนวทางที่ใช้"],
+        ["หยุดยาได้เมื่อไร", "ขึ้นอยู่กับสาเหตุและยาที่ใช้ ไม่ควรหยุดหรือปรับเองก่อนคุยกับแพทย์"]
+      ]
+    },
+    general: {
+      fit: ["ต้องการประเมินอาการกับแพทย์อย่างเป็นส่วนตัว", "ต้องการแผนที่อ้างอิงจากประวัติสุขภาพจริง", "พร้อมติดตามผลและปรับแผนเมื่อจำเป็น"],
+      consult: ["มีอาการรุนแรงหรือเกิดขึ้นฉับพลัน", "กำลังตั้งครรภ์ ให้นมบุตร หรือใช้ยาหลายชนิด", "มีโรคประจำตัวหรืออาการที่ยังไม่เคยตรวจ"],
+      faqs: [
+        ["ปรึกษาออนไลน์เหมาะกับทุกอาการไหม", "ไม่ทุกอาการ หากข้อมูลบ่งชี้ว่าต้องตรวจร่างกายหรือตรวจเพิ่มเติม แพทย์จะแนะนำให้พบสถานพยาบาล"],
+        ["ระบบสั่งยาให้อัตโนมัติไหม", "ไม่ การสั่งยาเกิดขึ้นเมื่อแพทย์ประเมินแล้วว่าเหมาะสมเท่านั้น"],
+        ["ข้อมูลครั้งก่อนหายไหม", "ประวัติและแผนการดูแลถูกออกแบบให้อยู่ในโปรไฟล์ เพื่อใช้ประกอบการติดตามครั้งถัดไป"]
+      ]
+    }
+  };
+
   const key = new URLSearchParams(location.search).get("condition") || "weight";
   const data = CONDITIONS[key] || CONDITIONS.weight;
+  const supporting = SUPPORTING_CONTENT[data.category] || SUPPORTING_CONTENT.general;
   const setText = (selector, value) => {
     const node = document.querySelector(selector);
     if (node && value) node.textContent = value;
@@ -374,7 +414,6 @@
   setText("[data-products-lead]", data.productsLead);
   setText("[data-medical-note]", data.medicalNote);
   setText("[data-safety]", data.safety);
-  setText("[data-results-note]", data.resultsNote);
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
   document.querySelectorAll("[data-intake-link]").forEach((link) => {
@@ -397,6 +436,20 @@
 
   const assessment = document.querySelector("[data-assessment-list]");
   if (assessment) assessment.innerHTML = data.assessment.map((item) => `<li>${item}</li>`).join("");
+
+  const fitList = document.querySelector("[data-fit-list]");
+  if (fitList) fitList.innerHTML = supporting.fit.map((item) => `<li>${item}</li>`).join("");
+
+  const consultList = document.querySelector("[data-consult-list]");
+  if (consultList) consultList.innerHTML = supporting.consult.map((item) => `<li>${item}</li>`).join("");
+
+  const faqList = document.querySelector("[data-faq-list]");
+  if (faqList) faqList.innerHTML = supporting.faqs.map(([question, answer], index) => `
+    <details class="faq-item"${index === 0 ? " open" : ""}>
+      <summary>${question}<i data-lucide="plus" aria-hidden="true"></i></summary>
+      <p>${answer}</p>
+    </details>
+  `).join("");
 
   const products = document.querySelector("[data-products]");
   /* The sixth field is how the medicine is used over time — continuous, as
