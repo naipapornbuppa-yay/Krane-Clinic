@@ -110,6 +110,7 @@
       trustMedicineBody: "Delivered nationwide by the Fascino pharmacy network in discreet packaging.",
       trustSecurityEyebrow: "International security standards",
       trustSecurityTitle: "Powered by INET",
+      trustSecurityProvider: "INET infrastructure certified across three ISO standards.",
       privacyKicker: "Your health space",
       privacyTitle: "We care about your privacy",
       privacyLead: "Your health and treatment data is used for care with your consent, with access limited by professional role.",

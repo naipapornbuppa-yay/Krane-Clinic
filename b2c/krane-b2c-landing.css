@@ -2451,12 +2451,9 @@ body{background:var(--landing-page-bg)}
   font:600 clamp(36px,4.8vw,66px)/1.1 "Prompt","Noto Sans Thai",sans-serif;
   letter-spacing:-.035em;
 }
-/* Credential cards. Three logos of very different construction (two round
-   seals, one stacked wordmark) have to look like one set, so each sits in the
-   same fixed well and is normalised by height rather than by box. The well is
-   a fixed column, which is also what gives every row a shared text left-edge.
-   Client (17 Aug): the section plate is gone and each credential is its own
-   softly tinted card with no outline, revealed one at a time on scroll. */
+/* Credential cards keep each mark on a generous white stage. Wordmarks and
+   round seals no longer share one tiny square; the ISO standards are written
+   as three readable credentials instead of hiding inside a single seal. */
 .trust-grid{
   display:grid;
   grid-template-columns:1fr;
@@ -2465,40 +2462,49 @@ body{background:var(--landing-page-bg)}
   margin:0 auto;
 }
 .trust-card{
-  display:grid;
-  grid-template-columns:var(--trust-seal-col,104px) minmax(0,1fr);
-  align-items:center;
+  display:flex;
+  flex-direction:column;
   gap:20px;
-  padding:22px 24px;
+  padding:18px;
   border:0;
   border-radius:24px;
   background:var(--surface-card-quiet);
   box-shadow:none;
 }
-.trust-card__seal{
+.trust-card__logo-stage{
   display:grid;
   place-items:center;
-  width:var(--trust-seal-size,76px);
-  height:var(--trust-seal-size,76px);
-  margin:0;
-  padding:0;
-  background:none;
-}
-/* Pixel caps, not percentages: a percentage max-height against the grid area
-   was not resolving here and the seals rendered at natural size (447px). */
-/* Every seal fills the same square, so the three logos read as one set
-   instead of three different sizes (client, 19 Aug). */
-.trust-card__seal img{
   width:100%;
-  height:100%;
-  object-fit:contain;
-  transform-origin:center;
+  min-height:150px;
+  padding:20px;
+  overflow:hidden;
+  border:1px solid rgba(17,35,60,.08);
+  border-radius:18px;
+  background:#fff;
 }
-/* The source marks do not share the same amount of internal canvas. Fascino
-   is optically heavy while the ISO file has roughly 31% transparent padding;
-   normalize the visible circles without distorting either logo. */
-.trust-card:nth-child(2) .trust-card__seal img{transform:scale(.9)}
-.trust-card:nth-child(3) .trust-card__seal img{transform:scale(1.43)}
+.trust-card__logo-stage img{
+  display:block;
+  object-fit:contain;
+}
+.trust-card--clinic .trust-card__logo-stage img{width:112px;height:112px}
+.trust-card--pharmacy .trust-card__logo-stage img{width:126px;height:126px}
+.trust-card__iso-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:16px 12px}
+.iso-standard{
+  display:flex;
+  min-width:0;
+  min-height:112px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:12px 6px;
+  border-radius:15px;
+  background:#edf2fb;
+  color:var(--landing-navy);
+  text-align:center;
+}
+.iso-standard b{color:var(--landing-blue);font:700 10px/1.2 "Inter",sans-serif;letter-spacing:.04em}
+.iso-standard strong{margin-top:7px;font:700 clamp(14px,1.5vw,19px)/1 "Inter",sans-serif;letter-spacing:-.04em}
+.iso-standard small{margin-top:7px;color:#68758b;font:600 9px/1.2 "Inter",sans-serif;text-transform:uppercase}
 .trust-card__body{min-width:0}
 .trust-card__eyebrow{
   margin:0;
@@ -2513,18 +2519,17 @@ body{background:var(--landing-page-bg)}
   font:400 14px/1.6 "Prompt","Noto Sans Thai",sans-serif;
 }
 @media(min-width:861px){
-  /* Wide: three tinted cards side by side, each stacked and centred. */
-  .trust-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1120px}
+  .trust-grid{grid-template-columns:.92fr .92fr 1.16fr;gap:16px;max-width:1160px}
   .trust-card{
-    grid-template-columns:minmax(0,1fr);
-    justify-items:center;
-    gap:18px;
-    padding:34px 30px;
+    gap:22px;
+    padding:20px;
     border-radius:28px;
-    text-align:center;
   }
-  .trust-card__seal{--trust-seal-size:84px}
-  .trust-card__line{max-width:30ch}
+  .trust-card__logo-stage{min-height:178px;border-radius:20px}
+  .trust-card--clinic .trust-card__logo-stage img{width:128px;height:128px}
+  .trust-card--pharmacy .trust-card__logo-stage img{width:142px;height:142px}
+  .trust-card__body{padding:0 6px 8px}
+  .trust-card__line{max-width:34ch}
 }
 .trust-section .compliance__logos{max-width:1260px;margin-inline:auto;padding-block:18px;border-block:1px solid rgba(17,35,60,.09)}
 
@@ -2669,8 +2674,14 @@ body{background:var(--landing-page-bg)}
   .care-banner__badges em{min-height:24px;padding:4px 8px;font-size:10px}
   .trust-section,.privacy-section{padding-block:56px}
   .trust-section__heading{margin-bottom:28px;text-align:left}
-  .trust-grid{--trust-seal-col:78px;--trust-seal-size:66px;gap:10px}
-  .trust-card{gap:16px;padding:18px 18px;border-radius:20px}
+  .trust-grid{gap:10px}
+  .trust-card{gap:16px;padding:14px;border-radius:20px}
+  .trust-card__logo-stage{min-height:138px;border-radius:16px}
+  .trust-card--clinic .trust-card__logo-stage img{width:104px;height:104px}
+  .trust-card--pharmacy .trust-card__logo-stage img{width:116px;height:116px}
+  .trust-card__iso-grid{gap:7px;padding:12px 9px}
+  .iso-standard{min-height:102px;padding-inline:4px}
+  .iso-standard strong{font-size:15px}
   .trust-card__eyebrow{font-size:15px}
   .trust-card__line{font-size:13.5px}
   .privacy-card{gap:16px;min-height:226px;padding:22px;border-radius:22px}
