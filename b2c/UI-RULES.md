@@ -142,11 +142,23 @@ else (client, 23 Aug):
   its follow-up row and its "เริ่มติดตามผล" action.
 - **Refilling is a separate errand, not a substitute for a follow-up.** Both sit
   on the card; the follow-up is the primary.
+- **The card is the tap target on home** (client, 28 Aug). Five buttons across
+  two cards was the clutter. A treatment card opens its refill; the follow-up
+  keeps its own entry point in the banner above, which names the doctor and the
+  next date.
 - **Refill is multi-choice**: the patient ticks which prescriptions to re-order
   and can tick more than one, so it keeps its ticks and one footer CTA (rule 1).
   The CTA names the count and the total; blocked, it says what it is waiting for.
-  Anything out of allowance is shown but not selectable, so the patient can see
-  it exists and why it is not on offer.
+- **Any prescription still in date can be refilled**, not only the newest one
+  (clinic back-office, 28 Aug). Expired ones are listed but not selectable, with
+  the expiry as the reason — `retireExpiredRefills()` reads `data-refill-expires`
+  so a stale row cannot be left selectable by hand.
+- **The word is เติมยา**, everywhere. Not สั่งซื้อซ้ำ, not สั่งซ้ำ. `คำสั่งซื้อ`
+  is a different thing (an order) and keeps its own word.
+- **One doctor looks after every case** (client, 28 Aug) — a regular doctor, not
+  a name per condition. Changing them is handled by a person, so the home screen
+  carries a quiet line pointing at LINE or email rather than a control that
+  implies self-service.
 
 ## 12. Sign-up
 
