@@ -1171,9 +1171,10 @@
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
         <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
-        <div class="divider" style="margin:0" data-consult-total-row></div>
-        <div class="between" data-consult-total-row><span class="muted" data-consult-total-label>ชำระเงินตอนนี้</span><span class="amt" data-pay-amt>฿ 350</span></div>
-        <div class="divider" style="margin:0" data-consult-total-row></div>
+        <!-- Client, 28 Aug: this row repeated the ฿350 directly above it and read
+             as a second charge. When the fee is settled with the medicine, that
+             is a fact about timing, not another line on a bill — it is said once,
+             in a toast, and the footer hint carries it on the page. -->
         <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
         <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
       </div>
@@ -6635,6 +6636,15 @@
     }
     fillDoctorName();
     if(id==='profile') syncHomeFollowUpCta();
+    if(id==='consultpay' && flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid){
+      /* Timing, not a second charge (client, 28 Aug). Said once on arrival so it
+         cannot be mistaken for another line on the bill. */
+      setTimeout(() => {
+        if(document.getElementById('consultpay')?.classList.contains('active')){
+          showActionToast('ค่าปรึกษาชำระพร้อมค่ายาหลังปรึกษา','info');
+        }
+      }, reduceMotion ? 0 : 420);
+    }
     if(id==='refill'){
       document.querySelectorAll('#refill [data-refill-option]').forEach(el => el.setAttribute('aria-checked','false'));
       retireExpiredRefills();
@@ -6992,7 +7002,6 @@
     const coverageAmount=document.querySelector('#consultpay [data-consult-coverage-amount]');
     if(coverageRow) coverageRow.hidden=covered<=0;
     if(coverageAmount) coverageAmount.textContent=fullyCovered ? 'ครอบคลุมเต็มจำนวน' : '- '+baht(covered);
-    document.querySelectorAll('#consultpay [data-consult-total-row]').forEach(el => { el.hidden=fullyCovered; });
     const amt = baht(amount);
     const a = document.querySelector('#consultpay [data-pay-amt]');
     const b = document.querySelector('#consultpay [data-pay-btn-amt]');
@@ -7015,10 +7024,8 @@
        stayed on screen whenever insurance covered the fee in full (client,
        20 Aug). The screen is an acknowledgement then, so it reads as one. */
     screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode || fullyCovered; });
-    const totalLabel=screen.querySelector('[data-consult-total-label]');
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    if(totalLabel) totalLabel.textContent=noticeMode ? 'ชำระพร้อมค่ายาหลังปรึกษา' : 'ชำระเงินตอนนี้';
     if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
     if(amount) amount.hidden=noticeMode || fullyCovered;
   }
