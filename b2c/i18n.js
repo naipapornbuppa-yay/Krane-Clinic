@@ -434,7 +434,7 @@
     "Progress review":"ทบทวนความคืบหน้า",
     "Usually a short chat, about 10 minutes. Video is available if the doctor needs a closer look.":"ปกติเป็นแชทสั้น ๆ ราว 10 นาที เปิดวิดีโอได้หากแพทย์ต้องการดูใกล้ขึ้น",
     /* ---- coverage pass 11 (follow-up merged into the profile treatment card) ---- */
-    "Next follow-up":"นัดติดตามครั้งถัดไป","12 Sep 2026 · Dr. Narin":"12 ก.ย. 2026 · คุณหมอนรินทร์ ทานากะ","Start follow-up":"เริ่มติดตามผล",
+    "2 Sep 2026 · Dr. Narin":"2 ก.ย. 2026 · คุณหมอนรินทร์","Next follow-up":"นัดติดตามครั้งถัดไป","12 Sep 2026 · Dr. Narin":"12 ก.ย. 2026 · คุณหมอนรินทร์ ทานากะ","Start follow-up":"เริ่มติดตามผล",
     /* ---- coverage pass 12 (medical certificate add-on at consult-fee checkout) ---- */
     "Medical certificate":"ใบรับรองแพทย์",
     "Issued by your doctor after the consultation. A signed PDF appears in your documents.":"ออกโดยแพทย์ของคุณหลังการปรึกษา ไฟล์ PDF พร้อมลายเซ็นจะอยู่ในเอกสารของคุณ",
@@ -1215,6 +1215,7 @@
     "ส่งรายการให้ร้านยาที่ใกล้ที่สุดก่อนเปิดการชำระเงิน":"Sending the order to the nearest pharmacy before payment opens.",
     "ตรวจสอบการจัดส่ง":"Delivery check",
     "ไม่มีร้านที่ส่งได้ภายในวัน":"No same-day pharmacy nearby",
+    "2 ก.ย. 2026 · คุณหมอนรินทร์":"2 Sep 2026 · Dr. Narin",
     "เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน ระบบจะคำนวณยอดใหม่ให้ทันที":"Switch to standard delivery before paying and the total is recalculated straight away.",
     "จัดส่ง 1 ถึง 3 วัน · ไม่มีค่าใช้จ่ายเพิ่ม":"1 to 3 days · no extra charge",
     "เปลี่ยนเป็นจัดส่งมาตรฐาน":"Switch to standard delivery",
@@ -1357,6 +1358,9 @@
     "เริ่มปรึกษาแพทย์":"Start a consultation",
     "เลือกเรื่องที่กังวล ใช้เวลา 5 นาที":"Pick your concern · about 5 minutes",
     "ติดตามผลกับคุณหมอ":"Follow up with Dr.",
+    "เมื่อมีอาการ":"As needed",
+    "เลือกรายการที่ต้องการสั่งซ้ำ":"Choose what to refill",
+    "เลือกรายการที่ต้องการสั่งซ้ำก่อน":"Choose what to refill first",
     /* Sentences that wrap the doctor-name span: each side of the span is its
        own text node, so each side needs its own entry or half the line stays
        Thai in English. */
@@ -1549,6 +1553,9 @@
     /* Both are written by the delivery quote after it lands, so neither exists
        in the markup for the first pass to remember. */
     [/^ชำระเงิน · (฿\s?[\d,.]+)$/, "Pay $1"],
+    /* Two patterns rather than "item(s)": a regex cannot pluralise on its own. */
+    [/^สั่งซ้ำ 1 รายการ · (฿\s?[\d,.]+)$/, "Refill 1 item · $1"],
+    [/^สั่งซ้ำ (\d+) รายการ · (฿\s?[\d,.]+)$/, "Refill $1 items · $2"],
     [/^([\d.,]+) กม\.$/, "$1 km"]
   ];
   function englishFor(thai) {

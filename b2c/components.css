@@ -2700,3 +2700,27 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .address-search__field{position:relative}
 .address-search__field .field__clear{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
 .address-search__field > input.input{padding-right:44px}
+
+/* ---------- Refill: pick which prescriptions to re-order (27 Aug) ---------- */
+/* Multi-choice, so every row carries a tick and the screen keeps one CTA. */
+.refill-option{width:100%;display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-2) var(--sp-2);border:1px solid transparent;border-radius:var(--radius-md);
+  background:var(--color-surface);color:var(--color-ink);text-align:left;cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.refill-option+.refill-option{margin-top:var(--sp-1)}
+.refill-option__tick{flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;
+  border:1.5px solid var(--color-line-strong);border-radius:6px;background:var(--color-surface);
+  color:#fff;transition:background var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.refill-option__tick .ui-icon{opacity:0}
+.refill-option[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.refill-option[aria-checked="true"] .refill-option__tick{background:var(--color-accent);border-color:var(--color-accent)}
+.refill-option[aria-checked="true"] .refill-option__tick .ui-icon{opacity:1}
+.refill-option__body{flex:1;min-width:0;display:grid;gap:1px}
+/* One medicine, one line (house rule 4). The thumb and the price are both
+   fixed so the name gets whatever is left rather than wrapping into two. */
+.refill-option__body strong{font-weight:var(--fw-semibold);font-size:var(--fs-sm);line-height:1.25}
+.refill-option .med-thumb{flex:0 0 40px;width:40px;height:40px}
+.refill-option .price{flex:0 0 auto;white-space:nowrap;font-size:var(--fs-sm)}
+/* Out of allowance: shown so the patient knows it exists, not offered. */
+.refill-option.is-unavailable{cursor:default;opacity:.62}
+.refill-option.is-unavailable .refill-option__tick{border-style:dashed}

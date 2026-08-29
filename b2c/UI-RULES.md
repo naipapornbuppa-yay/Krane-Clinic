@@ -135,7 +135,20 @@ else (client, 23 Aug):
 - All of them use the house illustration set (`#krane-state-*`) with a badge.
   The paper-crane flipbook belongs to the app's own boot screen.
 
-## 11. Sign-up
+## 11. Treatments and refills
+
+- **Every case has a follow-up** (client, 27 Aug). There is no such thing as an
+  active treatment nobody is following, so every card on the home screen carries
+  its follow-up row and its "เริ่มติดตามผล" action.
+- **Refilling is a separate errand, not a substitute for a follow-up.** Both sit
+  on the card; the follow-up is the primary.
+- **Refill is multi-choice**: the patient ticks which prescriptions to re-order
+  and can tick more than one, so it keeps its ticks and one footer CTA (rule 1).
+  The CTA names the count and the total; blocked, it says what it is waiting for.
+  Anything out of allowance is shown but not selectable, so the patient can see
+  it exists and why it is not on offer.
+
+## 12. Sign-up
 
 - **Order of the chain** (client, 26 Aug): intake → account → OTP → consent →
   name and phone → **height / weight / conditions** → doctor → payment.
@@ -151,7 +164,7 @@ else (client, 23 Aug):
 - The partner channel keeps its own document step (`#partner-idcard`).
   `#identity` stays in the app for the contexts that still need it.
 
-## 12. Navigation
+## 13. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

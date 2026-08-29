@@ -1972,22 +1972,40 @@
   <section class="screen" id="refill">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Refill a treatment</span></div>
     <div class="screen__body stack-4">
+      <!-- Client, 27 Aug: the patient picks which prescriptions to refill, and can
+           pick more than one. Multi-choice, so it keeps its ticks and its CTA
+           (house rule 1) — the per-card "refill this treatment" buttons became
+           one footer action that names what is selected. -->
+      <p class="section-label">เลือกรายการที่ต้องการสั่งซ้ำ</p>
       <div class="stack-3">
         <div class="card card--pad-sm stack-3">
           <div class="between"><div><strong>Hair loss</strong><div class="hint">Prescribed by Dr. A · 12 May 2026</div></div><span class="badge badge--line">2 refills left</span></div>
-          <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div></div><span class="price">฿ 590</span></div>
-          <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div></div><span class="price">฿ 450</span></div>
+          <button class="refill-option" type="button" role="checkbox" aria-checked="false" data-refill-option data-refill-price="590">
+            <span class="refill-option__tick" aria-hidden="true"><i data-lucide="check" class="ui-icon ui-icon--sm"></i></span>
+            <span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+            <span class="refill-option__body"><strong>Loratadine 10 mg</strong><span class="hint">วันละ 1 เม็ด</span></span>
+            <span class="price">฿ 590</span>
+          </button>
+          <button class="refill-option" type="button" role="checkbox" aria-checked="false" data-refill-option data-refill-price="450">
+            <span class="refill-option__tick" aria-hidden="true"><i data-lucide="check" class="ui-icon ui-icon--sm"></i></span>
+            <span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+            <span class="refill-option__body"><strong>Paracetamol 500 mg</strong><span class="hint">เมื่อมีอาการ</span></span>
+            <span class="price">฿ 450</span>
+          </button>
           <div class="card card--flat card--pad-sm stack-2" style="background:var(--color-bg-soft)">
             <div class="between"><span class="hint">Allowed</span><strong>3 total</strong></div>
             <div class="between"><span class="hint">Expires</span><strong>12 Dec 2026</strong></div>
             <div class="between"><span class="hint">Next follow-up</span><strong>12 Sep 2026</strong></div>
           </div>
           <p class="refill-note"><i data-lucide="badge-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>No doctor approval needed. Your doctor set your refill allowance during the consultation.</span></p>
-          <button class="btn btn--primary btn--sm" style="width:100%" data-go="address">Refill this treatment</button>
         </div>
         <div class="card card--pad-sm stack-3">
           <div class="between"><div><strong>Skin care</strong><div class="hint">Prescribed by Dr. B · 2 Apr 2026</div></div><span class="badge badge--line">No refills left</span></div>
-          <div class="plan-item" style="border:0;padding:0"><span class="thumb med-thumb" data-medicine-photo="tretinoin" aria-hidden="true"><img src="assets/medicine/real-v1/tretinoin-retin-a-0025.jpg" width="640" height="480" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Tretinoin 0.025%</div><div class="hint">Allowance used · needs a new consult</div></div><span class="price">n/a</span></div>
+          <div class="refill-option is-unavailable" aria-disabled="true">
+            <span class="refill-option__tick" aria-hidden="true"></span>
+            <span class="thumb med-thumb" data-medicine-photo="tretinoin" aria-hidden="true"><img src="assets/medicine/real-v1/tretinoin-retin-a-0025.jpg" width="640" height="480" loading="lazy" decoding="async" alt=""></span>
+            <span class="refill-option__body"><strong>Tretinoin 0.025%</strong><span class="hint">Allowance used · needs a new consult</span></span>
+          </div>
           <div class="card card--flat card--pad-sm stack-2" style="background:var(--color-bg-soft)">
             <div class="between"><span class="hint">Allowed</span><strong>1 total</strong></div>
             <div class="between"><span class="hint">Expires</span><strong>2 Jul 2026</strong></div>
@@ -2001,6 +2019,9 @@
         <button class="btn btn--secondary btn--sm" style="width:100%" data-go="upload-rx">Upload a prescription</button>
       </div>
       <p class="hint">You can't order more than your doctor approved. Need a change? Start a new consultation.</p>
+    </div>
+    <div class="screen__footer">
+      <button class="btn btn--primary" data-refill-continue aria-disabled="true"><span data-refill-cta-label>เลือกรายการที่ต้องการสั่งซ้ำ</span></button>
     </div>
   </section>
 
@@ -2024,15 +2045,21 @@
            Each treatment is its own card; in-flight orders stack in an "Active orders" list. -->
       <div class="stack-3">
         <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><span class="badge">2</span></div>
-        <!-- CTA weight is urgency-driven, not decorative: the treatment whose refill is due
-             soonest carries the single filled CTA; the rest stay quiet (one primary per screen). -->
+        <!-- Client, 27 Aug: every case is under a doctor, so every card carries its
+             follow-up. Refilling is its own errand beside it, not a substitute
+             for one — the card that used to offer only a refill implied a
+             treatment nobody was following. -->
         <div class="card card--pad-sm stack-3">
           <div class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></div>
           <div class="treatment-medications" role="list" aria-label="Medicines">
             <div class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></div>
           </div>
           <div class="treatment-refill">Next refill in 9 days</div>
-          <button class="btn btn--primary btn--sm" style="width:100%" data-go="refill">Refill now</button>
+          <div class="between followup-row"><span class="hint">Next follow-up</span><strong>2 Sep 2026 · Dr. Narin</strong></div>
+          <div class="treatment-actions">
+            <button class="btn btn--primary btn--sm treatment-actions__primary" data-go="matching" data-category="general">Start follow-up</button>
+            <button class="btn btn--secondary btn--sm" data-go="refill">Refill now</button>
+          </div>
         </div>
         <div class="card card--pad-sm stack-3">
           <div class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></div>
@@ -2042,7 +2069,7 @@
           </div>
           <div class="treatment-refill">Next refill in 24 days</div>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
-          <div class="between followup-row" style="padding:var(--sp-2) var(--sp-3);background:var(--color-bg-soft);border-radius:var(--radius-xs)"><span class="hint">Next follow-up</span><strong style="font-size:var(--fs-sm)">12 Sep 2026 · Dr. Narin</strong></div>
+          <div class="between followup-row"><span class="hint">Next follow-up</span><strong>12 Sep 2026 · Dr. Narin</strong></div>
           <!-- Client (6 Jul): there is NO messaging service. Talking to a doctor is always
                a booked consult. Two paths: consult now (own fee) vs the scheduled follow-up. -->
           <div class="treatment-actions">
@@ -5808,6 +5835,42 @@
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
   }
+  /* Refill is multi-choice (client, 27 Aug): the patient ticks the prescriptions
+     they want and the footer names how many and how much, so a blocked CTA still
+     says what it is waiting for rather than greying out silently. */
+  function syncRefillSelection(){
+    const scr=document.getElementById('refill');
+    if(!scr) return;
+    const chosen=[...scr.querySelectorAll('[data-refill-option][aria-checked="true"]')];
+    const total=chosen.reduce((sum,el) => sum + (Number(el.dataset.refillPrice)||0), 0);
+    const cta=scr.querySelector('[data-refill-continue]');
+    const label=scr.querySelector('[data-refill-cta-label]');
+    if(!cta||!label) return;
+    const ready=chosen.length>0;
+    cta.setAttribute('aria-disabled',String(!ready));
+    cta.classList.toggle('btn--blocked',!ready);
+    label.textContent = ready
+      ? `สั่งซ้ำ ${chosen.length} รายการ · ${baht(total)}`
+      : 'เลือกรายการที่ต้องการสั่งซ้ำ';
+  }
+  document.body.addEventListener('click', event => {
+    const option=event.target.closest('#refill [data-refill-option]');
+    if(option){
+      option.setAttribute('aria-checked', option.getAttribute('aria-checked')==='true' ? 'false' : 'true');
+      syncRefillSelection();
+      return;
+    }
+    const refillGo=event.target.closest('#refill [data-refill-continue]');
+    if(refillGo){
+      const chosen=document.querySelectorAll('#refill [data-refill-option][aria-checked="true"]').length;
+      if(!chosen){
+        showActionToast('เลือกรายการที่ต้องการสั่งซ้ำก่อน','warning');
+        document.querySelector('#refill [data-refill-option]')?.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'});
+        return;
+      }
+      show('address');
+    }
+  });
   function checkoutIsReady(){ return checkoutActionState()==='ready'; }
   /* Pressing the blocked pay button points at the thing that is blocking it:
      scroll it into view, outline it red, say so once (client, 23 Aug). Naming
@@ -6539,6 +6602,10 @@
     }
     fillDoctorName();
     if(id==='profile') syncHomeFollowUpCta();
+    if(id==='refill'){
+      document.querySelectorAll('#refill [data-refill-option]').forEach(el => el.setAttribute('aria-checked','false'));
+      syncRefillSelection();
+    }
     clearTimeout(deliveryQuoteTimer);
     clearInterval(deliveryQuoteCountdownTimer);
     if(id==='delivery-quote'){
