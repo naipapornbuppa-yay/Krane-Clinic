@@ -1265,25 +1265,24 @@
   <section class="screen" id="waitroom" data-screen-code="SCR-009">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room"></use></svg></span>
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor" data-wait-visual>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room" data-wait-art></use></svg></span>
         <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
       </div>
-      <!-- Left empty on purpose. The script owns this readout, and a translatable
-           placeholder here meant the i18n pass remembered it as the node's English
-           source and snapped the live countdown back to it on the next tick. -->
-      <div class="state-view__timer" data-wait-timer></div>
+      <button class="btn btn--primary waitroom-entry-cta" data-wait-enter data-go="video" hidden>
+        <span data-wait-enter-label>รอเรียกเข้าห้อง…</span>
+        <span class="waitroom-entry-cta__timer" data-wait-timer aria-live="polite"></span>
+      </button>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
          The camera/mic note used to be a two-line paragraph under the copy; it is
          a one-line info chip on the button now (client, 18 Aug) — it is a
          precondition for the tap, not a second paragraph to read. -->
     <div class="screen__footer stack-2">
       <p class="info-chip" data-wait-note><i data-lucide="info" class="ui-icon" aria-hidden="true"></i><span>เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้</span></p>
-      <button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button>
     </div>
   </section>
 
@@ -7051,13 +7050,19 @@
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
     const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
-          timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]');
+          timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]'),
+          btnLabel = w.querySelector('[data-wait-enter-label]'), visual = w.querySelector('[data-wait-visual]'),
+          art = w.querySelector('[data-wait-art]');
     /* Two states on one screen. Waiting carries the queue position and an
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
-    if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
+    if(btn){ btn.hidden = true; btn.classList.remove('is-ready-pop'); }
+    if(btnLabel) btnLabel.textContent = 'รอเรียกเข้าห้อง…';
+    if(timer) timer.classList.remove('waitroom-entry-cta__timer--urgent');
+    if(visual){ visual.classList.add('state-view__visual--loading'); visual.classList.remove('state-view__visual--success'); }
+    if(art) art.setAttribute('href','#krane-state-waiting-room');
     clearInterval(waitCountdownTimer);
     let elapsedSeconds = 0;
     paintElapsedTimer(timer,elapsedSeconds);
@@ -7071,7 +7076,10 @@
       clearInterval(waitCountdownTimer);
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
-      if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'เข้าห้องปรึกษา'; }
+      if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }
+      if(btnLabel) btnLabel.textContent = 'เข้าห้องปรึกษา';
+      if(visual){ visual.classList.remove('state-view__visual--loading'); visual.classList.add('state-view__visual--success'); }
+      if(art) art.setAttribute('href','#krane-state-enter-room');
       startWaitroomEntryWindow(w,timer);
     }, reduceMotion ? 400 : 4200);
   }
@@ -7092,8 +7100,11 @@
       if(!timer) return;
       const mm=String(Math.floor(remaining/60)).padStart(2,'0');
       const ss=String(remaining%60).padStart(2,'0');
-      timer.textContent = `เข้าห้องภายใน ${mm}:${ss}`;
-      timer.classList.toggle('state-view__timer--urgent', remaining <= 60);
+      timer.textContent = `${mm}:${ss}`;
+      timer.setAttribute('aria-label',document.documentElement.lang==='th'
+        ? `เข้าห้องภายใน ${mm}:${ss}`
+        : `Enter within ${mm}:${ss}`);
+      timer.classList.toggle('waitroom-entry-cta__timer--urgent', remaining <= 60);
     };
     paint();
     waitEntryTimer = setInterval(() => {
@@ -9439,6 +9450,10 @@
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
       <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+    </symbol>
+
+    <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260830-enter-room-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
