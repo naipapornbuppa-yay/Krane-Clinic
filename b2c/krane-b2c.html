@@ -1434,7 +1434,7 @@
         <h3 class="form-group__title">ผู้รับพัสดุ</h3>
         <div class="field-row">
           <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
-          <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
+          <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx" pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required></div>
         </div>
       </section>
 
@@ -3747,7 +3747,7 @@
     };
     Object.entries(values).forEach(([id,value]) => {
       const input=screen.querySelector(`#${id}`);
-      if(input) input.value=value || '';
+      if(input) input.value=id==='recipientPhone' ? formatThaiPhone(value) : (value || '');
     });
     screen.dataset.selectedKm=address.km || '3.2';
     /* Hydration writes .value directly, so no input event fires and the ×
@@ -3826,8 +3826,8 @@
       if(!firstMissing) firstMissing=el;
     }
     const phone=document.getElementById('recipientPhone');
-    if(phone && phone.value.trim() && phone.value.replace(/\D/g,'').length<10){
-      setFieldError(phone,'เบอร์โทรศัพท์ไม่ครบ กรอกให้ครบ 10 หลัก');
+    if(phone && phone.value.trim() && normalizePhone(phone.value).length!==10){
+      setFieldError(phone,'เบอร์โทรศัพท์ต้องมี 10 หลัก');
       if(!firstMissing) firstMissing=phone;
     }
     const postcode=document.getElementById('addrPostcode');
@@ -5346,6 +5346,12 @@
   // and copied straight into the patient's verified-contact field.
   function normalizePhone(value){
     return String(value || '').replace(/\D/g,'');
+  }
+  function formatThaiPhone(value){
+    const digits=normalizePhone(value).slice(0,10);
+    if(digits.length<=3) return digits;
+    if(digits.length<=6) return digits.slice(0,3)+'-'+digits.slice(3);
+    return digits.slice(0,3)+'-'+digits.slice(3,6)+'-'+digits.slice(6);
   }
   function isValidThaiMobile(value){
     const digits = normalizePhone(value);
@@ -9026,6 +9032,13 @@
   }
   const deliveryAddressScreen=document.getElementById('address');
   if(deliveryAddressScreen){
+    const recipientPhone=deliveryAddressScreen.querySelector('#recipientPhone');
+    if(recipientPhone){
+      recipientPhone.value=formatThaiPhone(recipientPhone.value);
+      recipientPhone.addEventListener('input',() => {
+        recipientPhone.value=formatThaiPhone(recipientPhone.value);
+      });
+    }
     // Update the persisted draft only from a field the patient is actively
     // editing. Background browser autofill never gets to replace the chosen pin.
     deliveryAddressScreen.addEventListener('input',event => {
