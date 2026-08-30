@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260830-compact-treatment-hero-v1";
+    const release = "20260830-treatment-tabs-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260830-compact-treatment-hero-v1">
+<link rel="stylesheet" href="components.css?v=20260830-treatment-tabs-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2072,7 +2072,7 @@
              buttons across two cards was the clutter. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-date="26/08/2026" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
           <span class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
@@ -2081,7 +2081,7 @@
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date>2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
           <span class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Loratadine 10 mg</span><span>วันละ 1 เม็ด</span></span>
@@ -2113,34 +2113,54 @@
 
   <!-- ===================== ACTIVE TREATMENT DETAIL ===================== -->
   <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span><span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span></div>
-    <div class="screen__body treatment-detail stack-5">
-      <section class="treatment-detail__hero">
-        <div><div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h1" data-treatment-detail-title>ผมร่วง</h2><p class="muted">ดูแลต่อเนื่องกับคุณหมอประจำของคุณ</p></div>
-        <div class="treatment-doctor">
-          <span class="avatar">น</span>
-          <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทนากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
-        </div>
-      </section>
-      <div class="treatment-detail__grid">
-        <section class="card card--pad-sm stack-3">
-          <div class="section-label">คำวินิจฉัย</div>
-          <p data-treatment-detail-diagnosis>ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา</p>
-        </section>
-        <section class="card card--pad-sm stack-3">
-          <div class="section-label">รายละเอียดการรักษา</div>
-          <p data-treatment-detail-plan>รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด</p>
-        </section>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span></div>
+    <div class="screen__body treatment-detail stack-3">
+      <div class="treatment-detail__tabs" role="tablist" aria-label="ข้อมูลการรักษา">
+        <button class="treatment-detail__tab is-active" type="button" role="tab" aria-selected="true" aria-controls="treatment-plan-panel" data-treatment-tab="plan">
+          <i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i><span>แผนการรักษา</span>
+        </button>
+        <button class="treatment-detail__tab" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine">
+          <i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>รายการยา</span>
+        </button>
       </div>
-      <section class="card card--pad-sm stack-3">
-        <div class="between"><div class="section-label">ยาตามแผน</div><span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span></div>
-        <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
+
+      <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
+        <article class="treatment-record stack-5">
+          <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
+          <div class="treatment-detail__summary">
+            <div><div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2></div>
+            <span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span>
+          </div>
+          <div class="treatment-doctor">
+            <span class="avatar">น</span>
+            <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทนากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
+          </div>
+          <div class="treatment-detail__grid">
+            <section class="treatment-detail__info stack-2">
+              <div class="section-label">คำวินิจฉัย</div>
+              <p data-treatment-detail-diagnosis>ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา</p>
+            </section>
+            <section class="treatment-detail__info stack-2">
+              <div class="section-label">รายละเอียดการรักษา</div>
+              <p data-treatment-detail-plan>รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด</p>
+            </section>
+          </div>
+          <section class="treatment-detail__followup">
+            <span><small>นัดติดตามผลครั้งถัดไป</small><strong data-treatment-detail-followup>12 ก.ย. 2026 · คุณหมอนรินทร์ ทนากะ</strong></span>
+            <button class="btn btn--secondary btn--sm" type="button" data-profile-followup>เข้าติดตามผล</button>
+          </section>
+          <button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button>
+        </article>
       </section>
-      <section class="card card--pad-sm treatment-detail__followup">
-        <span><small>นัดติดตามผลครั้งถัดไป</small><strong data-treatment-detail-followup>12 ก.ย. 2026 · คุณหมอนรินทร์ ทนากะ</strong></span>
-        <button class="btn btn--secondary btn--sm" type="button" data-profile-followup>เข้าติดตามผล</button>
+
+      <section class="treatment-detail__panel" id="treatment-medicine-panel" role="tabpanel" data-treatment-panel="medicine" hidden>
+        <article class="treatment-record stack-5">
+          <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
+          <div class="between treatment-detail__medicine-head"><div><div class="eyebrow">ยาตามแผนการรักษา</div><h2 class="h2" data-treatment-detail-medicine-title>ผมร่วง</h2></div><span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span></div>
+          <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
+          <button class="btn btn--primary" type="button" data-go="refill">เติมยาตามแผนเดิม</button>
+        </article>
       </section>
-      <div class="treatment-detail__actions"><button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button><button class="btn btn--secondary" type="button" data-go="refill">เติมยา</button></div>
     </div>
   </section>
 
@@ -5159,6 +5179,19 @@
     journeyActive=true;
     show('intake-general');
   }
+  function setTreatmentDetailTab(name='plan'){
+    const detail=document.getElementById('treatment-detail');
+    if(!detail) return;
+    detail.querySelectorAll('[data-treatment-tab]').forEach(tab => {
+      const selected=tab.dataset.treatmentTab===name;
+      tab.classList.toggle('is-active',selected);
+      tab.setAttribute('aria-selected',String(selected));
+      tab.tabIndex=selected ? 0 : -1;
+    });
+    detail.querySelectorAll('[data-treatment-panel]').forEach(panel => {
+      panel.hidden=panel.dataset.treatmentPanel!==name;
+    });
+  }
   function openTreatmentDetail(card){
     if(!card) return;
     if(card.dataset.category) setSelectedCategory(card.dataset.category);
@@ -5166,18 +5199,22 @@
     const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
     const diagnosis=card.dataset.treatmentDiagnosis || '';
     const plan=card.dataset.treatmentPlan || '';
+    const date=card.dataset.treatmentDate || '';
     const refill=card.querySelector('.treatment-refill')?.textContent.trim() || '';
     const followup=card.querySelector('.followup-row strong')?.textContent.trim() || '';
     const detail=document.getElementById('treatment-detail');
     if(!detail) return;
     detail.querySelector('[data-treatment-detail-title]').textContent=title;
+    detail.querySelector('[data-treatment-detail-medicine-title]').textContent=title;
     detail.querySelector('[data-treatment-detail-status]').textContent=status;
     detail.querySelector('[data-treatment-detail-diagnosis]').textContent=diagnosis;
     detail.querySelector('[data-treatment-detail-plan]').textContent=plan;
     detail.querySelector('[data-treatment-detail-refill]').textContent=refill;
     detail.querySelector('[data-treatment-detail-followup]').textContent=followup;
+    detail.querySelectorAll('[data-treatment-detail-date]').forEach(node => { node.textContent=date; });
     const medicines=detail.querySelector('[data-treatment-detail-medications]');
     medicines.replaceChildren(...[...card.querySelectorAll('.treatment-medication')].map(item => item.cloneNode(true)));
+    setTreatmentDetailTab('plan');
     show('treatment-detail');
   }
 
@@ -7369,6 +7406,8 @@
   }
   // navigation
   document.body.addEventListener('click', e => {
+    const treatmentTab=e.target.closest('[data-treatment-tab]');
+    if(treatmentTab){ setTreatmentDetailTab(treatmentTab.dataset.treatmentTab); return; }
     const treatmentOpen=e.target.closest('[data-treatment-open]');
     if(treatmentOpen){ openTreatmentDetail(treatmentOpen); return; }
     const profileFollowup=e.target.closest('[data-profile-followup]');
