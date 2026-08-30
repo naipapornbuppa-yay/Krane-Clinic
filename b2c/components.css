@@ -132,6 +132,27 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Social sign-in returns to Krane for profile completion before the care flow continues. */
 .auth-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
 @media(max-width:36rem){.auth-name-grid{grid-template-columns:1fr}}
+.auth-screen__top{justify-content:flex-start}
+.auth-screen__logo{display:block;width:72px;height:auto;max-height:24px;margin-inline:auto;object-fit:contain}
+.auth-screen__body{display:flex;justify-content:center;padding-top:clamp(36px,8vh,84px);padding-bottom:var(--sp-7)}
+.auth-screen__panel{width:min(100%,440px);margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-5)}
+.auth-screen__body:has([data-login-intake-notice]:not([hidden])){padding-top:var(--sp-5)}
+.auth-screen__context{align-items:flex-start;text-align:left}
+.auth-screen__context .hint{margin-top:2px;color:inherit;opacity:.82}
+.auth-screen__intro{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center}
+.auth-screen__intro .h1{margin:0;font-size:clamp(30px,5vw,40px)}
+.auth-screen__intro p{margin:0}
+.auth-screen__form{display:flex;flex-direction:column;gap:var(--sp-3)}
+.auth-screen__separator{display:flex;align-items:center;gap:var(--sp-3);color:var(--color-ink-3);font-size:var(--fs-sm);white-space:nowrap}
+.auth-screen__separator::before,.auth-screen__separator::after{content:"";height:1px;flex:1;background:var(--color-line-strong)}
+.auth-screen__social .social-btn{background:var(--color-surface);border-color:var(--color-line-strong);box-shadow:none}
+.auth-screen__social .social-btn:hover{background:var(--surface-sunken)}
+.auth-screen__create{align-self:center;text-align:center}
+@media(max-width:36rem){
+  .auth-screen__body{padding-top:var(--sp-6)}
+  .auth-screen__panel{gap:var(--sp-4)}
+  .auth-screen__intro .h1{font-size:30px}
+}
 .partner-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-3)}
 .partner-health-grid>.field{min-width:0;max-width:100%}
 .partner-health-compact{display:flex;flex-direction:column;gap:var(--sp-4)}
@@ -2234,6 +2255,10 @@ body.modal-open{overflow:hidden}
 /* ---------- Waiting room: locked CTA until the doctor admits ---------- */
 .btn.is-locked{opacity:.5;pointer-events:none}
 .is-ready-pop{animation:ready-pop var(--dur-base) var(--ease-spring)}
+.waitroom-entry-cta{width:min(100%,360px);min-height:56px;margin-top:var(--sp-2);padding-inline:var(--sp-5)}
+.waitroom-entry-cta__timer{padding-left:var(--sp-2);border-left:1px solid color-mix(in srgb,currentColor 38%,transparent);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.waitroom-entry-cta__timer:empty{display:none}
+.waitroom-entry-cta__timer--urgent{color:#ffd6d2}
 
 /* ---------- Reduce-only quantity stepper (treatment plan, F16) ---------- */
 .qty{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2)}
@@ -2447,47 +2472,32 @@ body.lang-th *{letter-spacing:normal}
   .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-/* Compact care progress: a quiet segmented track with one readable current-step
-   caption. This keeps the full journey and accessible labels without the generic
-   numbered-node stepper treatment. */
-.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:transparent;border-bottom:0}
-/* The header and the journey stepper below it read as one panel, not two
-   bars stacked on a seam: no background on either, so both just show the
-   screen behind them. */
+/* Client progress reference (30 Aug): three plain labels over three quiet
+   underline tracks. Only the current stage is dark; past and future stages
+   stay grey so the user's present position is unambiguous. */
+.care-journey{display:block;padding:11px 16px 13px;background:transparent;border-bottom:0}
 .screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
-.care-journey__steps{order:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.care-journey__step{position:relative;display:block;height:6px;min-height:0;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-line);box-shadow:none;overflow:hidden}
-.care-journey__step::before,.care-journey__dot,.care-journey__name{display:none}
-.care-journey__step.is-done{background:var(--color-accent)}
-/* The current stage is a track; its fill grows with the sub-steps. Done stages
-   are solid, so the bar reads as one continuous measure of the whole journey
-   instead of two controls disagreeing about what "1 / 5" means. */
-.care-journey__step.is-current{background:var(--color-line)}
-.care-journey__fill{display:none}
-.care-journey__step.is-current>.care-journey__fill{position:absolute;inset:0 auto 0 0;display:block;width:0;
-  border-radius:var(--radius-pill);background:var(--color-accent);
-  transition:width var(--dur-page) var(--ease-out)}
-@media(prefers-reduced-motion:reduce){.care-journey__step.is-current>.care-journey__fill{transition:none}}
-.care-journey__current{order:2;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;min-width:0;color:var(--color-ink)}
-.care-journey__current b{color:var(--color-ink-2);font-size:10px;font-weight:var(--fw-bold);line-height:1;font-variant-numeric:tabular-nums}
-.care-journey__current strong{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--color-ink);font-size:12px;font-weight:var(--fw-semibold);line-height:1.25;white-space:nowrap}
-.care-journey__current small{color:var(--color-ink-3);font-size:10px;font-weight:var(--fw-medium);line-height:1.2;white-space:nowrap}
-.care-journey__current small i{font-style:normal;color:var(--color-ink-3)}
-.care-journey__current em{padding:3px 7px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-3);font-size:10px;font-style:normal;font-weight:var(--fw-semibold);line-height:1;font-variant-numeric:tabular-nums}
+.care-journey__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.care-journey__step{position:relative;display:grid;grid-template-rows:auto 3px;gap:8px;min-width:0;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.care-journey__step::before,.care-journey__dot,.care-journey__fill{display:none}
+.care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
+.care-journey__name{display:block;width:100%;overflow:hidden;color:var(--color-ink-3);font-size:11px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;text-overflow:ellipsis}
+.care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
+.care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
+.care-journey__step.is-current .care-journey__name{color:var(--color-ink);font-weight:var(--fw-semibold)}
+.care-journey__step.is-current::after{background:var(--color-ink)}
+.care-journey__current{display:none}
 @media(max-width:780px){
-  .care-journey{display:flex;padding:10px 12px 9px;gap:8px}
-  .care-journey__steps{gap:5px}
-  .care-journey__step{height:3px;padding:0;border-radius:var(--radius-pill)}
-  .care-journey__dot,.care-journey__name{display:none}
-  .care-journey__current{display:grid}
-  .care-journey__current small{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+  .care-journey{display:block;padding:10px 12px 12px}
+  .care-journey__steps{gap:7px}
+  .care-journey__step{grid-template-rows:auto 3px;gap:7px}
+  .care-journey__name{display:block;font-size:10px}
   .screen__subprogress{padding-block:7px}
   .screen__subprogress .progress{height:2px}
 }
 @media(max-width:420px){
-  .care-journey__current{grid-template-columns:auto minmax(0,1fr) auto auto;gap:5px}
-  .care-journey__current small{grid-column:3;grid-row:1;max-width:84px;font-size:9px}
-  .care-journey__current em{grid-column:4;grid-row:1}
+  .care-journey__steps{gap:6px}
+  .care-journey__name{font-size:9.5px}
 }
 
 /* Address search, sitting over the map like a real map app's. */
@@ -2655,6 +2665,26 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 }
 .home-cta__go svg{width:19px;height:19px}
 
+/* Profile is a care-return surface, not a settings summary. The four shortcuts
+   put the repeat actions (follow-up, refill, booking and urgent consult) before
+   the longer treatment history while keeping the assigned doctor visible. */
+.profile-quick{display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.profile-quick__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3)}
+.profile-quick__action{min-width:0;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--surface-sunken);text-align:left;cursor:pointer}
+.profile-quick__action:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.profile-quick__action--primary{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-on-accent)}
+.profile-quick__action--primary:hover{background:var(--theme-accent-hover,var(--color-accent));color:var(--color-on-accent)}
+.profile-quick__icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--color-surface)}
+.profile-quick__action--primary .profile-quick__icon{background:rgba(255,255,255,.16)}
+.profile-quick__action>span:last-child{min-width:0;display:grid;gap:2px}
+.profile-quick__action strong{font-size:var(--fs-sm);line-height:1.25}
+.profile-quick__action small{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.25}
+.profile-quick__action--primary small{color:rgba(255,255,255,.78)}
+@media(max-width:760px){.profile-quick__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:390px){.profile-quick__action{align-items:flex-start;flex-direction:column}.profile-quick__icon{width:32px;height:32px}}
+
 /* The map picker rides above the sticky primary action as a floating pill, so
    it stays reachable while the form scrolls (client, 19 Aug). */
 .address-footer{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)}
@@ -2744,3 +2774,27 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-xs);
   background:var(--color-bg-soft);line-height:1.45}
 .care-team-note .ui-icon{flex:none;margin-top:2px;color:var(--color-accent)}
+
+/* Active-treatment detail keeps clinical context and repeat-conversion actions
+   together: diagnosis first, treatment rationale second, medicines and the
+   next appointment after that. */
+.treatment-detail{max-width:1040px;width:100%;margin-inline:auto}
+.treatment-detail__hero{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-5);
+  padding:var(--sp-5);border-radius:var(--radius-lg);background:var(--color-accent);color:var(--color-on-accent)}
+.treatment-detail__hero .eyebrow{color:rgba(255,255,255,.7)}
+.treatment-detail__hero .muted{color:rgba(255,255,255,.78);margin-top:var(--sp-2)}
+.treatment-doctor{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);
+  border-radius:var(--radius-md);background:rgba(255,255,255,.12)}
+.treatment-doctor .avatar{background:var(--color-surface);color:var(--color-accent)}
+.treatment-doctor>span:last-child{display:grid;gap:1px}.treatment-doctor small{color:rgba(255,255,255,.76)}
+.treatment-detail__grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}
+.treatment-detail__medications{border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden}
+.treatment-detail__followup{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)}
+.treatment-detail__followup>span{display:grid;gap:3px}.treatment-detail__followup small{color:var(--color-ink-3)}
+.treatment-detail__actions{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+@media(max-width:620px){
+  .treatment-detail__hero{align-items:flex-start;flex-direction:column}
+  .treatment-detail__grid{grid-template-columns:1fr}
+  .treatment-detail__followup{align-items:flex-start;flex-direction:column}
+  .treatment-detail__followup .btn{width:100%}
+}

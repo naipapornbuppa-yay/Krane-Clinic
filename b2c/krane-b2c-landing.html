@@ -53,9 +53,23 @@
           <option value="en">EN</option>
         </select>
       </label>
-      <a class="header-access" href="#services">
-        <span data-i18n="chooseCare">เลือกเรื่องปรึกษา</span>
-      </a>
+      <div class="header-profile" data-header-profile>
+        <a class="profile-trigger profile-trigger--login" href="krane-b2c.html#login" target="_parent" data-route="login" data-profile-login aria-label="เข้าสู่ระบบ">
+          <i data-lucide="user-round" aria-hidden="true"></i>
+        </a>
+        <button class="profile-trigger profile-trigger--account" type="button" aria-label="เปิดเมนูโปรไฟล์" aria-haspopup="menu" aria-expanded="false" data-profile-trigger hidden>
+          <img src="" alt="" referrerpolicy="no-referrer" data-profile-picture hidden>
+          <span data-profile-fallback aria-hidden="true">K</span>
+        </button>
+        <div class="profile-menu" role="menu" data-profile-menu hidden>
+          <div class="profile-menu__identity">
+            <strong data-profile-name>ผู้ใช้ Krane</strong>
+            <span data-profile-provider>บัญชีผู้ใช้</span>
+          </div>
+          <a href="krane-b2c.html#profile" target="_parent" data-route="profile" role="menuitem"><i data-lucide="user-round" aria-hidden="true"></i><span data-i18n="profile">โปรไฟล์</span></a>
+          <button type="button" role="menuitem" data-profile-logout><i data-lucide="log-out" aria-hidden="true"></i><span data-i18n="logout">ออกจากระบบ</span></button>
+        </div>
+      </div>
       <button class="menu-toggle" type="button" aria-label="เปิดเมนู" aria-controls="mobile-menu" aria-expanded="false" data-menu-open>
         <i data-lucide="menu" aria-hidden="true"></i>
       </button>
@@ -88,10 +102,10 @@
         </select>
       </label>
     </div>
-    <!-- One action in the drawer. The care picker is the page itself; signing
-         in is the thing you cannot do from the page (client, 18 Aug). -->
     <div class="mobile-menu__actions">
-      <a class="button button--dark" href="krane-b2c.html#login" target="_parent" data-route="login" data-i18n="login">เข้าสู่ระบบ</a>
+      <a class="button button--dark" href="krane-b2c.html#login" target="_parent" data-route="login" data-mobile-login data-i18n="login">เข้าสู่ระบบ</a>
+      <a class="button button--dark" href="krane-b2c.html#profile" target="_parent" data-route="profile" data-mobile-profile hidden><span data-i18n="profile">โปรไฟล์</span></a>
+      <button class="button button--outline" type="button" data-mobile-logout hidden><span data-i18n="logout">ออกจากระบบ</span></button>
     </div>
   </dialog>
 
@@ -142,11 +156,7 @@
 
         <a class="service-tile service-tile--photo care-banner-grid__sub" href="krane-b2c.html?v=20260827-fresh-intake-v1#intake1?category=sexual-health&amp;entry=direct&amp;fresh=1" target="_parent" data-route="intake1" data-category="sexual-health" data-banner-swap>
           <img class="service-tile__bg banner-swap__image banner-swap__image--lifestyle" src="assets/product-hero/ed-care-no-face-v1-optimized.webp" width="1672" height="584" fetchpriority="low" decoding="async" alt="">
-          <span class="service-tile__pill-cluster banner-swap__image banner-swap__image--product" aria-hidden="true">
-            <img src="assets/product-hero/ed-pill-viagra-shape-v2.svg" alt="">
-            <img src="assets/product-hero/ed-pill-viagra-shape-v2.svg" alt="">
-            <img src="assets/product-hero/ed-pill-viagra-shape-v2.svg" alt="">
-          </span>
+          <img class="service-tile__bg service-tile__bg--product service-tile__bg--ed-product banner-swap__image banner-swap__image--product" data-banner-product-src="assets/product-hero/ed-product-matte-100-crop-v6-optimized.webp?v=20260830-pill100-matte-v2" width="704" height="1003" alt="" decoding="async">
           <span class="service-tile__shade" aria-hidden="true"></span>
           <span class="service-tile__label" data-i18n="bannerEdTitle">มั่นใจขึ้น<br>เรื่องของผู้ชาย (ED)</span><i data-lucide="arrow-right" aria-hidden="true"></i>
         </a>
@@ -290,17 +300,54 @@
         <li>
           <span class="step-number">1</span>
           <div><h3 data-i18n="step1Title">ตอบแบบประเมินสุขภาพ</h3><p data-i18n="step1Body">ใช้เวลาเพียง 1 ถึง 2 นาที เลือกแบบประเมินเฉพาะเรื่องที่กังวล เพื่อให้แพทย์เห็นข้อมูลสำคัญก่อนเริ่มปรึกษา</p></div>
-          <span class="step-art" aria-hidden="true"><img src="assets/state-editorial-v5-ink/nurse-ready.png" width="560" height="360" loading="lazy" decoding="async" alt=""></span>
+          <div class="step-art how-mock how-mock--intake" data-how-mock="intake" aria-hidden="true">
+            <div class="how-mock__chrome"><b>krane</b><span><i></i><i></i><i></i></span></div>
+            <div class="how-mock__body how-mock__body--intake">
+              <div class="how-intake__meta"><span class="how-intake__progress"><i data-how-intake-progress></i></span><small data-how-intake-count>1 / 3</small></div>
+              <strong data-how-intake-question>กังวลเรื่องใดเป็นพิเศษ?</strong>
+              <div class="how-intake__options" data-how-intake-options></div>
+              <span class="how-mock__button" data-i18n="howMockNext">ถัดไป</span>
+            </div>
+          </div>
         </li>
         <li>
           <span class="step-number">2</span>
           <div><h3 data-i18n="step2Title">ปรึกษาแพทย์ออนไลน์</h3><p data-i18n="step2Body">คุยกับแพทย์แบบ 1 ต่อ 1 ผ่านวิดีโอคอล แพทย์จะซักถาม อธิบายทางเลือกและข้อควรระวัง แล้ววางแผนการรักษาที่เหมาะกับคุณ หากสะดวกสามารถเปลี่ยนเป็นเสียงหรือแชทได้</p></div>
-          <span class="step-art" aria-hidden="true"><img src="assets/state-editorial-v5-ink/doctor-matching.png" width="560" height="360" loading="lazy" decoding="async" alt=""></span>
+          <div class="step-art how-mock how-mock--consult" data-how-mock="consult" data-mode="video" aria-hidden="true">
+            <div class="how-mock__chrome"><b>krane</b><span><i></i><i></i><i></i></span></div>
+            <div class="how-mock__body how-mock__body--consult">
+              <div class="how-consult__tabs"><span data-consult-tab="video" data-i18n="howMockVideo">วิดีโอ</span><span data-consult-tab="chat" data-i18n="howMockChat">แชท</span></div>
+              <div class="how-consult__stage">
+                <div class="how-consult__video">
+                  <img src="assets/consultation/doctor-video-live.jpg?v=20260804a" width="1536" height="1024" loading="lazy" decoding="async" alt="">
+                  <span><i></i><b data-i18n="howMockDoctorLive">กำลังปรึกษากับคุณหมอ</b></span>
+                </div>
+                <div class="how-consult__chat">
+                  <small data-i18n="howMockDoctorName">คุณหมอนรินทร์</small>
+                  <span class="is-doctor" data-i18n="howMockDoctorMessage">ขอถามอาการเพิ่มเติมเล็กน้อยนะครับ</span>
+                  <span class="is-patient" data-i18n="howMockPatientMessage">ได้ค่ะ ช่วงนี้มีอาการทุกวัน</span>
+                  <em><i></i><i></i><i></i><b data-i18n="howMockTyping">คุณหมอกำลังพิมพ์</b></em>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
         <li>
           <span class="step-number">3</span>
           <div><h3 data-i18n="step3Title">ชำระเงิน แล้วรอรับยาที่บ้าน</h3><p data-i18n="step3Body">เมื่อแพทย์ออกใบสั่งยา Krane จัดส่งทั่วประเทศในแพ็กเกจมิดชิด กรุงเทพฯ และพื้นที่บริการด่วนรับยาได้เร็วสุดภายใน 2 ชั่วโมง*</p></div>
-          <span class="step-art" aria-hidden="true"><img src="assets/state-editorial-v5-ink/order-confirmed.png" width="560" height="360" loading="lazy" decoding="async" alt=""></span>
+          <div class="step-art how-mock how-mock--delivery" data-how-mock="delivery" data-delivery-stage="0" aria-hidden="true">
+            <div class="how-mock__chrome"><b>krane</b><span><i></i><i></i><i></i></span></div>
+            <div class="how-mock__body how-mock__body--delivery">
+              <div class="how-delivery__heading"><span><svg viewBox="0 0 24 24"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg></span><div><small data-i18n="howMockTracking">ติดตามการจัดส่ง</small><strong data-how-delivery-status>ยืนยันคำสั่งซื้อแล้ว</strong></div></div>
+              <div class="how-delivery__track">
+                <span data-track-index="0"><i></i><small data-i18n="howMockConfirmed">ยืนยันแล้ว</small></span>
+                <span data-track-index="1"><i></i><small data-i18n="howMockPreparing">จัดเตรียมยา</small></span>
+                <span data-track-index="2"><i></i><small data-i18n="howMockRider">กำลังจัดส่ง</small></span>
+                <span data-track-index="3"><i></i><small data-i18n="howMockDelivered">ส่งสำเร็จ</small></span>
+              </div>
+              <div class="how-delivery__card"><span></span><div><b>KRANE-260830</b><small data-i18n="howMockDiscreet">แพ็กเกจมิดชิด · ติดตามได้ทุกขั้นตอน</small></div></div>
+            </div>
+          </div>
         </li>
       </ol>
       <p class="how__note" data-i18n="howNote">*ระยะเวลาขึ้นอยู่กับพื้นที่ เวลาสั่งซื้อ ความพร้อมของร้านยา และเงื่อนไขการจัดส่ง</p>

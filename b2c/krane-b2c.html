@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260824-progress-pairs-v1";
+    const release = "20260830-profile-care-hub-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,13 +38,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260824-progress-pairs-v1">
+<link rel="stylesheet" href="components.css?v=20260830-profile-care-hub-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260816-delivery-pickup-v1" defer></script>
+<script src="i18n.js?v=20260830-intake-login-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -1003,18 +1003,27 @@
   </section>
 
   <!-- ===================== LOG IN (KRANE-F03 · returning user → lands on dashboard) ===================== -->
-  <section class="screen" id="login">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Log in</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">Welcome back</h2></div>
-      <div class="field"><label for="login-phone">Phone number</label><input class="input" id="login-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx"></div>
-      <p class="hint">We'll send a one-time code (OTP) to verify it's you.</p>
-      <div class="row" style="align-items:center;gap:var(--sp-3)"><div class="divider" style="flex:1;margin:0"></div><span class="hint">or</span><div class="divider" style="flex:1;margin:0"></div></div>
-      <div class="stack-2">
-        <button class="btn btn--secondary social-btn" data-social="LINE"><svg class="brand-icon" aria-hidden="true"><use href="#logo-line"></use></svg><span>Log in with LINE</span></button>
-        <button class="btn btn--secondary social-btn" data-social="Google"><svg class="brand-icon" aria-hidden="true"><use href="#logo-google"></use></svg><span>Log in with Google</span></button>
+  <section class="screen auth-screen" id="login">
+    <div class="screen__top auth-screen__top"><button class="back" data-back>‹</button><span class="ttl"><img class="auth-screen__logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"></span></div>
+    <div class="screen__body auth-screen__body">
+      <div class="auth-screen__panel">
+        <div class="alert auth-screen__context" data-login-intake-notice role="status" hidden>
+          <span class="a-ic" aria-hidden="true">i</span>
+          <div><div class="a-title">Log in to continue your treatment</div><div class="hint">Your assessment is saved. Sign in to continue where you left off.</div></div>
+        </div>
+        <div class="auth-screen__intro"><h2 class="h1">Welcome back</h2><p class="muted">Let’s get you logged in.</p></div>
+        <div class="auth-screen__form">
+          <div class="field"><label class="sr-only" for="login-phone">Phone number</label><input class="input" id="login-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="Phone number"></div>
+          <button class="btn btn--primary" data-login-phone>Continue to log in</button>
+        </div>
+        <div class="auth-screen__separator"><span>Or other log-in options</span></div>
+        <div class="stack-2 auth-screen__social">
+          <button class="btn btn--secondary social-btn" data-social="LINE"><svg class="brand-icon" aria-hidden="true"><use href="#logo-line"></use></svg><span>Log in with LINE</span></button>
+          <button class="btn btn--secondary social-btn" data-social="Google"><svg class="brand-icon" aria-hidden="true"><use href="#logo-google"></use></svg><span>Log in with Google</span></button>
+        </div>
+        <button class="textlink auth-screen__create" data-new-account>New here? Create an account</button>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-login-phone>Send OTP</button><button class="btn btn--ghost" data-new-account>New here? Create an account</button></div>
+    </div>
   </section>
 
   <!-- Social OAuth callback confirmation: explicit bridge between LINE/Google and the app -->
@@ -1111,7 +1120,7 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที" data-matching-countdown-value>00:10</div>
+      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="ผ่านไป 0 วินาที" data-matching-countdown-value>00:00</div>
     </div>
   </section>
 
@@ -1177,6 +1186,7 @@
              in a toast, and the footer hint carries it on the page. -->
         <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
         <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
+        <p class="hint" style="margin:0">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
       <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>ขอใบรับรองแพทย์ · ฟรี</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
@@ -1264,25 +1274,24 @@
   <section class="screen" id="waitroom" data-screen-code="SCR-009">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room"></use></svg></span>
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor" data-wait-visual>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room" data-wait-art></use></svg></span>
         <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
         <h2 class="h1" data-wait-title>ถึงคิวแล้ว!</h2>
         <p class="muted" data-wait-copy>กดเข้าห้องได้เลย คุณหมอ<span data-doctor-name>นรินทร์</span> พร้อมเจอคุณแล้ว</p>
       </div>
-      <!-- Left empty on purpose. The script owns this readout, and a translatable
-           placeholder here meant the i18n pass remembered it as the node's English
-           source and snapped the live countdown back to it on the next tick. -->
-      <div class="state-view__timer" data-wait-timer></div>
+      <button class="btn btn--primary waitroom-entry-cta" data-wait-enter data-go="video" hidden>
+        <span data-wait-enter-label>รอเรียกเข้าห้อง…</span>
+        <span class="waitroom-entry-cta__timer" data-wait-timer aria-live="polite"></span>
+      </button>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
          The camera/mic note used to be a two-line paragraph under the copy; it is
          a one-line info chip on the button now (client, 18 Aug) — it is a
          precondition for the tap, not a second paragraph to read. -->
     <div class="screen__footer stack-2">
       <p class="info-chip" data-wait-note><i data-lucide="info" class="ui-icon" aria-hidden="true"></i><span>เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้</span></p>
-      <button class="btn btn--primary is-locked" data-wait-enter data-go="video">Waiting to be admitted…</button>
     </div>
   </section>
 
@@ -1402,7 +1411,7 @@
         <h2 class="h1">กำลังสรุปแผนการรักษา</h2>
         <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> กำลังเขียนผลวินิจฉัยและรายการยาให้คุณ</p>
       </div>
-      <div class="state-view__timer" data-rx-timer>05:00</div>
+      <div class="state-view__timer" data-rx-timer>00:00</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-rx-to-checkout disabled aria-disabled="true">ตรวจสอบและชำระเงิน</button></div>
   </section>
@@ -1434,7 +1443,7 @@
         <h3 class="form-group__title">ผู้รับพัสดุ</h3>
         <div class="field-row">
           <div class="field grow"><label for="recipientName">ชื่อผู้รับ</label><input class="input" id="recipientName" autocomplete="name" placeholder="ชื่อและนามสกุล" required></div>
-          <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx" required></div>
+          <div class="field grow"><label for="recipientPhone">เบอร์โทรศัพท์</label><input class="input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx" pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required></div>
         </div>
       </section>
 
@@ -1543,7 +1552,7 @@
         <h2 class="h1">Pharmacist reviewing your order</h2>
         <p class="muted">Confirming the prescription, the stock and the final price.</p>
       </div>
-      <div class="state-view__timer" data-ph-countdown>00:10</div>
+      <div class="state-view__timer" data-ph-countdown>00:00</div>
     </div>
   </section>
 
@@ -1725,7 +1734,7 @@
           <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
         </div>
         <div class="checkout-bill">
-          <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
           <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
@@ -1733,27 +1742,6 @@
           <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
           <div class="checkout-bill__rule"></div>
           <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
-        </div>
-      </div>
-      <!-- Client (19 Aug): say plainly that the paperwork is released by
-           payment. Same three documents the order carries afterwards, shown
-           locked while the bill is outstanding. -->
-      <div class="doc-section" data-payment-documents>
-        <div class="section-label">เอกสารที่จะได้รับหลังชำระเงิน</div>
-        <div class="doc-row doc-row--locked">
-          <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong></span>
-          <span class="doc-row__action doc-row__action--locked"><i data-lucide="lock" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
-        </div>
-        <div class="doc-row doc-row--locked">
-          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong></span>
-          <span class="doc-row__action doc-row__action--locked"><i data-lucide="lock" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
-        </div>
-        <div class="doc-row doc-row--locked">
-          <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>สรุปผลการปรึกษาและแผนการรักษา</strong></span>
-          <span class="doc-row__action doc-row__action--locked"><i data-lucide="lock" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
         </div>
       </div>
       <p class="hint" data-checkout-assurance>ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน</p>
@@ -1831,10 +1819,10 @@
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Your order is on its way to dispatch.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Diagnosis and medicines are ready</h2><p class="muted" data-payment-success-copy>Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ดูเอกสารและติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1883,7 +1871,7 @@
         <span class="state-view__badge"><i data-prep-badge data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1" data-prep-title>เภสัชกำลังจัดยา</h2><p class="muted" data-prep-copy>เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ</p></div>
-      <div class="state-view__timer" data-prep-countdown>03:00</div>
+      <div class="state-view__timer" data-prep-countdown>00:00</div>
     </div>
   </section>
 
@@ -1905,6 +1893,13 @@
   <section class="screen" id="tracking" data-screen-code="SCR-048">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Order #KR-10293</span></div>
     <div class="screen__body stack-5">
+      <div class="card card--pad-sm stack-2" data-tracking-reference>
+        <div class="between">
+          <div><span class="field-label">เลขพัสดุ</span><strong data-tracking-number>KR102930000TH</strong></div>
+          <span class="badge" data-tracking-carrier>Thailand Post</span>
+        </div>
+        <a class="btn btn--ghost btn--sm" data-tracking-official href="https://track.thailandpost.com/" target="_blank" rel="noopener noreferrer">ติดตามบนเว็บไซต์ขนส่ง <i data-lucide="external-link" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
+      </div>
       <div class="timeline">
         <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
         <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
@@ -2046,6 +2041,16 @@
   <section class="screen screen--web" id="profile">
     <div class="screen__top"><img class="brand-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"><span class="grow"></span><span class="avatar" style="width:32px;height:32px">P</span></div>
     <div class="screen__body stack-5">
+      <section class="profile-quick" aria-labelledby="profile-quick-title">
+        <div class="between"><div><div class="eyebrow" id="profile-quick-title">เมนูด่วน</div><p class="hint">กลับเข้าสู่การดูแลได้ทันที</p></div><span class="badge badge--line">คุณหมอนรินทร์</span></div>
+        <div class="profile-quick__grid">
+          <button class="profile-quick__action profile-quick__action--primary" type="button" data-profile-followup data-category="general"><span class="profile-quick__icon"><i data-lucide="calendar-check-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>เข้าติดตามผล</strong><small>นัดที่กำลังจะถึง</small></span></button>
+          <button class="profile-quick__action" type="button" data-go="refill"><span class="profile-quick__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><span><strong>เติมยา</strong><small>จากแผนเดิม</small></span></button>
+          <button class="profile-quick__action" type="button" data-profile-new-appointment><span class="profile-quick__icon"><i data-lucide="calendar-plus-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>นัดหมายใหม่</strong><small>เริ่มเรื่องใหม่</small></span></button>
+          <button class="profile-quick__action" type="button" data-profile-consult-now><span class="profile-quick__icon"><i data-lucide="message-circle-heart" class="ui-icon" aria-hidden="true"></i></span><span><strong>ปรึกษาแพทย์ตอนนี้</strong><small>กับคุณหมอประจำ</small></span></button>
+        </div>
+      </section>
+
       <!-- Two versions of the same banner, both in the markup so each keeps its
            own translation; the follow-up one wins when a treatment card has a
            booked follow-up (client, 23 Aug). Someone already under a doctor is
@@ -2067,7 +2072,7 @@
              buttons across two cards was the clutter. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-go="refill" data-category="general">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
           <span class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
@@ -2076,7 +2081,7 @@
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date>2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-go="refill" data-category="hair-skin">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
           <span class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Loratadine 10 mg</span><span>วันละ 1 เม็ด</span></span>
@@ -2123,6 +2128,39 @@
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
       <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
     </nav>
+  </section>
+
+  <!-- ===================== ACTIVE TREATMENT DETAIL ===================== -->
+  <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span><span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span></div>
+    <div class="screen__body treatment-detail stack-5">
+      <section class="treatment-detail__hero">
+        <div><div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h1" data-treatment-detail-title>ผมร่วง</h2><p class="muted">ดูแลต่อเนื่องกับคุณหมอประจำของคุณ</p></div>
+        <div class="treatment-doctor">
+          <span class="avatar">น</span>
+          <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทนากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
+        </div>
+      </section>
+      <div class="treatment-detail__grid">
+        <section class="card card--pad-sm stack-3">
+          <div class="section-label">คำวินิจฉัย</div>
+          <p data-treatment-detail-diagnosis>ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา</p>
+        </section>
+        <section class="card card--pad-sm stack-3">
+          <div class="section-label">รายละเอียดการรักษา</div>
+          <p data-treatment-detail-plan>รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด</p>
+        </section>
+      </div>
+      <section class="card card--pad-sm stack-3">
+        <div class="between"><div class="section-label">ยาตามแผน</div><span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span></div>
+        <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
+      </section>
+      <section class="card card--pad-sm treatment-detail__followup">
+        <span><small>นัดติดตามผลครั้งถัดไป</small><strong data-treatment-detail-followup>12 ก.ย. 2026 · คุณหมอนรินทร์ ทนากะ</strong></span>
+        <button class="btn btn--secondary btn--sm" type="button" data-profile-followup>เข้าติดตามผล</button>
+      </section>
+      <div class="treatment-detail__actions"><button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button><button class="btn btn--secondary" type="button" data-go="refill">เติมยา</button></div>
+    </div>
   </section>
 
   <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
@@ -2937,6 +2975,7 @@
     'feedback':'SID-049',
     'feedbackdone':'SID-050',
     'profile':'SID-051',
+    'treatment-detail':'SID-051A',
     'activity':'SID-052',
     'empty-activities':'SID-053',
     'history':'SID-054',
@@ -3111,6 +3150,10 @@
     returningLogin:false,
     lastRequiredScreen:'concern',
     patientName:'',
+    authProvider:'',
+    profileDisplayName:'',
+    profilePictureUrl:'',
+    lineProfilePictureUrl:'',
     paymentPreference:'self-pay',
     consentRead:{pdpa:false,telemedicine:false},
     consentChecked:{pdpa:false,telemedicine:false},
@@ -3119,6 +3162,7 @@
     consultationFeeAcknowledged:false,
     consultationPaid:false,
     directGeneralHealthComplete:false,
+    followUpDirectToWaitroom:false,
     paymentResolution:'',
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
@@ -3235,11 +3279,12 @@
       draftReady:false,accountCreated:false,otpVerified:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
-      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',paymentPreference:'self-pay',
+      phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
+      authProvider:'',profileDisplayName:'',profilePictureUrl:'',lineProfilePictureUrl:'',paymentPreference:'self-pay',
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,paymentResolution:'',documentsUnlocked:false,
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
       orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
@@ -3742,7 +3787,7 @@
     };
     Object.entries(values).forEach(([id,value]) => {
       const input=screen.querySelector(`#${id}`);
-      if(input) input.value=value || '';
+      if(input) input.value=id==='recipientPhone' ? formatThaiPhone(value) : (value || '');
     });
     screen.dataset.selectedKm=address.km || '3.2';
     /* Hydration writes .value directly, so no input event fires and the ×
@@ -3821,8 +3866,8 @@
       if(!firstMissing) firstMissing=el;
     }
     const phone=document.getElementById('recipientPhone');
-    if(phone && phone.value.trim() && phone.value.replace(/\D/g,'').length<10){
-      setFieldError(phone,'เบอร์โทรศัพท์ไม่ครบ กรอกให้ครบ 10 หลัก');
+    if(phone && phone.value.trim() && normalizePhone(phone.value).length!==10){
+      setFieldError(phone,'เบอร์โทรศัพท์ต้องมี 10 หลัก');
       if(!firstMissing) firstMissing=phone;
     }
     const postcode=document.getElementById('addrPostcode');
@@ -3901,10 +3946,21 @@
     const success=document.getElementById('payment-success');
     const successTitle=success?.querySelector('[data-payment-success-title]');
     const successCopy=success?.querySelector('[data-payment-success-copy]');
-    if(successTitle) successTitle.textContent=hasFulfillableItems() ? 'ชำระเงินสำเร็จ' : 'ชำระค่าปรึกษาสำเร็จ';
-    if(successCopy) successCopy.textContent=hasFulfillableItems()
-      ? 'ร้านยาจัดเตรียมรายการพร้อมแล้ว กำลังเปิดสถานะจัดส่งและเอกสารของคุณ'
-      : 'ไม่มีรายการจัดส่ง เอกสารจากการปรึกษาพร้อมให้เปิดดูแล้ว';
+    const successCta=success?.querySelector('[data-payment-success-cta]');
+    const thai=document.documentElement.lang==='th';
+    const hasDelivery=hasFulfillableItems();
+    if(successTitle) successTitle.textContent=hasDelivery
+      ? (thai ? 'ผลการวินิจฉัยและรายการยาพร้อมแล้ว' : 'Your diagnosis and medicines are ready')
+      : (thai ? 'ผลการปรึกษาพร้อมแล้ว' : 'Your consultation results are ready');
+    if(successCopy) successCopy.textContent=hasDelivery
+      ? (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย รายการยา ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.')
+      : (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medical certificate and receipt.');
+    if(successCta){
+      successCta.dataset.go=hasDelivery ? 'tracking' : 'prescription';
+      successCta.textContent=hasDelivery
+        ? (thai ? 'ดูเอกสารและติดตามการจัดส่ง' : 'View documents and track delivery')
+        : (thai ? 'ดูเอกสาร' : 'View documents');
+    }
   }
   function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
     // The checkout and the bank gateway are separate screens, so both are updated.
@@ -5091,12 +5147,13 @@
     const cta=document.querySelector('#profile [data-home-cta]');
     if(!cta) return;
     const followUp=document.querySelector('#profile .followup-row strong');
-    const startFollowUp=document.querySelector('#profile [data-go="matching"][data-category]');
+    const startFollowUp=document.querySelector('#profile [data-treatment-open][data-category]');
     const has=Boolean(followUp && followUp.textContent.trim());
     cta.querySelector('[data-home-cta-variant="new"]').hidden=has;
     cta.querySelector('[data-home-cta-variant="followup"]').hidden=!has;
     if(!has){
       cta.dataset.go='conditions';
+      delete cta.dataset.profileFollowup;
       cta.removeAttribute('data-category');
       return;
     }
@@ -5106,8 +5163,41 @@
     const when=cta.querySelector('[data-home-followup-when]');
     const date=followUp.querySelector('[data-followup-date]');
     if(when && date) when.textContent=date.textContent.trim();
-    cta.dataset.go='matching';
+    cta.removeAttribute('data-go');
+    cta.dataset.profileFollowup='';
     if(startFollowUp?.dataset.category) cta.dataset.category=startFollowUp.dataset.category;
+  }
+
+  function beginAssignedDoctorFlow(category){
+    if(category) setSelectedCategory(category);
+    Object.assign(flowState,{
+      entryChannel:'direct',draftReady:true,directGeneralHealthComplete:false,
+      followUpDirectToWaitroom:true,consultationFeeAcknowledged:true,lastRequiredScreen:'intake-general'
+    });
+    persistFlowState();
+    journeyActive=true;
+    show('intake-general');
+  }
+  function openTreatmentDetail(card){
+    if(!card) return;
+    if(card.dataset.category) setSelectedCategory(card.dataset.category);
+    const title=card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
+    const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
+    const diagnosis=card.dataset.treatmentDiagnosis || '';
+    const plan=card.dataset.treatmentPlan || '';
+    const refill=card.querySelector('.treatment-refill')?.textContent.trim() || '';
+    const followup=card.querySelector('.followup-row strong')?.textContent.trim() || '';
+    const detail=document.getElementById('treatment-detail');
+    if(!detail) return;
+    detail.querySelector('[data-treatment-detail-title]').textContent=title;
+    detail.querySelector('[data-treatment-detail-status]').textContent=status;
+    detail.querySelector('[data-treatment-detail-diagnosis]').textContent=diagnosis;
+    detail.querySelector('[data-treatment-detail-plan]').textContent=plan;
+    detail.querySelector('[data-treatment-detail-refill]').textContent=refill;
+    detail.querySelector('[data-treatment-detail-followup]').textContent=followup;
+    const medicines=detail.querySelector('[data-treatment-detail-medications]');
+    medicines.replaceChildren(...[...card.querySelectorAll('.treatment-medication')].map(item => item.cloneNode(true)));
+    show('treatment-detail');
   }
 
   /* A medicine stepped down to 0 is declined rather than removed: it leaves the
@@ -5342,6 +5432,12 @@
   function normalizePhone(value){
     return String(value || '').replace(/\D/g,'');
   }
+  function formatThaiPhone(value){
+    const digits=normalizePhone(value).slice(0,10);
+    if(digits.length<=3) return digits;
+    if(digits.length<=6) return digits.slice(0,3)+'-'+digits.slice(3);
+    return digits.slice(0,3)+'-'+digits.slice(3,6)+'-'+digits.slice(6);
+  }
   function isValidThaiMobile(value){
     const digits = normalizePhone(value);
     return /^0[689]\d{8}$/.test(digits) || /^66[689]\d{8}$/.test(digits);
@@ -5512,10 +5608,11 @@
   }
   function syncGeneralHealthContext(){
     const direct=flowState.entryChannel==='direct';
+    const assignedDoctorFlow=direct && flowState.followUpDirectToWaitroom;
     const title=document.querySelector('#intake-general [data-general-health-title]');
     const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
     const submit=document.querySelector('#intake-general [data-general-health-submit]');
-    if(title) title.textContent=direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ';
+    if(title) title.textContent=assignedDoctorFlow ? 'ยืนยันข้อมูลสุขภาพ' : (direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ');
     if(hint) hint.hidden=!direct;
     if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
   }
@@ -5694,7 +5791,7 @@
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
     tracking:'payment-success', feedback:'consult', feedbackdone:'feedback',
-    refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
+    refill:'profile', profile:'landing', 'treatment-detail':'profile', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
@@ -5987,10 +6084,18 @@
       credit,
       method:deliveryMethod
     });
+    const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
     const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
-    if(consultationRow) consultationRow.hidden=consultationDue<=0;
-    if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
+    // UT-10: always itemise the doctor fee so users can understand the full bill,
+    // including when the fee was already paid or covered by a benefit.
+    if(consultationRow) consultationRow.hidden=false;
+    if(consultationAmount){
+      if(flowState.consultationPaid) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · ชำระแล้ว`;
+      else if(consultationDue<=0 && consultationCovered>0) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
+      else if(consultationCovered>0) consultationAmount.textContent=`${baht(consultationDue)} · สิทธิ์ ${baht(consultationCovered)}`;
+      else consultationAmount.textContent=baht(consultationDue);
+    }
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
     document.querySelectorAll('#payment [data-fulfillment-mode-option]').forEach(option => {
       const selected=option.dataset.fulfillmentModeOption===(pickup ? 'pickup' : 'delivery');
@@ -6532,6 +6637,14 @@
       // entering Log in cold (nav, followup care, home) turns it off
       if(!JOURNEY_INTAKE.includes(prevId) && !JOURNEY_AUTH.includes(prevId)) journeyActive = false;
     }
+    const loginIntakeNotice=document.querySelector('[data-login-intake-notice]');
+    if(loginIntakeNotice && id==='login'){
+      // A saved intake draft plus a clinical destination means this login was
+      // opened from the assessment, not from the ordinary landing/profile nav.
+      // Keep the message contextual so a cold login never implies treatment has
+      // already started.
+      loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
+    }
     /* Direct entry always restores the progress UI, even if this tab previously
        opened a partner link. Partner entry keeps it hidden on shared screens too. */
     document.querySelectorAll('.care-journey').forEach(cj => {
@@ -6673,13 +6786,13 @@
       if(title) title.textContent=pickup ? 'กำลังค้นหาสาขารับยา' : 'กำลังคำนวณค่าจัดส่ง';
       if(copy) copy.textContent=pickup ? 'ตรวจสอบสาขาใกล้คุณและเวลารับยา' : 'ตรวจสอบพื้นที่จัดส่งและค่าจัดส่งโดยประมาณ';
       const quoteCountdown=quoteScreen.querySelector('[data-delivery-quote-timer]');
-      let quoteSecondsRemaining=DELIVERY_QUOTE_SECONDS;
-      paintWaitCountdown(quoteCountdown,quoteSecondsRemaining);
+      let quoteElapsedSeconds=0;
+      paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
       clearInterval(deliveryQuoteCountdownTimer);
       deliveryQuoteCountdownTimer=setInterval(() => {
-        quoteSecondsRemaining=Math.max(0,quoteSecondsRemaining-1);
-        paintWaitCountdown(quoteCountdown,quoteSecondsRemaining);
-        if(quoteSecondsRemaining<=0) clearInterval(deliveryQuoteCountdownTimer);
+        quoteElapsedSeconds+=1;
+        paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
+        if(quoteElapsedSeconds>=DELIVERY_QUOTE_SECONDS) clearInterval(deliveryQuoteCountdownTimer);
       },1000);
       deliveryQuoteTimer=setTimeout(() => {
         clearInterval(deliveryQuoteCountdownTimer);
@@ -6726,18 +6839,9 @@
     else stopPaymentDeadlineTimer();
     if(['payfail','payment-success','pharmacypending','tracking'].includes(id)) syncPaymentOutcome();
     /* Pharmacy verification, acceptance/reservation and preparation all run
-       before payment. SCR-016D therefore releases documents and hands straight
-       to SCR-048 tracking; no pharmacy state is repeated after payment. */
+       before payment. Keep SCR-016D visible so the patient can understand that
+       their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
-    if(id==='payment-success' && hasFulfillableItems()){
-      paymentSuccessTimer=setTimeout(() => {
-        /* This screen moves on by itself after a beat, so the review has to be
-           part of that hop. Hanging it off the CTA alone meant only someone who
-           tapped within 1.8s ever saw it — which is why the rating looked like
-           it had been dropped from the build (client, 18 Aug). */
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('pharmacypending');
-      },reduceMotion ? 450 : 1800);
-    }
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
@@ -6782,29 +6886,29 @@
         scheduleConsultationSummary();
       }
     }
-    // Matching is a short automatic state. The frameless numeric countdown is
-    // the only time cue and reaches zero at the same moment the handoff occurs.
+    // UT-18: loading states show elapsed time. A count-up clock communicates
+    // that work is progressing without promising a completion time we cannot guarantee.
     clearTimeout(matchTimer);
     clearInterval(matchCountdownTimer);
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
       const countdown=mScr.querySelector('[data-matching-countdown]');
-      let secondsRemaining=10;
-      const syncMatchingCountdown=() => {
-        if(countdown) countdown.textContent='00:'+String(secondsRemaining).padStart(2,'0');
+      let elapsedSeconds=0;
+      const syncMatchingTimer=() => {
+        paintElapsedTimer(countdown,elapsedSeconds);
         if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
-          ? `เหลือ ${secondsRemaining} วินาที`
-          : `${secondsRemaining} seconds remaining`);
+          ? `ผ่านไป ${elapsedSeconds} วินาที`
+          : `${elapsedSeconds} seconds elapsed`);
       };
-      syncMatchingCountdown();
+      syncMatchingTimer();
       matchCountdownTimer=setInterval(() => {
         if(!mScr.classList.contains('active')){
           clearInterval(matchCountdownTimer);
           return;
         }
-        secondsRemaining=Math.max(0,secondsRemaining-1);
-        syncMatchingCountdown();
-        if(secondsRemaining===0) clearInterval(matchCountdownTimer);
+        elapsedSeconds+=1;
+        syncMatchingTimer();
+        if(elapsedSeconds>=10) clearInterval(matchCountdownTimer);
       },1000);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
@@ -6850,15 +6954,12 @@
             : 'Checking the prescription, stock and final price before payment.';
         }, reduceMotion ? 600 : 4200);
       }
-      // A five-minute service estimate, counting down live rather than sitting
-      // there as a static number.
-      let phSecondsRemaining=5*60;
-      paintWaitCountdown(phCountdown,phSecondsRemaining);
+      let phElapsedSeconds=0;
+      paintElapsedTimer(phCountdown,phElapsedSeconds);
       phCountdownTimer=setInterval(() => {
         if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
-        phSecondsRemaining=Math.max(0,phSecondsRemaining-1);
-        paintWaitCountdown(phCountdown,phSecondsRemaining);
-        if(phSecondsRemaining===0) clearInterval(phCountdownTimer);
+        phElapsedSeconds+=1;
+        paintElapsedTimer(phCountdown,phElapsedSeconds);
       },1000);
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
@@ -6917,13 +7018,12 @@
       if(title) title.textContent='เภสัชกำลังจัดยา';
       if(copy) copy.textContent='เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ';
       if(badge) badge.setAttribute('data-lucide','package');
-      let prepSecondsRemaining=3*60;
-      paintWaitCountdown(prepEl,prepSecondsRemaining);
+      let prepElapsedSeconds=0;
+      paintElapsedTimer(prepEl,prepElapsedSeconds);
       prepCountdownTimer=setInterval(() => {
         if(!scr.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
-        prepSecondsRemaining=Math.max(0,prepSecondsRemaining-1);
-        paintWaitCountdown(prepEl,prepSecondsRemaining);
-        if(prepSecondsRemaining===0) clearInterval(prepCountdownTimer);
+        prepElapsedSeconds+=1;
+        paintElapsedTimer(prepEl,prepElapsedSeconds);
       },1000);
       phPreparedTimer=setTimeout(() => {
         if(!scr.classList.contains('active')) return;
@@ -6964,13 +7064,12 @@
       const rxCta=rxScr?.querySelector('[data-rx-to-checkout]');
       if(rxCta){ rxCta.disabled=true; rxCta.setAttribute('aria-disabled','true'); }
       const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
-      let rxSecondsRemaining=5*60;
-      paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+      let rxElapsedSeconds=0;
+      paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       rxCountdownTimer=setInterval(() => {
         if(!rxScr?.classList.contains('active')){ clearInterval(rxCountdownTimer); return; }
-        rxSecondsRemaining=Math.max(0,rxSecondsRemaining-1);
-        paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
-        if(rxSecondsRemaining===0) clearInterval(rxCountdownTimer);
+        rxElapsedSeconds+=1;
+        paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       },1000);
       rxTimer=setTimeout(() => {
         if(!rxScr?.classList.contains('active')) return;
@@ -7035,37 +7134,49 @@
     syncConsultationPaymentAmount();
   });
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
-  function paintWaitCountdown(timer,remainingSeconds){
+  function paintElapsedTimer(timer,elapsedSeconds){
     if(!timer) return;
-    const mm=String(Math.floor(remainingSeconds/60)).padStart(2,'0');
-    const ss=String(remainingSeconds%60).padStart(2,'0');
+    const safeElapsed=Math.max(0,Math.floor(elapsedSeconds));
+    const mm=String(Math.floor(safeElapsed/60)).padStart(2,'0');
+    const ss=String(safeElapsed%60).padStart(2,'0');
     timer.textContent=mm+':'+ss;
+    timer.setAttribute('aria-label',document.documentElement.lang==='th'
+      ? `ผ่านไป ${safeElapsed} วินาที`
+      : `${safeElapsed} seconds elapsed`);
   }
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
     const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
-          timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]');
+          timer = w.querySelector('[data-wait-timer]'), btn = w.querySelector('[data-wait-enter]'),
+          btnLabel = w.querySelector('[data-wait-enter-label]'), visual = w.querySelector('[data-wait-visual]'),
+          art = w.querySelector('[data-wait-art]');
     /* Two states on one screen. Waiting carries the queue position and an
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
-    if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
+    if(btn){ btn.hidden = true; btn.classList.remove('is-ready-pop'); }
+    if(btnLabel) btnLabel.textContent = 'รอเรียกเข้าห้อง…';
+    if(timer) timer.classList.remove('waitroom-entry-cta__timer--urgent');
+    if(visual){ visual.classList.add('state-view__visual--loading'); visual.classList.remove('state-view__visual--success'); }
+    if(art) art.setAttribute('href','#krane-state-waiting-room');
     clearInterval(waitCountdownTimer);
-    let remainingSeconds = queuePos * 3 * 60;
-    paintWaitCountdown(timer,remainingSeconds);
+    let elapsedSeconds = 0;
+    paintElapsedTimer(timer,elapsedSeconds);
     waitCountdownTimer = setInterval(() => {
       if(!w.classList.contains('active')){ clearInterval(waitCountdownTimer); return; }
-      remainingSeconds = Math.max(0,remainingSeconds-1);
-      paintWaitCountdown(timer,remainingSeconds);
-      if(remainingSeconds===0) clearInterval(waitCountdownTimer);
+      elapsedSeconds += 1;
+      paintElapsedTimer(timer,elapsedSeconds);
     }, 1000);
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
-      if(btn){ btn.classList.remove('is-locked'); btn.classList.add('is-ready-pop'); btn.textContent = 'เข้าห้องปรึกษา'; }
+      if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }
+      if(btnLabel) btnLabel.textContent = 'เข้าห้องปรึกษา';
+      if(visual){ visual.classList.remove('state-view__visual--loading'); visual.classList.add('state-view__visual--success'); }
+      if(art) art.setAttribute('href','#krane-state-enter-room');
       startWaitroomEntryWindow(w,timer);
     }, reduceMotion ? 400 : 4200);
   }
@@ -7086,8 +7197,11 @@
       if(!timer) return;
       const mm=String(Math.floor(remaining/60)).padStart(2,'0');
       const ss=String(remaining%60).padStart(2,'0');
-      timer.textContent = `เข้าห้องภายใน ${mm}:${ss}`;
-      timer.classList.toggle('state-view__timer--urgent', remaining <= 60);
+      timer.textContent = `${mm}:${ss}`;
+      timer.setAttribute('aria-label',document.documentElement.lang==='th'
+        ? `เข้าห้องภายใน ${mm}:${ss}`
+        : `Enter within ${mm}:${ss}`);
+      timer.classList.toggle('waitroom-entry-cta__timer--urgent', remaining <= 60);
     };
     paint();
     waitEntryTimer = setInterval(() => {
@@ -7274,6 +7388,21 @@
   }
   // navigation
   document.body.addEventListener('click', e => {
+    const treatmentOpen=e.target.closest('[data-treatment-open]');
+    if(treatmentOpen){ openTreatmentDetail(treatmentOpen); return; }
+    const profileFollowup=e.target.closest('[data-profile-followup]');
+    if(profileFollowup){ beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return; }
+    const profileConsultNow=e.target.closest('[data-profile-consult-now]');
+    if(profileConsultNow){ beginAssignedDoctorFlow(selectedCategoryId); return; }
+    const profileNewAppointment=e.target.closest('[data-profile-new-appointment]');
+    if(profileNewAppointment){
+      flowState.followUpDirectToWaitroom=false;
+      flowState.entryChannel='direct';
+      persistFlowState();
+      journeyActive=true;
+      show('conditions');
+      return;
+    }
     /* Client (17 Aug): the "review medicine order" screen is gone — the
        prescription hands straight to review & pay. The checkout still has to be
        refreshed first, which is what that screen's continue button used to do. */
@@ -7319,6 +7448,8 @@
     const social = e.target.closest('[data-social]');
     if(social){
       const provider = social.dataset.social;
+      flowState.authProvider=provider;
+      if(!flowState.profileDisplayName) flowState.profileDisplayName=flowState.patientName || 'มะลิ สุธิดา';
       socialCompletesAuth = Boolean(social.closest('#login'));
       flowState.returningLogin = socialCompletesAuth;
       persistFlowState();
@@ -7639,6 +7770,7 @@
       submitOnce('patient-info',patientInfoContinue,() => {
         flowState.patientInfoComplete=true;
         flowState.patientName=name;
+        flowState.profileDisplayName=name;
         flowState.paymentPreference=paymentChoice;
         if(paymentChoice==='self-pay') flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
         persistFlowState();
@@ -8626,10 +8758,11 @@
     if(fromGeneralHealth && flowState.entryChannel==='direct'){
       flowState.draftReady=true;
       flowState.directGeneralHealthComplete=true;
-      /* The health details sit with the rest of the patient's own information
-         now (client, 26 Aug), so this hands on to the doctor rather than
-         jumping the queue straight into the waiting room. */
-      const next=directClinicalStartTarget();
+      /* A normal new-care route still starts doctor allocation. A follow-up or
+         consult-now shortcut already belongs to the patient's assigned doctor,
+         so after this safety confirmation it can enter that doctor's room. */
+      const next=flowState.followUpDirectToWaitroom ? 'waitroom' : directClinicalStartTarget();
+      flowState.followUpDirectToWaitroom=false;
       flowState.lastRequiredScreen=next;
       persistFlowState();
       saveIntakeDraft();
@@ -9012,6 +9145,13 @@
   }
   const deliveryAddressScreen=document.getElementById('address');
   if(deliveryAddressScreen){
+    const recipientPhone=deliveryAddressScreen.querySelector('#recipientPhone');
+    if(recipientPhone){
+      recipientPhone.value=formatThaiPhone(recipientPhone.value);
+      recipientPhone.addEventListener('input',() => {
+        recipientPhone.value=formatThaiPhone(recipientPhone.value);
+      });
+    }
     // Update the persisted draft only from a field the patient is actively
     // editing. Background browser autofill never gets to replace the chosen pin.
     deliveryAddressScreen.addEventListener('input',event => {
@@ -9423,6 +9563,10 @@
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
       <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260816-transparent-bg-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+    </symbol>
+
+    <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260830-enter-room-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
