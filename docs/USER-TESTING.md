@@ -9,7 +9,7 @@ as `b2c/ui-contract.json`: if it is not written down, it goes missing.
 the file and the mechanism, so the next person can verify it in one grep
 rather than trusting this file.
 
-Last verified: 26 Aug 2026 against `a1f1108`.
+Last verified: 28 Aug 2026 against `6dbf6f1`.
 
 ---
 
@@ -44,7 +44,7 @@ Last verified: 26 Aug 2026 against `a1f1108`.
 
 | # | Finding | Where it lives |
 |---|---------|----------------|
-| 11 | **No max length on phone fields.** Six inputs, none capped: `signup-phone`, `login-phone`, `social-phone`, `patient-phone`, `recipientPhone`, `account-phone`. | `krane-b2c.html` |
+| ~~11~~ | ~~No max length on phone fields.~~ **Fixed 28 Aug**: the three the patient types into (`signup-phone`, `login-phone`, `recipientPhone`) cap at 12 characters, the length of 08x-xxx-xxxx. The readonly and international fields are left alone. The validator also asked for ten digits while accepting nine; it asks for ten now. | `krane-b2c.html` |
 | 12 | **Copy is long throughout.** The 23 Aug pass (`c29e689`) fixed the sixteen `.state-view` screens only; the rest of the app has not had one. | — |
 | 13 | **Choosing your own doctor** is built but not offered in the default route. | `#choosedoc` |
 
