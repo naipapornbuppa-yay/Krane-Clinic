@@ -205,6 +205,107 @@
     }
   };
 
+  /* The client-working draft adds short, visual-first Thai copy that is not
+     shared with the application shell. Keep it bilingual without bloating the
+     global translation contract: text nodes remember their Thai source and
+     receive a page-local English equivalent when the language changes. */
+  const draftEnglishText = new Map([
+    ["ข้ามไปยังเนื้อหาหลัก", "Skip to main content"],
+    ["น้ำหนัก", "Weight"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
+    ["วิธีการทำงาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["บทความสุขภาพ", "Health articles"],
+    ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
+    ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
+    ["เร็ว ๆ นี้", "Coming soon"], ["ภาษา", "Language"], ["ภาษาไทย", "Thai"], ["เข้าสู่ระบบ", "Log in"],
+    ["ผู้ใช้ Krane", "Krane member"], ["บัญชีผู้ใช้", "Account"], ["โปรไฟล์", "Profile"], ["ออกจากระบบ", "Log out"],
+    ["เมนูหลัก", "Main menu"],
+    ["แพทย์ออนไลน์ของคุณ", "Your online doctor"], ["พร้อมให้คำปรึกษาเสมอ", "ready whenever you are"],
+    ["เริ่มจากเรื่องที่กังวล คุยกับแพทย์ที่มีใบอนุญาต รับแผนการรักษาเฉพาะบุคคล และจัดส่งยาอย่างมิดชิด", "Start with your concern, speak with a licensed doctor, receive a personalised care plan and discreet home delivery."],
+    ["ส่งถึงบ้าน", "Delivered home"], ["จัดส่งทั่วประเทศในบรรจุภัณฑ์มิดชิด", "Nationwide delivery in discreet packaging"],
+    ["แพทย์มีใบอนุญาต", "Licensed doctors"], ["ปรึกษาส่วนตัวแบบ 1 ต่อ 1", "Private one-to-one consultation"],
+    ["ข้อมูลเป็นส่วนตัว", "Private by design"], ["ดูแลตามมาตรฐานความปลอดภัย", "Protected to recognised security standards"],
+    ["แผนลดน้ำหนัก", "Weight-loss plan"], ["ดูแลโดยแพทย์แบบเฉพาะบุคคล", "Personalised doctor-led care"],
+    ["เริ่มตอนนี้", "Start now"], ["แผนฟื้นฟูเส้นผม", "Hair restoration plan"],
+    ["แผนฟื้นฟูสมรรถภาพเพศชาย", "Men's performance care"],
+    ["*แนวทางการรักษาและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Treatment and medication options depend on a doctor's assessment"],
+    ["ออนไลน์ 100%", "100% online"], ["เริ่มดูแลได้ใน 3 ขั้นตอน", "Start care in three steps"],
+    ["ตอบแบบประเมิน", "Complete an assessment"], ["เลือกเรื่องที่กังวล ใช้เวลาเพียง 1–2 นาที", "Choose your concern in just 1–2 minutes"],
+    ["คุยกับแพทย์", "Speak with a doctor"], ["ปรึกษาส่วนตัวผ่านวิดีโอ เสียง หรือแชท", "Consult privately by video, voice or chat"],
+    ["รับการดูแลถึงบ้าน", "Continue care at home"], ["รับแผนการรักษาและจัดส่งยาอย่างมิดชิด", "Receive your care plan and discreet delivery"],
+    ["พร้อมคุยกับแพทย์", "Ready to meet your doctor"], ["ออนไลน์ · เป็นส่วนตัว", "Online · Private"], ["เริ่มดูแล", "Start care"],
+    ["จัดการน้ำหนัก", "Weight management"], ["แผนลดน้ำหนักที่ออกแบบเพื่อคุณ", "A weight-loss plan designed for you"],
+    ["ที่ออกแบบเพื่อคุณ", "designed for you"], ["ดูรายละเอียด", "Learn more"], ["ประเมินโดยแพทย์", "Doctor assessed"],
+    ["เริ่มจากสุขภาพจริง", "Begin with your real health"], ["ไม่ใช่สูตรสำเร็จ", "not a one-size-fits-all formula"],
+    ["เป้าหมาย แผนการดูแล และตัวเลือกยาขึ้นอยู่กับการประเมินรายบุคคล", "Goals, care plans and medication options are based on an individual medical assessment."],
+    ["เริ่มประเมิน", "Start assessment"], ["เป้าหมายของคุณ", "Your goal"], ["ลดอย่างปลอดภัย", "Lose weight safely"],
+    ["และทำต่อได้จริง", "and make it sustainable"], ["คุมความอยากอาหาร", "Manage appetite"], ["ปรับพฤติกรรม", "Build lasting habits"],
+    ["ติดตามกับแพทย์", "Doctor follow-up"], ["เสียงจากผู้ใช้งาน Krane", "A Krane member"],
+    ["“รู้สึกว่ามีคนดูแลจริง ๆ แผนชัด เข้าใจง่าย และคุยกับหมอได้โดยไม่ต้องเดินทาง”", "“I felt genuinely supported. The plan was clear, easy to understand and I could speak with a doctor without travelling.”"],
+    ["*ผลลัพธ์และความเหมาะสมของการรักษาแตกต่างกันในแต่ละบุคคล", "*Results and treatment suitability vary by individual."],
+    ["สุขภาพเส้นผม", "Hair health"], ["ดูแลผมร่วง", "Target hair loss"], ["แบบตรงจุด", "at the source"],
+    ["ติดตามอย่างต่อเนื่อง", "Ongoing follow-up"], ["รู้สาเหตุ", "Understand the cause"], ["ก่อนเริ่มดูแล", "before starting care"],
+    ["แพทย์ประเมินรูปแบบผมร่วง ประวัติสุขภาพ และเป้าหมายของคุณ", "A doctor assesses your hair-loss pattern, health history and goals."],
+    ["ติดตามจากมุมเดิม", "Track from the same angle"], ["เห็นความเปลี่ยนแปลงชัดขึ้น", "See changes more clearly"],
+    ["วางแผนเป็นระยะ", "Review at each stage"], ["ปรับตามการตอบสนองของคุณ", "Adjust to your response"],
+    ["แพทย์ดูแลต่อเนื่อง", "Ongoing doctor care"], ["ไม่ต้องลองผิดลองถูกคนเดียว", "No more guessing alone"],
+    ["เป็นส่วนตัว", "Private"], ["ดูแลได้จากที่บ้าน", "Care from home"],
+    ["*ภาพประกอบจาก draft เพื่อสื่อรูปแบบการติดตาม ผลลัพธ์แตกต่างกันในแต่ละบุคคล", "*Draft imagery illustrates the follow-up format. Results vary by individual."],
+    ["กลับมาใกล้ชิด", "Feel close again"], ["อย่างมั่นใจอีกครั้ง", "with confidence"], ["คุยได้อย่างเป็นส่วนตัว", "A private conversation"],
+    ["เรื่องสำคัญ", "Important concerns"], ["ไม่ควรต้องเดาเอง", "should not leave you guessing"],
+    ["ปรึกษาแพทย์แบบ 1 ต่อ 1 พร้อมทางเลือกที่เหมาะกับสุขภาพของคุณ", "Speak privately one-to-one with a doctor about options suited to your health."],
+    ["มั่นใจขึ้น", "Feel more confident"], ["โดยไม่เสียความเป็นส่วนตัว", "without giving up privacy"], ["คุยกับแพทย์ส่วนตัว", "Private doctor consultation"],
+    ["แผนเฉพาะบุคคล", "Personalised plan"], ["จัดส่งมิดชิด", "Discreet delivery"],
+    ["“ขั้นตอนไม่ยุ่งยาก กล้าคุยมากกว่าที่คิด และเข้าใจทางเลือกของตัวเองชัดขึ้น”", "“The process was simple. I felt comfortable talking and understood my options much more clearly.”"],
+    ["คุยเรื่องสุขภาพผู้ชาย", "Talk about men's health"], ["ปรึกษาแพทย์ออนไลน์", "Consult online"], ["กลับมาใกล้ชิดอย่างมั่นใจ", "Feel close again with confidence"],
+    ["*แนวทางการดูแลและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Care and medication options depend on a doctor's assessment."],
+    ["เราไม่ใช่แค่คลินิกทั่วไป แต่เราคือ", "We are more than a clinic. We are a"],
+    ["แพลตฟอร์มให้บริการแพทย์ทางไกล", "licensed telemedicine platform"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
+    ["ดูแลครบในที่เดียว", "Complete care in one place"], ["ทำไมต้อง krane", "Why Krane"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
+    ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
+    ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],
+    ["คุ้มครองตาม PDPA", "Protected under PDPA"], ["ข้อมูลสุขภาพของคุณถูกใช้เพื่อการดูแลตามความยินยอมเท่านั้น", "Your health data is used for care only with your consent"],
+    ["โครงสร้างพื้นฐานพร้อมมาตรฐานความปลอดภัยระดับสากล", "Infrastructure backed by international security standards"],
+    ["แพทย์ของ Krane", "Krane doctors"], ["ทีมแพทย์ที่ดูแล", "The medical team behind"], ["ทุกการตัดสินใจ", "every decision"],
+    ["ทุกแผนเริ่มจากข้อมูลสุขภาพจริง และอยู่ภายใต้การประเมินของแพทย์ที่มีใบอนุญาต", "Every plan begins with your real health information and a licensed doctor's assessment."],
+    ["พบทีมแพทย์ของเรา", "Meet our medical team"], ["พญ. กรผกา ขันติโกสุม ว.", "Dr Kornpaka Khantikhosum"], ["เส้นผมและผิวหนัง", "Hair and dermatology"],
+    ["ตจวิทยา (ผิวหนัง)", "Dermatology"], ["นพ. ไพรัช เกตุรัตนกุล ว.", "Dr Phairat Keturanakul"], ["ผู้อำนวยการแพทย์", "Medical director"],
+    ["อายุรศาสตร์ · โรคระบบการหายใจ", "Internal medicine · Respiratory medicine"], ["อ.นพ. พหล สโรจวิสุทธิ์ ว.", "Dr Pahol Sarojvisut"],
+    ["การลดน้ำหนัก", "Weight management"], ["อายุรศาสตร์ · โภชนศาสตร์คลินิก", "Internal medicine · Clinical nutrition"],
+    ["อ.นพ. ชวลิต หงส์เลิศสกุล ว.", "Dr Chawalit Honglertsakul"], ["สุขภาพทางเพศ", "Sexual health"], ["ศัลยศาสตร์ยูโรวิทยา", "Urology"],
+    ["ดูประวัติเต็ม", "View full profile"], ["โภชนศาสตร์คลินิก", "Clinical nutrition"], ["ความเชี่ยวชาญ", "Specialty"], ["การศึกษาและการอบรม", "Education and training"],
+    ["ประสบการณ์การดูแลที่ง่ายและเป็นส่วนตัว", "Simple, private care experiences"], ["เรื่องจริง", "Real stories"], ["จากผู้ใช้งาน", "from our members"],
+    ["“ดีมากและบริการดีมาก”", "“Excellent care and service”"], ["คุณ @bright.mind", "@bright.mind"],
+    ["อ่านต่อเมื่ออยากรู้เพิ่ม", "Read more when you want to know more"], ["ผมร่วง · อ่าน 4 นาที", "Hair loss · 4 min read"],
+    ["ผมร่วง · อ่าน 3 นาที", "Hair loss · 3 min read"], ["น้ำหนัก · อ่าน 6 นาที", "Weight · 6 min read"],
+    ["ฟีนาสเตอไรด์ได้ผลจริงไหม", "Does finasteride work?"], ["ไมน็อกซิดิล ต้องคาดหวังอะไรบ้าง", "What to expect from minoxidil"],
+    ["ลดน้ำหนักอย่างปลอดภัยใต้การดูแลแพทย์", "Safe weight loss with medical care"], ["ดูบทความทั้งหมด", "View all articles"],
+    ["พร้อมเริ่มหรือยัง", "Ready to begin?"], ["ดูแลสุขภาพ", "Take care of your health"], ["ได้ง่ายกว่าที่คิด", "more easily than you think"],
+    ["ปรึกษาแพทย์เลย", "Consult a doctor"], ["บริการ", "Services"], ["เส้นผม", "Hair"], ["เกี่ยวกับ", "About"], ["มาตรฐานของเรา", "Our standards"],
+    ["กฎหมาย & ติดต่อ", "Legal & contact"], ["นโยบายความเป็นส่วนตัว", "Privacy policy"], ["ความเป็นส่วนตัว", "Privacy"], ["ข้อกำหนด", "Terms"],
+    ["© 2026 Krane Clinic สงวนลิขสิทธิ์", "© 2026 Krane Clinic. All rights reserved."],
+    ["*บริการการแพทย์ทางไกลให้บริการโดยแพทย์ที่มีใบอนุญาต ตัวเลือกการสั่งยาขึ้นอยู่กับการประเมินทางคลินิก ข้อมูลบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อให้ข้อมูลเท่านั้นและไม่ทดแทนคำแนะนำทางการแพทย์", "*Telemedicine is provided by licensed doctors. Prescriptions depend on a clinical assessment. This website is for information only and does not replace medical advice."],
+    ["เรื่องราวจากสมาชิก Krane", "A Krane member story"]
+  ]);
+
+  const applyDraftLanguage = (lang) => {
+    const root = document.querySelector(".landing-figma-draft");
+    if (!root || typeof document.createTreeWalker !== "function") return;
+    const showText = globalThis.NodeFilter?.SHOW_TEXT || 4;
+    const walker = document.createTreeWalker(root, showText);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent || parent.closest("script,style,[data-i18n]")) return;
+      if (node.__kraneThai == null) node.__kraneThai = node.nodeValue;
+      if (lang === "th") { node.nodeValue = node.__kraneThai; return; }
+      const source = node.__kraneThai;
+      const trimmed = source.trim();
+      if (!/[ก-๙]/.test(trimmed)) { node.nodeValue = source; return; }
+      const translated = draftEnglishText.get(trimmed) || "Krane Clinic";
+      node.nodeValue = source.replace(trimmed, translated);
+    });
+  };
+
   const menu = document.querySelector("#mobile-menu");
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
@@ -455,6 +556,7 @@
       const translated = lang === "en" ? translations.en[element.dataset.i18n] : element.dataset.th;
       if (translated != null) element.innerHTML = translated;
     });
+    applyDraftLanguage(lang);
     languageSelects.forEach((select) => { select.value = lang; });
     menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
     menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
