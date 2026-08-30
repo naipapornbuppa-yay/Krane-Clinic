@@ -1725,7 +1725,7 @@
           <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
         </div>
         <div class="checkout-bill">
-          <div class="checkout-bill__row" data-payment-consultation-row hidden><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
           <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
@@ -5987,10 +5987,18 @@
       credit,
       method:deliveryMethod
     });
+    const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
     const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
-    if(consultationRow) consultationRow.hidden=consultationDue<=0;
-    if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
+    // UT-10: always itemise the doctor fee so users can understand the full bill,
+    // including when the fee was already paid or covered by a benefit.
+    if(consultationRow) consultationRow.hidden=false;
+    if(consultationAmount){
+      if(flowState.consultationPaid) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · ชำระแล้ว`;
+      else if(consultationDue<=0 && consultationCovered>0) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
+      else if(consultationCovered>0) consultationAmount.textContent=`${baht(consultationDue)} · สิทธิ์ ${baht(consultationCovered)}`;
+      else consultationAmount.textContent=baht(consultationDue);
+    }
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
     document.querySelectorAll('#payment [data-fulfillment-mode-option]').forEach(option => {
       const selected=option.dataset.fulfillmentModeOption===(pickup ? 'pickup' : 'delivery');
