@@ -390,8 +390,8 @@
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  // Hero cards alternate between the human context and the relevant treatment
-  // products. Staggering keeps the page calm and avoids a synchronized flash.
+  // Hero cards alternate as one coordinated set between human context and
+  // product photography, so the mosaic always reads as a single campaign.
   const swapBanners = [...document.querySelectorAll("[data-banner-swap]")];
   const swapTimers = new Set();
   let bannerProductsReady = false;
@@ -405,14 +405,14 @@
       swapTimers.delete(timer);
       if (document.hidden || reducedMotionQuery.matches) return;
       banner.classList.toggle("is-product-frame", showProduct);
-      queueBannerSwap(banner, 6500, !showProduct);
+      queueBannerSwap(banner, 6800, !showProduct);
     }, delay);
     swapTimers.add(timer);
   };
   const startBannerSwaps = () => {
     clearBannerSwapTimers();
     if (!bannerProductsReady || document.hidden || reducedMotionQuery.matches) return;
-    swapBanners.forEach((banner, index) => queueBannerSwap(banner, 2800 + index * 900));
+    swapBanners.forEach((banner) => queueBannerSwap(banner, 3600));
   };
   const loadBannerProductImages = () => {
     const productImages = swapBanners
