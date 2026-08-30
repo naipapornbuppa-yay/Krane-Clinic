@@ -113,7 +113,7 @@
       trustMedicineEyebrow: "Authentic medicine, delivered home",
       trustMedicineTitle: "Medicine and delivery assurance",
       trustMedicineBody: "Delivered nationwide by the Fascino pharmacy network in discreet packaging.",
-      trustSecurityEyebrow: "International security standards",
+      trustSecurityEyebrow: "Powered by INET",
       trustSecurityTitle: "Powered by INET",
       trustSecurityProvider: "INET infrastructure certified across three ISO standards.",
       privacyKicker: "Your health space",
