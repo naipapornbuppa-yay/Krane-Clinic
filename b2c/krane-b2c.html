@@ -1111,7 +1111,7 @@
         <h2 class="h1">ซักประวัติเรียบร้อยแล้ว</h2>
         <p class="muted" data-matching-copy>รอสักครู่ krane กำลังค้นหาคุณหมอที่เหมาะให้คำปรึกษาในอาการของคุณ</p>
       </div>
-      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="เหลือ 10 วินาที" data-matching-countdown-value>00:10</div>
+      <div class="state-view__timer" data-matching-countdown role="timer" aria-live="polite" aria-label="ผ่านไป 0 วินาที" data-matching-countdown-value>00:00</div>
     </div>
   </section>
 
@@ -1402,7 +1402,7 @@
         <h2 class="h1">กำลังสรุปแผนการรักษา</h2>
         <p class="muted">คุณหมอ<span data-doctor-name>นรินทร์</span> กำลังเขียนผลวินิจฉัยและรายการยาให้คุณ</p>
       </div>
-      <div class="state-view__timer" data-rx-timer>05:00</div>
+      <div class="state-view__timer" data-rx-timer>00:00</div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-rx-to-checkout disabled aria-disabled="true">ตรวจสอบและชำระเงิน</button></div>
   </section>
@@ -1543,7 +1543,7 @@
         <h2 class="h1">Pharmacist reviewing your order</h2>
         <p class="muted">Confirming the prescription, the stock and the final price.</p>
       </div>
-      <div class="state-view__timer" data-ph-countdown>00:10</div>
+      <div class="state-view__timer" data-ph-countdown>00:00</div>
     </div>
   </section>
 
@@ -1883,7 +1883,7 @@
         <span class="state-view__badge"><i data-prep-badge data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1" data-prep-title>เภสัชกำลังจัดยา</h2><p class="muted" data-prep-copy>เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ</p></div>
-      <div class="state-view__timer" data-prep-countdown>03:00</div>
+      <div class="state-view__timer" data-prep-countdown>00:00</div>
     </div>
   </section>
 
@@ -6686,13 +6686,13 @@
       if(title) title.textContent=pickup ? 'กำลังค้นหาสาขารับยา' : 'กำลังคำนวณค่าจัดส่ง';
       if(copy) copy.textContent=pickup ? 'ตรวจสอบสาขาใกล้คุณและเวลารับยา' : 'ตรวจสอบพื้นที่จัดส่งและค่าจัดส่งโดยประมาณ';
       const quoteCountdown=quoteScreen.querySelector('[data-delivery-quote-timer]');
-      let quoteSecondsRemaining=DELIVERY_QUOTE_SECONDS;
-      paintWaitCountdown(quoteCountdown,quoteSecondsRemaining);
+      let quoteElapsedSeconds=0;
+      paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
       clearInterval(deliveryQuoteCountdownTimer);
       deliveryQuoteCountdownTimer=setInterval(() => {
-        quoteSecondsRemaining=Math.max(0,quoteSecondsRemaining-1);
-        paintWaitCountdown(quoteCountdown,quoteSecondsRemaining);
-        if(quoteSecondsRemaining<=0) clearInterval(deliveryQuoteCountdownTimer);
+        quoteElapsedSeconds+=1;
+        paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
+        if(quoteElapsedSeconds>=DELIVERY_QUOTE_SECONDS) clearInterval(deliveryQuoteCountdownTimer);
       },1000);
       deliveryQuoteTimer=setTimeout(() => {
         clearInterval(deliveryQuoteCountdownTimer);
@@ -6795,29 +6795,29 @@
         scheduleConsultationSummary();
       }
     }
-    // Matching is a short automatic state. The frameless numeric countdown is
-    // the only time cue and reaches zero at the same moment the handoff occurs.
+    // UT-18: loading states show elapsed time. A count-up clock communicates
+    // that work is progressing without promising a completion time we cannot guarantee.
     clearTimeout(matchTimer);
     clearInterval(matchCountdownTimer);
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
       const countdown=mScr.querySelector('[data-matching-countdown]');
-      let secondsRemaining=10;
-      const syncMatchingCountdown=() => {
-        if(countdown) countdown.textContent='00:'+String(secondsRemaining).padStart(2,'0');
+      let elapsedSeconds=0;
+      const syncMatchingTimer=() => {
+        paintElapsedTimer(countdown,elapsedSeconds);
         if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
-          ? `เหลือ ${secondsRemaining} วินาที`
-          : `${secondsRemaining} seconds remaining`);
+          ? `ผ่านไป ${elapsedSeconds} วินาที`
+          : `${elapsedSeconds} seconds elapsed`);
       };
-      syncMatchingCountdown();
+      syncMatchingTimer();
       matchCountdownTimer=setInterval(() => {
         if(!mScr.classList.contains('active')){
           clearInterval(matchCountdownTimer);
           return;
         }
-        secondsRemaining=Math.max(0,secondsRemaining-1);
-        syncMatchingCountdown();
-        if(secondsRemaining===0) clearInterval(matchCountdownTimer);
+        elapsedSeconds+=1;
+        syncMatchingTimer();
+        if(elapsedSeconds>=10) clearInterval(matchCountdownTimer);
       },1000);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
@@ -6863,15 +6863,12 @@
             : 'Checking the prescription, stock and final price before payment.';
         }, reduceMotion ? 600 : 4200);
       }
-      // A five-minute service estimate, counting down live rather than sitting
-      // there as a static number.
-      let phSecondsRemaining=5*60;
-      paintWaitCountdown(phCountdown,phSecondsRemaining);
+      let phElapsedSeconds=0;
+      paintElapsedTimer(phCountdown,phElapsedSeconds);
       phCountdownTimer=setInterval(() => {
         if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
-        phSecondsRemaining=Math.max(0,phSecondsRemaining-1);
-        paintWaitCountdown(phCountdown,phSecondsRemaining);
-        if(phSecondsRemaining===0) clearInterval(phCountdownTimer);
+        phElapsedSeconds+=1;
+        paintElapsedTimer(phCountdown,phElapsedSeconds);
       },1000);
       phTimer = setTimeout(() => {
         if(!pScr.classList.contains('active')) return;
@@ -6930,13 +6927,12 @@
       if(title) title.textContent='เภสัชกำลังจัดยา';
       if(copy) copy.textContent='เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ';
       if(badge) badge.setAttribute('data-lucide','package');
-      let prepSecondsRemaining=3*60;
-      paintWaitCountdown(prepEl,prepSecondsRemaining);
+      let prepElapsedSeconds=0;
+      paintElapsedTimer(prepEl,prepElapsedSeconds);
       prepCountdownTimer=setInterval(() => {
         if(!scr.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
-        prepSecondsRemaining=Math.max(0,prepSecondsRemaining-1);
-        paintWaitCountdown(prepEl,prepSecondsRemaining);
-        if(prepSecondsRemaining===0) clearInterval(prepCountdownTimer);
+        prepElapsedSeconds+=1;
+        paintElapsedTimer(prepEl,prepElapsedSeconds);
       },1000);
       phPreparedTimer=setTimeout(() => {
         if(!scr.classList.contains('active')) return;
@@ -6977,13 +6973,12 @@
       const rxCta=rxScr?.querySelector('[data-rx-to-checkout]');
       if(rxCta){ rxCta.disabled=true; rxCta.setAttribute('aria-disabled','true'); }
       const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
-      let rxSecondsRemaining=5*60;
-      paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
+      let rxElapsedSeconds=0;
+      paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       rxCountdownTimer=setInterval(() => {
         if(!rxScr?.classList.contains('active')){ clearInterval(rxCountdownTimer); return; }
-        rxSecondsRemaining=Math.max(0,rxSecondsRemaining-1);
-        paintWaitCountdown(rxTimerEl,rxSecondsRemaining);
-        if(rxSecondsRemaining===0) clearInterval(rxCountdownTimer);
+        rxElapsedSeconds+=1;
+        paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       },1000);
       rxTimer=setTimeout(() => {
         if(!rxScr?.classList.contains('active')) return;
@@ -7048,11 +7043,15 @@
     syncConsultationPaymentAmount();
   });
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
-  function paintWaitCountdown(timer,remainingSeconds){
+  function paintElapsedTimer(timer,elapsedSeconds){
     if(!timer) return;
-    const mm=String(Math.floor(remainingSeconds/60)).padStart(2,'0');
-    const ss=String(remainingSeconds%60).padStart(2,'0');
+    const safeElapsed=Math.max(0,Math.floor(elapsedSeconds));
+    const mm=String(Math.floor(safeElapsed/60)).padStart(2,'0');
+    const ss=String(safeElapsed%60).padStart(2,'0');
     timer.textContent=mm+':'+ss;
+    timer.setAttribute('aria-label',document.documentElement.lang==='th'
+      ? `ผ่านไป ${safeElapsed} วินาที`
+      : `${safeElapsed} seconds elapsed`);
   }
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
@@ -7065,13 +7064,12 @@
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
     if(btn){ btn.classList.add('is-locked'); btn.classList.remove('is-ready-pop'); btn.textContent = 'รอเรียกเข้าห้อง…'; }
     clearInterval(waitCountdownTimer);
-    let remainingSeconds = queuePos * 3 * 60;
-    paintWaitCountdown(timer,remainingSeconds);
+    let elapsedSeconds = 0;
+    paintElapsedTimer(timer,elapsedSeconds);
     waitCountdownTimer = setInterval(() => {
       if(!w.classList.contains('active')){ clearInterval(waitCountdownTimer); return; }
-      remainingSeconds = Math.max(0,remainingSeconds-1);
-      paintWaitCountdown(timer,remainingSeconds);
-      if(remainingSeconds===0) clearInterval(waitCountdownTimer);
+      elapsedSeconds += 1;
+      paintElapsedTimer(timer,elapsedSeconds);
     }, 1000);
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;

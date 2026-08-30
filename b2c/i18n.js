@@ -1214,7 +1214,7 @@
     "กำลังเขียนผลวินิจฉัยและรายการยาให้คุณ":"is writing up your diagnosis and medicines",
     "ซักประวัติเรียบร้อยแล้ว":"Health history complete",
     "กำลังจับคู่แพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องผมร่วงและผมบาง":"Matching you with a licensed doctor for hair loss and thinning",
-    "เหลือ 10 วินาที":"10 seconds left",
+    "ผ่านไป 0 วินาที":"0 seconds elapsed",
     "สิทธิ์ประกันครอบคลุมค่าปรึกษาแพทย์ ฿ 350 จึงไม่ต้องชำระค่าปรึกษา ณ ขั้นตอนนี้":"Your insurance covers the ฿ 350 consultation fee, so there is nothing to pay at this step.",
     "ค่าปรึกษาแพทย์":"Consultation fee",
     "ตรวจสอบพื้นที่จัดส่ง":"Checking the delivery area",
