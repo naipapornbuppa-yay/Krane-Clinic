@@ -136,6 +136,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-screen__logo{display:block;width:72px;height:auto;max-height:24px;margin-inline:auto;object-fit:contain}
 .auth-screen__body{display:flex;justify-content:center;padding-top:clamp(36px,8vh,84px);padding-bottom:var(--sp-7)}
 .auth-screen__panel{width:min(100%,440px);margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-5)}
+.auth-screen__body:has([data-login-intake-notice]:not([hidden])){padding-top:var(--sp-5)}
+.auth-screen__context{align-items:flex-start;text-align:left}
+.auth-screen__context .hint{margin-top:2px;color:inherit;opacity:.82}
 .auth-screen__intro{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center}
 .auth-screen__intro .h1{margin:0;font-size:clamp(30px,5vw,40px)}
 .auth-screen__intro p{margin:0}
@@ -2662,6 +2665,26 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 }
 .home-cta__go svg{width:19px;height:19px}
 
+/* Profile is a care-return surface, not a settings summary. The four shortcuts
+   put the repeat actions (follow-up, refill, booking and urgent consult) before
+   the longer treatment history while keeping the assigned doctor visible. */
+.profile-quick{display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.profile-quick__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3)}
+.profile-quick__action{min-width:0;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--surface-sunken);text-align:left;cursor:pointer}
+.profile-quick__action:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.profile-quick__action--primary{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-on-accent)}
+.profile-quick__action--primary:hover{background:var(--theme-accent-hover,var(--color-accent));color:var(--color-on-accent)}
+.profile-quick__icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--color-surface)}
+.profile-quick__action--primary .profile-quick__icon{background:rgba(255,255,255,.16)}
+.profile-quick__action>span:last-child{min-width:0;display:grid;gap:2px}
+.profile-quick__action strong{font-size:var(--fs-sm);line-height:1.25}
+.profile-quick__action small{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.25}
+.profile-quick__action--primary small{color:rgba(255,255,255,.78)}
+@media(max-width:760px){.profile-quick__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:390px){.profile-quick__action{align-items:flex-start;flex-direction:column}.profile-quick__icon{width:32px;height:32px}}
+
 /* The map picker rides above the sticky primary action as a floating pill, so
    it stays reachable while the form scrolls (client, 19 Aug). */
 .address-footer{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)}
@@ -2751,3 +2774,27 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-xs);
   background:var(--color-bg-soft);line-height:1.45}
 .care-team-note .ui-icon{flex:none;margin-top:2px;color:var(--color-accent)}
+
+/* Active-treatment detail keeps clinical context and repeat-conversion actions
+   together: diagnosis first, treatment rationale second, medicines and the
+   next appointment after that. */
+.treatment-detail{max-width:1040px;width:100%;margin-inline:auto}
+.treatment-detail__hero{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-5);
+  padding:var(--sp-5);border-radius:var(--radius-lg);background:var(--color-accent);color:var(--color-on-accent)}
+.treatment-detail__hero .eyebrow{color:rgba(255,255,255,.7)}
+.treatment-detail__hero .muted{color:rgba(255,255,255,.78);margin-top:var(--sp-2)}
+.treatment-doctor{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);
+  border-radius:var(--radius-md);background:rgba(255,255,255,.12)}
+.treatment-doctor .avatar{background:var(--color-surface);color:var(--color-accent)}
+.treatment-doctor>span:last-child{display:grid;gap:1px}.treatment-doctor small{color:rgba(255,255,255,.76)}
+.treatment-detail__grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}
+.treatment-detail__medications{border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden}
+.treatment-detail__followup{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)}
+.treatment-detail__followup>span{display:grid;gap:3px}.treatment-detail__followup small{color:var(--color-ink-3)}
+.treatment-detail__actions{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+@media(max-width:620px){
+  .treatment-detail__hero{align-items:flex-start;flex-direction:column}
+  .treatment-detail__grid{grid-template-columns:1fr}
+  .treatment-detail__followup{align-items:flex-start;flex-direction:column}
+  .treatment-detail__followup .btn{width:100%}
+}

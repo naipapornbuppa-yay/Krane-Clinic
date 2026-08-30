@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260824-progress-pairs-v1";
+    const release = "20260830-profile-care-hub-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,13 +38,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260830-progress-label-underline-v1">
+<link rel="stylesheet" href="components.css?v=20260830-profile-care-hub-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260816-delivery-pickup-v1" defer></script>
+<script src="i18n.js?v=20260830-intake-login-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -1007,6 +1007,10 @@
     <div class="screen__top auth-screen__top"><button class="back" data-back>‹</button><span class="ttl"><img class="auth-screen__logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"></span></div>
     <div class="screen__body auth-screen__body">
       <div class="auth-screen__panel">
+        <div class="alert auth-screen__context" data-login-intake-notice role="status" hidden>
+          <span class="a-ic" aria-hidden="true">i</span>
+          <div><div class="a-title">Log in to continue your treatment</div><div class="hint">Your assessment is saved. Sign in to continue where you left off.</div></div>
+        </div>
         <div class="auth-screen__intro"><h2 class="h1">Welcome back</h2><p class="muted">Let’s get you logged in.</p></div>
         <div class="auth-screen__form">
           <div class="field"><label class="sr-only" for="login-phone">Phone number</label><input class="input" id="login-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="Phone number"></div>
@@ -2037,6 +2041,16 @@
   <section class="screen screen--web" id="profile">
     <div class="screen__top"><img class="brand-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"><span class="grow"></span><span class="avatar" style="width:32px;height:32px">P</span></div>
     <div class="screen__body stack-5">
+      <section class="profile-quick" aria-labelledby="profile-quick-title">
+        <div class="between"><div><div class="eyebrow" id="profile-quick-title">เมนูด่วน</div><p class="hint">กลับเข้าสู่การดูแลได้ทันที</p></div><span class="badge badge--line">คุณหมอนรินทร์</span></div>
+        <div class="profile-quick__grid">
+          <button class="profile-quick__action profile-quick__action--primary" type="button" data-profile-followup data-category="general"><span class="profile-quick__icon"><i data-lucide="calendar-check-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>เข้าติดตามผล</strong><small>นัดที่กำลังจะถึง</small></span></button>
+          <button class="profile-quick__action" type="button" data-go="refill"><span class="profile-quick__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><span><strong>เติมยา</strong><small>จากแผนเดิม</small></span></button>
+          <button class="profile-quick__action" type="button" data-profile-new-appointment><span class="profile-quick__icon"><i data-lucide="calendar-plus-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>นัดหมายใหม่</strong><small>เริ่มเรื่องใหม่</small></span></button>
+          <button class="profile-quick__action" type="button" data-profile-consult-now><span class="profile-quick__icon"><i data-lucide="message-circle-heart" class="ui-icon" aria-hidden="true"></i></span><span><strong>ปรึกษาแพทย์ตอนนี้</strong><small>กับคุณหมอประจำ</small></span></button>
+        </div>
+      </section>
+
       <!-- Two versions of the same banner, both in the markup so each keeps its
            own translation; the follow-up one wins when a treatment card has a
            booked follow-up (client, 23 Aug). Someone already under a doctor is
@@ -2058,7 +2072,7 @@
              buttons across two cards was the clutter. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-go="refill" data-category="general">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
           <span class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
@@ -2067,7 +2081,7 @@
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date>2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-go="refill" data-category="hair-skin">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
           <span class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Loratadine 10 mg</span><span>วันละ 1 เม็ด</span></span>
@@ -2114,6 +2128,39 @@
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
       <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
     </nav>
+  </section>
+
+  <!-- ===================== ACTIVE TREATMENT DETAIL ===================== -->
+  <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span><span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span></div>
+    <div class="screen__body treatment-detail stack-5">
+      <section class="treatment-detail__hero">
+        <div><div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h1" data-treatment-detail-title>ผมร่วง</h2><p class="muted">ดูแลต่อเนื่องกับคุณหมอประจำของคุณ</p></div>
+        <div class="treatment-doctor">
+          <span class="avatar">น</span>
+          <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทนากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
+        </div>
+      </section>
+      <div class="treatment-detail__grid">
+        <section class="card card--pad-sm stack-3">
+          <div class="section-label">คำวินิจฉัย</div>
+          <p data-treatment-detail-diagnosis>ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา</p>
+        </section>
+        <section class="card card--pad-sm stack-3">
+          <div class="section-label">รายละเอียดการรักษา</div>
+          <p data-treatment-detail-plan>รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด</p>
+        </section>
+      </div>
+      <section class="card card--pad-sm stack-3">
+        <div class="between"><div class="section-label">ยาตามแผน</div><span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span></div>
+        <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
+      </section>
+      <section class="card card--pad-sm treatment-detail__followup">
+        <span><small>นัดติดตามผลครั้งถัดไป</small><strong data-treatment-detail-followup>12 ก.ย. 2026 · คุณหมอนรินทร์ ทนากะ</strong></span>
+        <button class="btn btn--secondary btn--sm" type="button" data-profile-followup>เข้าติดตามผล</button>
+      </section>
+      <div class="treatment-detail__actions"><button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button><button class="btn btn--secondary" type="button" data-go="refill">เติมยา</button></div>
+    </div>
   </section>
 
   <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
@@ -2928,6 +2975,7 @@
     'feedback':'SID-049',
     'feedbackdone':'SID-050',
     'profile':'SID-051',
+    'treatment-detail':'SID-051A',
     'activity':'SID-052',
     'empty-activities':'SID-053',
     'history':'SID-054',
@@ -3114,6 +3162,7 @@
     consultationFeeAcknowledged:false,
     consultationPaid:false,
     directGeneralHealthComplete:false,
+    followUpDirectToWaitroom:false,
     paymentResolution:'',
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
@@ -3235,7 +3284,7 @@
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,paymentResolution:'',documentsUnlocked:false,
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
       orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
@@ -5098,12 +5147,13 @@
     const cta=document.querySelector('#profile [data-home-cta]');
     if(!cta) return;
     const followUp=document.querySelector('#profile .followup-row strong');
-    const startFollowUp=document.querySelector('#profile [data-go="matching"][data-category]');
+    const startFollowUp=document.querySelector('#profile [data-treatment-open][data-category]');
     const has=Boolean(followUp && followUp.textContent.trim());
     cta.querySelector('[data-home-cta-variant="new"]').hidden=has;
     cta.querySelector('[data-home-cta-variant="followup"]').hidden=!has;
     if(!has){
       cta.dataset.go='conditions';
+      delete cta.dataset.profileFollowup;
       cta.removeAttribute('data-category');
       return;
     }
@@ -5113,8 +5163,41 @@
     const when=cta.querySelector('[data-home-followup-when]');
     const date=followUp.querySelector('[data-followup-date]');
     if(when && date) when.textContent=date.textContent.trim();
-    cta.dataset.go='matching';
+    cta.removeAttribute('data-go');
+    cta.dataset.profileFollowup='';
     if(startFollowUp?.dataset.category) cta.dataset.category=startFollowUp.dataset.category;
+  }
+
+  function beginAssignedDoctorFlow(category){
+    if(category) setSelectedCategory(category);
+    Object.assign(flowState,{
+      entryChannel:'direct',draftReady:true,directGeneralHealthComplete:false,
+      followUpDirectToWaitroom:true,consultationFeeAcknowledged:true,lastRequiredScreen:'intake-general'
+    });
+    persistFlowState();
+    journeyActive=true;
+    show('intake-general');
+  }
+  function openTreatmentDetail(card){
+    if(!card) return;
+    if(card.dataset.category) setSelectedCategory(card.dataset.category);
+    const title=card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
+    const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
+    const diagnosis=card.dataset.treatmentDiagnosis || '';
+    const plan=card.dataset.treatmentPlan || '';
+    const refill=card.querySelector('.treatment-refill')?.textContent.trim() || '';
+    const followup=card.querySelector('.followup-row strong')?.textContent.trim() || '';
+    const detail=document.getElementById('treatment-detail');
+    if(!detail) return;
+    detail.querySelector('[data-treatment-detail-title]').textContent=title;
+    detail.querySelector('[data-treatment-detail-status]').textContent=status;
+    detail.querySelector('[data-treatment-detail-diagnosis]').textContent=diagnosis;
+    detail.querySelector('[data-treatment-detail-plan]').textContent=plan;
+    detail.querySelector('[data-treatment-detail-refill]').textContent=refill;
+    detail.querySelector('[data-treatment-detail-followup]').textContent=followup;
+    const medicines=detail.querySelector('[data-treatment-detail-medications]');
+    medicines.replaceChildren(...[...card.querySelectorAll('.treatment-medication')].map(item => item.cloneNode(true)));
+    show('treatment-detail');
   }
 
   /* A medicine stepped down to 0 is declined rather than removed: it leaves the
@@ -5525,10 +5608,11 @@
   }
   function syncGeneralHealthContext(){
     const direct=flowState.entryChannel==='direct';
+    const assignedDoctorFlow=direct && flowState.followUpDirectToWaitroom;
     const title=document.querySelector('#intake-general [data-general-health-title]');
     const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
     const submit=document.querySelector('#intake-general [data-general-health-submit]');
-    if(title) title.textContent=direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ';
+    if(title) title.textContent=assignedDoctorFlow ? 'ยืนยันข้อมูลสุขภาพ' : (direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ');
     if(hint) hint.hidden=!direct;
     if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
   }
@@ -5707,7 +5791,7 @@
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
     tracking:'payment-success', feedback:'consult', feedbackdone:'feedback',
-    refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
+    refill:'profile', profile:'landing', 'treatment-detail':'profile', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
@@ -6553,6 +6637,14 @@
       // entering Log in cold (nav, followup care, home) turns it off
       if(!JOURNEY_INTAKE.includes(prevId) && !JOURNEY_AUTH.includes(prevId)) journeyActive = false;
     }
+    const loginIntakeNotice=document.querySelector('[data-login-intake-notice]');
+    if(loginIntakeNotice && id==='login'){
+      // A saved intake draft plus a clinical destination means this login was
+      // opened from the assessment, not from the ordinary landing/profile nav.
+      // Keep the message contextual so a cold login never implies treatment has
+      // already started.
+      loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
+    }
     /* Direct entry always restores the progress UI, even if this tab previously
        opened a partner link. Partner entry keeps it hidden on shared screens too. */
     document.querySelectorAll('.care-journey').forEach(cj => {
@@ -7296,6 +7388,21 @@
   }
   // navigation
   document.body.addEventListener('click', e => {
+    const treatmentOpen=e.target.closest('[data-treatment-open]');
+    if(treatmentOpen){ openTreatmentDetail(treatmentOpen); return; }
+    const profileFollowup=e.target.closest('[data-profile-followup]');
+    if(profileFollowup){ beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return; }
+    const profileConsultNow=e.target.closest('[data-profile-consult-now]');
+    if(profileConsultNow){ beginAssignedDoctorFlow(selectedCategoryId); return; }
+    const profileNewAppointment=e.target.closest('[data-profile-new-appointment]');
+    if(profileNewAppointment){
+      flowState.followUpDirectToWaitroom=false;
+      flowState.entryChannel='direct';
+      persistFlowState();
+      journeyActive=true;
+      show('conditions');
+      return;
+    }
     /* Client (17 Aug): the "review medicine order" screen is gone — the
        prescription hands straight to review & pay. The checkout still has to be
        refreshed first, which is what that screen's continue button used to do. */
@@ -8651,10 +8758,11 @@
     if(fromGeneralHealth && flowState.entryChannel==='direct'){
       flowState.draftReady=true;
       flowState.directGeneralHealthComplete=true;
-      /* The health details sit with the rest of the patient's own information
-         now (client, 26 Aug), so this hands on to the doctor rather than
-         jumping the queue straight into the waiting room. */
-      const next=directClinicalStartTarget();
+      /* A normal new-care route still starts doctor allocation. A follow-up or
+         consult-now shortcut already belongs to the patient's assigned doctor,
+         so after this safety confirmation it can enter that doctor's room. */
+      const next=flowState.followUpDirectToWaitroom ? 'waitroom' : directClinicalStartTarget();
+      flowState.followUpDirectToWaitroom=false;
       flowState.lastRequiredScreen=next;
       persistFlowState();
       saveIntakeDraft();
