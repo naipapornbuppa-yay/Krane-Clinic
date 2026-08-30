@@ -1810,10 +1810,10 @@
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment successful</h2><p class="muted" data-payment-success-copy>Your order is on its way to dispatch.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Diagnosis and medicines are ready</h2><p class="muted" data-payment-success-copy>Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="tracking">ติดตามการจัดส่ง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ดูเอกสารและติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1884,6 +1884,13 @@
   <section class="screen" id="tracking" data-screen-code="SCR-048">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Order #KR-10293</span></div>
     <div class="screen__body stack-5">
+      <div class="card card--pad-sm stack-2" data-tracking-reference>
+        <div class="between">
+          <div><span class="field-label">เลขพัสดุ</span><strong data-tracking-number>KR102930000TH</strong></div>
+          <span class="badge" data-tracking-carrier>Thailand Post</span>
+        </div>
+        <a class="btn btn--ghost btn--sm" data-tracking-official href="https://track.thailandpost.com/" target="_blank" rel="noopener noreferrer">ติดตามบนเว็บไซต์ขนส่ง <i data-lucide="external-link" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
+      </div>
       <div class="timeline">
         <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
         <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
@@ -3885,10 +3892,21 @@
     const success=document.getElementById('payment-success');
     const successTitle=success?.querySelector('[data-payment-success-title]');
     const successCopy=success?.querySelector('[data-payment-success-copy]');
-    if(successTitle) successTitle.textContent=hasFulfillableItems() ? 'ชำระเงินสำเร็จ' : 'ชำระค่าปรึกษาสำเร็จ';
-    if(successCopy) successCopy.textContent=hasFulfillableItems()
-      ? 'ร้านยาจัดเตรียมรายการพร้อมแล้ว กำลังเปิดสถานะจัดส่งและเอกสารของคุณ'
-      : 'ไม่มีรายการจัดส่ง เอกสารจากการปรึกษาพร้อมให้เปิดดูแล้ว';
+    const successCta=success?.querySelector('[data-payment-success-cta]');
+    const thai=document.documentElement.lang==='th';
+    const hasDelivery=hasFulfillableItems();
+    if(successTitle) successTitle.textContent=hasDelivery
+      ? (thai ? 'ผลการวินิจฉัยและรายการยาพร้อมแล้ว' : 'Your diagnosis and medicines are ready')
+      : (thai ? 'ผลการปรึกษาพร้อมแล้ว' : 'Your consultation results are ready');
+    if(successCopy) successCopy.textContent=hasDelivery
+      ? (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย รายการยา ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.')
+      : (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medical certificate and receipt.');
+    if(successCta){
+      successCta.dataset.go=hasDelivery ? 'tracking' : 'prescription';
+      successCta.textContent=hasDelivery
+        ? (thai ? 'ดูเอกสารและติดตามการจัดส่ง' : 'View documents and track delivery')
+        : (thai ? 'ดูเอกสาร' : 'View documents');
+    }
   }
   function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
     // The checkout and the bank gateway are separate screens, so both are updated.
@@ -6724,18 +6742,9 @@
     else stopPaymentDeadlineTimer();
     if(['payfail','payment-success','pharmacypending','tracking'].includes(id)) syncPaymentOutcome();
     /* Pharmacy verification, acceptance/reservation and preparation all run
-       before payment. SCR-016D therefore releases documents and hands straight
-       to SCR-048 tracking; no pharmacy state is repeated after payment. */
+       before payment. Keep SCR-016D visible so the patient can understand that
+       their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
-    if(id==='payment-success' && hasFulfillableItems()){
-      paymentSuccessTimer=setTimeout(() => {
-        /* This screen moves on by itself after a beat, so the review has to be
-           part of that hop. Hanging it off the CTA alone meant only someone who
-           tapped within 1.8s ever saw it — which is why the rating looked like
-           it had been dropped from the build (client, 18 Aug). */
-        if(document.getElementById('payment-success')?.classList.contains('active')) replaceCurrent('pharmacypending');
-      },reduceMotion ? 450 : 1800);
-    }
     clearTimeout(preloaderTimer);
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
