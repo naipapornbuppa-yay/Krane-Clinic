@@ -3483,7 +3483,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 }
 a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{object-position:58% center!important}
 [data-banner-swap]:hover .banner-swap__image,
-[data-banner-swap]:focus-visible .banner-swap__image{transform:scale(var(--banner-image-scale,1))}
+[data-banner-swap]:focus-visible .banner-swap__image{transform:none!important}
 @media(max-width:780px){
   .care-banner--weight .banner-swap__image--lifestyle{--banner-image-scale:1;object-position:74% 54%}
   a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--lifestyle{object-position:80% center}
@@ -3779,11 +3779,27 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
   backdrop-filter:blur(8px);
 }
 .care-banner-grid--static-products a[data-category="sexual-health"]{
-  background:var(--color-campaign-ed);
+  background:
+    radial-gradient(circle at 18% 12%,rgba(233,237,245,.7) 0%,rgba(233,237,245,0) 44%),
+    linear-gradient(145deg,#aab5c9 0%,#bac3d3 56%,#cbd1dc 100%);
 }
 .care-banner-grid--static-products a[data-category="sexual-health"] .service-tile__label{
-  color:var(--theme-on-dark);
+  color:var(--landing-navy);
   text-shadow:none;
+}
+.care-banner-grid--static-products a[data-category="sexual-health"] .service-tile__bg--ed-product{
+  object-fit:contain;
+  object-position:right center;
+  transform:none;
+  filter:drop-shadow(0 12px 14px rgba(35,53,87,.18));
+}
+@keyframes ed-pill-cluster-float{
+  0%,100%{translate:0 -4px}
+  50%{translate:0 4px}
+}
+.care-banner-grid--static-products a[data-category="sexual-health"]:hover .service-tile__bg--ed-product,
+.care-banner-grid--static-products a[data-category="sexual-health"]:focus-visible .service-tile__bg--ed-product{
+  animation:ed-pill-cluster-float 1.75s ease-in-out infinite;
 }
 .care-banner-grid--static-products a[data-category="hair-skin"]{
   background:var(--color-campaign-hair);
@@ -3797,27 +3813,24 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
   color:var(--landing-navy);
   text-shadow:none;
 }
-.service-tile__pill-cluster{
-  position:absolute;
-  inset:7% 3% 30% 42%;
-  z-index:0;
-}
-.service-tile__pill-cluster img{
-  position:absolute;
-  width:72%;
-  height:auto;
-}
-.service-tile__pill-cluster img:nth-child(1){top:0;right:0;transform:rotate(9deg)}
-.service-tile__pill-cluster img:nth-child(2){top:27%;left:-7%;width:62%;transform:rotate(-14deg)}
-.service-tile__pill-cluster img:nth-child(3){right:4%;bottom:-3%;width:54%;transform:rotate(18deg)}
-
 @media(max-width:700px){
   .care-banner-grid--static-products .care-banner__photo--product{object-position:58% center}
+  .care-banner-grid--static-products a[data-category="sexual-health"] .service-tile__bg--ed-product{
+    left:auto;
+    right:0;
+    width:76%;
+  }
   .care-banner-grid--static-products a[data-category="hair-skin"] .service-tile__bg--product{
     object-position:70% center;
     transform:scale(1.28);
   }
-  .service-tile__pill-cluster{inset:5% -4% 35% 31%}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .care-banner-grid--static-products a[data-category="sexual-health"] .service-tile__bg--ed-product{
+    animation:none!important;
+    translate:none!important;
+  }
 }
 
 /* 2026-08-30: full-width section rhythm and open trust marks. Each content
