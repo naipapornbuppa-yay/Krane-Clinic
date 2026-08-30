@@ -135,6 +135,20 @@
       step3Title: "Pay and await home delivery",
       step3Body: "After a prescription is issued, Krane delivers nationwide in discreet packaging. Bangkok and express-service areas may receive medicine in as little as two hours.*",
       howNote: "*Delivery time depends on location, order time, pharmacy availability and delivery conditions.",
+      howMockNext: "Next",
+      howMockVideo: "Video",
+      howMockChat: "Chat",
+      howMockDoctorLive: "Consulting your doctor",
+      howMockDoctorName: "Dr Narin",
+      howMockDoctorMessage: "I have one more question about your symptoms.",
+      howMockPatientMessage: "Sure. It has been happening every day.",
+      howMockTyping: "Doctor is typing",
+      howMockTracking: "Delivery tracking",
+      howMockConfirmed: "Confirmed",
+      howMockPreparing: "Preparing",
+      howMockRider: "On the way",
+      howMockDelivered: "Delivered",
+      howMockDiscreet: "Discreet package · Track every stage",
       protocolKicker: "Authentic medicine, delivered home",
       protocolTitle: "Doctor prescribed.<br>Pharmacist dispensed.",
       protocolLead: "Medicine and delivery assured through the Fascino pharmacy network in discreet packaging.",
@@ -777,6 +791,92 @@
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     schedule();
+  })();
+
+  /* UT-20: the three How-it-works cards demonstrate the real product instead
+     of using generic illustrations. The scenes advance only while this section
+     is visible and stop entirely when reduced motion is requested. */
+  (function howFlowMocks() {
+    const intakeMock = document.querySelector('[data-how-mock="intake"]');
+    const consultMock = document.querySelector('[data-how-mock="consult"]');
+    const deliveryMock = document.querySelector('[data-how-mock="delivery"]');
+    const section = document.querySelector('#how');
+    if (!intakeMock || !consultMock || !deliveryMock || !section) return;
+
+    const intakeScenes = {
+      th: [
+        { question:'กังวลเรื่องใดเป็นพิเศษ?', options:['ผมร่วง','ดูแลน้ำหนัก','สุขภาพเพศชาย'], selected:0 },
+        { question:'อาการนี้เริ่มมานานแค่ไหน?', options:['ไม่เกิน 1 เดือน','1–6 เดือน','มากกว่า 6 เดือน'], selected:1 },
+        { question:'มีโรคประจำตัวหรือไม่?', options:['ไม่มี','มี','ไม่แน่ใจ'], selected:0 }
+      ],
+      en: [
+        { question:'What would you like help with?', options:['Hair loss','Weight care',"Men's health"], selected:0 },
+        { question:'How long has this affected you?', options:['Under 1 month','1–6 months','Over 6 months'], selected:1 },
+        { question:'Do you have any health conditions?', options:['No','Yes','Not sure'], selected:0 }
+      ]
+    };
+    const deliveryStatuses = {
+      th:['ยืนยันคำสั่งซื้อแล้ว','เภสัชกรกำลังจัดยา','ไรเดอร์กำลังจัดส่ง','ส่งถึงคุณแล้ว'],
+      en:['Order confirmed','Pharmacist preparing','Courier on the way','Delivered']
+    };
+    let intakeIndex = 0;
+    let consultMode = 'video';
+    let deliveryIndex = 0;
+    let mockTimer = 0;
+
+    function renderHowMocks() {
+      const lang = document.documentElement.lang === 'en' ? 'en' : 'th';
+      const scene = intakeScenes[lang][intakeIndex];
+      const question = intakeMock.querySelector('[data-how-intake-question]');
+      const count = intakeMock.querySelector('[data-how-intake-count]');
+      const progress = intakeMock.querySelector('[data-how-intake-progress]');
+      const options = intakeMock.querySelector('[data-how-intake-options]');
+      if (question) question.textContent = scene.question;
+      if (count) count.textContent = `${intakeIndex + 1} / ${intakeScenes[lang].length}`;
+      if (progress) progress.style.width = `${((intakeIndex + 1) / intakeScenes[lang].length) * 100}%`;
+      if (options) options.innerHTML = scene.options.map((option,index) =>
+        `<span class="${index === scene.selected ? 'is-selected' : ''}">${option}</span>`
+      ).join('');
+
+      consultMock.dataset.mode = consultMode;
+      deliveryMock.dataset.deliveryStage = String(deliveryIndex);
+      const status = deliveryMock.querySelector('[data-how-delivery-status]');
+      if (status) status.textContent = deliveryStatuses[lang][deliveryIndex];
+      deliveryMock.querySelectorAll('[data-track-index]').forEach((item,index) => {
+        item.classList.toggle('is-done', index < deliveryIndex);
+        item.classList.toggle('is-current', index === deliveryIndex);
+      });
+    }
+
+    function advanceHowMocks() {
+      intakeIndex = (intakeIndex + 1) % 3;
+      consultMode = consultMode === 'video' ? 'chat' : 'video';
+      deliveryIndex = (deliveryIndex + 1) % 4;
+      renderHowMocks();
+    }
+    function startHowMocks() {
+      if (mockTimer || reducedMotionQuery.matches) return;
+      mockTimer = window.setInterval(advanceHowMocks, 2400);
+    }
+    function stopHowMocks() {
+      window.clearInterval(mockTimer);
+      mockTimer = 0;
+    }
+
+    document.addEventListener('krane:languagechange', renderHowMocks);
+    renderHowMocks();
+    if (reducedMotionQuery.matches) return;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) startHowMocks();
+        else stopHowMocks();
+      }, { threshold:0.18, rootMargin:'12% 0px' }).observe(section);
+    } else {
+      startHowMocks();
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopHowMocks();
+    });
   })();
 
   document.body.classList.add("motion-enabled");
