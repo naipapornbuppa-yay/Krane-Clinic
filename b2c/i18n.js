@@ -1195,6 +1195,7 @@
     "ประมาณ 15 นาที":"About 15 minutes",
     "ส่งยารอบสุดท้าย":"Last dispatch of the day",
     "21:00 น.":"21:00",
+    "หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป":"Consultations after 21:00 may receive medicine the next day.",
     "ขอใบรับรองแพทย์ · ฟรี":"Medical certificate on request · free",
     "นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา":"This is the consultation fee only. Medicine and delivery are paid separately after you see the doctor and receive a prescription.",
     "รับทราบและไปต่อ":"Got it, continue",
