@@ -29,6 +29,8 @@
       navGuarantee: "The Krane guarantee",
       navDoctors: "Our doctors",
       login: "Log in",
+      profile: "Profile",
+      logout: "Log out",
       chooseCare: "Choose your care",
       healthArticles: "Health articles",
       language: "Language",
@@ -193,6 +195,138 @@
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
   const mobileQuery = window.matchMedia("(max-width: 880px)");
+  const FLOW_STATE_KEY = "krane-p01-flow-state-v1";
+  const AUTH_PROFILE_KEY = "krane-auth-profile-v1";
+  const headerProfile = document.querySelector("[data-header-profile]");
+  const headerLogin = document.querySelector(".header-login");
+  const profileLogin = document.querySelector("[data-profile-login]");
+  const profileTrigger = document.querySelector("[data-profile-trigger]");
+  const profileMenu = document.querySelector("[data-profile-menu]");
+  const profilePicture = document.querySelector("[data-profile-picture]");
+  const profileFallback = document.querySelector("[data-profile-fallback]");
+  const profileName = document.querySelector("[data-profile-name]");
+  const profileProvider = document.querySelector("[data-profile-provider]");
+  const mobileLogin = document.querySelector("[data-mobile-login]");
+  const mobileProfile = document.querySelector("[data-mobile-profile]");
+  const mobileLogout = document.querySelector("[data-mobile-logout]");
+
+  function readSessionValue(key) {
+    try { return JSON.parse(window.sessionStorage.getItem(key) || "{}"); }
+    catch (_) { return {}; }
+  }
+
+  function safeProfilePicture(value) {
+    if (!value || typeof value !== "string") return "";
+    try {
+      const url = new URL(value, window.location.href);
+      return ["https:", "http:", "blob:"].includes(url.protocol) ? url.href : "";
+    } catch (_) { return ""; }
+  }
+
+  function resolveLandingAuth() {
+    const flow = readSessionValue(FLOW_STATE_KEY);
+    const stored = readSessionValue(AUTH_PROFILE_KEY);
+    const injected = window.__KRANE_AUTH__ && typeof window.__KRANE_AUTH__ === "object" ? window.__KRANE_AUTH__ : {};
+    const authenticated = injected.authenticated ?? stored.authenticated ?? Boolean(
+      flow.otpVerified && (flow.accountCreated || flow.returningIdentityValid || flow.identityVerified)
+    );
+    const provider = injected.provider || stored.provider || flow.authProvider || "";
+    return {
+      authenticated:Boolean(authenticated),
+      provider,
+      displayName:injected.displayName || stored.displayName || flow.profileDisplayName || flow.patientName || "ผู้ใช้ Krane",
+      pictureUrl:safeProfilePicture(
+        injected.pictureUrl || stored.pictureUrl || flow.lineProfilePictureUrl || flow.profilePictureUrl || ""
+      )
+    };
+  }
+
+  function closeProfileMenu({ restoreFocus = false } = {}) {
+    if (!profileMenu || profileMenu.hidden) return;
+    profileMenu.hidden = true;
+    profileTrigger?.setAttribute("aria-expanded", "false");
+    if (restoreFocus) profileTrigger?.focus();
+  }
+
+  function renderLandingAuth() {
+    const auth = resolveLandingAuth();
+    const lang = document.documentElement.lang === "en" ? "en" : "th";
+    headerProfile?.classList.toggle("is-authenticated", auth.authenticated);
+    if (headerLogin) headerLogin.hidden = auth.authenticated;
+    if (profileLogin) profileLogin.hidden = auth.authenticated;
+    if (profileTrigger) {
+      profileTrigger.hidden = !auth.authenticated;
+      profileTrigger.setAttribute("aria-label", lang === "en" ? "Open profile menu" : "เปิดเมนูโปรไฟล์");
+    }
+    if (profileName) profileName.textContent = auth.displayName;
+    if (profileProvider) {
+      profileProvider.textContent = auth.provider
+        ? `${auth.provider} ${lang === "en" ? "account" : "บัญชี"}`
+        : (lang === "en" ? "Krane account" : "บัญชี Krane");
+    }
+    if (profilePicture) {
+      profilePicture.hidden = !auth.pictureUrl;
+      if (auth.pictureUrl) profilePicture.src = auth.pictureUrl;
+      else profilePicture.removeAttribute("src");
+    }
+    if (profileFallback) {
+      profileFallback.hidden = Boolean(auth.pictureUrl);
+      profileFallback.textContent = (auth.displayName.trim()[0] || "K").toUpperCase();
+    }
+    if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+    if (mobileLogin) mobileLogin.hidden = auth.authenticated;
+    if (mobileProfile) mobileProfile.hidden = !auth.authenticated;
+    if (mobileLogout) mobileLogout.hidden = !auth.authenticated;
+    if (!auth.authenticated) closeProfileMenu();
+  }
+
+  function logoutLandingUser() {
+    try {
+      window.sessionStorage.removeItem(AUTH_PROFILE_KEY);
+      window.sessionStorage.removeItem(FLOW_STATE_KEY);
+      window.sessionStorage.removeItem("krane-p01-intake-draft-v2");
+      window.sessionStorage.removeItem("krane-p01-consent-records-v1");
+    } catch (_) {}
+    window.__KRANE_AUTH__ = { authenticated:false };
+    closeProfileMenu();
+    closeMenu();
+    renderLandingAuth();
+  }
+
+  profileTrigger?.addEventListener("click", () => {
+    if (!profileMenu) return;
+    const open = profileMenu.hidden;
+    profileMenu.hidden = !open;
+    profileTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) profileMenu.querySelector("[role='menuitem']")?.focus();
+  });
+  profilePicture?.addEventListener("error", () => {
+    profilePicture.hidden = true;
+    profilePicture.removeAttribute("src");
+    if (profileFallback) profileFallback.hidden = false;
+  });
+  document.querySelectorAll("[data-profile-logout], [data-mobile-logout]").forEach((button) => {
+    button.addEventListener("click", logoutLandingUser);
+  });
+  document.addEventListener("click", (event) => {
+    if (headerProfile && event.target instanceof Element && !headerProfile.contains(event.target)) closeProfileMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && profileMenu && !profileMenu.hidden) closeProfileMenu({ restoreFocus:true });
+  });
+  window.addEventListener("pageshow", renderLandingAuth);
+  window.addEventListener("focus", renderLandingAuth);
+  document.addEventListener("krane:authchange", renderLandingAuth);
+  document.addEventListener("krane:languagechange", renderLandingAuth);
+  window.KraneLandingAuth = {
+    sync(profile = {}) {
+      try { window.sessionStorage.setItem(AUTH_PROFILE_KEY, JSON.stringify(profile)); } catch (_) {}
+      window.__KRANE_AUTH__ = profile;
+      renderLandingAuth();
+    },
+    logout:logoutLandingUser
+  };
+  renderLandingAuth();
 
   function menuIsOpen() {
     return menu && (menu.open || menu.hasAttribute("open"));
