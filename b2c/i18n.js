@@ -1477,6 +1477,21 @@
     "ยอดที่ชำระ":"Amount paid",
     "ข้อมูลที่อ่านจากบัตร":"Read from your card",
     "แก้ไขได้ในหน้าถัดไป":"Editable on the next screen",
+    /* Labels and placeholders, not text nodes, and every one of them on a
+       screen or dialog that is not the one on show. Both blind spots were
+       closed in the contract check on 31 Aug; these are what it found. */
+    "ปิด":"Close",
+    "ปิดหน้าต่าง":"Close dialog",
+    "ปิดตัวเลือกวิธีชำระเงิน":"Close payment methods",
+    "ปิดหน้าต่างโค้ดส่วนลด":"Close discount codes",
+    "โค้ดส่วนลดที่ใช้ได้":"Discount codes you can use",
+    "ย่อเมนูเส้นทาง":"Collapse the step menu",
+    "ขยายเมนูเส้นทาง":"Expand the step menu",
+    "ผลการค้นหาที่อยู่":"Address search results",
+    "เลือกที่อยู่เพื่อหาสาขาที่ใกล้ที่สุด":"Choose an address to find the nearest branch",
+    "ระบุชื่อยา":"Name of the medicine",
+    "ระบุยาที่แพ้และอาการ":"Medicine you react to, and the reaction",
+    "อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…":"What went well, or what we could do better…",
     "เข้าติดตามผล":"Start follow-up",
     "ปรึกษาตอนนี้":"Consult now",
     /* An avatar initial, not prose — but it is still a Thai glyph on an

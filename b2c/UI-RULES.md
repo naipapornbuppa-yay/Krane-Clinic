@@ -91,6 +91,12 @@ only when the client asks for it, and the reason goes in the commit message.
 - **English means English.** Nothing stays Thai when the toggle is on English,
   and nothing stays English when it is on Thai. Both directions are asserted by
   `noThaiInEnglish` rules in the contract, on the app and on every marketing page.
+- **The check covers screens you cannot see.** One screen is active at a time,
+  so checking only what is on show checked one screen out of seventy; 73
+  untranslated strings piled up behind it before 31 Aug. The rule now activates
+  every `section.screen` in turn, reveals hidden `.modal-layer` dialogs, and
+  reads `placeholder` and `aria-label` as well as text, then puts everything
+  back. Adding a screen means it is covered from the moment it exists.
 - The app is English-source: new English copy goes in the markup, its Thai in
   `TH` (`b2c/i18n.js`). The flow screens are Thai-source: new Thai copy goes in
   the markup, its English in `EN_FROM_TH` in the same file.
