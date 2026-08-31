@@ -981,6 +981,155 @@
     });
   })();
 
+  /* UT-26: Figma's 3-step scene becomes three full-width snap frames. The
+     browser owns the actual horizontal scroll (so touch, trackpad and keyboard
+     remain native); this controller only keeps the rails, active state and
+     opt-in autoplay in sync. */
+  (function howCarousel() {
+    const section = document.querySelector('[data-how-carousel]');
+    const viewport = section?.querySelector('[data-how-viewport]');
+    const slides = section ? [...section.querySelectorAll('[data-how-slide]')] : [];
+    const indicators = section ? [...section.querySelectorAll('.figma-how__indicators [data-how-go]')] : [];
+    const count = section?.querySelector('[data-how-count]');
+    if (!section || !viewport || slides.length < 2) return;
+
+    const AUTO_DELAY = 5200;
+    let activeIndex = 0;
+    let autoTimer = 0;
+    let scrollFrame = 0;
+    let settleTimer = 0;
+    let isVisible = false;
+    let isPointerDown = false;
+    let resumeTimer = 0;
+
+    function normalizeIndex(index) {
+      return (index + slides.length) % slides.length;
+    }
+
+    function stopAuto() {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    }
+
+    function canAutoPlay() {
+      return isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+    }
+
+    function scheduleAuto(delay = AUTO_DELAY) {
+      stopAuto();
+      if (!canAutoPlay()) return;
+      autoTimer = window.setTimeout(() => {
+        goTo(activeIndex + 1, true);
+      }, delay);
+    }
+
+    function setActive(index) {
+      const nextIndex = normalizeIndex(index);
+      if (activeIndex === nextIndex && section.dataset.howReady === 'true') return;
+      activeIndex = nextIndex;
+      section.dataset.howActive = String(activeIndex);
+      section.dataset.howReady = 'true';
+      slides.forEach((slide, slideIndex) => {
+        const current = slideIndex === activeIndex;
+        slide.classList.toggle('is-current', current);
+        slide.toggleAttribute('inert', !current);
+        slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      });
+      indicators.forEach((indicator, indicatorIndex) => {
+        const current = indicatorIndex === activeIndex;
+        indicator.classList.toggle('is-current', current);
+        if (current) indicator.setAttribute('aria-current', 'step');
+        else indicator.removeAttribute('aria-current');
+      });
+      if (count) count.textContent = `${activeIndex + 1} / ${slides.length}`;
+    }
+
+    function goTo(index, fromAuto = false) {
+      const nextIndex = normalizeIndex(index);
+      setActive(nextIndex);
+      const left = slides[nextIndex].offsetLeft;
+      viewport.scrollTo({ left, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+      scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1800);
+    }
+
+    function updateFromScroll() {
+      scrollFrame = 0;
+      const width = viewport.clientWidth || 1;
+      const scrollLeft = viewport.scrollLeft;
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - scrollLeft);
+        const proximity = Math.max(0, 1 - distance / width);
+        slide.style.setProperty('--how-proximity', proximity.toFixed(3));
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      if (nearestDistance <= width * .48) setActive(nearestIndex);
+      window.clearTimeout(settleTimer);
+      if (isVisible) settleTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY + 800), 180);
+    }
+
+    viewport.addEventListener('scroll', () => {
+      stopAuto();
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateFromScroll);
+    }, { passive: true });
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    section.querySelectorAll('[data-how-go]').forEach((button) => {
+      button.addEventListener('click', () => goTo(Number(button.dataset.howGo || 0)));
+    });
+    section.querySelector('[data-how-prev]')?.addEventListener('click', () => goTo(activeIndex - 1));
+    section.querySelector('[data-how-next]')?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    viewport.addEventListener('pointerdown', () => {
+      isPointerDown = true;
+      stopAuto();
+    }, { passive: true });
+    const releasePointer = () => {
+      isPointerDown = false;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY + 1200), 900);
+    };
+    viewport.addEventListener('pointerup', releasePointer, { passive: true });
+    viewport.addEventListener('pointercancel', releasePointer, { passive: true });
+
+    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusout', () => window.setTimeout(scheduleAuto, 0));
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) scheduleAuto(3000);
+        else stopAuto();
+      }, { threshold: .34 }).observe(section);
+    } else {
+      isVisible = true;
+      scheduleAuto(3000);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else scheduleAuto();
+    });
+    reducedMotionQuery.addEventListener?.('change', () => {
+      if (reducedMotionQuery.matches) stopAuto();
+      else scheduleAuto();
+    });
+    window.addEventListener('resize', () => {
+      viewport.scrollLeft = slides[activeIndex].offsetLeft;
+      updateFromScroll();
+    }, { passive: true });
+
+    setActive(0);
+    updateFromScroll();
+  })();
+
   document.body.classList.add("motion-enabled");
   requestAnimationFrame(() => document.body.classList.add("motion-loaded"));
 
