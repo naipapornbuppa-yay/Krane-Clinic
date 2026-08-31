@@ -9,7 +9,13 @@ as `b2c/ui-contract.json`: if it is not written down, it goes missing.
 the file and the mechanism, so the next person can verify it in one grep
 rather than trusting this file.
 
-Last verified: 28 Aug 2026 against `6dbf6f1`.
+Last verified: 31 Aug 2026 against `61a5e8f`, which is what the live link is
+serving (Pages build 507, UI contract run 126, both green on that SHA).
+
+**Nine of the thirteen round-1 findings are still open** — one P0, six P1, two
+P2. Everything the client has asked for directly since 22 Aug is live; almost
+none of what user testing found is. Those are two different lists, and only one
+of them is moving.
 
 ---
 
@@ -33,7 +39,7 @@ Last verified: 28 Aug 2026 against `6dbf6f1`.
 
 | # | Finding | Hit by | Where it lives |
 |---|---------|--------|----------------|
-| 5 | **Date of birth picker.** Raw `<input type="date">`, no Thai-year affordance, no keyboard entry path. | 2/2 | `krane-b2c.html:922` (intake), `:1033` (social), `:1847` (insurance) |
+| 5 | **Date of birth picker.** Raw `<input type="date">`, no Thai-year affordance, no keyboard entry path. Three at the time of the finding; **five now** — the redesign work added two more of the same kind. | 2/2 | `krane-b2c.html`, 5 × `type="date"` |
 | 6 | **The price is nowhere on the landing page.** No ฿ amount anywhere; only "ฟรี" in the promo bar. "What does this cost" cannot be answered before signing up. | — | `krane-b2c-landing.html` |
 | 7 | **Two payment models are not explained.** Pay-before and pay-after both exist in the flow and read as a mistake rather than a choice. | — | `flowState.consultationPaymentTiming`, 6 sites in `krane-b2c.html` |
 | 8 | **Single-choice and multi-choice look the same** until you tap one and the page moves. | — | `[data-intake-auto-advance]` is the only marker |
@@ -62,6 +68,24 @@ These were raised on 22 Aug and are still waiting.
   rather than with it.
 
 ---
+
+## Shipped 29–31 Aug, and where it came from
+
+Verified present on `61a5e8f`. Every one of these came from the client
+directly, not from the round-1 list — worth seeing side by side with the nine
+open findings above.
+
+| Change | Verified by |
+|--------|-------------|
+| Sexual health / ED books a time instead of queueing for a doctor | `APPOINTMENT_ONLY`, `#appointment`, `#appointment-booked`, contract flow |
+| Refill is multi-select, and only from prescriptions that have not expired | `[data-refill-option]`, `retireExpiredRefills()` |
+| "เติมยา" replaces "สั่งซื้อซ้ำ" app-wide | 8 × `เติมยา`, 0 × `สั่งซื้อซ้ำ` |
+| Every case has a follow-up; the home banner changes when one exists | `.followup-row` |
+| Home cards are tappable; the per-card buttons are gone | contract components |
+| One regular doctor, with a small route to request a change | `.care-team-note` |
+| The yellow refill reassurance note is gone | no `refill-note` in markup or CSS |
+| Height / weight / conditions moved to directly after name + phone | `directNextAfterPatientInfo()` |
+| The language check now sees screens that are not on show | `noThaiInEnglish` walks every `section.screen` |
 
 ## Round 2 — pending
 

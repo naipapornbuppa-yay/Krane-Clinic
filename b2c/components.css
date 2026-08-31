@@ -2828,3 +2828,30 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   .treatment-detail__followup{align-items:flex-start;flex-direction:column}
   .treatment-detail__followup .btn{width:100%}
 }
+
+/* ---------- Appointment booking (SCR-007B, 31 Aug) ---------- */
+/* Sexual health books a time instead of queueing. Two single choices — a day,
+   then a time — then a commit, so the screen keeps its CTA. */
+.appointment-lead{margin:0}
+.appointment-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.appointment-day{display:grid;gap:2px;padding:10px 4px;border:1px solid var(--color-line);
+  border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-ink);
+  text-align:center;cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.appointment-day__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.appointment-day__date{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.appointment-day[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.appointment-day[aria-checked="true"] .appointment-day__date{color:var(--color-ink-2)}
+
+.appointment-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.appointment-slot{min-height:42px;padding:0 4px;border:1px solid var(--color-line);
+  border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-ink);
+  font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.appointment-slot[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent);color:#fff}
+/* Taken slots stay visible so the day does not look emptier than it is. */
+.appointment-slot.is-taken{background:var(--color-bg-soft);color:var(--color-ink-3);
+  border-color:transparent;cursor:default;text-decoration:line-through}
+@media(max-width:360px){
+  .appointment-slots{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

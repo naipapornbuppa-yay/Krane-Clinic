@@ -12,6 +12,8 @@
     "activity",
     "address",
     "address-map",
+    "appointment",
+    "appointment-booked",
     "article",
     "articles",
     "choosedoc",
@@ -224,6 +226,16 @@
       "selector": "#activity [data-order-progress] .order-progress__step",
       "why": "Orders carry their own progress bar in Activity once the pharmacy is done.",
       "minCount": 4
+    },
+    {
+      "selector": "#appointment [data-appointment-slot]",
+      "why": "Sexual health books a time instead of matching a doctor; the slot picker is the screen.",
+      "minCount": 6
+    },
+    {
+      "selector": "#appointment [data-appointment-day]",
+      "why": "Booking spans more than today, so the day picker must stay.",
+      "minCount": 3
     }
   ],
   "flows": [
@@ -308,6 +320,28 @@
         },
         {
           "visible": "[data-track-step='delivered'] [data-delivery-confirm]"
+        }
+      ]
+    },
+    {
+      "name": "Sexual health books a time instead of queueing",
+      "enter": "#appointment?entry=direct&category=sexual-health",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "consentsComplete": true,
+        "patientInfoComplete": true,
+        "directGeneralHealthComplete": true,
+        "consultationFeeAcknowledged": true
+      },
+      "assert": [
+        {
+          "activeScreen": "appointment"
+        },
+        {
+          "visible": "#appointment [data-appointment-confirm]"
         }
       ]
     }

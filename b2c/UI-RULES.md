@@ -91,6 +91,12 @@ only when the client asks for it, and the reason goes in the commit message.
 - **English means English.** Nothing stays Thai when the toggle is on English,
   and nothing stays English when it is on Thai. Both directions are asserted by
   `noThaiInEnglish` rules in the contract, on the app and on every marketing page.
+- **The check covers screens you cannot see.** One screen is active at a time,
+  so checking only what is on show checked one screen out of seventy; 73
+  untranslated strings piled up behind it before 31 Aug. The rule now activates
+  every `section.screen` in turn, reveals hidden `.modal-layer` dialogs, and
+  reads `placeholder` and `aria-label` as well as text, then puts everything
+  back. Adding a screen means it is covered from the moment it exists.
 - The app is English-source: new English copy goes in the markup, its Thai in
   `TH` (`b2c/i18n.js`). The flow screens are Thai-source: new Thai copy goes in
   the markup, its English in `EN_FROM_TH` in the same file.
@@ -160,7 +166,20 @@ else (client, 23 Aug):
   carries a quiet line pointing at LINE or email rather than a control that
   implies self-service.
 
-## 12. Sign-up
+## 12. Booking
+
+- **Sexual health books a time; it is not matched on the spot** (client, 31 Aug)
+  — there is no doctor to match for it. `APPOINTMENT_ONLY` in `krane-b2c.html`
+  holds the group and its conditions; `needsAppointment()` reads both, because
+  the picker keeps the group in `selectedCategoryId` and the condition in
+  `selectedConditionId` and a deep link can set either.
+- A booked consultation ends on its own confirmation, **not the waiting room**.
+- The booking screen is two single choices then a commit, so it keeps its CTA
+  (rule 1), and the CTA reads back the time about to be booked. Changing the day
+  clears the time — a slot free today may be taken tomorrow. Taken slots stay
+  visible and struck through so the day does not look emptier than it is.
+
+## 13. Sign-up
 
 - **Order of the chain** (client, 26 Aug): intake → account → OTP → consent →
   name and phone → **height / weight / conditions** → doctor → payment.
@@ -176,7 +195,7 @@ else (client, 23 Aug):
 - The partner channel keeps its own document step (`#partner-idcard`).
   `#identity` stays in the app for the contexts that still need it.
 
-## 13. Navigation
+## 14. Navigation
 
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.

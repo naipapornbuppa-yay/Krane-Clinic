@@ -234,30 +234,59 @@ for (const rule of contract.rules) {
     /* English has to mean English. Thai written straight into the markup has no
        English source to fall back to, so it used to survive the toggle and left
        most of a page in Thai (client audit, 19 Aug). Every visible string that
-       is still Thai in English mode is named here. */
+       is still Thai in English mode is named here.
+
+       Only one screen is on show at a time, so checking what is visible checked
+       one screen out of seventy and let 73 untranslated strings pile up behind
+       it (found 31 Aug). Every screen is activated in turn now, the same way
+       hidden dialogs are revealed, and put back afterwards. */
     if (rule.noThaiInEnglish) {
-      const strings = await page.evaluate(() => {
+      const strings = await page.evaluate(async () => {
         const THAI = /[ก-฾เ-๛]/;
         const found = new Set();
-        /* Dialogs are hidden until something opens them, so a leak inside one
-           survived this check twice. They are revealed for the walk and put
-           back exactly as they were. */
+        const settle = () => new Promise(resolve => setTimeout(resolve, 60));
+
         const reopened = [...document.querySelectorAll('.modal-layer[hidden]')];
         reopened.forEach(m => { m.hidden = false; });
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-          acceptNode(node) {
-            const parent = node.parentElement;
-            if (!parent) return NodeFilter.FILTER_REJECT;
-            if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.nodeName)) return NodeFilter.FILTER_REJECT;
-            if (!parent.getClientRects().length) return NodeFilter.FILTER_REJECT;
-            return NodeFilter.FILTER_ACCEPT;
+
+        const collect = root => {
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+            acceptNode(node) {
+              const parent = node.parentElement;
+              if (!parent) return NodeFilter.FILTER_REJECT;
+              if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.nodeName)) return NodeFilter.FILTER_REJECT;
+              if (!parent.getClientRects().length) return NodeFilter.FILTER_REJECT;
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          });
+          let node;
+          while ((node = walker.nextNode())) {
+            const text = node.nodeValue.trim().replace(/\s+/g, ' ');
+            if (text && THAI.test(text)) found.add(text);
           }
-        });
-        let node;
-        while ((node = walker.nextNode())) {
-          const text = node.nodeValue.trim().replace(/\s+/g, ' ');
-          if (text && THAI.test(text)) found.add(text);
+          /* A placeholder or a label is read out loud even though it is not a
+             text node, so those carry Thai just as visibly. */
+          root.querySelectorAll('[placeholder], [aria-label]').forEach(el => {
+            [el.getAttribute('placeholder'), el.getAttribute('aria-label')].forEach(value => {
+              const text = (value || '').trim().replace(/\s+/g, ' ');
+              if (text && THAI.test(text)) found.add(text);
+            });
+          });
+        };
+
+        collect(document.body);
+
+        const screens = [...document.querySelectorAll('section.screen')];
+        const wasActive = screens.filter(s => s.classList.contains('active'));
+        for (const screen of screens) {
+          screens.forEach(other => other.classList.remove('active'));
+          screen.classList.add('active');
+          await settle();
+          collect(screen);
         }
+        screens.forEach(s => s.classList.remove('active'));
+        wasActive.forEach(s => s.classList.add('active'));
+
         reopened.forEach(m => { m.hidden = true; });
         return [...found].slice(0, 8);
       });
