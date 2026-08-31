@@ -1137,6 +1137,67 @@
   </section>
 
   <!-- ===================== NO DOCTOR FREE NOW, PICK A TIME (KRANE-F09 fallback) ===================== -->
+  <!-- SCR-007B. Client, 31 Aug: sexual health cannot be matched to a doctor on
+       the spot, so that route books a time instead of queueing. Built as a real
+       booking screen rather than a fallback, because the next round of user
+       testing is meant to compare scheduling patterns on it. -->
+  <section class="screen" id="appointment" data-screen-code="SCR-007B">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">นัดเวลาปรึกษา</span></div>
+    <div class="screen__body stack-4">
+      <p class="muted appointment-lead">เรื่องนี้ต้องนัดเวลากับแพทย์ล่วงหน้า เลือกวันและเวลาที่คุณสะดวก</p>
+
+      <div class="stack-2">
+        <span class="section-label">เลือกวัน</span>
+        <div class="appointment-days" role="radiogroup" aria-label="เลือกวัน">
+          <button class="appointment-day" type="button" role="radio" aria-checked="true" data-appointment-day data-day-label="วันนี้"><span class="appointment-day__name">วันนี้</span><span class="appointment-day__date">31 ส.ค.</span></button>
+          <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="พรุ่งนี้"><span class="appointment-day__name">พรุ่งนี้</span><span class="appointment-day__date">1 ก.ย.</span></button>
+          <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="อังคาร"><span class="appointment-day__name">อังคาร</span><span class="appointment-day__date">2 ก.ย.</span></button>
+          <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="พุธ"><span class="appointment-day__name">พุธ</span><span class="appointment-day__date">3 ก.ย.</span></button>
+        </div>
+      </div>
+
+      <div class="stack-2">
+        <span class="section-label">เลือกเวลา</span>
+        <div class="appointment-slots" role="radiogroup" aria-label="เลือกเวลา" data-appointment-slots>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>10:00</button>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>11:30</button>
+          <button class="appointment-slot is-taken" type="button" role="radio" aria-checked="false" aria-disabled="true" data-appointment-slot>13:00</button>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>14:30</button>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>16:00</button>
+          <button class="appointment-slot is-taken" type="button" role="radio" aria-checked="false" aria-disabled="true" data-appointment-slot>17:30</button>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>19:00</button>
+          <button class="appointment-slot" type="button" role="radio" aria-checked="false" data-appointment-slot>20:30</button>
+        </div>
+        <p class="hint">เวลาที่จางคือมีคนจองแล้ว</p>
+      </div>
+
+      <div class="card card--pad-sm stack-2 consultation-fee-card">
+        <div class="between"><span class="muted">คุณหมอที่ดูแล</span><strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong></div>
+        <div class="between"><span class="muted">ค่าปรึกษาแพทย์</span><strong>฿ 350</strong></div>
+      </div>
+    </div>
+    <div class="screen__footer">
+      <button class="btn btn--primary btn--blocked" data-appointment-confirm aria-disabled="true"><span data-appointment-cta-label>เลือกเวลาก่อน</span></button>
+    </div>
+  </section>
+
+  <!-- The end of the booked route: a time, not a queue. -->
+  <section class="screen" id="appointment-booked" data-screen-code="SCR-007C">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">นัดหมายแล้ว</span></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Appointment booked">
+        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-no-slots"></use></svg></span>
+        <span class="state-view__badge"><i data-lucide="calendar-check" class="ui-icon" aria-hidden="true"></i></span>
+      </div>
+      <div class="state-view__copy">
+        <h2 class="h1">จองเวลาปรึกษาแล้ว</h2>
+        <p class="muted">เราจะเตือนคุณก่อนถึงเวลานัด</p>
+      </div>
+      <div class="state-view__timer" data-appointment-when></div>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
+  </section>
+
   <section class="screen" id="noslots" data-screen-code="SCR-007">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pick a time</span></div>
     <div class="screen__body state-view state-view--decision">
@@ -5835,8 +5896,17 @@
     if(flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete) return 'intake-general';
     return directClinicalStartTarget();
   }
+  /* Client, 31 Aug: sexual health has no doctor to match on the spot, so that
+     route books a time instead of queueing. Everything else still matches. */
+  const APPOINTMENT_ONLY = new Set(['sexual-health','ed','early-ejaculation','sexual-general']);
+  /* The picker keeps the group in selectedCategoryId and the condition in
+     selectedConditionId, so both are checked — a deep link can set either. */
+  function needsAppointment(){
+    return APPOINTMENT_ONLY.has(selectedCategoryId) || APPOINTMENT_ONLY.has(selectedConditionId);
+  }
   function directClinicalStartTarget(){
     if(DIRECT_NURSE_SCREENING_ENABLED) return 'nurse';
+    if(needsAppointment()) return 'appointment';
     doctorAvailable=true;
     return 'matching';
   }
@@ -6020,6 +6090,67 @@
       show('address');
     }
   });
+  /* Booking is two single choices and then a commit, so it keeps its CTA rather
+     than advancing on the first tap (house rule 1). The CTA names the chosen
+     time, so the patient reads back what they are about to book. */
+  let appointmentDay='วันนี้', appointmentSlot='';
+  function syncAppointment(){
+    const scr=document.getElementById('appointment');
+    if(!scr) return;
+    const cta=scr.querySelector('[data-appointment-confirm]');
+    const label=scr.querySelector('[data-appointment-cta-label]');
+    if(!cta||!label) return;
+    const ready=Boolean(appointmentSlot);
+    cta.setAttribute('aria-disabled',String(!ready));
+    cta.classList.toggle('btn--blocked',!ready);
+    label.textContent = ready ? `จองเวลา ${appointmentDay} ${appointmentSlot}` : 'เลือกเวลาก่อน';
+  }
+  function resetAppointment(){
+    const scr=document.getElementById('appointment');
+    if(!scr) return;
+    appointmentSlot='';
+    scr.querySelectorAll('[data-appointment-slot]').forEach(el => el.setAttribute('aria-checked','false'));
+    const day=scr.querySelector('[data-appointment-day][aria-checked="true"]');
+    appointmentDay=day?.dataset.dayLabel || 'วันนี้';
+    syncAppointment();
+  }
+  document.body.addEventListener('click', event => {
+    const day=event.target.closest('#appointment [data-appointment-day]');
+    if(day){
+      day.closest('.appointment-days').querySelectorAll('[data-appointment-day]')
+        .forEach(el => el.setAttribute('aria-checked', String(el===day)));
+      appointmentDay=day.dataset.dayLabel || '';
+      /* A slot free today may be taken tomorrow, so the time is re-chosen when
+         the day changes rather than silently carried over. */
+      appointmentSlot='';
+      document.querySelectorAll('#appointment [data-appointment-slot]')
+        .forEach(el => el.setAttribute('aria-checked','false'));
+      syncAppointment();
+      return;
+    }
+    const slot=event.target.closest('#appointment [data-appointment-slot]');
+    if(slot){
+      if(slot.getAttribute('aria-disabled')==='true'){
+        showActionToast('เวลานี้มีคนจองแล้ว','warning');
+        return;
+      }
+      slot.closest('.appointment-slots').querySelectorAll('[data-appointment-slot]')
+        .forEach(el => el.setAttribute('aria-checked', String(el===slot)));
+      appointmentSlot=slot.textContent.trim();
+      syncAppointment();
+      return;
+    }
+    const confirm=event.target.closest('#appointment [data-appointment-confirm]');
+    if(confirm){
+      if(!appointmentSlot){
+        showActionToast('เลือกเวลาที่สะดวกก่อน','warning');
+        return;
+      }
+      flowState.appointmentWhen=`${appointmentDay} ${appointmentSlot}`;
+      persistFlowState();
+      show('consultpay');
+    }
+  });
   function checkoutIsReady(){ return checkoutActionState()==='ready'; }
   /* Pressing the blocked pay button points at the thing that is blocking it:
      scroll it into view, outline it red, say so once (client, 23 Aug). Naming
@@ -6172,7 +6303,10 @@
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
-    const preDoctorTarget=flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete ? 'intake-general' : 'waitroom';
+    const booked=flowState.entryChannel==='direct' && needsAppointment();
+    const preDoctorTarget=flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete
+      ? 'intake-general'
+      : (booked ? 'appointment-booked' : 'waitroom');
     if(consultationBalanceDue()<=0) return preDoctorTarget;
     return timing==='before' || !flowState.consultationFeeAcknowledged ? 'consultpay' : preDoctorTarget;
   }
@@ -6767,6 +6901,11 @@
     }
     fillDoctorName();
     if(id==='profile') syncHomeFollowUpCta();
+    if(id==='appointment') resetAppointment();
+    if(id==='appointment-booked'){
+      const when=document.querySelector('#appointment-booked [data-appointment-when]');
+      if(when) when.textContent=flowState.appointmentWhen || '';
+    }
     if(id==='consultpay' && flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid){
       /* Timing, not a second charge (client, 28 Aug). Said once on arrival so it
          cannot be mistaken for another line on the bill. */
