@@ -5011,3 +5011,73 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   background:transparent;
   filter:brightness(0) invert(1);
 }
+
+/* UT-25 — finish the Figma hair product composition: keep the large
+   MINOXIDIL tablet fully visible at the far edge and overlap the two Krane
+   colour tablets behind it. All three layers follow the existing coordinated
+   lifestyle/product swap instead of introducing a separate animation. */
+.care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer{
+  position:absolute;
+  z-index:0;
+  display:block;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .75s ease,transform 1.05s cubic-bezier(.2,.72,.2,1);
+  filter:drop-shadow(0 12px 18px rgba(20,52,46,.18));
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .hair-product-layer{
+  opacity:1;
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .banner-swap__image--product{
+  right:0!important;
+  bottom:0!important;
+  width:auto!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+  filter:drop-shadow(0 14px 18px rgba(20,52,46,.16))!important;
+}
+.care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--blue{
+  right:21%;
+  bottom:5%;
+  width:25%;
+  transform:translate3d(10px,8px,0) rotate(-7deg) scale(.94);
+}
+.care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--pink{
+  right:10%;
+  top:7%;
+  width:22%;
+  transform:translate3d(8px,-6px,0) rotate(6deg) scale(.92);
+  filter:hue-rotate(55deg) saturate(1.08) drop-shadow(0 12px 18px rgba(20,52,46,.16));
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .hair-product-layer--blue{
+  transform:translate3d(0,0,0) rotate(-7deg) scale(1);
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .hair-product-layer--pink{
+  transform:translate3d(0,0,0) rotate(6deg) scale(1);
+}
+@media(max-width:760px){
+  .care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .banner-swap__image--product{
+    right:0!important;
+    bottom:0!important;
+    width:auto!important;
+    height:100%!important;
+  }
+  .care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--blue{
+    right:22%;
+    bottom:7%;
+    width:38%;
+  }
+  .care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--pink{
+    right:7%;
+    top:10%;
+    width:32%;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer{transition:none}
+}
