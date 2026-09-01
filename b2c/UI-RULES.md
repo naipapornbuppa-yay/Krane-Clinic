@@ -179,8 +179,9 @@ else (client, 23 Aug):
   The tinted plate is what groups a label with its text and it stays; the 1px
   line around it was the part that made a card of plain reading matter look
   like a form to fill in. Same as the house rule for cards: soft fill, no
-  outline. A secondary button sitting on one of these plates lifts to the card
-  surface, or it is grey on grey and reads as disabled.
+  outline. The follow-up panel is the appointment and nothing else: its
+  "เข้าติดตามผล" button went to the same place as the primary button directly
+  below it (client, 1 Sep).
   The status badge rides on the date line, which leaves the condition name the
   full width — beside the badge it wrapped onto two lines.
 - **Refill is multi-choice**: the patient ticks which prescriptions to re-order
