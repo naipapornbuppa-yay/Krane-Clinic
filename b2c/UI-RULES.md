@@ -179,9 +179,18 @@ else (client, 23 Aug):
   The tinted plate is what groups a label with its text and it stays; the 1px
   line around it was the part that made a card of plain reading matter look
   like a form to fill in. Same as the house rule for cards: soft fill, no
-  outline. The follow-up panel is the appointment and nothing else: its
-  "เข้าติดตามผล" button went to the same place as the primary button directly
-  below it (client, 1 Sep).
+  outline.
+- **The doctor is named once per screen** (client, 1 Sep: "มีหมอหลายที่มาก").
+  Treatment detail had the name in the doctor card, again beside the follow-up
+  date at the bottom, and a button between them. `.treatment-care` is one block
+  holding the doctor and the appointment with them, because the appointment is
+  with that doctor; the separate follow-up panel and its duplicate
+  "เข้าติดตามผล" button are gone, and the date no longer repeats the name
+  printed two lines above it.
+- **That block sits at the foot of the screen.** What the patient opened a
+  treatment record for is the diagnosis and the plan, so those come first; the
+  doctor, the next appointment and the button that reaches them read as one
+  group at the end.
   The status badge rides on the date line, which leaves the condition name the
   full width — beside the badge it wrapped onto two lines.
 - **Refill is multi-choice**: the patient ticks which prescriptions to re-order

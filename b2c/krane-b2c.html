@@ -2185,10 +2185,6 @@
           <div class="treatment-detail__summary">
             <div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2>
           </div>
-          <div class="treatment-doctor">
-            <span class="avatar">น</span>
-            <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทนากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
-          </div>
           <div class="treatment-detail__grid">
             <section class="treatment-detail__info stack-2">
               <div class="section-label">คำวินิจฉัย</div>
@@ -2199,11 +2195,24 @@
               <p data-treatment-detail-plan>รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด</p>
             </section>
           </div>
-          <!-- Client, 1 Sep: one action on this screen. "เข้าติดตามผล" sat
-               directly above "ปรึกษาคุณหมอประจำ" and went to the same place, so
-               the panel is the appointment itself and nothing else. -->
-          <section class="treatment-detail__followup">
-            <span><small>นัดติดตามผลครั้งถัดไป</small><strong data-treatment-detail-followup>12 ก.ย. 2026 · คุณหมอนรินทร์ ทนากะ</strong></span>
+          <!-- Client, 1 Sep: the doctor sits at the foot of the screen. What the
+               patient opened this for is the diagnosis and the plan, so those
+               come first; the doctor, the next appointment and the button that
+               reaches them read as one group at the end.
+
+               The doctor was named in three places before — a card at the top, a
+               follow-up panel at the bottom, and the button between. One block
+               holds the doctor and the appointment with them, and the date no
+               longer repeats the name printed two lines above it. -->
+          <section class="treatment-care">
+            <div class="treatment-doctor">
+              <span class="avatar">น</span>
+              <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทานากะ</strong><small>เลขใบประกอบวิชาชีพ 12345</small></span>
+            </div>
+            <div class="treatment-care__next">
+              <small>นัดติดตามผลครั้งถัดไป</small>
+              <strong data-treatment-detail-followup>2 ก.ย. 2026</strong>
+            </div>
           </section>
           <button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button>
         </article>
@@ -5327,7 +5336,9 @@
     const plan=card.dataset.treatmentPlan || '';
     const date=card.dataset.treatmentDate || '';
     const refill=card.querySelector('.treatment-refill')?.textContent.trim() || '';
-    const followup=card.querySelector('.followup-row strong')?.textContent.trim() || '';
+    /* The date on its own. The row also carries the doctor's name, which is
+       already two lines above this on the detail screen. */
+    const followup=card.querySelector('.followup-row [data-followup-date]')?.textContent.trim() || '';
     const detail=document.getElementById('treatment-detail');
     if(!detail) return;
     detail.querySelector('[data-treatment-detail-title]').textContent=title;
