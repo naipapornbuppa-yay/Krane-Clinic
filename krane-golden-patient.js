@@ -15,11 +15,15 @@
   if (demo.statuses.includes(statusFromUrl)) demo.writeState({ fulfilmentStatus: statusFromUrl });
 
   /* Each pattern also matches the value it produces, so repeat passes are a no-op. */
+  /* The follow-up dates are not rewritten here any more. The app generates them
+     from data-followup-offset so they move with the real date, and these two
+     pairs stamped a fixed calendar date back over that — which is what made the
+     three-day reminder disappear a few days after the fixture was written. They
+     also collapsed both treatment cards onto one date, so the case that is
+     deliberately outside the reminder window stopped being demonstrable. */
   const pairs = [
     [/Mali B\.(?:\s*\(Demo\))?/g, f.patient.name],
-    [/Dr\. Narin(?:\s+Tanaka|\s+T\.)?/g, f.doctor.name],
-    [/12 Sep 2026/g, f.treatment.followUp],
-    [/12 ก\.ย\. 2026/g, "26 ส.ค. 2026"]
+    [/Dr\. Narin(?:\s+Tanaka|\s+T\.)?/g, f.doctor.name]
   ];
 
   /* i18n.js carries a Thai form of the doctor's name, which the Doctor and Admin CMS

@@ -165,6 +165,16 @@ else (client, 23 Aug):
 - The window is measured from `data-followup-iso`, never from the rendered date:
   that text is translated, so parsing it would mean parsing Thai month
   abbreviations and would break the moment the language toggle ran.
+- **Demo dates are offsets, not calendar dates** (client, 1 Sep). A fixed date
+  plus a three-day window means the feature quietly stops appearing a few days
+  after the date is written — in the middle of a testing round, with nobody
+  told. `data-followup-offset` on the treatment card is the source: `1` for the
+  card inside the window, `11` for the one outside, so both the shown and the
+  hidden case stay demonstrable forever. `krane-golden-fixture.js` derives its
+  `followUp` from the same offset so the clinic side never disagrees.
+- Anything generated per-day is written in the current language and rewritten on
+  the language toggle. The i18n pass matches whole strings from a fixed table,
+  and a date that moves every day can never be in one.
 - **Treatment detail draws no boxes around text** (client, 1 Sep). Diagnosis,
   plan and follow-up were each in a bordered tinted panel, so a card of plain
   reading matter arrived looking like a form. The section label is the divider.

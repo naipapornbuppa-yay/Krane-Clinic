@@ -5,6 +5,23 @@
    Language: this file never forces a language. Thai remains the default and i18n.js owns
    the swap. See replaceText() below for how fixture values survive translation. */
 (function () {
+  /* The follow-up used to be a fixed calendar date. The patient app only shows
+     its reminder inside the three days before the appointment, so a fixed date
+     meant the demo silently lost that reminder a few days after the date was
+     written — mid-testing-round, with nobody told. It is one day out from
+     whenever the demo is opened now, and the clinic side reads the same
+     appointment, so the two never disagree. */
+  const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const MONTHS_TH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+  function relativeDate(offsetDays, thai) {
+    const when = new Date();
+    when.setHours(0, 0, 0, 0);
+    when.setDate(when.getDate() + offsetDays);
+    const months = thai ? MONTHS_TH : MONTHS_EN;
+    return when.getDate() + " " + months[when.getMonth()] + " " + when.getFullYear();
+  }
+  const FOLLOW_UP_OFFSET_DAYS = 1;
+
   const fixture = Object.freeze({
     patient: Object.freeze({
       name: "Mali S. (Demo)",
@@ -37,7 +54,8 @@
         Object.freeze({ name: "Minoxidil 5% topical", dosage: "Apply 1 mL to the scalp twice daily", price: 450 })
       ]),
       medicineFee: 1040,
-      followUp: "26 Aug 2026"
+      followUp: relativeDate(FOLLOW_UP_OFFSET_DAYS, false),
+      followUpTH: relativeDate(FOLLOW_UP_OFFSET_DAYS, true)
     }),
     order: Object.freeze({
       id: "KR-10293",

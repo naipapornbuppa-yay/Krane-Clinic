@@ -2126,7 +2126,7 @@
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
           </span>
           <span class="treatment-refill">Next refill in 9 days</span>
-          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
+          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="1" data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
@@ -2137,7 +2137,7 @@
           </span>
           <span class="treatment-refill">Next refill in 24 days</span>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
-          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-iso="2026-09-12">12 Sep 2026</span> · Dr. Narin</strong></span>
+          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="11" data-followup-iso="2026-09-12">12 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
 
@@ -5220,6 +5220,41 @@
   /* Only worth saying when the appointment is close (client, 1 Sep). A date
      eleven days out is not news, and a permanent banner for it is noise. */
   const FOLLOWUP_NOTICE_DAYS = 3;
+  /* The seeded follow-ups were fixed calendar dates, so the three-day reminder
+     would stop appearing four days after they were written and the demo link
+     would quietly lose the feature part-way through a testing round (client,
+     1 Sep). They are offsets from today now: one inside the window so the
+     reminder always has something to show, one outside so the hidden case is
+     still demonstrable.
+
+     The date is written in whichever language is on rather than left to the
+     i18n pass, because that pass matches whole strings from a fixed table and
+     a date that moves every day can never be in one. */
+  const FOLLOWUP_MONTHS_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const FOLLOWUP_MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function syncFollowUpDates(){
+    const thai=document.documentElement.lang==='th';
+    const months=thai ? FOLLOWUP_MONTHS_TH : FOLLOWUP_MONTHS_EN;
+    document.querySelectorAll('[data-followup-date][data-followup-offset]').forEach(node => {
+      const offset=Number(node.dataset.followupOffset);
+      if(!Number.isFinite(offset)) return;
+      const when=new Date();
+      when.setHours(0,0,0,0);
+      when.setDate(when.getDate()+offset);
+      const pad=value => String(value).padStart(2,'0');
+      node.setAttribute('data-followup-iso',`${when.getFullYear()}-${pad(when.getMonth()+1)}-${pad(when.getDate())}`);
+      const text=`${when.getDate()} ${months[when.getMonth()]} ${when.getFullYear()}`;
+      if(node.textContent!==text) node.textContent=text;
+    });
+  }
+  /* Rewrite on the language toggle. Watching the lang attribute keeps this out
+     of i18n.js, and cannot loop: the swap changes text, never that attribute.
+     The reminder is re-synced too — it holds a copy of the date, so on its own
+     it kept whichever language was showing when the screen was opened. */
+  if(window.MutationObserver){
+    new MutationObserver(() => { syncFollowUpDates(); syncHomeFollowUpCta(); })
+      .observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  }
   /* Read off data-followup-iso, not the rendered text: that text is translated,
      so parsing it would mean parsing Thai month abbreviations and would break
      the moment the language toggle ran. */
@@ -5236,6 +5271,8 @@
     const cta=document.querySelector('#profile [data-home-cta]');
     const toast=document.querySelector('#profile [data-followup-toast]');
     if(!cta || !toast) return;
+    /* Before reading the window, so a session left open overnight rolls over. */
+    syncFollowUpDates();
     const followUp=document.querySelector('#profile .followup-row strong');
     const date=followUp?.querySelector('[data-followup-date]');
     const startFollowUp=document.querySelector('#profile [data-treatment-open][data-category]');
