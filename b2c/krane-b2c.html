@@ -2097,10 +2097,19 @@
       <a class="home-cta" data-go="conditions" data-home-cta>
         <span class="home-cta__copy">
           <span class="home-cta__variant" data-home-cta-variant="new"><strong>เริ่มปรึกษาแพทย์</strong><span>เลือกเรื่องที่กังวล ใช้เวลา 5 นาที</span></span>
-          <span class="home-cta__variant" data-home-cta-variant="followup" hidden><strong>ติดตามผลกับคุณหมอ<span data-doctor-name>นรินทร์</span></strong><span>นัดครั้งถัดไป <span data-home-followup-when>12 ก.ย. 2026</span></span></span>
         </span>
         <span class="home-cta__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></span>
       </a>
+      <!-- Client, 1 Sep: the follow-up was a full-width blue banner the size of
+           the primary CTA, for something the patient only needs reminding of.
+           One small line now, and only inside the three days before the
+           appointment — outside that window it does not appear at all, because
+           ติดตามผล is already the first item in the quick menu above. -->
+      <button class="followup-toast" type="button" data-followup-toast data-profile-followup hidden>
+        <i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i>
+        <span class="followup-toast__text">นัดติดตามผล <span data-home-followup-when>2 ก.ย. 2026</span></span>
+        <span class="followup-toast__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      </button>
 
       <!-- F05 update (client 20 Jun): a patient can have multiple active treatments and orders.
            Each treatment is its own card; in-flight orders stack in an "Active orders" list. -->
@@ -2117,7 +2126,7 @@
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
           </span>
           <span class="treatment-refill">Next refill in 9 days</span>
-          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date>2 Sep 2026</span> · Dr. Narin</strong></span>
+          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
@@ -2128,7 +2137,7 @@
           </span>
           <span class="treatment-refill">Next refill in 24 days</span>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
-          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date>12 Sep 2026</span> · Dr. Narin</strong></span>
+          <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-iso="2026-09-12">12 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
 
@@ -2166,10 +2175,15 @@
 
       <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
         <article class="treatment-record stack-5">
-          <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
-          <div class="treatment-detail__summary">
-            <div><div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2></div>
+          <!-- Client, 1 Sep: the status badge rides on the date line now. Beside
+               the title it took a third of the width and pushed the condition
+               name onto two lines; the date row had empty space doing nothing. -->
+          <div class="treatment-record__head">
+            <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
             <span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span>
+          </div>
+          <div class="treatment-detail__summary">
+            <div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2>
           </div>
           <div class="treatment-doctor">
             <span class="avatar">น</span>
@@ -2195,8 +2209,13 @@
 
       <section class="treatment-detail__panel" id="treatment-medicine-panel" role="tabpanel" data-treatment-panel="medicine" hidden>
         <article class="treatment-record stack-5">
-          <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
-          <div class="between treatment-detail__medicine-head"><div><div class="eyebrow">ยาตามแผนการรักษา</div><h2 class="h2" data-treatment-detail-medicine-title>ผมร่วง</h2></div><span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span></div>
+          <div class="treatment-record__head">
+            <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
+            <span class="hint" data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</span>
+          </div>
+          <div class="treatment-detail__medicine-head">
+            <div class="eyebrow">ยาตามแผนการรักษา</div><h2 class="h2" data-treatment-detail-medicine-title>ผมร่วง</h2>
+          </div>
           <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
           <button class="btn btn--primary" type="button" data-go="refill">เติมยาตามแผนเดิม</button>
         </article>
@@ -5198,29 +5217,43 @@
      The date is read off the treatment card rather than written twice, so the
      two can never disagree, and each banner keeps its own translation because
      both are in the markup. */
+  /* Only worth saying when the appointment is close (client, 1 Sep). A date
+     eleven days out is not news, and a permanent banner for it is noise. */
+  const FOLLOWUP_NOTICE_DAYS = 3;
+  /* Read off data-followup-iso, not the rendered text: that text is translated,
+     so parsing it would mean parsing Thai month abbreviations and would break
+     the moment the language toggle ran. */
+  function daysUntilFollowUp(node){
+    const iso=node?.getAttribute('data-followup-iso');
+    if(!iso) return null;
+    const when=new Date(`${iso}T00:00:00`);
+    if(Number.isNaN(when.getTime())) return null;
+    const today=new Date();
+    today.setHours(0,0,0,0);
+    return Math.round((when-today)/86400000);
+  }
   function syncHomeFollowUpCta(){
     const cta=document.querySelector('#profile [data-home-cta]');
-    if(!cta) return;
+    const toast=document.querySelector('#profile [data-followup-toast]');
+    if(!cta || !toast) return;
     const followUp=document.querySelector('#profile .followup-row strong');
+    const date=followUp?.querySelector('[data-followup-date]');
     const startFollowUp=document.querySelector('#profile [data-treatment-open][data-category]');
     const has=Boolean(followUp && followUp.textContent.trim());
-    cta.querySelector('[data-home-cta-variant="new"]').hidden=has;
-    cta.querySelector('[data-home-cta-variant="followup"]').hidden=!has;
-    if(!has){
-      cta.dataset.go='conditions';
-      delete cta.dataset.profileFollowup;
-      cta.removeAttribute('data-category');
-      return;
-    }
+    const days=has ? daysUntilFollowUp(date) : null;
+    const soon=days!==null && days>=0 && days<=FOLLOWUP_NOTICE_DAYS;
+    /* Someone already under a doctor is not starting from "choose what is
+       worrying you" (client, 23 Aug), so the big CTA stays out of their way
+       whether or not the reminder is showing. */
+    cta.hidden=has;
+    toast.hidden=!soon;
+    if(!soon) return;
     /* Copy the date from its own node. Slicing the sentence on "·" used to run
        before the i18n pass and banked the English half, which the banner then
        kept because that became its remembered source. */
-    const when=cta.querySelector('[data-home-followup-when]');
-    const date=followUp.querySelector('[data-followup-date]');
+    const when=toast.querySelector('[data-home-followup-when]');
     if(when && date) when.textContent=date.textContent.trim();
-    cta.removeAttribute('data-go');
-    cta.dataset.profileFollowup='';
-    if(startFollowUp?.dataset.category) cta.dataset.category=startFollowUp.dataset.category;
+    if(startFollowUp?.dataset.category) toast.dataset.category=startFollowUp.dataset.category;
   }
 
   function beginAssignedDoctorFlow(category){

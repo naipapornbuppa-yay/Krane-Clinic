@@ -2634,6 +2634,24 @@ body.lang-th *{letter-spacing:normal}
 }
 .home-cta:hover{background:var(--theme-accent-hover,var(--color-accent))}
 .home-cta:active{transform:scale(.99)}
+/* display:flex above beats the hidden attribute on its own. */
+.home-cta[hidden]{display:none}
+/* One quiet line, not a second primary action. Sized like a notice: it tells
+   the patient the appointment is close and gets out of the way. */
+.followup-toast{width:100%;display:flex;align-items:center;gap:var(--sp-2);
+  min-height:44px;padding:10px var(--sp-3);border:0;border-radius:var(--radius-sm);
+  background:var(--color-accent-soft);color:var(--color-accent);
+  font:inherit;font-size:13px;font-weight:var(--fw-medium);text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform var(--dur-micro) var(--ease-out),opacity var(--dur-micro) var(--ease-out)}
+.followup-toast[hidden]{display:none}
+.followup-toast .ui-icon{width:17px;height:17px;flex:none}
+/* One line always: the date makes this long enough to wrap on a small phone. */
+.followup-toast__text{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.followup-toast__go{flex:none;display:grid;place-items:center;opacity:.65}
+.followup-toast__go svg{width:15px;height:15px}
+.followup-toast:active{transform:scale(.99);opacity:.75}
+.followup-toast:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
 /* The label is short and fixed; it was breaking mid-word ("ถัด / ไป") to make
    room for a long date and doctor name. Hold the label, wrap the value. */
 .followup-row{align-items:flex-start;gap:var(--sp-4);
@@ -2818,18 +2836,25 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .treatment-record{padding:var(--sp-5);border:1px solid var(--color-line);
   border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-card)}
 .treatment-record__date{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2)}
-.treatment-detail__summary{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+/* The status rides here, beside the date, so the title below gets the full
+   width and stays on one line. */
+.treatment-record__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.treatment-record__head>.badge,.treatment-record__head>.hint{flex:none}
+.treatment-detail__summary,.treatment-detail__medicine-head{display:block;min-width:0}
 .treatment-detail__summary .eyebrow,.treatment-detail__medicine-head .eyebrow{margin-bottom:4px}
 .treatment-doctor{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);
   border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-bg-soft)}
 .treatment-doctor .avatar{background:var(--color-surface);color:var(--color-accent)}
 .treatment-doctor>span:last-child{display:grid;gap:1px}.treatment-doctor small{color:var(--color-ink-3)}
 .treatment-detail__grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}
-.treatment-detail__info{padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-bg-soft)}
+/* Client, 1 Sep: no outlined text boxes. Every field on this screen was in its
+   own bordered, tinted panel, so a card of plain reading matter arrived looking
+   like a form. The section label already separates one field from the next. */
+.treatment-detail__info{padding:0;border:0;border-radius:0;background:none}
 .treatment-detail__info p{margin:0;line-height:1.6}
 .treatment-detail__medications{border:1px solid var(--color-line);border-radius:var(--radius-md);overflow:hidden}
 .treatment-detail__followup{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);
-  padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-sm)}
+  padding:0;border:0;border-radius:0}
 .treatment-detail__followup>span{display:grid;gap:3px}.treatment-detail__followup small{color:var(--color-ink-3)}
 @media(max-width:620px){
   .treatment-record{padding:var(--sp-4);border-radius:var(--radius-sm)}

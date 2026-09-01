@@ -154,9 +154,22 @@ else (client, 23 Aug):
 - **Refilling is a separate errand, not a substitute for a follow-up.** Both sit
   on the card; the follow-up is the primary.
 - **The card is the tap target on home** (client, 28 Aug). Five buttons across
-  two cards was the clutter. A treatment card opens its refill; the follow-up
-  keeps its own entry point in the banner above, which names the doctor and the
-  next date.
+  two cards was the clutter. A treatment card opens its refill.
+- **The follow-up reminder is one small line, and only inside three days**
+  (client, 1 Sep). It was a full-width blue banner the size of the primary CTA,
+  standing permanently for something the patient only needs reminding of when it
+  is close. `.followup-toast` is a single 44px line; `FOLLOWUP_NOTICE_DAYS`
+  is the window, and outside it nothing shows at all — ติดตามผล is already the
+  first item in the quick menu. A patient who has a doctor never sees the big
+  "เริ่มปรึกษาแพทย์" CTA, reminder showing or not.
+- The window is measured from `data-followup-iso`, never from the rendered date:
+  that text is translated, so parsing it would mean parsing Thai month
+  abbreviations and would break the moment the language toggle ran.
+- **Treatment detail draws no boxes around text** (client, 1 Sep). Diagnosis,
+  plan and follow-up were each in a bordered tinted panel, so a card of plain
+  reading matter arrived looking like a form. The section label is the divider.
+  The status badge rides on the date line, which leaves the condition name the
+  full width — beside the badge it wrapped onto two lines.
 - **Refill is multi-choice**: the patient ticks which prescriptions to re-order
   and can tick more than one, so it keeps its ticks and one footer CTA (rule 1).
   The CTA names the count and the total; blocked, it says what it is waiting for.

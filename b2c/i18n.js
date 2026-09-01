@@ -1097,6 +1097,7 @@
   /* Thai written straight into the markup, mapped back to English. Grouped in
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
+    "นัดติดตามผล":"Follow-up",
     "ที่อยู่จัดส่ง":"Delivery address",
     "ชำระเงิน":"Payment",
     "ขั้นตอนที่ 1 จาก 3, แบบสอบถาม":"Step 1 of 3, questionnaire",
