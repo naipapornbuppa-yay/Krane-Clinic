@@ -5,7 +5,13 @@
     "b2c/tools/contract-check.mjs asserts every line of this file against the",
     "running page; CI fails the build if something has been removed.",
     "Adding to this file is normal. Removing from it needs the client to say so,",
-    "and the reason belongs in the commit message."
+    "and the reason belongs in the commit message and in _removed below."
+  ],
+  "_removed": [
+    "noslots (SCR-007), 31 Aug: a second design for picking a consultation time,",
+    "reachable only from the demo rail's error link. #appointment (SCR-007B) now",
+    "owns that job for every route, so the two patterns no longer disagree in the",
+    "same build. Client approved retiring it before the round-2 test link."
   ],
   "screens": [
     "account",
@@ -44,7 +50,6 @@
     "landing",
     "login",
     "matching",
-    "noslots",
     "notifications",
     "nurse",
     "onboard1",
@@ -324,8 +329,10 @@
       ]
     },
     {
-      "name": "Sexual health books a time instead of queueing",
-      "enter": "#appointment?entry=direct&category=sexual-health",
+      "name": "Sexual health matches, fails, then books a time",
+      "why": "New, 31 Aug: the route to test is matching flagging no doctor and forcing a booking, not a booking screen on its own. Entering at #matching and waiting out the timer asserts the whole beat, so a regression that skips the match attempt fails the build.",
+      "enter": "#matching?entry=direct&category=sexual-health",
+      "waitBefore": 13000,
       "seed": {
         "entryChannel": "direct",
         "draftReady": true,

@@ -168,11 +168,22 @@ else (client, 23 Aug):
 
 ## 12. Booking
 
-- **Sexual health books a time; it is not matched on the spot** (client, 31 Aug)
-  — there is no doctor to match for it. `APPOINTMENT_ONLY` in `krane-b2c.html`
-  holds the group and its conditions; `needsAppointment()` reads both, because
-  the picker keeps the group in `selectedCategoryId` and the condition in
-  `selectedConditionId` and a deep link can set either.
+- **Sexual health goes through matching and fails it** (New, 31 Aug), it does
+  not skip to booking. The route New wants tested is *matching flags no doctor →
+  forced scheduling*, so the patient sees the match attempt and the failure, not
+  just the time picker. `directClinicalStartTarget()` sends every route to
+  `#matching` and sets `doctorAvailable` from `needsAppointment()`; the matching
+  timer re-reads `needsAppointment()` so a deep link straight to `#matching`
+  fails the same way. `APPOINTMENT_ONLY` holds the group and its conditions, and
+  `needsAppointment()` reads both `selectedCategoryId` and `selectedConditionId`
+  because the picker uses one for the group and one for the condition.
+- **One screen picks a consultation time.** `#appointment` (SCR-007B) owns it.
+  The old `#noslots` (SCR-007) was a second, English, option-pill design for the
+  same job reachable only from the demo rail, and was retired on 31 Aug — two
+  scheduling patterns in one build makes a comparison test unreadable.
+- Because the patient arrives from a failed match, the booking screen says so
+  ("ขณะนี้ไม่มีแพทย์ว่างสำหรับเรื่องนี้"). It must not claim the condition needs
+  booking in advance; that is a different story from the one just shown.
 - A booked consultation ends on its own confirmation, **not the waiting room**.
 - The booking screen is two single choices then a commit, so it keeps its CTA
   (rule 1), and the CTA reads back the time about to be booked. Changing the day

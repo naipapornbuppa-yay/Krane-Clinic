@@ -433,7 +433,6 @@
           <a data-go="matching">Auto-match</a><a data-go="choosedoc">Option · Choose doctor</a>
         </div><div class="rail-error-menu">
           <a class="is-exception" data-demo-nomatch data-screen-ref="matching"><span class="rail-error-tag">Error case</span>No doctor available now</a>
-          <a class="is-exception" data-go="noslots"><span class="rail-error-tag">Error case</span>No booking slots</a>
         </div></details>
         <details class="rail-page" open><summary>Consultation payment</summary><div class="rail-sub">
           <a data-go="consultpay">Order summary</a><a data-go="consultpay-gw">Payment gateway</a>
@@ -1144,7 +1143,10 @@
   <section class="screen" id="appointment" data-screen-code="SCR-007B">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">นัดเวลาปรึกษา</span></div>
     <div class="screen__body stack-4">
-      <p class="muted appointment-lead">เรื่องนี้ต้องนัดเวลากับแพทย์ล่วงหน้า เลือกวันและเวลาที่คุณสะดวก</p>
+      <!-- Arrived here because matching just failed, so the screen has to say so.
+           The old lead ("this needs booking in advance") described a different
+           story from the one the patient actually went through. -->
+      <p class="muted appointment-lead">ขณะนี้ไม่มีแพทย์ว่างสำหรับเรื่องนี้ เลือกวันและเวลาที่คุณสะดวก</p>
 
       <div class="stack-2">
         <span class="section-label">เลือกวัน</span>
@@ -1196,30 +1198,6 @@
       <div class="state-view__timer" data-appointment-when></div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
-  </section>
-
-  <section class="screen" id="noslots" data-screen-code="SCR-007">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Pick a time</span></div>
-    <div class="screen__body state-view state-view--decision">
-      <div class="state-view__visual state-view__visual--neutral" role="img" aria-label="No doctor available now">
-        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-no-slots"></use></svg></span>
-        <span class="state-view__badge"><i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i></span>
-      </div>
-      <div class="state-view__copy"><h2 class="h1">No doctor available now</h2><p class="muted">Choose the next available time.</p></div>
-      <div class="stack-3">
-        <div class="eyebrow">Today's doctor availability</div>
-        <div class="row" style="flex-wrap:wrap;gap:var(--sp-2)">
-          <button class="option" style="width:auto" aria-selected="true" data-select><span class="opt-title">14:30</span></button>
-          <button class="option" style="width:auto" data-select><span class="opt-title">17:00</span></button>
-          <button class="option" style="width:auto" data-select><span class="opt-title">19:00</span></button>
-          <button class="option" style="width:auto" data-select><span class="opt-title">Tomorrow 09:30</span></button>
-        </div>
-      </div>
-      <div class="card card--pad-sm stack-2 consultation-fee-card" data-consultation-balance-card>
-        <div class="between"><span class="muted" data-consultation-balance-label>ค่าปรึกษาแพทย์</span><strong data-consultation-balance-amount>฿ 350</strong></div>
-        <div class="hint" data-consultation-balance-hint>สิทธิ์ประกันครอบคลุมค่าปรึกษาแพทย์ ฿ 350 จึงไม่ต้องชำระค่าปรึกษา ณ ขั้นตอนนี้</div>
-      </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="consultpay">Book &amp; pay</button></div>
   </section>
 
   <!-- ===================== CONSULTATION FEE PAYMENT (first payment) ===================== -->
@@ -3013,7 +2991,6 @@
     'nurse':'SID-023',
     'matching':'SID-024',
     'choosedoc':'SID-025',
-    'noslots':'SID-026',
     'consultpay':'SID-027',
     'consultpay-gw':'SID-028',
     'consultpay-fail':'SID-029',
@@ -3115,8 +3092,9 @@
   let patientInfoNext = 'matching';
   // Doctor matching outcome. true -> a doctor is matched and the consultation
   // balance gate decides whether checkout is needed; false -> no doctor can be
-  // matched now, so the availability page (noslots) is shown to pick a slot first.
-  // Toggled by the "No doctor now" demo state so both branches can be shown.
+  // matched now, so #appointment is shown to book a time instead.
+  // Set per route by directClinicalStartTarget(): sexual health always fails to
+  // match, everything else always succeeds.
   let doctorAvailable = true;
   let actionToastTimer;
   const actionToast = document.createElement('div');
@@ -3581,7 +3559,7 @@
   const careJourneyStageOrder = {
     1: ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern',
         'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
-    2: ['intake-general','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail',
+    2: ['intake-general','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail',
         'waitroom','consult','video','rx-writing'],
     3: ['address','delivery-quote','pharmacy-search','pharmacypending','pharmacyissue',
         'payment','payment-gw','payfail','payment-success','tracking']
@@ -4251,7 +4229,21 @@
   function setSelectedCategory(value){
     const normalized = categoryAliases[value] || value;
     const cat = consultationCatalog.find(item => item.id === normalized);
-    if(!cat) return false;
+    if(!cat){
+      /* A condition id is accepted here too. Only group ids resolved before, so
+         a shared link reading category=ed silently selected nothing and the
+         route matched a doctor as if sexual health had never been picked —
+         exactly the case a test link is most likely to name. */
+      for(const group of consultationCatalog){
+        const condition = group.conditions.find(item => item.id === normalized);
+        if(!condition) continue;
+        selectedCategoryId = group.id;
+        selectedConditionId = condition.id;
+        renderedIntakeContext = '';
+        return true;
+      }
+      return false;
+    }
     selectedCategoryId = cat.id;
     const firstAvailable = cat.conditions.find(item => item.status !== 'Soon') || cat.conditions[0];
     selectedConditionId = firstAvailable ? firstAvailable.id : `${cat.id}-general`;
@@ -5861,7 +5853,7 @@
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', identity:'consent-terms', 'patient-info':'identity', 'insurance-result':'insurance', nurse:'patient-info',
-    matching:'patient-info', choosedoc:'matching', noslots:'matching',
+    matching:'patient-info', choosedoc:'matching', appointment:'matching',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult',
     address:'payment', 'delivery-quote':'address', 'pharmacy-search':'address',
@@ -5904,10 +5896,15 @@
   function needsAppointment(){
     return APPOINTMENT_ONLY.has(selectedCategoryId) || APPOINTMENT_ONLY.has(selectedConditionId);
   }
+  /* These routes still go through matching (New, 31 Aug: "while matching doctor
+     if system flag no doctor is available it will automatically force user to
+     schedule appointment"). Skipping straight to the booking screen showed the
+     time picker but never the moment that sends you there, which is the half
+     that has never been user-tested. doctorAvailable=false makes the matching
+     screen fail on its timer and hand over to #appointment. */
   function directClinicalStartTarget(){
     if(DIRECT_NURSE_SCREENING_ENABLED) return 'nurse';
-    if(needsAppointment()) return 'appointment';
-    doctorAvailable=true;
+    doctorAvailable = !needsAppointment();
     return 'matching';
   }
   function partnerClinicalStartTarget(){
@@ -6645,14 +6642,14 @@
   });
 
   const REQUIRED_CARE_TARGETS = new Set([
-    'nurse','matching','choosedoc','noslots','consultpay','consultpay-gw','consultpay-fail','waitroom',
+    'nurse','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','address','delivery-quote','pharmacy-search',
     'pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
     'tracking','feedback','feedbackdone','refill','prescription','upload-rx'
   ]);
   /* Everything from doctor matching onwards now sits after the health page,
      so all of it waits on that page rather than only the waiting room. */
-  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','choosedoc','noslots',
+  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','choosedoc','appointment',
     'consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
@@ -7076,7 +7073,10 @@
            matching, including when insurance covers it and the balance is 0.
            consultationHandoffTarget() skipped straight to the waiting room in
            that case, which is what hid the fee summary. */
-        replaceCurrent(doctorAvailable ? 'consultpay' : 'noslots');
+        /* needsAppointment() is re-read here rather than trusted from the
+           doctorAvailable set at route entry, so a deep link straight to
+           #matching fails to match for sexual health too. */
+        replaceCurrent(doctorAvailable && !needsAppointment() ? 'consultpay' : 'appointment');
       }, 10000);
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
@@ -8514,7 +8514,6 @@
     'social-confirm':   { id:'KRANE-F03', name:'Social Login Callback, Confirm Account', stories:['Client 14 Jul: LINE / Google login returns to a clear confirmation screen before continuing','Patient reviews the verified identity and contact details shared by the provider','New-patient and returning-patient routes continue to the correct next step'] },
     'matching':         { id:'KRANE-F09 + KRANE-F11', name:'Doctor Matching (Auto-match default)', stories:['US-F09.1: Auto-match assigns an available licensed doctor without a redundant introduction screen','US-F11.1: The patient sees one waiting state while a doctor is assigned','If no doctor is immediately available, the system offers the next suitable appointment without sending the patient to an error page'] },
     'choosedoc':        { id:'KRANE-F09 + KRANE-F11', name:'Choose a Doctor (optional)', stories:['US-F09.2: Patient browses available doctors for the service type and selects one','US-F09.5: When two doctors are free at once, a choice can be offered after a successful match'] },
-    'noslots':          { id:'KRANE-F09', name:'No Doctor Free Now, Pick a Time', stories:['US-F09.5: Time selection appears only when no doctor is immediately available','US-F09.3: Booking confirmation and reminder are sent for the fallback time'] },
     'consultpay':       { id:'KRANE-F39 + KRANE-F09', name:'Consultation Fee Payment', stories:['US-F39.1: Discount / coupon code can be entered at checkout','Prototype assumption: Payment 1 is consultation fee only and is required before entering the waiting room','Prototype assumption: medicine and delivery remain a separate payment after prescription acceptance'] },
     'waitroom':         { id:'KRANE-F14', name:'Waiting Room, Doctor Joins First', stories:['US-F14.4: Doctor joins first before patient enters the consultation room','Client v3: the patient cannot enter a blank room; the Enter button unlocks only when the doctor admits them','Patient sees current status, estimated next step, and what to prepare while waiting'] },
     'consult':          { id:'KRANE-F13', name:'Consultation Screen (Patient), Chat Tab', stories:['US-F13.1: Chat + video tabs freely switchable during session','US-F13.2: Patient sees doctor name, photo, and licence number in session','US-F13.3: Patient can view intake form summary in the same view','US-F13.4: Session stays open until doctor closes it and sends the treatment plan','Prototype assumption: consultation fee is already paid before this screen'] },

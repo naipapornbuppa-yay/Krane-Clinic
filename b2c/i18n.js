@@ -1370,7 +1370,7 @@
     "เลือกเรื่องที่กังวล ใช้เวลา 5 นาที":"Pick your concern · about 5 minutes",
     "ติดตามผลกับคุณหมอ":"Follow up with Dr.",
     "นัดเวลาปรึกษา":"Book a consultation",
-    "เรื่องนี้ต้องนัดเวลากับแพทย์ล่วงหน้า เลือกวันและเวลาที่คุณสะดวก":"This concern is booked in advance. Pick a day and time that suits you.",
+    "ขณะนี้ไม่มีแพทย์ว่างสำหรับเรื่องนี้ เลือกวันและเวลาที่คุณสะดวก":"No doctor is available for this right now. Pick a day and time that suits you.",
     "เลือกวัน":"Pick a day",
     "เลือกเวลาก่อน":"Pick a time first",
     "เวลาที่จางคือมีคนจองแล้ว":"Faded times are already taken",
