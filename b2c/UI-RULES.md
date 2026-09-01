@@ -211,3 +211,13 @@ else (client, 23 Aug):
 - Back returns to the page the user came from, including deep links.
 - Re-consulting from an existing treatment card skips the condition picker.
 - Landing and web-app share one nav bar and one drawer.
+- **The home quick menu draws no boxes** (client, 1 Sep: "เอากรอบ…ตรงควิกเมนูออก
+  ไม่สวยไม่คลีน"). No plate behind the action and no disc behind the icon — four
+  actions were putting eight containers across the top of the home screen. The
+  icon sits on the page in brand blue and the **label** identifies the action,
+  so labels stay one line and never wrap. The follow-up is marked by accent
+  colour on its label, not by a filled tile; the blue banner below it is the
+  loud version of the same action and does not need a second one above.
+- With no plate to darken, a quick-menu press is answered by the item itself
+  (scale and fade), and focus by an outline. An action with no visible feedback
+  reads as broken — the same finding as the greyed-out pay button.
