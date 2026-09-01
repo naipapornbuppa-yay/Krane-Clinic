@@ -175,9 +175,12 @@ else (client, 23 Aug):
 - Anything generated per-day is written in the current language and rewritten on
   the language toggle. The i18n pass matches whole strings from a fixed table,
   and a date that moves every day can never be in one.
-- **Treatment detail draws no boxes around text** (client, 1 Sep). Diagnosis,
-  plan and follow-up were each in a bordered tinted panel, so a card of plain
-  reading matter arrived looking like a form. The section label is the divider.
+- **Treatment detail keeps its panels but draws no strokes** (client, 1 Sep).
+  The tinted plate is what groups a label with its text and it stays; the 1px
+  line around it was the part that made a card of plain reading matter look
+  like a form to fill in. Same as the house rule for cards: soft fill, no
+  outline. A secondary button sitting on one of these plates lifts to the card
+  surface, or it is grey on grey and reads as disabled.
   The status badge rides on the date line, which leaves the condition name the
   full width — beside the badge it wrapped onto two lines.
 - **Refill is multi-choice**: the patient ticks which prescriptions to re-order
