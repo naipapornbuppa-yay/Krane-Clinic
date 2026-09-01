@@ -20,6 +20,11 @@ only when the client asks for it, and the reason goes in the commit message.
   has finished with a multi-select, a text field or a dropdown.
 - **Segmented control** (`.partner-binary`, `.partner-duration-units`) is the pattern for
   2–4 short mutually exclusive values. Selected = white surface + shadow on a sunken track.
+- **Two panels on one screen use that same control, not bespoke tabs** (client,
+  1 Sep). Treatment detail had its own 72px boxed tab strip welded to the top of
+  the record card; it is `.partner-binary--accent` now, the same switch as
+  delivery/pickup on checkout. Text only — a switch this size does not need
+  icons, and a screen already called hard to read does not need decoration.
 
 ## 2. One page, one question
 
