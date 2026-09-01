@@ -102,6 +102,13 @@ only when the client asks for it, and the reason goes in the commit message.
   every `section.screen` in turn, reveals hidden `.modal-layer` dialogs, and
   reads `placeholder` and `aria-label` as well as text, then puts everything
   back. Adding a screen means it is covered from the moment it exists.
+- **A Thai placeholder that JS overwrites at runtime still fails that check.**
+  The rule now activates screens nobody has navigated to, so whatever is
+  literally in the markup is what it reads. Any node a script fills in later
+  must be written English-source, or generated — a Thai default sitting there
+  waiting to be replaced is a build failure. `npm run check:ui` runs 130 checks:
+  the 112 screen/component/flow assertions **and** the 18 rules. Running only
+  the first half is how four commits went out with this red.
 - The app is English-source: new English copy goes in the markup, its Thai in
   `TH` (`b2c/i18n.js`). The flow screens are Thai-source: new Thai copy goes in
   the markup, its English in `EN_FROM_TH` in the same file.

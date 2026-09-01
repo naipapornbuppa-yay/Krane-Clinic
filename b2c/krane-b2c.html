@@ -2211,7 +2211,10 @@
             </div>
             <div class="treatment-care__next">
               <small>นัดติดตามผลครั้งถัดไป</small>
-              <strong data-treatment-detail-followup>2 ก.ย. 2026</strong>
+              <!-- Rendered from the offset like every other follow-up date, so
+                   it is in the right language before a treatment is opened.
+                   Written in English here as the source i18n falls back to. -->
+              <strong data-treatment-detail-followup data-followup-date data-followup-offset="1">2 Sep 2026</strong>
             </div>
           </section>
           <button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button>
@@ -5336,9 +5339,12 @@
     const plan=card.dataset.treatmentPlan || '';
     const date=card.dataset.treatmentDate || '';
     const refill=card.querySelector('.treatment-refill')?.textContent.trim() || '';
-    /* The date on its own. The row also carries the doctor's name, which is
-       already two lines above this on the detail screen. */
-    const followup=card.querySelector('.followup-row [data-followup-date]')?.textContent.trim() || '';
+    /* The date on its own — the row also carries the doctor's name, which is
+       already two lines above this on the detail screen. The offset is mirrored
+       rather than the text copied, so syncFollowUpDates() renders this date the
+       same way as every other one and it follows the language toggle instead of
+       freezing in whichever language the treatment happened to be opened in. */
+    const followupNode=card.querySelector('.followup-row [data-followup-date]');
     const detail=document.getElementById('treatment-detail');
     if(!detail) return;
     detail.querySelector('[data-treatment-detail-title]').textContent=title;
@@ -5347,7 +5353,16 @@
     detail.querySelector('[data-treatment-detail-diagnosis]').textContent=diagnosis;
     detail.querySelector('[data-treatment-detail-plan]').textContent=plan;
     detail.querySelector('[data-treatment-detail-refill]').textContent=refill;
-    detail.querySelector('[data-treatment-detail-followup]').textContent=followup;
+    const detailFollowup=detail.querySelector('[data-treatment-detail-followup]');
+    if(detailFollowup){
+      if(followupNode?.dataset.followupOffset){
+        detailFollowup.dataset.followupOffset=followupNode.dataset.followupOffset;
+        syncFollowUpDates();
+      }else{
+        detailFollowup.removeAttribute('data-followup-offset');
+        detailFollowup.textContent=followupNode?.textContent.trim() || '';
+      }
+    }
     detail.querySelectorAll('[data-treatment-detail-date]').forEach(node => { node.textContent=date; });
     const medicines=detail.querySelector('[data-treatment-detail-medications]');
     medicines.replaceChildren(...[...card.querySelectorAll('.treatment-medication')].map(item => item.cloneNode(true)));
