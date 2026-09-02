@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-care-team-contact-v1";
+    const release = "20260903-payment-readonly-list-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,13 +38,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260830-quick-menu-no-frame-v1">
+<link rel="stylesheet" href="components.css?v=20260903-payment-readonly-list-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260903-care-team-contact-v1" defer></script>
+<script src="i18n.js?v=20260903-payment-readonly-list-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -2012,6 +2012,56 @@
     </div>
   </section>
 
+  <!-- Editing prescribed quantities is intentionally separate from checkout.
+       The payment page stays a calm, read-only bill; this screen owns the only
+       quantity controls and keeps the prescription maximum visible. -->
+  <section class="screen" id="payment-items" data-screen-code="SCR-014E">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">แก้ไขรายการยา</span></div>
+    <div class="screen__body stack-4 payment-items-editor">
+      <header class="payment-items-editor__head">
+        <span class="eyebrow">รายการยาตามใบสั่งแพทย์</span>
+        <h2 class="h2">เลือกรายการที่ต้องการรับ</h2>
+        <p class="muted">ลดจำนวนหรือไม่รับบางรายการได้ โดยไม่เกินจำนวนที่แพทย์สั่ง</p>
+      </header>
+      <div class="checkout-order checkout-order--editor">
+        <div class="checkout-order__item" data-order-item="cough">
+          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260819-generic-blister-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__body"><span class="checkout-order__name">Dextromethorphan 15 mg</span><span class="checkout-order__note">ลดอาการไอ</span></span>
+          <span class="checkout-order__price" data-order-price>฿ 170</span>
+          <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="Dextromethorphan 15 mg quantity">
+            <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
+          </span>
+        </div>
+        <div class="checkout-order__item" data-order-item="loratadine">
+          <span class="checkout-order__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__body"><span class="checkout-order__name">Loratadine 10 mg</span><span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span></span>
+          <span class="checkout-order__price" data-order-price>฿ 94</span>
+          <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="94" aria-label="Loratadine 10 mg quantity">
+            <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
+          </span>
+        </div>
+        <div class="checkout-order__item" data-order-item="paracetamol">
+          <span class="checkout-order__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__body"><span class="checkout-order__name">Paracetamol 500 mg</span><span class="checkout-order__note">แก้ปวด ลดไข้</span></span>
+          <span class="checkout-order__price" data-order-price>฿ 40</span>
+          <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="20" aria-label="Paracetamol 500 mg quantity">
+            <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
+          </span>
+        </div>
+        <div class="checkout-order__item" data-order-item="naproxen">
+          <span class="checkout-order__thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__body"><span class="checkout-order__name">Naproxen 250 mg</span><span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span></span>
+          <span class="checkout-order__price" data-order-price>฿ 134</span>
+          <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="Naproxen 250 mg quantity">
+            <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
+          </span>
+        </div>
+      </div>
+      <p class="payment-items-editor__note"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>การเปลี่ยนจำนวนไม่แก้ไขชนิดยาและขนาดยาที่แพทย์สั่ง</span></p>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="payment">บันทึกรายการและกลับไปชำระเงิน</button></div>
+  </section>
+
   <!-- ===================== MEDICATION PAYMENT (KRANE-F18 · hosted gateway look) =====================
        F18 update (client 20 Jun): payment is handled by a third-party hosted gateway (KBank /
        K-Payment Gateway). This screen mirrors that gateway chrome, Krane plugs into it rather than
@@ -2077,64 +2127,15 @@
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
-      <!-- 2. What is in the order. Grab puts the basket under the delivery
-           details, because where it goes is decided before what it costs
-           (client, 20 Aug). Items stay editable right up to payment. -->
+      <!-- 2. What is in the order. This is now a true read-only summary: the
+           consultation appears first and medicine quantities are edited on
+           #payment-items, never inline beside prices. -->
       <div class="stack-2">
-        <!-- Who prescribed it belongs on the section line, not as a row of its
-             own inside the card (client, 19 Aug). -->
         <div class="checkout-head">
           <span class="section-label">สรุปคำสั่งซื้อ</span>
-          <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
+          <button class="checkout-order__edit" type="button" data-go="payment-items"><i data-lucide="pencil" class="ui-icon" aria-hidden="true"></i><span>แก้ไขรายการยา</span></button>
         </div>
         <div class="checkout-order">
-          <div class="checkout-order__item" data-order-item="cough">
-            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260819-generic-blister-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Dextromethorphan 15 mg</span>
-              <span class="checkout-order__note">ลดอาการไอ</span>
-            </span>
-            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="Dextromethorphan 15 mg quantity">
-              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
-            </span>
-            <span class="checkout-order__price" data-order-price>฿ 170</span>
-          </div>
-          <div class="checkout-order__item" data-order-item="loratadine">
-            <span class="checkout-order__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Loratadine 10 mg</span>
-              <span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span>
-            </span>
-            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="94" aria-label="Loratadine 10 mg quantity">
-              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
-            </span>
-            <span class="checkout-order__price" data-order-price>฿ 94</span>
-          </div>
-          <div class="checkout-order__item" data-order-item="paracetamol">
-            <span class="checkout-order__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Paracetamol 500 mg</span>
-              <span class="checkout-order__note">แก้ปวด ลดไข้</span>
-            </span>
-            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="20" aria-label="Paracetamol 500 mg quantity">
-              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
-            </span>
-            <span class="checkout-order__price" data-order-price>฿ 40</span>
-          </div>
-          <div class="checkout-order__item" data-order-item="naproxen">
-            <span class="checkout-order__thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Naproxen 250 mg</span>
-              <span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span>
-            </span>
-            <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="Naproxen 250 mg quantity">
-              <button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span>
-            </span>
-            <span class="checkout-order__price" data-order-price>฿ 134</span>
-          </div>
-                  <!-- Client, 1 Sep: the doctor's fee is a line in the basket, not only a
-               row in the bill. It is the largest single thing the patient is
-               buying and it was the one thing the item list did not mention. -->
           <div class="checkout-order__item checkout-order__item--service" data-order-consultation>
             <span class="checkout-order__thumb checkout-order__thumb--service" aria-hidden="true"><i data-lucide="stethoscope" class="ui-icon"></i></span>
             <span class="checkout-order__body">
@@ -2143,7 +2144,44 @@
             </span>
             <span class="checkout-order__price" data-payment-consultation>฿ 350</span>
           </div>
+          <div class="checkout-order__item" data-order-item="cough">
+            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260819-generic-blister-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Dextromethorphan 15 mg</span>
+              <span class="checkout-order__note">ลดอาการไอ</span>
+            </span>
+            <span class="checkout-order__quantity" data-order-qty>2 แผง</span>
+            <span class="checkout-order__price" data-order-price>฿ 170</span>
+          </div>
+          <div class="checkout-order__item" data-order-item="loratadine">
+            <span class="checkout-order__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Loratadine 10 mg</span>
+              <span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span>
+            </span>
+            <span class="checkout-order__quantity" data-order-qty>1 แผง</span>
+            <span class="checkout-order__price" data-order-price>฿ 94</span>
+          </div>
+          <div class="checkout-order__item" data-order-item="paracetamol">
+            <span class="checkout-order__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Paracetamol 500 mg</span>
+              <span class="checkout-order__note">แก้ปวด ลดไข้</span>
+            </span>
+            <span class="checkout-order__quantity" data-order-qty>2 แผง</span>
+            <span class="checkout-order__price" data-order-price>฿ 40</span>
+          </div>
+          <div class="checkout-order__item" data-order-item="naproxen">
+            <span class="checkout-order__thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Naproxen 250 mg</span>
+              <span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span>
+            </span>
+            <span class="checkout-order__quantity" data-order-qty>1 แผง</span>
+            <span class="checkout-order__price" data-order-price>฿ 134</span>
+          </div>
         </div>
+        <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
       <!-- Client, 1 Sep, after auditing Grab: the money reads straight down from
@@ -3460,6 +3498,7 @@
     'delivery-quote':'SID-037',
     'pharmacy-search':'SID-038',
     'insurance':'SID-039',
+    'payment-items':'SID-040A',
     'payment':'SID-040',
     'payment-gw':'SID-041',
     'payment-success':'SID-042',
@@ -4025,7 +4064,7 @@
     2: ['intake-general','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail',
         'waitroom','consult','video','rx-writing','rx-plan','appointment-booked'],
     3: ['address','delivery-quote','pharmacy-search','pharmacypending','pharmacyissue',
-        'payment','payment-gw','payfail','payment-success','tracking']
+        'payment-items','payment','payment-gw','payfail','payment-success','tracking']
   };
   const careJourneyScreens = Object.entries(careJourneyStageOrder)
     .reduce((acc,[stage,ids]) => { ids.forEach(id => { acc[id]=Number(stage); }); return acc; },{});
@@ -4162,11 +4201,11 @@
       const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
       // Keep checkout quantities aligned with the patient's pre-pay medicine
       // selection. The per-item maximum still comes from the prescription.
-      document.querySelectorAll(`#payment [data-order-item="${key}"]`).forEach(row => {
+      document.querySelectorAll(`#payment [data-order-item="${key}"], #payment-items [data-order-item="${key}"]`).forEach(row => {
         const qty=row.querySelector('[data-order-qty]');
         const qtyControl=row.querySelector('[data-qty-n]');
         const price=row.querySelector('[data-order-price],[data-line-price]');
-        if(qty) qty.textContent=`${quantity}×`;
+        if(qty) qty.textContent=`จำนวน ${quantity} แผง`;
         if(qtyControl){
           qtyControl.textContent=String(quantity);
           const control=qtyControl.closest('[data-qty]');
@@ -4178,6 +4217,7 @@
           if(plus) plus.disabled=quantity>=max;
         }
         if(price) price.textContent=baht(unit*quantity);
+        if(row.closest('#payment')) row.hidden=quantity<=0;
       });
     });
     document.querySelectorAll('[data-addon-option]').forEach(option => {
@@ -7434,7 +7474,7 @@
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','address','delivery-quote','pharmacy-search',
-    'pharmacypending','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
+    'pharmacypending','payment-items','payment','payment-gw','payment-success','insurance','payfail','pharmacyissue',
     'tracking','feedback','feedbackdone','prescription','upload-rx'
   ]);
   /* Everything from doctor matching onwards now sits after the health page,
@@ -7669,7 +7709,7 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address','delivery-quote','pharmacy-search','pharmacypending','payment','payment-success','tracking'].includes(id)) hasActiveCase = true;
+    if(['address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-success','tracking'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       // Some desktop browsers restore remembered address values just after the
       // screen becomes visible. Re-apply the persisted order address after that
@@ -7751,6 +7791,7 @@
         replaceCurrent('payment');
       }, reduceMotion ? 600 : DELIVERY_QUOTE_SECONDS*1000);
     }
+    if(id==='payment-items') syncOrderCheckout();
     if(id==='payment'){
       syncDeliveryAddress();
       refreshMedicationCheckout();

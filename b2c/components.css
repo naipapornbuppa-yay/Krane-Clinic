@@ -858,8 +858,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    so it lines up with the medicines, and stays a plain line: the grey header bar
    this used to have is gone on the client's call and is not coming back. */
 .checkout-order__head{padding:var(--sp-3) var(--sp-4) 0}
-/* Sits on the section line beside "สรุปคำสั่งซื้อ", so it stays small and
-   does not wrap the section heading (client, 19 Aug). */
+/* Prescription attribution stays outside the receipt so the consultation and
+   medicine rows keep one consistent list rhythm. */
 .checkout-order__by{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:0;font-size:var(--fs-xs);font-weight:var(--fw-regular);color:var(--color-ink-3);text-align:right}
 .checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink-2)}
 .checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
@@ -875,22 +875,37 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-order__body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
 .checkout-order__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__note{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.4}
+.checkout-order__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
 .checkout-order__price{flex:none;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
 /* The doctor's fee is a service, not a box of tablets: it sits in the same row
    rhythm but takes an icon instead of a product photo and has no stepper —
    there is no quantity to change. */
 .checkout-order__thumb--service{display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent)}
 .checkout-order__thumb--service .ui-icon{width:20px;height:20px}
-/* Denser than the base row: four items with a stepper each ran long on a
-   phone-height screen, so this trims the padding and the stepper controls
-   rather than the type, which stays readable at the same size. */
+/* Checkout is a read-only receipt. Quantity changes live on #payment-items,
+   so every line reads like one calm list item instead of a mini form. */
 #payment .checkout-order__item{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;padding-block:var(--sp-2);gap:var(--sp-2)}
 #payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2;width:38px;height:38px}
 #payment .checkout-order__body{grid-column:2;grid-row:1}
-#payment .checkout-order__price{grid-column:3;grid-row:1}
-#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:4px}
-#payment .checkout-order__stepper .qty-btn{width:30px;height:30px}
-#payment .checkout-order__stepper .hint{white-space:nowrap}
+#payment .checkout-order__quantity{grid-column:2;grid-row:2}
+#payment .checkout-order__price{grid-column:3;grid-row:1 / span 2;align-self:center}
+.checkout-order__edit{display:inline-flex;align-items:center;gap:6px;padding:4px 0;border:0;background:transparent;color:var(--color-accent);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.checkout-order__edit .ui-icon{width:14px;height:14px}
+.checkout-order__edit:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px;border-radius:4px}
+#payment .checkout-order__by{justify-content:flex-start;padding-inline:2px;text-align:left}
+
+/* Dedicated medicine editor: the only checkout surface with steppers. */
+.payment-items-editor{max-width:720px;width:100%;margin-inline:auto}
+.payment-items-editor__head{display:flex;flex-direction:column;gap:var(--sp-2)}
+.payment-items-editor__head .h2{margin:0}
+.checkout-order--editor .checkout-order__item{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:var(--sp-2) var(--sp-3);padding-block:var(--sp-3)}
+.checkout-order--editor .checkout-order__thumb{grid-column:1;grid-row:1 / span 2}
+.checkout-order--editor .checkout-order__body{grid-column:2;grid-row:1}
+.checkout-order--editor .checkout-order__price{grid-column:3;grid-row:1}
+.checkout-order--editor .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start}
+.checkout-order--editor .checkout-order__stepper .hint{white-space:nowrap}
+.payment-items-editor__note{display:flex;align-items:flex-start;gap:var(--sp-2);margin:0;color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.5}
+.payment-items-editor__note .ui-icon{width:18px;height:18px;flex:none;color:var(--color-accent)}
 
 /* Footer pays: amount sits beside the action, as in the Grab reference */
 .checkout-pay{display:flex;align-items:center;gap:var(--sp-4)}
@@ -919,7 +934,17 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .payment-deadline[data-expired="true"]{border:0;background:var(--color-danger-soft);color:var(--color-danger-ink)}
 .payment-deadline[data-expired="true"] .payment-deadline__icon{color:var(--color-danger-ink)}
 .payment-deadline[data-expired="true"] .payment-deadline__time{background:var(--color-danger)}
-@media(max-width:390px){.payment-deadline{grid-template-columns:32px minmax(0,1fr) auto;gap:10px;margin-inline:12px;padding:10px 12px}.payment-deadline__icon{width:32px;height:32px}.payment-deadline__copy small{display:none}.payment-deadline__time{min-width:76px;padding-inline:8px;font-size:14px}}
+@media(max-width:390px){
+  .payment-deadline{gap:8px;margin:6px 12px 10px;padding:6px 12px;min-height:38px}
+  .payment-deadline__icon{width:18px;height:18px}
+  .payment-deadline__copy{gap:4px}
+  .payment-deadline__copy strong{font-size:13px}
+  .payment-deadline__copy small{display:none}
+  .payment-deadline__time{min-width:0;padding:0;font-size:inherit}
+  .checkout-order--editor .checkout-order__item{grid-template-columns:44px minmax(0,1fr) auto;padding:10px 12px}
+  .checkout-order--editor .checkout-order__thumb{width:44px;height:44px}
+  .checkout-order--editor .checkout-order__stepper .qty-btn{width:32px;height:32px}
+}
 .checkout-addon__mark{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-bold);letter-spacing:-.02em}
 .checkout-addon[aria-selected="true"] .checkout-addon__mark{background:var(--color-surface)}
 .checkout-delivery-option{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left}
