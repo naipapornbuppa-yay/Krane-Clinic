@@ -1105,6 +1105,9 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .hero-draft__benefits span{display:flex;flex-direction:column;gap:3px}
 .hero-draft__benefits strong{color:var(--draft-ink);font-size:15px;font-weight:600}
 .hero-draft__benefits small{color:var(--draft-muted);font-size:12px;line-height:1.5}
+/* The marquee copy only exists to close the loop on a phone. */
+.hero-draft__benefits li.is-clone{display:none}
+.hero-draft__marquee{min-width:0}
 
 .landing-figma-draft .care-banner-grid{
   display:grid;
@@ -4962,7 +4965,16 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .hero-draft__intro{padding:22px 4px 28px}
   .landing-figma-draft .hero h1{font-size:42px;line-height:1.08;letter-spacing:-.035em}
   .landing-figma-draft .hero__lead{font-size:14px;line-height:1.65}
-  .landing-figma-draft .hero-draft__benefits{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  /* Client, 1 Sep: three chips are wider than the screen, so the third was cut
+     in half with nothing to say it scrolled. The row runs itself instead. */
+  .landing-figma-draft .hero-draft__marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+  .landing-figma-draft .hero-draft__benefits{display:flex;width:max-content;gap:8px;overflow:visible;padding-bottom:2px;animation:hero-benefits-marquee 22s linear infinite}
+  .landing-figma-draft .hero-draft__benefits li.is-clone{display:flex}
+  @keyframes hero-benefits-marquee{to{transform:translate3d(calc(-50% - 4px),0,0)}}
+  @media(prefers-reduced-motion:reduce){
+    .landing-figma-draft .hero-draft__benefits{width:auto;animation:none;overflow-x:auto;scrollbar-width:none}
+    .landing-figma-draft .hero-draft__benefits li.is-clone{display:none}
+  }
   .landing-figma-draft .hero-draft__benefits li{min-width:max-content;display:flex;gap:7px;padding:9px 11px;border:1px solid rgba(23,28,40,.12);border-radius:999px}
   .landing-figma-draft .hero-draft__benefits svg{width:15px;height:15px}.landing-figma-draft .hero-draft__benefits small{display:none}
   .landing-figma-draft .hero-draft__benefits strong{font-size:12px}

@@ -67,10 +67,18 @@ only when the client asks for it, and the reason goes in the commit message.
 - Icons and interactive accents use the app blue `--color-accent`. Not the grey-teal
   `--color-info` default.
 - **"You are here" is blue, not ink** (client, 1 Sep). The care-journey bar marks
-  the live stage with the accent on both the label and its track; done and
-  future stages stay grey, so one stage is still being pointed at. Labels are
-  13px, dropping to 12 and 11.5 on narrower phones — they were 9.5px at 390
-  wide, which is below anything else on the screen.
+  the live stage with the accent on its label, and fills its track as the
+  patient moves through it. Labels are 13px, dropping to 12 and 11.5 on
+  narrower phones — they were 9.5px at 390 wide, below anything else on screen.
+- **The three states have to look like three states.** Done is a full accent
+  track, live is a grey track with the accent fill travelling across it, and
+  not-started is grey and empty. Turning the live track grey so the fill had
+  somewhere to travel made "done" and "not started" identical, and a patient who
+  had finished the questionnaire saw an almost empty bar.
+- **The fill also moves during a wait**, not only between screens.
+  `creepJourneyFill()` runs it across the slice a waiting screen owns for the
+  length of that wait; a bar that arrives and then sits still for ten seconds
+  reads as stuck.
 - Yellow `--surface-notice` means caution or "read this" — never decoration.
 - Every colour pair is contrast-checked (≥4.5:1 for body text) before it ships.
 

@@ -1199,8 +1199,8 @@
         <p class="muted">เราจะเตือนคุณก่อนถึงเวลานัด</p>
       </div>
       <div class="state-view__timer" data-appointment-when></div>
+      <div class="state-view__action"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
   </section>
 
   <!-- ===================== CONSULTATION FEE PAYMENT (first payment) ===================== -->
@@ -1471,15 +1471,19 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">แผนการรักษา</span></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--success" role="img" aria-label="Diagnosis and medicines ready">
-        <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-treatment-plan"></use></svg></span>
+        <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-treatment-plan"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="clipboard-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
         <h2 class="h1">ผลวินิจฉัยและยาพร้อมแล้ว</h2>
         <p class="muted">ชำระเงินแล้วอ่านผลวินิจฉัย รอรับยา และใบรับรองแพทย์ได้เลย</p>
       </div>
+      <!-- Client, 1 Sep: the action sits where the counter sits on the screens
+           that have one, directly under the copy, rather than pinned to the
+           bottom of the viewport. A state screen's last element is its outcome,
+           and on this one the outcome is the way forward. -->
+      <div class="state-view__action"><button class="btn btn--primary" data-go="payment">ดำเนินการต่อ</button></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="payment">ดำเนินการต่อ</button></div>
   </section>
 
 
@@ -1887,8 +1891,8 @@
       </div>
       <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Diagnosis and medicines are ready</h2><p class="muted" data-payment-success-copy>Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
+      <div class="state-view__action"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ดูเอกสารและติดตามการจัดส่ง</button></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ดูเอกสารและติดตามการจัดส่ง</button></div>
   </section>
 
   <!-- ===================== INSURANCE INTAKE & CLAIM (KRANE-F35) ===================== -->
@@ -1951,8 +1955,8 @@
       </div>
       <div class="state-view__copy"><h2 class="h1">ไม่มีร้านที่ส่งได้ภายในวัน</h2><p class="muted">เปลี่ยนเป็นการจัดส่งมาตรฐานก่อนชำระเงิน ระบบจะคำนวณยอดใหม่ให้ทันที</p></div>
       <div class="state-view__timer">จัดส่ง 1 ถึง 3 วัน · ไม่มีค่าใช้จ่ายเพิ่ม</div>
+      <div class="state-view__action"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-pharmacy-issue-action="postal">เปลี่ยนเป็นจัดส่งมาตรฐาน</button></div>
   </section>
 
   <!-- ===================== TRACKING ===================== -->
@@ -2027,7 +2031,8 @@
         <span class="state-view__badge"><i data-lucide="heart" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Thank you</h2><p class="muted">Your feedback was submitted.</p></div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="payment">View treatment plan</button></div>
+      <div class="state-view__action"><button class="btn btn--primary" data-go="payment">View treatment plan</button></div>
+    </div>
   </section>
 
   <!-- ===================== REFILL (KRANE-F22) ===================== -->
@@ -5539,8 +5544,31 @@
     const prev = Math.round(((index + prevDone) / track.length) * 100);
 
     /* Paint the previous width first so the change animates instead of jumping. */
+    fill.style.transition = '';
     if(!fill.style.width) fill.style.width = prev + '%';
     window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
+  }
+
+  /* A waiting screen holds the patient for ten seconds. The bar reaching that
+     screen's position and then sitting still for the whole wait reads as stuck,
+     which is what "still not show loading" meant: it was moving only between
+     screens, never during one. Over a wait it creeps across the slice the
+     screen owns, so the wait itself is visible progress. */
+  function creepJourneyFill(id,durationMs){
+    const stage = careJourneyScreens[id];
+    if(!stage) return;
+    const screen = document.getElementById(id);
+    const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
+    if(!fill) return;
+    const track = careJourneyStageScreens[stage] || [];
+    const index = track.indexOf(id);
+    if(index < 0) return;
+    const target = Math.round(((index + 1) / track.length) * 100);
+    window.requestAnimationFrame(() => {
+      if(!screen.classList.contains('active')) return;
+      fill.style.transition = `width ${durationMs}ms linear`;
+      fill.style.width = target + '%';
+    });
   }
 
   /* Step two of the picker. It stays empty until a category is tapped: it used
@@ -7195,6 +7223,7 @@
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> availability page to pick a slot, where the same gate runs on continue.
+      creepJourneyFill('matching',10000);
       matchTimer = setTimeout(() => {
         if(!mScr.classList.contains('active')) return;
         /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
@@ -7354,6 +7383,7 @@
         rxElapsedSeconds+=1;
         paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       },1000);
+      creepJourneyFill('rx-writing',reduceMotion ? 500 : 3400);
       rxTimer=setTimeout(() => {
         if(!rxScr?.classList.contains('active')) return;
         clearInterval(rxCountdownTimer);

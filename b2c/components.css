@@ -447,6 +447,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Success, empty and recoverable states use the same circular object stage as
    loading screens. Branding belongs on the object itself; never add a second
    floating logo tag above the artwork. */
+/* Client, 1 Sep: line art only, no white plate behind it. */
+.state-view__tile--cutout{background:transparent;box-shadow:none;border-radius:0}
 .state-view__tile--brand{
   width:100%;height:100%;overflow:visible;border-radius:0;background:transparent;
   box-shadow:none;isolation:isolate
@@ -565,6 +567,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* A stage that ends clears this readout, which used to leave an empty pill sitting
    under the copy. Nothing to say means nothing to show. */
 .state-view__timer:empty{display:none}
+/* Where the counter would be. A state screen that ends on an action rather than
+   on a wait puts that action in the same place, so the two read as the same
+   shape of screen instead of one having a floating footer (client, 1 Sep). */
+.state-view__action{width:100%;max-width:320px;margin-inline:auto}
+.state-view__action .btn{width:100%}
 /* The last minute of the entry window: the deadline is the point, so it stops
    being a quiet readout (client, 20 Aug). */
 .state-view__timer--urgent{color:var(--color-danger)}
@@ -2495,6 +2502,11 @@ body.lang-th *{letter-spacing:normal}
 .care-journey__name{display:block;width:100%;overflow:hidden;color:var(--color-ink-3);font-size:13px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;text-overflow:ellipsis}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
+/* A finished stage keeps a full accent track. Turning the live stage's track
+   grey so the fill had somewhere to travel left "done" and "not started"
+   looking the same, so a patient who had finished the whole questionnaire saw
+   an almost empty bar (client, 1 Sep). */
+.care-journey__step.is-done::after{background:var(--color-accent)}
 /* Client, 1 Sep: bigger, and the live stage in brand blue rather than ink —
    the accent is what the rest of the app uses to say "you are here". Past and
    future stages stay grey, so there is still only one stage being pointed at. */
