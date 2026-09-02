@@ -234,13 +234,26 @@ else (client, 23 Aug):
   group at the end.
   The status badge rides on the date line, which leaves the condition name the
   full width — beside the badge it wrapped onto two lines.
-- **Refill is multi-choice**: the patient ticks which prescriptions to re-order
-  and can tick more than one, so it keeps its ticks and one footer CTA (rule 1).
-  The CTA names the count and the total; blocked, it says what it is waiting for.
+- **Refilling is a bottom sheet, not a screen** (client, 1 Sep: "หน้านี้ตรงนี้
+  ไม่ต้องมีก็ได้มั้ง คือเอาหน้าชำระเงินมาใช้เลย"). A whole page for re-ordering
+  medicine the patient already takes was a second, near-identical checkout to
+  keep in step with the real one. `#refill-sheet` asks the one question that is
+  actually open — which prescription, or all of them — and then hands the answer
+  to `#payment`, the same checkout every other order goes through. Picking IS
+  the answer (rule 1): the tap closes the sheet, there is no second confirm.
+- Every route into a refill opens that sheet: the quick menu, the treatment
+  detail and the demo rail all carry `data-refill-open`, so there is one refill
+  design rather than one per entry point.
+- **A refill never charges a second consultation fee.** The doctor already wrote
+  the prescription, so `startRefill()` marks the consultation paid before the
+  checkout renders; the bill line reads "ชำระแล้ว".
 - **Any prescription still in date can be refilled**, not only the newest one
   (clinic back-office, 28 Aug). Expired ones are listed but not selectable, with
-  the expiry as the reason — `retireExpiredRefills()` reads `data-refill-expires`
-  so a stale row cannot be left selectable by hand.
+  the expiry as the reason — the sheet reads `data-refill-expires` so a stale
+  row cannot be left selectable by hand.
+- **Never more than the doctor approved.** Two prescriptions that share a
+  medicine take the larger allowance, not the sum of the two, so "ยาทั้งหมด"
+  cannot quietly order double.
 - **The word is เติมยา**, everywhere. Not สั่งซื้อซ้ำ, not สั่งซ้ำ. `คำสั่งซื้อ`
   is a different thing (an order) and keeps its own word.
 - **One doctor looks after every case** (client, 28 Aug) — a regular doctor, not
