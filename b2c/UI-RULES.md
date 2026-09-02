@@ -84,6 +84,12 @@ only when the client asks for it, and the reason goes in the commit message.
   `creepJourneyFill()` runs it across the slice a waiting screen owns for the
   length of that wait; a bar that arrives and then sits still for ten seconds
   reads as stuck.
+- **A count is a fact, not a control** (client, 1 Sep). Section counts sit beside
+  their heading as a plain number (`.section-count`). On a filled pill the count
+  read as a button and got pressed.
+- **No outline on a list of medicines.** Soft fill, no stroke, like every other
+  card. The divider between two rows stays — it separates two medicines, it does
+  not draw a box round them.
 - Yellow `--surface-notice` means caution or "read this" — never decoration.
 - Every colour pair is contrast-checked (≥4.5:1 for body text) before it ships.
 
