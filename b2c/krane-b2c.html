@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-profile-figma-nav-v1";
+    const release = "20260903-followup-prefill-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260903-profile-figma-nav-v1" defer></script>
+<script src="i18n.js?v=20260903-followup-prefill-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -519,6 +519,72 @@
       outline-offset: 3px;
     }
 
+    #intake-general .followup-prefill {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid rgba(70, 104, 177, .2);
+      border-radius: 22px;
+      background: #eef3fc;
+      color: #17233a;
+    }
+    #intake-general .followup-prefill[hidden] { display: none; }
+    #intake-general .followup-prefill__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    #intake-general .followup-prefill__eyebrow {
+      display: block;
+      margin-bottom: 4px;
+      color: #4668b1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    #intake-general .followup-prefill__head strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    #intake-general .followup-prefill__edit {
+      flex: 0 0 auto;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid rgba(23, 35, 58, .15);
+      border-radius: 999px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    #intake-general .followup-prefill__grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 10px;
+    }
+    #intake-general .followup-prefill__item {
+      min-width: 0;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.76);
+    }
+    #intake-general .followup-prefill__item span,
+    #intake-general .followup-prefill__item small {
+      display: block;
+      color: #69758a;
+      font-size: 12px;
+    }
+    #intake-general .followup-prefill__item strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 14px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
     @container screen (max-width: 1120px) {
       #profile > .profile-shell-nav {
         width: calc(100% - 32px);
@@ -637,6 +703,10 @@
       #profile .profile-shell-nav__account,
       #profile .profile-shell-nav__mobile > summary { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
       #profile .profile-shell-nav__drawer { right: -2px; }
+      #intake-general .followup-prefill { padding: 16px; border-radius: 20px; }
+      #intake-general .followup-prefill__head { display: grid; }
+      #intake-general .followup-prefill__edit { justify-self: start; }
+      #intake-general .followup-prefill__grid { grid-template-columns: 1fr; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1221,6 +1291,17 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl" data-general-health-title>ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
       <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
+      <aside class="followup-prefill" data-followup-prefill hidden aria-live="polite">
+        <div class="followup-prefill__head">
+          <div><span class="followup-prefill__eyebrow">เติมจากการปรึกษาครั้งก่อนแล้ว</span><strong>ตรวจสอบเฉพาะข้อมูลที่เปลี่ยน</strong></div>
+          <button class="followup-prefill__edit" type="button" data-followup-edit-symptoms>แก้ไขอาการและคำตอบ</button>
+        </div>
+        <div class="followup-prefill__grid">
+          <div class="followup-prefill__item"><span>อาการครั้งก่อน</span><strong data-followup-prefill-concern></strong></div>
+          <div class="followup-prefill__item"><span>ยาและอาหารเสริมที่แจ้งไว้</span><strong data-followup-prefill-medicines></strong></div>
+        </div>
+        <small data-followup-prefill-reviewed></small>
+      </aside>
       <div class="card card--pad-sm partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow"><label for="intake-sex">เพศกำเนิด</label><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
@@ -2395,7 +2476,7 @@
       <section class="profile-quick" aria-labelledby="profile-quick-title">
         <div class="between"><div><div class="eyebrow" id="profile-quick-title">เมนูด่วน</div><p class="hint">กลับเข้าสู่การดูแลได้ทันที</p></div><span class="badge badge--line">คุณหมอนรินทร์</span></div>
         <div class="profile-quick__grid">
-          <button class="profile-quick__action profile-quick__action--primary" type="button" data-profile-followup data-category="general"><span class="profile-quick__icon"><i data-lucide="calendar-check-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>ติดตามผล</strong></span></button>
+          <button class="profile-quick__action profile-quick__action--primary" type="button" data-profile-followup data-category="sleep-stress"><span class="profile-quick__icon"><i data-lucide="calendar-check-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>ติดตามผล</strong></span></button>
           <button class="profile-quick__action" type="button" data-refill-open><span class="profile-quick__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><span><strong>เติมยา</strong></span></button>
           <button class="profile-quick__action" type="button" data-profile-new-appointment><span class="profile-quick__icon"><i data-lucide="calendar-plus-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>นัดหมายใหม่</strong></span></button>
           <button class="profile-quick__action" type="button" data-profile-consult-now><span class="profile-quick__icon"><i data-lucide="message-circle-heart" class="ui-icon" aria-hidden="true"></i></span><span><strong>ปรึกษาตอนนี้</strong></span></button>
@@ -2432,7 +2513,7 @@
              buttons across two cards was the clutter. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-date="26/08/2026" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sleep-stress" data-treatment-date="26/08/2026" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
           <span class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
@@ -3533,6 +3614,7 @@
   const FLOW_STATE_KEY = 'krane-p01-flow-state-v1';
   const DRAFT_KEY = 'krane-p01-intake-draft-v2';
   const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
+  const FOLLOWUP_RECORD_KEY = 'krane-p01-followup-record-v1';
   const MALI_SAVED_ADDRESS = {
     recipientName:'มะลิ สุธิดา',
     recipientPhone:'081-234-5678',
@@ -3577,6 +3659,7 @@
     consultationPaid:false,
     directGeneralHealthComplete:false,
     followUpDirectToWaitroom:false,
+    followUpContext:null,
     paymentResolution:'',
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
@@ -3687,6 +3770,12 @@
   function writeSessionJson(key,value){
     try { sessionStorage.setItem(key,JSON.stringify(value)); } catch(error) {}
   }
+  function readLocalJson(key){
+    try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(error) { return {}; }
+  }
+  function writeLocalJson(key,value){
+    try { localStorage.setItem(key,JSON.stringify(value)); } catch(error) {}
+  }
   function persistFlowState(){ writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
     Object.assign(flowState,{
@@ -3698,7 +3787,7 @@
       consentRead:{pdpa:false,telemedicine:false},
       consentChecked:{pdpa:false,telemedicine:false},
       entryChannel:'direct',
-      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,paymentResolution:'',documentsUnlocked:false,
+      consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,followUpContext:null,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
       orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
@@ -5659,11 +5748,19 @@
 
   function beginAssignedDoctorFlow(category){
     if(category) setSelectedCategory(category);
+    const followUpRecord=hydrateFollowUpRecord(selectedCategoryId);
     Object.assign(flowState,{
       entryChannel:'direct',draftReady:true,directGeneralHealthComplete:false,
-      followUpDirectToWaitroom:true,consultationFeeAcknowledged:true,lastRequiredScreen:'intake-general'
+      followUpDirectToWaitroom:true,consultationFeeAcknowledged:true,lastRequiredScreen:'intake-general',
+      followUpContext:{
+        active:true,
+        category:followUpRecord.category,
+        sourceConsultationAt:followUpRecord.sourceConsultationAt,
+        loadedAt:new Date().toISOString()
+      }
     });
     persistFlowState();
+    saveIntakeDraft();
     journeyActive=true;
     show('intake-general');
   }
@@ -6158,6 +6255,7 @@
     if(title) title.textContent=assignedDoctorFlow ? 'ยืนยันข้อมูลสุขภาพ' : (direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ');
     if(hint) hint.hidden=!direct;
     if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
+    updateFollowUpPrefillCard(flowState.followUpContext?.active ? followUpRecordFor(flowState.followUpContext.category) : null);
   }
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
@@ -7057,6 +7155,183 @@
       : `Choosing from licensed doctors suited to ${concern.toLowerCase()}.`;
   }
   const INTAKE_DRAFT_SCREENS = ['intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general'];
+  /* A follow-up is not a blank intake. This static prototype has no clinical
+     API, so the last completed case is represented by a durable local snapshot
+     instead of the ordinary session-only draft. In production this object is
+     the shape returned by the authenticated patient-record endpoint; keeping
+     it separate here prevents an unfinished new intake from overwriting the
+     previously confirmed record. */
+  const DEFAULT_FOLLOWUP_RECORDS = {
+    'sleep-stress':{
+      category:'sleep-stress',
+      selectedConditionId:'sleep',
+      sourceConsultationAt:'26 ส.ค. 2026',
+      concern:'หลับยาก ตื่นกลางดึก และมีความเครียดช่วงก่อนนอน',
+      currentMedicines:'Melatonin 5 mg · วันละ 1 เม็ด',
+      fields:{
+        'intake-duration':'8',
+        'intake-sleep-hours':'4-6h',
+        'intake-treatment-result':'better',
+        'intake-sex':'female',
+        'intake-dob':'1994-03-12',
+        'intake-height':'165',
+        'intake-weight':'58'
+      },
+      durationUnit:'สัปดาห์',
+      optionLabels:{
+        intake1:['หลับยาก ใช้เวลานานกว่าจะหลับ','ตื่นกลางดึกแล้วหลับต่อยาก'],
+        intake2:['ง่วงหรือเพลียระหว่างวัน','กังวลหรือคิดวนไม่หยุด','ใช้โทรศัพท์หรือจอก่อนนอน'],
+        intake3:['เมลาโทนิน'],
+        intake4:['None of these apply']
+      },
+      history:{conditions:'ไม่มี',medications:'Melatonin 5 mg · วันละ 1 เม็ด',allergies:'ไม่มี'}
+    },
+    'hair-skin':{
+      category:'hair-skin',
+      selectedConditionId:'hair-loss',
+      sourceConsultationAt:'30 มิ.ย. 2026',
+      concern:'ผมบางบริเวณกลางศีรษะและแนวไรผม',
+      currentMedicines:'Loratadine 10 mg · Paracetamol 500 mg',
+      fields:{
+        'intake-duration':'6',
+        'intake-treatment-result':'helped',
+        'intake-treatment-details':'ใช้ยาตามแผนเดิม อาการคงที่ ไม่มีผลข้างเคียงใหม่',
+        'intake-sex':'male',
+        'intake-dob':'1990-06-18',
+        'intake-height':'175',
+        'intake-weight':'70'
+      },
+      durationUnit:'month',
+      optionLabels:{
+        intake1:['Crown or top of the scalp','Temples or receding hairline'],
+        intake2:['Moderate','Gradual thinning'],
+        intake3:['Medicine prescribed by a doctor'],
+        intake4:['None of these apply']
+      },
+      history:{conditions:'ไม่มี',medications:'Loratadine 10 mg · Paracetamol 500 mg',allergies:'ไม่มี'}
+    },
+    general:{
+      category:'general',
+      selectedConditionId:'',
+      sourceConsultationAt:'26 ส.ค. 2026',
+      concern:'นอนไม่หลับ ตื่นกลางดึก และมีความเครียดช่วงก่อนนอน',
+      currentMedicines:'Melatonin 5 mg · วันละ 1 เม็ด',
+      fields:{
+        'general-description':'นอนไม่หลับ ตื่นกลางดึก และมีความเครียดช่วงก่อนนอน',
+        'intake-duration':'8',
+        'intake-sex':'female',
+        'intake-dob':'1994-03-12',
+        'intake-height':'165',
+        'intake-weight':'58'
+      },
+      durationUnit:'week',
+      optionLabels:{
+        intake1:['Moderate','It comes and goes','None of these apply']
+      },
+      history:{conditions:'ไม่มี',medications:'Melatonin 5 mg · วันละ 1 เม็ด',allergies:'ไม่มี'}
+    }
+  };
+  function cloneFollowUpRecord(record){
+    return JSON.parse(JSON.stringify(record || {}));
+  }
+  function followUpRecordFor(category){
+    const normalized=categoryAliases[category] || category || 'general';
+    const recordKey=DEFAULT_FOLLOWUP_RECORDS[normalized] ? normalized : 'general';
+    const stored=readLocalJson(FOLLOWUP_RECORD_KEY);
+    const fallback=DEFAULT_FOLLOWUP_RECORDS[recordKey];
+    const record=Object.assign(cloneFollowUpRecord(fallback),cloneFollowUpRecord(stored[recordKey]));
+    record.fields=Object.assign({},fallback.fields || {},stored[recordKey]?.fields || {});
+    record.optionLabels=Object.assign({},fallback.optionLabels || {},stored[recordKey]?.optionLabels || {});
+    record.history=Object.assign({},fallback.history || {},stored[recordKey]?.history || {});
+    record.category=recordKey;
+    if(!stored[recordKey]){
+      stored[recordKey]=record;
+      writeLocalJson(FOLLOWUP_RECORD_KEY,stored);
+    }
+    return record;
+  }
+  function optionLabel(option){
+    return option.querySelector('.opt-title')?.textContent.trim() || option.textContent.trim();
+  }
+  function applyFollowUpOptionLabels(record){
+    Object.entries(record.optionLabels || {}).forEach(([screenId,labels]) => {
+      const wanted=new Set(labels || []);
+      document.querySelectorAll(`#${screenId} .option`).forEach(option => {
+        option.setAttribute('aria-selected',String(wanted.has(optionLabel(option))));
+      });
+    });
+  }
+  function applyFollowUpHistory(history){
+    Object.entries(history || {}).forEach(([key,value]) => {
+      const group=document.querySelector(`#health-history-modal [data-direct-history="${key}"]`);
+      if(!group) return;
+      const hasDetails=Boolean(value && value!=='ไม่มี');
+      setDirectHistoryChoice(group,hasDetails);
+      const input=group.querySelector('input');
+      if(input && hasDetails) input.value=value;
+    });
+  }
+  function hydrateFollowUpRecord(category){
+    const record=followUpRecordFor(category);
+    setSelectedCategory(record.category);
+    if(record.selectedConditionId) selectedConditionId=record.selectedConditionId;
+    renderIntakeQuestions();
+    Object.entries(record.fields || {}).forEach(([id,value]) => {
+      const field=document.getElementById(id);
+      if(field) field.value=value ?? '';
+    });
+    document.querySelectorAll('#intake1 [data-intake-duration-unit]').forEach(option => {
+      option.setAttribute('aria-selected',String(option.dataset.intakeDurationUnit===record.durationUnit));
+    });
+    applyFollowUpOptionLabels(record);
+    applyFollowUpHistory(record.history);
+    INTAKE_DRAFT_SCREENS.forEach(syncIntakeDropdownContinue);
+    updateSelectedCare();
+    return record;
+  }
+  function updateFollowUpPrefillCard(record){
+    const card=document.querySelector('#intake-general [data-followup-prefill]');
+    const active=Boolean(flowState.followUpContext?.active && record);
+    if(!card) return;
+    card.hidden=!active;
+    if(!active) return;
+    const concern=card.querySelector('[data-followup-prefill-concern]');
+    const medicines=card.querySelector('[data-followup-prefill-medicines]');
+    const reviewed=card.querySelector('[data-followup-prefill-reviewed]');
+    if(concern) concern.textContent=record.concern || 'ข้อมูลอาการจากครั้งก่อน';
+    if(medicines) medicines.textContent=record.currentMedicines || record.history?.medications || 'ไม่มี';
+    if(reviewed) reviewed.textContent=`ทบทวนล่าสุด ${record.sourceConsultationAt || 'ในการปรึกษาครั้งก่อน'} · ข้อมูลนี้จะถูกส่งให้แพทย์พร้อมการเปลี่ยนแปลงครั้งนี้`;
+  }
+  function captureFollowUpRecord(){
+    const context=flowState.followUpContext;
+    if(!context?.active) return null;
+    const existing=followUpRecordFor(context.category);
+    const fields={};
+    INTAKE_DRAFT_SCREENS.forEach(screenId => {
+      document.querySelectorAll(`#${screenId} input:not([type="file"]),#${screenId} textarea,#${screenId} select`).forEach(field => {
+        if(field.id) fields[field.id]=field.value;
+      });
+    });
+    const optionLabels={};
+    INTAKE_DRAFT_SCREENS.forEach(screenId => {
+      optionLabels[screenId]=[...document.querySelectorAll(`#${screenId} .option[aria-selected="true"]`)].map(optionLabel);
+    });
+    const history={
+      conditions:directHistoryValue('conditions'),
+      medications:directHistoryValue('medications'),
+      allergies:directHistoryValue('allergies')
+    };
+    const durationUnit=document.querySelector('#intake1 [data-intake-duration-unit][aria-selected="true"]')?.dataset.intakeDurationUnit || existing.durationUnit;
+    const next=Object.assign({},existing,{
+      fields,optionLabels,history,durationUnit,
+      currentMedicines:history.medications==='ไม่มี' ? existing.currentMedicines : history.medications,
+      updatedAt:new Date().toISOString()
+    });
+    const records=readLocalJson(FOLLOWUP_RECORD_KEY);
+    records[context.category]=next;
+    writeLocalJson(FOLLOWUP_RECORD_KEY,records);
+    return next;
+  }
   function saveIntakeDraft(){
     const fields={};
     INTAKE_DRAFT_SCREENS.forEach(screenId => {
@@ -8061,6 +8336,8 @@
     if(treatmentTab){ setTreatmentDetailTab(treatmentTab.dataset.treatmentTab); return; }
     const treatmentOpen=e.target.closest('[data-treatment-open]');
     if(treatmentOpen){ openTreatmentDetail(treatmentOpen); return; }
+    const followUpEditSymptoms=e.target.closest('[data-followup-edit-symptoms]');
+    if(followUpEditSymptoms){ show('intake1'); return; }
     const profileFollowup=e.target.closest('[data-profile-followup]');
     if(profileFollowup){ beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return; }
     const profileConsultNow=e.target.closest('[data-profile-consult-now]');
@@ -8068,6 +8345,7 @@
     const profileNewAppointment=e.target.closest('[data-profile-new-appointment]');
     if(profileNewAppointment){
       flowState.followUpDirectToWaitroom=false;
+      flowState.followUpContext=null;
       flowState.entryChannel='direct';
       persistFlowState();
       journeyActive=true;
@@ -9420,6 +9698,8 @@
      the other entries still run it inline. */
   function completeSharedHealthIntake(fromGeneralHealth){
     if(fromGeneralHealth && flowState.entryChannel==='direct'){
+      const completingFollowUp=Boolean(flowState.followUpContext?.active);
+      if(completingFollowUp) captureFollowUpRecord();
       flowState.draftReady=true;
       flowState.directGeneralHealthComplete=true;
       /* A normal new-care route still starts doctor allocation. A follow-up or
@@ -9427,10 +9707,13 @@
          so after this safety confirmation it can enter that doctor's room. */
       const next=flowState.followUpDirectToWaitroom ? 'waitroom' : directClinicalStartTarget();
       flowState.followUpDirectToWaitroom=false;
+      if(completingFollowUp){
+        flowState.followUpContext=Object.assign({},flowState.followUpContext,{active:false,completedAt:new Date().toISOString()});
+      }
       flowState.lastRequiredScreen=next;
       persistFlowState();
       saveIntakeDraft();
-      showActionToast('ยืนยันข้อมูลสุขภาพแล้ว','success');
+      showActionToast(completingFollowUp ? 'บันทึกข้อมูลติดตามผลแล้ว' : 'ยืนยันข้อมูลสุขภาพแล้ว','success');
       show(next);
       return;
     }
