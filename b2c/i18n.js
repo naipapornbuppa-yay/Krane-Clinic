@@ -1105,6 +1105,18 @@
   /* Thai written straight into the markup, mapped back to English. Grouped in
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
+    /* Authenticated patient-hub capsule navigation (3 Sep). */
+    "เมนูหลัก":"Main navigation",
+    "เมนูหลักบนมือถือ":"Mobile main navigation",
+    "เปิดเมนูหลัก":"Open main navigation",
+    "เปิดบัญชีของฉัน":"Open my account",
+    "น้ำหนัก":"Weight",
+    "ฟื้นฟูสมรรถภาพเพศชาย":"Men's sexual health",
+    "ผม & ผิว":"Hair & skin",
+    "วิธีการทำงาน":"How it works",
+    "แพทย์ของเรา":"Our doctors",
+    "บทความสุขภาพ":"Health articles",
+    "โปรไฟล์":"Profile",
     /* Refill bottom sheet (client, 1 Sep) */
     "ภูมิแพ้":"Allergy",
     "ดูแลผิว":"Skin care",
@@ -1838,6 +1850,16 @@
     var b = e.target.closest && e.target.closest(".lang__opt");
     if (!b || !b.dataset.lng) return;
     var th = b.dataset.lng === "th";
+    apply(th); persist(th); broadcast(th);
+  });
+
+  /* Capsule headers use a compact select on desktop and mobile. The custom
+     select adapter dispatches a native change event after a choice, so this
+     one listener keeps the whole app and any embedded frame in sync. */
+  document.addEventListener("change", function (e) {
+    var select = e.target && e.target.closest && e.target.closest("[data-language]");
+    if (!select) return;
+    var th = select.value === "th";
     apply(th); persist(th); broadcast(th);
   });
 

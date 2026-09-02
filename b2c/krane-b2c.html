@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260830-quick-menu-no-frame-v1";
+    const release = "20260903-profile-figma-nav-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260830-intake-login-v1" defer></script>
+<script src="i18n.js?v=20260903-profile-figma-nav-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -336,6 +336,311 @@
     @media(max-width:600px){.state-view__visual:has(.krane-state-art){width:min(75vw,332px)!important}}
     @media(prefers-reduced-motion:reduce){
       .state-view__visual--loading .krane-state-art{animation:none}
+    }
+  </style>
+  <style id="profile-figma-nav-20260903">
+    /* Patient hub shell — the Figma capsule navigation adapted to an
+       authenticated screen. The account affordance keeps the patient's state
+       instead of presenting a misleading second log-in action. */
+    #profile > .profile-shell-nav {
+      --profile-nav-ink: #111827;
+      --profile-nav-blue: #4668b1;
+      --profile-nav-line: #dfe3e8;
+      width: calc(100% - 48px);
+      min-height: 78px;
+      margin: 20px 24px 0;
+      padding: 0 16px 0 28px;
+      gap: clamp(18px, 2vw, 36px);
+      border: 1px solid rgba(17, 24, 39, .045);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--profile-nav-ink);
+      box-shadow: 0 16px 35px rgba(17, 24, 39, .10), 0 3px 10px rgba(17, 24, 39, .04);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      z-index: 30;
+      overflow: visible;
+    }
+    #profile .profile-shell-nav__brand {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      min-width: 116px;
+      color: inherit;
+      text-decoration: none;
+    }
+    #profile .profile-shell-nav__brand img {
+      display: block;
+      width: 112px;
+      height: auto;
+      max-height: 31px;
+      object-fit: contain;
+      object-position: left center;
+    }
+    #profile .profile-shell-nav__links {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      align-self: stretch;
+      flex: 1 1 auto;
+      min-width: 0;
+      gap: clamp(16px, 2.15vw, 38px);
+    }
+    #profile .profile-shell-nav__links a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      padding: 3px 0 0;
+      color: var(--profile-nav-ink);
+      font-size: clamp(12px, 1.05vw, 15px);
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    #profile .profile-shell-nav__links a::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 13px;
+      left: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--profile-nav-blue);
+      opacity: 0;
+      transform: scaleX(.35);
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    #profile .profile-shell-nav__links a:hover,
+    #profile .profile-shell-nav__links a:focus-visible,
+    #profile .profile-shell-nav__links a.is-current {
+      color: var(--profile-nav-blue);
+    }
+    #profile .profile-shell-nav__links a:hover::after,
+    #profile .profile-shell-nav__links a:focus-visible::after,
+    #profile .profile-shell-nav__links a.is-current::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    #profile .profile-shell-nav__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+      gap: 10px;
+    }
+    #profile .profile-shell-nav__language {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-right: 0;
+      color: var(--profile-nav-ink);
+    }
+    #profile .profile-shell-nav__language select {
+      appearance: none;
+      -webkit-appearance: none;
+      min-width: 40px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      outline: 0;
+    }
+    #profile .profile-shell-nav__language > .custom-select {
+      width: 58px !important;
+      max-width: 58px;
+      --custom-select-height: 44px !important;
+    }
+    #profile .profile-shell-nav__language .custom-select__trigger {
+      width: 58px;
+      min-height: 44px;
+      gap: 8px;
+      padding: 0 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    #profile .profile-shell-nav__language .custom-select__trigger:hover,
+    #profile .profile-shell-nav__language .custom-select__trigger:focus-visible,
+    #profile .profile-shell-nav__language .custom-select.is-open .custom-select__trigger {
+      background: #eef1f5;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    #profile .profile-shell-nav__language .custom-select__value { flex: 1 1 auto; width: auto; }
+    #profile .profile-shell-nav__language .custom-select__chevron { width: 8px; height: 8px; border-width: 1.5px; }
+    #profile .profile-shell-nav__language .custom-select__menu { min-width: 84px; right: 0; left: auto; }
+    #profile .profile-shell-nav__language > svg {
+      display: none;
+    }
+    #profile .profile-shell-nav__account {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 118px;
+      min-height: 52px;
+      gap: 9px;
+      padding: 0 19px;
+      border: 0;
+      border-radius: 999px;
+      background: #101827;
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    #profile .profile-shell-nav__account-avatar {
+      display: grid;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 1;
+    }
+    #profile .profile-shell-nav__mobile { display: none; }
+    #profile .profile-shell-nav :is(a, button, select, summary):focus-visible {
+      outline: 3px solid rgba(70, 104, 177, .32);
+      outline-offset: 3px;
+    }
+
+    @container screen (max-width: 1120px) {
+      #profile > .profile-shell-nav {
+        width: calc(100% - 32px);
+        min-height: 68px;
+        margin: 16px 16px 0;
+        padding: 0 12px 0 22px;
+        gap: 14px;
+      }
+      #profile .profile-shell-nav__links { gap: 17px; }
+      #profile .profile-shell-nav__links a { font-size: 12px; }
+      #profile .profile-shell-nav__account { min-width: 102px; min-height: 46px; padding-inline: 14px; }
+    }
+
+    @container screen (max-width: 930px) {
+      #profile > .profile-shell-nav {
+        width: calc(100% - 24px);
+        min-height: 64px;
+        margin: 12px 12px 0;
+        padding: 0 10px 0 20px;
+        gap: 10px;
+      }
+      #profile .profile-shell-nav__brand { min-width: 0; margin-right: auto; }
+      #profile .profile-shell-nav__brand img { width: 101px; max-height: 28px; }
+      #profile .profile-shell-nav__links { display: none; }
+      #profile .profile-shell-nav__actions { gap: 6px; }
+      #profile .profile-shell-nav__language { min-height: 42px; padding-right: 0; }
+      #profile .profile-shell-nav__language select { min-width: 32px; height: 42px; font-size: 14px; }
+      #profile .profile-shell-nav__language > .custom-select,
+      #profile .profile-shell-nav__language .custom-select__trigger { width: 54px !important; max-width: 54px; }
+      #profile .profile-shell-nav__language .custom-select__trigger { padding-inline: 7px; }
+      #profile .profile-shell-nav__account {
+        min-width: 42px;
+        width: 42px;
+        min-height: 42px;
+        height: 42px;
+        padding: 0;
+        border: 1px solid var(--profile-nav-line);
+        background: #f1f4f8;
+        color: var(--profile-nav-ink);
+      }
+      #profile .profile-shell-nav__account-avatar {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        font-size: 15px;
+      }
+      #profile .profile-shell-nav__account-label { display: none; }
+      #profile .profile-shell-nav__mobile {
+        position: relative;
+        display: block;
+        flex: 0 0 auto;
+      }
+      #profile .profile-shell-nav__mobile > summary {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        color: var(--profile-nav-ink);
+        list-style: none;
+        cursor: pointer;
+      }
+      #profile .profile-shell-nav__mobile > summary::-webkit-details-marker { display: none; }
+      #profile .profile-shell-nav__mobile > summary svg { width: 23px; height: 23px; }
+      #profile .profile-shell-nav__mobile[open] > summary { background: #eef1f5; }
+      #profile .profile-shell-nav__drawer {
+        position: absolute;
+        top: calc(100% + 14px);
+        right: 0;
+        width: min(330px, calc(100vw - 32px));
+        padding: 10px;
+        border: 1px solid rgba(17, 24, 39, .07);
+        border-radius: 24px;
+        background: #fff;
+        box-shadow: 0 22px 55px rgba(17, 24, 39, .18);
+      }
+      #profile .profile-shell-nav__drawer a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        padding: 0 16px;
+        border-radius: 15px;
+        color: var(--profile-nav-ink);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      #profile .profile-shell-nav__drawer a::after {
+        content: "→";
+        color: #758095;
+        font-size: 18px;
+      }
+      #profile .profile-shell-nav__drawer a:hover,
+      #profile .profile-shell-nav__drawer a:focus-visible,
+      #profile .profile-shell-nav__drawer a.is-current { background: #eef3fc; color: var(--profile-nav-blue); }
+    }
+
+    @container screen (max-width: 480px) {
+      #profile > .profile-shell-nav {
+        width: calc(100% - 20px);
+        min-height: 62px;
+        margin: 10px 10px 0;
+        padding: 0 8px 0 18px;
+        border-radius: 31px;
+        box-shadow: 0 10px 26px rgba(17, 24, 39, .10), 0 2px 8px rgba(17, 24, 39, .04);
+      }
+      #profile .profile-shell-nav__brand img { width: 94px; max-height: 25px; }
+      #profile .profile-shell-nav__actions { gap: 3px; }
+      #profile .profile-shell-nav__language { padding-right: 0; }
+      #profile .profile-shell-nav__language select { min-width: 29px; font-size: 13px; }
+      #profile .profile-shell-nav__language > .custom-select,
+      #profile .profile-shell-nav__language .custom-select__trigger { width: 50px !important; max-width: 50px; }
+      #profile .profile-shell-nav__language .custom-select__trigger { padding-inline: 6px; font-size: 13px; }
+      #profile .profile-shell-nav__account,
+      #profile .profile-shell-nav__mobile > summary { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
+      #profile .profile-shell-nav__drawer { right: -2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #profile .profile-shell-nav__links a::after { transition: none; }
     }
   </style>
 </head>
@@ -2052,7 +2357,40 @@
 
   <!-- ===================== PROFILE (home, bottom nav) ===================== -->
   <section class="screen screen--web" id="profile">
-    <div class="screen__top"><img class="brand-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane"><span class="grow"></span><span class="avatar" style="width:32px;height:32px">P</span></div>
+    <header class="screen__top profile-shell-nav">
+      <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane home">
+        <img src="../assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane">
+      </a>
+      <nav class="profile-shell-nav__links" aria-label="เมนูหลัก">
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#ed-program">ฟื้นฟูสมรรถภาพเพศชาย</a>
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#hair-program">ผม &amp; ผิว</a>
+        <a class="is-current" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how" aria-current="page">วิธีการทำงาน</a>
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#experts">แพทย์ของเรา</a>
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#articles-preview">บทความสุขภาพ</a>
+      </nav>
+      <div class="profile-shell-nav__actions">
+        <label class="profile-shell-nav__language">
+          <span class="sr-only">Language</span>
+          <select data-language aria-label="Language"><option value="th">TH</option><option value="en">EN</option></select>
+        </label>
+        <button class="profile-shell-nav__account" type="button" data-go="settings" aria-label="เปิดบัญชีของฉัน">
+          <span class="profile-shell-nav__account-avatar" aria-hidden="true">P</span>
+          <span class="profile-shell-nav__account-label">โปรไฟล์</span>
+        </button>
+        <details class="profile-shell-nav__mobile">
+          <summary aria-label="เปิดเมนูหลัก"><i data-lucide="menu" aria-hidden="true"></i></summary>
+          <nav class="profile-shell-nav__drawer" aria-label="เมนูหลักบนมือถือ">
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#ed-program">ฟื้นฟูสมรรถภาพเพศชาย</a>
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#hair-program">ผม &amp; ผิว</a>
+            <a class="is-current" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how" aria-current="page">วิธีการทำงาน</a>
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#experts">แพทย์ของเรา</a>
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#articles-preview">บทความสุขภาพ</a>
+          </nav>
+        </details>
+      </div>
+    </header>
     <div class="screen__body stack-5">
       <section class="profile-quick" aria-labelledby="profile-quick-title">
         <div class="between"><div><div class="eyebrow" id="profile-quick-title">เมนูด่วน</div><p class="hint">กลับเข้าสู่การดูแลได้ทันที</p></div><span class="badge badge--line">คุณหมอนรินทร์</span></div>
