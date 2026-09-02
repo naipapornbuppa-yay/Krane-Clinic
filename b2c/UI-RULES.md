@@ -219,6 +219,19 @@ else (client, 23 Aug):
   carries a quiet line pointing at LINE or email rather than a control that
   implies self-service.
 
+## 11b. The consultation hand-off
+
+- **The plan is shown, and the patient taps to pay** (client, 1 Sep: "หน้าสรุป
+  แผนการรักษาเสร็จแล้ว และต้องกดไปชำระต่อ ยังไม่มาเลย"). `#rx-writing` used to run
+  its timer and then `replaceCurrent('payment')`, so the plan the doctor had just
+  written was never shown and checkout arrived unannounced. `#rx-plan`
+  (SCR-011B) is that step: it says the diagnosis and medicines are ready, what
+  paying unlocks, and carries the only way forward.
+- A waiting screen carries no buttons (rule 10). The CTA that used to sit on
+  `#rx-writing` was enabled in the same tick that navigated away from it, so it
+  could never be pressed — if a button cannot be pressed, the screen it is on is
+  the wrong screen for it.
+
 ## 12. Booking
 
 - **Sexual health goes through matching and fails it** (New, 31 Aug), it does

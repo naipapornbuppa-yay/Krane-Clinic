@@ -1098,6 +1098,10 @@
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
     "นัดติดตามผล":"Follow-up",
+    "เลือกจากแพทย์ที่มีใบอนุญาตและพร้อมให้คำปรึกษา":"Choosing from licensed doctors who are available now.",
+    "กำลังหาแพทย์ให้คุณ":"Finding your doctor",
+    "ผลวินิจฉัยและยาพร้อมแล้ว":"Your plan is ready",
+    "ชำระเงินแล้วอ่านผลวินิจฉัย รอรับยา และใบรับรองแพทย์ได้เลย":"After payment: your diagnosis, medicine tracking and certificate.",
     "ที่อยู่จัดส่ง":"Delivery address",
     "ชำระเงิน":"Payment",
     "ขั้นตอนที่ 1 จาก 3, แบบสอบถาม":"Step 1 of 3, questionnaire",

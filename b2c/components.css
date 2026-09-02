@@ -2479,8 +2479,19 @@ body.lang-th *{letter-spacing:normal}
 .screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 .care-journey__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .care-journey__step{position:relative;display:grid;grid-template-rows:auto 3px;gap:8px;min-width:0;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
-.care-journey__step::before,.care-journey__dot,.care-journey__fill{display:none}
+.care-journey__step::before,.care-journey__dot{display:none}
 .care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
+/* The live stage fills across its own track as the patient moves through it,
+   rather than switching on whole (client, 1 Sep: "slowly load within it bar
+   same as before"). updateIntakeProgress() drives the width — per question on
+   the paginated screens, so it creeps rather than jumping a screen at a time —
+   and paints the previous width first so the change animates from where it was.
+   The 30 Aug redesign hid this element and left the JS running into nothing. */
+.care-journey__fill{display:none;position:absolute;z-index:1;bottom:0;left:0;
+  width:0;height:3px;border-radius:var(--radius-pill);background:var(--color-accent);
+  transition:width 520ms var(--ease-out)}
+.care-journey__step.is-current .care-journey__fill{display:block}
+@media(prefers-reduced-motion:reduce){.care-journey__fill{transition:none}}
 .care-journey__name{display:block;width:100%;overflow:hidden;color:var(--color-ink-3);font-size:13px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;text-overflow:ellipsis}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
@@ -2488,7 +2499,9 @@ body.lang-th *{letter-spacing:normal}
    the accent is what the rest of the app uses to say "you are here". Past and
    future stages stay grey, so there is still only one stage being pointed at. */
 .care-journey__step.is-current .care-journey__name{color:var(--color-accent);font-weight:var(--fw-semibold)}
-.care-journey__step.is-current::after{background:var(--color-accent)}
+/* The live stage keeps a grey track — the accent on it is the fill, and a
+   track already fully blue would leave nothing for the fill to travel across. */
+.care-journey__step.is-current::after{background:var(--color-line)}
 .care-journey__current{display:none}
 @media(max-width:780px){
   .care-journey{display:block;padding:10px 12px 12px}
