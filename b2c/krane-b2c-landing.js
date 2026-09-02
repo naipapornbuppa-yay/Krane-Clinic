@@ -1,7 +1,7 @@
 (() => {
   const translations = {
     en: {
-      announcementPromo: "Special offer: Free doctor consultation through <strong>1 January 2027</strong>",
+      announcementPromo: "Special offer: Join today and get your first doctor consultation free",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",
@@ -215,7 +215,7 @@
      receive a page-local English equivalent when the language changes. */
   const draftEnglishText = new Map([
     ["ข้ามไปยังเนื้อหาหลัก", "Skip to main content"],
-    ["น้ำหนัก", "Weight"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
+    ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
     ["วิธีการทำงาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["บทความสุขภาพ", "Health articles"],
     ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
     ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
