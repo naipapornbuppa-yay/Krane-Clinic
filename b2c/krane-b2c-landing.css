@@ -5243,14 +5243,31 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   font-size:9px;
 }
 .figma-how__screen--assessment>strong svg{width:12px;height:12px}
-.figma-how__screen--consult{padding:0;background:#d7e1ea}
-.figma-how__screen--consult>img{width:100%;height:100%;object-fit:cover;object-position:57% 50%}
-.figma-how__screen--consult::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,22,34,.12) 42%,rgba(9,22,34,.82))}
+.figma-how__screen--consult{padding:0;isolation:isolate;background:#e9eef5}
+.how-screen__consult-view{position:absolute;inset:0;transition:opacity .46s ease,transform .46s cubic-bezier(.22,.72,.2,1)}
+.how-screen__consult-view--video{z-index:1;overflow:hidden;background:#d7e1ea}
+.how-screen__consult-view--video>img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
+.how-screen__consult-view--video::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,22,34,.1) 42%,rgba(9,22,34,.84))}
+.how-screen__consult-view--chat{z-index:2;display:flex;flex-direction:column;padding:34px 14px 14px;background:#f4f6fa;opacity:0;transform:translateX(12px)}
+.figma-how__screen--consult[data-mode="chat"] .how-screen__consult-view--video{opacity:0;transform:translateX(-12px)}
+.figma-how__screen--consult[data-mode="chat"] .how-screen__consult-view--chat{opacity:1;transform:none}
 .how-screen__doctor{position:absolute;z-index:2;right:16px;bottom:80px;left:16px;display:flex;flex-direction:column;color:#fff}
 .how-screen__doctor b{font-size:11px;font-weight:600}.how-screen__doctor small{margin-top:2px;color:rgba(255,255,255,.72);font-size:7px}
 .how-screen__call-controls{position:absolute;z-index:2;right:16px;bottom:26px;left:16px;display:flex;justify-content:center;gap:12px}
 .how-screen__call-controls span{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.92);color:var(--draft-ink)}
 .how-screen__call-controls span.is-end{background:#df5f5f;color:#fff}.how-screen__call-controls svg{width:13px;height:13px}
+.how-screen__chat-head{min-height:34px;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #e1e6ee;color:var(--draft-ink)}
+.how-screen__chat-head>span{display:flex;flex-direction:column}.how-screen__chat-head b{font-size:9px;font-weight:600}.how-screen__chat-head small{margin-top:2px;color:#4f8a67;font-size:7px}
+.how-screen__chat-head>svg{width:15px;height:15px;color:var(--draft-blue)}
+.how-screen__chat-date{margin:10px 0 8px;color:#8992a0;font-size:7px;text-align:center}
+.how-screen__message{max-width:87%;margin-top:7px;padding:8px 9px;border-radius:11px;font-size:7.5px;line-height:1.45}
+.how-screen__message.is-doctor{align-self:flex-start;border-bottom-left-radius:4px;background:#fff;color:#28364c;box-shadow:0 3px 12px rgba(31,49,74,.06)}
+.how-screen__message.is-patient{align-self:flex-end;border-bottom-right-radius:4px;background:var(--draft-ink);color:#fff}
+.how-screen__typing{display:flex;align-items:center;gap:3px;margin-top:10px;color:#778293;font-size:7px;font-style:normal}
+.how-screen__typing>i{width:3px;height:3px;border-radius:50%;background:#7f8998;animation:how-typing 1s ease-in-out infinite}.how-screen__typing>i:nth-child(2){animation-delay:.14s}.how-screen__typing>i:nth-child(3){animation-delay:.28s}
+.how-screen__typing b{margin-left:3px;font-weight:500}
+.how-screen__chat-input{min-height:32px;display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding:0 9px;border:1px solid #dfe4ec;border-radius:10px;background:#fff;color:#8a93a1;font-size:7px}
+.how-screen__chat-input svg{width:12px;height:12px;color:var(--draft-blue)}
 .figma-how__screen--delivery{display:flex;flex-direction:column;align-items:center;background:#f4f6fa}
 .figma-how__screen--delivery .how-screen__top{width:100%}
 .figma-how__screen--delivery>img.how-screen__crane{width:190px;height:150px;margin-top:40px;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(26,40,60,.1))}
@@ -5332,6 +5349,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .figma-how__screen--assessment>p{margin-top:20px;font-size:13px}.how-screen__option{min-height:33px;margin-top:6px;font-size:7px}
   .figma-how__screen--assessment>strong{min-height:34px;margin-top:12px}
   .figma-how__screen--consult{padding:0}.how-screen__doctor{bottom:66px}.how-screen__call-controls{bottom:20px}
+  .how-screen__consult-view--chat{padding:29px 11px 12px}.how-screen__chat-head{min-height:30px;padding-bottom:8px}.how-screen__chat-head b{font-size:8px}.how-screen__message{margin-top:6px;padding:7px 8px;font-size:6.8px}.how-screen__chat-input{min-height:29px}
   .how-screen__brand{width:36px;max-height:10px}
   .figma-how__screen--delivery{padding:29px 14px 18px}.figma-how__screen--delivery>img.how-screen__crane{width:158px;height:112px;margin-top:32px}
   .figma-how__step--active{grid-row:2;align-self:start;padding:8px 10px 0}
@@ -5349,7 +5367,8 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 
 @media(prefers-reduced-motion:reduce){
   .figma-how__viewport{scroll-behavior:auto}
-  .figma-how__rail i,.figma-how__indicators i{transition:none}
+  .figma-how__rail i,.figma-how__indicators i,.how-screen__consult-view{transition:none}
+  .how-screen__typing>i{animation:none}
 }
 
 /* UT-27 — product-frame artwork needs mobile bounds of its own. The desktop

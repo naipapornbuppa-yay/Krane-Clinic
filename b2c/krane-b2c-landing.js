@@ -139,10 +139,14 @@
       howMockVideo: "Video",
       howMockChat: "Chat",
       howMockDoctorLive: "Consulting your doctor",
-      howMockDoctorName: "Dr Narin",
+      howMockDoctorName: "Dr Nicha Wattanakul",
       howMockDoctorMessage: "I have one more question about your symptoms.",
       howMockPatientMessage: "Sure. It has been happening every day.",
+      howMockDoctorPlan: "Thank you. I'll explain the care options that may suit you.",
       howMockTyping: "Doctor is typing",
+      howMockOnline: "Online",
+      howMockToday: "Today",
+      howMockInput: "Type a message",
       howMockTracking: "Delivery tracking",
       howMockConfirmed: "Confirmed",
       howMockPreparing: "Preparing",
@@ -979,6 +983,58 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopHowMocks();
     });
+  })();
+
+  /* Keep the doctor centred in the phone and demonstrate that the same private
+     consultation can continue in chat. The inner scene only runs while its
+     carousel slide is active and visible; reduced-motion users keep video. */
+  (function consultPhoneSwitcher() {
+    const consult = document.querySelector('[data-how-consult-switch]');
+    const section = document.querySelector('#how');
+    const slide = consult?.closest('[data-how-slide]');
+    if (!consult || !section || !slide) return;
+
+    let mode = 'video';
+    let timer = 0;
+    let visible = false;
+
+    function render() {
+      consult.dataset.mode = mode;
+    }
+    function stop() {
+      window.clearInterval(timer);
+      timer = 0;
+    }
+    function start() {
+      stop();
+      if (!visible || !slide.classList.contains('is-current') || reducedMotionQuery.matches || document.hidden) return;
+      timer = window.setInterval(() => {
+        mode = mode === 'video' ? 'chat' : 'video';
+        render();
+      }, 3200);
+    }
+    function sync() {
+      if (slide.classList.contains('is-current')) {
+        mode = 'video';
+        render();
+        start();
+      } else {
+        stop();
+      }
+    }
+
+    new MutationObserver(sync).observe(slide, { attributes:true, attributeFilter:['class'] });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        sync();
+      }, { threshold:.18, rootMargin:'10% 0px' }).observe(section);
+    } else {
+      visible = true;
+      sync();
+    }
+    document.addEventListener('visibilitychange', sync);
+    render();
   })();
 
   /* UT-26: Figma's 3-step scene becomes three full-width snap frames. The
