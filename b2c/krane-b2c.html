@@ -1654,7 +1654,7 @@
         <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
         <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span><span class="checkout-row__recipient" data-payment-recipient hidden></span></span>
           <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
@@ -1746,8 +1746,40 @@
             </span>
             <span class="checkout-order__price" data-order-price>฿ 134</span>
           </div>
+                  <!-- Client, 1 Sep: the doctor's fee is a line in the basket, not only a
+               row in the bill. It is the largest single thing the patient is
+               buying and it was the one thing the item list did not mention. -->
+          <div class="checkout-order__item checkout-order__item--service" data-order-consultation>
+            <span class="checkout-order__thumb checkout-order__thumb--service" aria-hidden="true"><i data-lucide="stethoscope" class="ui-icon"></i></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">ค่าปรึกษาแพทย์</span>
+              <span class="checkout-order__note">คุณหมอนรินทร์ ทานากะ</span>
+            </span>
+            <span class="checkout-order__price" data-payment-consultation>฿ 350</span>
+          </div>
         </div>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
+      </div>
+      <!-- Client, 1 Sep, after auditing Grab: the money reads straight down from
+           the basket — items, then what they add up to, then delivery and any
+           discount. It used to sit at the very bottom, four sections below the
+           list it was totalling, so the patient scrolled past add-ons and the
+           payment method to find out what the basket cost. -->
+      <div class="stack-2 checkout-final-summary">
+        <div class="checkout-head">
+          <span class="section-label">สรุปยอดชำระ</span>
+          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
+        </div>
+        <div class="checkout-bill">
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__rule"></div>
+          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
+        </div>
       </div>
       <!-- Add more to the basket, the way a food order does. Retail extras stay
            visibly separate from prescribed medicine. -->
@@ -1796,23 +1828,6 @@
           <span class="checkout-row__body"><span class="checkout-row__label">ชำระด้วย</span><span class="checkout-row__value" data-payment-method>QR / PromptPay</span></span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
-      </div>
-      <!-- 5. Final calculation, after every editable decision above it. -->
-      <div class="stack-2 checkout-final-summary">
-        <div class="checkout-head">
-          <span class="section-label">สรุปยอดชำระ</span>
-          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
-        </div>
-        <div class="checkout-bill">
-          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
-          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
-          <div class="checkout-bill__rule"></div>
-          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
-        </div>
       </div>
       <p class="hint" data-checkout-assurance>ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน</p>
     </div>
@@ -3855,6 +3870,16 @@
     document.querySelectorAll('[data-payment-address]').forEach(el => {
       el.textContent=confirmed ? deliveryAddressSummary(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
     });
+    /* Client, 1 Sep: New wants the name on this screen, the way a delivery app
+       shows it — who it is going to sits with where it is going, so the patient
+       can check both without opening the address screen. Data-driven, so there
+       is no fixed string here for the language pass to miss. */
+    const recipient=document.querySelector('[data-payment-recipient]');
+    if(recipient){
+      const parts=[address.recipientName,address.recipientPhone].map(part => (part || '').trim()).filter(Boolean);
+      recipient.textContent=parts.join(' · ');
+      recipient.hidden=!(confirmed && parts.length);
+    }
     const row=document.querySelector('[data-payment-address-row]');
     if(row) row.classList.toggle('checkout-row--empty',!confirmed);
     const action=document.querySelector('[data-payment-address-action]');
@@ -6413,15 +6438,17 @@
     });
     const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
-    const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
+    const consultationAmounts=[...document.querySelectorAll('#payment [data-payment-consultation]')];
     // UT-10: always itemise the doctor fee so users can understand the full bill,
     // including when the fee was already paid or covered by a benefit.
     if(consultationRow) consultationRow.hidden=false;
-    if(consultationAmount){
-      if(flowState.consultationPaid) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · ชำระแล้ว`;
-      else if(consultationDue<=0 && consultationCovered>0) consultationAmount.textContent=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
-      else if(consultationCovered>0) consultationAmount.textContent=`${baht(consultationDue)} · สิทธิ์ ${baht(consultationCovered)}`;
-      else consultationAmount.textContent=baht(consultationDue);
+    if(consultationAmounts.length){
+      let consultationText;
+      if(flowState.consultationPaid) consultationText=`${baht(CONSULTATION_FEE_BAHT)} · ชำระแล้ว`;
+      else if(consultationDue<=0 && consultationCovered>0) consultationText=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
+      else if(consultationCovered>0) consultationText=`${baht(consultationDue)} · สิทธิ์ ${baht(consultationCovered)}`;
+      else consultationText=baht(consultationDue);
+      consultationAmounts.forEach(node => { node.textContent=consultationText; });
     }
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
     document.querySelectorAll('#payment [data-fulfillment-mode-option]').forEach(option => {

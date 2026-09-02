@@ -138,10 +138,17 @@ only when the client asks for it, and the reason goes in the commit message.
 
 ## 9. Checkout and fulfilment
 
-- **Checkout is ordered like a delivery app** (client, 20 Aug: "ทำลอก grab มาเลย"):
-  where it goes → what is in it → offers → how it is paid → the bill → what you
-  get afterwards. The address is near the top, not below the basket. Pinned by
-  the `order` rule in the contract.
+- **Checkout is ordered like a delivery app** (client, 20 Aug: "ทำลอก grab มาเลย",
+  re-audited against Grab on 1 Sep): where it goes → what is in it → **what it
+  adds up to** → optional extras → how it is paid. The money reads straight down
+  from the basket; the bill used to sit at the very bottom, four sections below
+  the list it was totalling. Pinned by the `order` rule in the contract.
+- **The address row names the recipient.** Who it is going to sits under where
+  it is going, so neither has to be checked on another screen.
+- **The doctor's fee is a line in the basket**, not only a row in the bill. It is
+  the largest single thing being bought and the item list did not mention it. It
+  takes an icon rather than a product photo and has no stepper — there is no
+  quantity to change.
 - **Saving an address runs the quote and comes straight back.** One loading
   state with a five-second counter covers the wait; checkout then scrolls to the
   address row and pulses it (`.checkout-row.is-just-set`), so the answer is

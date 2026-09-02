@@ -482,29 +482,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* A loading stage is one icon, not a 248px photo tile with a badge tucked into its
    corner. The disc stays on this element rather than inside the artwork so the
    pharmacy failure state can recolour it without a second set of files. */
-/* Client, 1 Sep: a thin ring turning behind the artwork on a waiting screen.
-   The illustration and the counter both say "working", but neither of them
-   moves in a way that tracks the wait — the ring does, and it sits behind the
-   drawing so it reads as atmosphere rather than a second thing to look at.
-
-   aspect-ratio, not width and height percentages: the visual box is not square
-   on every screen, and 92%/92% of it drew an ellipse that ran into the heading.
-   The ring takes its size from the shorter side — height drives it, max-width
-   catches the case where the box is taller than it is wide — so it stays round
-   and always inside the artwork rather than spilling past it. */
-.state-view__visual--loading::before{
-  content:"";position:absolute;z-index:0;
-  top:50%;left:50%;translate:-50% -50%;
-  height:88%;width:auto;max-width:88%;aspect-ratio:1;border-radius:50%;
-  border:1.5px solid color-mix(in srgb,var(--color-accent) 13%,transparent);
-  border-top-color:color-mix(in srgb,var(--color-accent) 52%,transparent);
-  animation:state-view-spin 2.4s linear infinite
-}
-.state-view__visual--loading>*{position:relative;z-index:1}
-@keyframes state-view-spin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){
-  .state-view__visual--loading::before{animation:none}
-}
 .state-view__visual--icon{width:auto;height:auto;min-height:0}
 .state-view__stage{
   width:140px;height:140px;display:grid;place-items:center;flex:none;
@@ -840,6 +817,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-row__label{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
 .checkout-row__value{color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .checkout-row__value--wrap{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
+/* Who the order is going to, under where it is going — the delivery-app row. */
+.checkout-row__recipient{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.35}
+.checkout-row__recipient[hidden]{display:none}
 .checkout-row__chevron{flex:none;color:var(--color-ink-3)}
 .checkout-row__tag{flex:none;padding:2px var(--sp-2);border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
 /* A tag that names a blocker reads as one (client, 19 Aug). The soft tint was
@@ -891,6 +871,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-order__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__note{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.4}
 .checkout-order__price{flex:none;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* The doctor's fee is a service, not a box of tablets: it sits in the same row
+   rhythm but takes an icon instead of a product photo and has no stepper —
+   there is no quantity to change. */
+.checkout-order__thumb--service{display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent)}
+.checkout-order__thumb--service .ui-icon{width:20px;height:20px}
 /* Denser than the base row: four items with a stepper each ran long on a
    phone-height screen, so this trims the padding and the stepper controls
    rather than the type, which stays readable at the same size. */
