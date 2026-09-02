@@ -1097,6 +1097,18 @@
   /* Thai written straight into the markup, mapped back to English. Grouped in
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
+    /* Refill bottom sheet (client, 1 Sep) */
+    "ภูมิแพ้":"Allergy",
+    "ดูแลผิว":"Skin care",
+    "เติมยาจากใบสั่งไหน":"Which prescription?",
+    "เลือกใบสั่งยาที่ยังไม่หมดอายุ แล้วไปหน้าสั่งซื้อได้เลย":"Pick a prescription that has not expired and go straight to checkout.",
+    "ใบสั่งยาที่เติมยาได้":"Prescriptions you can refill",
+    "ปิดตัวเลือกเติมยา":"Close refill options",
+    "ยาทั้งหมดที่เติมได้":"Everything I can refill",
+    "รวมทุกใบสั่งยาไว้ในคำสั่งซื้อเดียว":"All your prescriptions in one order",
+    "ใบสั่งยาหมดอายุ ต้องปรึกษาแพทย์ใหม่":"Prescription expired · needs a new consultation",
+    "เติมยาได้ไม่เกินจำนวนที่แพทย์อนุมัติ":"You can refill up to the amount your doctor approved.",
+    "มีใบสั่งยาจากที่อื่น":"I have a prescription from another clinic",
     "นัดติดตามผล":"Follow-up",
     "เลือกจากแพทย์ที่มีใบอนุญาตและพร้อมให้คำปรึกษา":"Choosing from licensed doctors who are available now.",
     "กำลังหาแพทย์ให้คุณ":"Finding your doctor",
