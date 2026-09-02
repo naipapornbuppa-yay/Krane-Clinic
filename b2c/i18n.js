@@ -1345,6 +1345,7 @@
     "แผง":"strips",
     "จำนวน 1 แผง":"1 strip",
     "จำนวน 2 แผง":"2 strips",
+    "จำนวน 1 ชิ้น":"1 item",
     "ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก":"Relieves allergy, itching, hives and a runny nose",
     "แก้ปวด ลดไข้":"Relieves pain and fever",
     "บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ":"Relieves pain and inflammation in joints, bones and muscles",

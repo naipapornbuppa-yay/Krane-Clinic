@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-payment-readonly-list-v1";
+    const release = "20260903-addon-cart-items-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260903-payment-readonly-list-v1" defer></script>
+<script src="i18n.js?v=20260903-addon-cart-items-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -2180,6 +2180,33 @@
             <span class="checkout-order__quantity" data-order-qty>1 แผง</span>
             <span class="checkout-order__price" data-order-price>฿ 134</span>
           </div>
+          <div class="checkout-order__item" data-order-addon="wellness" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Biotin + Zinc</span>
+              <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
+            </span>
+            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 290</span>
+          </div>
+          <div class="checkout-order__item" data-order-addon="pillcase" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
+              <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
+            </span>
+            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 190</span>
+          </div>
+          <div class="checkout-order__item" data-order-addon="pouch" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
+              <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
+            </span>
+            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 250</span>
+          </div>
         </div>
         <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
@@ -4224,7 +4251,17 @@
       const selected=Boolean(flowState.orderState.addOns[option.dataset.addonOption]);
       option.setAttribute('aria-pressed',String(selected));
       const action=option.querySelector('[data-addon-action]');
-      if(action) action.textContent=selected ? 'นำออก' : 'เพิ่ม';
+      if(action){
+        const thai=document.documentElement.lang==='th';
+        action.textContent=selected ? (thai ? 'นำออก' : 'Remove') : (thai ? 'เพิ่ม' : 'Add');
+      }
+    });
+    document.querySelectorAll('#payment [data-order-addon]').forEach(row => {
+      const key=row.dataset.orderAddon;
+      const selected=Boolean(flowState.orderState.addOns[key]);
+      row.hidden=!selected;
+      const price=row.querySelector('[data-order-addon-price]');
+      if(price) price.textContent=baht(ADDON_PRICES[key] || 0);
     });
     document.querySelectorAll('[data-delivery-value]').forEach(option => {
       const selected=option.dataset.deliveryValue===flowState.orderState.deliveryMethod;
