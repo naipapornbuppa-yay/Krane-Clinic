@@ -66,6 +66,11 @@ only when the client asks for it, and the reason goes in the commit message.
 
 - Icons and interactive accents use the app blue `--color-accent`. Not the grey-teal
   `--color-info` default.
+- **"You are here" is blue, not ink** (client, 1 Sep). The care-journey bar marks
+  the live stage with the accent on both the label and its track; done and
+  future stages stay grey, so one stage is still being pointed at. Labels are
+  13px, dropping to 12 and 11.5 on narrower phones — they were 9.5px at 390
+  wide, which is below anything else on the screen.
 - Yellow `--surface-notice` means caution or "read this" — never decoration.
 - Every colour pair is contrast-checked (≥4.5:1 for body text) before it ships.
 
