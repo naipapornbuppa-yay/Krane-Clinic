@@ -3626,7 +3626,7 @@
     1: ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern',
         'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
     2: ['intake-general','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail',
-        'waitroom','consult','video','rx-writing','rx-plan'],
+        'waitroom','consult','video','rx-writing','rx-plan','appointment-booked'],
     3: ['address','delivery-quote','pharmacy-search','pharmacypending','pharmacyissue',
         'payment','payment-gw','payfail','payment-success','tracking']
   };
@@ -5298,7 +5298,7 @@
      The reminder is re-synced too — it holds a copy of the date, so on its own
      it kept whichever language was showing when the screen was opened. */
   if(window.MutationObserver){
-    new MutationObserver(() => { syncFollowUpDates(); syncHomeFollowUpCta(); })
+    new MutationObserver(() => { syncFollowUpDates(); syncHomeFollowUpCta(); syncAppointmentDays(); })
       .observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   }
   /* Read off data-followup-iso, not the rendered text: that text is translated,
@@ -6256,6 +6256,33 @@
     cta.classList.toggle('btn--blocked',!ready);
     label.textContent = ready ? `จองเวลา ${appointmentDay} ${appointmentSlot}` : 'เลือกเวลาก่อน';
   }
+  /* Client, 1 Sep: the day row read "วันนี้ 31 ส.ค." two days after that date.
+     The four chips were fixed dates in the markup, so "today" was only ever
+     right on the day they were written — the same trap as the follow-up dates.
+     They are offsets from today now, named and dated in the current language. */
+  const WEEKDAYS_TH = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  const WEEKDAYS_EN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function syncAppointmentDays(){
+    const row=document.querySelector('#appointment [data-appointment-day]')?.parentElement;
+    if(!row) return;
+    const thai=document.documentElement.lang==='th';
+    const months=thai ? FOLLOWUP_MONTHS_TH : FOLLOWUP_MONTHS_EN;
+    const days=thai ? WEEKDAYS_TH : WEEKDAYS_EN;
+    row.querySelectorAll('[data-appointment-day]').forEach((chip,index) => {
+      const when=new Date();
+      when.setHours(0,0,0,0);
+      when.setDate(when.getDate()+index);
+      const name=index===0 ? (thai ? 'วันนี้' : 'Today')
+        : index===1 ? (thai ? 'พรุ่งนี้' : 'Tomorrow')
+        : days[when.getDay()];
+      const date=`${when.getDate()} ${months[when.getMonth()]}`;
+      const nameEl=chip.querySelector('.appointment-day__name');
+      const dateEl=chip.querySelector('.appointment-day__date');
+      if(nameEl && nameEl.textContent!==name) nameEl.textContent=name;
+      if(dateEl && dateEl.textContent!==date) dateEl.textContent=date;
+      chip.dataset.dayLabel=name;
+    });
+  }
   function resetAppointment(){
     const scr=document.getElementById('appointment');
     if(!scr) return;
@@ -7054,7 +7081,7 @@
     }
     fillDoctorName();
     if(id==='profile') syncHomeFollowUpCta();
-    if(id==='appointment') resetAppointment();
+    if(id==='appointment'){ syncAppointmentDays(); resetAppointment(); }
     if(id==='appointment-booked'){
       const when=document.querySelector('#appointment-booked [data-appointment-when]');
       if(when) when.textContent=flowState.appointmentWhen || '';

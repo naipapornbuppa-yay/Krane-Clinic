@@ -75,6 +75,11 @@ only when the client asks for it, and the reason goes in the commit message.
   not-started is grey and empty. Turning the live track grey so the fill had
   somewhere to travel made "done" and "not started" identical, and a patient who
   had finished the questionnaire saw an almost empty bar.
+- **Every screen in a stage carries the bar.** #appointment-booked was missing
+  from the journey map, so the booking confirmation dropped the progress bar
+  mid-flow and read as a different app.
+- **A waiting screen turns a thin ring behind the artwork** (client, 1 Sep).
+  The drawing and the counter both say "working" but neither tracks the wait.
 - **The fill also moves during a wait**, not only between screens.
   `creepJourneyFill()` runs it across the slice a waiting screen owns for the
   length of that wait; a bar that arrives and then sits still for ten seconds
@@ -185,7 +190,10 @@ else (client, 23 Aug):
 - The window is measured from `data-followup-iso`, never from the rendered date:
   that text is translated, so parsing it would mean parsing Thai month
   abbreviations and would break the moment the language toggle ran.
-- **Demo dates are offsets, not calendar dates** (client, 1 Sep). A fixed date
+- **Demo dates are offsets, not calendar dates** (client, 1 Sep). This applies to
+  the booking day row too: its four chips were fixed dates, so it read
+  "วันนี้ 31 ส.ค." two days after that date. `syncAppointmentDays()` names and
+  dates them from today, in the current language. A fixed date
   plus a three-day window means the feature quietly stops appearing a few days
   after the date is written — in the middle of a testing round, with nobody
   told. `data-followup-offset` on the treatment card is the source: `1` for the

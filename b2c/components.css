@@ -482,6 +482,21 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* A loading stage is one icon, not a 248px photo tile with a badge tucked into its
    corner. The disc stays on this element rather than inside the artwork so the
    pharmacy failure state can recolour it without a second set of files. */
+/* Client, 1 Sep: a thin ring turning behind the artwork on a waiting screen.
+   The illustration and the counter both say "working", but neither of them
+   moves in a way that tracks the wait — the ring does, and it sits behind the
+   drawing so it reads as atmosphere rather than a second thing to look at. */
+.state-view__visual--loading::before{
+  content:"";position:absolute;z-index:0;width:92%;height:92%;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--color-accent) 12%,transparent);
+  border-top-color:color-mix(in srgb,var(--color-accent) 55%,transparent);
+  animation:state-view-spin 2.4s linear infinite
+}
+.state-view__visual--loading>*{position:relative;z-index:1}
+@keyframes state-view-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){
+  .state-view__visual--loading::before{animation:none}
+}
 .state-view__visual--icon{width:auto;height:auto;min-height:0}
 .state-view__stage{
   width:140px;height:140px;display:grid;place-items:center;flex:none;
@@ -2908,24 +2923,32 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    then a time — then a commit, so the screen keeps its CTA. */
 .appointment-lead{margin:0}
 .appointment-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
-.appointment-day{display:grid;gap:2px;padding:10px 4px;border:1px solid var(--color-line);
-  border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-ink);
-  text-align:center;cursor:pointer;
-  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+/* Client, 1 Sep: same language as the rest of the app — a soft plate and no
+   stroke, and the selection carries the accent as a fill rather than an outline.
+   Eight outlined white boxes on a grey page was the pattern already rejected on
+   the quick menu and on treatment detail. */
+.appointment-day{display:grid;gap:2px;padding:11px 4px;border:0;
+  border-radius:var(--radius-sm);background:var(--color-bg-soft);color:var(--color-ink);
+  text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
 .appointment-day__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
 .appointment-day__date{font-size:var(--fs-xs);color:var(--color-ink-3)}
-.appointment-day[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
-.appointment-day[aria-checked="true"] .appointment-day__date{color:var(--color-ink-2)}
+.appointment-day[aria-checked="true"]{background:var(--color-accent);color:#fff}
+.appointment-day[aria-checked="true"] .appointment-day__date{color:rgba(255,255,255,.8)}
+.appointment-day:active,.appointment-slot:active{transform:scale(.97)}
+.appointment-day:focus-visible,.appointment-slot:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
 
 .appointment-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
-.appointment-slot{min-height:42px;padding:0 4px;border:1px solid var(--color-line);
-  border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-ink);
-  font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;
-  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
-.appointment-slot[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent);color:#fff}
-/* Taken slots stay visible so the day does not look emptier than it is. */
-.appointment-slot.is-taken{background:var(--color-bg-soft);color:var(--color-ink-3);
-  border-color:transparent;cursor:default;text-decoration:line-through}
+.appointment-slot{min-height:44px;padding:0 4px;border:0;
+  border-radius:var(--radius-sm);background:var(--color-bg-soft);color:var(--color-ink);
+  font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.appointment-slot[aria-checked="true"]{background:var(--color-accent);color:#fff}
+/* Taken slots stay visible so the day does not look emptier than it is — but
+   they sit back on the page rather than carrying a plate of their own, so the
+   free ones are what the eye lands on. */
+.appointment-slot.is-taken{background:transparent;color:var(--color-ink-3);
+  cursor:default;text-decoration:line-through;opacity:.55}
 @media(max-width:360px){
   .appointment-slots{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
