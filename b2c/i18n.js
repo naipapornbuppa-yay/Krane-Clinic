@@ -1539,7 +1539,7 @@
     "ปรึกษาคุณหมอประจำ":"Consult your doctor",
     "เมื่อมีอาการ":"As needed",
     "ค่าปรึกษาชำระพร้อมค่ายาหลังปรึกษา":"The consultation fee is settled with your medicine afterwards",
-    "ดูแลทุกเคสของคุณ · ต้องการเปลี่ยนแพทย์ ทักแอดมินที่ LINE @kraneclinic หรือ care@krane.clinic":"looks after all of your cases · to change doctor, message our admin on LINE @kraneclinic or care@krane.clinic",
+    "หากต้องการเปลี่ยนแพทย์ ติดต่อแอดมินได้ที่ LINE @kraneclinic หรือ care@kraneclinic.com":"To change your doctor, contact our admin via LINE @kraneclinic or care@kraneclinic.com",
     "เลือกรายการที่ต้องการเติมยา":"Choose what to refill",
     "เลือกรายการที่ต้องการเติมยาก่อน":"Choose what to refill first",
     /* Sentences that wrap the doctor-name span: each side of the span is its
