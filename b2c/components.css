@@ -485,11 +485,19 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Client, 1 Sep: a thin ring turning behind the artwork on a waiting screen.
    The illustration and the counter both say "working", but neither of them
    moves in a way that tracks the wait — the ring does, and it sits behind the
-   drawing so it reads as atmosphere rather than a second thing to look at. */
+   drawing so it reads as atmosphere rather than a second thing to look at.
+
+   aspect-ratio, not width and height percentages: the visual box is not square
+   on every screen, and 92%/92% of it drew an ellipse that ran into the heading.
+   The ring takes its size from the shorter side — height drives it, max-width
+   catches the case where the box is taller than it is wide — so it stays round
+   and always inside the artwork rather than spilling past it. */
 .state-view__visual--loading::before{
-  content:"";position:absolute;z-index:0;width:92%;height:92%;border-radius:50%;
-  border:2px solid color-mix(in srgb,var(--color-accent) 12%,transparent);
-  border-top-color:color-mix(in srgb,var(--color-accent) 55%,transparent);
+  content:"";position:absolute;z-index:0;
+  top:50%;left:50%;translate:-50% -50%;
+  height:88%;width:auto;max-width:88%;aspect-ratio:1;border-radius:50%;
+  border:1.5px solid color-mix(in srgb,var(--color-accent) 13%,transparent);
+  border-top-color:color-mix(in srgb,var(--color-accent) 52%,transparent);
   animation:state-view-spin 2.4s linear infinite
 }
 .state-view__visual--loading>*{position:relative;z-index:1}
