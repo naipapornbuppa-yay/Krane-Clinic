@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-payment-editor-clean-v1";
+    const release = "20260903-pharmacy-retry-flow-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -838,7 +838,7 @@
         <details class="rail-page"><summary>Pharmacy matching</summary><div class="rail-sub">
           <a data-go="delivery-quote">Before payment · Delivery quote</a>
           <a data-go="pharmacy-search">Before payment · Stock &amp; price review</a>
-          <a data-go="pharmacypending">Before payment · Prepared &amp; ready</a>
+          <a data-go="pharmacypending">Before payment · Stock confirmed</a>
         </div><div class="rail-error-menu">
           <a class="is-exception" data-demo-nostock data-screen-ref="pharmacy-search"><span class="rail-error-tag">Error case</span>Pharmacy declines stock</a>
           <a class="is-exception" data-go="pharmacyissue"><span class="rail-error-tag">Error case</span>Standard-delivery fallback</a>
@@ -2397,16 +2397,15 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-payment-retry>Try payment again</button><button class="btn btn--ghost" data-payment-alternate-method>Use a different method</button></div>
   </section>
 
-  <!-- ===================== PHARMACY ACCEPTED + STOCK RESERVED (PRE-PAYMENT) ===================== -->
-  <!-- ===================== PHARMACY PREPARED + READY TO DISPATCH (PRE-PAYMENT) ===================== -->
+  <!-- ===================== PHARMACY STOCK CONFIRMED (PRE-PAYMENT) ===================== -->
   <section class="screen" id="pharmacypending" data-screen-code="SCR-017">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">กำลังจัดยา</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ยืนยันสต็อก</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Medicine prepared and ready to dispatch">
+      <div class="state-view__visual state-view__visual--success" role="img" aria-label="Pharmacy stock confirmed before payment">
         <span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-medicine-preparing"></use></svg></span>
         <span class="state-view__badge"><i data-prep-badge data-lucide="package" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-prep-title>เภสัชกำลังจัดยา</h2><p class="muted" data-prep-copy>เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-prep-title>ร้านยายืนยันสต็อกแล้ว</h2><p class="muted" data-prep-copy>อัปเดตสต็อกและยอดเรียบร้อย กำลังกลับไปหน้าชำระเงิน</p></div>
       <div class="state-view__timer" data-prep-countdown>00:00</div>
     </div>
   </section>
@@ -8019,54 +8018,36 @@
         flowState.orderState.pharmacyPrepared=false;
         flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
         persistFlowState();
-        replaceCurrent('pharmacypending');
-        showActionToast('ร้านยายืนยันและสำรองสต็อกแล้ว','success');
+        /* Stock recheck is a pre-payment detour, not fulfilment. Return to the
+           same checkout with the refreshed quote; no payment or tracking state
+           is created here. */
+        replaceCurrent('payment');
+        showActionToast('ร้านยายืนยันสต็อกและอัปเดตยอดแล้ว','success');
       }, 10000);
     }
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
     clearInterval(prepCountdownTimer);
-    /* Two stages on one screen, after payment: the pharmacist is packing it,
-       then it is packed. The second stage hands over to Activity, where the
-       order carries its own progress bar from then on (client, 20 Aug). */
+    /* Legacy/direct links may still open this transition screen. It is only a
+       stock-confirmation handoff before payment and must never create a paid or
+       dispatched order. */
     clearTimeout(phPreparedTimer);
     if(id === 'pharmacypending'){
       const scr=document.getElementById('pharmacypending');
+      const thai=document.documentElement.lang==='th';
       const prepEl=scr.querySelector('[data-prep-countdown]');
       const title=scr.querySelector('[data-prep-title]');
       const copy=scr.querySelector('[data-prep-copy]');
       const badge=scr.querySelector('[data-prep-badge]');
-      scr.dataset.prepStage='packing';
-      if(title) title.textContent='เภสัชกำลังจัดยา';
-      if(copy) copy.textContent='เภสัชกรกำลังจัดยาตามใบสั่งแพทย์ของคุณ';
-      if(badge) badge.setAttribute('data-lucide','package');
-      let prepElapsedSeconds=0;
-      paintElapsedTimer(prepEl,prepElapsedSeconds);
-      prepCountdownTimer=setInterval(() => {
-        if(!scr.classList.contains('active')){ clearInterval(prepCountdownTimer); return; }
-        prepElapsedSeconds+=1;
-        paintElapsedTimer(prepEl,prepElapsedSeconds);
-      },1000);
+      scr.dataset.prepStage='confirmed';
+      if(title) title.textContent=thai ? 'ร้านยายืนยันสต็อกแล้ว' : 'Pharmacy stock confirmed';
+      if(copy) copy.textContent=thai ? 'อัปเดตสต็อกและยอดเรียบร้อย กำลังกลับไปหน้าชำระเงิน' : 'Stock and total updated. Returning to checkout.';
+      if(prepEl) prepEl.textContent='';
+      if(badge) badge.setAttribute('data-lucide','package-check');
+      window.lucide?.createIcons({attrs:{'stroke-width':1.8}});
       phPreparedTimer=setTimeout(() => {
         if(!scr.classList.contains('active')) return;
-        clearInterval(prepCountdownTimer);
-        scr.dataset.prepStage='prepared';
-        flowState.orderState.pharmacyAccepted=true;
-        flowState.orderState.pharmacyPrepared=true;
-        flowState.orderState.stockLocked=true;
-        persistFlowState();
-        if(title) title.textContent='จัดยาสำเร็จแล้ว';
-        if(copy) copy.textContent='ยาของคุณพร้อมส่งแล้ว ติดตามสถานะได้เลย';
-        if(prepEl) prepEl.textContent='';
-        if(badge) badge.setAttribute('data-lucide','package-check');
-        window.lucide?.createIcons({attrs:{'stroke-width':1.8}});
-        phPreparedTimer=setTimeout(() => {
-          if(!scr.classList.contains('active')) return;
-          /* Straight to this order's own timeline (client, 23 Aug), not the
-             list of orders — the patient wants to see where their medicine is,
-             and Activity keeps its progress bars for coming back later. */
-          replaceCurrent('tracking');
-        }, reduceMotion ? 500 : 2200);
-      }, reduceMotion ? 600 : 4200);
+        replaceCurrent('payment');
+      }, reduceMotion ? 300 : 900);
     }
     clearTimeout(waitTimer);
     if(id === 'waitroom') resetWaitroom();
@@ -9065,8 +9046,8 @@
       pharmacyRetryCount=0;
       pharmacyForceDecline=false;
       refreshMedicationCheckout();
-      show('pharmacypending');
-      showActionToast('ยืนยันจัดส่งมาตรฐานแล้ว ร้านยาสำรองสต็อกให้แล้ว','success');
+      show('payment');
+      showActionToast('ยืนยันจัดส่งมาตรฐานและอัปเดตยอดแล้ว','success');
       return;
     }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
@@ -9679,9 +9660,8 @@
     resetGatewayAttempt('payment-gw');
     activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
   });
-  /* The pharmacy used to run before payment and hand back to checkout on a
-     5s dwell. It runs after payment now (client, 20 Aug), so SCR-017A owns its
-     own two stages and hands over to Activity; that auto-advance is gone. */
+  /* An expired quote rechecks pharmacy stock, then returns to this checkout.
+     Payment is still an explicit later action by the patient. */
   document.body.addEventListener('click',event => {
     if(event.target.closest('[data-payment-deadline-retry]')){
       invalidateFulfillmentQuote();
