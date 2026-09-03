@@ -190,6 +190,9 @@
       closingLead: "Complete a five-minute digital assessment and begin a direct medical conversation with a specialist.",
       consultNow: "Consult a doctor",
       footerIntro: "Premium clinical solutions for modern men, powered by medical science and personalised to support your health journey.",
+      hairTitlePrefix: "Proven care for ",
+      hairTitleEmphasis: "thicker hair",
+      hairTitleSuffix: "",
       footerDisclaimer: "*Disclaimer: Telemedicine services are provided by independent licensed clinics partnered with Krane Clinic. Prescriptions depend on a doctor's clinical assessment. This website is for information only and does not replace medical advice.",
       services: "Services",
       hairShort: "Hair loss",
@@ -244,6 +247,8 @@
     ["และทำต่อได้จริง", "and make it sustainable"], ["คุมความอยากอาหาร", "Manage appetite"], ["ปรับพฤติกรรม", "Build lasting habits"],
     ["ติดตามกับแพทย์", "Doctor follow-up"], ["เสียงจากผู้ใช้งาน Krane", "A Krane member"],
     ["“รู้สึกว่ามีคนดูแลจริง ๆ แผนชัด เข้าใจง่าย และคุยกับหมอได้โดยไม่ต้องเดินทาง”", "“I felt genuinely supported. The plan was clear, easy to understand and I could speak with a doctor without travelling.”"],
+    ["ผลลัพธ์จากการติดตาม", "Progress over time"], ["ติดตามการเปลี่ยนแปลงอย่างเป็นระบบ", "Track progress consistently"],
+    ["น้ำหนัก · ติดตามผลตามระยะเวลาที่แพทย์แนะนำ", "Weight care · follow-up on your doctor's recommended schedule"],
     ["*ผลลัพธ์และความเหมาะสมของการรักษาแตกต่างกันในแต่ละบุคคล", "*Results and treatment suitability vary by individual."],
     ["สุขภาพเส้นผม", "Hair health"], ["ดูแลผมร่วง", "Target hair loss"], ["แบบตรงจุด", "at the source"],
     ["ติดตามอย่างต่อเนื่อง", "Ongoing follow-up"], ["รู้สาเหตุ", "Understand the cause"], ["ก่อนเริ่มดูแล", "before starting care"],
@@ -252,7 +257,7 @@
     ["วางแผนเป็นระยะ", "Review at each stage"], ["ปรับตามการตอบสนองของคุณ", "Adjust to your response"],
     ["แพทย์ดูแลต่อเนื่อง", "Ongoing doctor care"], ["ไม่ต้องลองผิดลองถูกคนเดียว", "No more guessing alone"],
     ["เป็นส่วนตัว", "Private"], ["ดูแลได้จากที่บ้าน", "Care from home"],
-    ["*ภาพประกอบจาก draft เพื่อสื่อรูปแบบการติดตาม ผลลัพธ์แตกต่างกันในแต่ละบุคคล", "*Draft imagery illustrates the follow-up format. Results vary by individual."],
+    ["*ภาพประกอบเพื่อสื่อรูปแบบการติดตาม ผลลัพธ์แตกต่างกันในแต่ละบุคคล", "*Images illustrate the follow-up format. Results vary by individual."],
     ["กลับมาใกล้ชิด", "Feel close again"], ["อย่างมั่นใจอีกครั้ง", "with confidence"], ["คุยได้อย่างเป็นส่วนตัว", "A private conversation"],
     ["เรื่องสำคัญ", "Important concerns"], ["ไม่ควรต้องเดาเอง", "should not leave you guessing"],
     ["ปรึกษาแพทย์แบบ 1 ต่อ 1 พร้อมทางเลือกที่เหมาะกับสุขภาพของคุณ", "Speak privately one-to-one with a doctor about options suited to your health."],
@@ -267,6 +272,7 @@
     ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
     ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],
     ["คุ้มครองตาม PDPA", "Protected under PDPA"], ["ข้อมูลสุขภาพของคุณถูกใช้เพื่อการดูแลตามความยินยอมเท่านั้น", "Your health data is used for care only with your consent"],
+    ["ปลอดภัยตามมาตรฐานสากล", "Protected to international standards"], ["โครงสร้างพื้นฐานโดย INET พร้อมมาตรฐาน ISO ครบ 3 ด้าน", "INET infrastructure certified across three ISO standards"],
     ["โครงสร้างพื้นฐานพร้อมมาตรฐานความปลอดภัยระดับสากล", "Infrastructure backed by international security standards"],
     ["แพทย์ของ Krane", "Krane doctors"], ["ทีมแพทย์ที่ดูแล", "The medical team behind"], ["ทุกการตัดสินใจ", "every decision"],
     ["ทุกแผนเริ่มจากข้อมูลสุขภาพจริง และอยู่ภายใต้การประเมินของแพทย์ที่มีใบอนุญาต", "Every plan begins with your real health information and a licensed doctor's assessment."],
@@ -1346,6 +1352,129 @@
     } else {
       isVisible = true;
       scheduleAuto(2600);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else scheduleAuto();
+    });
+    reducedMotionQuery.addEventListener?.('change', () => {
+      if (reducedMotionQuery.matches) stopAuto();
+      else scheduleAuto();
+    });
+    window.addEventListener('resize', () => {
+      viewport.scrollLeft = slides[activeIndex].offsetLeft;
+    }, { passive:true });
+
+    setActive(0);
+  })();
+
+  /* Three before/after pairs remain swipeable as native scroll content. The
+     carousel advances only while visible and idle, and keeps arrows, dots,
+     keyboard input, and reduced-motion behavior in sync. */
+  (function weightResultsCarousel() {
+    const section = document.querySelector('[data-weight-results]');
+    const viewport = section?.querySelector('[data-weight-result-viewport]');
+    const slides = section ? [...section.querySelectorAll('[data-weight-result-slide]')] : [];
+    const dots = section ? [...section.querySelectorAll('[data-weight-result-go]')] : [];
+    if (!section || !viewport || slides.length < 2) return;
+
+    const AUTO_DELAY = 5600;
+    let activeIndex = 0;
+    let autoTimer = 0;
+    let settleTimer = 0;
+    let scrollFrame = 0;
+    let isVisible = false;
+    let isPointerDown = false;
+
+    const normalize = (index) => (index + slides.length) % slides.length;
+    const stopAuto = () => {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    };
+    const canAutoPlay = () => isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+
+    function scheduleAuto(delay = AUTO_DELAY) {
+      stopAuto();
+      if (!canAutoPlay()) return;
+      autoTimer = window.setTimeout(() => goTo(activeIndex + 1, true), delay);
+    }
+
+    function setActive(index) {
+      activeIndex = normalize(index);
+      section.dataset.weightResultActive = String(activeIndex);
+      slides.forEach((slide, slideIndex) => {
+        const current = slideIndex === activeIndex;
+        slide.classList.toggle('is-current', current);
+        slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      });
+      dots.forEach((dot, dotIndex) => {
+        const current = dotIndex === activeIndex;
+        dot.classList.toggle('is-current', current);
+        if (current) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function goTo(index, fromAuto = false) {
+      const nextIndex = normalize(index);
+      setActive(nextIndex);
+      viewport.scrollTo({
+        left:slides[nextIndex].offsetLeft,
+        behavior:reducedMotionQuery.matches ? 'auto' : 'smooth'
+      });
+      scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1200);
+    }
+
+    function updateFromScroll() {
+      scrollFrame = 0;
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - viewport.scrollLeft);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      if (nearestDistance <= viewport.clientWidth * .48) setActive(nearestIndex);
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY), 220);
+    }
+
+    viewport.addEventListener('scroll', () => {
+      stopAuto();
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateFromScroll);
+    }, { passive:true });
+    viewport.addEventListener('pointerdown', () => {
+      isPointerDown = true;
+      stopAuto();
+    }, { passive:true });
+    const releasePointer = () => {
+      isPointerDown = false;
+      window.setTimeout(() => scheduleAuto(AUTO_DELAY + 800), 350);
+    };
+    viewport.addEventListener('pointerup', releasePointer, { passive:true });
+    viewport.addEventListener('pointercancel', releasePointer, { passive:true });
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusout', () => window.setTimeout(() => scheduleAuto(AUTO_DELAY), 0));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    section.querySelector('[data-weight-result-prev]')?.addEventListener('click', () => goTo(activeIndex - 1));
+    section.querySelector('[data-weight-result-next]')?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) scheduleAuto(2800);
+        else stopAuto();
+      }, { threshold:.3 }).observe(section);
+    } else {
+      isVisible = true;
+      scheduleAuto(2800);
     }
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopAuto();
