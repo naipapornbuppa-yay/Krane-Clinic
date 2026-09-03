@@ -329,8 +329,6 @@
   const profileName = document.querySelector("[data-profile-name]");
   const profileProvider = document.querySelector("[data-profile-provider]");
   const mobileLogin = document.querySelector("[data-mobile-login]");
-  const mobileProfile = document.querySelector("[data-mobile-profile]");
-  const mobileLogout = document.querySelector("[data-mobile-logout]");
 
   function readSessionValue(key) {
     try { return JSON.parse(window.sessionStorage.getItem(key) || "{}"); }
@@ -396,9 +394,14 @@
       profileFallback.textContent = (auth.displayName.trim()[0] || "K").toUpperCase();
     }
     if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log in" : "เข้าสู่ระบบ");
-    if (mobileLogin) mobileLogin.hidden = auth.authenticated;
-    if (mobileProfile) mobileProfile.hidden = !auth.authenticated;
-    if (mobileLogout) mobileLogout.hidden = !auth.authenticated;
+    if (mobileLogin) {
+      mobileLogin.hidden = false;
+      mobileLogin.href = auth.authenticated ? "krane-b2c.html#profile" : "krane-b2c.html#login";
+      mobileLogin.dataset.route = auth.authenticated ? "profile" : "login";
+      mobileLogin.textContent = auth.authenticated
+        ? (lang === "en" ? "Profile" : "โปรไฟล์")
+        : (lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+    }
     if (!auth.authenticated) closeProfileMenu();
   }
 
@@ -427,7 +430,7 @@
     profilePicture.removeAttribute("src");
     if (profileFallback) profileFallback.hidden = false;
   });
-  document.querySelectorAll("[data-profile-logout], [data-mobile-logout]").forEach((button) => {
+  document.querySelectorAll("[data-profile-logout]").forEach((button) => {
     button.addEventListener("click", logoutLandingUser);
   });
   document.addEventListener("click", (event) => {
