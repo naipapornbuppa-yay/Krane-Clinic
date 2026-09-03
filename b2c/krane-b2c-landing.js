@@ -305,8 +305,11 @@
       const source = node.__kraneThai;
       const trimmed = source.trim();
       if (!/[ก-๙]/.test(trimmed)) { node.nodeValue = source; return; }
-      const translated = draftEnglishText.get(trimmed) || "Krane Clinic";
-      node.nodeValue = source.replace(trimmed, translated);
+      const translated = draftEnglishText.get(trimmed);
+      // Leave copy that is not in this page-specific dictionary untouched so the
+      // complete TH/EN layer can translate it next. Replacing unknown Thai copy
+      // with the brand name hid missing translations and produced misleading UI.
+      node.nodeValue = translated ? source.replace(trimmed, translated) : source;
     });
   };
 

@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260903-payment-editor-clean-v1" defer></script>
+<script src="i18n.js?v=20260903-quality-gates-v1" defer></script>
 <script src="../krane-golden-patient.js" defer></script>
 
 <style>
@@ -2211,8 +2211,26 @@
         <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
-      <!-- Optional retail items sit directly under the cart they join, rather
-           than after the bill that already totals them. -->
+      <!-- The bill follows the prescription cart it totals, matching the
+           delivery-app reading order validated with the client. -->
+      <div class="stack-2 checkout-final-summary">
+        <div class="checkout-head">
+          <span class="section-label">สรุปยอดชำระ</span>
+          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
+        </div>
+        <div class="checkout-bill">
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__rule"></div>
+          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
+        </div>
+      </div>
+      <!-- Optional retail items come after the current bill, so they read as
+           a secondary choice rather than part of the prescribed basket. -->
       <div class="stack-2" data-payment-required-section data-payment-addons>
         <div class="checkout-head">
           <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
@@ -2234,24 +2252,6 @@
             <span class="checkout-addon-card__copy"><strong>กระเป๋าจัดเก็บผลิตภัณฑ์</strong><span>ขนาดพกพา · กันละอองน้ำ</span></span>
             <span class="checkout-addon-card__foot"><span>฿ 250</span><em data-addon-action>เพิ่ม</em></span>
           </button>
-        </div>
-      </div>
-      <!-- The money reads straight down from the basket and its optional add-ons,
-           then delivery and any discount. -->
-      <div class="stack-2 checkout-final-summary">
-        <div class="checkout-head">
-          <span class="section-label">สรุปยอดชำระ</span>
-          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
-        </div>
-        <div class="checkout-bill">
-          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
-          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
-          <div class="checkout-bill__rule"></div>
-          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
         </div>
       </div>
       <!-- 3. Offers, between the basket and the payment method. -->
@@ -3560,12 +3560,20 @@
   const prototypeRail = document.querySelector('#prototype-rail');
   const railToggle = prototypeRail?.querySelector('.rail-toggle');
   const railCollapseStorageKey = 'krane-prototype-rail-collapsed';
+  function isEnglishUi(){
+    if(document.documentElement.lang === 'en' || /[?&#]lang=en\b/.test(window.location.href)) return true;
+    try{ return window.localStorage.getItem('krane_lang') === 'en'; }catch(error){ return false; }
+  }
   function setPrototypeRailCollapsed(collapsed, persist = true){
     document.body.classList.toggle('rail-is-collapsed', collapsed);
     if(railToggle){
+      const english=isEnglishUi();
+      const railLabel=english
+        ? (collapsed ? 'Expand the step menu' : 'Collapse the step menu')
+        : (collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง');
       railToggle.setAttribute('aria-expanded', String(!collapsed));
-      railToggle.setAttribute('aria-label', collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง');
-      railToggle.title = collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง';
+      railToggle.setAttribute('aria-label', railLabel);
+      railToggle.title = railLabel;
     }
     if(persist){
       try{ window.localStorage.setItem(railCollapseStorageKey, collapsed ? '1' : '0'); }catch(error){}
@@ -6106,10 +6114,15 @@
     const fab=document.querySelector('#video .call-fab');
     const badge=fab?.querySelector('[data-consult-unread-badge]');
     if(!fab || !badge) return;
+    const english=isEnglishUi();
     fab.classList.toggle('has-unread',Boolean(unread));
     badge.hidden=!unread;
-    fab.setAttribute('aria-label',unread ? 'เปิดแชท มีรายการยาจากแพทย์ 1 รายการ' : 'เปิดแชท');
-    fab.title=unread ? 'มีรายการยาจากแพทย์ · เปิดแชท' : 'เปิดแชท การโทรยังดำเนินต่อ';
+    fab.setAttribute('aria-label',unread
+      ? (english ? 'Open chat, 1 medicine summary from your doctor' : 'เปิดแชท มีรายการยาจากแพทย์ 1 รายการ')
+      : (english ? 'Open chat' : 'เปิดแชท'));
+    fab.title=unread
+      ? (english ? 'Medicine summary from your doctor · open chat' : 'มีรายการยาจากแพทย์ · เปิดแชท')
+      : (english ? 'Open chat · the call is still active' : 'เปิดแชท การโทรยังดำเนินต่อ');
   }
   function revealConsultationSummary(){
     typingTimer=null;
