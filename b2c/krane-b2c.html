@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-promo-spacing-v1";
+    const release = "20260903-checkout-density-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260903-promo-spacing-v1">
+<link rel="stylesheet" href="components.css?v=20260903-checkout-density-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2211,29 +2211,8 @@
         <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
-      <!-- Client, 1 Sep, after auditing Grab: the money reads straight down from
-           the basket — items, then what they add up to, then delivery and any
-           discount. It used to sit at the very bottom, four sections below the
-           list it was totalling, so the patient scrolled past add-ons and the
-           payment method to find out what the basket cost. -->
-      <div class="stack-2 checkout-final-summary">
-        <div class="checkout-head">
-          <span class="section-label">สรุปยอดชำระ</span>
-          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
-        </div>
-        <div class="checkout-bill">
-          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
-          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
-          <div class="checkout-bill__rule"></div>
-          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
-        </div>
-      </div>
-      <!-- Add more to the basket, the way a food order does. Retail extras stay
-           visibly separate from prescribed medicine. -->
+      <!-- Optional retail items sit directly under the cart they join, rather
+           than after the bill that already totals them. -->
       <div class="stack-2" data-payment-required-section data-payment-addons>
         <div class="checkout-head">
           <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
@@ -2255,6 +2234,24 @@
             <span class="checkout-addon-card__copy"><strong>กระเป๋าจัดเก็บผลิตภัณฑ์</strong><span>ขนาดพกพา · กันละอองน้ำ</span></span>
             <span class="checkout-addon-card__foot"><span>฿ 250</span><em data-addon-action>เพิ่ม</em></span>
           </button>
+        </div>
+      </div>
+      <!-- The money reads straight down from the basket and its optional add-ons,
+           then delivery and any discount. -->
+      <div class="stack-2 checkout-final-summary">
+        <div class="checkout-head">
+          <span class="section-label">สรุปยอดชำระ</span>
+          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
+        </div>
+        <div class="checkout-bill">
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-medicine-row><span>ค่ายาตามใบสั่งแพทย์</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__rule"></div>
+          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
         </div>
       </div>
       <!-- 3. Offers, between the basket and the payment method. -->
