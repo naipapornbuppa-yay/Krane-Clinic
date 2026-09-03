@@ -1338,7 +1338,7 @@
     "เลือกรายการที่ต้องการรับ":"Choose the medicines you want to receive",
     "ลดจำนวนหรือไม่รับบางรายการได้ โดยไม่เกินจำนวนที่แพทย์สั่ง":"Reduce the quantity or remove an item, up to the amount prescribed by your doctor.",
     "การเปลี่ยนจำนวนไม่แก้ไขชนิดยาและขนาดยาที่แพทย์สั่ง":"Changing the quantity does not change the medicine or dosage prescribed by your doctor.",
-    "บันทึกรายการและกลับไปชำระเงิน":"Save and return to payment",
+    "บันทึกรายการ":"Save items",
     "ใบสั่งยาโดย":"Prescribed by",
     "คุณหมอนรินทร์ ทานากะ":"Dr. Narin Tanaka",
     "ลดอาการไอ":"Relieves a cough",
