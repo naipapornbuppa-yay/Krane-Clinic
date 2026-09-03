@@ -6208,3 +6208,70 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     background:#f4f5f7;
   }
 }
+
+/* UT-34 — preserve the flat Figma product-card language in both carousel
+   states. The lifestyle figure is already a transparent cutout, so a dark
+   scrim only muddies the campaign colour and creates the unwanted fade. */
+.care-banner-grid--auto-products .care-banner--weight,
+.care-banner-grid--auto-products .care-banner--weight:not(.is-product-frame){
+  background:#be7d61!important;
+}
+.care-banner-grid--auto-products .care-banner--weight .care-banner__shade{
+  background:none!important;
+}
+
+/* The approved hair frame (Figma 1064:3222) is two source layers on #7ea99e:
+   a MINOXIDIL tablet in a 343px square and the F1 tablet in a 198x248 crop.
+   Keeping those exact layers removes the chipped AI cutout edges and restores
+   the authored overlap. */
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame{
+  background:#7ea99e!important;
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .banner-swap__image--product{
+  top:-63.333%!important;
+  right:-7.38%!important;
+  bottom:auto!important;
+  left:auto!important;
+  width:51.657%!important;
+  height:163.333%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  filter:none!important;
+}
+.care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--f1{
+  z-index:1;
+  top:-18.095%;
+  right:14.458%;
+  bottom:auto;
+  left:auto;
+  width:29.819%;
+  height:118.095%;
+  object-fit:cover;
+  filter:none;
+  transform:none;
+}
+.care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .hair-product-layer--f1{
+  opacity:1;
+  transform:none;
+}
+
+@media(max-width:760px){
+  /* Mobile cards are taller than the desktop Figma frame. Scale the same two
+     pieces as one bottom-right cluster without cropping either tablet. */
+  .care-banner-grid--auto-products [data-category="hair-skin"].is-product-frame .banner-swap__image--product{
+    top:auto!important;
+    right:-50%!important;
+    bottom:0!important;
+    left:auto!important;
+    width:160%!important;
+    height:163.333%!important;
+    object-fit:contain!important;
+  }
+  .care-banner-grid--auto-products [data-category="hair-skin"] .hair-product-layer--f1{
+    top:13%;
+    right:5%;
+    width:auto;
+    height:46%;
+    object-fit:contain;
+  }
+}
