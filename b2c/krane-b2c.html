@@ -3734,6 +3734,7 @@
     documentsUnlocked:false,
     coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
     orderState:{
+      checkoutOrigin:'consultation',
       quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},
       deliveryMethod:'same-day',
       fulfillmentMode:'delivery',
@@ -3786,7 +3787,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -3859,7 +3860,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,followUpContext:null,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -6569,6 +6570,7 @@
     return 'matching';
   }
   function consultationBalanceDue(){
+    if(flowState.orderState.checkoutOrigin === 'refill') return 0;
     if(flowState.consultationPaid) return 0;
     if(flowState.entryChannel === 'partner'){
       const explicitBalance=flowState.partnerConsultationBalanceDue;
@@ -6738,7 +6740,7 @@
         quantities[med]=Math.max(quantities[med] || 0, qty);
       });
     });
-    Object.assign(flowState.orderState,{quantities});
+    Object.assign(flowState.orderState,{quantities,checkoutOrigin:'refill'});
     /* The doctor already wrote this prescription, so a refill must not ask for a
        second consultation fee on the way to the same checkout. */
     Object.assign(flowState,{entryChannel:'direct',draftReady:true,consultationPaid:true,
@@ -6926,12 +6928,16 @@
       method:deliveryMethod
     });
     const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
+    const refillCheckout=flowState.orderState.checkoutOrigin==='refill';
+    const consultationOrderRow=document.querySelector('#payment [data-order-consultation]');
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
     const consultationAmounts=[...document.querySelectorAll('#payment [data-payment-consultation]')];
-    // UT-10: always itemise the doctor fee so users can understand the full bill,
-    // including when the fee was already paid or covered by a benefit.
-    if(consultationRow) consultationRow.hidden=false;
-    if(consultationAmounts.length){
+    // Consultation journeys itemise the doctor fee, including paid or covered
+    // states. A home-screen refill is a prescription-only order, so it has no
+    // consultation line item at all.
+    if(consultationOrderRow) consultationOrderRow.hidden=refillCheckout;
+    if(consultationRow) consultationRow.hidden=refillCheckout;
+    if(!refillCheckout && consultationAmounts.length){
       let consultationText;
       if(flowState.consultationPaid) consultationText=`${baht(CONSULTATION_FEE_BAHT)} · ชำระแล้ว`;
       else if(consultationDue<=0 && consultationCovered>0) consultationText=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
@@ -7057,6 +7063,7 @@
       paymentResolution:'',
       lastRequiredScreen:'signup'
     });
+    flowState.orderState.checkoutOrigin='consultation';
     persistFlowState();
     saveIntakeDraft();
     postAuthNext='matching';
@@ -8940,6 +8947,8 @@
     if(e.target.closest('[data-acceptplan-confirm]')){
       const m=document.querySelector('[data-acceptplan-modal]');
       if(m) m.hidden=true;
+      flowState.orderState.checkoutOrigin='consultation';
+      persistFlowState();
       show('rx-writing');
       return;
     }
