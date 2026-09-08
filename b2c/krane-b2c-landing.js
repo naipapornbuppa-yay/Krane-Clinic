@@ -1209,12 +1209,12 @@
   /* UT-33: keep the product catalogue a native horizontal scroller and add
      predictable controls for people who do not discover drag/trackpad input. */
   (function weightProductRail() {
-    const section = document.querySelector('[data-weight-products]');
-    const viewport = section?.querySelector('[data-weight-product-viewport]');
-    const cards = section ? [...section.querySelectorAll('.weight-product-card')] : [];
-    const previous = section?.querySelector('[data-weight-product-prev]');
-    const next = section?.querySelector('[data-weight-product-next]');
-    if (!section || !viewport || cards.length < 2) return;
+    document.querySelectorAll('[data-weight-products]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-product-viewport]');
+    const cards = [...section.querySelectorAll('.weight-product-card')];
+    const previous = section.querySelector('[data-weight-product-prev]');
+    const next = section.querySelector('[data-weight-product-next]');
+    if (!viewport || cards.length < 2) return;
 
     let updateFrame = 0;
 
@@ -1250,17 +1250,18 @@
     }, { passive:true });
     window.addEventListener('resize', updateControls, { passive:true });
     updateControls();
+    });
   })();
 
   /* The approved weight layout includes an auto-swiping testimonial panel.
      Autoplay stops while the panel is focused, touched, offscreen, hidden or
      reduced-motion is requested; arrows/dots and native swipe still work. */
   (function weightTestimonialCarousel() {
-    const section = document.querySelector('[data-weight-testimonials]');
-    const viewport = section?.querySelector('[data-weight-testimonial-viewport]');
-    const slides = section ? [...section.querySelectorAll('[data-weight-testimonial-slide]')] : [];
-    const dots = section ? [...section.querySelectorAll('[data-weight-testimonial-go]')] : [];
-    if (!section || !viewport || slides.length < 2) return;
+    document.querySelectorAll('[data-weight-testimonials]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-testimonial-viewport]');
+    const slides = [...section.querySelectorAll('[data-weight-testimonial-slide]')];
+    const dots = [...section.querySelectorAll('[data-weight-testimonial-go]')];
+    if (!viewport || slides.length < 2) return;
 
     const AUTO_DELAY = 5200;
     let activeIndex = 0;
@@ -1374,17 +1375,18 @@
     }, { passive:true });
 
     setActive(0);
+    });
   })();
 
   /* Three before/after pairs remain swipeable as native scroll content. The
      carousel advances only while visible and idle, and keeps arrows, dots,
      keyboard input, and reduced-motion behavior in sync. */
   (function weightResultsCarousel() {
-    const section = document.querySelector('[data-weight-results]');
-    const viewport = section?.querySelector('[data-weight-result-viewport]');
-    const slides = section ? [...section.querySelectorAll('[data-weight-result-slide]')] : [];
-    const dots = section ? [...section.querySelectorAll('[data-weight-result-go]')] : [];
-    if (!section || !viewport || slides.length < 2) return;
+    document.querySelectorAll('[data-weight-results]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-result-viewport]');
+    const slides = [...section.querySelectorAll('[data-weight-result-slide]')];
+    const dots = [...section.querySelectorAll('[data-weight-result-go]')];
+    if (!viewport || slides.length < 2) return;
 
     const AUTO_DELAY = 5600;
     let activeIndex = 0;
@@ -1497,6 +1499,7 @@
     }, { passive:true });
 
     setActive(0);
+    });
   })();
 
   document.body.classList.add("motion-enabled");
