@@ -6929,12 +6929,14 @@
     });
     const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
     const refillCheckout=flowState.orderState.checkoutOrigin==='refill';
+    const paymentJourney=document.querySelector('#payment > .care-journey');
     const consultationOrderRow=document.querySelector('#payment [data-order-consultation]');
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
     const consultationAmounts=[...document.querySelectorAll('#payment [data-payment-consultation]')];
-    // Consultation journeys itemise the doctor fee, including paid or covered
-    // states. A home-screen refill is a prescription-only order, so it has no
-    // consultation line item at all.
+    // A home-screen refill is a prescription-only order, not a new clinical
+    // journey. Remove both the three-step consultation progress and its fee
+    // line items so checkout starts directly with the repeat prescription.
+    if(paymentJourney) paymentJourney.hidden=refillCheckout || flowState.entryChannel==='partner';
     if(consultationOrderRow) consultationOrderRow.hidden=refillCheckout;
     if(consultationRow) consultationRow.hidden=refillCheckout;
     if(!refillCheckout && consultationAmounts.length){
