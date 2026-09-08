@@ -1873,6 +1873,51 @@
     reviewAnimationFrame = requestAnimationFrame(animateReviews);
   }
 
+  const articlesRail = document.querySelector(".articles-row");
+  const articleCards = articlesRail ? [...articlesRail.children] : [];
+  const articleDots = [...document.querySelectorAll("[data-articles-go]")];
+  let articleRailFrame = 0;
+
+  function setCurrentArticle(index) {
+    articleDots.forEach((dot, dotIndex) => {
+      const current = dotIndex === index;
+      dot.classList.toggle("is-current", current);
+      if (current) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  }
+
+  function updateCurrentArticle() {
+    articleRailFrame = 0;
+    if (!articlesRail || !articleCards.length) return;
+    const firstOffset = articleCards[0].offsetLeft;
+    const closest = articleCards.reduce((best, card, index) => {
+      const distance = Math.abs(card.offsetLeft - firstOffset - articlesRail.scrollLeft);
+      return distance < best.distance ? { index, distance } : best;
+    }, { index:0, distance:Infinity });
+    setCurrentArticle(closest.index);
+  }
+
+  if (articlesRail && articleCards.length && articleDots.length) {
+    articlesRail.addEventListener("scroll", () => {
+      if (!articleRailFrame) articleRailFrame = requestAnimationFrame(updateCurrentArticle);
+    }, { passive:true });
+    articleDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        const index = Number(dot.dataset.articlesGo || 0);
+        const card = articleCards[index];
+        if (!card) return;
+        articlesRail.scrollTo({
+          left:card.offsetLeft - articleCards[0].offsetLeft,
+          behavior:reducedMotionQuery.matches ? "auto" : "smooth"
+        });
+        setCurrentArticle(index);
+      });
+    });
+    window.addEventListener("resize", updateCurrentArticle, { passive:true });
+    updateCurrentArticle();
+  }
+
   const memberCount = document.querySelector("[data-member-count]");
   const memberCountTarget = Number(memberCount?.dataset.countTarget || 3000);
   let memberCountStarted = false;
