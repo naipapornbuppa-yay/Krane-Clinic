@@ -2909,15 +2909,23 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 /* Client treatment-detail structure (30 Aug): one dated record with two tabs.
    The treatment plan is the default view; medicines stay one tap away without
    repeating the whole home card or turning the detail header into a hero. */
-.treatment-detail{max-width:880px;width:100%;margin-inline:auto}
+.treatment-detail{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-3);
+  max-width:880px;width:100%;margin-inline:auto
+}
+/* Both tab panels occupy the same grid slot and inherit the exact same inset.
+   Reset the generic stack margins here so switching tabs cannot change the
+   card position merely because the visible panel is a different DOM sibling. */
+.treatment-detail.stack-3>*+*{margin-top:0}
 /* The switch is the shared segmented control now, so it needs no rules of its
    own beyond sitting clear of the card it used to be welded to. */
 .treatment-detail__switch{width:100%}
+.treatment-detail__panel{width:100%;min-width:0;margin:0}
 .treatment-detail__panel[hidden]{display:none}
 /* Freed from the tab strip, the record is an ordinary card again: its own top
    border and all four corners, instead of the flat-topped shape it needed while
    the tabs were glued on. */
-.treatment-record{padding:var(--sp-5);border:1px solid var(--color-line);
+.treatment-record{width:100%;min-width:0;margin:0;padding:var(--sp-5);border:1px solid var(--color-line);
   border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-card)}
 .treatment-record__date{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2)}
 /* The status rides here, beside the date, so the title below gets the full
