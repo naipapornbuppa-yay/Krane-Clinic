@@ -259,7 +259,7 @@
     ["น้ำหนัก · ติดตามผลตามระยะเวลาที่แพทย์แนะนำ", "Weight care · follow-up on your doctor's recommended schedule"],
     ["*ผลลัพธ์และความเหมาะสมของการรักษาแตกต่างกันในแต่ละบุคคล", "*Results and treatment suitability vary by individual."],
     ["สุขภาพเส้นผม", "Hair health"], ["ดูแลผมร่วง", "Target hair loss"], ["แบบตรงจุด", "at the source"],
-    ["ติดตามอย่างต่อเนื่อง", "Ongoing follow-up"], ["รู้สาเหตุ", "Understand the cause"], ["ก่อนเริ่มดูแล", "before starting care"],
+    ["ติดตามอย่างต่อเนื่อง", "Ongoing follow-up"], ["ติดตามผลต่อเนื่อง", "Ongoing follow-up"], ["รู้สาเหตุ", "Understand the cause"], ["ก่อนเริ่มดูแล", "before starting care"],
     ["แพทย์ประเมินรูปแบบผมร่วง ประวัติสุขภาพ และเป้าหมายของคุณ", "A doctor assesses your hair-loss pattern, health history and goals."],
     ["ติดตามจากมุมเดิม", "Track from the same angle"], ["เห็นความเปลี่ยนแปลงชัดขึ้น", "See changes more clearly"],
     ["วางแผนเป็นระยะ", "Review at each stage"], ["ปรับตามการตอบสนองของคุณ", "Adjust to your response"],
@@ -301,7 +301,103 @@
     ["กฎหมาย & ติดต่อ", "Legal & contact"], ["นโยบายความเป็นส่วนตัว", "Privacy policy"], ["ความเป็นส่วนตัว", "Privacy"], ["ข้อกำหนด", "Terms"],
     ["© 2026 Krane Clinic สงวนลิขสิทธิ์", "© 2026 Krane Clinic. All rights reserved."],
     ["*บริการการแพทย์ทางไกลให้บริการโดยแพทย์ที่มีใบอนุญาต ตัวเลือกการสั่งยาขึ้นอยู่กับการประเมินทางคลินิก ข้อมูลบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อให้ข้อมูลเท่านั้นและไม่ทดแทนคำแนะนำทางการแพทย์", "*Telemedicine is provided by licensed doctors. Prescriptions depend on a clinical assessment. This website is for information only and does not replace medical advice."],
-    ["เรื่องราวจากสมาชิก Krane", "A Krane member story"]
+    ["เรื่องราวจากสมาชิก Krane", "A Krane member story"],
+    ["ปรึกษาออนไลน์", "Online consultation"],
+    ["เริ่มจากสาเหตุ แล้ววางแผนให้เหมาะกับคุณ", "Start with the cause, then build the right plan for you"],
+    ["แผนดูแลจากสาเหตุ", "Cause-led care plan"],
+    ["ประเมินรูปแบบผมร่วง ประวัติสุขภาพ และเป้าหมายของคุณ", "Assess your hair-loss pattern, health history and goals"],
+    ["เฉพาะจุด", "Targeted"], ["ตามแพทย์สั่ง", "As prescribed"],
+    ["ผลิตภัณฑ์ชนิดหยด", "Dropper treatment"],
+    ["หนึ่งในรูปแบบการดูแลที่แพทย์อาจพิจารณาตามความเหมาะสม", "One care option a doctor may consider when appropriate"],
+    ["ใช้ง่าย", "Easy to use"], ["ผลิตภัณฑ์ชนิดปั๊ม", "Pump treatment"],
+    ["ออกแบบให้ใช้ต่อเนื่องตามคำแนะนำและแผนที่แพทย์กำหนด", "Designed for consistent use based on your doctor's guidance and plan"],
+    ["ปรับแผน", "Adjust the plan"], ["ดูแลต่อเนื่องกับแพทย์", "Ongoing doctor-led care"],
+    ["ติดตามความเปลี่ยนแปลงและทบทวนแผนเมื่อข้อมูลสุขภาพเปลี่ยนไป", "Track changes and review the plan when your health information changes"],
+    ["เรื่องไหนที่คุณกังวล?", "What concerns you most?"],
+    ["ผมบางกลางศีรษะ", "Thinning at the crown"], ["แนวผมและขมับ", "Hairline and temples"],
+    ["ผมร่วงมากกว่าปกติ", "More shedding than usual"],
+    ["คำตอบจะพาคุณไปเริ่มแบบประเมินสุขภาพเส้นผม", "Your answer will take you to the hair-health assessment"],
+    ["“พอรู้สาเหตุที่เป็นไปได้ ก็เลิกลองผลิตภัณฑ์ไปเรื่อยและเริ่มดูแลอย่างมีแผน”", "“Once I understood the likely cause, I stopped trying random products and started following a plan.”"],
+    ["ประเมินผมร่วง", "Hair-loss assessment"],
+    ["“การถ่ายรูปจากมุมเดิมช่วยให้เห็นความเปลี่ยนแปลงชัดกว่าการส่องกระจกทุกวัน”", "“Photos from the same angle showed the change more clearly than checking the mirror every day.”"],
+    ["“มีแพทย์ช่วยทบทวนแผน ทำให้รู้ว่าควรทำต่อหรือปรับตรงไหน”", "“Having a doctor review the plan helped me know what to continue and what to adjust.”"],
+    ["เห็นความเปลี่ยนแปลงจากมุมเดิม", "See change from the same angle"],
+    ["เส้นผม · ติดตามผลตามระยะเวลาที่แพทย์แนะนำ", "Hair · Follow-up timing is based on your doctor's advice"],
+    ["แข็ง", "Stronger"], ["แรงกว่าเดิม", "than before"],
+    ["ดูแลอย่างเป็นส่วนตัวและเหมาะกับคุณ", "Private care, tailored to you"],
+    ["ซิลเดนาฟิล", "Sildenafil"], ["เริ่มจากสุขภาพ อาการ และเป้าหมายของคุณ", "Start with your health, symptoms and goals"],
+    ["ทางเลือก", "Option"], ["ทาดาลาฟิล", "Tadalafil"],
+    ["แพทย์พิจารณาจากประวัติสุขภาพและยาที่ใช้อยู่", "A doctor considers your health history and current medicines"],
+    ["1 ต่อ 1", "One-to-one"], ["คุยกับแพทย์โดยตรง", "Speak directly with a doctor"],
+    ["ถามเรื่องที่กังวลได้อย่างเป็นส่วนตัว", "Ask about your concern privately"], ["เริ่มคุย", "Start a conversation"],
+    ["ทบทวนผลและความเหมาะสมร่วมกับแพทย์", "Review results and suitability with your doctor"],
+    ["สิ่งที่คุณอยากดูแล?", "What would you like help with?"], ["ความมั่นใจ", "Confidence"],
+    ["สมรรถภาพทางเพศ", "Sexual performance"], ["คุยอย่างเป็นส่วนตัว", "Talk privately"],
+    ["“คุยกับแพทย์ได้เป็นส่วนตัว ทำให้ตัดสินใจจากข้อมูลแทนการเดาเอง”", "“A private conversation with a doctor helped me decide from real information instead of guessing.”"],
+    ["“การติดตามผลช่วยให้รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”", "“Follow-up made it clear how to continue care without trial and error.”"],
+    ["มีแผนดูแล", "Guided care"], ["ตามแผนแพทย์", "Doctor-led"],
+    ["สุขภาพผู้ชาย · ประสบการณ์และแผนการดูแลแตกต่างกันในแต่ละบุคคล", "Men's health · Experiences and care plans vary by individual"],
+    ["*รูปแบบผลิตภัณฑ์และแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์", "*Product formats and care plans depend on a doctor's assessment."],
+    ["*ตัวเลือกยาและแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์", "*Medicine options and care plans depend on a doctor's assessment."],
+    ["*ตัวเลือกยาและแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์ ไม่ใช่ทุกตัวเลือกจะเหมาะกับทุกคน", "*Medicine options and care plans depend on a doctor's assessment. Not every option is suitable for everyone."],
+    ["ประสบการณ์ที่ติดตามได้", "Progress you can track"],
+    ["จากความกังวลสู่แผนดูแลที่ชัดเจน", "From concern to a clear care plan"],
+    ["ทำไมต้อง", "Why"],
+    ["การดูแลสุขภาพสำหรับผู้ชายยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ", "Modern men's healthcare grounded in medical science, with personalised plans designed around you."],
+    ["มิติใหม่ในการ", "A new approach to"], ["ลดน้ำหนัก", "weight loss"],
+    ["แบบรับประทาน", "Oral"], ["GLP-1 แบบรับประทาน", "Oral GLP-1"],
+    ["ตัวเลือกแบบเม็ดที่แพทย์อาจพิจารณาตามสุขภาพและเป้าหมาย", "A tablet option a doctor may consider based on your health and goals"],
+    ["คุณ พ., 36 ปี", "P., age 36"], ["คุณ ม., 41 ปี", "M., age 41"],
+    ["คุณ อ., 33 ปี", "O., age 33"], ["คุณ น., 38 ปี", "N., age 38"],
+    ["คุณ ต., 34 ปี", "T., age 34"], ["คุณ ว., 41 ปี", "W., age 41"],
+    ["คุณ ม., 38 ปี", "M., age 38"], ["คุณ ก., 39 ปี", "K., age 39"],
+    ["คุณ ธ., 45 ปี", "T., age 45"], ["คุณ ร., 42 ปี", "R., age 42"]
+  ]);
+
+  const draftEnglishAttributes = new Map([
+    ["เลื่อนดูตัวเลือกดูแลเส้นผม", "Browse hair-care options"],
+    ["รายการตัวเลือกดูแลเส้นผมแบบเลื่อนได้", "Scrollable list of hair-care options"],
+    ["ผลลัพธ์ก่อนและหลังการติดตามเส้นผม", "Hair follow-up before-and-after results"],
+    ["ผลลัพธ์เส้นผมคู่ที่ 1", "Hair result pair 1"], ["ผลลัพธ์เส้นผมคู่ที่ 2", "Hair result pair 2"],
+    ["ผลลัพธ์เส้นผมคู่ที่ 3", "Hair result pair 3"], ["เลือกผลลัพธ์เส้นผม", "Select a hair result"],
+    ["ผลลัพธ์ก่อนหน้า", "Previous result"], ["ผลลัพธ์ถัดไป", "Next result"],
+    ["เลื่อนดูตัวเลือกสุขภาพผู้ชาย", "Browse men's-health options"],
+    ["รายการตัวเลือกสุขภาพผู้ชายแบบเลื่อนได้", "Scrollable list of men's-health options"],
+    ["ความเห็นจากผู้รับการดูแลด้านสุขภาพผู้ชาย", "Men's-health member stories"],
+    ["ประสบการณ์ก่อนและหลังเริ่มแผนดูแลสุขภาพผู้ชาย", "Experiences before and after starting men's-health care"],
+    ["ประสบการณ์การดูแลคู่ที่ 1", "Care experience pair 1"], ["ประสบการณ์การดูแลคู่ที่ 2", "Care experience pair 2"],
+    ["ประสบการณ์การดูแลคู่ที่ 3", "Care experience pair 3"], ["เลือกประสบการณ์การดูแล", "Select a care experience"],
+    ["ประสบการณ์ก่อนหน้า", "Previous experience"], ["ประสบการณ์ถัดไป", "Next experience"],
+    ["ประสบการณ์ที่ 1", "Experience 1"], ["ประสบการณ์ที่ 2", "Experience 2"], ["ประสบการณ์ที่ 3", "Experience 3"],
+    ["เลือกบทความ", "Select an article"], ["บทความที่ 1", "Article 1"], ["บทความที่ 2", "Article 2"],
+    ["บทความที่ 3", "Article 3"], ["บทความที่ 4", "Article 4"],
+    ["เม็ดยาแบบไม่แสดงตราสินค้า", "Unbranded medicine tablet"],
+    ["ปากกาลดน้ำหนักแบบไม่แสดงตราสินค้า", "Unbranded weight-management injection pens"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 1", "Abdomen before and after care-plan follow-up, pair 1"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 2", "Abdomen before and after care-plan follow-up, pair 2"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 3", "Abdomen before and after care-plan follow-up, pair 3"],
+    ["ชุดผลิตภัณฑ์ดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care products"],
+    ["ขวดหยดสำหรับการดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care dropper bottle"],
+    ["ขวดปั๊มสำหรับการดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care pump bottle"],
+    ["ภาพสื่อถึงการติดตามแผนดูแล", "Visual representing ongoing care-plan follow-up"],
+    ["ภาพเปรียบเทียบเส้นผมบริเวณกลางศีรษะก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Crown before and after follow-up, photographed from the same angle and lighting"],
+    ["ภาพเปรียบเทียบแนวผมและขมับก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Hairline and temples before and after follow-up, photographed from the same angle and lighting"],
+    ["ภาพเปรียบเทียบผมบางแบบกระจายก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Diffuse thinning before and after follow-up, photographed from the same angle and lighting"],
+    ["เม็ดยาทาดาลาฟิลแบบไม่แสดงตราสินค้า", "Unbranded tadalafil tablets"],
+    ["โทรศัพท์สำหรับวิดีโอปรึกษาแพทย์ออนไลน์", "Phone showing an online doctor consultation"],
+    ["แพทย์กำลังติดตามและทบทวนแผนการดูแล", "Doctor reviewing and following up on a care plan"],
+    ["ภาพสื่อถึงความกังวลก่อนเริ่มปรึกษา", "Visual representing concern before consultation"],
+    ["ภาพสื่อถึงการเริ่มดูแลอย่างเป็นส่วนตัว", "Visual representing the start of private care"],
+    ["ภาพสื่อถึงการพูดคุยเรื่องสุขภาพกับคู่", "Visual representing a conversation about health with a partner"],
+    ["ภาพสื่อถึงความมั่นใจหลังได้รับข้อมูลและคำแนะนำ", "Visual representing confidence after receiving information and guidance"],
+    ["ภาพผลิตภัณฑ์แบบไม่แสดงตราสินค้า", "Unbranded product image"],
+    ["ภาพผลิตภัณฑ์แบบไม่แสดงตราสินค้าในอีกมุมหนึ่ง", "Unbranded product image from another angle"],
+    ["ตรากระทรวงสาธารณสุข", "Ministry of Public Health emblem"],
+    ["เครื่องหมายรับรอง ISO/IEC 27001:2022 ที่ INET ใช้", "INET ISO/IEC 27001:2022 certification mark"],
+    ["เครื่องหมายรับรอง ISO 27018:2019 ที่ INET ใช้", "INET ISO 27018:2019 certification mark"],
+    ["เครื่องหมายรับรอง ISO/IEC 20000-1:2018 ที่ INET ใช้", "INET ISO/IEC 20000-1:2018 certification mark"],
+    ["พญ. กรผกา ขันติโกสุม", "Dr Kornpaka Khantikosum"],
+    ["นพ. ไพรัช เกตุรัตนกุล", "Dr Pairat Ketrattanakul"]
   ]);
 
   const applyDraftLanguage = (lang) => {
@@ -324,6 +420,15 @@
       // complete TH/EN layer can translate it next. Replacing unknown Thai copy
       // with the brand name hid missing translations and produced misleading UI.
       node.nodeValue = translated ? source.replace(trimmed, translated) : source;
+    });
+    root.querySelectorAll("[aria-label],[placeholder],[title],[alt]").forEach((element) => {
+      ["aria-label", "placeholder", "title", "alt"].forEach((attribute) => {
+        if (!element.hasAttribute(attribute)) return;
+        const cacheKey = `kraneThai${attribute.replace("-", "")}`;
+        if (!element.dataset[cacheKey]) element.dataset[cacheKey] = element.getAttribute(attribute);
+        const source = element.dataset[cacheKey];
+        element.setAttribute(attribute, lang === "en" ? (draftEnglishAttributes.get(source) || source) : source);
+      });
     });
   };
 
