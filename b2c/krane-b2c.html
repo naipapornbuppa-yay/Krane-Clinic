@@ -7703,10 +7703,14 @@
     }
     /* Direct entry always restores the progress UI, even if this tab previously
        opened a partner link. Partner entry keeps it hidden on shared screens too. */
+    const refillCheckout=flowState.orderState && flowState.orderState.checkoutOrigin==='refill';
     document.querySelectorAll('.care-journey').forEach(cj => {
       const ownerScreen=cj.closest('.screen');
       const coldAuth=ownerScreen && JOURNEY_AUTH.includes(ownerScreen.id) && !journeyActive;
-      cj.hidden=flowState.entryChannel==='partner' || coldAuth;
+      const refillDetour=refillCheckout
+        && ownerScreen
+        && (ownerScreen.id==='intake-general' || ownerScreen.id==='payment');
+      cj.hidden=flowState.entryChannel==='partner' || coldAuth || refillDetour;
     });
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
