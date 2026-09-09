@@ -1274,6 +1274,14 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .landing-figma-draft .trust-grid--open{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:70px}
 .landing-figma-draft .trust-grid--open .trust-card{min-height:410px;display:flex;flex-direction:column;gap:30px;padding:16px 28px;border:0;border-right:1px solid rgba(23,28,40,.12);border-radius:0;background:transparent;box-shadow:none}
 .landing-figma-draft .trust-grid--open .trust-card:last-child{border-right:0}
+/* The second set of four only exists to close the marquee loop on a phone. It
+   is hidden from assistive tech in the markup and from every layout above the
+   phone breakpoint here, so the desktop grid still shows four columns. */
+.landing-figma-draft .trust-card.is-clone{display:none}
+/* With clones in the markup the last child is one of them, so the divider on
+   the real fourth column stayed drawn and took the 1px that kept its heading on
+   one line. The card before the first clone is the last one the reader sees. */
+.landing-figma-draft .trust-grid--open .trust-card:has(+ .trust-card.is-clone){border-right:0}
 .landing-figma-draft .trust-grid--open .trust-card__logo-stage,
 .trust-card__icon-stage{height:190px;display:grid;place-items:center;padding:0;background:transparent}
 .landing-figma-draft .trust-grid--open .trust-card__logo-stage img{max-width:150px;max-height:150px;object-fit:contain}
@@ -1405,14 +1413,38 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   .positioning-section p,.positioning-section h2{font-size:42px;line-height:1.2}
   .landing-figma-draft .trust-section--figma{padding:62px 18px;border-radius:36px}
   .trust-section--figma .section-heading h2{font-size:44px}
-  .landing-figma-draft .trust-grid--open{grid-template-columns:1fr;margin-top:42px}
-  .landing-figma-draft .trust-grid--open .trust-card{min-height:0;display:grid;grid-template-columns:112px 1fr;align-items:center;gap:18px;padding:26px 4px;border-right:0;border-bottom:1px solid rgba(23,28,40,.12)}
-  .landing-figma-draft .trust-grid--open .trust-card:last-child{border-bottom:0}
-  .landing-figma-draft .trust-grid--open .trust-card__logo-stage,.trust-card__icon-stage{height:112px}
-  .landing-figma-draft .trust-grid--open .trust-card__logo-stage img{max-width:94px;max-height:94px}
-  .trust-card__icon-stage svg{width:62px;height:62px}
-  .landing-figma-draft .trust-grid--open .trust-card__iso-grid{height:112px;padding:8px 0}
-  .landing-figma-draft .trust-grid--open .trust-card__eyebrow{font-size:16px}
+  /* Client, 9 Sep: stacked, the four reasons ran 1,280px down the phone — four
+     screens of scrolling for a section nobody scrolls to read twice. The row
+     runs itself instead, the same marquee the hero benefits use: the grid is
+     the track, .trust-marquee is the window, and the four .is-clone cards close
+     the loop. Nothing changes above this breakpoint. */
+  .landing-figma-draft .trust-marquee{margin-inline:-18px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+  .landing-figma-draft .trust-grid--open{display:flex;width:max-content;max-width:none;gap:0;margin-top:38px;animation:trust-cards-marquee 40s linear infinite}
+  .landing-figma-draft .trust-grid--open .trust-card{flex:0 0 268px;width:268px;min-height:0;display:flex;flex-direction:column;gap:14px;padding:4px 20px;border-top:0;border-bottom:0;border-right:1px solid rgba(23,28,40,.12)}
+  /* In the loop every card needs its divider, the last one included, so the
+     seam between the fourth card and its clone looks like every other join. */
+  .landing-figma-draft .trust-grid--open .trust-card:last-child,
+  .landing-figma-draft .trust-grid--open .trust-card:has(+ .trust-card.is-clone){border-right:1px solid rgba(23,28,40,.12)}
+  .landing-figma-draft .trust-card.is-clone{display:flex}
+  /* Same fix the compliance marquee needed: reveal-on-scroll watches the
+     viewport, and every card but the first starts off to the right of it, so
+     they would ride in at opacity 0 and only fade once they had already
+     arrived. Inside a track that moves itself, the cards are simply present. */
+  .motion-enabled .trust-grid--open .trust-card.reveal-item{opacity:1;transform:none;transition:none;will-change:auto}
+  @keyframes trust-cards-marquee{to{transform:translate3d(-50%,0,0)}}
+  /* Reduced motion: the same row, pushed by hand. The clones would only be a
+     second copy of the list to swipe through, so they go. */
+  @media(prefers-reduced-motion:reduce){
+    .landing-figma-draft .trust-grid--open{width:auto;animation:none;overflow-x:auto;scrollbar-width:none}
+    .landing-figma-draft .trust-card.is-clone{display:none}
+  }
+  .landing-figma-draft .trust-grid--open .trust-card__logo-stage,.trust-card__icon-stage{height:106px}
+  .landing-figma-draft .trust-grid--open .trust-card__logo-stage img{max-width:88px;max-height:88px}
+  .landing-figma-draft .trust-grid--open .trust-card--pharmacy .trust-card__logo-stage img{max-width:72px;max-height:88px}
+  .trust-card__icon-stage svg{width:60px;height:60px}
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid{height:106px;padding:4px 0}
+  .landing-figma-draft .trust-grid--open .trust-card__eyebrow{font-size:15px;line-height:1.4}
+  .landing-figma-draft .trust-grid--open .trust-card__line{font-size:12.5px;line-height:1.65}
 
   .landing-figma-draft .experts--figma{padding:62px 18px 34px;border-radius:36px}
   .landing-figma-draft .experts--figma .experts__intro h2{font-size:42px}
@@ -7485,4 +7517,26 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     height:238px;
   }
   .weight-result-pair .program-result-diptych--split>img{object-fit:cover!important}
+}
+
+/* The ISO block inside the trust marquee. Its sizes were authored for the old
+   full-width stacked card, so at 268px the third badge ran 160px wide inside a
+   108px cell and spilled into the next card. Those rules sit later in this file
+   than the marquee block, so the marquee's own sizes have to be stated here. */
+@media(max-width:760px){
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:58px 42px;
+    gap:6px 8px;
+    align-content:center;
+    height:106px;
+    min-height:0;
+    padding:0;
+  }
+  /* Three marks in two columns leaves the third alone on its row — it sits
+     across both and centred, rather than hanging under one of them. */
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification:nth-child(3){grid-column:1/-1;justify-self:center}
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification img{height:42px;max-width:92px;max-height:42px}
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification:nth-child(2) img{width:42px;height:42px;max-width:42px}
+  .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification:nth-child(3) img{width:88px;height:30px;max-width:88px;max-height:30px}
 }
