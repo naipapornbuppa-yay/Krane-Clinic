@@ -7721,7 +7721,10 @@
       const refillDetour=refillCheckout
         && ownerScreen
         && (ownerScreen.id==='intake-general' || ownerScreen.id==='payment');
-      cj.hidden=flowState.entryChannel==='partner' || coldAuth || refillDetour;
+      const followUpDetour=flowState.followUpDirectToWaitroom
+        && ownerScreen
+        && ownerScreen.id==='intake-general';
+      cj.hidden=flowState.entryChannel==='partner' || coldAuth || refillDetour || followUpDetour;
     });
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
