@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260903-checkout-density-v1";
+    const release = "20260909-signup-auth-align-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260903-checkout-density-v1">
+<link rel="stylesheet" href="components.css?v=20260909-signup-auth-align-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -1373,18 +1373,26 @@
   </section>
 
   <!-- ===================== SIGN UP · after completed health intake ===================== -->
-  <section class="screen" id="signup">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Create your account</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">Create your secure care account</h2></div>
-      <div class="field"><label for="signup-phone">Phone number</label><input class="input" id="signup-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="08x-xxx-xxxx"></div>
-      <p class="hint">We'll text a one-time code (OTP). No password needed.</p>
-      <div class="row" style="align-items:center;gap:var(--sp-3)"><div class="divider" style="flex:1;margin:0"></div><span class="hint">or</span><div class="divider" style="flex:1;margin:0"></div></div>
-      <div class="stack-2">
+  <section class="screen auth-screen auth-screen--signup" id="signup">
+    <div class="screen__top auth-screen__top"><button class="back" data-back>‹</button><span class="ttl">Create your account</span></div>
+    <div class="screen__body auth-screen__body">
+      <div class="auth-screen__panel">
+        <div class="auth-screen__intro">
+          <h2 class="h1">Create your secure care account</h2>
+          <p class="muted">We'll text a one-time code (OTP). No password needed.</p>
+        </div>
+        <div class="auth-screen__form">
+          <div class="field"><label class="sr-only" for="signup-phone">Phone number</label><input class="input" id="signup-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="Phone number"></div>
+          <button class="btn btn--primary" data-signup-phone>Send OTP</button>
+        </div>
+        <div class="auth-screen__separator"><span>Or other sign-up options</span></div>
+        <div class="stack-2 auth-screen__social">
         <button class="btn btn--secondary social-btn" data-social="LINE" data-auth-next="consent-terms"><svg class="brand-icon" aria-hidden="true"><use href="#logo-line"></use></svg><span>Sign up with LINE</span></button>
         <button class="btn btn--secondary social-btn" data-social="Google" data-auth-next="consent-terms"><svg class="brand-icon" aria-hidden="true"><use href="#logo-google"></use></svg><span>Sign up with Google</span></button>
+        </div>
+        <button class="textlink auth-screen__create" data-go="login">Already have an account? Log in</button>
       </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-signup-phone>Send OTP</button><button class="textlink" data-go="login">Already have an account? Log in</button></div>
+    </div>
   </section>
 
   <!-- ===================== LOG IN (KRANE-F03 · returning user → lands on dashboard) ===================== -->

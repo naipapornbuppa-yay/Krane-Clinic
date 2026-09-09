@@ -779,7 +779,7 @@
     "Confirm your account":"ยืนยันบัญชีของคุณ","You’re signed in":"เข้าสู่ระบบแล้ว","Review the details from":"ตรวจสอบข้อมูลจาก","Verified":"ยืนยันแล้ว","First name":"ชื่อ","Last name":"นามสกุล","Confirm & continue":"ยืนยันและไปต่อ","Use another account":"ใช้บัญชีอื่น",
     "I confirm these details are mine and may be used for appointment updates, prescriptions and delivery.":"ฉันยืนยันว่าข้อมูลนี้เป็นของฉัน และอนุญาตให้ใช้สำหรับแจ้งนัด ใบสั่งยา และการจัดส่ง","You can edit these details now or later in Settings.":"แก้ไขข้อมูลได้ตอนนี้หรือภายหลังในหน้าตั้งค่า",
     "Send OTP":"ส่งรหัส OTP","or":"หรือ","Social login · confirm account (KRANE-F03)":"Social login · ยืนยันบัญชี (KRANE-F03)","▶ Start walkthrough":"▶ เริ่มเดโม","↻ Restart walkthrough":"↻ เริ่มเดโมใหม่",
-    "Log in with LINE":"เข้าสู่ระบบด้วย LINE","Log in with Google":"เข้าสู่ระบบด้วย Google","Sign up with LINE":"สมัครด้วย LINE","Sign up with Google":"สมัครด้วย Google",
+    "Log in with LINE":"เข้าสู่ระบบด้วย LINE","Log in with Google":"เข้าสู่ระบบด้วย Google","Sign up with LINE":"สมัครด้วย LINE","Sign up with Google":"สมัครด้วย Google","Or other sign-up options":"หรือสมัครด้วยวิธีอื่น",
     "Save insurance info":"บันทึกข้อมูลประกัน","We will check your entitlement automatically the next time you have an order.":"เราจะตรวจสอบสิทธิ์ประกันให้อัตโนมัติเมื่อคุณมีคำสั่งซื้อครั้งถัดไป",
     "Trying a second nearby pharmacy…":"กำลังลองร้านยาใกล้เคียงร้านที่สอง…","Trying a third nearby pharmacy…":"กำลังลองร้านยาใกล้เคียงร้านที่สาม…",
     "Sending your order to the pharmacy":"กำลังส่งคำสั่งซื้อไปที่ร้านยา","We hold your slot while they check the shelf":"เราจองคิวไว้ให้ระหว่างร้านตรวจสอบสต็อก",
