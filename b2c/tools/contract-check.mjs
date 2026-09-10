@@ -120,6 +120,11 @@ for (const flow of contract.flows) {
         try { sessionStorage.setItem(key, JSON.stringify(seed)); } catch { /* private mode */ }
       }, ['krane-p01-flow-state-v1', flow.seed]);
     }
+    if (flow.authSeed) {
+      await page.addInitScript(([key, seed]) => {
+        try { sessionStorage.setItem(key, JSON.stringify(seed)); } catch { /* private mode */ }
+      }, ['krane-auth-profile-v1', flow.authSeed]);
+    }
     await page.goto(`${base}/b2c/krane-b2c.html${flow.enter}`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(flow.waitBefore || 1600);
     for (const assertion of flow.assertBeforeClick || []) await check(page, flow, assertion);
