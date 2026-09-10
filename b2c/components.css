@@ -97,11 +97,16 @@ img{max-width:100%}
 /* ---------- Inputs ---------- */
 .field{display:block;min-width:0;max-width:100%}
 .field>label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:var(--sp-2)}
+/* Outlined, not filled. A grey fill on a white card reads as a disabled field:
+   patients said the birth date, height and weight boxes looked like something
+   they could not tap or type into. These now match the select trigger next to
+   them, which is the one control nobody mistook for read-only (client, 10 Sep). */
 .input,.select,.textarea{
   width:100%;min-width:0;max-width:100%;height:var(--control-h);padding:0 var(--sp-4);
-  border:1px solid transparent;border-radius:var(--control-radius);
-  background:var(--surface-sunken);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
+  border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
+.input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
@@ -109,8 +114,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .date-control{position:relative;width:100%;min-width:0;height:var(--control-h)}
 .date-control__display{
   width:100%;height:100%;display:grid;grid-template-columns:24px minmax(0,1fr) 24px;
-  align-items:center;gap:8px;padding:0 var(--sp-4);border:1px solid transparent;
-  border-radius:var(--control-radius);background:var(--color-field);color:var(--color-ink);
+  align-items:center;gap:8px;padding:0 var(--sp-4);border:1px solid var(--color-line-strong);
+  border-radius:var(--control-radius);background:var(--color-surface);color:var(--color-ink);
   font-family:var(--font-base);font-size:16px;line-height:1.4;box-sizing:border-box
 }
 .date-control__value{min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -192,9 +197,13 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-history-detail .input:disabled{cursor:not-allowed;background:var(--color-bg-2);color:var(--color-ink-3);opacity:.7}
 #intake-general .field,#intake-concern .field{gap:6px}
 #intake-general .field label,#intake-concern .field label{font-size:13px;font-weight:var(--fw-medium);line-height:1.35;color:var(--color-ink)}
-#intake-general .input,#intake-general .select,#intake-general .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-color:transparent;border-radius:var(--control-radius);background:var(--color-field);font-size:16px}
-#intake-general .partner-binary{padding:4px}
-#intake-general .input:focus,#intake-general .select:focus{background:var(--color-field)}
+/* Outlined like the rest of the form: the filled boxes on this screen were the
+   ones patients read as disabled. The segmented control keeps its fill, since a
+   track has to sit behind the selected half (client, 10 Sep). */
+#intake-general .input,#intake-general .select,#intake-general .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-radius:var(--control-radius);font-size:16px}
+#intake-general .input,#intake-general .select{border:1px solid var(--color-line-strong);background:var(--color-surface)}
+#intake-general .partner-binary{padding:4px;border-color:transparent;background:var(--color-field)}
+#intake-general .input:focus,#intake-general .select:focus{background:var(--color-surface)}
 .partner-nurse-avatar{display:grid;place-items:center;background:var(--color-bg-2);color:var(--color-ink)}
 .partner-nurse-avatar [data-demo-icon]{width:24px;height:24px}
 .partner-nurse-call{position:relative;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden;border-radius:var(--radius-lg);background:linear-gradient(150deg,var(--color-ink),#273247);color:#fff;text-align:center;padding:var(--sp-5)}
@@ -1837,7 +1846,7 @@ body.modal-open{overflow:hidden}
 .health-history-dialog{width:min(460px,100%)}
 .health-history-dialog .partner-clinical-grid{gap:var(--sp-4);margin-top:var(--sp-5)}
 .health-history-dialog .partner-binary{height:52px;padding:4px;border-color:transparent;border-radius:var(--control-radius);background:var(--color-field)}
-.health-history-dialog .input{height:48px;border-color:transparent;background:var(--color-field);font-size:16px}
+.health-history-dialog .input{height:48px;border-color:var(--color-line-strong);background:var(--color-surface);font-size:16px}
 /* Caution, in the notice tone the rest of the app uses for it — no other
    colour on this dialog competes with the answers. */
 .health-history-dialog .modal-dialog__icon{background:var(--surface-notice);color:var(--surface-notice-ink)}
@@ -2438,12 +2447,10 @@ body.lang-th *{letter-spacing:normal}
 
 .consent-agree{display:flex;align-items:flex-start;gap:var(--sp-3);cursor:pointer}
 .consent-agree .check{margin-top:var(--sp-1);flex:none}
-.consent-choice__body{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px 12px;min-width:0;flex:1}
+/* One column: the required / optional badges are gone, and the checkbox on the
+   left already says whether a line has to be ticked (client, 10 Sep). */
+.consent-choice__body{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:8px;min-width:0;flex:1}
 .consent-choice__body .hint{line-height:1.5;color:var(--color-ink-2)}
-.consent-choice__badge{display:inline-flex;align-items:center;justify-content:center;min-height:24px;padding:3px 9px;border-radius:999px;
-  background:var(--color-bg-soft);color:var(--color-ink-2);font-size:12px;line-height:1.2;font-weight:var(--fw-semibold);white-space:nowrap}
-.consent-choice__badge--required{background:color-mix(in srgb,var(--color-accent) 12%,var(--color-surface));color:var(--color-accent-strong)}
-.consent-choice__badge--optional{background:var(--color-bg-soft);color:var(--color-ink-3)}
 .consent-choice--optional{padding-top:16px;border-top:1px solid var(--color-line)}
 /* Locked until the document has been read to the end. */
 .is-unread .consent-agree{cursor:not-allowed;opacity:.55}
