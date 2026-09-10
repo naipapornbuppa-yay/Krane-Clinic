@@ -4498,7 +4498,7 @@ main>.how{
 /* Review handles must never become a full-card dark overlay. The original
    top and the Figma bottom offsets were both active, stretching the caption
    across the portrait. Keep it as a small, light identity chip instead. */
-.landing-figma-draft .reviews--figma .review-column figure figcaption{
+.landing-figma-draft .reviews--figma .review-marquee figure figcaption{
   top:14px;
   right:auto;
   bottom:auto;
@@ -7298,15 +7298,12 @@ html[lang="en"] .landing-figma-draft #ed-title{
   width:100%!important;
   height:auto!important;
   display:flex!important;
+  flex-direction:column!important;
   align-items:stretch!important;
   gap:16px!important;
   margin-top:40px;
   padding:4px 0 10px;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
-  scroll-snap-type:x proximity;
-  scroll-padding-inline:2px;
-  scrollbar-width:none;
+  overflow:hidden!important;
   transform:none!important;
 }
 .landing-figma-draft .reviews--figma .review-collage::-webkit-scrollbar{display:none}
@@ -7320,14 +7317,14 @@ html[lang="en"] .landing-figma-draft #ed-title{
   transform:none!important;
 }
 .landing-figma-draft .reviews--figma .review-mobile-sequence{display:none!important}
-.landing-figma-draft .reviews--figma .review-column figure{
-  width:auto!important;
-  height:clamp(310px,37vw,430px)!important;
+.landing-figma-draft .reviews--figma .review-marquee figure{
+  width:clamp(178px,17vw,222px)!important;
+  height:clamp(232px,22vw,286px)!important;
   min-width:0!important;
-  min-height:310px!important;
+  min-height:0!important;
+  flex:none;
   margin:0!important;
   border-radius:24px!important;
-  scroll-snap-align:start;
 }
 
 /* Editorial cards keep one width and one height, with the next card peeking in
@@ -7580,12 +7577,8 @@ html[lang="en"] .landing-figma-draft #ed-title{
    it takes a deep navy ground with white type and runs edge to edge past the
    page gutter. The clip track carries one aria-hidden copy of the cards, the
    same loop the trust row uses, so the drift has no visible seam. */
-.landing-figma-draft .reviews--figma{
-  margin-inline:calc(var(--page-gutter) * -1);
-  border-radius:0;
-  background:var(--landing-navy);
-  color:#fff;
-}
+/* The full-bleed navy and the type colours are set on the section rule above;
+   this only carries what the dark ground needs from the copy block. */
 .reviews--figma .reviews__copy h2,
 .reviews--figma .reviews__copy blockquote,
 .reviews--figma .reviews__copy cite{color:#fff}
@@ -7598,27 +7591,46 @@ html[lang="en"] .landing-figma-draft #ed-title{
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
 }
+/* Two rails, one drifting each way. The track holds two identical sets and
+   travels exactly one set plus one gap, so the loop has no seam. */
+.review-rail{width:100%;overflow:hidden}
 .review-marquee{
   display:flex;
   width:max-content;
   gap:16px;
-  animation:review-drift 46s linear infinite;
+  animation:review-drift 54s linear infinite;
   will-change:transform;
 }
-.review-marquee__copy{display:flex;gap:16px}
-.reviews--figma .review-marquee .review-column{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
+.review-marquee--b{animation:review-drift-back 66s linear infinite}
+.review-marquee__set{display:flex;gap:16px;flex:none}
+/* The cards used to inherit their frame from .review-column, which the two-rail
+   markup no longer has. Without position:relative the caption chip and the play
+   badge escaped the photograph and positioned against the section. */
+.review-marquee figure{
+  position:relative;
+  overflow:hidden;
   flex:none;
+  margin:0;
+  border-radius:24px;
+  background:var(--landing-canvas);
+  cursor:pointer;
+  transition:transform .3s var(--ease),box-shadow .3s ease;
 }
-.reviews--figma .review-marquee .review-column figure{width:208px}
+.review-marquee figure img{width:100%;height:100%;object-fit:cover}
 .review-collage:hover .review-marquee,
 .review-marquee:focus-within{animation-play-state:paused}
-@keyframes review-drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@keyframes review-drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(calc(-50% - 8px),0,0)}
+}
+@keyframes review-drift-back{
+  from{transform:translate3d(calc(-50% - 8px),0,0)}
+  to{transform:translate3d(0,0,0)}
+}
 @media(prefers-reduced-motion:reduce){
   .review-marquee{animation:none}
-  .reviews--figma .review-collage{overflow-x:auto}
+  .review-rail{overflow-x:auto;scrollbar-width:none}
+  .review-rail::-webkit-scrollbar{display:none}
 }
 
 /* Articles sit on white so the dark stories section above them reads as the
@@ -7650,7 +7662,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .landing-figma-draft .reviews--figma .reviews__copy>p,
 .landing-figma-draft .reviews--figma .reviews__copy blockquote,
 .landing-figma-draft .reviews--figma .reviews__copy cite{color:#fff!important}
-.landing-figma-draft .reviews--figma .review-column figure>svg{
+.landing-figma-draft .reviews--figma .review-marquee figure>svg{
   width:44px;
   height:44px;
   padding:13px;
@@ -7661,6 +7673,6 @@ html[lang="en"] .landing-figma-draft #ed-title{
   backdrop-filter:blur(10px);
   box-shadow:0 2px 14px rgba(12,18,30,.18);
 }
-.landing-figma-draft .reviews--figma .review-column figure:hover>svg{background:rgba(255,255,255,.34)}
+.landing-figma-draft .reviews--figma .review-marquee figure:hover>svg{background:rgba(255,255,255,.34)}
 /* The phone is a short navigable demo, so it takes taps (client, 10 Sep). */
 .figma-how__live{pointer-events:auto}
