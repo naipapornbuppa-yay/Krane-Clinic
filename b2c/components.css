@@ -3196,3 +3196,42 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .timeline .delivery-rider{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
 .timeline .delivery-rider .ui-icon{flex:none;color:var(--color-ink-3)}
 .timeline .delivery-rider[hidden]{display:none}
+
+/* ---------- Phone field with a dialling code ----------
+   The code sits inside the same outline as the number, so the pair reads as one
+   control rather than a select that happens to be next to an input. */
+.phone-field{position:relative;display:flex;align-items:stretch;width:100%;min-width:0}
+.phone-field__country{display:inline-flex;align-items:center;gap:6px;flex:none;
+  height:var(--control-h);padding:0 10px 0 var(--sp-3);
+  border:1px solid var(--color-line-strong);border-right:0;
+  border-radius:var(--control-radius) 0 0 var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
+.phone-field__country:hover{border-color:var(--color-ink-3)}
+.phone-field__country:focus-visible{outline:3px solid var(--color-focus);outline-offset:-1px}
+.phone-field__flag{font-size:16px;line-height:1}
+.phone-field__dial{font-variant-numeric:tabular-nums}
+.phone-field__caret{width:7px;height:7px;flex:none;border-right:1.6px solid var(--color-ink-3);border-bottom:1.6px solid var(--color-ink-3);transform:translateY(-2px) rotate(45deg)}
+.phone-field__country[aria-expanded="true"] .phone-field__caret{transform:translateY(1px) rotate(-135deg)}
+.phone-field__input.input{border-radius:0 var(--control-radius) var(--control-radius) 0;min-width:0}
+
+.phone-field__menu{position:absolute;z-index:20;top:calc(100% + 6px);left:0;
+  width:min(320px,100%);max-height:300px;display:flex;flex-direction:column;gap:6px;
+  padding:8px;overflow:hidden;
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);
+  background:var(--color-surface);box-shadow:var(--shadow-lg,0 18px 44px rgba(16,28,48,.18))}
+.phone-field__menu[hidden]{display:none}
+.phone-field__search.input{height:var(--control-h-sm);flex:none;font-size:var(--fs-sm)}
+.phone-field__list{margin:0;padding:0;overflow-y:auto;list-style:none}
+.phone-field__list li[hidden]{display:none}
+.phone-field__option{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
+  width:100%;min-height:40px;padding:6px 8px;border:0;border-radius:var(--radius-sm);
+  background:transparent;color:var(--color-ink);font:inherit;font-size:var(--fs-sm);text-align:left;cursor:pointer}
+.phone-field__option:hover,.phone-field__option:focus-visible{background:var(--surface-sunken);outline:none}
+.phone-field__option-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-field__option-dial{color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+/* A dialling code plus a number does not fit half a row on a phone: the number
+   was clipped to "08x-x" beside the name. The row wraps and the pair takes a
+   line of its own; forcing the width without allowing the wrap only collapsed
+   the field beside it. */
+.field-row:has(.phone-field){flex-wrap:wrap}
+.field-row:has(.phone-field)>.field{flex:1 1 100%}
