@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260911-weight-results-glass-v1";
+    const release = "20260911-treatment-status-v2";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260911-rider-icon-out-v1">
+<link rel="stylesheet" href="components.css?v=20260911-treatment-status-v2">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2699,7 +2699,7 @@
               <strong>Sleep &amp; stress</strong>
               <span class="treatment-card__programme">โปรแกรมดูแลการนอน 3 เดือน</span>
             </span>
-            <span class="badge badge--warn">Refill soon</span>
+            <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="1" data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
@@ -2710,7 +2710,7 @@
               <strong>Hair loss</strong>
               <span class="treatment-card__programme">แผนฟื้นฟูเส้นผม 6 เดือน</span>
             </span>
-            <span class="badge badge--ok">On track</span>
+            <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="11" data-followup-iso="2026-09-12">12 Sep 2026</span> · Dr. Narin</strong></span>
@@ -2848,10 +2848,13 @@
            They are one feed with a filter over it: a patient looking for last
            month's consultation should not have to know which list it lives in
            (client, 10 Sep). -->
-      <div class="activity-filters" role="tablist" aria-label="กรองกิจกรรม">
-        <button class="activity-filter is-current" type="button" role="tab" aria-selected="true" data-activity-filter="all"><i data-lucide="layout-grid" class="ui-icon" aria-hidden="true"></i><span>ทั้งหมด</span></button>
-        <button class="activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="consult"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i><span>ปรึกษาแพทย์</span></button>
-        <button class="activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i><span>ชำระเงิน</span></button>
+      <!-- The same segmented control the treatment record uses, so the app has
+           one way of showing a choice between three, with the icon beside its
+           label rather than stacked over it (client, 11 Sep). -->
+      <div class="partner-binary partner-binary--accent activity-filters" role="tablist" aria-label="กรองกิจกรรม">
+        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="true" data-activity-filter="all"><i data-lucide="layout-grid" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ทั้งหมด</span></button>
+        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="consult"><i data-lucide="stethoscope" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ปรึกษาแพทย์</span></button>
+        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="receipt-text" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ชำระเงิน</span></button>
       </div>
       <div class="activity-list" data-activity-list>
         <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10293">
@@ -2887,6 +2890,20 @@
             <span class="activity-card__doctor-body"><strong>คุณหมอนรินทร์ ทานากะ</strong><em>แผนฟื้นฟูเส้นผม ฟีนาสเตอไรด์และไมน็อกซิดิล</em></span>
           </span>
           <span class="activity-card__foot"><span>ผลวินิจฉัยและใบสั่งยาพร้อมให้เปิดดู</span><strong>฿ 350</strong></span>
+        </button>
+        <!-- A course that has ended is a record, not a treatment in progress, so
+             it lives here rather than on the home list (client, 11 Sep). -->
+        <button class="activity-card" type="button" data-activity-type="consult" data-go="history" aria-label="เปิดประวัติโปรแกรมดูแลผิว">
+          <span class="activity-card__head">
+            <span class="badge">จบโปรแกรมแล้ว</span>
+            <span class="activity-card__date">28 ก.พ. 2026<small>โปรแกรม 3 เดือน</small></span>
+          </span>
+          <span class="activity-card__ref">เลขที่อ้างอิง #KR-10042</span>
+          <span class="activity-card__doctor">
+            <img class="activity-card__avatar" src="assets/doctor-profile-male-2026-07-25.png" width="256" height="256" loading="lazy" decoding="async" alt="">
+            <span class="activity-card__doctor-body"><strong>คุณหมอนรินทร์ ทานากะ</strong><em>โปรแกรมดูแลผิว ครบตามแผน</em></span>
+          </span>
+          <span class="activity-card__foot"><span>เอกสารยังเปิดดูได้</span><strong>฿ 2,140</strong></span>
         </button>
       </div>
       <p class="activity-empty" data-activity-empty hidden>ยังไม่มีกิจกรรมในหมวดนี้</p>
@@ -6025,7 +6042,27 @@
     today.setHours(0,0,0,0);
     return Math.round((when-today)/86400000);
   }
+  /* A treatment on this list is one of two things: running, or close enough to
+     its follow-up that the appointment is the next thing to do. A course that
+     has ended is not on this list at all, it is a record on the activity feed,
+     so there is no third badge to read here (client, 11 Sep). */
+  const FOLLOW_UP_SOON_DAYS = 7;
+  function syncTreatmentStatus(){
+    const thai=document.documentElement.lang!=='en';
+    document.querySelectorAll('#profile .treatment-card').forEach(card => {
+      const badge=card.querySelector('[data-treatment-status]');
+      if(!badge) return;
+      const offset=Number(card.querySelector('.followup-row [data-followup-date]')?.dataset.followupOffset);
+      const soon=Number.isFinite(offset) && offset<=FOLLOW_UP_SOON_DAYS;
+      badge.classList.toggle('badge--warn',soon);
+      badge.classList.toggle('badge--ok',!soon);
+      badge.textContent=soon
+        ? (thai ? 'ใกล้ถึงนัดติดตาม' : 'Follow-up soon')
+        : (thai ? 'กำลังรักษา' : 'Active');
+    });
+  }
   function syncHomeFollowUpCta(){
+    syncTreatmentStatus();
     const cta=document.querySelector('#profile [data-home-cta]');
     const toast=document.querySelector('#profile [data-followup-toast]');
     if(!cta || !toast) return;
