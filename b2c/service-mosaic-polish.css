@@ -305,7 +305,7 @@
     bottom: auto;
     left: 22px;
     max-width: calc(100% - 44px) !important;
-    font-size: clamp(31px, 9.5vw, 43px);
+    font-size: clamp(18px, 5.4vw, 24px);
   }
 
   .landing-figma-draft .care-banner-grid--auto-products a[data-category="hair-skin"] .service-tile__label,
@@ -521,7 +521,7 @@
   }
 
   .landing-figma-draft #services .service-carousel-card--lead .service-carousel-card__title {
-    font-size: clamp(31px, 9.5vw, 43px) !important;
+    font-size: clamp(18px, 5.4vw, 24px) !important;
   }
 
   .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__title {
@@ -616,7 +616,7 @@
 
 @media (max-width: 760px) {
   .landing-figma-draft #services.care-banner-grid--auto-products > [data-banner-swap] .care-banner__copy > strong {
-    font-size: clamp(31px, 9.5vw, 43px) !important;
+    font-size: clamp(18px, 5.4vw, 24px) !important;
   }
 
   .landing-figma-draft #services.care-banner-grid--auto-products > [data-banner-swap][data-category] > .service-tile__label {
@@ -730,7 +730,7 @@
 
   .landing-figma-draft .care-banner-grid--auto-products .care-banner__copy > strong,
   .landing-figma-draft .care-banner-grid--auto-products .care-banner--weight.is-product-frame .care-banner__copy > strong {
-    font-size: clamp(31px, 9.5vw, 43px) !important;
+    font-size: clamp(18px, 5.4vw, 24px) !important;
   }
 
   .landing-figma-draft .care-banner-grid--auto-products > [data-banner-swap][data-category] > .service-tile__label {
@@ -793,5 +793,110 @@
     min-height: 50px !important;
     padding: 10px 18px !important;
     font-size: 12px !important;
+  }
+}
+
+/* ---------- Phone: keep the mosaic, shrink what was sized for a desktop ----------
+   The weight card ran the full width with hair and men's health squeezed into a
+   row beneath it, so the three read as two unrelated blocks. The phone keeps the
+   same composition as every other size: the pens on the left across both rows,
+   the other two stacked on the right. The card chrome was still desktop sized in
+   that space, a 58px pill CTA inside a 170px column (client, 11 Sep). */
+@media (max-width: 760px) {
+  .landing-figma-draft .care-banner-grid--auto-products {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr) !important;
+    grid-template-rows: repeat(2, minmax(150px, 27vw)) !important;
+    gap: 10px !important;
+    width: calc(100% - 24px) !important;
+    height: auto !important;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products .care-banner--weight {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub--hair {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub--ed {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products > a { border-radius: 22px !important }
+
+  /* Type and controls sized for the column they now sit in. The rules that set
+     these carry #services, so an id has to be matched to reach them. */
+  .landing-figma-draft #services .service-carousel-card__title {
+    font-size: clamp(17px, 4.8vw, 22px) !important;
+    line-height: 1.2 !important;
+  }
+  /* The two right-hand cards are 150px tall: their label has to fit above the
+     control without pushing into the photograph. */
+  .landing-figma-draft #services .service-tile__label {
+    font-size: 14px !important;
+    line-height: 1.22 !important;
+    max-width: calc(100% - 24px) !important;
+  }
+  .landing-figma-draft #services .service-carousel-card__content small {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+  .landing-figma-draft #services .care-banner__cta,
+  .landing-figma-draft #services .service-carousel-card__cta,
+  .landing-figma-draft #services .service-tile__product-cta,
+  .landing-figma-draft #services .service-carousel-card--lead .service-carousel-card__cta,
+  .landing-figma-draft #services .care-banner--weight.is-product-frame .care-banner__cta {
+    right: 12px !important;
+    bottom: 12px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+  .landing-figma-draft #services .care-banner__cta svg,
+  .landing-figma-draft #services .service-carousel-card__cta svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  /* The badge strip and the pager have no room beside a 36px control. */
+  .landing-figma-draft #services .care-banner__product-badges { display: none !important }
+  .landing-figma-draft #services .service-carousel-card__pager { bottom: 12px !important; left: 12px !important }
+  /* The lead card's copy sat over the pens once the card became a column. */
+  .landing-figma-draft #services .service-carousel-card--lead .service-carousel-card__content {
+    top: 16px !important;
+    right: 14px !important;
+    left: 14px !important;
+    bottom: auto !important;
+  }
+}
+
+/* The compact cards carry their own sizes further up, on a longer selector and
+   again inside a 390px block, so the phone sizes have to be stated last and at
+   the same weight to reach them. */
+@media (max-width: 760px) {
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__title,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__label {
+    font-size: 14px !important;
+    line-height: 1.22 !important;
+  }
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__product-cta {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 12px !important;
+    font-size: 11px !important;
+  }
+}
+@media (max-width: 390px) {
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__title,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__label {
+    font-size: 13px !important;
+  }
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__product-cta {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 11px !important;
   }
 }

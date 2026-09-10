@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260911-ed-art-contain-v1";
+    const release = "20260911-order-items-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-app-width-v2">
+<link rel="stylesheet" href="components.css?v=20260911-order-items-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2570,6 +2570,13 @@
           </div>
         </div>
       </div>
+      <!-- What is actually in the parcel. The basket is the checkout's job, but
+           once the order is on the road this is the only place left that can
+           answer "what did I order" (client, 11 Sep). -->
+      <div class="stack-2">
+        <span class="section-label">รายการที่สั่ง</span>
+        <div class="card card--pad-sm delivery-items" data-delivery-items></div>
+      </div>
       <!-- The last thing on the screen is the promise a patient waiting on this
            delivery is most likely to be anxious about (client, 10 Sep). -->
       <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งมิดชิด ไม่ระบุชื่อยา</span></p>
@@ -2578,7 +2585,7 @@
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a aria-current="page" data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -2724,7 +2731,7 @@
       <a aria-current="page" data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -2752,6 +2759,16 @@
           <div class="treatment-detail__summary">
             <div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2>
           </div>
+          <section class="treatment-care treatment-care--lead">
+            <div class="treatment-doctor">
+              <span class="avatar">น</span>
+              <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทานากะ</strong><small>เลขใบประกอบวิชาชีพ ว.42317</small></span>
+            </div>
+            <div class="treatment-care__next">
+              <small>นัดติดตามผลครั้งถัดไป</small>
+              <strong data-treatment-detail-followup data-followup-date data-followup-offset="1">2 Sep 2026</strong>
+            </div>
+          </section>
           <!-- The plan reads as the note a clinician writes: goal, findings,
                assessment, plan, each a short list rather than two paragraphs to
                read through (client, 10 Sep). -->
@@ -2773,16 +2790,6 @@
               <ul class="doc-summary-list" data-treatment-planlist></ul>
             </div>
           </div>
-          <section class="treatment-care">
-            <div class="treatment-doctor">
-              <span class="avatar">น</span>
-              <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทานากะ</strong><small>เลขใบประกอบวิชาชีพ ว.42317</small></span>
-            </div>
-            <div class="treatment-care__next">
-              <small>นัดติดตามผลครั้งถัดไป</small>
-              <strong data-treatment-detail-followup data-followup-date data-followup-offset="1">2 Sep 2026</strong>
-            </div>
-          </section>
         </article>
       </section>
 
@@ -2888,7 +2895,7 @@
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a aria-current="page" data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -2945,7 +2952,7 @@
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -2964,7 +2971,7 @@
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a aria-current="page" data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -3033,7 +3040,7 @@
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
       <a aria-current="page" data-go="empty-activities"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
       <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-settings"></use></svg></span>Settings</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
     </nav>
   </section>
 
@@ -10557,6 +10564,54 @@
     const postal=!pickup && flowState.orderState.deliveryMethod==='postal';
     const parcelCard=screen.querySelector('[data-tracking-reference]');
     if(parcelCard) parcelCard.hidden=!postal;
+    /* Rendered from the order, not written into the markup, so it always shows
+       what was actually paid for including anything declined at checkout. */
+    const items=screen.querySelector('[data-delivery-items]');
+    if(items){
+      const rows=[];
+      Object.entries(MEDICINE_PRICES).forEach(([key,unit]) => {
+        const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
+        if(!quantity) return;
+        const name=document.querySelector(`#payment [data-order-item="${key}"] .checkout-order__name`)?.textContent
+          || key;
+        rows.push({name,note:quantity+' แผง',price:unit*quantity});
+      });
+      Object.entries(ADDON_PRICES).forEach(([key,price]) => {
+        if(!flowState.orderState.addOns[key]) return;
+        const name=document.querySelector(`#payment [data-order-addon="${key}"] .checkout-order__name`)?.textContent
+          || key;
+        rows.push({name,note:'1 ชิ้น',price});
+      });
+      const total=rows.reduce((sum,row) => sum+row.price,0);
+      items.replaceChildren(...rows.map(row => {
+        const line=document.createElement('div');
+        line.className='delivery-item';
+        const name=document.createElement('span');
+        name.className='delivery-item__name';
+        name.textContent=row.name;
+        const note=document.createElement('span');
+        note.className='delivery-item__note';
+        note.textContent=row.note;
+        const price=document.createElement('span');
+        price.className='delivery-item__price';
+        price.textContent=baht(row.price);
+        line.append(name,note,price);
+        return line;
+      }));
+      if(rows.length){
+        const foot=document.createElement('div');
+        foot.className='delivery-item delivery-item--total';
+        const label=document.createElement('span');
+        label.className='delivery-item__name';
+        label.textContent='รวม '+rows.length+' รายการ';
+        const price=document.createElement('span');
+        price.className='delivery-item__price';
+        price.textContent=baht(total);
+        foot.append(label,price);
+        items.append(foot);
+      }
+      items.closest('.stack-2').hidden=!rows.length;
+    }
     const recipient=screen.querySelector('[data-delivery-recipient]');
     const recipientPhone=screen.querySelector('[data-delivery-recipient-phone]');
     const savedName=String(flowState.orderState.address.recipientName || flowState.patientName || '').trim();

@@ -2313,65 +2313,97 @@
       words.forEach((word, index) => word.classList.toggle("is-lit", index < next));
     }
     function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
+
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
     paint();
   })();
 
-  /* The two rows drift at a steady base speed and take a push from the page:
-     scrolling down speeds the top row up and the bottom row back, scrolling up
-     reverses both. Position is kept as a number and wrapped against one set's
-     width, so the loop never reaches a seam and never accumulates drift. */
-  (function scrollTextBand() {
-    const band = document.querySelector("[data-scroll-text]");
-    if (!band || reducedMotionQuery.matches) return;
-    const tracks = [...band.querySelectorAll("[data-scroll-text-track]")].map((track) => ({
-      el: track,
-      set: track.querySelector(".scroll-text__set"),
-      dir: track.dataset.scrollTextTrack === "b" ? 1 : -1,
-      x: 0,
-      width: 0
-    }));
-    if (!tracks.length) return;
+  /* Word by word on scroll: each word starts 20px low and transparent and rises
+     into place, with the stagger driven by how far the block has crossed the
+     viewport rather than by a timer, so scrolling back up puts it away again.
+     Thai has no spaces between words, so the same segmenter the positioning
+     statement uses finds real word boundaries here. */
+  (function scrollRevealWords() {
+    const block = document.querySelector("[data-scroll-reveal]");
+    if (!block) return;
+    const lines = [...block.querySelectorAll(".scroll-text__line")];
+    if (!lines.length) return;
 
-    const measure = () => tracks.forEach((t) => { t.width = t.set.getBoundingClientRect().width || 1; });
-    measure();
-    window.addEventListener("resize", measure, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter("th", { granularity: "word" })
+      : null;
+    const segment = (text) => segmenter
+      ? [...segmenter.segment(text)].map((part) => part.segment)
+      : text.split(/(\s+)/);
 
-    let lastScroll = window.scrollY;
-    let push = 0;
-    window.addEventListener("scroll", () => {
-      const now = window.scrollY;
-      push += (now - lastScroll) * 0.55;
-      lastScroll = now;
-    }, { passive: true });
+    const words = [];
+    lines.forEach((line) => {
+      const parts = segment(line.textContent);
+      line.textContent = "";
+      parts.forEach((part) => {
+        if (!part.trim()) { line.append(part); return; }
+        const word = document.createElement("span");
+        word.className = "reveal-word";
+        word.textContent = part;
+        line.append(word);
+        words.push(word);
+      });
+    });
+    block.classList.add("is-reveal-ready");
+    if (reducedMotionQuery.matches) return;
 
-    let visible = true;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver((entries) => {
-        visible = entries.some((entry) => entry.isIntersecting);
-      }, { rootMargin: "20% 0px" }).observe(band);
+    // Words overlap by this many places, which is what makes it read as a rise
+    // rather than a row of switches.
+    const SPREAD = 4;
+    let frame = 0;
+    function paint() {
+      frame = 0;
+      const box = block.getBoundingClientRect();
+      const view = window.innerHeight || 800;
+      const start = view * 0.92;
+      const span = Math.max(1, box.height + view * 0.34);
+      const progress = Math.min(1, Math.max(0, (start - box.top) / span));
+      const head = progress * (words.length + SPREAD);
+      words.forEach((word, index) => {
+        const local = Math.min(1, Math.max(0, (head - index) / SPREAD));
+        word.style.opacity = local.toFixed(3);
+        word.style.transform = "translateY(" + ((1 - local) * 20).toFixed(2) + "px)";
+      });
     }
+    function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
 
-    let last = 0;
-    function step(now) {
-      const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
-      last = now;
-      // The push decays on its own, so the rows settle back to the base drift.
-      push *= 0.9;
-      if (visible && !document.hidden && dt) {
-        tracks.forEach((t) => {
-          t.x += t.dir * (26 * dt) + t.dir * push * 0.06;
-          // Wrap inside one set, so the transform stays small and seamless.
-          if (t.x <= -t.width) t.x += t.width;
-          if (t.x >= 0) t.x -= t.width;
-          t.el.style.transform = "translate3d(" + t.x.toFixed(2) + "px,0,0)";
+    /* The band sits directly under the header, so on load it is already in view
+       and there is no scroll left to reveal it with. It plays itself once at the
+       same pace instead, and only then hands over to the scroll. */
+    const box = block.getBoundingClientRect();
+    const view = window.innerHeight || 800;
+    if (box.top < view * 0.9) {
+      let head = 0;
+      const total = words.length + SPREAD;
+      let last = 0;
+      const intro = (now) => {
+        const dt = last ? (now - last) / 1000 : 0;
+        last = now;
+        head = Math.min(total, head + total * dt * 0.8);
+        words.forEach((word, index) => {
+          const local = Math.min(1, Math.max(0, (head - index) / SPREAD));
+          word.style.opacity = local.toFixed(3);
+          word.style.transform = "translateY(" + ((1 - local) * 20).toFixed(2) + "px)";
         });
-      }
-      requestAnimationFrame(step);
+        if (head < total) requestAnimationFrame(intro);
+        else {
+          window.addEventListener("scroll", schedule, { passive: true });
+          window.addEventListener("resize", schedule, { passive: true });
+        }
+      };
+      requestAnimationFrame(intro);
+      return;
     }
-    requestAnimationFrame(step);
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    paint();
   })();
 
   if (window.lucide) {
