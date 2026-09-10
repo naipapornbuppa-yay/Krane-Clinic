@@ -88,7 +88,9 @@
       badge.className = "badge badge--ok";
       top.appendChild(badge);
     }
-    badge.textContent = statusTH[state.fulfilmentStatus] || state.fulfilmentStatus;
+    badge.textContent = isThai()
+      ? (statusTH[state.fulfilmentStatus] || state.fulfilmentStatus)
+      : state.fulfilmentStatus;
   }
 
   document.addEventListener("click", function (event) {

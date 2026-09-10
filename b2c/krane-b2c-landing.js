@@ -152,6 +152,13 @@
       howMockTrackingReady: "Medicine prepared",
       howMockTrackingRider: "Rider has collected your order",
       howMockTrackingCurrent: "Out for delivery",
+      howMockOrderLoading: "Confirming your order",
+      howMockOrderLoadingBody: "Krane is preparing your information",
+      howMockOrderSuccess: "Your order is confirmed",
+      howMockOrderSuccessBody: "Payment and prescription confirmed",
+      howMockTrackingNumber: "Tracking number",
+      howMockOrderStatus: "Out for delivery",
+      howMockOrderEta: "Arriving by 6:00 PM",
       howMockConfirmed: "Confirmed",
       howMockPreparing: "Preparing",
       howMockRider: "On the way",
@@ -201,6 +208,13 @@
       hairTitlePrefix: "Proven care for ",
       hairTitleEmphasis: "thicker hair",
       hairTitleSuffix: "",
+      hairProductsLabel: "Hair-loss products",
+      hairProductsEyebrow: "Medication options selected by a doctor",
+      hairProductsTitle: "Hair-loss medication options",
+      hairProductOral: "Oral medication",
+      hairProductTopical: "Topical treatment",
+      hairProductPrescription: "As prescribed",
+      hairProductDisclaimer: "*Medication and dose depend on your doctor's assessment and prescription.",
       footerDisclaimer: "*Disclaimer: Telemedicine services are provided by independent licensed clinics partnered with Krane Clinic. Prescriptions depend on a doctor's clinical assessment. This website is for information only and does not replace medical advice.",
       services: "Services",
       hairShort: "Hair loss",
@@ -351,7 +365,11 @@
     ["คุณ อ., 33 ปี", "O., age 33"], ["คุณ น., 38 ปี", "N., age 38"],
     ["คุณ ต., 34 ปี", "T., age 34"], ["คุณ ว., 41 ปี", "W., age 41"],
     ["คุณ ม., 38 ปี", "M., age 38"], ["คุณ ก., 39 ปี", "K., age 39"],
-    ["คุณ ธ., 45 ปี", "T., age 45"], ["คุณ ร., 42 ปี", "R., age 42"]
+    ["คุณ ธ., 45 ปี", "T., age 45"], ["คุณ ร., 42 ปี", "R., age 42"],
+    ["ฟังจากคนที่เริ่มก่อนคุณ", "Hear from people who started before you"],
+    ["“ตอนแรกไม่กล้าเล่าให้ใครฟัง พอได้คุยกับแพทย์ก็รู้ว่าเป็นเรื่องที่ดูแลได้”", "“At first I was afraid to tell anyone. Speaking with a doctor helped me understand that it can be treated.”"],
+    ["“ได้คุยเป็นส่วนตัวจริง ๆ เลยตัดสินใจจากข้อมูลแทนการเดาเอง”", "“The conversation was genuinely private, so I could decide from facts instead of guessing.”"],
+    ["“พอมีการติดตามผล ก็รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”", "“Follow-up made it clear how to continue care without trial and error.”"]
   ]);
 
   const draftEnglishAttributes = new Map([
@@ -397,7 +415,13 @@
     ["เครื่องหมายรับรอง ISO 27018:2019 ที่ INET ใช้", "INET ISO 27018:2019 certification mark"],
     ["เครื่องหมายรับรอง ISO/IEC 20000-1:2018 ที่ INET ใช้", "INET ISO/IEC 20000-1:2018 certification mark"],
     ["พญ. กรผกา ขันติโกสุม", "Dr Kornpaka Khantikosum"],
-    ["นพ. ไพรัช เกตุรัตนกุล", "Dr Pairat Ketrattanakul"]
+    ["นพ. ไพรัช เกตุรัตนกุล", "Dr Pairat Ketrattanakul"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ก., 39 ปี", "Play interview with K., age 39"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ธ., 45 ปี", "Play interview with T., age 45"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ร., 42 ปี", "Play interview with R., age 42"],
+    ["รีวิวจากสมาชิก", "Member reviews"],
+    ["รีวิวจากสมาชิก แถวบน", "Member reviews, top row"],
+    ["รีวิวจากสมาชิก แถวล่าง", "Member reviews, bottom row"]
   ]);
 
   const applyDraftLanguage = (lang) => {
@@ -777,7 +801,7 @@
   const clearBannerSwapTimers = () => {
     swapTimers.forEach((timer) => window.clearTimeout(timer));
     swapTimers.clear();
-    swapBanners.forEach((banner) => banner.classList.remove("is-product-frame"));
+    swapBanners.forEach((banner) => banner.classList.add("is-product-frame"));
   };
   const queueBannerSwap = (banner, delay, showProduct = true) => {
     const timer = window.setTimeout(() => {
@@ -1162,6 +1186,67 @@
     render();
   })();
 
+  /* The delivery phone follows the production journey instead of presenting a
+     single invented card: Krane prepares the order, confirms it, then opens
+     the same compact progress hierarchy used by the patient app. */
+  (function deliveryPhoneSequence() {
+    const delivery = document.querySelector('[data-how-delivery-sequence]');
+    const section = document.querySelector('#how');
+    const slide = delivery?.closest('[data-how-slide]');
+    if (!delivery || !section || !slide) return;
+
+    const states = ['loading', 'success', 'progress'];
+    const delays = [2600, 1400, 5000];
+    let stateIndex = 0;
+    let timer = 0;
+    let visible = false;
+
+    function render() {
+      delivery.dataset.deliveryState = states[stateIndex];
+    }
+    function stop() {
+      window.clearTimeout(timer);
+      timer = 0;
+    }
+    function schedule() {
+      stop();
+      if (!visible || !slide.classList.contains('is-current') || reducedMotionQuery.matches || document.hidden) return;
+      timer = window.setTimeout(() => {
+        stateIndex = (stateIndex + 1) % states.length;
+        render();
+        schedule();
+      }, delays[stateIndex]);
+    }
+    function sync() {
+      if (reducedMotionQuery.matches) {
+        stateIndex = 2;
+        render();
+        stop();
+        return;
+      }
+      if (slide.classList.contains('is-current')) {
+        stateIndex = 0;
+        render();
+        schedule();
+      } else {
+        stop();
+      }
+    }
+
+    new MutationObserver(sync).observe(slide, { attributes:true, attributeFilter:['class'] });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        sync();
+      }, { threshold:.18, rootMargin:'10% 0px' }).observe(section);
+    } else {
+      visible = true;
+      sync();
+    }
+    document.addEventListener('visibilitychange', sync);
+    render();
+  })();
+
   /* UT-26: Figma's 3-step scene becomes three full-width snap frames. The
      browser owns the actual horizontal scroll (so touch, trackpad and keyboard
      remain native); this controller only keeps the rails, active state and
@@ -1174,7 +1259,7 @@
     const count = section?.querySelector('[data-how-count]');
     if (!section || !viewport || slides.length < 2) return;
 
-    const AUTO_DELAY = 5200;
+    const AUTO_DELAY = 8000;
     let activeIndex = 0;
     let autoTimer = 0;
     let scrollFrame = 0;
