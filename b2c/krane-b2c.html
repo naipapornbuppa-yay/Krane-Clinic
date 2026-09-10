@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-tracking-copy-v1";
+    const release = "20260910-tracking-copy-v2";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-tracking-copy-v1">
+<link rel="stylesheet" href="components.css?v=20260910-tracking-copy-v2">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -4329,8 +4329,12 @@
         'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
     2: ['intake-general','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail',
         'waitroom','consult','video','rx-writing','rx-plan','appointment-booked'],
+    /* Tracking is not a step of the journey: by then it is finished and paid,
+       and the stepper sat above the delivery saying the patient was still in
+       the middle of something (client, 10 Sep). It is last in this list, so
+       dropping it leaves every other screen's position unchanged. */
     3: ['address','delivery-quote','pharmacy-search','pharmacypending','pharmacyissue',
-        'payment','payment-gw','payfail','payment-success','tracking']
+        'payment','payment-gw','payfail','payment-success']
   };
   const careJourneyScreens = Object.entries(careJourneyStageOrder)
     .reduce((acc,[stage,ids]) => { ids.forEach(id => { acc[id]=Number(stage); }); return acc; },{});
