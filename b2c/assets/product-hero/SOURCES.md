@@ -50,6 +50,7 @@ Downloaded for the Krane Clinic landing-page prototype on 2026-08-09.
 These images are included for client-review prototyping. Confirm manufacturer permissions, local product registration, indication language, and Thai advertising approval before production publication.
 
 - Weight service card Figma export v1: `weight-care-figma-branded-pens-v1.png` is the exact image asset exported on 2026-09-10 from the approved `Krane Clinic Working` Figma frame (`1064:3253`, image layer `1064:3542`). The transparent source contains the Zepbound, Ozempic, and Wegovy product composition shown in that design; CSS reproduces the Figma crop. Brand and product imagery remains subject to the same manufacturer-permission, Thai registration, and advertising review noted above.
+- Weight service card redacted high-resolution v2: `weight-care-pens-redacted-hires-v2.png` is an ImageGen precise-object edit of the approved Figma export. Only the final character of each visible product wordmark was removed (`Zepbound` → `Zepboun`, `OZEMPIC` → `OZEMPI`, `Wegovy` → `Wegov`); the three-pen composition, label details, lighting, and crop were otherwise preserved. The generated chroma background was removed locally to restore a transparent alpha canvas, then the asset was delivered at 1974 × 3188 px for high-density displays.
 
 ## Weight-care desktop hover sequence v3
 
