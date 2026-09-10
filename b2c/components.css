@@ -3109,13 +3109,6 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   background:var(--surface-sunken);color:var(--color-ink-2);font-size:var(--fs-xs);text-align:center}
 .delivery-discreet .ui-icon{flex:none;color:var(--color-accent)}
 
-/* The consultation note, written in the order a clinician writes it. */
-.doc-soap{display:flex;flex-direction:column;gap:var(--sp-4)}
-.doc-soap__block{display:flex;flex-direction:column;gap:var(--sp-2)}
-.doc-soap__title{margin:0;color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-bold);line-height:1.35}
-.doc-soap__title em{font-style:normal;font-weight:var(--fw-medium);color:var(--color-ink-3)}
-.doc-soap__block--plan{padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-accent-soft)}
-.doc-soap__block--plan .doc-soap__title em{color:var(--color-ink-2)}
 
 .doc-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:var(--sp-2)}
 .doc-tab{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;
@@ -3223,3 +3216,26 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .field-row:has(.phone-field)>.field{flex:1 1 100%}
 /* Three tabs, not two: the segmented control sizes to however many it holds. */
 .treatment-detail__switch{grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none}
+
+/* The plan on the documents screen. No inner container: the sheet is already a
+   card, and a grey box inside a white card inside a grey screen was three
+   surfaces deep for one paragraph (client, 10 Sep). */
+.doc-plan__block{display:flex;flex-direction:column;gap:6px}
+.doc-plan__block p{margin:0;line-height:1.6}
+.doc-plan__care{display:flex;flex-direction:column;gap:var(--sp-3);
+  padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+.doc-plan__next{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)}
+.doc-plan__next small{color:var(--color-ink-3)}
+.doc-plan__next strong{text-align:right;font-size:var(--fs-sm);line-height:1.3}
+.doc-plan .treatment-doctor .avatar{background:var(--surface-sunken)}
+
+/* Same on the record screen: the diagnosis, the plan and the doctor read as
+   sections of one sheet rather than three grey tiles stacked on it. */
+.treatment-detail__info{padding:0;background:transparent}
+.treatment-care{padding:var(--sp-4) 0 0;border-top:1px solid var(--color-line);border-radius:0;background:transparent}
+.treatment-doctor .avatar{background:var(--surface-sunken)}
+/* The record's medicine tab renders the same blocks without lucide icons, since
+   they are built after the icon pass has run. A dot carries the row instead. */
+.doc-med__bullet{width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--color-accent)}
+.doc-med__facts li:last-child .doc-med__bullet{background:var(--color-warning,#B4791F)}
+.treatment-detail__medications{display:flex;flex-direction:column;gap:var(--sp-3)}
