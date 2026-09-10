@@ -8203,16 +8203,23 @@ html[lang="en"] .landing-figma-draft #ed-title{
 /* Two rails passing in opposite directions, so the row reads as movement rather
    than one long queue. Each rail holds its set twice and travels exactly one
    set, so the loop has no seam (client, 10 Sep). */
+/* The clip and the fade live on each rail, not on the pair. On the wrapper they
+   cut the card shadows off along the top and bottom edge of the row; on the rail
+   the padding gives the shadow room inside the box that does the clipping. */
 .landing-figma-draft .trust-section--figma .trust-marquee{
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:0;
   width:100%;
+  overflow:visible;
+}
+.landing-figma-draft .trust-rail{
+  width:100%;
+  padding-block:22px;
   overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
   mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
 }
-.landing-figma-draft .trust-rail{width:100%;overflow:hidden}
 .landing-figma-draft .trust-section--figma .trust-grid--open{
   display:flex!important;
   width:max-content!important;
@@ -8257,12 +8264,26 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 @media (max-width: 760px){
   .landing-figma-draft .trust-section--figma .trust-marquee{margin-inline:-18px;width:calc(100% + 36px)}
+  .landing-figma-draft .trust-rail{padding-block:12px}
   .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{
     width:210px!important;flex-basis:210px!important;padding:18px 16px!important
   }
 }
 @media (prefers-reduced-motion: reduce){
   .landing-figma-draft .trust-rail{overflow-x:auto;scrollbar-width:none}
-  .landing-figma-draft .trust-section--figma .trust-marquee{-webkit-mask-image:none;mask-image:none}
+  .landing-figma-draft .trust-rail{-webkit-mask-image:none;mask-image:none}
   .landing-figma-draft .trust-section--figma .trust-grid--open{animation:none!important;will-change:auto}
+}
+
+/* The positioning statement reads as it is scrolled: each word carries its own
+   colour and lifts out of the page as the section crosses the viewport. Until
+   the script has wrapped the words the block renders exactly as before, so it
+   is never dimmed with no way to light it. */
+.positioning-section.is-lit-ready .positioning-word{
+  opacity:.16;
+  transition:opacity .45s var(--ease,cubic-bezier(.22,.61,.36,1));
+}
+.positioning-section.is-lit-ready .positioning-word.is-lit{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .positioning-section.is-lit-ready .positioning-word{opacity:1;transition:none}
 }

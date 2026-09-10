@@ -2245,6 +2245,74 @@
     updateParallax();
   }
 
+  /* The positioning statement lights word by word as the section crosses the
+     viewport, so the sentence reads at the pace it is scrolled rather than
+     arriving all at once (client, 10 Sep). Words are wrapped once; the scroll
+     handler only moves a count, so nothing is measured per frame. */
+  (function litPositioningStatement() {
+    const section = document.querySelector(".positioning-section");
+    if (!section) return;
+    const lines = [...section.querySelectorAll("p, h2")];
+    if (!lines.length) return;
+
+    /* Thai does not put spaces between words, so splitting on whitespace lit the
+       whole sentence in four jumps. Intl.Segmenter finds real Thai word
+       boundaries without cutting through a cluster and stranding its tone mark;
+       whitespace is the fallback where it is missing. */
+    const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter("th", { granularity: "word" })
+      : null;
+    const segment = (text) => segmenter
+      ? [...segmenter.segment(text)].map((part) => part.segment)
+      : text.split(/(\s+)/);
+
+    const words = [];
+    lines.forEach((line) => {
+      const parts = segment(line.textContent);
+      line.textContent = "";
+      parts.forEach((part) => {
+        if (!part.trim()) {
+          line.append(part);
+          return;
+        }
+        const word = document.createElement("span");
+        word.className = "positioning-word";
+        word.textContent = part;
+        line.append(word);
+        words.push(word);
+      });
+    });
+    section.classList.add("is-lit-ready");
+
+    if (reducedMotionQuery.matches) {
+      words.forEach((word) => word.classList.add("is-lit"));
+      return;
+    }
+
+    let lit = -1;
+    let frame = 0;
+    function paint() {
+      frame = 0;
+      const box = section.getBoundingClientRect();
+      const view = window.innerHeight || 800;
+      /* Opens when the block's top has risen past three quarters of the screen
+         and closes when its bottom passes the halfway line, so the sentence is
+         fully lit while it is still in front of the reader. */
+      const start = view * 0.78;
+      const end = view * 0.42;
+      const span = Math.max(1, box.height + (start - end));
+      const progress = Math.min(1, Math.max(0, (start - box.top) / span));
+      const next = Math.round(progress * words.length);
+      if (next === lit) return;
+      lit = next;
+      words.forEach((word, index) => word.classList.toggle("is-lit", index < next));
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    paint();
+  })();
+
   if (window.lucide) {
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
   }
