@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-consent-auto-v1";
+    const release = "20260910-otp-size-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-consent-auto-v1">
+<link rel="stylesheet" href="components.css?v=20260910-otp-size-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -158,15 +158,19 @@
   .identity-upload:focus-within{outline:3px solid var(--color-focus);outline-offset:3px}
   .identity-upload.is-complete{border:1px solid var(--color-accent)!important;background:var(--color-accent-soft-2)}
   .identity-upload.is-complete [data-identity-status]{color:var(--color-accent-ink);font-weight:var(--fw-semibold)}
-  .otp-entry{position:relative;width:100%}
+  /* Six boxes for six digits, so they keep a digit's proportions and sit in the
+     middle rather than stretching to whatever width the screen happens to be:
+     on a desktop each cell was as wide as a card (client, 10 Sep). */
+  .otp-entry{position:relative;width:fit-content;max-width:100%;margin-inline:auto}
   .otp-entry__input{position:absolute;z-index:2;inset:0;width:100%;height:100%;margin:0;border:0;opacity:0;cursor:text}
-  .otp-entry__cells{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--sp-2);width:100%}
-  .otp-entry__cell{display:grid;place-items:center;min-width:0;height:64px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;transition:border-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+  .otp-entry__cells{display:grid;grid-template-columns:repeat(6,minmax(0,56px));justify-content:center;gap:var(--sp-2)}
+  .otp-entry__cell{display:grid;place-items:center;min-width:0;width:56px;height:64px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;transition:border-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
   .otp-entry__cell.is-filled{background:var(--color-bg-soft)}
   .otp-entry:focus-within .otp-entry__cell.is-current{border-color:var(--color-blue);box-shadow:0 0 0 3px var(--color-focus)}
   @media(max-width:420px){
-    .otp-entry__cells{gap:7px}
-    .otp-entry__cell{height:58px;border-radius:12px;font-size:24px}
+    .otp-entry__cells{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+    .otp-entry__cell{width:auto;height:58px;border-radius:12px;font-size:24px}
+    .otp-entry{width:100%}
   }
 </style>
   <style id="insurance-entry-polish">
