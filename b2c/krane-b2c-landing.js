@@ -798,16 +798,25 @@
   const swapBanners = [...document.querySelectorAll("[data-banner-swap]")];
   const swapTimers = new Set();
   let bannerProductsReady = false;
+  const setBannerFrame = (banner, showProduct) => {
+    banner.classList.toggle("is-product-frame", showProduct);
+    banner.querySelectorAll(".banner-swap__image").forEach((image) => {
+      const isProductImage = image.classList.contains("banner-swap__image--product");
+      const isActive = showProduct ? isProductImage : !isProductImage;
+      image.classList.toggle("is-active", isActive);
+      image.setAttribute("aria-hidden", String(!isActive));
+    });
+  };
   const clearBannerSwapTimers = () => {
     swapTimers.forEach((timer) => window.clearTimeout(timer));
     swapTimers.clear();
-    swapBanners.forEach((banner) => banner.classList.add("is-product-frame"));
+    swapBanners.forEach((banner) => setBannerFrame(banner, true));
   };
   const queueBannerSwap = (banner, delay, showProduct = true) => {
     const timer = window.setTimeout(() => {
       swapTimers.delete(timer);
       if (document.hidden || reducedMotionQuery.matches) return;
-      banner.classList.toggle("is-product-frame", showProduct);
+      setBannerFrame(banner, showProduct);
       queueBannerSwap(banner, 6800, !showProduct);
     }, delay);
     swapTimers.add(timer);
