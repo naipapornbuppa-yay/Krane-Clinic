@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-grab-cart-v2";
+    const release = "20260910-paid-copy-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-grab-cart-v2">
+<link rel="stylesheet" href="components.css?v=20260910-paid-copy-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2414,9 +2414,9 @@
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Diagnosis and medicines are ready</h2><p class="muted" data-payment-success-copy>Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment complete</h2><p class="muted" data-payment-success-copy>Your receipt, diagnosis and medicine list are in your documents. The pharmacy is preparing your order and will let you know when it is on the way.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
-      <div class="state-view__action"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ดูเอกสารและติดตามการจัดส่ง</button></div>
+      <div class="state-view__action"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ติดตามการจัดส่ง</button></div>
     </div>
   </section>
 
@@ -4623,16 +4623,18 @@
     const successCta=success?.querySelector('[data-payment-success-cta]');
     const thai=document.documentElement.lang==='th';
     const hasDelivery=hasFulfillableItems();
-    if(successTitle) successTitle.textContent=hasDelivery
-      ? (thai ? 'ผลการวินิจฉัยและรายการยาพร้อมแล้ว' : 'Your diagnosis and medicines are ready')
-      : (thai ? 'ผลการปรึกษาพร้อมแล้ว' : 'Your consultation results are ready');
+    /* The heading says what just happened, not what is waiting behind it: this
+       is the screen that closes the payment, so it confirms the payment. What
+       the patient gets and what happens next belong in the line under it, and
+       the button names one destination instead of two (client, 10 Sep). */
+    if(successTitle) successTitle.textContent=thai ? 'ชำระเงินเรียบร้อยแล้ว' : 'Payment complete';
     if(successCopy) successCopy.textContent=hasDelivery
-      ? (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย รายการยา ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medicines, medical certificate and receipt.')
-      : (thai ? 'ชำระเงินเรียบร้อยแล้ว เปิดดูผลวินิจฉัย ใบรับรองแพทย์ และใบเสร็จได้เลย' : 'Payment is complete. You can now view your diagnosis, medical certificate and receipt.');
+      ? (thai ? 'ใบเสร็จ ผลวินิจฉัย และรายการยาอยู่ในเอกสารของคุณแล้ว ร้านยากำลังจัดยาและจะแจ้งเมื่อเริ่มจัดส่ง' : 'Your receipt, diagnosis and medicine list are in your documents. The pharmacy is preparing your order and will let you know when it is on the way.')
+      : (thai ? 'ใบเสร็จ ผลวินิจฉัย และใบรับรองแพทย์อยู่ในเอกสารของคุณแล้ว เปิดดูหรือดาวน์โหลดได้ทุกเมื่อ' : 'Your receipt, diagnosis and medical certificate are in your documents, ready to open or download at any time.');
     if(successCta){
       successCta.dataset.go=hasDelivery ? 'tracking' : 'prescription';
       successCta.textContent=hasDelivery
-        ? (thai ? 'ดูเอกสารและติดตามการจัดส่ง' : 'View documents and track delivery')
+        ? (thai ? 'ติดตามการจัดส่ง' : 'Track delivery')
         : (thai ? 'ดูเอกสาร' : 'View documents');
     }
   }
