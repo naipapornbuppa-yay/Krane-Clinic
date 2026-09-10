@@ -3220,3 +3220,20 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .doc-soap__title em{font-style:normal;font-weight:var(--fw-medium);color:var(--color-ink-3)}
 .doc-soap__block--plan{padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-accent-soft)}
 .doc-soap__block--plan .doc-soap__title em{color:var(--color-ink-2)}
+
+/* ---------- The app is a phone app ----------
+   Every screen filled whatever width the browser gave it, so on a laptop a form
+   field ran the width of the window and the OTP boxes were as wide as cards.
+   The content column is now a phone's width and stops at a tablet's; the screen
+   itself still owns the full surface, so headers, footers and the bottom nav
+   stay anchored to the edges (client, 10 Sep). */
+/* The call stage and the chat thread are excluded: their children are either
+   positioned against the screen edges or aligned left and right by sender, and
+   a centred column would break both. */
+.screen__body:not(.callstage):not(.chat-body)>*,
+.screen__footer>*{
+  width:100%;
+  max-width:var(--app-content-max,600px);
+  margin-inline:auto;
+}
+.bottomnav,.screen__top{max-width:none}
