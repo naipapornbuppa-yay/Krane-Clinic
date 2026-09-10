@@ -1268,7 +1268,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .positioning-section p,.positioning-section h2{max-width:1120px;font-size:clamp(56px,5.55vw,80px);font-weight:600;line-height:1.18;letter-spacing:-.055em}
 .positioning-section h2{color:var(--draft-blue)}
 
-.landing-figma-draft .trust-section--figma{padding:96px 64px;border-radius:64px;background:#fff}
+.landing-figma-draft .trust-section--figma{padding:96px 64px;border-radius:64px;background:transparent}
 .trust-section--figma .section-heading>p{color:var(--draft-blue);font-size:14px;font-weight:600}
 .trust-section--figma .section-heading h2{margin-top:12px;font-size:clamp(48px,4.3vw,62px);font-weight:600;line-height:1.15;letter-spacing:-.045em}
 .landing-figma-draft .trust-grid--open{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:70px}
@@ -6630,9 +6630,18 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     flex:0 0 auto;
     margin-left:auto;
   }
-  .landing-figma-draft .site-header .header-actions>.language-control,
+  /* The account and the language stay on the bar. Folding them into the drawer
+     left a header with a brand and one hamburger, and signing in or switching
+     language became two taps behind a menu that shows neither (client, 10 Sep). */
+  .landing-figma-draft .site-header .header-actions>.language-control{
+    display:inline-flex!important;
+  }
   .landing-figma-draft .site-header .header-actions>.header-profile{
-    display:none!important;
+    display:flex!important;
+  }
+  .landing-figma-draft .site-header .header-actions{gap:2px}
+  .landing-figma-draft .site-header .language-control select{
+    min-width:40px;padding-right:15px;font-size:12px;
   }
   .landing-figma-draft .site-header .brand{
     flex:1 1 auto;
@@ -8191,66 +8200,68 @@ html[lang="en"] .landing-figma-draft #ed-title{
   }
 }
 
-/* The trust rail is a true double marquee at every viewport: one complete set
-   of four certifications followed by its existing clone set for a seamless
-   loop. The content remains horizontally browsable when motion is reduced. */
-.landing-figma-draft .trust-section--figma .trust-marquee {
-  width: 100%;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
-  mask-image: linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
+/* Two rails passing in opposite directions, so the row reads as movement rather
+   than one long queue. Each rail holds its set twice and travels exactly one
+   set, so the loop has no seam (client, 10 Sep). */
+.landing-figma-draft .trust-section--figma .trust-marquee{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  width:100%;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
 }
-
-.landing-figma-draft .trust-section--figma .trust-grid--open {
-  display: flex !important;
-  width: max-content !important;
-  max-width: none !important;
-  grid-template-columns: none !important;
-  gap: 0 !important;
-  animation: trust-double-marquee 44s linear infinite !important;
-  will-change: transform;
+.landing-figma-draft .trust-rail{width:100%;overflow:hidden}
+.landing-figma-draft .trust-section--figma .trust-grid--open{
+  display:flex!important;
+  width:max-content!important;
+  max-width:none!important;
+  grid-template-columns:none!important;
+  gap:16px!important;
+  margin-top:0!important;
+  animation:trust-rail-left 52s linear infinite!important;
+  will-change:transform;
 }
-
-.landing-figma-draft .trust-section--figma .trust-grid--open .trust-card {
-  width: clamp(300px,24vw,420px) !important;
-  flex: 0 0 clamp(300px,24vw,420px) !important;
-  border-right: 1px solid rgba(23,28,40,.12) !important;
+.landing-figma-draft .trust-section--figma .trust-grid--b{
+  animation:trust-rail-right 64s linear infinite!important;
 }
-
-.landing-figma-draft .trust-section--figma .trust-card.is-clone {
-  display: flex !important;
+/* Each logo is its own card with its own line, so the three ISO marks are read
+   one at a time rather than crowded into a single tile. */
+.landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{
+  width:clamp(230px,20vw,290px)!important;
+  min-height:0!important;
+  flex:0 0 clamp(230px,20vw,290px)!important;
+  display:flex!important;
+  flex-direction:column;
+  gap:16px!important;
+  padding:22px 20px!important;
+  border:1px solid var(--landing-line,rgba(23,28,40,.1))!important;
+  border-radius:24px!important;
+  background:var(--color-surface,#fff)!important;
 }
-
-@keyframes trust-double-marquee {
-  to { transform: translate3d(-50%,0,0); }
+.landing-figma-draft .trust-section--figma .trust-card__logo-stage,
+.landing-figma-draft .trust-section--figma .trust-card__icon-stage{
+  height:84px!important;min-height:0!important;display:grid;place-items:center
 }
-
-@media (max-width: 760px) {
-  .landing-figma-draft .trust-section--figma .trust-marquee {
-    margin-inline: -18px;
-    width: calc(100% + 36px);
+.landing-figma-draft .trust-section--figma .trust-card__logo-stage img{max-height:84px;width:auto;object-fit:contain}
+.landing-figma-draft .trust-section--figma .trust-card.is-clone{display:flex!important}
+@keyframes trust-rail-left{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(calc(-50% - 8px),0,0)}
+}
+@keyframes trust-rail-right{
+  from{transform:translate3d(calc(-50% - 8px),0,0)}
+  to{transform:translate3d(0,0,0)}
+}
+@media (max-width: 760px){
+  .landing-figma-draft .trust-section--figma .trust-marquee{margin-inline:-18px;width:calc(100% + 36px)}
+  .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{
+    width:210px!important;flex-basis:210px!important;padding:18px 16px!important
   }
-
-  .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card {
-    width: 268px !important;
-    flex-basis: 268px !important;
-  }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-figma-draft .trust-section--figma .trust-marquee {
-    overflow-x: auto;
-    -webkit-mask-image: none;
-    mask-image: none;
-    scrollbar-width: none;
-  }
-
-  .landing-figma-draft .trust-section--figma .trust-grid--open {
-    animation: none !important;
-    will-change: auto;
-  }
-
-  .landing-figma-draft .trust-section--figma .trust-card.is-clone {
-    display: none !important;
-  }
+@media (prefers-reduced-motion: reduce){
+  .landing-figma-draft .trust-rail{overflow-x:auto;scrollbar-width:none}
+  .landing-figma-draft .trust-section--figma .trust-marquee{-webkit-mask-image:none;mask-image:none}
+  .landing-figma-draft .trust-section--figma .trust-grid--open{animation:none!important;will-change:auto}
 }
