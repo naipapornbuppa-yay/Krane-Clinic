@@ -795,28 +795,38 @@
 
   // Hero cards alternate as one coordinated set between human context and
   // product photography, so the mosaic always reads as a single campaign.
-  const swapBanners = [...document.querySelectorAll("[data-banner-swap]")];
+  class ServiceCarouselCard {
+    constructor(element) {
+      this.element = element;
+      this.productImage = element.querySelector("[data-banner-product-src]");
+      this.images = [...element.querySelectorAll(".banner-swap__image")];
+    }
+
+    setFrame(showProduct) {
+      this.element.classList.toggle("is-product-frame", showProduct);
+      this.images.forEach((image) => {
+        const isProductImage = image.classList.contains("banner-swap__image--product");
+        const isActive = showProduct ? isProductImage : !isProductImage;
+        image.classList.toggle("is-active", isActive);
+        image.setAttribute("aria-hidden", String(!isActive));
+      });
+    }
+  }
+
+  const swapBanners = [...document.querySelectorAll("[data-banner-swap]")]
+    .map((element) => new ServiceCarouselCard(element));
   const swapTimers = new Set();
   let bannerProductsReady = false;
-  const setBannerFrame = (banner, showProduct) => {
-    banner.classList.toggle("is-product-frame", showProduct);
-    banner.querySelectorAll(".banner-swap__image").forEach((image) => {
-      const isProductImage = image.classList.contains("banner-swap__image--product");
-      const isActive = showProduct ? isProductImage : !isProductImage;
-      image.classList.toggle("is-active", isActive);
-      image.setAttribute("aria-hidden", String(!isActive));
-    });
-  };
   const clearBannerSwapTimers = () => {
     swapTimers.forEach((timer) => window.clearTimeout(timer));
     swapTimers.clear();
-    swapBanners.forEach((banner) => setBannerFrame(banner, true));
+    swapBanners.forEach((banner) => banner.setFrame(true));
   };
   const queueBannerSwap = (banner, delay, showProduct = true) => {
     const timer = window.setTimeout(() => {
       swapTimers.delete(timer);
       if (document.hidden || reducedMotionQuery.matches) return;
-      setBannerFrame(banner, showProduct);
+      banner.setFrame(showProduct);
       queueBannerSwap(banner, 6800, !showProduct);
     }, delay);
     swapTimers.add(timer);
@@ -828,7 +838,7 @@
   };
   const loadBannerProductImages = () => {
     const productImages = swapBanners
-      .map((banner) => banner.querySelector("[data-banner-product-src]"))
+      .map((banner) => banner.productImage)
       .filter(Boolean);
     return Promise.all(productImages.map((image) => new Promise((resolve) => {
       if (image.complete && image.currentSrc) {
