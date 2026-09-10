@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-phone-country-v3";
+    const release = "20260910-treatment-tabs-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-phone-country-v3">
+<link rel="stylesheet" href="components.css?v=20260910-treatment-tabs-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2682,7 +2682,7 @@
              buttons across two cards was the clutter. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sleep-stress" data-treatment-date="26/08/2026" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sleep-stress" data-treatment-date="26/08/2026" data-treatment-medicines='[["Melatonin 5mg","วันละ 1 เม็ด ก่อนนอน"]]' data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
               <strong>Sleep &amp; stress</strong>
@@ -2698,7 +2698,7 @@
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="1" data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-medicines='[["Loratadine 10 mg","วันละ 1 เม็ด"],["Paracetamol 500 mg","เมื่อมีอาการ ทุก 4 ถึง 6 ชม."]]' data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
               <strong>Hair loss</strong>
@@ -2746,6 +2746,7 @@
       <div class="partner-binary partner-binary--accent treatment-detail__switch" role="tablist" aria-label="ข้อมูลการรักษา">
         <button class="partner-binary__option is-active" type="button" role="tab" aria-selected="true" aria-controls="treatment-plan-panel" data-treatment-tab="plan">แผนการรักษา</button>
         <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine">รายการยา</button>
+        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-docs-panel" data-treatment-tab="docs">เอกสาร</button>
       </div>
 
       <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
@@ -2792,7 +2793,6 @@
               <strong data-treatment-detail-followup data-followup-date data-followup-offset="1">2 Sep 2026</strong>
             </div>
           </section>
-          <button class="btn btn--primary" type="button" data-profile-followup>ปรึกษาคุณหมอประจำ</button>
         </article>
       </section>
 
@@ -2807,6 +2807,39 @@
           </div>
           <div class="treatment-medications treatment-detail__medications" data-treatment-detail-medications></div>
           <button class="btn btn--primary" type="button" data-refill-open>เติมยาตามแผนเดิม</button>
+        </article>
+      </section>
+
+      <!-- Third tab, so this screen carries the same three the client wireframed
+           for the documents view: the plan, the medicines and the paperwork.
+           Each row opens the document itself rather than restating it here. -->
+      <section class="treatment-detail__panel" id="treatment-docs-panel" role="tabpanel" data-treatment-panel="docs" hidden>
+        <article class="treatment-record stack-4">
+          <div class="treatment-detail__medicine-head">
+            <div class="eyebrow">เอกสารที่เกี่ยวข้อง</div><h2 class="h2">เอกสารของการรักษานี้</h2>
+          </div>
+          <div class="doc-section">
+            <button class="doc-row" type="button" data-doc-open="summary">
+              <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="doc-row__body"><strong>สรุปผลการปรึกษา</strong><span class="hint">ผลวินิจฉัยและแผนการรักษา</span></span>
+              <span class="doc-row__action">ดู</span>
+            </button>
+            <button class="doc-row" type="button" data-doc-open="rx">
+              <span class="doc-row__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="doc-row__body"><strong>ใบสั่งยา</strong><span class="hint">ชื่อยา วิธีใช้ และข้อควรระวัง</span></span>
+              <span class="doc-row__action">ดู</span>
+            </button>
+            <button class="doc-row" type="button" data-doc-open="cert">
+              <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ</span></span>
+              <span class="doc-row__action">ดู</span>
+            </button>
+            <button class="doc-row" type="button" data-doc-open="receipt">
+              <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">ค่าปรึกษาและค่ายา</span></span>
+              <span class="doc-row__action">ดู</span>
+            </button>
+          </div>
         </article>
       </section>
     </div>
@@ -6105,7 +6138,11 @@
   function openTreatmentDetail(card){
     if(!card) return;
     if(card.dataset.category) setSelectedCategory(card.dataset.category);
-    const title=card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
+    /* The card head became .treatment-card__title, and the only .between left on
+       the card is the follow-up row, so this had started naming the treatment
+       after its next appointment date. */
+    const title=card.querySelector('.treatment-card__title strong')?.textContent.trim()
+      || card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
     const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
     const diagnosis=card.dataset.treatmentDiagnosis || '';
     const plan=card.dataset.treatmentPlan || '';
@@ -6136,8 +6173,27 @@
       }
     }
     detail.querySelectorAll('[data-treatment-detail-date]').forEach(node => { node.textContent=date; });
+    /* The home cards no longer show the list, so they carry it as data. Cards
+       that still render one (the history screen) are cloned as before. */
     const medicines=detail.querySelector('[data-treatment-detail-medications]');
-    medicines.replaceChildren(...[...card.querySelectorAll('.treatment-medication')].map(item => item.cloneNode(true)));
+    const rendered=[...card.querySelectorAll('.treatment-medication')];
+    if(rendered.length){
+      medicines.replaceChildren(...rendered.map(item => item.cloneNode(true)));
+    }else{
+      let list=[];
+      try{ list=JSON.parse(card.dataset.treatmentMedicines || '[]'); }catch(err){ list=[]; }
+      medicines.replaceChildren(...list.map(([name,directions]) => {
+        const row=document.createElement('span');
+        row.className='treatment-medication';
+        row.setAttribute('role','listitem');
+        const label=document.createElement('span');
+        label.textContent=name;
+        const dose=document.createElement('span');
+        dose.textContent=directions;
+        row.append(label,dose);
+        return row;
+      }));
+    }
     setTreatmentDetailTab('plan');
     show('treatment-detail');
   }
