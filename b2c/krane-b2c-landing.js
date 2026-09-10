@@ -2293,15 +2293,20 @@
     let frame = 0;
     function paint() {
       frame = 0;
-      const box = section.getBoundingClientRect();
+      /* Measured on the text, not the section. The section is a tall block with
+         the sentence floating in the middle of it, so pacing the reveal by the
+         section's own height meant the last words only lit once the sentence had
+         already scrolled off the top. It finishes while the whole sentence is
+         still on screen. */
+      const first = lines[0].getBoundingClientRect();
+      const last = lines[lines.length - 1].getBoundingClientRect();
+      const textTop = first.top;
+      const textHeight = Math.max(1, last.bottom - first.top);
       const view = window.innerHeight || 800;
-      /* Opens when the block's top has risen past three quarters of the screen
-         and closes when its bottom passes the halfway line, so the sentence is
-         fully lit while it is still in front of the reader. */
-      const start = view * 0.78;
-      const end = view * 0.42;
-      const span = Math.max(1, box.height + (start - end));
-      const progress = Math.min(1, Math.max(0, (start - box.top) / span));
+      const start = view * 0.88;
+      const end = view * 0.34;
+      const span = Math.max(1, textHeight + (start - end) * 0.55);
+      const progress = Math.min(1, Math.max(0, (start - textTop) / span));
       const next = Math.round(progress * words.length);
       if (next === lit) return;
       lit = next;
