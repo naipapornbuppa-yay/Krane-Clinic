@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-referral-v2";
+    const release = "20260910-treatment-card-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-referral-v2">
+<link rel="stylesheet" href="components.css?v=20260910-treatment-card-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2684,21 +2684,51 @@
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
         <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sleep-stress" data-treatment-date="26/08/2026" data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
-          <span class="between"><strong>Sleep &amp; stress</strong><span class="badge badge--warn">Refill soon</span></span>
+          <span class="treatment-card__head">
+            <span class="treatment-card__title">
+              <strong>Sleep &amp; stress</strong>
+              <span class="treatment-card__programme">โปรแกรมดูแลการนอน 3 เดือน</span>
+            </span>
+            <span class="badge badge--warn">Refill soon</span>
+          </span>
+          <span class="treatment-card__meta">
+            <span class="treatment-meta"><i data-lucide="user-round" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>คุณหมอนรินทร์ ทานากะ</span></span>
+            <span class="treatment-meta"><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เริ่ม 26 ส.ค. 2026</span></span>
+            <span class="treatment-meta"><i data-lucide="chart-line" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เดือนที่ 1 จาก 3</span></span>
+          </span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
           </span>
-          <span class="treatment-refill">Next refill in 9 days</span>
+          <span class="treatment-progress" style="--treatment-progress:30%">
+            <span class="treatment-progress__head"><span>ยาคงเหลือ</span><strong>9 วัน</strong></span>
+            <span class="treatment-progress__track" role="img" aria-label="ยาคงเหลือ 9 วัน จากรอบ 30 วัน"><span class="treatment-progress__fill"></span></span>
+            <span class="hint">เติมยาได้ตั้งแต่ 4 ก.ย. 2026</span>
+          </span>
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="1" data-followup-iso="2026-09-02">2 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
-          <span class="between"><strong>Hair loss</strong><span class="badge badge--ok">On track</span></span>
+          <span class="treatment-card__head">
+            <span class="treatment-card__title">
+              <strong>Hair loss</strong>
+              <span class="treatment-card__programme">แผนฟื้นฟูเส้นผม 6 เดือน</span>
+            </span>
+            <span class="badge badge--ok">On track</span>
+          </span>
+          <span class="treatment-card__meta">
+            <span class="treatment-meta"><i data-lucide="user-round" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>คุณหมอนรินทร์ ทานากะ</span></span>
+            <span class="treatment-meta"><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เริ่ม 30 มิ.ย. 2026</span></span>
+            <span class="treatment-meta"><i data-lucide="chart-line" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เดือนที่ 3 จาก 6</span></span>
+          </span>
           <span class="treatment-medications" role="list" aria-label="Medicines">
             <span class="treatment-medication" role="listitem"><span>Loratadine 10 mg</span><span>วันละ 1 เม็ด</span></span>
             <span class="treatment-medication" role="listitem"><span>Paracetamol 500 mg</span><span>เมื่อมีอาการ ทุก 4 ถึง 6 ชม.</span></span>
           </span>
-          <span class="treatment-refill">Next refill in 24 days</span>
+          <span class="treatment-progress" style="--treatment-progress:80%">
+            <span class="treatment-progress__head"><span>ยาคงเหลือ</span><strong>24 วัน</strong></span>
+            <span class="treatment-progress__track" role="img" aria-label="ยาคงเหลือ 24 วัน จากรอบ 30 วัน"><span class="treatment-progress__fill"></span></span>
+            <span class="hint">เติมยาได้ตั้งแต่ 19 ก.ย. 2026</span>
+          </span>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
           <span class="between followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-offset="11" data-followup-iso="2026-09-12">12 Sep 2026</span> · Dr. Narin</strong></span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
