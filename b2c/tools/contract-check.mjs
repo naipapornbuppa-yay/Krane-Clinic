@@ -201,6 +201,25 @@ for (const rule of contract.rules) {
         }
       }
     }
+    if (rule.containedImage) {
+      const [imageSelector, frameSelector] = rule.containedImage;
+      const got = await page.evaluate(([imageSel, frameSel]) => {
+        const image = document.querySelector(imageSel);
+        const frame = document.querySelector(frameSel);
+        if (!image || !frame) return null;
+        const art = image.getBoundingClientRect();
+        const card = frame.getBoundingClientRect();
+        return {
+          fit:getComputedStyle(image).objectFit,
+          inside:art.left >= card.left - 1 && art.top >= card.top - 1 &&
+            art.right <= card.right + 1 && art.bottom <= card.bottom + 1
+        };
+      }, [imageSelector, frameSelector]);
+      if (!got) fail('rule', `${rule.name}: image or frame not found`);
+      else if (got.fit !== 'contain' || !got.inside) {
+        fail('rule', `${rule.name}: expected contained artwork inside its card, got object-fit=${got.fit}, inside=${got.inside}`);
+      }
+    }
     /* Checkout reads in the order a delivery app puts it — where it goes, what
        is in it, how it is paid, then the bill (client, 20 Aug: "ทำลอก grab
        มาเลย"). Sections are easy to reshuffle by accident, so the sequence is

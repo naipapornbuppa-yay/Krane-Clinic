@@ -569,6 +569,22 @@
   }
 }
 
+/* Keep the complete two-tablet artwork inside the ED card. Earlier breakpoint
+   rules enlarged the square source beyond the narrow card (`116%` wide with a
+   negative right offset), so both the title-side edge and the lower tablet were
+   clipped. The card owns the crop; the artwork itself now always fits within
+   that frame, with a small safe inset at every size. The ID-scoped selector
+   keeps legacy desktop/mobile coordinates from winning again. */
+.landing-figma-draft #services [data-category="sexual-health"].is-product-frame .service-tile__bg--ed-product {
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: clamp(8px, 1vw, 16px) !important;
+  box-sizing: border-box;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
 /* ID-scoped lock wins over legacy state-specific selectors retained in the
    base landing stylesheet. Carousel state must never affect UI geometry. */
 .landing-figma-draft #services.care-banner-grid--auto-products > [data-banner-swap] .care-banner__copy > strong {
