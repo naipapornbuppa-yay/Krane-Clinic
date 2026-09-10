@@ -138,7 +138,7 @@
     "Photo of the front of your Thai ID card.":"รูปด้านหน้าบัตรประชาชนไทย",
     "or":"หรือ",
     "· sent via SMS":"· ส่งทาง SMS",
-    "Today, 11:05":"วันนี้ 11:05","Pharmacist verified prescription and stock":"เภสัชกรตรวจสอบใบสั่งยาและสต็อกแล้ว","Today, 11:12":"วันนี้ 11:12","Stock reserved and medicine prepared":"จองสต็อกและจัดเตรียมยาแล้ว","Fascino Ari · Today, 11:18":"Fascino อารีย์ · วันนี้ 11:18","Arranging rider pickup":"กำลังจัดหาคนขับเข้ารับพัสดุ","Dispatch in progress":"อยู่ระหว่างดำเนินการจัดส่ง",
+    "Today, 11:05":"วันนี้ 11:05","Pharmacist verified prescription and stock":"เภสัชกรตรวจสอบใบสั่งยาและสต็อกแล้ว","Today, 11:12":"วันนี้ 11:12","Stock reserved and medicine prepared":"จัดยาเรียบร้อย","Fascino Ari · Today, 11:18":"Fascino อารีย์ · วันนี้ 11:18","Arranging rider pickup":"กำลังหาไรเดอร์","Dispatch in progress":"รอไรเดอร์รับของ",
     "Today, 11:20":"วันนี้ 11:20",
     "Today, 11:22":"วันนี้ 11:22",
     "Noted":"รับทราบ",
@@ -269,7 +269,7 @@
     "Your order":"คำสั่งซื้อของคุณ","Your medicine is being prepared":"กำลังจัดเตรียมยาของคุณ","Order confirmed":"ยืนยันคำสั่งซื้อแล้ว","Preview ready":"ดูตัวอย่างเมื่อพร้อม",
     "Payment successful":"ชำระเงินสำเร็จ","Fascino Ari confirmed your order and is preparing your medicine now.":"Fascino Ari ยืนยันคำสั่งซื้อของคุณแล้ว และกำลังจัดเตรียมยาให้คุณตอนนี้","Amount paid":"ยอดที่ชำระแล้ว","View order details":"ดูรายละเอียดคำสั่งซื้อ","Same day · by 6pm":"ส่งวันนี้ · ภายใน 18:00 น.",
     "Refund":"คืนเงิน","Your refund is on its way":"กำลังดำเนินการคืนเงินให้คุณ","Back to home":"กลับหน้าหลัก","Start a new consultation":"เริ่มปรึกษาใหม่",
-    "Order tracking":"ติดตามคำสั่งซื้อ","Consultation completed":"ปรึกษาเสร็จสิ้น","Medication payment confirmed":"ยืนยันการชำระค่ายาแล้ว","Pharmacy accepted order":"ร้านยารับคำสั่งซื้อแล้ว","Preparing medicine":"กำลังจัดยา","Rider pickup":"ไรเดอร์รับของ","Out for delivery":"กำลังจัดส่ง","Delivered":"จัดส่งสำเร็จ","Pending":"รอดำเนินการ","Next":"ถัดไป",
+    "Order tracking":"ติดตามคำสั่งซื้อ","Consultation completed":"ปรึกษาเสร็จสิ้น","Medication payment confirmed":"ชำระเงินแล้ว","Pharmacy accepted order":"ร้านยารับคำสั่งซื้อแล้ว","Preparing medicine":"กำลังจัดยา","Rider pickup":"ไรเดอร์รับของ","Out for delivery":"กำลังจัดส่ง","Delivered":"จัดส่งสำเร็จ","Pending":"รอดำเนินการ","Next":"ถัดไป",
     /* ---- profile / settings ---- */
     "Hi, Mali":"สวัสดี, มะลิ","Active treatments":"การรักษาที่กำลังดำเนินอยู่","Active orders":"คำสั่งซื้อที่กำลังดำเนินอยู่","Past orders":"คำสั่งซื้อที่ผ่านมา","On track":"เป็นไปตามแผน","Message":"ข้อความ","Track order":"ติดตามคำสั่งซื้อ","History":"ประวัติ","New consult":"ปรึกษาใหม่",
     "Notifications":"การแจ้งเตือน","New":"ใหม่","Earlier":"ก่อนหน้า","Medical history":"ประวัติการรักษา","Active treatment":"การรักษาปัจจุบัน","Past consultations":"การปรึกษาที่ผ่านมา","Prescriptions":"ใบสั่งยา",

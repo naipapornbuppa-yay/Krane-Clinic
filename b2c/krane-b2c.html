@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-treatment-card-v1";
+    const release = "20260910-tracking-copy-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-treatment-card-v1">
+<link rel="stylesheet" href="components.css?v=20260910-tracking-copy-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2519,7 +2519,7 @@
       <div class="delivery-eta">
         <div class="delivery-eta__head">
           <span class="delivery-eta__label">ถึงประมาณ</span>
-          <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่งไรเดอร์</span></button>
+          <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่ง</span></button>
         </div>
         <strong class="delivery-eta__time" data-delivery-eta-window>15:00 - 15:55</strong>
         <span class="delivery-eta__state" data-delivery-eta-state>ไรเดอร์กำลังไปรับยาที่ร้าน</span>
@@ -2536,7 +2536,7 @@
            waiting on a delivery, so they read as one step (client, 10 Sep). -->
       <div class="timeline timeline--compact">
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:12</div></div>
-        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div><div class="hint" data-track-pharmacist>จัดยาโดย ภก. ณิชา ไพศาล เลขที่ ภ.24188</div></div>
+        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div><div class="hint" data-track-pharmacist>ภก. ณิชา ไพศาล · ภ.24188</div></div>
         <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div>
@@ -2544,11 +2544,11 @@
         </div>
       </div>
       <div class="stack-2">
-        <span class="section-label">รายละเอียดการจัดส่ง</span>
+        <span class="section-label">การจัดส่ง</span>
         <div class="card card--pad-sm delivery-facts">
           <div class="delivery-fact">
             <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="truck" class="ui-icon ui-icon--sm"></i></span>
-            <span class="delivery-fact__label">ผู้ให้บริการขนส่ง</span>
+            <span class="delivery-fact__label">ขนส่ง</span>
             <span class="delivery-fact__value" data-delivery-courier>Lalamove</span>
           </div>
           <div class="delivery-fact">
@@ -2558,7 +2558,7 @@
           </div>
           <div class="delivery-fact">
             <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon ui-icon--sm"></i></span>
-            <span class="delivery-fact__label">ที่อยู่จัดส่ง</span>
+            <span class="delivery-fact__label">ที่อยู่</span>
             <span class="delivery-fact__value" data-delivery-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</span>
           </div>
         </div>
@@ -2569,7 +2569,7 @@
       </div>
       <!-- The last thing on the screen is the promise a patient waiting on this
            delivery is most likely to be anxious about (client, 10 Sep). -->
-      <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งแบบมิดชิด ไม่ระบุชื่อยาด้านนอก</span></p>
+      <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งมิดชิด ไม่ระบุชื่อยา</span></p>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
@@ -10325,19 +10325,24 @@
     const windowEl=screen.querySelector('[data-delivery-eta-window]');
     const label=screen.querySelector('.delivery-eta__label');
     const outForDelivery=screen.querySelector('[data-track-step="out"]')?.classList.contains('active');
-    if(label) label.textContent=delivered ? 'จัดส่งเมื่อ' : (pickup ? 'รับยาได้ประมาณ' : 'ถึงประมาณ');
+    if(label) label.textContent=delivered ? 'ส่งถึงเมื่อ' : (pickup ? 'รับได้ประมาณ' : 'ถึงประมาณ');
+    /* The card is scanned, not read: one clause each. */
     if(state){
       state.textContent=delivered
-        ? 'ยาถึงปลายทางแล้ว ขอบคุณที่ใช้บริการ'
+        ? 'จัดส่งสำเร็จแล้ว'
         : pickup
-          ? 'ยาพร้อมให้รับที่ร้าน แสดงเลขคำสั่งซื้อกับเภสัชกร'
+          ? 'รับยาได้ที่ร้าน'
           : outForDelivery
-            ? 'ไรเดอร์รับยาแล้วและกำลังไปส่ง'
-            : 'ไรเดอร์กำลังไปรับยาที่ร้าน';
+            ? 'ไรเดอร์กำลังไปส่ง'
+            : 'ไรเดอร์กำลังไปรับยา';
     }
     if(windowEl) windowEl.textContent=deliveryArrivalWindow();
+    /* Reached from an activity card rather than through the address step, the
+       row read "no delivery address chosen" on an order already on the road.
+       An empty address is a missing fact, so the row goes rather than states it. */
     const address=screen.querySelector('[data-delivery-address]');
-    if(address) address.textContent=deliveryAddressSummary();
+    const hasAddress=Boolean(flowState.orderState.addressConfirmed);
+    if(address && hasAddress) address.textContent=deliveryAddressSummary();
     const courier=screen.querySelector('[data-delivery-courier]');
     if(courier) courier.textContent=flowState.orderState.deliveryMethod==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove';
     const summary=screen.querySelector('[data-delivery-order-summary]');
@@ -10355,7 +10360,8 @@
     // The courier rows are meaningless for a counter pickup.
     screen.querySelectorAll('[data-delivery-courier],[data-delivery-address]').forEach(el => {
       const fact=el.closest('.delivery-fact');
-      if(fact) fact.hidden=pickup;
+      if(!fact) return;
+      fact.hidden = pickup || (el.hasAttribute('data-delivery-address') && !hasAddress);
     });
     /* Same-day and postal are two different deliveries, and the screen was
        showing both: a rider with a live position and a Thailand Post tracking
