@@ -1281,6 +1281,10 @@
       return (index + slides.length) % slides.length;
     }
 
+    function slideScrollLeft(slide) {
+      return slide.offsetLeft - slides[0].offsetLeft;
+    }
+
     function stopAuto() {
       window.clearTimeout(autoTimer);
       autoTimer = 0;
@@ -1322,7 +1326,7 @@
     function goTo(index, fromAuto = false) {
       const nextIndex = normalizeIndex(index);
       setActive(nextIndex);
-      const left = slides[nextIndex].offsetLeft;
+      const left = slideScrollLeft(slides[nextIndex]);
       viewport.scrollTo({ left, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
       scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1800);
     }
@@ -1334,7 +1338,7 @@
       let nearestIndex = 0;
       let nearestDistance = Infinity;
       slides.forEach((slide, index) => {
-        const distance = Math.abs(slide.offsetLeft - scrollLeft);
+        const distance = Math.abs(slideScrollLeft(slide) - scrollLeft);
         const proximity = Math.max(0, 1 - distance / width);
         slide.style.setProperty('--how-proximity', proximity.toFixed(3));
         if (distance < nearestDistance) {
@@ -1397,7 +1401,7 @@
       else scheduleAuto();
     });
     window.addEventListener('resize', () => {
-      viewport.scrollLeft = slides[activeIndex].offsetLeft;
+      viewport.scrollLeft = slideScrollLeft(slides[activeIndex]);
       updateFromScroll();
     }, { passive: true });
 

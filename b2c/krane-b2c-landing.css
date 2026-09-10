@@ -7392,6 +7392,46 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 .articles-carousel__dots button.is-current{width:28px;background:var(--draft-blue)}
 .articles-carousel__dots button:focus-visible{outline:2px solid var(--draft-blue);outline-offset:4px}
+
+/* Keep each how-it-works step as one clean, full viewport frame. The track
+   remains swipeable, but adjacent slides are paint-contained and every layer
+   shares the same flat background colour. */
+.landing-figma-draft .figma-how[data-how-carousel],
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__viewport,
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__track,
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__slide,
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__visual {
+  background: #fff !important;
+}
+
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__viewport {
+  max-width: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  contain: paint;
+  isolation: isolate;
+}
+
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__track {
+  width: auto;
+  min-width: 0;
+}
+
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .landing-figma-draft .figma-how[data-how-carousel] .figma-how__viewport {
+    border-radius: 20px;
+    clip-path: inset(0 round 20px);
+  }
+}
 .landing-figma-draft .articles-section--figma .articles-section__all{margin-top:20px}
 
 @media(min-width:900px){
