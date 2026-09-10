@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-outline-fields-v1";
+    const release = "20260910-showcase-guard-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -10293,11 +10293,18 @@
     const beats=showcases[stage];
     if(!beats || beats.length<2) return;
     let step=1;
+    /* A beat must never trip a route guard. The intake pages a category actually
+       has vary, so asking for one it does not have used to redirect and raise
+       the "finish the required steps first" warning inside a phone that is only
+       meant to be looked at. A beat that would redirect is skipped instead. */
+    const reachable=id => normalizeScreenTarget(requiredRouteFor(id))===normalizeScreenTarget(id);
     const tick=() => {
       const beat=beats[step % beats.length];
       step+=1;
       if(beat.before) beat.before();
-      if(beat.screen && beat.screen!==document.querySelector('.screen.active')?.id) show(beat.screen,false);
+      if(beat.screen && beat.screen!==document.querySelector('.screen.active')?.id && reachable(beat.screen)){
+        show(beat.screen,false);
+      }
       setTimeout(tick,beat.hold);
     };
     setTimeout(tick,4200);
