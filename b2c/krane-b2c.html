@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-tracking-copy-v2";
+    const release = "20260910-card-slim-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-tracking-copy-v2">
+<link rel="stylesheet" href="components.css?v=20260910-card-slim-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2538,7 +2538,7 @@
         <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:12</div></div>
         <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div><div class="hint" data-track-pharmacist>ภก. ณิชา ไพศาล · ภ.24188</div></div>
         <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
-        <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
+        <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div><!-- The rider belongs to this step, not to a card of its own: it is only true once someone has actually picked the order up. --><div class="hint delivery-rider" data-track-rider hidden><i data-lucide="user-round" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ไรเดอร์ ณัฐพงษ์ ด.</span><a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></div></div>
         <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div>
           <button class="step__action" type="button" data-delivery-confirm hidden>ได้รับของแล้ว</button>
         </div>
@@ -2551,10 +2551,13 @@
             <span class="delivery-fact__label">ขนส่ง</span>
             <span class="delivery-fact__value" data-delivery-courier>Lalamove</span>
           </div>
+          <!-- The rider is the courier's business. What the patient checks here
+               is who the medicine is going to and on which number the delivery
+               will call (client, 10 Sep). -->
           <div class="delivery-fact">
             <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="user-round" class="ui-icon ui-icon--sm"></i></span>
-            <span class="delivery-fact__label">ไรเดอร์</span>
-            <span class="delivery-fact__value">ณัฐพงษ์ ด. <a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></span>
+            <span class="delivery-fact__label">ผู้รับ</span>
+            <span class="delivery-fact__value"><span data-delivery-recipient>มะลิ สุธิดา</span> <a class="delivery-fact__call" href="tel:+66812345678" data-delivery-recipient-phone>081-234-5678</a></span>
           </div>
           <div class="delivery-fact">
             <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon ui-icon--sm"></i></span>
@@ -2562,10 +2565,6 @@
             <span class="delivery-fact__value" data-delivery-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</span>
           </div>
         </div>
-      </div>
-      <div class="delivery-order">
-        <strong data-delivery-order-summary>2 รายการ · ฿ 558</strong>
-        <span class="hint" data-delivery-order-ref>#KR-10293</span>
       </div>
       <!-- The last thing on the screen is the promise a patient waiting on this
            delivery is most likely to be anxious about (client, 10 Sep). -->
@@ -2696,9 +2695,6 @@
             <span class="treatment-meta"><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เริ่ม 26 ส.ค. 2026</span></span>
             <span class="treatment-meta"><i data-lucide="chart-line" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เดือนที่ 1 จาก 3</span></span>
           </span>
-          <span class="treatment-medications" role="list" aria-label="Medicines">
-            <span class="treatment-medication" role="listitem"><span>Melatonin 5mg</span><span>1 tablet daily</span></span>
-          </span>
           <span class="treatment-progress" style="--treatment-progress:30%">
             <span class="treatment-progress__head"><span>ยาคงเหลือ</span><strong>9 วัน</strong></span>
             <span class="treatment-progress__track" role="img" aria-label="ยาคงเหลือ 9 วัน จากรอบ 30 วัน"><span class="treatment-progress__fill"></span></span>
@@ -2719,10 +2715,6 @@
             <span class="treatment-meta"><i data-lucide="user-round" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>คุณหมอนรินทร์ ทานากะ</span></span>
             <span class="treatment-meta"><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เริ่ม 30 มิ.ย. 2026</span></span>
             <span class="treatment-meta"><i data-lucide="chart-line" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เดือนที่ 3 จาก 6</span></span>
-          </span>
-          <span class="treatment-medications" role="list" aria-label="Medicines">
-            <span class="treatment-medication" role="listitem"><span>Loratadine 10 mg</span><span>วันละ 1 เม็ด</span></span>
-            <span class="treatment-medication" role="listitem"><span>Paracetamol 500 mg</span><span>เมื่อมีอาการ ทุก 4 ถึง 6 ชม.</span></span>
           </span>
           <span class="treatment-progress" style="--treatment-progress:80%">
             <span class="treatment-progress__head"><span>ยาคงเหลือ</span><strong>24 วัน</strong></span>
@@ -6682,7 +6674,8 @@
       Object.assign(flowState.orderState.address,{
         building:'ลุมพินี เพลส พระราม 4',floor:'ชั้น 12 ห้อง 1204',line:'1922 ถนนพระรามที่ 4',
         subdistrict:'คลองเตย',districtName:'คลองเตย',province:'กรุงเทพมหานคร',postcode:'10110',
-        district:'คลองเตย กรุงเทพมหานคร 10110',km:'3.2'
+        district:'คลองเตย กรุงเทพมหานคร 10110',km:'3.2',
+        recipientName:flowState.patientName || 'มะลิ ส.',recipientPhone:flowState.verifiedPhone || '0812345678'
       });
       flowState.orderState.addressConfirmed=true;
     }
@@ -10349,18 +10342,6 @@
     if(address && hasAddress) address.textContent=deliveryAddressSummary();
     const courier=screen.querySelector('[data-delivery-courier]');
     if(courier) courier.textContent=flowState.orderState.deliveryMethod==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove';
-    const summary=screen.querySelector('[data-delivery-order-summary]');
-    if(summary){
-      let lines=0, medicines=0;
-      Object.entries(MEDICINE_PRICES).forEach(([key,unit]) => {
-        const q=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
-        if(q>0){ lines+=1; medicines+=unit*q; }
-      });
-      Object.entries(ADDON_PRICES).forEach(([key,price]) => {
-        if(flowState.orderState.addOns[key]){ lines+=1; medicines+=price; }
-      });
-      summary.textContent=lines+' รายการ · '+baht(medicines);
-    }
     // The courier rows are meaningless for a counter pickup.
     screen.querySelectorAll('[data-delivery-courier],[data-delivery-address]').forEach(el => {
       const fact=el.closest('.delivery-fact');
@@ -10374,8 +10355,26 @@
     const postal=!pickup && flowState.orderState.deliveryMethod==='postal';
     const parcelCard=screen.querySelector('[data-tracking-reference]');
     if(parcelCard) parcelCard.hidden=!postal;
-    const riderFact=screen.querySelector('.delivery-fact__call')?.closest('.delivery-fact');
-    if(riderFact) riderFact.hidden=pickup || postal;
+    const recipient=screen.querySelector('[data-delivery-recipient]');
+    const recipientPhone=screen.querySelector('[data-delivery-recipient-phone]');
+    const savedName=String(flowState.orderState.address.recipientName || flowState.patientName || '').trim();
+    const savedPhone=String(flowState.orderState.address.recipientPhone || flowState.verifiedPhone || '').trim();
+    if(recipient && savedName) recipient.textContent=savedName;
+    if(recipientPhone && savedPhone){
+      recipientPhone.textContent=formatThaiPhone(savedPhone);
+      recipientPhone.href='tel:+66'+normalizePhone(savedPhone).replace(/^0/,'');
+    }
+    const recipientFact=recipientPhone?.closest('.delivery-fact');
+    // Who it is going to still matters when it is going by post.
+    if(recipientFact) recipientFact.hidden=pickup;
+    /* The rider only exists once the order has left the pharmacy, and never for
+       post or a counter pickup. */
+    const riderLine=screen.querySelector('[data-track-rider]');
+    if(riderLine){
+      const outStep=screen.querySelector('[data-track-step="out"]');
+      const onTheRoad=Boolean(outStep && (outStep.classList.contains('active') || outStep.classList.contains('done')));
+      riderLine.hidden=pickup || postal || !onTheRoad;
+    }
     const riderButton=screen.querySelector('[data-rider-locate]');
     if(riderButton) riderButton.hidden=pickup || postal || delivered;
   }

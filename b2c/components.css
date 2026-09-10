@@ -3068,9 +3068,6 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .delivery-fact__value{grid-column:2;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
 .delivery-fact__call{margin-left:6px;color:var(--color-accent);font-weight:var(--fw-semibold);white-space:nowrap}
 
-.delivery-order{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
-  padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);background:var(--surface-sunken)}
-.delivery-order strong{font-size:var(--fs-base);font-variant-numeric:tabular-nums}
 
 /* ---------- Activity: one feed with a filter over it ---------- */
 .activity-filters{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:var(--sp-2)}
@@ -3113,8 +3110,11 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .activity-empty[hidden]{display:none}
 
 /* Closing reassurance on the tracking screen: quiet, not a banner. */
+/* margin:0 cancelled the stack spacing above it, so the strip sat flush on the
+   card it follows, and it ended a hand's width from the bottom nav. It carries
+   its own spacing on both sides instead. */
 .delivery-discreet{display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:0;padding:10px 14px;border-radius:var(--radius-pill);
+  margin:var(--sp-2) 0 var(--sp-4);padding:10px 14px;border-radius:var(--radius-pill);
   background:var(--surface-sunken);color:var(--color-ink-2);font-size:var(--fs-xs);text-align:center}
 .delivery-discreet .ui-icon{flex:none;color:var(--color-accent)}
 
@@ -3199,3 +3199,8 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .treatment-progress__fill{display:block;width:var(--treatment-progress,0%);height:100%;border-radius:inherit;background:var(--color-accent)}
 /* Under a week of medicine left is the one state worth a second colour. */
 .treatment-card:has(.badge--warn) .treatment-progress__fill{background:var(--color-warning,#B4791F)}
+/* The rider sits inside its timeline step, so it lines up with the step's hint
+   rather than forming a row of its own. */
+.timeline .delivery-rider{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.timeline .delivery-rider .ui-icon{flex:none;color:var(--color-ink-3)}
+.timeline .delivery-rider[hidden]{display:none}
