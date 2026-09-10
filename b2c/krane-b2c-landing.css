@@ -5266,6 +5266,28 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.72);
   transform:translateX(-50%);
 }
+/* ---- "How it works" phone: the real app, not a redrawn copy ----------------
+   Prototype chrome, so the phone geometry stays in raw px like the frame it
+   sits in. Each slide embeds krane-b2c.html at a real handset width and scales
+   it into the 214x474 screen cutout, so the mock cannot drift from the app the
+   way a hand-built replica did. 390x864 renders below the app's 780px rail
+   breakpoint, so it composes as pure mobile with no reviewer rail.
+   ?demoStage= is the app's own QA deep link: it seeds the prerequisites for a
+   guarded screen without weakening the real sequence guards. */
+.figma-how__live{
+  position:absolute;
+  z-index:4;
+  top:96px;
+  left:50%;
+  width:390px;
+  height:835px;
+  border:0;
+  border-radius:31px;
+  background:var(--landing-surface-tint);
+  transform:translateX(-50%) scale(.54871);
+  transform-origin:top center;
+  pointer-events:none;
+}
 .how-screen__top{display:flex;align-items:center;justify-content:space-between;font-size:8px}
 .how-screen__brand{display:block;width:41px;height:auto;max-height:12px;object-fit:contain;object-position:left center}
 .how-screen__top span{color:#71798a;font-size:7px}
@@ -5407,6 +5429,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .figma-how__device{top:-10px;width:590px;height:590px}
   .figma-how__visual::after{top:66px;width:52px;height:14px}
   .figma-how__screen{top:66px;width:200px;height:440px;border-radius:29px}
+  .figma-how__live{top:80px;height:831px;border-radius:29px;transform:translateX(-50%) scale(.5128)}
   .figma-how__controls{position:static;margin-top:20px}
   .figma-how[data-how-carousel] .figma-pill-button{position:static;margin:28px auto 0;transform:none}
 }
@@ -5432,6 +5455,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .figma-how__device{top:-24px;width:420px;height:420px;filter:drop-shadow(0 18px 24px rgba(17,27,48,.1))}
   .figma-how__visual::after{top:30px;width:37px;height:10px}
   .figma-how__screen{top:29px;width:143px;height:313px;padding:23px 10px 14px;border-radius:21px}
+  .figma-how__live{top:40px;height:824px;border-radius:21px;transform:translateX(-50%) scale(.3667)}
   .how-screen__brand{width:30px;max-height:9px}
   .how-screen__top span{font-size:5.5px}
   .how-screen__progress{height:3px;gap:3px;margin-top:10px}
@@ -7231,14 +7255,21 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .experts--figma #doctor-1:hover .expert-card__media>img{transform:scale(1.24)!important}
 }
 
-/* Reviews use one legible story introduction followed by one consistent rail. */
+/* Reviews use one legible story introduction followed by one consistent rail.
+   The section is the page's single dark break, edge to edge (client, 10 Sep). */
 .landing-figma-draft .reviews--figma{
+  position:relative;
+  width:100vw!important;
+  max-width:100vw!important;
   height:auto!important;
   min-height:0!important;
   display:block!important;
+  margin-right:calc(50% - 50vw)!important;
+  margin-left:calc(50% - 50vw)!important;
   padding:clamp(60px,6vw,88px) clamp(24px,5vw,64px)!important;
-  border-radius:clamp(36px,4vw,64px)!important;
-  background:#efe7df!important;
+  border-radius:0!important;
+  background:var(--landing-navy)!important;
+  color:#fff!important;
 }
 .landing-figma-draft .reviews--figma .reviews__copy{
   order:0!important;
@@ -7251,7 +7282,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 .landing-figma-draft .reviews--figma .reviews__copy h2{
   margin-top:18px!important;
-  color:var(--draft-ink)!important;
+  color:#fff!important;
   font-size:clamp(42px,4.3vw,62px)!important;
   line-height:1.08!important;
 }
@@ -7306,7 +7337,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
   min-height:0!important;
   padding:clamp(60px,6vw,88px) clamp(24px,5vw,64px) clamp(42px,5vw,68px)!important;
   border-radius:clamp(36px,4vw,64px)!important;
-  background:#dce8f3!important;
+  background:#fff!important;
 }
 
 /* A deliberate lower-page colour rhythm makes every content change legible:
@@ -7544,3 +7575,92 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification:nth-child(2) img{width:42px;height:42px;max-width:42px}
   .landing-figma-draft .trust-grid--open .trust-card__iso-grid .inet-certification:nth-child(3) img{width:88px;height:30px;max-width:88px;max-height:30px}
 }
+/* ---- Member stories: dark, full bleed, self-scrolling (client, 10 Sep) -----
+   The section reads as a break in the page rather than another light card, so
+   it takes a deep navy ground with white type and runs edge to edge past the
+   page gutter. The clip track carries one aria-hidden copy of the cards, the
+   same loop the trust row uses, so the drift has no visible seam. */
+.landing-figma-draft .reviews--figma{
+  margin-inline:calc(var(--page-gutter) * -1);
+  border-radius:0;
+  background:var(--landing-navy);
+  color:#fff;
+}
+.reviews--figma .reviews__copy h2,
+.reviews--figma .reviews__copy blockquote,
+.reviews--figma .reviews__copy cite{color:#fff}
+.reviews--figma .reviews__copy blockquote{opacity:.92}
+.reviews--figma .reviews__copy cite{opacity:.68}
+.reviews--figma .review-collage{
+  height:auto;
+  display:block;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+.review-marquee{
+  display:flex;
+  width:max-content;
+  gap:16px;
+  animation:review-drift 46s linear infinite;
+  will-change:transform;
+}
+.review-marquee__copy{display:flex;gap:16px}
+.reviews--figma .review-marquee .review-column{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  flex:none;
+}
+.reviews--figma .review-marquee .review-column figure{width:208px}
+.review-collage:hover .review-marquee,
+.review-marquee:focus-within{animation-play-state:paused}
+@keyframes review-drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@media(prefers-reduced-motion:reduce){
+  .review-marquee{animation:none}
+  .reviews--figma .review-collage{overflow-x:auto}
+}
+
+/* Articles sit on white so the dark stories section above them reads as the
+   one break in the page (client, 10 Sep). */
+.landing-figma-draft .articles-section--figma{background:#fff}
+
+/* The play badge sat as a solid disc on the face in each card. Frosted glass
+   instead, so it reads as a control over the photograph rather than a sticker
+   on top of it (client, 10 Sep). */
+.review-collage figure>svg,
+.review-collage figure>i>svg{
+  width:44px;
+  height:44px;
+  padding:13px;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:50%;
+  background:rgba(255,255,255,.22);
+  color:#fff;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  box-shadow:0 2px 14px rgba(12,18,30,.18);
+  transition:background var(--dur-base,.24s) var(--ease,ease);
+}
+.review-collage figure:hover>svg,
+.review-collage figure:hover>i>svg{background:rgba(255,255,255,.34)}
+
+/* The dark section carries its own text colours; the play badge is set on a
+   four-class chain upstream, so this match keeps the same weight. */
+.landing-figma-draft .reviews--figma .reviews__copy>p,
+.landing-figma-draft .reviews--figma .reviews__copy blockquote,
+.landing-figma-draft .reviews--figma .reviews__copy cite{color:#fff!important}
+.landing-figma-draft .reviews--figma .review-column figure>svg{
+  width:44px;
+  height:44px;
+  padding:13px;
+  border:1px solid rgba(255,255,255,.5);
+  background:rgba(255,255,255,.22);
+  color:#fff;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  box-shadow:0 2px 14px rgba(12,18,30,.18);
+}
+.landing-figma-draft .reviews--figma .review-column figure:hover>svg{background:rgba(255,255,255,.34)}
+/* The phone is a short navigable demo, so it takes taps (client, 10 Sep). */
+.figma-how__live{pointer-events:auto}

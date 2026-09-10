@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260909-pdpa-consent-v1";
+    const release = "20260910-video-demo-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260909-treatment-tab-padding-v1">
+<link rel="stylesheet" href="components.css?v=20260910-call-selfview-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -1816,8 +1816,11 @@
   <section class="screen" id="video">
     <div class="screen__top video-call-top"><span class="ttl">ปรึกษาแพทย์</span><button class="transition-stage__close" data-endcall data-go="consult" aria-label="วางสาย">×</button></div>
     <div class="screen__body callstage callstage--live">
-      <div class="call-self call-self--camera" data-call-self>
-        <i data-lucide="video" class="ui-icon ui-icon--md" aria-hidden="true"></i>
+      <!-- The self-view held a camera glyph, which read as a camera that was off.
+           The Krane mark stands in for the patient's own picture until a real
+           camera feed exists (client, 10 Sep). -->
+      <div class="call-self call-self--camera call-self--brand" data-call-self>
+        <img class="call-self__mark" src="assets/krane-mark-bone.svg" width="1204" height="835" alt="" aria-hidden="true">
         <span>กล้องของคุณ</span>
       </div>
       <!-- Chat sits on a floating button, not in the control row: that row is for
@@ -10251,6 +10254,33 @@
     history=['landing'];
     show('landing',false);
   }
+
+  /* The landing page embeds this screen as a short self-playing demo: the call
+     runs, the doctor moves to chat and the medicine list arrives, then it
+     returns to the call. Only the demo deep link starts it, so a real
+     consultation is never navigated away from, and the first tap inside the
+     frame hands control to the visitor and stops the loop. */
+  (function playVideoConsultDemo(){
+    if(window.kraneDemoStage!=='video') return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const beats=[{id:'video',hold:5200},{id:'consult',hold:6600}];
+    let step=1, stopped=false;
+    document.addEventListener('pointerdown',() => { stopped=true; },{once:true});
+    const tick=() => {
+      if(stopped) return;
+      const beat=beats[step % beats.length];
+      step+=1;
+      // Replay the typing beat on every pass, rather than reopening a thread
+      // that already has the list sitting in it.
+      if(beat.id==='consult'){
+        const plan=document.querySelector('#consult [data-plan-card]');
+        if(plan) delete plan.dataset.seenInChat;
+      }
+      show(beat.id,false);
+      setTimeout(tick,beat.hold);
+    };
+    setTimeout(tick,4600);
+  })();
   updateFeatToast((document.querySelector('.screen.active') || {}).id || 'landing');
 
   // address search: suggestions appear only while typing (hidden otherwise)
