@@ -8190,3 +8190,67 @@ html[lang="en"] .landing-figma-draft #ed-title{
     font-size: 10px;
   }
 }
+
+/* The trust rail is a true double marquee at every viewport: one complete set
+   of four certifications followed by its existing clone set for a seamless
+   loop. The content remains horizontally browsable when motion is reduced. */
+.landing-figma-draft .trust-section--figma .trust-marquee {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
+  mask-image: linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
+}
+
+.landing-figma-draft .trust-section--figma .trust-grid--open {
+  display: flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  animation: trust-double-marquee 44s linear infinite !important;
+  will-change: transform;
+}
+
+.landing-figma-draft .trust-section--figma .trust-grid--open .trust-card {
+  width: clamp(300px,24vw,420px) !important;
+  flex: 0 0 clamp(300px,24vw,420px) !important;
+  border-right: 1px solid rgba(23,28,40,.12) !important;
+}
+
+.landing-figma-draft .trust-section--figma .trust-card.is-clone {
+  display: flex !important;
+}
+
+@keyframes trust-double-marquee {
+  to { transform: translate3d(-50%,0,0); }
+}
+
+@media (max-width: 760px) {
+  .landing-figma-draft .trust-section--figma .trust-marquee {
+    margin-inline: -18px;
+    width: calc(100% + 36px);
+  }
+
+  .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card {
+    width: 268px !important;
+    flex-basis: 268px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-figma-draft .trust-section--figma .trust-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+    scrollbar-width: none;
+  }
+
+  .landing-figma-draft .trust-section--figma .trust-grid--open {
+    animation: none !important;
+    will-change: auto;
+  }
+
+  .landing-figma-draft .trust-section--figma .trust-card.is-clone {
+    display: none !important;
+  }
+}
