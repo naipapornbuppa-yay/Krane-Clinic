@@ -893,13 +893,31 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    there is no quantity to change. */
 .checkout-order__thumb--service{display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent)}
 .checkout-order__thumb--service .ui-icon{width:20px;height:20px}
-/* Checkout is a read-only receipt. Quantity changes live on #payment-items,
-   so every line reads like one calm list item instead of a mini form. */
+/* The basket is edited where it is read: every line carries its own stepper,
+   the way a delivery-app cart does, instead of sending the patient to a second
+   screen and back to check the total (client, 10 Sep). Price stays on the top
+   row against the name; the stepper sits under it on its own row so a long
+   Thai medicine name never has to share width with the buttons. */
 #payment .checkout-order__item{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;padding-block:var(--sp-2);gap:var(--sp-2)}
 #payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2;width:38px;height:38px}
 #payment .checkout-order__body{grid-column:2;grid-row:1}
 #payment .checkout-order__quantity{grid-column:2;grid-row:2}
-#payment .checkout-order__price{grid-column:3;grid-row:1 / span 2;align-self:center}
+#payment .checkout-order__price{grid-column:3;grid-row:1}
+#payment .checkout-order__item--service .checkout-order__price{grid-row:1 / span 2;align-self:center}
+#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:0}
+#payment .checkout-order__stepper .hint{white-space:nowrap}
+#payment .checkout-order__remove{grid-column:3;grid-row:2;justify-self:end;align-self:center;
+  width:32px;height:32px;display:grid;place-items:center;padding:0;
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);
+  background:var(--color-surface);color:var(--color-ink-3);cursor:pointer;
+  transition:color var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+#payment .checkout-order__remove:hover{border-color:var(--color-danger);color:var(--color-danger)}
+#payment .checkout-order__remove:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+/* Declined, not gone: the row stays so the plus can bring it back. */
+#payment .checkout-order__item.is-declined .checkout-order__thumb,
+#payment .checkout-order__item.is-declined .checkout-order__body,
+#payment .checkout-order__item.is-declined .checkout-order__price{opacity:.45}
+#payment .checkout-order__item.is-declined .checkout-order__name{text-decoration:line-through}
 .checkout-order__edit{display:inline-flex;align-items:center;gap:6px;padding:4px 0;border:0;background:transparent;color:var(--color-accent);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
 .checkout-order__edit .ui-icon{width:14px;height:14px}
 .checkout-order__edit:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px;border-radius:4px}
@@ -2527,7 +2545,7 @@ body.lang-th *{letter-spacing:normal}
   .care-journey__name{display:block;margin-top:2px;font-size:9.5px;font-weight:var(--fw-regular);line-height:1.12}
   .care-journey__step .care-journey__name{margin-top:0}
   .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-medium)}
-  .care-journey__steps .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-semibold)}
+  .care-journey__steps .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-bold)}
   .care-journey__step::before{top:18px;right:calc(50% + 12px);left:calc(-50% - 14px)}
   .care-journey__dot{width:24px;height:24px;border-radius:8px;font-size:10px}
   .care-journey__dot svg{width:11px;height:11px}
@@ -2578,7 +2596,9 @@ body.lang-th *{letter-spacing:normal}
 /* Client, 1 Sep: bigger, and the live stage in brand blue rather than ink —
    the accent is what the rest of the app uses to say "you are here". Past and
    future stages stay grey, so there is still only one stage being pointed at. */
-.care-journey__step.is-current .care-journey__name{color:var(--color-accent);font-weight:var(--fw-semibold)}
+/* The current stage is the one fact the header has to carry, so its name is
+   set in bold, not semibold, against the two it sits between (client, 10 Sep). */
+.care-journey__step.is-current .care-journey__name{color:var(--color-accent);font-weight:var(--fw-bold)}
 /* The live stage keeps a grey track — the accent on it is the fill, and a
    track already fully blue would leave nothing for the fill to travel across. */
 .care-journey__step.is-current::after{background:var(--color-line)}
