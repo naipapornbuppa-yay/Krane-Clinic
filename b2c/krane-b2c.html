@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-consult-note-v4";
+    const release = "20260910-doc-detail-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-consult-note-v4">
+<link rel="stylesheet" href="components.css?v=20260910-doc-detail-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2541,24 +2541,6 @@
         <strong data-delivery-order-summary>2 รายการ · ฿ 558</strong>
         <span class="hint" data-delivery-order-ref>#KR-10293</span>
       </div>
-      <div class="doc-section">
-        <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
-        <button class="doc-row" type="button" data-doc-open="summary">
-          <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>สรุปผลการปรึกษา</strong><span class="hint">CS-2026-10293 · 30 มิ.ย. 2026</span></span>
-          <span class="doc-row__action">ดู</span>
-        </button>
-        <button class="doc-row" type="button" data-doc-open="receipt">
-          <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293 · <span data-payment-outcome-amount>฿ 558</span></span></span>
-          <span class="doc-row__action">ดู</span>
-        </button>
-        <button class="doc-row" type="button" data-doc-open="cert">
-          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ · ฟรี</span></span>
-          <span class="doc-row__action">ดู</span>
-        </button>
-      </div>
       <!-- The last thing on the screen is the promise a patient waiting on this
            delivery is most likely to be anxious about (client, 10 Sep). -->
       <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งแบบมิดชิด ไม่ระบุชื่อยาด้านนอก</span></p>
@@ -3173,9 +3155,37 @@
           <div class="between"><span class="muted">Refills</span><strong>3</strong></div>
         </div>
         <div class="divider"></div>
-        <div class="section-label">Medicines &amp; directions</div>
-        <div class="plan-item" style="border:0;padding:0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint">รับประทานวันละ 1 เม็ด</div></div></div>
-        <div class="plan-item" style="border:0;padding:0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint">รับประทานเมื่อมีอาการ ทุก 4 ถึง 6 ชั่วโมง</div></div></div>
+        <div class="section-label">ยาและเวชภัณฑ์</div>
+        <!-- The list gave a name and one line of directions. The client's
+             wireframe asks for what each medicine is for, how to take it and
+             what it can do, which is what a patient reads a prescription for
+             (client wireframe, 10 Sep). -->
+        <div class="doc-med">
+          <div class="doc-med__head">
+            <span class="thumb med-thumb doc-med__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+            <span class="doc-med__title"><strong>Loratadine 10 mg</strong><span class="hint">ยาแก้แพ้ชนิดไม่ง่วงซึม</span></span>
+          </div>
+          <p class="doc-med__purpose">ใช้ลดอาการแพ้ ผื่นคัน ลมพิษ และลดน้ำมูก</p>
+          <ul class="doc-med__facts">
+            <li><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รับประทานครั้งละ 1 เม็ด</span></li>
+            <li><i data-lucide="clock" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>วันละ 1 ครั้ง เวลาเดิมทุกวัน</span></li>
+            <li><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ต่อเนื่อง 30 วัน หรือจนกว่าอาการจะดีขึ้น</span></li>
+            <li><i data-lucide="triangle-alert" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>อาจมีอาการปากแห้ง หรือง่วงเล็กน้อยในบางราย</span></li>
+          </ul>
+        </div>
+        <div class="doc-med">
+          <div class="doc-med__head">
+            <span class="thumb med-thumb doc-med__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+            <span class="doc-med__title"><strong>Paracetamol 500 mg</strong><span class="hint">ยาแก้ปวด ลดไข้</span></span>
+          </div>
+          <p class="doc-med__purpose">ใช้บรรเทาอาการปวดและลดไข้</p>
+          <ul class="doc-med__facts">
+            <li><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รับประทานครั้งละ 1 ถึง 2 เม็ด</span></li>
+            <li><i data-lucide="clock" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เมื่อมีอาการ ห่างกันอย่างน้อย 4 ถึง 6 ชั่วโมง</span></li>
+            <li><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ไม่เกิน 8 เม็ดต่อวัน</span></li>
+            <li><i data-lucide="triangle-alert" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เลี่ยงการดื่มแอลกอฮอล์ระหว่างใช้ยา</span></li>
+          </ul>
+        </div>
         <div class="divider"></div>
         <div class="doc-sign">
           <span class="hint">Digitally signed</span>
@@ -3189,7 +3199,12 @@
            it: this tab was a request form, so the patient never saw the
            document they had already been given. -->
       <div data-doc="other" class="stack-4" hidden>
-      <div class="stack-4">
+        <div class="section-label">เอกสารที่เกี่ยวข้อง</div>
+        <div class="doc-other__picker" role="tablist" aria-label="เอกสารที่เกี่ยวข้อง">
+          <button class="doc-other__pick" type="button" role="tab" data-doc-other="cert" aria-selected="true">ใบรับรองแพทย์</button>
+          <button class="doc-other__pick" type="button" role="tab" data-doc-other="receipt" aria-selected="false">ใบเสร็จ</button>
+        </div>
+      <div class="stack-4" data-doc-other-panel="cert">
         <div class="card card--pad-sm stack-3 doc-sheet">
           <div class="between"><div><strong>Krane Clinic · ใบรับรองแพทย์</strong><div class="hint">สถานพยาบาลออนไลน์ เลขที่ใบอนุญาต 11101-xxxxx</div></div><span class="badge badge--ok">ออกแล้ว</span></div>
           <div class="divider"></div>
@@ -3220,7 +3235,7 @@
       </div>
       <!-- Receipt: the same tabbed document surface, so the patient has one
            place to find every paper the visit produced. -->
-      <div class="stack-4">
+      <div class="stack-4" data-doc-other-panel="receipt" hidden>
         <div class="card card--pad-sm stack-3 doc-sheet">
           <div class="between"><div><strong>Krane Clinic · ใบเสร็จรับเงิน</strong><div class="hint">ออกโดย Krane Clinic · เลขประจำตัวผู้เสียภาษี 0-1055-xxxxx-xx</div></div><span class="badge badge--ok">ชำระแล้ว</span></div>
           <div class="divider"></div>
@@ -4684,6 +4699,12 @@
     syncCertificateIdentity();
     const screen=document.getElementById('prescription');
     if(!screen) return;
+    /* The certificate and the receipt live behind one tab now, so a link that
+       names either of them opens that tab and then picks the panel. */
+    if(name==='cert' || name==='receipt'){
+      setOtherDocument(name);
+      name='other';
+    }
     const tab=screen.querySelector(`[data-doc-tab="${name}"]`);
     if(!tab) return;
     screen.querySelectorAll('[data-doc-tab]').forEach(button => {
@@ -4691,6 +4712,17 @@
     });
     screen.querySelectorAll('[data-doc]').forEach(block => { block.hidden = block.dataset.doc !== name; });
     screen.querySelector('.screen__body').scrollTop=0;
+  }
+
+  function setOtherDocument(name){
+    const screen=document.getElementById('prescription');
+    if(!screen) return;
+    screen.querySelectorAll('[data-doc-other]').forEach(button => {
+      button.setAttribute('aria-selected',String(button.dataset.docOther===name));
+    });
+    screen.querySelectorAll('[data-doc-other-panel]').forEach(panel => {
+      panel.hidden = panel.dataset.docOtherPanel !== name;
+    });
   }
 
   function syncPaymentOutcome(){
@@ -9578,6 +9610,11 @@
     /* Receipt and certificate are reached from wherever the patient happens to
        be looking for them, so the caller names the tab and the documents
        screen opens on it. */
+    const docOther = e.target.closest('[data-doc-other]');
+    if(docOther){
+      setOtherDocument(docOther.dataset.docOther);
+      return;
+    }
     const docOpen = e.target.closest('[data-doc-open]');
     if(docOpen){
       show('prescription');
