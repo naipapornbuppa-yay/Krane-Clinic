@@ -1715,8 +1715,6 @@ body.modal-open{overflow:hidden}
 [data-intake-auto-advance] .option[data-select] .opt-check{display:none}
 [data-intake-auto-advance] .option[data-select]{padding-right:var(--sp-4)}
 
-/* Issued documents carry the wordmark as a watermark, the way a printed
-   certificate or receipt does — set behind the content, never over it. */
 /* A document sheet breathes more than a UI card: 16px put the header against
    its status pill and left the signature sitting on the bottom edge. */
 .doc-sheet{position:relative;overflow:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-6)}
@@ -1729,17 +1727,10 @@ body.modal-open{overflow:hidden}
 .doc-sign{display:flex;flex-direction:column;gap:var(--sp-1)}
 .doc-sign__mark{width:min(210px,72%);height:auto;margin:var(--sp-2) 0 0;display:block}
 .doc-sign>strong{font-family:var(--font-display);font-weight:var(--fw-semibold)}
-.doc-sheet::before{
-  content:"";
-  position:absolute;
-  top:50%;left:50%;
-  width:132%;
-  aspect-ratio:1059/280;
-  background:url("../assets/krane-logo-16aug26-2.svg") center/contain no-repeat;
-  transform:translate(-50%,-50%) rotate(-22deg);
-  opacity:.06;
-  pointer-events:none;
-}
+/* The wordmark watermark is gone: at the size a phone renders it, it sat under
+   the body text as a grey smear rather than reading as a mark on a document
+   (client, 10 Sep). The stacking context stays, since the sheet still positions
+   its own header and signature. */
 .doc-sheet>*{position:relative;z-index:1}
 /* The header row keeps its status chip whole: the title shrinks, the pill does
    not, so "ชำระแล้ว" cannot break across two lines. */
