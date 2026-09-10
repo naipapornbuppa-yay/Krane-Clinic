@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-paid-copy-v1";
+    const release = "20260910-activity-feed-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-paid-copy-v1">
+<link rel="stylesheet" href="components.css?v=20260910-activity-feed-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2487,6 +2487,17 @@
   <section class="screen" id="tracking" data-screen-code="SCR-048">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Order #KR-10293</span></div>
     <div class="screen__body stack-5">
+      <!-- The order opened on a parcel number. What a patient checks this screen
+           for is when it arrives and who is bringing it, so that reads first and
+           the rest of the trail follows below it (client, 10 Sep). -->
+      <div class="delivery-eta">
+        <div class="delivery-eta__head">
+          <span class="delivery-eta__label">ถึงประมาณ</span>
+          <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่งไรเดอร์</span></button>
+        </div>
+        <strong class="delivery-eta__time" data-delivery-eta-window>15:00 - 15:55</strong>
+        <span class="delivery-eta__state" data-delivery-eta-state>ไรเดอร์กำลังไปรับยาที่ร้าน</span>
+      </div>
       <div class="card card--pad-sm stack-2" data-tracking-reference>
         <div class="between">
           <div><span class="field-label">เลขพัสดุ</span><strong data-tracking-number>KR102930000TH</strong></div>
@@ -2494,16 +2505,48 @@
         </div>
         <a class="btn btn--ghost btn--sm" data-tracking-official href="https://track.thailandpost.com/" target="_blank" rel="noopener noreferrer">ติดตามบนเว็บไซต์ขนส่ง <i data-lucide="external-link" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
       </div>
-      <div class="timeline">
+      <!-- Seven rows pushed the courier and the documents off the screen. The
+           two pharmacy checks and the payment line are one fact to a patient
+           waiting on a delivery, so they read as one step (client, 10 Sep). -->
+      <div class="timeline timeline--compact">
         <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
-        <div class="step done"><strong>Pharmacist verified prescription and stock</strong><div class="hint">Today, 11:12</div></div>
         <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div></div>
-        <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:20</div></div>
         <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div>
           <button class="step__action" type="button" data-delivery-confirm hidden>ได้รับของแล้ว</button>
         </div>
+      </div>
+      <div class="card card--pad-sm delivery-place">
+        <span class="delivery-place__icon" aria-hidden="true"><i data-lucide="store" class="ui-icon"></i></span>
+        <span class="delivery-place__body">
+          <strong data-pharmacy-name>ร้านยา Fascino สาขาอารีย์</strong>
+          <span class="hint">จัดยาโดย ภก. ณิชา ไพศาล เลขที่ ภ.24188</span>
+        </span>
+      </div>
+      <div class="stack-2">
+        <span class="section-label">รายละเอียดการจัดส่ง</span>
+        <div class="card card--pad-sm delivery-facts">
+          <div class="delivery-fact">
+            <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="truck" class="ui-icon ui-icon--sm"></i></span>
+            <span class="delivery-fact__label">ผู้ให้บริการขนส่ง</span>
+            <span class="delivery-fact__value" data-delivery-courier>Lalamove</span>
+          </div>
+          <div class="delivery-fact">
+            <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="user-round" class="ui-icon ui-icon--sm"></i></span>
+            <span class="delivery-fact__label">ไรเดอร์</span>
+            <span class="delivery-fact__value">ณัฐพงษ์ ด. <a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></span>
+          </div>
+          <div class="delivery-fact">
+            <span class="delivery-fact__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon ui-icon--sm"></i></span>
+            <span class="delivery-fact__label">ที่อยู่จัดส่ง</span>
+            <span class="delivery-fact__value" data-delivery-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</span>
+          </div>
+        </div>
+      </div>
+      <div class="delivery-order">
+        <strong data-delivery-order-summary>2 รายการ · ฿ 558</strong>
+        <span class="hint" data-delivery-order-ref>#KR-10293</span>
       </div>
       <div class="doc-section">
         <div class="section-label">เอกสารของคำสั่งซื้อนี้</div>
@@ -2756,44 +2799,54 @@
   <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
        Completed consultation and order events are one treatment record. ===================== -->
   <section class="screen screen--web" id="activity">
-    <div class="screen__top"><span class="ttl">Activity</span></div>
-    <div class="screen__body stack-5">
-      <div class="stack-3">
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Active orders</div><span class="section-count">2</span></div>
-        <!-- The order lands here once the pharmacy has packed it, so the card
-             carries the stage it is at rather than only a badge (client, 20 Aug). -->
-        <div class="card card--pad-sm order-card" data-go="tracking" data-order-progress="dispatched">
-          <div class="order-top"><div><div class="order-id">#KR-10293</div><div class="order-title">Hair loss treatment</div></div><span class="badge badge--active">Out for delivery</span></div>
-          <div class="order-status"><span class="status-dot"></span><span>Arriving by 6pm today</span></div>
-          <ol class="order-progress" aria-label="สถานะคำสั่งซื้อ">
-            <li class="order-progress__step is-done">ชำระเงินแล้ว</li>
-            <li class="order-progress__step is-done">จัดยาแล้ว</li>
-            <li class="order-progress__step is-current">กำลังจัดส่ง</li>
-            <li class="order-progress__step">ได้รับแล้ว</li>
-          </ol>
-          <div class="order-meta"><span>Loratadine · Paracetamol</span><span>Same-day</span></div>
-        </div>
-        <div class="card card--pad-sm order-card" data-go="tracking" data-order-progress="preparing">
-          <div class="order-top"><div><div class="order-id">#KR-10288</div><div class="order-title">Sleep &amp; stress</div></div><span class="badge badge--progress">Preparing</span></div>
-          <div class="order-status"><span class="status-dot"></span><span>Pharmacy accepted · medicine being prepared</span></div>
-          <ol class="order-progress" aria-label="สถานะคำสั่งซื้อ">
-            <li class="order-progress__step is-done">ชำระเงินแล้ว</li>
-            <li class="order-progress__step is-current">กำลังจัดยา</li>
-            <li class="order-progress__step">กำลังจัดส่ง</li>
-            <li class="order-progress__step">ได้รับแล้ว</li>
-          </ol>
-          <div class="order-meta"><span>Melatonin 5mg</span><span>Next-day</span></div>
-        </div>
-
-        <div class="between" style="margin-top:var(--sp-2)"><div class="eyebrow" style="margin:0">Past treatments</div><span class="section-count">1</span></div>
-        <button class="card card--pad-sm order-card order-card--past treatment-history-card" type="button" data-go="history" aria-label="Open past hair loss treatment">
-          <div class="history-card__summary">
-            <div><div class="order-id">#KR-10170</div><div class="order-title">Hair loss treatment</div></div>
-            <div class="history-card__side"><span class="badge badge--done">Completed</span><span class="history-card__chevron" aria-hidden="true">›</span></div>
-          </div>
-          <div class="order-meta"><span>12 May 2026 · Dr. Narin</span><span>Diagnosis and prescription available</span></div>
+    <div class="screen__top"><span class="ttl">กิจกรรมของฉัน</span></div>
+    <div class="screen__body stack-4">
+      <!-- Orders and consultations were two headed lists with their own counts.
+           They are one feed with a filter over it: a patient looking for last
+           month's consultation should not have to know which list it lives in
+           (client, 10 Sep). -->
+      <div class="activity-filters" role="tablist" aria-label="กรองกิจกรรม">
+        <button class="activity-filter is-current" type="button" role="tab" aria-selected="true" data-activity-filter="all"><i data-lucide="layout-grid" class="ui-icon" aria-hidden="true"></i><span>ทั้งหมด</span></button>
+        <button class="activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="consult"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i><span>ปรึกษาแพทย์</span></button>
+        <button class="activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i><span>ชำระเงิน</span></button>
+      </div>
+      <div class="activity-list" data-activity-list>
+        <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10293">
+          <span class="activity-card__head">
+            <span class="badge badge--active">กำลังจัดส่ง</span>
+            <span class="activity-card__date">วันนี้<small>ถึงประมาณ 18:00 น.</small></span>
+          </span>
+          <span class="activity-card__thumbs" aria-hidden="true">
+            <span class="activity-card__thumb"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+            <span class="activity-card__thumb"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+            <span class="activity-card__thumb"><img src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span>
+          </span>
+          <span class="activity-card__foot"><span>#KR-10293 · 3 รายการ</span><strong>฿ 558</strong></span>
+        </button>
+        <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10288">
+          <span class="activity-card__head">
+            <span class="badge badge--progress">กำลังจัดยา</span>
+            <span class="activity-card__date">เมื่อวาน<small>ร้านยารับคำสั่งซื้อแล้ว</small></span>
+          </span>
+          <span class="activity-card__thumbs" aria-hidden="true">
+            <span class="activity-card__thumb"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260819-generic-blister-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+          </span>
+          <span class="activity-card__foot"><span>#KR-10288 · 1 รายการ</span><strong>฿ 320</strong></span>
+        </button>
+        <button class="activity-card" type="button" data-activity-type="consult" data-go="history" aria-label="เปิดประวัติการปรึกษา #KR-10170">
+          <span class="activity-card__head">
+            <span class="badge badge--done">ปรึกษาสำเร็จ</span>
+            <span class="activity-card__date">12 พ.ค. 2026<small>20:20 - 20:35</small></span>
+          </span>
+          <span class="activity-card__ref">เลขที่อ้างอิง #KR-10170</span>
+          <span class="activity-card__doctor">
+            <img class="activity-card__avatar" src="assets/doctor-profile-male-2026-07-25.png" width="256" height="256" loading="lazy" decoding="async" alt="">
+            <span class="activity-card__doctor-body"><strong>คุณหมอนรินทร์ ทานากะ</strong><em>แผนฟื้นฟูเส้นผม ฟีนาสเตอไรด์และไมน็อกซิดิล</em></span>
+          </span>
+          <span class="activity-card__foot"><span>ผลวินิจฉัยและใบสั่งยาพร้อมให้เปิดดู</span><strong>฿ 350</strong></span>
         </button>
       </div>
+      <p class="activity-empty" data-activity-empty hidden>ยังไม่มีกิจกรรมในหมวดนี้</p>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
@@ -6494,6 +6547,19 @@
     saveConsentRecords('direct',Object.entries(consentDocuments).map(([type,document]) => ({
       type,version:document.version,acceptedAt:new Date().toISOString()
     })));
+    /* Anything downstream of the address step reads that address back, and a
+       deep link never walked through it. Without this the tracking demo showed
+       "no delivery address chosen" on a delivered order. */
+    if(['tracking','payment','payment-gw','payment-success','payfail','delivery-quote',
+        'pharmacy-search','pharmacypending','pharmacyissue','prescription'].includes(target)
+       && !flowState.orderState.addressConfirmed){
+      Object.assign(flowState.orderState.address,{
+        building:'ลุมพินี เพลส พระราม 4',floor:'ชั้น 12 ห้อง 1204',line:'1922 ถนนพระรามที่ 4',
+        subdistrict:'คลองเตย',districtName:'คลองเตย',province:'กรุงเทพมหานคร',postcode:'10110',
+        district:'คลองเตย กรุงเทพมหานคร 10110',km:'3.2'
+      });
+      flowState.orderState.addressConfirmed=true;
+    }
     persistFlowState();
     isAuthenticated=true;
     hasActiveCase=true;
@@ -9122,6 +9188,33 @@
     /* The basket row carries its own remove, so an add-on can be dropped where
        it is listed instead of hunting for its card in the rail below. Adding it
        back is still the card, which is where the price and description live. */
+    /* The filter narrows the one feed. It runs before the [data-go] handler so a
+       filter press never also opens the card underneath it. */
+    const activityFilter=e.target.closest('[data-activity-filter]');
+    if(activityFilter){
+      const want=activityFilter.dataset.activityFilter;
+      document.querySelectorAll('[data-activity-filter]').forEach(b => {
+        const current=b===activityFilter;
+        b.classList.toggle('is-current',current);
+        b.setAttribute('aria-selected',String(current));
+      });
+      let shown=0;
+      document.querySelectorAll('#activity [data-activity-type]').forEach(card => {
+        const match=want==='all' || card.dataset.activityType===want;
+        card.hidden=!match;
+        if(match) shown+=1;
+      });
+      const empty=document.querySelector('[data-activity-empty]');
+      if(empty) empty.hidden=shown>0;
+      return;
+    }
+    /* There is no dispatch map behind the prototype, so the button says where
+       the live position actually lives rather than opening an empty frame. */
+    const riderLocate=e.target.closest('[data-rider-locate]');
+    if(riderLocate){
+      showActionToast('ตำแหน่งไรเดอร์แบบเรียลไทม์เปิดดูได้ในแอปของผู้ให้บริการขนส่ง','info');
+      return;
+    }
     const addOnRemove=e.target.closest('[data-addon-remove]');
     if(addOnRemove){
       const key=addOnRemove.dataset.addonRemove;
@@ -10035,6 +10128,65 @@
       if(hint) hint.textContent=delivered ? 'ได้รับแล้ว' : 'รอดำเนินการ';
     }
     if(confirmButton) confirmButton.hidden=delivered;
+    syncTrackingDetails(delivered);
+  }
+  /* The arrival window, the courier block and the order footer all read from
+     the order the patient actually placed, so the screen never shows a basket
+     or an address that belongs to nobody. The rider's own details stay fixed:
+     there is no dispatch service behind the prototype to name a real one. */
+  function syncTrackingDetails(delivered){
+    const screen=document.getElementById('tracking');
+    if(!screen) return;
+    const pickup=flowState.orderState.fulfillmentMode==='pickup';
+    const state=screen.querySelector('[data-delivery-eta-state]');
+    const windowEl=screen.querySelector('[data-delivery-eta-window]');
+    const label=screen.querySelector('.delivery-eta__label');
+    const outForDelivery=screen.querySelector('[data-track-step="out"]')?.classList.contains('active');
+    if(label) label.textContent=delivered ? 'จัดส่งเมื่อ' : (pickup ? 'รับยาได้ประมาณ' : 'ถึงประมาณ');
+    if(state){
+      state.textContent=delivered
+        ? 'ยาถึงปลายทางแล้ว ขอบคุณที่ใช้บริการ'
+        : pickup
+          ? 'ยาพร้อมให้รับที่ร้าน แสดงเลขคำสั่งซื้อกับเภสัชกร'
+          : outForDelivery
+            ? 'ไรเดอร์รับยาแล้วและกำลังไปส่ง'
+            : 'ไรเดอร์กำลังไปรับยาที่ร้าน';
+    }
+    if(windowEl) windowEl.textContent=deliveryArrivalWindow();
+    const address=screen.querySelector('[data-delivery-address]');
+    if(address) address.textContent=deliveryAddressSummary();
+    const courier=screen.querySelector('[data-delivery-courier]');
+    if(courier) courier.textContent=flowState.orderState.deliveryMethod==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove';
+    const summary=screen.querySelector('[data-delivery-order-summary]');
+    if(summary){
+      let lines=0, medicines=0;
+      Object.entries(MEDICINE_PRICES).forEach(([key,unit]) => {
+        const q=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
+        if(q>0){ lines+=1; medicines+=unit*q; }
+      });
+      Object.entries(ADDON_PRICES).forEach(([key,price]) => {
+        if(flowState.orderState.addOns[key]){ lines+=1; medicines+=price; }
+      });
+      summary.textContent=lines+' รายการ · '+baht(medicines);
+    }
+    // The courier rows are meaningless for a counter pickup.
+    screen.querySelectorAll('[data-delivery-courier],[data-delivery-address]').forEach(el => {
+      const fact=el.closest('.delivery-fact');
+      if(fact) fact.hidden=pickup;
+    });
+    const riderFact=screen.querySelector('.delivery-fact__call')?.closest('.delivery-fact');
+    if(riderFact) riderFact.hidden=pickup;
+    const riderButton=screen.querySelector('[data-rider-locate]');
+    if(riderButton) riderButton.hidden=pickup || delivered;
+  }
+  /* A window, not a single minute: a courier ETA that reads as exact is a
+     promise the dispatch cannot keep. */
+  function deliveryArrivalWindow(){
+    const minutes=flowState.orderState.deliveryMethod==='postal' ? 24*60 : 95;
+    const from=new Date(Date.now()+(minutes-40)*60000);
+    const to=new Date(Date.now()+minutes*60000);
+    const clock=d => String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    return clock(from)+' - '+clock(to);
   }
   const signupDoneModal = document.getElementById('signup-done-modal');
   let signupDoneTarget = '';

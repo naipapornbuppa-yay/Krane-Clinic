@@ -1078,6 +1078,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .timeline{position:relative;padding-left:var(--sp-6)}
 .timeline .step{position:relative;padding-bottom:var(--sp-5)}
 .timeline .step:last-child{padding-bottom:0}
+/* Tighter rows for the delivery trail, which sits above the courier block and
+   the documents and should not push either off the screen. */
+.timeline--compact .step{padding-bottom:var(--sp-4)}
 .timeline .step .hint{margin-top:2px}
 /* connector runs dot-to-dot only (no tail above first / below last) */
 .timeline .step:not(:last-child)::after{content:"";position:absolute;left:calc(-1*var(--sp-6) + 10px);top:23px;bottom:2px;width:2px;background:var(--color-line)}
@@ -3034,3 +3037,74 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 @media(max-width:360px){
   .appointment-slots{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+/* ---------- Delivery tracking: arrival first ----------
+   The screen used to open on a parcel number. What a patient checks it for is
+   when the medicine arrives and who is bringing it, so the window leads and the
+   trail, the pharmacy and the courier follow (client, 10 Sep). */
+.delivery-eta{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border-radius:var(--radius-lg);background:var(--color-ink);color:var(--color-on-accent)}
+.delivery-eta__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.delivery-eta__label{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:rgba(255,255,255,.72)}
+.delivery-eta__rider{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;
+  border:1px solid rgba(255,255,255,.28);border-radius:var(--radius-pill);
+  background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.delivery-eta__rider:hover{background:rgba(255,255,255,.2)}
+.delivery-eta__rider:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.delivery-eta__time{font-size:30px;font-weight:var(--fw-bold);line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.delivery-eta__state{font-size:var(--fs-sm);color:rgba(255,255,255,.82)}
+
+.delivery-place{display:flex;align-items:center;gap:var(--sp-3)}
+.delivery-place__icon{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--surface-sunken);color:var(--color-ink-2)}
+.delivery-place__body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.delivery-place__body strong{font-size:var(--fs-sm)}
+
+.delivery-facts{display:flex;flex-direction:column;gap:var(--sp-3)}
+.delivery-fact{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:start;gap:2px var(--sp-3)}
+.delivery-fact__icon{grid-column:1;grid-row:1 / span 2;align-self:center;display:grid;place-items:center;color:var(--color-ink-3)}
+.delivery-fact__label{grid-column:2;font-size:var(--fs-xs);color:var(--color-ink-3)}
+.delivery-fact__value{grid-column:2;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
+.delivery-fact__call{margin-left:6px;color:var(--color-accent);font-weight:var(--fw-semibold);white-space:nowrap}
+
+.delivery-order{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);background:var(--surface-sunken)}
+.delivery-order strong{font-size:var(--fs-base);font-variant-numeric:tabular-nums}
+
+/* ---------- Activity: one feed with a filter over it ---------- */
+.activity-filters{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:var(--sp-2)}
+.activity-filter{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;
+  border:1px solid transparent;border-radius:var(--radius-md);background:transparent;
+  color:var(--color-ink-3);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-medium);cursor:pointer;
+  transition:color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
+.activity-filter .ui-icon{width:22px;height:22px}
+.activity-filter:hover{color:var(--color-ink-2);background:var(--surface-sunken)}
+.activity-filter.is-current{color:var(--color-accent);background:var(--color-accent-soft);border-color:transparent;font-weight:var(--fw-bold)}
+.activity-filter:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+
+.activity-list{display:flex;flex-direction:column;gap:var(--sp-3)}
+.activity-card{display:flex;flex-direction:column;gap:var(--sp-3);width:100%;padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);
+  color:inherit;font:inherit;text-align:left;cursor:pointer;
+  transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
+.activity-card:hover{border-color:var(--color-line-strong);box-shadow:var(--shadow-sm)}
+.activity-card:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.activity-card[hidden]{display:none}
+.activity-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+.activity-card__date{display:flex;flex-direction:column;align-items:flex-end;gap:2px;
+  font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2);text-align:right}
+.activity-card__date small{font-size:11px;font-weight:var(--fw-regular);color:var(--color-ink-3)}
+.activity-card__thumbs{display:flex;gap:var(--sp-2)}
+.activity-card__thumb{flex:none;width:56px;height:56px;display:grid;place-items:center;overflow:hidden;
+  border-radius:var(--radius-md);background:var(--surface-sunken)}
+.activity-card__thumb img{width:100%;height:100%;object-fit:contain}
+.activity-card__ref{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.activity-card__doctor{display:flex;align-items:center;gap:var(--sp-3)}
+.activity-card__avatar{flex:none;width:44px;height:44px;border-radius:var(--radius-pill);object-fit:cover}
+.activity-card__doctor-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.activity-card__doctor-body strong{font-size:var(--fs-sm)}
+.activity-card__doctor-body em{font-style:normal;font-size:var(--fs-xs);color:var(--color-accent);font-weight:var(--fw-medium)}
+.activity-card__foot{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
+  padding-top:var(--sp-3);border-top:1px solid var(--color-line);
+  font-size:var(--fs-xs);color:var(--color-ink-3)}
+.activity-card__foot strong{font-size:var(--fs-base);color:var(--color-ink);font-variant-numeric:tabular-nums}
+.activity-empty{padding:var(--sp-6) 0;color:var(--color-ink-3);font-size:var(--fs-sm);text-align:center}
+.activity-empty[hidden]{display:none}
