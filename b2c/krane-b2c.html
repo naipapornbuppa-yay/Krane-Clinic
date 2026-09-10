@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260910-profile-session-v1";
+    const release = "20260910-consult-note-v4";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260910-profile-session-v1">
+<link rel="stylesheet" href="components.css?v=20260910-consult-note-v4">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
@@ -2498,7 +2498,7 @@
         <strong class="delivery-eta__time" data-delivery-eta-window>15:00 - 15:55</strong>
         <span class="delivery-eta__state" data-delivery-eta-state>ไรเดอร์กำลังไปรับยาที่ร้าน</span>
       </div>
-      <div class="card card--pad-sm stack-2" data-tracking-reference>
+      <div class="card card--pad-sm stack-2" data-tracking-reference hidden>
         <div class="between">
           <div><span class="field-label">เลขพัสดุ</span><strong data-tracking-number>KR102930000TH</strong></div>
           <span class="badge" data-tracking-carrier>Thailand Post</span>
@@ -2509,20 +2509,13 @@
            two pharmacy checks and the payment line are one fact to a patient
            waiting on a delivery, so they read as one step (client, 10 Sep). -->
       <div class="timeline timeline--compact">
-        <div class="step done"><strong>Consultation completed</strong><div class="hint">Today, 11:05</div></div>
-        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div></div>
+        <div class="step done"><strong>Medication payment confirmed</strong><div class="hint">Today, 11:12</div></div>
+        <div class="step done"><strong>Stock reserved and medicine prepared</strong><div class="hint">Fascino Ari · Today, 11:18</div><div class="hint" data-track-pharmacist>จัดยาโดย ภก. ณิชา ไพศาล เลขที่ ภ.24188</div></div>
         <div class="step active" data-track-step="dispatch"><strong>Arranging rider pickup</strong><div class="hint">Dispatch in progress</div></div>
         <div class="step" data-track-step="out"><strong>Out for delivery</strong><div class="hint">Estimated by 6pm</div></div>
         <div class="step" data-track-step="delivered"><strong>Delivered</strong><div class="hint">Pending</div>
           <button class="step__action" type="button" data-delivery-confirm hidden>ได้รับของแล้ว</button>
         </div>
-      </div>
-      <div class="card card--pad-sm delivery-place">
-        <span class="delivery-place__icon" aria-hidden="true"><i data-lucide="store" class="ui-icon"></i></span>
-        <span class="delivery-place__body">
-          <strong data-pharmacy-name>ร้านยา Fascino สาขาอารีย์</strong>
-          <span class="hint">จัดยาโดย ภก. ณิชา ไพศาล เลขที่ ภ.24188</span>
-        </span>
       </div>
       <div class="stack-2">
         <span class="section-label">รายละเอียดการจัดส่ง</span>
@@ -2566,6 +2559,9 @@
           <span class="doc-row__action">ดู</span>
         </button>
       </div>
+      <!-- The last thing on the screen is the promise a patient waiting on this
+           delivery is most likely to be anxious about (client, 10 Sep). -->
+      <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งแบบมิดชิด ไม่ระบุชื่อยาด้านนอก</span></p>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
@@ -3096,7 +3092,23 @@
   <section class="screen" id="prescription" data-screen-code="SCR-018">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Documents</span></div>
     <div class="screen__body stack-4">
-      <div class="row" style="gap:var(--sp-2);flex-wrap:wrap"><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="summary" aria-selected="true">สรุปผลการปรึกษา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="rx">ใบสั่งยา</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="cert">ใบรับรองแพทย์</button><button class="btn btn--ghost btn--sm" data-toggle data-doc-tab="receipt">ใบเสร็จ</button></div>
+      <!-- Four equal document buttons made the summary, which is what a patient
+           opens this screen for, one option among four. It leads now, the
+           medicine detail sits beside it and the paperwork behind one tab, with
+           the two things worth doing next reachable from the date row
+           (client wireframe, 10 Sep). -->
+      <div class="doc-header">
+        <span class="doc-header__date">วันที่ 30 มิ.ย. 2026</span>
+        <span class="doc-header__actions">
+          <button class="btn btn--ghost btn--sm" type="button" data-profile-followup data-category="hair-skin">ติดตามผล</button>
+          <button class="btn btn--ghost btn--sm" type="button" data-refill-open>เติมยา</button>
+        </span>
+      </div>
+      <div class="doc-tabs" role="tablist" aria-label="เอกสารการปรึกษา">
+        <button class="doc-tab" type="button" role="tab" data-toggle data-doc-tab="summary" aria-selected="true"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i><span>ผลการปรึกษา</span></button>
+        <button class="doc-tab" type="button" role="tab" data-toggle data-doc-tab="rx" aria-selected="false"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>รายละเอียดยา</span></button>
+        <button class="doc-tab" type="button" role="tab" data-toggle data-doc-tab="other" aria-selected="false"><i data-lucide="files" class="ui-icon" aria-hidden="true"></i><span>เอกสารอื่น ๆ</span></button>
+      </div>
       <!-- The consultation summary: what was discussed, what the doctor concluded and
            what happens next, in the patient's own words rather than clinical shorthand. -->
       <div data-doc="summary" class="stack-4">
@@ -3109,24 +3121,43 @@
             <div class="between"><span class="muted">เลขที่การปรึกษา</span><strong>CS-2026-10293</strong></div>
           </div>
           <div class="divider"></div>
-          <div class="section-label">อาการที่มาปรึกษา</div>
-          <p class="muted" style="margin:0">ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน ไม่เคยรักษามาก่อน</p>
-          <div class="divider"></div>
-          <div class="section-label">การประเมินของแพทย์</div>
-          <p class="muted" style="margin:0">เข้าได้กับภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้</p>
-          <div class="divider"></div>
-          <div class="section-label">แผนการรักษา</div>
-          <ul class="doc-summary-list">
-            <li>เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน</li>
-            <li>ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน</li>
-            <li>ถ่ายรูปบริเวณที่กังวลทุกเดือนเพื่อเทียบผล</li>
-          </ul>
-          <div class="divider"></div>
-          <div class="section-label">สิ่งที่ควรทำต่อ</div>
-          <ul class="doc-summary-list">
-            <li>นัดติดตามครั้งถัดไป 26 ส.ค. 2026</li>
-            <li>หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์</li>
-          </ul>
+          <!-- The client's wireframe asks for the note in the order a clinician
+               writes it, so the sections follow SOAP and each one is a short
+               list rather than a paragraph to read through. -->
+          <div class="doc-soap">
+            <div class="doc-soap__block">
+              <h3 class="doc-soap__title">เป้าหมาย</h3>
+              <ul class="doc-summary-list">
+                <li>ชะลอผมร่วงบริเวณกลางศีรษะและกรอบหน้า</li>
+                <li>เห็นความหนาแน่นของเส้นผมเพิ่มขึ้นภายใน 6 เดือน</li>
+              </ul>
+            </div>
+            <div class="doc-soap__block">
+              <h3 class="doc-soap__title">อาการที่พบ <em>(Subjective, Objective)</em></h3>
+              <ul class="doc-summary-list">
+                <li>ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน</li>
+                <li>ไม่เคยใช้ยาหรือผลิตภัณฑ์รักษาผมร่วงมาก่อน</li>
+                <li>จากภาพถ่าย แนวผมด้านหน้าร่นขึ้นเล็กน้อย หนังศีรษะไม่มีผื่นหรือการอักเสบ</li>
+              </ul>
+            </div>
+            <div class="doc-soap__block">
+              <h3 class="doc-soap__title">ผลการวินิจฉัย <em>(Assessment)</em></h3>
+              <ul class="doc-summary-list">
+                <li>ภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น</li>
+                <li>ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้</li>
+              </ul>
+            </div>
+            <div class="doc-soap__block doc-soap__block--plan">
+              <h3 class="doc-soap__title">แผนการรักษา <em>(Plan)</em></h3>
+              <ul class="doc-summary-list">
+                <li>เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน</li>
+                <li>ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน</li>
+                <li>ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม</li>
+                <li>นัดติดตามครั้งถัดไป 26 ส.ค. 2026</li>
+                <li>หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div data-doc="rx" class="stack-4" hidden>
@@ -3157,7 +3188,8 @@
       <!-- The issued certificate itself, laid out like the prescription beside
            it: this tab was a request form, so the patient never saw the
            document they had already been given. -->
-      <div data-doc="cert" class="stack-4" hidden>
+      <div data-doc="other" class="stack-4" hidden>
+      <div class="stack-4">
         <div class="card card--pad-sm stack-3 doc-sheet">
           <div class="between"><div><strong>Krane Clinic · ใบรับรองแพทย์</strong><div class="hint">สถานพยาบาลออนไลน์ เลขที่ใบอนุญาต 11101-xxxxx</div></div><span class="badge badge--ok">ออกแล้ว</span></div>
           <div class="divider"></div>
@@ -3188,7 +3220,7 @@
       </div>
       <!-- Receipt: the same tabbed document surface, so the patient has one
            place to find every paper the visit produced. -->
-      <div data-doc="receipt" class="stack-4" hidden>
+      <div class="stack-4">
         <div class="card card--pad-sm stack-3 doc-sheet">
           <div class="between"><div><strong>Krane Clinic · ใบเสร็จรับเงิน</strong><div class="hint">ออกโดย Krane Clinic · เลขประจำตัวผู้เสียภาษี 0-1055-xxxxx-xx</div></div><span class="badge badge--ok">ชำระแล้ว</span></div>
           <div class="divider"></div>
@@ -3207,6 +3239,7 @@
           <div class="divider"></div>
           <div class="between"><strong>ยอดที่ชำระ</strong><strong data-payment-outcome-amount style="font-size:var(--fs-lg)">฿ 558</strong></div>
         </div>
+      </div>
       </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-demo-action="กำลังดาวน์โหลดเอกสาร PDF">ดาวน์โหลด PDF</button></div>
   </section>
@@ -10208,10 +10241,17 @@
       const fact=el.closest('.delivery-fact');
       if(fact) fact.hidden=pickup;
     });
+    /* Same-day and postal are two different deliveries, and the screen was
+       showing both: a rider with a live position and a Thailand Post tracking
+       number for the same order. A parcel number belongs to the postal one, a
+       named rider to the same-day one, and only one of them is ever true. */
+    const postal=!pickup && flowState.orderState.deliveryMethod==='postal';
+    const parcelCard=screen.querySelector('[data-tracking-reference]');
+    if(parcelCard) parcelCard.hidden=!postal;
     const riderFact=screen.querySelector('.delivery-fact__call')?.closest('.delivery-fact');
-    if(riderFact) riderFact.hidden=pickup;
+    if(riderFact) riderFact.hidden=pickup || postal;
     const riderButton=screen.querySelector('[data-rider-locate]');
-    if(riderButton) riderButton.hidden=pickup || delivered;
+    if(riderButton) riderButton.hidden=pickup || postal || delivered;
   }
   /* A window, not a single minute: a courier ETA that reads as exact is a
      promise the dispatch cannot keep. */
