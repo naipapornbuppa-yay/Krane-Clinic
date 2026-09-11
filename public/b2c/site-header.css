@@ -8,7 +8,7 @@
   --site-nav-control-height:38px;
 }
 
-.announcement{height:28px;min-height:28px}
+.announcement{height:auto;min-height:calc(28px + env(safe-area-inset-top, 0px));padding-top:env(safe-area-inset-top, 0px)}
 .announcement__group{min-height:28px;gap:8px;padding-inline:32px}
 .announcement span,.announcement strong{font-size:11px;line-height:1.2}
 
@@ -68,12 +68,331 @@
 
 @media(max-width:700px){
   :root{--site-nav-padding-inline:16px;--site-nav-logo-width:74px}
-  .announcement{height:26px;min-height:26px}
-  .announcement__group{min-height:26px;padding-inline:16px}
-  .announcement span,.announcement strong{font-size:9px}
+  /* The band has to keep growing into the status-bar inset here: the landing
+     sheet zeroes its padding at this breakpoint, which left the notch painted
+     as a white strip above the blue instead of reading as part of it. Restored
+     last, where nothing else can clobber it. Copy was also down at 9px, which
+     is below what anyone reads on a phone. */
+  .announcement{
+    height:auto;
+    min-height:calc(30px + env(safe-area-inset-top, 0px));
+    padding:env(safe-area-inset-top, 0px) 0 0;
+  }
+  .announcement__group{min-height:30px;padding-inline:16px}
+  .announcement span,.announcement strong{font-size:12px}
   .site-header{padding-right:12px}
   .site-header .brand{height:30px;margin-right:auto}
   .site-header .header-actions{height:38px;gap:6px}
   .site-header .header-login{min-height:36px;padding-inline:13px;font-size:11px}
   .detail-nav{padding:0 12px 0 16px}
+}
+
+
+/* =========================================================================
+   Shared public-site navigation (header + mobile drawer).
+   Single source of truth: condition-detail, doctors and any other public page
+   load this file, so the bar cannot drift between routes. Variables fall back
+   to sensible defaults for pages that do not define the landing palette.
+   ========================================================================= */
+:root{
+  --landing-ink:var(--color-ink,#121824);
+  --landing-muted:var(--color-ink-3,#5c6479);
+  --landing-line:var(--color-line,#e2e8f0);
+  --landing-canvas:var(--color-bg,#f5f5f4);
+  --landing-blue:var(--color-accent,#3A548F);
+  --landing-navy:var(--color-ink,#121824);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+body.menu-open{overflow:hidden}
+/* Ships with the nav rather than living in one page's stylesheet: the shared
+   markup uses it for the "Language" label, which otherwise renders visibly and
+   collides with the logo on any page that does not happen to define it. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+/* A skip link must never take layout space or paint while unfocused.
+   The transform trick relied on the anchor being transformable and on the
+   fixed rule landing; when either failed the link rendered in flow as a white
+   band above the announcement bar, which is what read as a white notch strip
+   (client, 18 Aug). Clipped-to-nothing cannot fail that way. */
+.skip-link{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
+.skip-link:focus,.skip-link:focus-visible{position:fixed!important;z-index:100;top:10px;left:10px;
+  width:auto;height:auto;margin:0;padding:10px 14px;overflow:visible;clip:auto;clip-path:none;
+  border-radius:10px;background:#fff;color:#121826;box-shadow:0 4px 18px rgba(18,24,36,.18);transform:none}
+
+/* Keep the service-detail navigation identical to the landing-page navigation. */
+.site-header{position:sticky;top:0;z-index:50;height:72px;margin:0;display:flex;align-items:center;gap:16px;padding:12px var(--page-gutter,clamp(20px,5vw,48px));border:0;border-bottom:1px solid transparent;border-radius:0;background:#fff;box-shadow:none;backdrop-filter:none;transition:background .3s ease,box-shadow .3s ease,border-color .3s ease}
+.site-header.is-scrolled{border-color:var(--landing-line);background:rgba(255,255,255,.98);box-shadow:0 12px 28px rgba(17,27,48,.07);backdrop-filter:blur(16px)}
+.brand{height:40px;min-width:170px;display:flex;align-items:center;padding:0 16px}
+.brand img{width:116px;height:auto;object-fit:contain;object-position:left center}
+.desktop-nav{height:40px;display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,34px);white-space:nowrap}
+.nav-menu{position:relative;height:40px;display:flex;align-items:center}
+.nav-menu__trigger{position:relative;height:40px;display:inline-flex;align-items:center;gap:5px;padding:0;border:0;background:transparent;color:#343434;font-size:14px;font-weight:500;white-space:nowrap;cursor:pointer}
+.nav-menu__trigger svg{width:15px;height:15px;transition:transform .2s ease}
+.nav-menu__trigger::after{content:"";position:absolute;right:0;bottom:-8px;left:0;height:2px;border-radius:2px;background:var(--landing-blue);transform:scaleX(0);transform-origin:right;transition:transform .28s var(--ease)}
+.nav-menu.is-open .nav-menu__trigger{color:var(--landing-blue)}
+.nav-menu.is-open .nav-menu__trigger::after{transform:scaleX(1);transform-origin:left}
+.nav-menu.is-open .nav-menu__trigger svg{transform:rotate(180deg)}
+.nav-menu__menu{position:absolute;top:52px;left:-18px;z-index:70;width:360px;padding:14px;border:1px solid var(--landing-line);border-radius:24px;background:#fff;box-shadow:0 24px 60px rgba(17,27,48,.16);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .18s ease,visibility .18s ease,transform .18s ease}
+.nav-menu--end .nav-menu__menu{right:-18px;left:auto}
+.nav-menu.is-open .nav-menu__menu{opacity:1;visibility:visible;transform:none}
+.desktop-nav .nav-menu__menu a{min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 14px;border-radius:14px;color:var(--landing-ink);font-size:14px}
+.desktop-nav .nav-menu__menu a:hover,.desktop-nav .nav-menu__menu a:focus-visible{background:var(--landing-canvas);color:var(--landing-blue)}
+.nav-menu__menu svg{width:16px;height:16px;flex:none;transition:transform .2s ease}
+.nav-menu__menu a:hover svg,.nav-menu__menu a:focus-visible svg{transform:translateX(3px)}
+.header-actions{min-width:250px;height:40px;margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.language-control{display:inline-flex;align-items:center}
+.language-control select{min-width:54px;height:44px;padding:0 24px 0 8px;border:0;border-radius:8px;background:transparent;color:var(--landing-navy);font:600 13px/1 "Inter",sans-serif;cursor:pointer}
+.language-control select:hover{background:var(--landing-canvas)}
+.header-login,.header-access{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 20px;border-radius:var(--button-radius,14px);font-size:13px;font-weight:600;white-space:nowrap}
+.header-login{background:var(--landing-navy);color:#fff}
+.header-access{border:1px solid currentColor;background:transparent;color:var(--landing-navy)}
+.menu-toggle{display:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--landing-canvas);align-items:center;justify-content:center;cursor:pointer}
+.menu-toggle svg{width:22px;height:22px}
+/* Right-edge drawer, matching the landing page menu. */
+.mobile-menu{width:min(380px,86%);max-width:none;height:100dvh;max-height:100dvh;margin:0 0 0 auto;padding:20px;overflow:auto;overscroll-behavior:contain;border:0;border-radius:0;background:#fff;color:var(--landing-ink);box-shadow:-18px 0 60px rgba(18,24,36,.22)}
+.mobile-menu__head[tabindex="-1"]:focus{outline:none}
+.mobile-menu :focus:not(:focus-visible){outline:none}
+.mobile-menu :focus-visible{outline:2px solid var(--landing-blue);outline-offset:2px;border-radius:6px}
+/* Column layout only while open — see krane-b2c-landing.css. */
+.mobile-menu[open]{display:flex;flex-direction:column;animation:menu-enter .32s var(--ease) both}
+.mobile-menu[open]::backdrop{animation:backdrop-enter .24s ease both}
+.mobile-menu::backdrop{background:rgba(17,27,48,.42);backdrop-filter:blur(6px)}
+.mobile-menu__head{display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid var(--landing-line)}
+.mobile-menu__head img{width:132px;height:auto}
+.mobile-menu__head button{width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--landing-canvas);cursor:pointer}
+.mobile-menu nav{display:flex;flex-direction:column;padding:12px 0}
+.mobile-menu nav a{min-height:54px;display:flex;align-items:center;border-bottom:1px solid var(--landing-line);font-size:18px;font-weight:500}
+.mobile-treatment-menu{border-bottom:1px solid var(--landing-line)}
+.mobile-treatment-menu summary{min-height:54px;display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;cursor:pointer;list-style:none}
+.mobile-treatment-menu summary::-webkit-details-marker{display:none}
+.mobile-treatment-menu summary svg{width:18px;height:18px;transition:transform .2s ease}
+.mobile-treatment-menu[open] summary svg{transform:rotate(180deg)}
+.mobile-treatment-menu>div{padding:0 0 8px 14px}
+.mobile-menu nav .mobile-treatment-menu a{min-height:44px;border-bottom:0;color:var(--landing-muted);font-size:15px}
+.mobile-menu__language{min-height:60px;display:flex;align-items:center;justify-content:space-between}
+.mobile-menu__language>span{color:var(--landing-muted);font-size:14px}
+/* One action, so it takes the whole width. The two-column grid left the
+   lone sign-in button sitting at half width (client, 19 Aug). */
+.mobile-menu__actions{display:grid;grid-template-columns:1fr;gap:10px;padding-top:16px}
+.mobile-menu__actions .button{width:100%;padding:0 14px}
+.mobile-menu .button--outline{border:1px solid currentColor;background:transparent;color:var(--landing-ink)}
+.mobile-menu .button--dark{background:var(--landing-navy);color:#fff}
+.partner-access-link{grid-column:1/-1;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--landing-blue);font-size:14px;font-weight:600}
+@keyframes menu-enter{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes backdrop-enter{from{opacity:0}to{opacity:1}}
+
+@media(max-width:1220px){
+  .brand{min-width:166px}
+  .brand img{width:140px}
+  .desktop-nav{gap:16px}
+  .header-actions{min-width:auto}
+  .header-access{display:none}
+}
+@media(max-width:960px){
+  .site-header{height:64px;padding:10px 20px}
+  .brand{min-width:0;margin-right:0;padding:0 8px}
+  .brand img{width:112px}
+  .header-actions{margin-left:auto}
+}
+@media(max-width:880px){
+  .brand{margin-right:auto}
+  .desktop-nav{display:none}
+  .menu-toggle{display:inline-flex}
+}
+@media(max-width:700px){
+  .site-header{height:60px;padding:8px 12px 8px 16px}
+  /* Client (18 Aug): the language toggle belongs in the bar itself, not only
+     inside the drawer — switching TH/EN is the one thing a visitor reaches for
+     before opening a menu. Sized down so it still fits beside the login pill. */
+  .site-header .language-control select{min-width:42px;height:40px;padding:0 17px 0 5px;font-size:12px}
+}
+
+/* ---- Nav surface ---------------------------------------------------------
+   Client (17 Aug): the top app bar takes the app's page colour, not the
+   announcement blue — the nav should read as the same surface the product
+   sits on, with the promo band above it as the only coloured strip. Shared
+   here rather than on one page so the header is identical on every route. */
+.site-header{background:var(--surface-card);border-bottom-color:transparent;color:var(--landing-ink)}
+.site-header.is-scrolled{
+  border-color:transparent;
+  background:var(--surface-card);
+  box-shadow:0 10px 26px rgba(18,24,36,.07);
+  backdrop-filter:none;
+}
+.site-header .desktop-nav a,
+.site-header .nav-menu__trigger{color:var(--landing-ink)}
+.site-header .desktop-nav a:hover,
+.site-header .desktop-nav a.is-current,
+.site-header .nav-menu.is-open .nav-menu__trigger{color:var(--landing-blue)}
+.site-header .language-control select{color:var(--landing-navy)}
+.site-header .header-login{background:var(--landing-navy);color:#fff;box-shadow:none}
+.site-header .header-access{border-color:currentColor;background:transparent;color:var(--landing-navy)}
+.site-header .menu-toggle{background:transparent;color:var(--landing-ink)}
+
+/* ---- Drawer ---------------------------------------------------------------
+   One contract for every right-edge sheet on the public site: the nav drawer,
+   the landing doctor sheet and the doctors-page doctor sheet. They were three
+   separate implementations with three widths, two surfaces and two close
+   buttons — the two doctor sheets are the same component and now say so.
+   Consumers keep their own content styles; only the shell lives here. */
+.drawer{
+  width:min(420px,88%);
+  max-width:none;
+  height:100vh;
+  height:100dvh;
+  max-height:none;
+  margin:0 0 0 auto;
+  padding:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  border:0;
+  border-radius:0;
+  background:var(--surface-card);
+  color:var(--landing-ink);
+  box-shadow:-18px 0 60px rgba(18,24,36,.22);
+}
+.drawer[open]{display:block;animation:menu-enter .32s var(--ease) both}
+.drawer::backdrop{background:rgba(17,27,48,.42);backdrop-filter:blur(6px)}
+.drawer[open]::backdrop{animation:backdrop-enter .24s ease both}
+.drawer__panel{min-height:100%;background:var(--surface-card)}
+.drawer__close{
+  position:fixed;top:18px;right:18px;z-index:4;
+  display:grid;width:44px;height:44px;place-items:center;padding:0;
+  border:0;border-radius:50%;
+  background:var(--surface-sunken);color:var(--landing-ink);cursor:pointer;
+}
+.drawer__close svg{width:22px;height:22px}
+@media(min-width:861px){
+  .drawer{width:min(560px,46vw)}
+}
+/* The nav drawer has no .drawer__panel to carry an inner gutter, so its content
+   went flush to the shell's edges as soon as .drawer{padding:0} started winning
+   over .mobile-menu{padding:20px}. Give the nav sheet its own gutter — the two
+   doctor sheets keep padding:0 so their hero media stays full-bleed — and
+   restore the column layout that .drawer[open]{display:block} was overriding. */
+.drawer.mobile-menu{
+  padding:calc(20px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) 20px;
+}
+.drawer.mobile-menu[open]{display:flex;flex-direction:column}
+
+/* Shared public navigation capsule.
+   The landing page has the same component with page-scoped spacing for its
+   announcement strip; every other public page inherits this exact surface,
+   radius and responsive density from here. */
+.site-header,
+.site-header.is-scrolled{
+  top:16px;
+  width:calc(100% - 80px);
+  height:64px;
+  min-height:64px;
+  margin:16px 40px 0;
+  padding:12px;
+  gap:16px;
+  border:1px solid #fff;
+  border-radius:40px;
+  background:#fff;
+  box-shadow:0 12px 34px rgba(18,30,51,.09);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.site-header .brand{
+  height:40px;
+  min-width:152px;
+  padding:0 16px;
+}
+.site-header .brand img{width:94px}
+.site-header .header-actions{height:40px}
+.site-header .language-control,
+.site-header .header-login,
+.site-header .header-access{height:40px}
+.site-header .header-login,
+.site-header .header-access{border-radius:999px}
+
+@media(min-width:1101px) and (max-width:1320px){
+  .site-header,
+  .site-header.is-scrolled{
+    width:calc(100% - 48px);
+    margin:28px 24px 0;
+    padding-left:22px;
+  }
+  .site-header .brand{
+    min-width:96px;
+    margin-right:22px;
+  }
+  .site-header .brand img{width:96px}
+  .site-header .desktop-nav{gap:18px}
+  .site-header .desktop-nav a{font-size:13px}
+  .site-header .header-actions{margin-left:20px}
+}
+
+@media(max-width:1100px){
+  .site-header,
+  .site-header.is-scrolled{
+    top:12px;
+    width:calc(100% - 32px);
+    height:60px;
+    min-height:60px;
+    margin:20px 16px 0;
+    padding:0 12px 0 18px;
+    gap:8px;
+    border-radius:30px;
+  }
+  .site-header .desktop-nav{display:none}
+  .site-header .menu-toggle{display:inline-flex}
+  .site-header .brand{
+    flex:1 1 auto;
+    height:32px;
+    min-width:0;
+    padding:4px 8px;
+  }
+  .site-header .brand img{width:100px}
+  .site-header .header-actions{
+    flex:0 0 auto;
+    min-width:0;
+    height:40px;
+    gap:6px;
+  }
+}
+
+@media(max-width:760px){
+  .site-header,
+  .site-header.is-scrolled{
+    top:6px;
+    width:calc(100% - 20px);
+    height:54px;
+    min-height:54px;
+    margin:8px 10px 0;
+    padding:0 7px 0 14px;
+    gap:4px;
+    border-radius:27px;
+  }
+  .site-header .brand{
+    height:28px;
+    padding:5px 8px;
+  }
+  .site-header .brand img{width:88px}
+  .site-header .header-actions{height:36px;gap:3px}
+  .site-header .language-control,
+  .site-header .language-control select,
+  .site-header .header-login,
+  .site-header .header-access,
+  .site-header .menu-toggle{
+    height:36px;
+    min-height:36px;
+  }
+  .site-header .menu-toggle{width:36px}
+}
+
+@media(max-width:520px){
+  /* Language stays; only the two text buttons fold into the drawer, since a
+     word-width button is what actually does not fit here. */
+  .site-header .header-actions>.header-login,
+  .site-header .header-actions>.header-access{display:none!important}
+  .site-header .brand{padding-left:4px}
+  .site-header .menu-toggle{
+    display:inline-flex;
+    width:38px;
+    height:38px;
+    min-height:38px;
+  }
 }

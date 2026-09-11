@@ -54,7 +54,9 @@
     });
     document.querySelectorAll('.bottomnav a').forEach(function (link) {
       var target = link.dataset.go || '';
-      var name = target === 'profile' ? 'user-round' : target.includes('activit') || target === 'tracking' ? 'package' :
+      // The first tab is the home dashboard, not a profile — this script paints
+      // over the inline sprite, so the glyph has to change here too.
+      var name = target === 'profile' ? 'house' : target.includes('activit') || target === 'tracking' ? 'package' :
         target === 'notifications' ? 'bell' : target === 'settings' ? 'sliders-horizontal' : 'house';
       setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
     });
