@@ -535,7 +535,6 @@
     }
     if (profileFallback) {
       profileFallback.hidden = Boolean(auth.pictureUrl);
-      profileFallback.textContent = (auth.displayName.trim()[0] || "K").toUpperCase();
     }
     if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log in" : "เข้าสู่ระบบ");
     if (mobileLogin) {
