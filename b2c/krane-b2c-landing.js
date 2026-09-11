@@ -2319,6 +2319,93 @@
     paint();
   })();
 
+  /* Word by word on scroll: each word starts 20px low and transparent and rises
+     into place, with the stagger driven by how far the block has crossed the
+     viewport rather than by a timer, so scrolling back up puts it away again.
+     Thai has no spaces between words, so the same segmenter the positioning
+     statement uses finds real word boundaries here. */
+  (function scrollRevealWords() {
+    const block = document.querySelector("[data-scroll-reveal]");
+    if (!block) return;
+    const lines = [...block.querySelectorAll(".scroll-text__line")];
+    if (!lines.length) return;
+
+    const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter("th", { granularity: "word" })
+      : null;
+    const segment = (text) => segmenter
+      ? [...segmenter.segment(text)].map((part) => part.segment)
+      : text.split(/(\s+)/);
+
+    const words = [];
+    lines.forEach((line) => {
+      const parts = segment(line.textContent);
+      line.textContent = "";
+      parts.forEach((part) => {
+        if (!part.trim()) { line.append(part); return; }
+        const word = document.createElement("span");
+        word.className = "reveal-word";
+        word.textContent = part;
+        line.append(word);
+        words.push(word);
+      });
+    });
+    block.classList.add("is-reveal-ready");
+    if (reducedMotionQuery.matches) return;
+
+    // Words overlap by this many places, which is what makes it read as a rise
+    // rather than a row of switches.
+    const SPREAD = 4;
+    let frame = 0;
+    function paint() {
+      frame = 0;
+      const box = block.getBoundingClientRect();
+      const view = window.innerHeight || 800;
+      const start = view * 0.92;
+      const span = Math.max(1, box.height + view * 0.34);
+      const progress = Math.min(1, Math.max(0, (start - box.top) / span));
+      const head = progress * (words.length + SPREAD);
+      words.forEach((word, index) => {
+        const local = Math.min(1, Math.max(0, (head - index) / SPREAD));
+        word.style.opacity = local.toFixed(3);
+        word.style.transform = "translateY(" + ((1 - local) * 20).toFixed(2) + "px)";
+      });
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
+
+    /* If the band happens to be on screen already when the script runs, there is
+       no scroll left to reveal it with. It plays itself once at the same pace
+       instead, and only then hands over to the scroll. */
+    const box = block.getBoundingClientRect();
+    const view = window.innerHeight || 800;
+    if (box.top < view * 0.9) {
+      let head = 0;
+      const total = words.length + SPREAD;
+      let last = 0;
+      const intro = (now) => {
+        const dt = last ? (now - last) / 1000 : 0;
+        last = now;
+        head = Math.min(total, head + total * dt * 0.8);
+        words.forEach((word, index) => {
+          const local = Math.min(1, Math.max(0, (head - index) / SPREAD));
+          word.style.opacity = local.toFixed(3);
+          word.style.transform = "translateY(" + ((1 - local) * 20).toFixed(2) + "px)";
+        });
+        if (head < total) requestAnimationFrame(intro);
+        else {
+          window.addEventListener("scroll", schedule, { passive: true });
+          window.addEventListener("resize", schedule, { passive: true });
+        }
+      };
+      requestAnimationFrame(intro);
+      return;
+    }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    paint();
+  })();
+
   if (window.lucide) {
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
   }
