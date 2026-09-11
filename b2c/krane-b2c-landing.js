@@ -290,7 +290,7 @@
     ["*แนวทางการดูแลและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Care and medication options depend on a doctor's assessment."],
     ["เราไม่ใช่แค่คลินิกทั่วไป แต่เราคือ", "We are more than a clinic. We are a"],
     ["แพลตฟอร์มให้บริการแพทย์ทางไกล", "licensed telemedicine platform"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
-    ["ดูแลครบในที่เดียว", "Complete care in one place"], ["ทำไมต้อง krane", "Why Krane"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
+    ["ดูแลครบในที่เดียว", "Complete care in one place"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
     ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
     ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],
     ["คุ้มครองตาม PDPA", "Protected under PDPA"], ["ข้อมูลสุขภาพของคุณถูกใช้เพื่อการดูแลตามความยินยอมเท่านั้น", "Your health data is used for care only with your consent"],
@@ -373,6 +373,7 @@
   ]);
 
   const draftEnglishAttributes = new Map([
+    ["ทำไมต้อง Krane", "Why Krane"],
     ["เลื่อนดูตัวเลือกดูแลเส้นผม", "Browse hair-care options"],
     ["รายการตัวเลือกดูแลเส้นผมแบบเลื่อนได้", "Scrollable list of hair-care options"],
     ["ผลลัพธ์ก่อนและหลังการติดตามเส้นผม", "Hair follow-up before-and-after results"],
