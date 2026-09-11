@@ -2936,6 +2936,21 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   background:var(--color-bg-soft);line-height:1.45}
 .care-team-note .ui-icon{flex:none;margin-top:2px;color:var(--color-accent)}
 
+/* Documents are a first-class return destination on the profile. This row is
+   deliberately quieter than the four quick actions, but large enough to read
+   as a complete library rather than one treatment's attachment. */
+.profile-documents-link{width:100%;display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);
+  background:var(--color-surface);box-shadow:var(--shadow-card);color:var(--color-ink);text-align:left;cursor:pointer}
+.profile-documents-link:hover,.profile-documents-link:focus-visible{border-color:var(--color-accent);outline:none}
+.profile-documents-link__icon{width:40px;height:40px;display:grid;place-items:center;flex:none;
+  border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-accent)}
+.profile-documents-link__icon .ui-icon{width:21px;height:21px}
+.profile-documents-link__body{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+.profile-documents-link__body strong{font-size:var(--fs-base);font-weight:var(--fw-semibold)}
+.profile-documents-link__body span{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.profile-documents-link__go{flex:none;color:var(--color-ink-3)}
+
 /* Client treatment-detail structure (30 Aug): one dated record with two tabs.
    The treatment plan is the default view; medicines stay one tap away without
    repeating the whole home card or turning the detail header into a hero. */
@@ -3199,7 +3214,7 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    the field beside it. */
 .field-row:has(.phone-field){flex-wrap:wrap}
 .field-row:has(.phone-field)>.field{flex:1 1 100%}
-/* Three tabs, not two: the segmented control sizes to however many it holds. */
+/* The two destinations share the row evenly in either language. */
 .treatment-detail__switch{grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none}
 
 /* The plan on the documents screen. No inner container: the sheet is already a
@@ -3249,6 +3264,42 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 /* Leading the record, the doctor block sits above the note rather than closing
    it, so its rule sits under it instead of over it (client, 11 Sep). */
 .treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
+.treatment-record__certificate{display:flex;flex-direction:column;gap:var(--sp-3);
+  padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+.treatment-record__certificate .h3{margin:3px 0 0;font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+
+/* My Documents: search first, then one date-sorted list. There are no document
+   type tabs here because search must span every certificate, prescription and
+   receipt at once. */
+.my-documents{max-width:880px;width:100%;margin-inline:auto}
+.my-documents__intro{display:flex;flex-direction:column;gap:var(--sp-4)}
+.my-documents__intro .h1{margin:3px 0 0}
+.my-documents__search{display:flex;align-items:center;gap:var(--sp-3);height:48px;
+  padding:0 var(--sp-4);border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink-3)}
+.my-documents__search:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-focus)}
+.my-documents__search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--color-ink);font:inherit}
+.my-documents__search input::placeholder{color:var(--color-ink-3)}
+.my-documents__toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.my-documents__toolbar .section-label{margin:0}
+.my-documents__sort{width:auto;min-width:132px;height:40px;padding-block:0}
+.my-documents__list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.my-document{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto}
+.my-document[hidden]{display:none}
+.my-document__date{color:var(--color-ink-3);font-size:var(--fs-xs);white-space:nowrap}
+.my-document__go{color:var(--color-ink-3)}
+.my-documents__empty{min-height:240px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:var(--sp-2);border:1px dashed var(--color-line-strong);border-radius:var(--radius-md);
+  color:var(--color-ink-3);text-align:center}
+.my-documents__empty[hidden]{display:none}
+.my-documents__empty .ui-icon{width:30px;height:30px;color:var(--color-accent)}
+.my-documents__empty strong{color:var(--color-ink)}
+.my-documents__empty span{font-size:var(--fs-sm)}
+@media(max-width:560px){
+  .my-document{grid-template-columns:auto minmax(0,1fr) auto}
+  .my-document__date{display:none}
+  .my-documents__intro .h1{font-size:var(--fs-xl)}
+}
 
 /* What is in the parcel, on the tracking screen. */
 .delivery-items{display:flex;flex-direction:column;gap:var(--sp-3)}

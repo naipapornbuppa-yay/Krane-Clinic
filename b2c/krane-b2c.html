@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260911-treatment-tab-icons-v1";
+    const release = "20260911-my-documents-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,13 +38,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260824-progress-pairs-v1">
-<link rel="stylesheet" href="components.css?v=20260911-treatment-tab-icons-v1">
+<link rel="stylesheet" href="components.css?v=20260911-my-documents-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260816-delivery-pickup-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260816-delivery-pickup-v1" defer></script>
-<script src="i18n.js?v=20260910-profile-session-v1" defer></script>
+<script src="i18n.js?v=20260911-my-documents-v1" defer></script>
 <script src="../krane-golden-patient.js?v=20260910-profile-session-v1" defer></script>
 
 <style>
@@ -968,7 +968,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260911-treatment-tab-icons-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260911-my-documents-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -2444,7 +2444,7 @@
         <span class="state-view__tile state-view__tile--brand"><svg class="krane-state-art" viewBox="0 0 560 360" aria-hidden="true"><use href="#krane-state-payment-success"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span>
       </div>
-      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment complete</h2><p class="muted" data-payment-success-copy>Your receipt, diagnosis and medicine list are in your documents. The pharmacy is preparing your order and will let you know when it is on the way.</p></div>
+      <div class="state-view__copy"><h2 class="h1" data-payment-success-title>Payment complete</h2><p class="muted" data-payment-success-copy>Payment is complete. Open the receipt from the paid step in order tracking while the pharmacy prepares your medicine.</p></div>
       <div class="state-view__timer"><strong data-payment-outcome-amount>฿ 558</strong></div>
       <div class="state-view__action"><button class="btn btn--primary" data-payment-success-cta data-go="tracking">ติดตามการจัดส่ง</button></div>
     </div>
@@ -2723,6 +2723,12 @@
              that implies self-service. -->
         <p class="hint care-team-note"><i data-lucide="user-round-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>หากต้องการเปลี่ยนแพทย์ ติดต่อแอดมินได้ที่ LINE @kraneclinic หรือ care@kraneclinic.com</span></p>
 
+        <button class="profile-documents-link" type="button" data-go="my-documents">
+          <span class="profile-documents-link__icon"><i data-lucide="folder-search-2" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="profile-documents-link__body"><strong>เอกสารของฉัน</strong><span>ใบสั่งยา ใบรับรองแพทย์ และใบเสร็จทั้งหมด</span></span>
+          <i data-lucide="chevron-right" class="ui-icon ui-icon--sm profile-documents-link__go" aria-hidden="true"></i>
+        </button>
+
         <!-- Client (5 Jul): orders live on the Activity tab, not the profile -->
         <button class="textlink" data-go="activity">View all orders ›</button>
       </div>
@@ -2739,15 +2745,13 @@
   <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span></div>
     <div class="screen__body treatment-detail stack-3">
-      <!-- The app's segmented control, same as the delivery/pickup switch on
-           checkout (client, 1 Sep). This was a pair of 72px boxed tabs welded to
-           the top of the record card, which read as page furniture rather than a
-           switch. Compact leading icons now make the three destinations easier
-           to scan without restoring the old boxed-tab treatment. -->
+      <!-- Treatment detail has two destinations: the clinical plan and the
+           medicine list. Documents have their own searchable library in the
+           profile; the certificate for this treatment remains at the end of
+           the plan where it belongs. -->
       <div class="partner-binary partner-binary--accent treatment-detail__switch" role="tablist" aria-label="ข้อมูลการรักษา">
         <button class="partner-binary__option is-active" type="button" role="tab" aria-selected="true" aria-controls="treatment-plan-panel" data-treatment-tab="plan"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i><span>แผนการรักษา</span></button>
         <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>รายการยา</span></button>
-        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-docs-panel" data-treatment-tab="docs"><i data-lucide="file-text" class="ui-icon" aria-hidden="true"></i><span>เอกสาร</span></button>
       </div>
 
       <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
@@ -2790,6 +2794,17 @@
               <ul class="doc-summary-list" data-treatment-planlist></ul>
             </div>
           </div>
+          <section class="treatment-record__certificate" aria-labelledby="treatment-certificate-title">
+            <div class="treatment-detail__medicine-head">
+              <div class="eyebrow">เอกสารการรักษา</div>
+              <h3 class="h3" id="treatment-certificate-title">ใบรับรองแพทย์</h3>
+            </div>
+            <button class="doc-row" type="button" data-doc-open="cert">
+              <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ · เปิดดูหรือดาวน์โหลด</span></span>
+              <span class="doc-row__action">ดู</span>
+            </button>
+          </section>
         </article>
       </section>
 
@@ -2814,29 +2829,57 @@
         </article>
       </section>
 
-      <!-- Third tab, so this screen carries the same three the client wireframed
-           for the documents view: the plan, the medicines and the paperwork.
-           Each row opens the document itself rather than restating it here. -->
-      <section class="treatment-detail__panel" id="treatment-docs-panel" role="tabpanel" data-treatment-panel="docs" hidden>
-        <article class="treatment-record stack-4">
-          <div class="treatment-detail__medicine-head">
-            <div class="eyebrow">เอกสารที่เกี่ยวข้อง</div><h2 class="h2">เอกสารของการรักษานี้</h2>
-          </div>
-          <div class="doc-section">
-            <button class="doc-row" type="button" data-doc-open="cert">
-              <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
-              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ</span></span>
-              <span class="doc-row__action">ดู</span>
-            </button>
-            <button class="doc-row" type="button" data-doc-open="receipt">
-              <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
-              <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">ค่าปรึกษาและค่ายา</span></span>
-              <span class="doc-row__action">ดู</span>
-            </button>
-          </div>
-        </article>
-      </section>
     </div>
+  </section>
+
+  <!-- ===================== MY DOCUMENTS ===================== -->
+  <section class="screen screen--web" id="my-documents" data-screen-code="SCR-051B">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">เอกสารของฉัน</span><span class="grow"></span></div>
+    <div class="screen__body my-documents stack-4">
+      <div class="my-documents__intro">
+        <div><div class="eyebrow">เอกสารทั้งหมด</div><h2 class="h1">ค้นหาเอกสารของคุณ</h2></div>
+        <label class="my-documents__search" for="my-documents-search">
+          <i data-lucide="search" class="ui-icon ui-icon--sm" aria-hidden="true"></i>
+          <input id="my-documents-search" type="search" inputmode="search" autocomplete="off" placeholder="ค้นหาชื่อเอกสาร เลขที่ หรือการรักษา" data-document-search>
+        </label>
+      </div>
+      <div class="my-documents__toolbar">
+        <span class="section-label">เรียงตามวันที่</span>
+        <select class="select my-documents__sort" aria-label="เรียงเอกสารตามวันที่" data-document-sort>
+          <option value="newest">ล่าสุดก่อน</option>
+          <option value="oldest">เก่าสุดก่อน</option>
+        </select>
+      </div>
+      <div class="my-documents__list" data-document-list>
+        <button class="doc-row my-document" type="button" data-doc-open="receipt" data-document-item data-document-date="2026-09-11" data-document-search-text="ใบเสร็จรับเงิน RC-2026-10293 KR-10293 ค่ายา ผมร่วง">
+          <span class="doc-row__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293 · 11 ก.ย. 2026 · ผมร่วง</span></span>
+          <span class="my-document__date">11 ก.ย. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
+        </button>
+        <button class="doc-row my-document" type="button" data-doc-open="cert" data-document-item data-document-date="2026-08-26" data-document-search-text="ใบรับรองแพทย์ MC-2026-10288 การนอน ความเครียด คุณหมอนรินทร์">
+          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">MC-2026-10288 · 26 ส.ค. 2026 · การนอนและความเครียด</span></span>
+          <span class="my-document__date">26 ส.ค. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
+        </button>
+        <button class="doc-row my-document" type="button" data-doc-open="rx" data-document-item data-document-date="2026-06-30" data-document-search-text="ใบสั่งยา RX-2026-10293 ผมร่วง Loratadine Paracetamol">
+          <span class="doc-row__icon"><i data-lucide="file-text" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบสั่งยา</strong><span class="hint">RX-2026-10293 · 30 มิ.ย. 2026 · ผมร่วง</span></span>
+          <span class="my-document__date">30 มิ.ย. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
+        </button>
+        <button class="doc-row my-document" type="button" data-doc-open="cert" data-document-item data-document-date="2026-06-30" data-document-search-text="ใบรับรองแพทย์ MC-2026-10293 ผมร่วง คุณหมอนรินทร์">
+          <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">MC-2026-10293 · 30 มิ.ย. 2026 · ผมร่วง</span></span>
+          <span class="my-document__date">30 มิ.ย. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="my-documents__empty" data-document-empty hidden><i data-lucide="file-search-2" class="ui-icon" aria-hidden="true"></i><strong>ไม่พบเอกสาร</strong><span>ลองค้นหาด้วยชื่อเอกสาร เลขที่ หรือชื่อการรักษา</span></div>
+    </div>
+    <nav class="bottomnav">
+      <a aria-current="page" data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
+      <a data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
+      <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
+      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
+    </nav>
   </section>
 
   <!-- ===================== ACTIVITY (KRANE-F05 · Tab 2: active orders + past treatments)
@@ -3752,6 +3795,7 @@
     'feedbackdone':'SID-050',
     'profile':'SID-051',
     'treatment-detail':'SID-051A',
+    'my-documents':'SID-051B',
     'activity':'SID-052',
     'empty-activities':'SID-053',
     'history':'SID-054',
@@ -4766,6 +4810,30 @@
     screen.querySelector('.screen__body').scrollTop=0;
   }
 
+  function refreshMyDocuments(){
+    const screen=document.getElementById('my-documents');
+    if(!screen) return;
+    const list=screen.querySelector('[data-document-list]');
+    const search=screen.querySelector('[data-document-search]');
+    const sort=screen.querySelector('[data-document-sort]');
+    const empty=screen.querySelector('[data-document-empty]');
+    if(!list) return;
+    const query=(search?.value || '').trim().toLocaleLowerCase(document.documentElement.lang || 'th');
+    const direction=sort?.value === 'oldest' ? 1 : -1;
+    const items=[...list.querySelectorAll('[data-document-item]')];
+    items.sort((a,b) => direction * String(a.dataset.documentDate || '').localeCompare(String(b.dataset.documentDate || '')))
+      .forEach(item => list.appendChild(item));
+    let visible=0;
+    items.forEach(item => {
+      const haystack=`${item.dataset.documentSearchText || ''} ${item.textContent || ''}`.toLocaleLowerCase(document.documentElement.lang || 'th');
+      item.hidden=Boolean(query) && !haystack.includes(query);
+      if(!item.hidden) visible+=1;
+    });
+    if(empty) empty.hidden=visible!==0;
+  }
+  document.querySelector('[data-document-search]')?.addEventListener('input',refreshMyDocuments);
+  document.querySelector('[data-document-sort]')?.addEventListener('change',refreshMyDocuments);
+
   function syncPaymentOutcome(){
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
     const net=paid;
@@ -4789,8 +4857,8 @@
        the button names one destination instead of two (client, 10 Sep). */
     if(successTitle) successTitle.textContent=thai ? 'ชำระเงินเรียบร้อยแล้ว' : 'Payment complete';
     if(successCopy) successCopy.textContent=hasDelivery
-      ? (thai ? 'ใบเสร็จ ผลวินิจฉัย และรายการยาอยู่ในเอกสารของคุณแล้ว ร้านยากำลังจัดยาและจะแจ้งเมื่อเริ่มจัดส่ง' : 'Your receipt, diagnosis and medicine list are in your documents. The pharmacy is preparing your order and will let you know when it is on the way.')
-      : (thai ? 'ใบเสร็จ ผลวินิจฉัย และใบรับรองแพทย์อยู่ในเอกสารของคุณแล้ว เปิดดูหรือดาวน์โหลดได้ทุกเมื่อ' : 'Your receipt, diagnosis and medical certificate are in your documents, ready to open or download at any time.');
+      ? (thai ? 'ชำระเงินสำเร็จแล้ว ดูใบเสร็จได้จากขั้นชำระเงินในหน้าติดตามคำสั่งซื้อ ร้านยากำลังจัดยาและจะแจ้งเมื่อเริ่มจัดส่ง' : 'Payment is complete. Open the receipt from the paid step in order tracking while the pharmacy prepares your medicine.')
+      : (thai ? 'ชำระเงินสำเร็จแล้ว ใบรับรองแพทย์และเอกสารการรักษาเปิดดูหรือดาวน์โหลดได้ทุกเมื่อ' : 'Payment is complete. Your medical certificate and treatment documents are ready to open or download.');
     if(successCta){
       successCta.dataset.go=hasDelivery ? 'tracking' : 'prescription';
       successCta.textContent=hasDelivery
@@ -8165,6 +8233,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(id==='address-map') window.setTimeout(setupAddressMap,0);
     if(id==='tracking') syncTrackingDelivery();
+    if(id==='my-documents') refreshMyDocuments();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='intake-general') syncGeneralHealthContext();
@@ -10032,6 +10101,7 @@
     'feedback':         { id:'none', name:'Post-Consultation Feedback (not in Phase 1 feature scope)', stories:['Proposed: consultation satisfaction rating for care quality','Note: no KRANE-F## assigned, flag for next feature list update'] },
     'feedbackdone':     { id:'none', name:'Post-Consultation Feedback, Thanks state', stories:[] },
     'profile':          { id:'KRANE-F05', name:'Patient Profile (4-Tab), Tab 1: Profile', stories:['US-F05.1: Active consultation/condition shown with Refill button','US-F05.8: Multiple orders are grouped as needing action, active, and past','US-F05.5: Bottom nav includes Profile as a permanent tab'] },
+    'my-documents':     { id:'KRANE-F05', name:'My Documents', stories:['All prescriptions, medical certificates and receipts are searchable in one place','Documents are sorted by date with newest first by default','Receipts remain linked from the paid step in order tracking'] },
     'history':          { id:'KRANE-F05', name:'Past Treatment Detail', stories:['A completed treatment is represented once instead of duplicating its consultation and order','The detail shows the diagnosis and the previous prescription when one was issued'] },
     'notifications':    { id:'KRANE-F05 + KRANE-F12', name:'Patient Profile, Tab 3: Notifications + Appointment Alerts', stories:['US-F05.6: All platform alerts shown in the Notifications tab','US-F12.1: Booking confirmation, time-change, and cancellation notifications','US-F12.2: Reminder X hours before appointment (configurable)'] },
     'settings':         { id:'KRANE-F05', name:'Patient Profile, Tab 4: Settings', stories:['US-F05.7: Account, payment methods, notification prefs, help, log out'] },

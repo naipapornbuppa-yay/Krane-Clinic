@@ -1743,7 +1743,26 @@
     "ชำระเงินแล้ว":"Paid",
     "จัดยาแล้ว":"Packed",
     "กำลังจัดส่ง":"On the way",
-    "ได้รับแล้ว":"Delivered"
+    "ได้รับแล้ว":"Delivered",
+    "เอกสารของฉัน":"My Documents",
+    "ใบสั่งยา ใบรับรองแพทย์ และใบเสร็จทั้งหมด":"All prescriptions, medical certificates and receipts",
+    "เอกสารการรักษา":"Treatment document",
+    "ออกโดยแพทย์ผู้ตรวจ · เปิดดูหรือดาวน์โหลด":"Issued by your doctor · open or download",
+    "เอกสารทั้งหมด":"All documents",
+    "ค้นหาเอกสารของคุณ":"Find your documents",
+    "ค้นหาชื่อเอกสาร เลขที่ หรือการรักษา":"Search by document, number or treatment",
+    "เรียงตามวันที่":"Sort by date",
+    "เรียงเอกสารตามวันที่":"Sort documents by date",
+    "ล่าสุดก่อน":"Newest first",
+    "เก่าสุดก่อน":"Oldest first",
+    "ไม่พบเอกสาร":"No documents found",
+    "ลองค้นหาด้วยชื่อเอกสาร เลขที่ หรือชื่อการรักษา":"Try a document name, number or treatment",
+    "RC-2026-10293 · 11 ก.ย. 2026 · ผมร่วง":"RC-2026-10293 · 11 Sep 2026 · Hair loss",
+    "11 ก.ย. 2026":"11 Sep 2026",
+    "MC-2026-10288 · 26 ส.ค. 2026 · การนอนและความเครียด":"MC-2026-10288 · 26 Aug 2026 · Sleep and stress",
+    "26 ส.ค. 2026":"26 Aug 2026",
+    "RX-2026-10293 · 30 มิ.ย. 2026 · ผมร่วง":"RX-2026-10293 · 30 Jun 2026 · Hair loss",
+    "MC-2026-10293 · 30 มิ.ย. 2026 · ผมร่วง":"MC-2026-10293 · 30 Jun 2026 · Hair loss"
   };
   var EN = {}, TH_FROM_EN = {};
   for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
