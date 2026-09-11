@@ -758,8 +758,9 @@
   }
 }
 
-/* Compact service cards use the same labelled CTA as the lead card at every
-   breakpoint. Never collapse it into the legacy standalone arrow circle. */
+/* Compact service cards use the same labelled CTA as the lead card from tablet
+   up. Never collapse it into the legacy text-indent arrow hack; the phone rule
+   at the end of this file hides the label properly instead. */
 .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta,
 .landing-figma-draft #services .service-carousel-card--compact.is-product-frame .service-carousel-card__cta {
   width: auto !important;
@@ -898,5 +899,47 @@
     height: 32px !important;
     min-height: 32px !important;
     font-size: 11px !important;
+  }
+}
+
+
+/* ---------- Phone: the small cards carry the arrow alone ----------
+   The pill kept a desktop minimum width (132px) inside a 136px card, so it ran
+   edge to edge and read as a bar rather than a button, and the lead card's pill
+   filled its column the same way. On a phone the two small cards drop the label
+   and keep the arrow in a round button; the lead card keeps its words but hugs
+   them (client, 11 Sep). */
+@media (max-width: 760px) {
+  .landing-figma-draft #services .care-banner__cta,
+  .landing-figma-draft #services .service-carousel-card__cta,
+  .landing-figma-draft #services .service-tile__product-cta,
+  .landing-figma-draft #services .care-banner--weight.is-product-frame .care-banner__cta,
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__product-cta {
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta,
+  .landing-figma-draft #services .service-carousel-card--compact .service-tile__product-cta,
+  .landing-figma-draft #services .service-carousel-card--compact.is-product-frame .service-carousel-card__cta {
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border-radius: 50% !important;
+  }
+
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta-label {
+    display: none !important;
+  }
+
+  .landing-figma-draft #services .service-carousel-card--compact .service-carousel-card__cta svg,
+  .landing-figma-draft #services .service-carousel-card--compact.is-product-frame .service-carousel-card__cta svg {
+    width: 17px !important;
+    height: 17px !important;
+    flex: 0 0 17px !important;
   }
 }
