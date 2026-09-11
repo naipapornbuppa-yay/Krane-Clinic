@@ -8397,3 +8397,84 @@ html[lang="en"] .landing-figma-draft #ed-title{
 @media(prefers-reduced-motion:reduce){
   .scroll-text.is-reveal-ready .reveal-word{opacity:1;transform:none}
 }
+
+/* 11 Sep 2026 — lock the landing mosaic and care journey to one shared
+   alignment system. The two compact cards fill equal grid rows, and their
+   labels, actions and pagers stay fixed while only the artwork cross-fades. */
+.landing-figma-draft .care-banner-grid--auto-products{
+  grid-template-rows:repeat(2,minmax(0,1fr));
+  align-items:stretch;
+}
+.landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub{
+  height:100%!important;
+  min-height:0;
+  align-self:stretch;
+}
+.landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub .service-tile__label,
+.landing-figma-draft .care-banner-grid--auto-products [data-category="sexual-health"] .service-tile__label,
+.landing-figma-draft .care-banner-grid--auto-products [data-category="sexual-health"].is-product-frame .service-tile__label{
+  top:24px!important;
+  right:24px!important;
+  bottom:auto!important;
+  left:28px!important;
+  max-width:14ch!important;
+  text-align:left!important;
+}
+
+/* A single clipped viewport owns the carousel edge. The desktop rail moves
+   only by its controls, preventing the first pixel of the adjacent slide from
+   painting outside the rounded frame. */
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__viewport{
+  overflow-x:hidden;
+  overflow-y:hidden;
+  box-sizing:border-box;
+}
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__slide{
+  box-sizing:border-box;
+  contain:layout paint;
+}
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__visual{
+  box-sizing:border-box;
+}
+.landing-figma-draft .figma-how[data-how-carousel] .figma-how__heading h2{
+  font-size:clamp(42px,4.3vw,62px);
+  line-height:1.15;
+  letter-spacing:-.045em;
+}
+
+@media(max-width:760px){
+  .landing-figma-draft .care-banner-grid--auto-products{
+    grid-template-rows:380px 250px;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub{
+    height:auto!important;
+  }
+  .landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub .service-tile__label,
+  .landing-figma-draft .care-banner-grid--auto-products [data-category="sexual-health"] .service-tile__label,
+  .landing-figma-draft .care-banner-grid--auto-products [data-category="sexual-health"].is-product-frame .service-tile__label{
+    top:16px!important;
+    right:14px!important;
+    left:16px!important;
+    max-width:11ch!important;
+  }
+  .landing-figma-draft .figma-how[data-how-carousel] .figma-how__heading h2{
+    max-width:12ch;
+    font-size:clamp(34px,9.6vw,40px);
+    line-height:1.1;
+  }
+  /* Leave a deliberate safety inset around the transparent phone frame so
+     its bottom stroke is never clipped by the 350px mobile visual stage. */
+  .landing-figma-draft .figma-how[data-how-carousel] .figma-how__device{
+    top:-20px;
+    width:410px;
+    height:410px;
+  }
+  .landing-figma-draft .figma-how[data-how-carousel] .figma-how__visual::after{
+    top:33px;
+  }
+  .landing-figma-draft .figma-how[data-how-carousel] .figma-how__live{
+    top:38px;
+    border-radius:20px;
+    transform:translateX(-50%) scale(.3525);
+  }
+}
