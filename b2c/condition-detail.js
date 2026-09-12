@@ -486,4 +486,38 @@
       `).join("");
     }
   }
+
+  /* The landing page reveals one editorial chapter at a time. Detail pages
+     use the same restrained movement so the system feels related without
+     turning clinical content into a showreel. */
+  const revealTargets = document.querySelectorAll(
+    ".care-proof, .content-section, .price-clarity, .closing-cta"
+  );
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("detail-motion-ready");
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -8%", threshold: 0.08 });
+    revealTargets.forEach((target) => revealObserver.observe(target));
+  } else {
+    revealTargets.forEach((target) => target.classList.add("is-visible"));
+  }
+
+  /* site-header.js runs before dynamic FAQ/product content exists. Refresh the
+     shared icon pass after the condition-specific markup has been inserted. */
+  window.lucide?.createIcons({ attrs: { "stroke-width": 1.8 } });
+
+  /* Hash links in the public nav target sections whose height depends on the
+     condition-specific cards rendered above. Align after that markup exists,
+     otherwise the browser can stop at the pre-render position. */
+  if (location.hash) {
+    const hashTarget = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => hashTarget?.scrollIntoView());
+    }, { once: true });
+  }
 })();
