@@ -3360,3 +3360,21 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .password-rules li.is-met{color:var(--color-success,#1f7a4d)}
 .password-mismatch{color:var(--color-danger)}
 .auth-screen__forgot{align-self:center;margin-top:var(--sp-2)}
+
+/* The connector below the step in progress draws itself toward the next dot,
+   so the trail reads as moving rather than as a static list with one dot lit
+   (client, 12 Sep). The line holds once it arrives, then starts again. */
+.timeline .step.active:not(:last-child)::after{
+  background-color:var(--color-line);
+  background-image:linear-gradient(var(--color-accent),var(--color-accent));
+  background-repeat:no-repeat;
+  background-size:100% 0%;
+  animation:timeline-run 1.9s var(--ease,cubic-bezier(.4,0,.2,1)) infinite;
+}
+@keyframes timeline-run{
+  0%,6%{background-size:100% 0%}
+  62%,100%{background-size:100% 100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .timeline .step.active:not(:last-child)::after{animation:none;background-size:100% 100%}
+}
