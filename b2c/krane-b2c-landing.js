@@ -98,8 +98,9 @@
       general: "General symptoms / Not sure",
       comingSoon: "Coming soon",
       confidenceEyebrow: "Private men's health care",
-      confidenceTitle: "Feel close again,<br>with confidence",
-      confidenceLead: "Consult a doctor privately, one-to-one, with care options tailored to you.",
+      confidenceTitle: "Regain your confidence",
+      confidenceLead: "Start with a private doctor consultation, then choose the care approach that fits you.",
+      confidenceScroll: "Scroll to continue",
       confidenceCta: "Consult now",
       confidenceProofTitle: "Private 1-to-1 consultation",
       confidenceProofBody: "With a licensed doctor",
@@ -892,6 +893,35 @@
     window.addEventListener("load", loadConfidenceVideo, { once: true });
   }
   reducedMotionQuery.addEventListener?.("change", syncConfidenceVideoMotion);
+
+  const confidenceStory = document.querySelector("[data-confidence-story]");
+  let confidenceStoryFrame = 0;
+  const updateConfidenceStory = () => {
+    confidenceStoryFrame = 0;
+    if (!confidenceStory) return;
+    if (reducedMotionQuery.matches) {
+      confidenceStory.style.setProperty("--confidence-scale", "1");
+      confidenceStory.style.setProperty("--confidence-copy-y", "0px");
+      confidenceStory.style.setProperty("--confidence-copy-opacity", "1");
+      return;
+    }
+    const bounds = confidenceStory.getBoundingClientRect();
+    const travel = Math.max(1, bounds.height - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, -bounds.top / travel));
+    confidenceStory.style.setProperty("--confidence-scale", (1.03 + progress * .06).toFixed(3));
+    confidenceStory.style.setProperty("--confidence-copy-y", `${(18 - progress * 36).toFixed(1)}px`);
+    confidenceStory.style.setProperty("--confidence-copy-opacity", (.86 + progress * .14).toFixed(3));
+  };
+  const queueConfidenceStoryUpdate = () => {
+    if (!confidenceStory || confidenceStoryFrame) return;
+    confidenceStoryFrame = window.requestAnimationFrame(updateConfidenceStory);
+  };
+  if (confidenceStory) {
+    updateConfidenceStory();
+    window.addEventListener("scroll", queueConfidenceStoryUpdate, { passive: true });
+    window.addEventListener("resize", queueConfidenceStoryUpdate);
+    reducedMotionQuery.addEventListener?.("change", queueConfidenceStoryUpdate);
+  }
 
   const careHeroArt = document.querySelector("[data-care-hero-art]");
   const careHeroCard = careHeroArt?.closest(".care-banner--weight");

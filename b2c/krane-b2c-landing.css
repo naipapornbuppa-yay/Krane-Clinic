@@ -3349,6 +3349,116 @@ body{background:var(--landing-page-bg)}
   .confidence-campaign__cta,.confidence-campaign__cta svg{transition:none}
 }
 
+/* ED story break: the original beach film returns as a full-bleed, sticky
+   chapter between the programme and the next content band. The extra scroll
+   distance creates a short pause without turning the page into a long
+   animation; JS only supplies the subtle camera/copy drift. */
+.confidence-campaign--scroll-story{
+  --confidence-scale:1.03;
+  --confidence-copy-y:18px;
+  --confidence-copy-opacity:.86;
+  height:160svh;
+  min-height:920px;
+  overflow:visible;
+  background:#26302f;
+}
+.landing-figma-draft main>.confidence-campaign--scroll-story{
+  margin-top:-40px;
+  margin-inline:0;
+  overflow:visible;
+}
+.confidence-campaign--scroll-story .confidence-campaign__stage{
+  position:sticky;
+  top:0;
+  isolation:isolate;
+  width:100%;
+  height:100svh;
+  min-height:560px;
+  overflow:hidden;
+  background:#26302f;
+}
+.confidence-campaign--scroll-story .confidence-campaign__video{
+  transform:scale(var(--confidence-scale));
+  transform-origin:center;
+  will-change:transform;
+}
+.confidence-campaign--scroll-story .confidence-campaign__shade{
+  background:
+    linear-gradient(90deg,rgba(8,18,27,.62) 0%,rgba(8,18,27,.3) 45%,rgba(8,18,27,.05) 78%),
+    linear-gradient(0deg,rgba(8,18,27,.5) 0%,rgba(8,18,27,.04) 58%);
+}
+.confidence-campaign--scroll-story .confidence-campaign__copy{
+  bottom:clamp(116px,15vh,180px);
+  transform:translate3d(0,var(--confidence-copy-y),0);
+  opacity:var(--confidence-copy-opacity);
+  will-change:transform,opacity;
+}
+.confidence-campaign--scroll-story .confidence-campaign__eyebrow{
+  font-size:clamp(13px,1.2vw,17px);
+}
+.confidence-campaign--scroll-story h2{
+  max-width:9ch;
+  margin-top:16px;
+  font-size:clamp(54px,7vw,104px);
+  font-weight:500;
+  line-height:.98;
+  letter-spacing:-.055em;
+}
+.confidence-campaign--scroll-story .confidence-campaign__lead{
+  max-width:42ch;
+  margin-top:24px;
+  color:rgba(255,255,255,.88);
+}
+.confidence-campaign__scroll-cue{
+  position:absolute;
+  right:clamp(28px,4vw,58px);
+  bottom:clamp(28px,4vw,52px);
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:rgba(255,255,255,.82);
+  font-size:12px;
+  font-weight:600;
+}
+.confidence-campaign__scroll-cue svg{
+  width:18px;
+  height:18px;
+  animation:confidence-scroll-cue 1.8s ease-in-out infinite;
+}
+@keyframes confidence-scroll-cue{
+  0%,100%{transform:translateY(-2px)}
+  50%{transform:translateY(4px)}
+}
+@media(max-width:800px){
+  .landing-figma-draft main>.confidence-campaign--scroll-story{margin-top:-12px}
+  .confidence-campaign--scroll-story{height:145svh;min-height:820px}
+  .confidence-campaign--scroll-story .confidence-campaign__video{object-position:center center}
+  .confidence-campaign--scroll-story .confidence-campaign__shade{
+    background:linear-gradient(0deg,rgba(8,18,27,.68) 0%,rgba(8,18,27,.3) 50%,rgba(8,18,27,.04) 82%);
+  }
+  .confidence-campaign--scroll-story .confidence-campaign__copy{
+    right:24px;
+    bottom:116px;
+    left:24px;
+    width:auto;
+  }
+  .confidence-campaign--scroll-story h2{font-size:clamp(48px,12vw,72px)}
+  .confidence-campaign__scroll-cue{right:24px;bottom:90px}
+}
+@media(prefers-reduced-motion:reduce){
+  .confidence-campaign--scroll-story{
+    --confidence-scale:1;
+    --confidence-copy-y:0px;
+    --confidence-copy-opacity:1;
+    height:100svh;
+    min-height:620px;
+  }
+  .confidence-campaign--scroll-story .confidence-campaign__video{will-change:auto}
+  .confidence-campaign--scroll-story .confidence-campaign__copy{will-change:auto}
+  .confidence-campaign__scroll-cue svg{animation:none}
+}
+
 /* Medical advisor directory and profile sheet */
 body.expert-open{overflow:hidden}
 .experts{
