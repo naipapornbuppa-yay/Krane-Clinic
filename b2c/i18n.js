@@ -1585,6 +1585,7 @@
     "อานนท์ พ.":"Anon P.",
     "มะลิ":"Mali",
     "ไทย":"Thai",
+    "ภาษาไทย":"Thai",
     "กำลังเตรียม":"Preparing",
     "ได้รับของแล้ว":"I have received it",
     "เล่าให้เราฟังว่าอะไรดี หรืออะไรที่เราทำได้ดีกว่านี้…":"Tell us what went well, or what we could do better…",
@@ -1874,6 +1875,13 @@
     [].forEach.call(document.querySelectorAll("[data-lang] .lang__opt, .lang .lang__opt"), function (x) {
       if (x.dataset.lng) x.classList.toggle("is-active", (x.dataset.lng === "th") === th);
     });
+    /* Every compact header and the named Settings dropdown reflect the same
+       saved choice. Assigning the native value does not emit change, so this
+       cannot recurse through the listener below. */
+    [].forEach.call(document.querySelectorAll("select[data-language]"), function (select) {
+      select.value = th ? "th" : "en";
+    });
+    if (window.kraneSyncSelects) window.kraneSyncSelects(document);
   }
   function observeOn() {
     /* Watched in both languages: screens rendered after load carry Thai that
