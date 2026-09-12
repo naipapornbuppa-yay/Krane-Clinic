@@ -492,8 +492,12 @@
     const flow = readSessionValue(FLOW_STATE_KEY);
     const stored = readSessionValue(AUTH_PROFILE_KEY);
     const injected = window.__KRANE_AUTH__ && typeof window.__KRANE_AUTH__ === "object" ? window.__KRANE_AUTH__ : {};
+    /* A verified code no longer means a finished account: sign-up ends at the
+       password, so someone who stopped at that step is still logged out here
+       (client, 12 Sep). */
     const authenticated = injected.authenticated ?? stored.authenticated ?? Boolean(
-      flow.otpVerified && (flow.accountCreated || flow.returningIdentityValid || flow.identityVerified)
+      flow.otpVerified && flow.passwordSet &&
+      (flow.accountCreated || flow.returningIdentityValid || flow.identityVerified)
     );
     const provider = injected.provider || stored.provider || flow.authProvider || "";
     return {
