@@ -31,6 +31,11 @@ img{max-width:100%}
 .stack-3>*+*{margin-top:var(--sp-3)}
 .stack-4>*+*{margin-top:var(--sp-4)}
 .stack-5>*+*{margin-top:var(--sp-5)}
+/* A hidden first child must not leave its gap behind. Intake pages that promote
+   the question to heading hide the screen title, and every one of them started
+   24px lower than the sets that keep their title (client, 19 Aug). */
+.stack-2>[hidden]:first-child+*,.stack-3>[hidden]:first-child+*,
+.stack-4>[hidden]:first-child+*,.stack-5>[hidden]:first-child+*{margin-top:0}
 .row{display:flex;align-items:center;gap:var(--sp-3)}
 .row>*,.between>*{min-width:0}
 .between{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
@@ -61,11 +66,11 @@ img{max-width:100%}
 .btn--primary:hover{background:var(--btn-primary-bg-hover);box-shadow:var(--shadow-md)}
 .btn:disabled,.btn.is-disabled,.btn[aria-disabled="true"]{background:var(--color-line-strong);border-color:transparent;color:var(--color-ink-3);box-shadow:none;cursor:not-allowed;transform:none}
 .btn.is-disabled:hover,.btn[aria-disabled="true"]:hover{background:var(--color-line-strong);box-shadow:none;transform:none}
-.btn--secondary{background:var(--color-surface);color:var(--color-ink);border-color:var(--color-line-strong)}
-.btn--secondary:hover{background:var(--color-bg-2)}
+.btn--secondary{background:var(--surface-sunken);color:var(--color-ink);border-color:transparent}
+.btn--secondary:hover{background:var(--surface-sunken-hover)}
 .btn--ghost{background:transparent;color:var(--color-ink-2);width:auto;padding:0 var(--sp-3)}
 .btn--danger{background:transparent;color:var(--color-danger);border-color:color-mix(in srgb,var(--color-danger) 40%,transparent)}
-.btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-surface))}
+.btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-field))}
 .btn--sm{height:var(--control-h-sm);padding:0 var(--sp-4);font-size:var(--fs-sm);width:auto}
 .social-btn{gap:12px}
 .brand-icon{width:22px;height:22px;display:block;flex:none}
@@ -92,11 +97,16 @@ img{max-width:100%}
 /* ---------- Inputs ---------- */
 .field{display:block;min-width:0;max-width:100%}
 .field>label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:var(--sp-2)}
+/* Outlined, not filled. A grey fill on a white card reads as a disabled field:
+   patients said the birth date, height and weight boxes looked like something
+   they could not tap or type into. These now match the select trigger next to
+   them, which is the one control nobody mistook for read-only (client, 10 Sep). */
 .input,.select,.textarea{
   width:100%;min-width:0;max-width:100%;height:var(--control-h);padding:0 var(--sp-4);
   border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
+.input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
@@ -127,6 +137,27 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Social sign-in returns to Krane for profile completion before the care flow continues. */
 .auth-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
 @media(max-width:36rem){.auth-name-grid{grid-template-columns:1fr}}
+.auth-screen__top{justify-content:flex-start}
+.auth-screen__logo{display:block;width:72px;height:auto;max-height:24px;margin-inline:auto;object-fit:contain}
+.auth-screen__body{display:flex;justify-content:center;padding-top:clamp(36px,8vh,84px);padding-bottom:var(--sp-7)}
+.auth-screen__panel{width:min(100%,440px);margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-5)}
+.auth-screen__body:has([data-login-intake-notice]:not([hidden])){padding-top:var(--sp-5)}
+.auth-screen__context{align-items:flex-start;text-align:left}
+.auth-screen__context .hint{margin-top:2px;color:inherit;opacity:.82}
+.auth-screen__intro{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center}
+.auth-screen__intro .h1{margin:0;font-size:clamp(30px,5vw,40px)}
+.auth-screen__intro p{margin:0}
+.auth-screen__form{display:flex;flex-direction:column;gap:var(--sp-3)}
+.auth-screen__separator{display:flex;align-items:center;gap:var(--sp-3);color:var(--color-ink-3);font-size:var(--fs-sm);white-space:nowrap}
+.auth-screen__separator::before,.auth-screen__separator::after{content:"";height:1px;flex:1;background:var(--color-line-strong)}
+.auth-screen__social .social-btn{background:var(--color-surface);border-color:var(--color-line-strong);box-shadow:none}
+.auth-screen__social .social-btn:hover{background:var(--surface-sunken)}
+.auth-screen__create{align-self:center;text-align:center}
+@media(max-width:36rem){
+  .auth-screen__body{padding-top:var(--sp-6)}
+  .auth-screen__panel{gap:var(--sp-4)}
+  .auth-screen__intro .h1{font-size:30px}
+}
 .partner-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-3)}
 .partner-health-grid>.field{min-width:0;max-width:100%}
 .partner-health-compact{display:flex;flex-direction:column;gap:var(--sp-4)}
@@ -147,17 +178,31 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2)}
 .partner-history-field>legend{display:block;width:100%;padding:0;font-size:13px;font-weight:var(--fw-medium);line-height:1.35;margin:0;color:var(--color-ink)}
 .partner-history-field>.partner-binary{width:100%;align-self:stretch}
-.partner-binary{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:52px;padding:4px;border:1px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface)}
+.partner-binary{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:52px;padding:4px;border:1px solid transparent;border-radius:var(--control-radius);background:var(--color-field)}
 .partner-binary__option{min-width:0;height:100%;padding:0 10px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-2);font-size:14px;font-weight:var(--fw-medium);cursor:pointer;transition:background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
-.partner-binary__option[aria-checked="true"]{background:var(--color-surface-deep);color:var(--color-on-dark);box-shadow:var(--shadow-sm)}
+/* Segmented control, per the client's reference: the track recedes and the
+   chosen side is a raised light pill, rather than the selected half going
+   dark. Reads as a switch you can move, not as a filled button. */
+.partner-binary__option[aria-checked="true"]{background:var(--color-surface);color:var(--color-ink);box-shadow:0 1px 2px rgba(18,24,36,.06),0 2px 8px rgba(18,24,36,.08)}
+.partner-binary__option[aria-checked="false"]{color:var(--color-ink-3)}
 .partner-binary__option:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+/* Same segmented control, filled in the app blue with no outline — used by
+   the delivery/pickup toggle (client, 19 Aug). Tabs report aria-selected
+   where the binary questions report aria-checked. */
+.partner-binary__option[aria-selected="false"]{color:var(--color-ink-3)}
+.partner-binary--accent .partner-binary__option[aria-checked="true"],
+.partner-binary--accent .partner-binary__option[aria-selected="true"]{background:var(--color-accent);color:#fff;box-shadow:none}
 .partner-history-detail{display:flex;align-items:center;width:100%;min-width:0;max-width:100%;margin:0}
 .partner-history-detail .input{width:100%;min-width:0;max-width:100%;text-overflow:ellipsis}
 .partner-history-detail .input:disabled{cursor:not-allowed;background:var(--color-bg-2);color:var(--color-ink-3);opacity:.7}
 #intake-general .field,#intake-concern .field{gap:6px}
 #intake-general .field label,#intake-concern .field label{font-size:13px;font-weight:var(--fw-medium);line-height:1.35;color:var(--color-ink)}
-#intake-general .input,#intake-general .select,#intake-general .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-color:var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);font-size:16px}
-#intake-general .partner-binary{padding:4px}
+/* Outlined like the rest of the form: the filled boxes on this screen were the
+   ones patients read as disabled. The segmented control keeps its fill, since a
+   track has to sit behind the selected half (client, 10 Sep). */
+#intake-general .input,#intake-general .select,#intake-general .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-radius:var(--control-radius);font-size:16px}
+#intake-general .input,#intake-general .select{border:1px solid var(--color-line-strong);background:var(--color-surface)}
+#intake-general .partner-binary{padding:4px;border-color:transparent;background:var(--color-field)}
 #intake-general .input:focus,#intake-general .select:focus{background:var(--color-surface)}
 .partner-nurse-avatar{display:grid;place-items:center;background:var(--color-bg-2);color:var(--color-ink)}
 .partner-nurse-avatar [data-demo-icon]{width:24px;height:24px}
@@ -176,31 +221,48 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-concern-hero__copy{position:relative;z-index:1;max-width:230px}
 .partner-concern-hero__copy h2{margin:0 0 var(--sp-2);font-size:clamp(25px,7vw,32px);line-height:1.12}
 .partner-concern-hero__copy p{margin:0;color:var(--color-ink-2);font-size:var(--fs-base);line-height:1.5}
-.partner-concern-hero__visual{width:92px;height:92px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--color-surface);color:var(--color-accent);box-shadow:var(--shadow-sm)}
+.partner-concern-hero__visual{width:92px;height:92px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--color-surface);color:var(--color-ink-2);box-shadow:var(--shadow-sm)}
 .partner-concern-hero__visual [data-demo-icon]{width:42px;height:42px}
 .partner-concern-textarea{min-height:124px}
 #intake-concern .partner-concern-textarea{min-height:96px}
 #intake-concern .partner-photo-upload{padding:18px 14px}
 .field-label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:var(--sp-2)}
-.partner-duration-row{height:56px;display:flex;align-items:stretch;gap:0;overflow:hidden;border:1px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface)}
-.partner-duration-stepper,.partner-duration-units{height:100%;display:flex;align-items:center;background:transparent}
-.partner-duration-stepper{flex:0 0 40%;min-width:164px;justify-content:space-between;gap:8px;padding:8px 12px}
+/* Client (18 Aug): the amount and its unit stack instead of splitting one
+   56px bar in two — four units never fit beside a stepper on a phone, and the
+   halves fought for width. The units now use the same segmented treatment as
+   the ไม่มี/มี control: a recessed track with the chosen side raised, rather
+   than one dark half against a flat field that read as disabled. */
+.partner-duration-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;border:0;border-radius:0;background:transparent;overflow:visible;height:auto}
+.partner-duration-stepper,.partner-duration-units{display:flex;align-items:center}
+.partner-duration-stepper{height:56px;flex:none;min-width:0;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:var(--control-radius);background:var(--color-field)}
 .partner-duration-stepper button{width:30px;height:30px;display:inline-grid;place-items:center;flex:0 0 30px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font:inherit;font-size:17px;font-weight:var(--fw-semibold);line-height:1;cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease}
 .partner-duration-stepper button:hover:not(:disabled){background:var(--color-bg-2)}
 .partner-duration-stepper button:active:not(:disabled){transform:scale(.92)}
 .partner-duration-stepper button:disabled{opacity:.35;cursor:not-allowed}
-.partner-duration-stepper input{width:48px;min-width:42px;height:100%;padding:0;border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:20px;font-weight:var(--fw-semibold);text-align:center;-moz-appearance:textfield}
+.partner-duration-stepper input{width:auto;min-width:42px;flex:1;height:100%;padding:0;border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:20px;font-weight:var(--fw-semibold);text-align:center;-moz-appearance:textfield}
 .partner-duration-stepper input::-webkit-inner-spin-button,.partner-duration-stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .partner-duration-stepper input:focus{outline:none}
-.partner-duration-units{flex:1;gap:5px;padding:6px 8px;border-left:1px solid var(--color-line);overflow:hidden}
-.partner-duration-units button{height:42px;min-width:0;flex:1;padding:0 10px;border:1px solid var(--color-line-strong);border-radius:calc(var(--control-radius) - 6px);background:var(--color-surface);color:var(--color-ink-2);font:inherit;font-weight:var(--fw-medium);cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease,color .18s ease}
-.partner-duration-units button+button{border-left:1px solid var(--color-line-strong)}
-.partner-duration-units button[aria-selected="true"]{border-color:var(--color-surface-deep);background:var(--color-surface-deep);color:var(--color-on-dark)}
+.partner-duration-units{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;height:52px;gap:4px;padding:4px;border:0;border-radius:var(--control-radius);background:var(--color-field);overflow:hidden}
+.partner-duration-units button{height:100%;min-width:0;padding:0 6px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-3);font:inherit;font-size:14px;font-weight:var(--fw-medium);cursor:pointer;white-space:nowrap;transition:background .18s ease,transform .12s ease,color .18s ease,box-shadow .18s ease}
+.partner-duration-units button[aria-selected="true"]{background:var(--color-surface);color:var(--color-ink);box-shadow:0 1px 2px rgba(18,24,36,.06),0 2px 8px rgba(18,24,36,.08)}
 .partner-duration-units button:active{transform:scale(.97)}
 .intake-duration-field{gap:8px}
 .intake-duration-control{max-width:620px}
 /* Sits inline at the end of the heading itself instead of on its own line below it. */
 .h1:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+/* One page, one question — so the question itself is the heading. The screen
+   title used to stay huge over every page while the actual question sat in a
+   small grey label, which read as backwards importance (client, 18 Aug). */
+/* Specific enough to outrank .section-label and .field>label, which both come
+   later in this file and would otherwise keep the heading at 13px. */
+[data-intake-question] .intake-question__title{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:var(--fw-bold);line-height:1.3;
+  letter-spacing:0;text-transform:none;color:var(--color-ink);margin:0 0 var(--sp-4);display:block}
+[data-intake-question] .intake-question__title:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+/* Follow-up prompts on the same page share one look, so a page built from a
+   section label plus a field label does not read as two different things. */
+[data-intake-question] .intake-question__sub{display:block;margin:0 0 var(--sp-2);
+  font-family:var(--font-body,inherit);font-size:var(--fs-base);font-weight:var(--fw-semibold);
+  line-height:1.4;letter-spacing:0;text-transform:none;color:var(--color-ink)}
 .intake-question-count{flex:none;margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.4;white-space:nowrap}
 [data-intake-question][hidden]{display:none!important}
 
@@ -229,7 +291,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    its two lines almost touching, so the pinned address read as an offcut of the
    map rather than its own line of information. It gets room on all four sides
    and its lines get room from each other. */
-.address-readout{display:flex;flex-direction:column;gap:5px;margin:0;padding:var(--sp-1) 0 var(--sp-2)}
+.address-readout{display:flex;flex-direction:column;gap:5px;margin:0;padding:var(--sp-4) 0 var(--sp-3)}
 .address-readout strong{font-size:var(--fs-base);line-height:1.4;color:var(--color-ink)}
 .address-readout span{font-size:var(--fs-sm);line-height:1.5;color:var(--color-ink-2)}
 /* Two fields per row, each free to shrink; min-width:0 stops a long Thai label
@@ -256,7 +318,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   will-change:transform}
 .sim-map--full{position:relative;height:clamp(260px,46vh,420px);border-radius:var(--radius-md);overflow:hidden}
 .sim-map__crosshair{position:absolute;left:50%;top:50%;z-index:2;display:grid;place-items:center;width:38px;height:38px;
-  transform:translate(-50%,-100%);color:var(--color-accent-ink);pointer-events:none;filter:drop-shadow(0 6px 8px rgba(23,46,81,.28))}
+  transform:translate(-50%,-100%);color:var(--color-accent);pointer-events:none;filter:drop-shadow(0 6px 8px rgba(23,46,81,.28))}
+.sim-map__crosshair svg{fill:currentColor;stroke:currentColor;stroke-width:1.2}
+/* Keep the dot in the head readable once the body is filled. */
+.sim-map__crosshair svg circle{fill:var(--color-surface);stroke:none}
 .sim-map__crosshair .ui-icon{width:38px;height:38px}
 .sim-map__zoom{position:absolute;right:var(--sp-3);top:var(--sp-3);z-index:3;display:grid;gap:1px;border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow-sm)}
 .sim-map__zoom button{width:36px;height:36px;border:0;background:var(--color-surface);color:var(--color-ink);font-size:18px;line-height:1;cursor:pointer}
@@ -266,6 +331,20 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:13px;font-weight:var(--fw-semibold);cursor:pointer;box-shadow:var(--shadow-sm)}
 .sim-map__locate .ui-icon{width:16px;height:16px}
 .sim-map.is-panning .sim-map__plane{transition:none}
+/* ---- OpenStreetMap tiles (no SDK: the tiles are plain images) ---- */
+.osm-map{position:absolute;inset:0;z-index:1;overflow:hidden;background:#E8E4DD;touch-action:none;cursor:grab}
+.osm-map.is-panning{cursor:grabbing}
+.osm-map__plane{position:absolute;inset:0;will-change:transform}
+.osm-map__tile{position:absolute;width:256px;height:256px;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.osm-map__credit{position:absolute;right:0;bottom:0;z-index:2;padding:2px 6px;border-radius:var(--radius-sm) 0 0 0;
+  background:rgba(255,255,255,.78);color:var(--color-ink-3);font-size:10px;line-height:1.4}
+/* A precondition for the tap, not a paragraph to read: one line, on the
+   button, in the app's own blue (client, 18 Aug). */
+.info-chip{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;
+  padding:10px var(--sp-3);border-radius:var(--control-radius);
+  background:color-mix(in srgb,var(--color-accent) 9%,var(--color-surface));
+  color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.35}
+.info-chip .ui-icon{flex:none;width:16px;height:16px}
 /* ---- In-app map modal ---- */
 .map-modal{position:absolute;inset:0;z-index:40;display:grid;place-items:end center}
 .map-modal__backdrop{position:absolute;inset:0;background:rgba(23,46,81,.42)}
@@ -274,6 +353,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .map-modal__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
 .map-modal__close{width:var(--tap-target-min,44px);height:var(--tap-target-min,44px);border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:15px;cursor:pointer}
 .map-modal__foot{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+/* Confirm sheets follow the same action stack as every dialog in the app: the
+   action full width, the way out under it (client, 18 Aug). Side by side, the
+   ghost label wrapped onto three lines on a 390px screen. */
+.endcall-modal .map-modal__foot{display:grid;grid-template-columns:1fr;gap:var(--sp-2)}
+.endcall-modal .map-modal__foot .btn{width:100%;height:var(--control-h)}
+.endcall-modal .map-modal__foot .btn--ghost{order:2}
 .map-modal__readout{min-width:0}
 .map-modal__readout strong{display:block;font-size:14px}
 /* ---- Recipient inline edit ---- */
@@ -285,7 +370,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .delivery-map-preview.is-pin-selected .delivery-map-cta{background:var(--color-accent)}
 @keyframes delivery-pin-drop{0%{transform:translate(-50%,-110%) scale(.72);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
 @keyframes delivery-pin-pulse{0%,100%{box-shadow:var(--shadow-md),0 0 0 0 rgba(17,103,255,.34)}50%{box-shadow:var(--shadow-md),0 0 0 10px rgba(17,103,255,0)}}
-.delivery-map-cta{position:absolute;left:50%;bottom:12px;min-height:38px;padding:0 18px;transform:translateX(-50%);white-space:nowrap;border:0;border-radius:var(--radius-pill);background:var(--color-surface-deep);color:var(--color-on-dark);font:inherit;font-size:14px;font-weight:var(--fw-semibold);box-shadow:var(--shadow-md);cursor:pointer}
+.delivery-map-cta{position:absolute;left:50%;bottom:12px;min-height:38px;padding:0 18px;transform:translateX(-50%);white-space:nowrap;border:0;border-radius:var(--button-radius);background:var(--color-surface-deep);color:var(--color-on-dark);font:inherit;font-size:14px;font-weight:var(--fw-semibold);box-shadow:var(--shadow-md);cursor:pointer}
 .delivery-address-summary{display:flex;flex-direction:column;gap:1px;padding:8px 12px;font-size:13px}
 .delivery-address-summary span{color:var(--color-ink-2);font-size:13px}
 .delivery-recipient,.delivery-method-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px}
@@ -315,7 +400,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .transition-stage{display:flex;min-height:0;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding-top:24px;padding-bottom:32px;text-align:center}
 /* Krane transition graphic: one compact animated icon per state.
    It intentionally has no illustration panel, orbit dots, or borrowed scene background. */
-.transition-stage__visual{position:relative;width:112px;height:112px;display:grid;place-items:center;overflow:visible;background:transparent;color:var(--color-accent)}
+.transition-stage__visual{position:relative;width:112px;height:112px;display:grid;place-items:center;overflow:visible;background:transparent;color:var(--color-ink-2)}
 .screen__body.center>.transition-stage__visual{margin-inline:auto}
 .transition-stage__visual::before,.transition-stage__visual::after{display:none}
 .transition-stage__symbol{position:relative;z-index:1;width:72px;height:72px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:var(--color-on-dark);box-shadow:0 10px 30px color-mix(in srgb,var(--color-accent) 24%,transparent);animation:krane-signal-float 2.2s var(--ease-inout) infinite}
@@ -371,6 +456,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Success, empty and recoverable states use the same circular object stage as
    loading screens. Branding belongs on the object itself; never add a second
    floating logo tag above the artwork. */
+/* Client, 1 Sep: line art only, no white plate behind it. */
+.state-view__tile--cutout{background:transparent;box-shadow:none;border-radius:0}
 .state-view__tile--brand{
   width:100%;height:100%;overflow:visible;border-radius:0;background:transparent;
   box-shadow:none;isolation:isolate
@@ -424,7 +511,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .state-view__visual--loading .state-view__badge{
   background:var(--color-accent);color:var(--color-on-accent)
 }
-.stage-graphic{position:relative;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#f7f9ff,#e8eefb);color:var(--color-accent)}
+.stage-graphic{position:relative;display:grid;place-items:center;overflow:hidden;background:var(--color-bg-2);color:var(--color-ink-2)}
 .stage-graphic>.ui-icon{width:64px;height:64px;stroke-width:1.55;position:relative;z-index:2}
 .stage-graphic::before{content:"";position:absolute;width:112px;height:112px;border:1px solid color-mix(in srgb,var(--color-accent) 22%,transparent);border-radius:50%;animation:stage-orbit 3.2s var(--ease-inout) infinite}
 .stage-graphic--doctor{background:linear-gradient(145deg,#f5f8ff,#dfe9ff)}
@@ -489,6 +576,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* A stage that ends clears this readout, which used to leave an empty pill sitting
    under the copy. Nothing to say means nothing to show. */
 .state-view__timer:empty{display:none}
+/* Where the counter would be. A state screen that ends on an action rather than
+   on a wait puts that action in the same place, so the two read as the same
+   shape of screen instead of one having a floating footer (client, 1 Sep). */
+.state-view__action{width:100%;max-width:320px;margin-inline:auto}
+.state-view__action .btn{width:100%}
+/* The last minute of the entry window: the deadline is the point, so it stops
+   being a quiet readout (client, 20 Aug). */
+.state-view__timer--urgent{color:var(--color-danger)}
+
 .state-view__countdown{
   display:inline-flex;align-items:baseline;justify-content:center;gap:7px;
   min-width:0;padding:0;border:0;background:transparent;box-shadow:none;
@@ -563,7 +659,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .pharmacy-review-simple__status .step-dot.is-done{background:var(--color-surface-deep);color:var(--color-on-dark)}
 .pharmacy-review-simple__status strong{margin-left:5px;font-size:13px}
 .partner-relief-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
-.partner-relief-grid button{min-height:54px;padding:8px 6px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:14px;font-weight:var(--fw-medium);line-height:1.3;cursor:pointer}
+.partner-relief-grid button{min-height:54px;padding:8px 6px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--color-field);color:var(--color-ink);font:inherit;font-size:14px;font-weight:var(--fw-medium);line-height:1.3;cursor:pointer}
 .partner-relief-grid button[aria-selected="true"]{border-color:var(--color-surface-deep);background:var(--color-surface-deep);color:var(--color-on-dark)}
 .partner-photo-upload{display:flex!important;flex-direction:column;align-items:center!important;justify-content:center!important;padding:var(--sp-5) var(--sp-4);background:var(--color-surface);text-align:center}
 .partner-photo-upload .up-ic{margin-inline:auto}
@@ -572,14 +668,16 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-photo-upload .up-sub{max-width:460px;margin-inline:auto;line-height:1.45}
 @media(max-width:360px){
   .partner-concern-hero__visual{width:72px;height:72px}
-  .partner-duration-stepper{flex-basis:38%;min-width:142px;padding-inline:8px}
-  .partner-duration-units{padding-inline:6px}
-  .partner-duration-units button{padding-inline:6px}
+  .partner-duration-stepper{padding-inline:8px}
+  .partner-duration-units button{padding-inline:4px;font-size:13px}
   .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 /* ---------- Card ---------- */
-.card{background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-sm)}
+/* Client (17 Aug): the page is the darker tone and the card is the lighter one
+   sitting on it — the reverse of before, where a grey card sat on a white
+   screen. No outline; separation comes from the tone step plus a faint lift. */
+.card{background:var(--surface-card);border:0;border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:none}
 .card--flat{box-shadow:none}
 .card--filled{background:var(--color-bg-soft);border-color:transparent}
 .card--pad-sm{padding:var(--sp-4)}
@@ -587,14 +685,18 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* ---------- Selectable option (intake / concern / delivery) ---------- */
 .option{
   display:flex;align-items:center;gap:var(--sp-4);width:100%;text-align:left;cursor:pointer;
-  background:var(--color-bg-soft);border:1px solid transparent;border-radius:var(--radius-md);
-  padding:var(--sp-4);box-shadow:none;min-height:68px;font:inherit;color:var(--color-ink);
+  /* Options are card-like, so they take the lighter surface like cards do —
+     the old translucent near-white disappeared against the darker page. */
+  background:var(--surface-card-raised);border:1px solid transparent;border-radius:var(--radius-md);
+  padding:var(--sp-4);box-shadow:var(--shadow-card-raised);min-height:68px;font:inherit;color:var(--color-ink);
   transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
 /* inline option chips (e.g. time slots) opt out of the uniform list height */
 .option[style*="width:auto"]{min-height:0}
-.option:hover{border-color:transparent;background:var(--color-bg-2);transform:translateY(-1px);box-shadow:none}
-.option:active{transform:scale(.985)}
+@media(hover:hover){
+  .option:hover{border-color:transparent;background:var(--surface-card-hover);transform:translateY(-1px);box-shadow:var(--shadow-card-raised)}
+}
+.option:active{background:var(--surface-sunken-active);transform:scale(.985)}
 /* selected: sleek single hairline in the brand colour + a faint tint (no double ring, no bulk) */
 .option[aria-selected="true"]{border-color:transparent;background:var(--color-accent-soft)}
 /* focus: clean brand ring (replaces the browser's default orange outline) */
@@ -622,12 +724,20 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .option .opt-soon{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-3);background:var(--color-bg-2);border:1px solid var(--color-line-strong);padding:3px 9px;border-radius:var(--radius-pill);flex:none}
 .common-group{display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
 .common-group:first-of-type{padding-top:0;border-top:0}
+/* One question per page: the group rule has nothing left to separate. */
+[data-intake-question].common-group{padding-top:0;border-top:0}
 
 /* ---------- Badge / pill ---------- */
 /* One consistent badge: soft-filled pill, no borders/outlines. Tints stay in-palette. */
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:4px 10px;border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:4px 10px;border:0;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2);white-space:nowrap}
+.between>.badge{flex:none}
+/* A count is a fact, not a control. On a pill it read as a button and the
+   client tried to press it (1 Sep), so it drops the plate and stays a number
+   beside its heading. */
+.section-count{flex:none;color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);
+  font-variant-numeric:tabular-nums;background:none;border:0;padding:0}
 .badge--line{background:var(--color-bg-2);border:0;color:var(--color-ink-2)}
-.badge--warn{background:var(--color-blue-soft);color:var(--color-status-blue-ink)}
+.badge--warn{background:var(--state-attention);color:var(--state-attention-ink)}
 
 /* brand-tinted avatar / thumb (icon circles) + colourful badge */
 .avatar svg{width:54%;height:54%}
@@ -638,7 +748,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   box-shadow:none}
 .avatar.avatar--brand::before,.thumb.thumb--brand::before{display:none}
 .avatar.avatar--brand svg,.thumb.thumb--brand svg{position:relative;width:54%;height:54%}
-.badge--ok{background:var(--color-accent-soft);color:var(--color-accent-ink)}
+.badge--ok{background:var(--state-positive);color:var(--state-positive-ink)}
 
 
 /* ---------- Progress bar ---------- */
@@ -650,18 +760,22 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    Fictional AI-generated reference photography demonstrates framing without
    exposing any real patient's identity or health data. */
 .photo-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2);margin:0;padding:0;list-style:none}
-.photo-guide__item{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);padding:var(--sp-3) var(--sp-2);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface);text-align:center}
+/* Reference art, not choices. An outlined white card made all four look
+   tappable (client, 19 Aug), so the drawings sit straight on the page. */
+.photo-guide__item{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);padding:0 2px;border:0;background:none;text-align:center}
 /* Four consistent reference angles. If an asset is unavailable, the tile
    falls back to a neutral photo slot with a camera glyph (.is-empty). */
-.photo-guide__figure{width:100%;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:var(--color-bg-2);color:var(--color-ink-3)}
+/* No plate behind the drawing: the beige tile boxed each figure into a second
+   card inside the card (client, 19 Aug). The empty-state slot keeps a fill so
+   there is something to see when an asset is missing. */
+.photo-guide__figure{width:100%;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:transparent;color:var(--color-ink-3)}
 .photo-guide__img{width:100%;height:100%;object-fit:cover;display:block}
-.photo-guide__figure.is-empty{position:relative}
+.photo-guide__figure.is-empty{position:relative;background:var(--color-bg-2)}
 .photo-guide__figure.is-empty .photo-guide__img{display:none}
 .photo-guide__figure.is-empty::after{content:"";position:absolute;inset:0;background:no-repeat center/22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236E7076' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E")}
 .photo-guide__label{color:var(--color-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1.3}
-@media(max-width:420px){
-  .photo-guide{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
+/* Four angles, one row, at every width. The 2×2 fold turned a single glance
+   into a block of four cards (client, 19 Aug). */
 
 /* Care journey: the whole service stays visible, from first question to medicine
    arriving at home, so the patient can always see when they meet the doctor and
@@ -705,28 +819,37 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* ---------- Checkout rows (Grab reference, client 20 Jul) ----------
    A tappable row that states one decision: what you pay with, which promo
    applies. The chevron is the only affordance, no coloured edges. */
-.checkout-row{width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:64px;padding:var(--sp-3) var(--sp-4);border:1px solid transparent;border-radius:var(--radius-lg);background:var(--color-bg-soft);color:var(--color-ink);text-align:left;cursor:pointer;transition:background var(--dur-base) var(--ease-out)}
-.checkout-row:hover{border-color:transparent;background:var(--color-bg-2)}
+/* One surface language on checkout: every row and card is the same white
+   card with the same small shadow. The screen used to mix a sunken grey
+   row, a white card, a bordered card and a blue-filled selection
+   (client, 19 Aug). */
+.checkout-row{width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:64px;padding:var(--sp-3) var(--sp-4);border:1px solid transparent;border-radius:var(--radius-lg);background:var(--surface-card-raised);box-shadow:var(--shadow-card-raised);color:var(--color-ink);text-align:left;cursor:pointer;transition:background var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.checkout-row:hover{border-color:transparent;background:var(--surface-card-hover)}
 .checkout-row+.checkout-row{margin-top:var(--sp-2)}
 .checkout-row__icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink-2)}
 .checkout-row__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .checkout-row__label{color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-medium)}
 .checkout-row__value{color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-semibold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .checkout-row__value--wrap{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
+/* Who the order is going to, under where it is going — the delivery-app row. */
+.checkout-row__recipient{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.35}
+.checkout-row__recipient[hidden]{display:none}
 .checkout-row__chevron{flex:none;color:var(--color-ink-3)}
 .checkout-row__tag{flex:none;padding:2px var(--sp-2);border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
-.checkout-row--empty{border-color:var(--color-line);background:var(--color-surface)}
+/* A tag that names a blocker reads as one (client, 19 Aug). The soft tint was
+   too quiet to catch beside the grey placeholder, so it is a filled red with
+   white text (client, 19 Aug). */
+.checkout-row__tag--error{background:var(--color-danger-strong);color:#fff;
+  padding:4px var(--sp-3);font-weight:var(--fw-bold);letter-spacing:.01em}
+.checkout-row--empty{border-color:transparent;background:var(--surface-card-raised)}
 .checkout-row--empty .checkout-row__value{color:var(--color-ink-3);font-weight:var(--fw-regular)}
-.checkout-fulfillment-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--color-line);border-radius:var(--radius-pill);background:var(--color-surface)}
-.checkout-fulfillment-switch button{min-height:42px;padding:8px 14px;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-.checkout-fulfillment-switch button[aria-selected="true"]{background:var(--color-accent-soft);color:var(--color-accent-ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-accent) 10%,transparent)}
-.checkout-fulfillment-switch button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
-.checkout-pickup-row{cursor:default;border-color:var(--color-line);background:var(--color-bg-soft)}
+/* Tappable since 19 Aug, and on the same white card as every other row. */
+.checkout-pickup-row{cursor:pointer;border-color:transparent;background:var(--surface-card-raised)}
 .checkout-pickup-row .hint{margin-top:2px;white-space:normal;line-height:1.4}
 
 /* Price breakdown: quiet rows only. The payable total lives in the footer beside
    the confirm button, so this block carries no emphasised total of its own. */
-.checkout-bill{padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface)}
+.checkout-bill{padding:var(--sp-4);border:1px solid color-mix(in srgb,var(--color-line) 55%,transparent);border-radius:var(--radius-lg);background:var(--surface-card-raised);box-shadow:var(--shadow-card-raised)}
 .checkout-bill__row{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding-block:var(--sp-2);color:var(--color-ink-2);font-size:var(--fs-sm)}
 /* The total had no rule of its own, so label and amount collapsed together
    instead of sitting at opposite ends like every row above it. */
@@ -738,14 +861,18 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Grab-style itemised order summary on the checkout screen: one card, a line
    per prescribed item. No header of its own any more, client's call. */
 .checkout-order{border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);overflow:hidden}
+#payment .checkout-order{border-color:color-mix(in srgb,var(--color-line) 55%,transparent);background:var(--surface-card-raised);box-shadow:var(--shadow-card-raised)}
+#payment .checkout-order__item+.checkout-order__item{border-top-color:color-mix(in srgb,var(--color-line) 62%,transparent)}
 /* 9811190 dropped the rules for the attribution line but left its markup, so
    "ใบสั่งยาโดย ..." rendered as unstyled inline text flush against the card edge
    and the rounded border clipped its first character. It keeps the item padding
    so it lines up with the medicines, and stays a plain line: the grey header bar
    this used to have is gone on the client's call and is not coming back. */
 .checkout-order__head{padding:var(--sp-3) var(--sp-4) 0}
-.checkout-order__by{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;min-width:0;font-size:var(--fs-sm);font-weight:var(--fw-regular);color:var(--color-ink-2)}
-.checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink)}
+/* Prescription attribution stays outside the receipt so the consultation and
+   medicine rows keep one consistent list rhythm. */
+.checkout-order__by{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:0;font-size:var(--fs-xs);font-weight:var(--fw-regular);color:var(--color-ink-3);text-align:right}
+.checkout-order__by strong{font-weight:var(--fw-semibold);color:var(--color-ink-2)}
 .checkout-order__item{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
 .checkout-order__item+.checkout-order__item{border-top:1px solid var(--color-line)}
 .checkout-order__thumb{width:52px;height:52px;flex:none;border:1px solid var(--color-line);border-radius:var(--radius-md);background:#fff;display:grid;place-items:center;overflow:hidden}
@@ -759,17 +886,55 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .checkout-order__body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
 .checkout-order__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
 .checkout-order__note{font-size:var(--fs-xs);color:var(--color-ink-3);line-height:1.4}
+.checkout-order__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
 .checkout-order__price{flex:none;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-/* Denser than the base row: four items with a stepper each ran long on a
-   phone-height screen, so this trims the padding and the stepper controls
-   rather than the type, which stays readable at the same size. */
+/* The doctor's fee is a service, not a box of tablets: it sits in the same row
+   rhythm but takes an icon instead of a product photo and has no stepper —
+   there is no quantity to change. */
+.checkout-order__thumb--service{display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent)}
+.checkout-order__thumb--service .ui-icon{width:20px;height:20px}
+/* The basket is edited where it is read: every line carries its own stepper,
+   the way a delivery-app cart does, instead of sending the patient to a second
+   screen and back to check the total (client, 10 Sep). Price stays on the top
+   row against the name; the stepper sits under it on its own row so a long
+   Thai medicine name never has to share width with the buttons. */
 #payment .checkout-order__item{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;padding-block:var(--sp-2);gap:var(--sp-2)}
 #payment .checkout-order__thumb{grid-column:1;grid-row:1 / span 2;width:38px;height:38px}
 #payment .checkout-order__body{grid-column:2;grid-row:1}
+#payment .checkout-order__quantity{grid-column:2;grid-row:2}
 #payment .checkout-order__price{grid-column:3;grid-row:1}
-#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:4px}
-#payment .checkout-order__stepper .qty-btn{width:30px;height:30px}
+#payment .checkout-order__item--service .checkout-order__price{grid-row:1 / span 2;align-self:center}
+#payment .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start;margin-top:0}
 #payment .checkout-order__stepper .hint{white-space:nowrap}
+#payment .checkout-order__remove{grid-column:3;grid-row:2;justify-self:end;align-self:center;
+  width:32px;height:32px;display:grid;place-items:center;padding:0;
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);
+  background:var(--color-surface);color:var(--color-ink-3);cursor:pointer;
+  transition:color var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+#payment .checkout-order__remove:hover{border-color:var(--color-danger);color:var(--color-danger)}
+#payment .checkout-order__remove:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+/* Declined, not gone: the row stays so the plus can bring it back. */
+#payment .checkout-order__item.is-declined .checkout-order__thumb,
+#payment .checkout-order__item.is-declined .checkout-order__body,
+#payment .checkout-order__item.is-declined .checkout-order__price{opacity:.45}
+#payment .checkout-order__item.is-declined .checkout-order__name{text-decoration:line-through}
+.checkout-order__edit{display:inline-flex;align-items:center;gap:6px;padding:4px 0;border:0;background:transparent;color:var(--color-accent);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.checkout-order__edit .ui-icon{width:14px;height:14px}
+.checkout-order__edit:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px;border-radius:4px}
+#payment .checkout-order__by{justify-content:flex-start;padding-inline:2px;text-align:left}
+
+/* Dedicated medicine editor: the only checkout surface with steppers. */
+.payment-items-editor{max-width:720px;width:100%;margin-inline:auto}
+.payment-items-editor__head{display:flex;flex-direction:column;gap:var(--sp-2)}
+.payment-items-editor__head .h2{margin:0}
+.checkout-order--editor .checkout-order__item{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:var(--sp-2) var(--sp-3);padding-block:var(--sp-3)}
+.checkout-order--editor .checkout-order__thumb{grid-column:1;grid-row:1 / span 2}
+.checkout-order--editor .checkout-order__body{grid-column:2;grid-row:1}
+.checkout-order--editor .checkout-order__price{grid-column:3;grid-row:1}
+.checkout-order--editor .checkout-order__stepper{grid-column:2 / -1;grid-row:2;justify-self:start}
+.checkout-order--editor .checkout-order__stepper .hint{white-space:nowrap}
+.payment-items-editor__note{display:flex;align-items:flex-start;gap:var(--sp-2);margin:var(--sp-4) 0 0;color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.5}
+.payment-items-editor__note .ui-icon{width:18px;height:18px;flex:none;color:var(--color-accent)}
 
 /* Footer pays: amount sits beside the action, as in the Grab reference */
 .checkout-pay{display:flex;align-items:center;gap:var(--sp-4)}
@@ -780,38 +945,57 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @media(max-width:340px){.checkout-pay{gap:var(--sp-3)}.checkout-pay__amount strong{font-size:var(--fs-md)}.checkout-pay .btn{font-size:var(--fs-sm)}}
 /* Client 16 Aug: a thin strip, not a card. The icon plate and the second copy
    line are gone; title and clock sit on one row. */
-.payment-deadline{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) var(--sp-4) 0;padding:7px 12px;border:1px solid color-mix(in srgb,var(--color-accent) 20%,var(--color-line));border-radius:var(--radius-pill);background:color-mix(in srgb,var(--color-accent-soft) 60%,var(--color-surface));color:var(--color-ink);flex:none}
-.payment-deadline__icon{width:18px;height:18px;flex:none;display:grid;place-items:center;color:var(--color-accent);background:none;box-shadow:none}
+.payment-deadline{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) var(--sp-4) var(--sp-3);padding:8px 14px;border:0;border-radius:var(--radius-pill);background:var(--surface-notice);color:var(--surface-notice-ink);flex:none}
+.payment-deadline__icon{width:18px;height:18px;flex:none;display:grid;place-items:center;color:var(--surface-notice-ink);background:none;box-shadow:none}
 .payment-deadline__icon svg{width:16px;height:16px}
 .payment-deadline__copy{min-width:0;flex:1;display:flex;align-items:baseline;gap:6px;line-height:1.3;overflow:hidden}
 .payment-deadline__copy strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
 .payment-deadline__copy small{display:none}
-.payment-deadline__time{flex:none;min-width:0;padding:2px 8px;border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-surface);font-size:var(--fs-xs);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;letter-spacing:.04em}
-.payment-deadline__retry{flex:none;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--color-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
-.payment-deadline[data-expired="true"]{border-color:color-mix(in srgb,var(--color-danger) 34%,var(--color-line));background:color-mix(in srgb,var(--color-danger) 9%,var(--color-surface))}
-.payment-deadline[data-expired="true"] .payment-deadline__icon{color:var(--color-danger)}
+.payment-deadline__time{padding:0;border-radius:0;background:none;color:inherit;font-size:inherit;font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.payment-deadline__time[hidden]{display:none}
+#payment>.screen__body{
+  padding-top:var(--sp-2);
+  scroll-padding-top:var(--sp-4);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 14px);
+}
+.payment-deadline__retry{flex:none;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--surface-notice-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.payment-deadline[data-expired="true"]{border:0;background:var(--color-danger-soft);color:var(--color-danger-ink)}
+.payment-deadline[data-expired="true"] .payment-deadline__icon{color:var(--color-danger-ink)}
 .payment-deadline[data-expired="true"] .payment-deadline__time{background:var(--color-danger)}
-@media(max-width:390px){.payment-deadline{grid-template-columns:32px minmax(0,1fr) auto;gap:10px;margin-inline:12px;padding:10px 12px}.payment-deadline__icon{width:32px;height:32px}.payment-deadline__copy small{display:none}.payment-deadline__time{min-width:76px;padding-inline:8px;font-size:14px}}
+@media(max-width:390px){
+  .payment-deadline{gap:8px;margin:6px 12px 10px;padding:6px 12px;min-height:38px}
+  .payment-deadline__icon{width:18px;height:18px}
+  .payment-deadline__copy{gap:4px}
+  .payment-deadline__copy strong{font-size:13px}
+  .payment-deadline__copy small{display:none}
+  .payment-deadline__time{min-width:0;padding:0;font-size:inherit}
+  .checkout-order--editor .checkout-order__item{grid-template-columns:44px minmax(0,1fr) auto;padding:10px 12px}
+  .checkout-order--editor .checkout-order__thumb{width:44px;height:44px}
+  .checkout-order--editor .checkout-order__stepper .qty-btn{width:32px;height:32px}
+}
 .checkout-addon__mark{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-bold);letter-spacing:-.02em}
 .checkout-addon[aria-selected="true"] .checkout-addon__mark{background:var(--color-surface)}
-.checkout-delivery-option{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left}
-.checkout-delivery-option[aria-checked="true"]{background:var(--color-accent-soft);border-color:var(--color-accent)}
-.checkout-delivery-option .checkout-order__price{justify-self:end;margin-left:var(--sp-4)}
+.checkout-delivery-option{display:grid;grid-template-columns:minmax(0,1fr) minmax(108px,42%);align-items:center;column-gap:var(--sp-2);row-gap:0;min-height:64px;padding:8px var(--sp-4);text-align:left}
+.checkout-delivery-option .opt-body{gap:1px}
+.checkout-delivery-option .opt-title{font-size:var(--fs-sm)}
+.checkout-delivery-option .opt-sub{font-size:var(--fs-xs)}
+/* Selection is a border and a tick, not a different fill. */
+.checkout-delivery-option[aria-checked="true"]{background:var(--surface-card-raised);border-color:var(--color-accent)}
+#payment .checkout-delivery-option .checkout-order__price{grid-column:2;grid-row:1;justify-self:end;max-width:128px;margin-left:0;font-size:var(--fs-xs);line-height:1.25;text-align:right;white-space:normal}
 .checkout-addon-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--sp-4);overscroll-behavior-inline:contain;padding:2px var(--sp-4) var(--sp-2);margin-inline:calc(var(--sp-4) * -1);scrollbar-width:none}
 .checkout-addon-rail::-webkit-scrollbar{display:none}
-.checkout-addon-card{flex:0 0 clamp(156px,44vw,176px);min-height:148px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:8px;border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.checkout-addon-card{flex:0 0 clamp(142px,40vw,164px);min-height:118px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px;border:1px solid transparent;border-radius:var(--radius-md);background:var(--surface-card-raised);box-shadow:var(--shadow-card-raised);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
 .checkout-addon-card:active{transform:scale(.985)}
-.checkout-addon-card[aria-pressed="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
-.checkout-addon-card__visual{position:relative;width:100%;height:72px;display:grid;place-items:center;overflow:visible;background:transparent;isolation:isolate}
-.checkout-addon-card__visual::before{content:"";position:absolute;width:60px;height:60px;border-radius:50%;background:#dbe4f2;box-shadow:inset 0 0 0 1px rgba(23,46,81,.04),0 12px 24px rgba(23,46,81,.08)}
-.checkout-addon-card__visual img{position:relative;z-index:1;width:84px;height:84px;object-fit:contain;padding:0;filter:drop-shadow(0 7px 8px rgba(23,46,81,.15));animation:loading-illustration-float 3.2s var(--ease-inout) infinite;transform-origin:center}
-.checkout-addon-card:nth-child(2) .checkout-addon-card__visual img{animation-delay:-.8s}
-.checkout-addon-card:nth-child(3) .checkout-addon-card__visual img{animation-delay:-1.6s}
+.checkout-addon-card[aria-pressed="true"]{border-color:var(--color-accent);background:var(--surface-card-raised)}
+.checkout-addon-card__visual{position:relative;width:100%;height:46px;display:grid;place-items:center;overflow:visible;background:transparent;isolation:isolate}
+.checkout-addon-card__visual::before{content:"";position:absolute;width:42px;height:42px;border-radius:50%;background:var(--surface-sunken);box-shadow:none}
+.checkout-addon-card__visual img{position:relative;z-index:1;width:58px;height:58px;object-fit:contain;padding:0}
 .checkout-addon-card[aria-pressed="true"] .checkout-addon-card__copy{min-width:0;display:flex;flex-direction:column;gap:2px}
-.checkout-addon-card__copy strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13px;line-height:1.35;font-weight:var(--fw-semibold)}
-.checkout-addon-card__copy span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--color-ink-3)}
-.checkout-addon-card__foot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-top:auto;font-size:13px;font-weight:var(--fw-semibold)}
-.checkout-addon-card__foot em{padding:4px 10px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:var(--fs-xs);font-style:normal;font-weight:var(--fw-medium)}
+.checkout-addon-card__copy strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:1;-webkit-box-orient:vertical;font-size:12px;line-height:1.3;font-weight:var(--fw-semibold)}
+.checkout-addon-card__copy span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px;color:var(--color-ink-3)}
+.checkout-addon-card__foot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-top:auto;font-size:12px;font-weight:var(--fw-semibold)}
+.checkout-addon-card__foot em{padding:3px 8px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink);font-size:11px;font-style:normal;font-weight:var(--fw-medium)}
 .checkout-addon-card[aria-pressed="true"] .checkout-addon-card__foot em{background:var(--color-ink);color:var(--color-surface)}
 @media(prefers-reduced-motion:reduce){.checkout-addon-card__visual img{animation:none}}
 .photo-graphic.payment-state-graphic{min-height:160px}
@@ -834,7 +1018,19 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 
 /* ---------- Chat bubbles ---------- */
 /* the thread is a flex column so each bubble can sit left (doctor) or right (you) */
-.chat-body{display:flex;flex-direction:column;gap:var(--sp-3)}
+.chat-body{display:flex;flex-direction:column;gap:var(--sp-3);background:var(--surface-chat)}
+#consult,#consult .screen__top,#consult .screen__footer,#consult .care-journey{background:var(--surface-chat)}
+/* Watermark sits under the thread, never over it, and never takes a tap.
+   One wordmark rather than a tile, painted on the scroll pane itself so it
+   stays put while the thread moves over it (default background-attachment on
+   a scroller is fixed to the element, not to its content). */
+.chat-body{
+  background-image:url("assets/chat-v1/krane-wordmark-watermark.svg");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:86% auto;
+}
+.chat-body>*{position:relative;z-index:1}
 .chat-body .alert{align-self:stretch}
 .chat-body .bubble{margin-top:4px}
 .chat-body .bubble--lbl{margin-top:20px}
@@ -850,12 +1046,21 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .chat-fab .ui-icon,.call-fab .ui-icon{width:22px;height:22px;flex:none}
 .chat-fab:hover{background:var(--color-accent-hover);transform:translateY(-1px)}
 .chat-fab:active{transform:scale(.96)}
-.bubble{max-width:80%;line-height:1.45;box-shadow:var(--shadow-sm);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);font-size:var(--fs-base);position:relative}
+.bubble{max-width:80%;line-height:1.45;box-shadow:none;padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-lg);font-size:var(--fs-base);position:relative}
 /* doctor = white bubble, bordered, left */
-.bubble--in{background:var(--color-surface);color:var(--color-ink);border:1px solid var(--color-line-strong);border-bottom-left-radius:var(--radius-xs);align-self:flex-start}
+.bubble--in{background:var(--surface-bubble-in);color:var(--color-ink);border:0;border-bottom-left-radius:var(--radius-xs);align-self:flex-start;margin-left:42px}
 /* you = navy bubble, right */
-.bubble--out{background:var(--color-accent);color:var(--color-on-accent);border-bottom-right-radius:var(--radius-xs);align-self:flex-end}
+.bubble--out{background:var(--surface-bubble-out);color:var(--color-ink);border:0;border-bottom-right-radius:var(--radius-xs);align-self:flex-end}
 /* tiny sender label above the first bubble of a run */
+/* The doctor's face rides with every incoming bubble, so a long thread never
+   loses track of who is speaking. Drawn as a pseudo-element rather than markup
+   so bubbles appended at runtime get it for free. */
+.bubble--in::after{
+  content:"";position:absolute;left:-42px;bottom:0;width:32px;height:32px;
+  border-radius:50%;background:var(--surface-bubble-in) center/cover no-repeat;
+  background-image:url("assets/chat-v1/doctor-avatar.png");
+  box-shadow:0 1px 3px rgba(18,24,36,.16);
+}
 .bubble--lbl::before{content:attr(data-from);position:absolute;top:-16px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-3);letter-spacing:.02em}
 .bubble--in.bubble--lbl::before{left:4px}
 .bubble--out.bubble--lbl::before{right:4px}
@@ -873,6 +1078,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .timeline{position:relative;padding-left:var(--sp-6)}
 .timeline .step{position:relative;padding-bottom:var(--sp-5)}
 .timeline .step:last-child{padding-bottom:0}
+/* Tighter rows for the delivery trail, which sits above the courier block and
+   the documents and should not push either off the screen. */
+.timeline--compact .step{padding-bottom:var(--sp-4)}
 .timeline .step .hint{margin-top:2px}
 /* connector runs dot-to-dot only (no tail above first / below last) */
 .timeline .step:not(:last-child)::after{content:"";position:absolute;left:calc(-1*var(--sp-6) + 10px);top:23px;bottom:2px;width:2px;background:var(--color-line)}
@@ -1009,7 +1217,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    ============================================================ */
 .screen{
   width:100%;max-width:none;min-width:0;height:100vh;height:100dvh;min-height:100vh;min-height:100dvh;max-height:100dvh;margin:0;
-  background:var(--color-surface);border:0;border-radius:0;
+  /* One page tone for the whole screen, chrome included, so no band shows where
+     the top bar or footer meets the body. */
+  background:var(--surface-page);border:0;border-radius:0;
   box-shadow:none;overflow:hidden;display:flex;flex-direction:column;position:relative;
   container-type:inline-size;container-name:screen;   /* enables @container layout below */
 }
@@ -1043,12 +1253,33 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__top{
   display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4);
   position:relative;width:100%;min-width:0;max-width:100%;border-bottom:0;min-height:56px;flex:none;
-  background:color-mix(in srgb,var(--color-surface) 88%,transparent);
+  /* Chrome is the page, not a band on top of it: same colour as the screen so
+     no edge shows where the bar ends. */
+  background:var(--surface-page);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
-.screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line);background:var(--color-surface);cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
+.screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
 .screen__top .back .bk-lbl{display:none}
 .screen__top .ttl{min-width:0;font-weight:var(--fw-semibold);font-size:var(--fs-base);overflow-wrap:anywhere}
+/* Chat header: title left of a live pill, both on the same optical centre.
+   The pill replaces the in-thread "call still running" bar. */
+.screen__top--chat{gap:var(--sp-3)}
+.screen__top--chat>.ttl{position:static!important;flex:1;text-align:left!important;pointer-events:auto!important}
+.live-pill{
+  display:inline-flex;align-items:center;gap:7px;min-height:28px;flex:none;
+  padding:0 12px;border:0;border-radius:var(--radius-pill);
+  /* Live is a positive state, so it reads from the positive palette and the
+     whole pill pulses — not just the dot — because it is the one thing on this
+     screen announcing the call is still running. */
+  background:var(--state-positive);color:var(--state-positive-ink);
+  font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer;
+  animation:live-pulse 1.8s ease-in-out infinite;
+}
+.live-pill[hidden]{display:none}
+.live-pill__dot{width:7px;height:7px;flex:none;border-radius:50%;background:var(--state-positive-ink);animation:live-blink 1.4s ease-in-out infinite}
+@keyframes live-blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes live-pulse{0%,100%{opacity:1}50%{opacity:.66}}
+@media(prefers-reduced-motion:reduce){.live-pill,.live-pill__dot{animation:none}}
 .screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 /* Per-question progress lifted out of the top bar to sit under the main
    care stepper on questionnaire screens. Same row layout the top bar used. */
@@ -1071,7 +1302,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    stretched to the full width of a tablet or desktop frame instead of holding a
    readable measure. Restated here with enough specificity to stick. */
 .screen__body>.state-view__copy{max-width:34ch}
-.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:1px solid var(--color-line);flex:none;background:color-mix(in srgb,var(--color-surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.screen__footer{width:100%;min-width:0;max-width:100%;padding:var(--sp-4);border-top:0;flex:none;background:var(--surface-page);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Safari composites a -webkit-backdrop-filter element above later content no matter
    what the z-index says, so the blurred header and footer painted over any overlay
    anchored to the viewport: it swallowed the last option of the select sheet and can
@@ -1104,26 +1335,76 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .action-toast--warning .action-toast__icon{background:rgba(133,96,28,.12);color:var(--color-warning)}
 .action-toast--danger .action-toast__icon{background:rgba(147,69,58,.12);color:var(--color-danger)}
 
-/* bottom nav (Profile / Activities / Notifications / Settings) */
-.bottomnav{position:absolute;left:0;right:0;bottom:0;z-index:5;
-  display:flex;gap:0;padding:5px 8px max(5px,env(safe-area-inset-bottom));border:0;border-top:1px solid var(--color-line);border-radius:0;overflow:hidden;
-  background:rgba(255,255,255,.94);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
-  box-shadow:0 -8px 22px rgba(17,19,24,.07)}
-.screen:has(.bottomnav) .screen__body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-.bottomnav a{flex:1;min-width:0;text-align:center;padding:5px 3px 3px;border-radius:0;background:transparent!important;color:var(--color-ink-3);font-size:10.5px;line-height:1.1;text-decoration:none;font-weight:var(--fw-medium);display:flex;flex-direction:column;align-items:center;gap:2px}
-.bottomnav a .ic{width:21px;height:21px;display:grid;place-items:center}
-.bottomnav a svg{width:19px;height:19px}
+/* ---------- Floating navigation bar ----------
+   Reference: the Instagram capsule (client, 20 Aug) — the bar lifts off the
+   bottom edge and floats over the content as a rounded capsule instead of
+   sitting docked behind a hairline. Icons only, no labels, with a soft pill
+   behind the one you are on. Everything else in the app is untouched: this
+   uses the app's own tokens, not a new palette. */
+.bottomnav{position:absolute;z-index:5;
+  left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;justify-content:space-around;gap:2px;
+  height:60px;padding:0 6px;
+  border:0;border-radius:30px;overflow:visible;
+  /* Glass, not frosted plastic (client, 20 Aug). Three things make it read as
+     glass rather than as a translucent panel: the fill is thin enough to see
+     structure through it, the blur is paired with a saturation and brightness
+     lift so colour behind it blooms the way it does through real glass, and the
+     light is graded top to bottom instead of flat. */
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--color-surface) 74%,transparent) 0%,
+    color-mix(in srgb,var(--color-surface) 60%,transparent) 52%,
+    color-mix(in srgb,var(--color-surface) 68%,transparent) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(210%) brightness(1.06);
+  backdrop-filter:blur(30px) saturate(210%) brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(255,255,255,.35),
+    0 10px 30px rgba(17,19,24,.16),
+    0 2px 6px rgba(17,19,24,.07)}
+/* The specular rim: a 1px gradient edge, bright where light would catch the
+   top-left of a curved surface and fading round the bottom. A plain border
+   cannot vary along its length, so it is masked out of a gradient instead. */
+.bottomnav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(150deg,
+    rgba(255,255,255,.95) 0%,
+    rgba(255,255,255,.35) 34%,
+    color-mix(in srgb,var(--color-line) 55%,transparent) 62%,
+    rgba(255,255,255,.7) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none}
+/* Browsers without backdrop-filter get an opaque capsule rather than a
+   see-through one with unreadable icons. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .bottomnav{background:var(--color-surface)}
+}
+/* Content has to clear a bar that is no longer flush with the bottom. */
+.screen:has(.bottomnav) .screen__body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+.bottomnav a{flex:1;min-width:0;max-width:84px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0;border-radius:20px;background:transparent!important;text-decoration:none;
+  color:var(--color-ink-2);-webkit-tap-highlight-color:transparent;cursor:pointer;
+  /* label text is off, the icon carries it — same as the reference */
+  font-size:0;line-height:0}
+.bottomnav a .ic{position:relative;display:grid;place-items:center;
+  width:52px;height:40px;border-radius:20px;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.bottomnav a svg{width:24px;height:24px}
 .bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
-.bottomnav a{transition:color var(--dur-micro) var(--ease-out),background var(--dur-base) var(--ease-out)}
-.bottomnav a[aria-current="page"]{color:var(--color-accent);font-weight:var(--fw-semibold)}
-/* motion: the active icon pops with a spring each time you land on the tab */
-.screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:check-pop var(--dur-base) var(--ease-spring)}
+.bottomnav a[aria-current="page"]{color:var(--color-ink)}
+.bottomnav a[aria-current="page"] .ic{background:var(--color-accent-soft)}
+.bottomnav a:active .ic{background:color-mix(in srgb,var(--color-ink) 8%,transparent)}
+.bottomnav a[aria-current="page"]:active .ic{background:var(--color-accent-soft)}
+.bottomnav a:focus-visible .ic{outline:3px solid var(--color-accent);outline-offset:2px}
+/* the pill grows out from under the icon when you land on a tab */
+.screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:nav-pill-in 260ms var(--ease-out)}
+@keyframes nav-pill-in{from{transform:scale(.6);opacity:.4}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){
-  .bottomnav a{transition:none}
+  .bottomnav a .ic{transition:none}
   .screen.is-entering .bottomnav a[aria-current="page"] .ic{animation:none}
 }
-
 
 /* legacy text fallback; product screens use the official vector logo */
 .brandmark{width:32px;height:32px;border-radius:var(--radius-md);background:var(--color-accent);color:var(--color-on-accent);display:grid;place-items:center;font-weight:var(--fw-bold)}
@@ -1191,17 +1472,29 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 #video .call-remote__video{width:100%;height:100%;border-radius:0;aspect-ratio:auto;object-fit:cover;object-position:center center;mix-blend-mode:normal;filter:saturate(.96) contrast(1.01) brightness(.97)}
 #video .callstage--live .call-remote--video::after{background:linear-gradient(180deg,rgba(15,29,47,.04) 0%,transparent 48%,rgba(15,29,47,.7) 100%)}
 #video .call-remote__identity{left:20px;right:20px;bottom:14px}
-#video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:1px solid rgba(255,255,255,.26);border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
+/* Flat tile, no outline: the border read as a stray frame against the video. */
+#video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:0;border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
+/* Self-view: the Krane mark on a soft gradient, with the caption as a strip
+   along the bottom edge so the tile reads as a picture, not a label. */
+#video .call-self--brand{overflow:hidden;padding:0;gap:0;place-items:center;background:#000}
+#video .call-self--brand .call-self__mark{width:62px;height:auto;opacity:1;filter:none}
 #video .call-fab{right:16px;bottom:122px;background:var(--color-accent)}
 #video .callstage--live .call-controls{bottom:48px}
 #video .callstage--live .call-btn{background:rgba(29,43,63,.72)}
+/* Hang up is the one destructive control in the row, so it stays filled red —
+   the id-scoped rule above was quietly painting it the same dark as the rest. */
+#video .callstage--live .call-btn--end{background:var(--color-danger);border-color:transparent;color:#fff}
+#video .callstage--live .call-btn--end:hover{background:var(--color-danger);filter:brightness(1.08)}
 #video .callstage--live .call-hint{bottom:10px;color:rgba(255,255,255,.78)}
 
 /* ---------- Rating (stars) ---------- */
 .rating-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) 0}
 .rating-row+.rating-row{border-top:1px solid var(--color-line)}
-.rating{display:inline-flex;gap:var(--sp-1)}
-.star{width:30px;height:30px;border:0;background:transparent;cursor:pointer;color:var(--color-line-strong);font-size:24px;line-height:1;padding:0}
+.rating{display:inline-flex;gap:0}
+/* 30px squares with gaps between them meant a tap could land on nothing;
+   the whole star row is now made of full-height 44px targets (client, 19 Aug). */
+.star{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;
+  color:var(--color-line-strong);font-size:26px;line-height:1;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .star.on{color:var(--color-accent)}
 
 /* ---------- Toggle switch ---------- */
@@ -1244,18 +1537,58 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 /* ---------- Settings / nav list rows ---------- */
 .setting-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) 0;cursor:pointer}
 .setting-row+.setting-row{border-top:1px solid var(--color-line)}
-.setting-row .ic{position:relative;overflow:hidden;width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--color-accent);background:var(--color-powder);border:0;box-shadow:none}
+.setting-row .ic{position:relative;overflow:hidden;width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--color-ink-2);background:var(--color-bg-2);border:0;box-shadow:none}
 .setting-row .ic::before{display:none}
 .setting-row .ic svg{position:relative}
 .setting-row .ic svg{width:19px;height:19px}
 .setting-row .grow{min-width:0}
 .setting-row .chev{color:var(--color-ink-3);margin-left:auto}
-.section-label{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.08em;text-transform:uppercase;color:var(--color-ink-3);margin-bottom:var(--sp-1)}
+/* A group title on the address form is the same thing as a section label
+   anywhere else, so it is the same rule rather than a second, slightly larger
+   and darker style (client, 20 Aug). */
+.section-label,
+.form-group__title{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.08em;text-transform:uppercase;color:var(--color-ink-3);margin-bottom:var(--sp-1)}
+
+/* Order progress on the Activity card: four stages as a segmented bar, so the
+   card answers "where is it" without opening tracking (client, 20 Aug). */
+.order-progress{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  margin:var(--sp-3) 0 0;padding:0;list-style:none}
+.order-progress__step{position:relative;padding-top:13px;
+  font-size:10px;line-height:1.25;font-weight:var(--fw-medium);color:var(--color-ink-3);
+  letter-spacing:0}
+.order-progress__step::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  border-radius:2px;background:var(--color-line)}
+.order-progress__step.is-done::before{background:var(--color-accent)}
+.order-progress__step.is-current::before{background:var(--color-accent)}
+.order-progress__step.is-current{color:var(--color-accent);font-weight:var(--fw-semibold)}
+.order-progress__step.is-done{color:var(--color-ink-2)}
+/* the stage you are at keeps a pulse so the card reads as live */
+.order-progress__step.is-current::after{content:"";position:absolute;top:0;right:0;width:34%;height:4px;
+  border-radius:2px;background:var(--color-accent);animation:order-progress-pulse 1.8s var(--ease-out) infinite}
+@keyframes order-progress-pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.order-progress__step.is-current::after{animation:none;opacity:1}}
+/* Just back from the quote: mark the row the patient was sent to look at. */
+.checkout-row.is-just-set{animation:checkout-row-settle 1.6s var(--ease-out)}
+@keyframes checkout-row-settle{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--color-accent) 45%,transparent)}
+  30%{box-shadow:0 0 0 4px color-mix(in srgb,var(--color-accent) 22%,transparent)}
+  100%{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.checkout-row.is-just-set{animation:none}}
+/* Pressed the blocked pay button: the thing that is blocking it says so, in the
+   same red outline a wrong field uses (client, 23 Aug). */
+.is-blocking{border-color:var(--color-danger) !important;
+  box-shadow:0 0 0 2px var(--color-danger),0 0 0 6px color-mix(in srgb,var(--color-danger) 16%,transparent) !important;
+  animation:checkout-blocker-nudge .5s var(--ease-out)}
+@keyframes checkout-blocker-nudge{0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-4px)}60%{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.is-blocking{animation:none}}
+/* Blocked but still tappable, so the tap can be answered. Reads as dead. */
+.btn--blocked,.btn--blocked:hover{background:var(--color-line);border-color:var(--color-line);
+  color:color-mix(in srgb,var(--color-ink) 55%,transparent);box-shadow:none;cursor:default}
 
 /* ---------- Notification row ---------- */
 .notif{display:flex;gap:var(--sp-3);padding:var(--sp-4) 0;cursor:pointer}
 .notif+.notif{border-top:1px solid var(--color-line)}
-.notif .ic{position:relative;overflow:hidden;width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--color-accent);background:var(--color-powder);border:0;box-shadow:none}
+.notif .ic{position:relative;overflow:hidden;width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--color-ink-2);background:var(--color-bg-2);border:0;box-shadow:none}
 .notif .ic::before{display:none}
 .notif .ic svg{position:relative}
 .notif .ic svg{width:20px;height:20px}
@@ -1295,7 +1628,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .treatment-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-2)}
 .treatment-actions__primary{grid-column:1 / -1}
 .treatment-actions .btn{width:100%;min-width:0;padding-inline:var(--sp-3)}
-.treatment-medications{overflow:hidden;border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-bg-soft)}
+/* Client, 1 Sep: no outline on the medicine list. Soft fill, no stroke — the
+   house rule the rest of the cards already follow. The divider between rows
+   stays: it separates two medicines, it does not draw a box round them. */
+.treatment-medications{overflow:hidden;border:0;border-radius:var(--radius-sm);background:var(--color-bg-soft)}
 .treatment-medication{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:10px 12px}
 .treatment-medication+.treatment-medication{border-top:1px solid var(--color-line)}
 .treatment-medication span:first-child{min-width:0;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink);overflow-wrap:anywhere}
@@ -1303,9 +1639,9 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .treatment-refill{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3)}
 
 /* ---------- Alert / inline banner (edge states) ---------- */
-.alert{display:flex;gap:var(--sp-3);padding:var(--sp-4);border-radius:var(--radius-md);border:1px solid transparent;background:var(--color-bg-2)}
-.alert .a-ic{width:28px;height:28px;border-radius:var(--radius-pill);flex:none;display:grid;place-items:center;color:var(--color-on-dark);font-weight:var(--fw-bold);font-size:var(--fs-sm)}
-.alert:not(.alert--danger):not(.alert--warning):not(.alert--success) .a-ic{background:var(--color-info)}
+.alert{display:flex;gap:var(--sp-3);padding:var(--sp-4);border-radius:var(--radius-md);border:1px solid transparent;background:var(--surface-notice);color:var(--surface-notice-ink)}
+.alert .a-ic{width:28px;height:28px;border-radius:var(--radius-pill);flex:none;display:grid;place-items:center;background:var(--surface-notice-strong);color:var(--surface-notice-ink);font-weight:var(--fw-bold);font-size:var(--fs-sm)}
+.alert:not(.alert--danger):not(.alert--warning):not(.alert--success) .a-ic{background:var(--surface-notice-strong);color:var(--surface-notice-ink)}
 /* Real medicine photography is shared by plan, checkout, refill, history and
    prescription rows. A white framed stage keeps differently shaped Thai-market
    packs legible without substituting a generic pill icon. */
@@ -1313,6 +1649,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
   border:1px solid var(--color-line);border-radius:var(--radius-md);background:#fff;overflow:hidden}
 .med-thumb img{width:100%;height:100%;object-fit:contain;display:block}
 .med-thumb .medicine-photo--naproxen,.checkout-order__thumb .medicine-photo--naproxen{transform:scale(1.75)}
+/* Fallback for a medicine with no cleared pack photograph yet: the same white
+   stage carrying the app's pill glyph, so the row still reads as a medicine. */
+.med-thumb .ui-icon,.checkout-order__thumb .ui-icon{width:24px;height:24px;color:var(--color-accent)}
+#payment .checkout-order__thumb .ui-icon{width:20px;height:20px}
 
 /* Draft plan card: one quiet line under each medicine giving the quantity and
    what it is for, so the list reads as a plan rather than two prices. */
@@ -1325,10 +1665,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
    helper text under the list and read as a footnote. Promoted to a callout with
    the accent tint so it reads as an instruction the patient should act on,
    while staying quieter than a warning. Tokens only. */
-.plan-edit-callout{background:var(--color-accent-soft-2);border-color:var(--color-accent-soft)}
-.plan-edit-callout .a-ic{background:var(--color-accent-ink)}
-.plan-edit-callout .a-title{font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--color-ink)}
-.plan-edit-callout .hint{color:var(--color-ink-2)}
+.plan-edit-callout{background:var(--surface-notice);border-color:transparent}
+.plan-edit-callout .a-ic{background:var(--surface-notice-strong);color:var(--surface-notice-ink)}
+.plan-edit-callout .a-title{font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--surface-notice-ink)}
+.plan-edit-callout .hint,.alert .hint{color:color-mix(in srgb,var(--surface-notice-ink) 78%,transparent)}
 /* SCR-012 declined medicines. A row stepped to 0 leaves the order list and
    appears here, so declining reads as a deliberate choice rather than a ฿0 row
    sitting among the kept items. Tokens only. */
@@ -1337,10 +1677,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .declined-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0}
 .declined-row+.declined-row{border-top:1px solid var(--color-line)}
 .declined-row .grow{color:var(--color-ink-2);text-decoration:line-through}
-.alert--danger{border-color:var(--color-danger);background:color-mix(in srgb,var(--color-danger) 8%,var(--color-surface))}
+.alert--danger{border-color:var(--color-danger);background:color-mix(in srgb,var(--color-danger) 8%,var(--color-field))}
 .alert--danger .a-ic{background:var(--color-danger)}
-.alert--warning{border-color:transparent;background:color-mix(in srgb,var(--color-warning) 10%,var(--color-surface))}
-.alert--warning .a-ic{background:var(--color-warning)}
+.alert--warning{border-color:transparent;background:var(--surface-notice);color:var(--surface-notice-ink)}
+.alert--warning .a-ic{background:var(--surface-notice-strong);color:var(--surface-notice-ink)}
 .alert--success{border-color:var(--color-success);background:color-mix(in srgb,var(--color-success) 9%,var(--color-surface))}
 .alert--success .a-ic{background:var(--color-success)}
 .alert .a-title{font-weight:var(--fw-semibold)}
@@ -1348,28 +1688,200 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 /* ---------- Modal / continuity guard ---------- */
 .modal-layer{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:var(--sp-5)}
 .modal-layer__scrim{position:absolute;inset:0;padding:0;border:0;background:rgba(7,33,31,.58);cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:fade-in var(--dur-base) var(--ease-out) both}
-.modal-dialog{position:relative;width:min(440px,100%);padding:var(--sp-6);border:1px solid var(--color-glass-border);border-radius:var(--radius-xl);background:var(--color-glass-strong);box-shadow:var(--shadow-lg);animation:modal-in var(--dur-page) var(--ease-out) both}
-.modal-dialog__icon{width:48px;height:48px;display:grid;place-items:center;margin-bottom:var(--sp-4);border-radius:var(--radius-md);background:var(--color-info-soft);color:var(--color-info)}
+.modal-dialog{position:relative;z-index:1;width:min(440px,100%);padding:var(--sp-6);border:1px solid var(--color-glass-border);border-radius:var(--radius-xl);background:var(--color-glass-strong);box-shadow:var(--shadow-lg);animation:modal-in var(--dur-page) var(--ease-out) both}
+.modal-dialog__close{position:absolute;z-index:2;top:16px;right:16px;width:40px;height:40px;display:grid;place-items:center;padding:0;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--color-accent);cursor:pointer;transition:background-color .15s ease,transform .15s ease}
+.modal-dialog__close .ui-icon{width:22px;height:22px;stroke-width:2}
+.modal-dialog__close:hover{background:var(--color-accent-soft)}
+.modal-dialog__close:active{transform:scale(.94)}
+.modal-dialog__close:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+/* One sheet, one header tone: the app blue, not the grey-teal info default.
+   Every dialog inherits it; only a dialog that means caution overrides it
+   (client, 18–19 Aug). */
+.modal-dialog__icon{width:48px;height:48px;display:grid;place-items:center;margin-bottom:var(--sp-4);border-radius:var(--radius-md);
+  background:color-mix(in srgb,var(--color-accent) 12%,var(--color-surface));color:var(--color-accent)}
 .modal-dialog__icon .ui-icon{width:24px;height:24px}
 .modal-dialog h2{margin:0;font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-semibold);line-height:1.3}
 .modal-dialog p{margin:var(--sp-3) 0 0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.65}
 .modal-dialog__case{margin-top:var(--sp-4);padding:var(--sp-3);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-bg-soft)}
 .modal-dialog__case strong,.modal-dialog__case span{display:block}
 .modal-dialog__case span{margin-top:2px;color:var(--color-ink-3);font-size:var(--fs-xs)}
-.modal-dialog__actions{display:flex;justify-content:flex-end;gap:var(--sp-2);margin-top:var(--sp-5)}
-.modal-dialog__actions .btn{width:auto}
+/* Sheet actions stack: the primary full width on top, the way out full width
+   under it. Thai labels wrap, and two half-width buttons read as a choice
+   between equals when they are not (client, 18–19 Aug). Markup order is the
+   visual order, so the primary comes first in the DOM. */
+.modal-dialog__actions{display:grid;grid-template-columns:1fr;gap:var(--sp-2);margin-top:var(--sp-5)}
+.modal-dialog__actions .btn{width:100%;height:var(--control-h)}
 body.modal-open{overflow:hidden}
 @keyframes modal-in{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
 .payment-method-dialog{width:min(440px,100%)}
+/* Single-choice intake pages advance on tap, so the radio tick has nothing
+   left to communicate — the row itself is the answer. */
+[data-intake-auto-advance] .option[data-select] .opt-check{display:none}
+[data-intake-auto-advance] .option[data-select]{padding-right:var(--sp-4)}
+
+/* A document sheet breathes more than a UI card: 16px put the header against
+   its status pill and left the signature sitting on the bottom edge. */
+.doc-sheet{position:relative;overflow:hidden;padding:var(--sp-5) var(--sp-5) var(--sp-6)}
+/* The signature is the doctor's mark, with the printed name beneath it the way
+   a signed document reads — not a name in bold on the same line as the label. */
+/* Rules in a document separate sections, so they sit off the text rather than
+   hard against the line above — the medicine list ran straight into the one
+   below it. */
+.doc-sheet .divider{margin:var(--sp-5) 0}
+.doc-sign{display:flex;flex-direction:column;gap:var(--sp-1)}
+.doc-sign__mark{width:min(210px,72%);height:auto;margin:var(--sp-2) 0 0;display:block}
+.doc-sign>strong{font-family:var(--font-display);font-weight:var(--fw-semibold)}
+/* The wordmark watermark is gone: at the size a phone renders it, it sat under
+   the body text as a grey smear rather than reading as a mark on a document
+   (client, 10 Sep). The stacking context stays, since the sheet still positions
+   its own header and signature. */
+.doc-sheet>*{position:relative;z-index:1}
+/* The header row keeps its status chip whole: the title shrinks, the pill does
+   not, so "ชำระแล้ว" cannot break across two lines. */
+.doc-sheet>.between>div:first-child{min-width:0}
+/* Field rows read as label then value. The label is short and fixed, so it
+   never breaks mid-word to make room — the value wraps instead. */
+.doc-sheet .kv-list .between{align-items:flex-start;gap:var(--sp-5)}
+.doc-sheet .kv-list .between>.muted{flex:none;white-space:nowrap}
+.doc-sheet .kv-list .between>strong{min-width:0;text-align:right}
+
+/* ---- Order documents ----------------------------------------------------
+   Ghost text links under the timeline read as fine print, which is the wrong
+   weight for the receipt and the certificate — those are the two things people
+   come back to this screen for. Each is its own row with a visible action. */
+.doc-section{display:flex;flex-direction:column;gap:var(--sp-2)}
+.doc-summary-list{margin:0;padding-left:1.15em;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.65}
+.doc-summary-list li+li{margin-top:4px}
+.doc-row{
+  width:100%;display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);
+  border:0;border-radius:var(--radius-lg);
+  background:var(--surface-card-raised);
+  box-shadow:var(--shadow-card-raised);
+  color:var(--color-ink);text-align:left;cursor:pointer;
+  transition:transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
+}
+.doc-row:hover,.doc-row:focus-visible{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.doc-row__icon{
+  flex:none;display:grid;width:40px;height:40px;place-items:center;
+  border-radius:var(--radius-md);
+  background:var(--surface-sunken);color:var(--color-ink-2);
+}
+.doc-row__icon .ui-icon{width:19px;height:19px}
+.doc-row__body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.doc-row__body strong{font-size:var(--fs-base);font-weight:var(--fw-semibold)}
+.doc-row__body .hint{font-size:var(--fs-xs)}
+.doc-row__action{
+  flex:none;display:inline-flex;align-items:center;justify-content:center;
+  min-width:64px;height:36px;padding:0 var(--sp-4);
+  border:1px solid currentColor;border-radius:var(--button-radius);
+  color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-semibold);
+}
+
+/* Milestone dialog: the illustration leads, then the news, then one way on. */
+/* Clear button inside a field. Sized to the tap-target minimum and sitting on
+   the input's own centre line, so the label above it is not thrown off. */
+/* ---- Address search -----------------------------------------------------
+   The form opens on a search box, not a slab of map: naming the place is the
+   fast path, and the map is one tap away for when you cannot. */
+.address-search{position:relative;display:flex;flex-direction:column;gap:var(--sp-2)}
+.address-search__field{position:relative}
+.address-search__field .input{padding-left:42px}
+.address-search__icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:grid;place-items:center;color:var(--color-ink-3);pointer-events:none}
+.address-search__icon .ui-icon{width:17px;height:17px}
+.address-search__map{width:100%}
+.address-suggestions{
+  position:absolute;z-index:5;top:calc(var(--control-h) + 6px);left:0;right:0;
+  margin:0;padding:var(--sp-1);list-style:none;
+  border-radius:var(--radius-md);background:var(--color-surface);
+  box-shadow:0 2px 6px rgba(18,24,36,.06),0 14px 34px rgba(18,24,36,.14);
+  max-height:288px;overflow:auto;
+}
+.address-suggestions[hidden]{display:none}
+.address-suggestion{
+  width:100%;display:flex;align-items:flex-start;gap:var(--sp-3);
+  padding:var(--sp-3);border:0;border-radius:var(--radius-sm);
+  background:transparent;color:var(--color-ink);text-align:left;cursor:pointer;
+}
+.address-suggestion:hover,.address-suggestion:focus-visible{background:var(--surface-sunken)}
+.address-suggestions__empty{padding:var(--sp-3);color:var(--color-ink-3);font-size:var(--fs-sm);line-height:1.5}
+.address-suggestion__icon{flex:none;display:grid;width:28px;height:28px;place-items:center;border-radius:50%;background:var(--surface-sunken);color:var(--color-ink-2)}
+.address-suggestion__body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.address-suggestion__body strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.address-suggestion__body span{color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.4}
+/* Map screen: the map is the content, so it takes the height it is given. */
+.address-map-body{display:flex;flex-direction:column;gap:var(--sp-4)}
+.address-map--full{flex:1;height:auto;min-height:320px;max-height:none}
+.address-map--full .sim-map{height:100%}
+
+.field--clearable{position:relative}
+.field--clearable>input.input{padding-right:42px}
+.field__clear{
+  position:absolute;right:6px;bottom:calc((var(--control-h) - 32px) / 2);
+  display:grid;width:32px;height:32px;place-items:center;padding:0;
+  border:0;border-radius:50%;background:transparent;color:var(--color-ink-3);cursor:pointer;
+}
+/* Nine fields in a row read as a wall. Grouping them by subject gives the eye
+   somewhere to rest (client, 18 Aug). */
+.form-group{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);
+  border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:var(--shadow-xs,0 1px 2px rgba(18,24,36,.06))}
+/* the group is a flex column with its own gap, so the label adds no margin */
+.form-group__title{margin:0}
+.form-group__optional{font-weight:var(--fw-regular);color:var(--color-ink-3)}
+/* A field that failed validation says so where it failed, not only in a toast. */
+.field.is-invalid>.input,.field.is-invalid>.textarea,.field.is-invalid>.select{
+  border-color:var(--color-danger);box-shadow:0 0 0 1px var(--color-danger) inset}
+.field__error{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--color-danger);font-size:var(--fs-xs);line-height:1.4}
+.field:not(.is-invalid)>.field__error{display:none}
+/* The error line grows the field downwards; the × has to stay on the input,
+   not slide to the new bottom edge (client, 19 Aug). --field-error-h is the
+   measured height of the message and is set alongside .is-invalid. */
+.field.is-invalid .field__clear{bottom:calc(((var(--control-h) - 32px) / 2) + var(--field-error-h,26px))}
+.field__clear:hover{background:var(--surface-sunken-hover);color:var(--color-ink-2)}
+.field__clear[hidden]{display:none}
+.field__clear svg{width:15px;height:15px}
+
+.csat-dialog{width:min(460px,100%)}
+.csat-dialog[tabindex="-1"]:focus{outline:none}
+/* A rating dialog asking three questions reads friendlier with a face on it
+   (client, 19 Aug). Same guide figure the service pages use. */
+.csat-dialog__header{display:flex;align-items:center;gap:var(--sp-3)}
+.csat-dialog__intro{flex:1;min-width:0}
+.csat-dialog__art{flex:none;display:block;width:112px;height:auto;margin:0}
+.csat-dialog__rows{margin-top:var(--sp-4)}
+/* Label above its stars: five 44px targets leave no room for a Thai label
+   beside them, and the label wrapped mid-word. */
+.csat-dialog .rating-row{flex-direction:column;align-items:flex-start;gap:6px}
+.csat-dialog .rating{margin-left:-10px}
+.csat-dialog .field{margin-top:var(--sp-4)}
+
+.signup-done-dialog{width:min(420px,100%);text-align:center}
+.signup-done-dialog[tabindex="-1"]:focus{outline:none}
+.signup-done-dialog__art{width:min(240px,72%);height:auto;margin:0 auto var(--sp-3);display:block}
+
+.health-history-dialog{width:min(460px,100%)}
+.health-history-dialog .partner-clinical-grid{gap:var(--sp-4);margin-top:var(--sp-5)}
+.health-history-dialog .partner-binary{height:52px;padding:4px;border-color:transparent;border-radius:var(--control-radius);background:var(--color-field)}
+.health-history-dialog .input{height:48px;border-color:var(--color-line-strong);background:var(--color-surface);font-size:16px}
+/* Caution, in the notice tone the rest of the app uses for it — no other
+   colour on this dialog competes with the answers. */
+.health-history-dialog .modal-dialog__icon{background:var(--surface-notice);color:var(--surface-notice-ink)}
+.waitroom-expired-dialog .modal-dialog__icon{background:var(--surface-notice);color:var(--surface-notice-ink)}
 .payment-method-list{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-5)}
 .payment-method-option{min-height:var(--control-h-lg)}
 .payment-method-option .opt-icon{background:var(--color-surface);border:0}
-.payment-method-option[aria-selected="true"] .opt-check{display:grid}
+/* The tap commits the choice and closes the sheet, so the tick has nothing
+   left to say — the filled row is the selection (client, 18 Aug). */
+.payment-method-option .opt-check{display:none}
+.payment-method-option{padding-right:var(--sp-4)}
+#promo-modal .promo-code-field{padding-top:var(--sp-4)}
+#promo-modal .promo-code-field>label{margin-bottom:var(--sp-3);line-height:1.4}
+/* On a phone every dialog is a bottom sheet: full width, square at the
+   bottom, rounded at the top. One geometry, applied once, so a new sheet
+   cannot be born a one-off (client, 19 Aug). */
 @media(max-width:36rem){
   .modal-layer{align-items:end;padding:0}
-  .payment-method-dialog{width:100%;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:var(--sp-5)}
-  .payment-method-dialog .modal-dialog__actions{display:grid;grid-template-columns:1fr 1fr}
-  .payment-method-dialog .modal-dialog__actions .btn{width:100%}
+  .modal-dialog{width:100%;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:var(--sp-5) var(--sp-5) max(var(--sp-5),env(safe-area-inset-bottom))}
 }
 
 /* PDPA review: concise consent stays in the care form; the full notice is read here. */
@@ -1411,7 +1923,7 @@ body.modal-open{overflow:hidden}
 
 /* ---------- Empty state ---------- */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3);padding:var(--sp-7) var(--sp-4)}
-.empty .e-art{width:72px;height:72px;border-radius:var(--radius-lg);background:var(--gradient-teal-soft);border:1px solid var(--color-line);box-shadow:var(--shadow-sm);display:grid;place-items:center;color:var(--color-accent);font-size:28px}
+.empty .e-art{width:72px;height:72px;border-radius:var(--radius-lg);background:var(--color-bg-2);border:0;box-shadow:none;display:grid;place-items:center;color:var(--color-ink-2);font-size:28px}
 
 /* ---------- Map picker (Grab-style address: drop a pin) ---------- */
 .map{position:relative;width:100%;height:172px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--color-line);
@@ -1676,7 +2188,7 @@ body.modal-open{overflow:hidden}
 /* ---------- Quick actions row (profile, one row, nav-bar style) ---------- */
 .quick-row{display:flex;gap:var(--sp-2)}
 .quick-row a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center;text-decoration:none;color:var(--color-ink);cursor:pointer;padding:var(--sp-2) 2px}
-.quick-row a .qic{width:48px;height:48px;border-radius:50%;background:var(--color-powder);color:var(--color-accent);border:0;display:grid;place-items:center}
+.quick-row a .qic{width:48px;height:48px;border-radius:50%;background:var(--color-bg-2);color:var(--color-ink-2);border:0;display:grid;place-items:center}
 .quick-row a .qic svg{width:21px;height:21px}
 .quick-row a .qlbl{font-size:var(--fs-xs);font-weight:var(--fw-medium);line-height:1.2}
 .quick-row a:hover .qic{background:var(--color-accent);color:var(--color-on-accent);box-shadow:none}
@@ -1686,8 +2198,10 @@ body.modal-open{overflow:hidden}
 #profile .screen__body{background:var(--color-bg)}
 #profile .quick-row{padding:12px 8px;border-radius:24px;background:var(--color-surface);box-shadow:0 8px 24px rgba(17,27,48,.06)}
 #profile .card{border:0;border-radius:24px;box-shadow:0 8px 24px rgba(17,27,48,.07)}
-#profile .btn--primary{border-radius:var(--radius-pill);background:var(--color-surface-deep)}
-#profile .btn--primary:hover{background:var(--color-surface-mid)}
+/* Removed: the home screen was overriding the primary button into a pill with
+   its own ink, so the same action looked like a different component here than
+   in intake or checkout. --button-radius already says actions share one
+   rounded-rectangle geometry and the pill is for statuses. */
 
 /* ---------- Choice cards (category / condition picker, tap to go, no radio) ---------- */
 .choice-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-2);grid-auto-rows:auto}
@@ -1714,8 +2228,9 @@ body.modal-open{overflow:hidden}
 .choice-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--color-line-strong)}
 .choice-card:focus{outline:none}
 .choice-card:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+/* Category icons carry the app's own blue, not a neutral grey (client, 18 Aug). */
 .choice-card .cc-icon{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;
-  background:var(--color-powder);color:var(--color-accent);border:0}
+  background:color-mix(in srgb,var(--color-accent) 11%,var(--color-surface));color:var(--color-accent);border:0}
 .choice-card .cc-icon .ui-icon{width:23px;height:23px}
 .choice-card .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
 .choice-card .cc-title{min-width:0;font-weight:var(--fw-semibold);line-height:var(--lh-tight);overflow-wrap:anywhere}
@@ -1825,6 +2340,10 @@ body.modal-open{overflow:hidden}
 /* ---------- Waiting room: locked CTA until the doctor admits ---------- */
 .btn.is-locked{opacity:.5;pointer-events:none}
 .is-ready-pop{animation:ready-pop var(--dur-base) var(--ease-spring)}
+.waitroom-entry-cta{width:min(100%,360px);min-height:56px;margin-top:var(--sp-2);padding-inline:var(--sp-5)}
+.waitroom-entry-cta__timer{padding-left:var(--sp-2);border-left:1px solid color-mix(in srgb,currentColor 38%,transparent);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.waitroom-entry-cta__timer:empty{display:none}
+.waitroom-entry-cta__timer--urgent{color:#ffd6d2}
 
 /* ---------- Reduce-only quantity stepper (treatment plan, F16) ---------- */
 .qty{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2)}
@@ -1852,13 +2371,18 @@ body.modal-open{overflow:hidden}
 
 /* ---------- In-chat call bar: the call continues while the patient chats (F13) ---------- */
 .callbar{display:flex;align-items:center;gap:var(--sp-3);width:100%;padding:var(--sp-3) var(--sp-4);
-  border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-accent-soft);
-  cursor:pointer;font-size:var(--fs-sm);color:var(--color-ink);
+  border:0;border-radius:var(--radius-md);background:var(--surface-notice);
+  cursor:pointer;font-size:var(--fs-sm);color:var(--surface-notice-ink);
   transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
-.callbar:hover{background:var(--color-accent-soft-2);transform:translateY(-1px)}
-.callbar strong{color:var(--color-blue);white-space:nowrap}
-.callbar .cb-dot{width:9px;height:9px;border-radius:var(--radius-pill);background:var(--color-success);flex:none;animation:cb-pulse 1.6s ease-out infinite}
-@keyframes cb-pulse{0%{box-shadow:0 0 0 0 rgba(47,122,88,.4)}100%{box-shadow:0 0 0 9px rgba(47,122,88,0)}}
+.callbar:hover{background:var(--surface-notice-strong);transform:translateY(-1px)}
+.callbar strong{color:var(--surface-notice-ink);white-space:nowrap}
+/* One line: the bar is a status, and wrapping it to two made it read as a
+   paragraph sitting in the thread. */
+.callbar>.grow{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* The dot is the live signal, so it is the one bright thing on the cream band
+   rather than the same ink as the text. */
+.callbar .cb-dot{width:9px;height:9px;border-radius:var(--radius-pill);background:#E8B411;flex:none;animation:cb-pulse 1.6s ease-out infinite}
+@keyframes cb-pulse{0%{box-shadow:0 0 0 0 rgba(232,180,17,.55)}100%{box-shadow:0 0 0 9px rgba(232,180,17,0)}}
 /* helper line under the call controls (dark call stage) */
 .call-hint{text-align:center;font-size:var(--fs-xs);color:rgba(255,255,255,.62);margin:var(--sp-2) 0 var(--sp-4)}
 /* Voice is a fallback, so the room says plainly who turned video off and that the
@@ -1889,9 +2413,7 @@ body.lang-th *{letter-spacing:normal}
 
 
 /* Tags read at a glance (matching the back office). */
-.badge--line{background:var(--color-bg-2);color:var(--color-ink-2)}
-.badge--ok{background:var(--color-accent-soft);color:var(--color-ink)}
-.badge--warn{background:var(--color-warning-soft);color:var(--color-warning)}
+.badge--line{background:var(--state-neutral);color:var(--state-neutral-ink)}
 
 /* ---------- Checkout structure (payment screen) ---------- */
 /* Section label with a trailing link or hint, so a section can carry a secondary
@@ -1941,6 +2463,11 @@ body.lang-th *{letter-spacing:normal}
 
 .consent-agree{display:flex;align-items:flex-start;gap:var(--sp-3);cursor:pointer}
 .consent-agree .check{margin-top:var(--sp-1);flex:none}
+/* One column: the required / optional badges are gone, and the checkbox on the
+   left already says whether a line has to be ticked (client, 10 Sep). */
+.consent-choice__body{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:8px;min-width:0;flex:1}
+.consent-choice__body .hint{line-height:1.5;color:var(--color-ink-2)}
+.consent-choice--optional{padding-top:16px;border-top:1px solid var(--color-line)}
 /* Locked until the document has been read to the end. */
 .is-unread .consent-agree{cursor:not-allowed;opacity:.55}
 .consent-note{color:var(--color-ink-3)}
@@ -1970,6 +2497,7 @@ body.lang-th *{letter-spacing:normal}
 #consent-terms .card>.stack-3>*+*{margin-top:12px}
 #consent-terms .consent-agree{gap:10px}
 #consent-terms .consent-note{font-size:13px;line-height:1.4}
+#consent-terms .consent-choice--optional{margin-top:16px;padding-top:18px}
 #consent-terms .consent-page__sentinel{display:block;width:100%;height:1px}
 
 /* True phone viewport: the product shell fills the visible app area while only
@@ -2015,7 +2543,7 @@ body.lang-th *{letter-spacing:normal}
   .care-journey__name{display:block;margin-top:2px;font-size:9.5px;font-weight:var(--fw-regular);line-height:1.12}
   .care-journey__step .care-journey__name{margin-top:0}
   .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-medium)}
-  .care-journey__steps .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-semibold)}
+  .care-journey__steps .care-journey__step.is-current .care-journey__name{font-weight:var(--fw-bold)}
   .care-journey__step::before{top:18px;right:calc(50% + 12px);left:calc(-50% - 14px)}
   .care-journey__dot{width:24px;height:24px;border-radius:8px;font-size:10px}
   .care-journey__dot svg{width:11px;height:11px}
@@ -2030,53 +2558,60 @@ body.lang-th *{letter-spacing:normal}
   #payment .checkout-order__note,#payment .checkout-row__label,#payment .checkout-calc{font-size:13px}
 }
 @media(max-width:480px){
-  .partner-duration-stepper{flex-basis:38%;min-width:142px;padding-inline:8px}
-  .partner-duration-units{padding-inline:6px}
-  .partner-duration-units button{padding-inline:6px}
+  .partner-duration-stepper{padding-inline:8px}
+  .partner-duration-units button{padding-inline:4px;font-size:13px}
   .partner-relief-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-/* Compact care progress: a quiet segmented track with one readable current-step
-   caption. This keeps the full journey and accessible labels without the generic
-   numbered-node stepper treatment. */
-.care-journey{display:flex;flex-direction:column;gap:9px;padding:12px 16px 11px;background:transparent;border-bottom:0}
-/* The header and the journey stepper below it read as one panel, not two
-   bars stacked on a seam: no background on either, so both just show the
-   screen behind them. */
+/* Client progress reference (30 Aug): three plain labels over three quiet
+   underline tracks. Only the current stage is dark; past and future stages
+   stay grey so the user's present position is unambiguous. */
+.care-journey{display:block;padding:11px 16px 13px;background:transparent;border-bottom:0}
 .screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
-.care-journey__steps{order:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.care-journey__step{position:relative;display:block;height:6px;min-height:0;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-line);box-shadow:none;overflow:hidden}
-.care-journey__step::before,.care-journey__dot,.care-journey__name{display:none}
-.care-journey__step.is-done{background:var(--color-accent)}
-/* The current stage is a track; its fill grows with the sub-steps. Done stages
-   are solid, so the bar reads as one continuous measure of the whole journey
-   instead of two controls disagreeing about what "1 / 5" means. */
-.care-journey__step.is-current{background:var(--color-line)}
-.care-journey__fill{display:none}
-.care-journey__step.is-current>.care-journey__fill{position:absolute;inset:0 auto 0 0;display:block;width:0;
-  border-radius:var(--radius-pill);background:var(--color-accent);
-  transition:width var(--dur-page) var(--ease-out)}
-@media(prefers-reduced-motion:reduce){.care-journey__step.is-current>.care-journey__fill{transition:none}}
-.care-journey__current{order:2;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;min-width:0;color:var(--color-ink)}
-.care-journey__current b{color:var(--color-accent);font-size:10px;font-weight:var(--fw-bold);line-height:1;font-variant-numeric:tabular-nums}
-.care-journey__current strong{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--color-ink);font-size:12px;font-weight:var(--fw-semibold);line-height:1.25;white-space:nowrap}
-.care-journey__current small{color:var(--color-ink-3);font-size:10px;font-weight:var(--fw-medium);line-height:1.2;white-space:nowrap}
-.care-journey__current small i{font-style:normal;color:var(--color-ink-3)}
-.care-journey__current em{padding:3px 7px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-3);font-size:10px;font-style:normal;font-weight:var(--fw-semibold);line-height:1;font-variant-numeric:tabular-nums}
+.care-journey__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.care-journey__step{position:relative;display:grid;grid-template-rows:auto 3px;gap:8px;min-width:0;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.care-journey__step::before,.care-journey__dot{display:none}
+.care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
+/* The live stage fills across its own track as the patient moves through it,
+   rather than switching on whole (client, 1 Sep: "slowly load within it bar
+   same as before"). updateIntakeProgress() drives the width — per question on
+   the paginated screens, so it creeps rather than jumping a screen at a time —
+   and paints the previous width first so the change animates from where it was.
+   The 30 Aug redesign hid this element and left the JS running into nothing. */
+.care-journey__fill{display:none;position:absolute;z-index:1;bottom:0;left:0;
+  width:0;height:3px;border-radius:var(--radius-pill);background:var(--color-accent);
+  transition:width 520ms var(--ease-out)}
+.care-journey__step.is-current .care-journey__fill{display:block}
+@media(prefers-reduced-motion:reduce){.care-journey__fill{transition:none}}
+.care-journey__name{display:block;width:100%;overflow:hidden;color:var(--color-ink-3);font-size:13px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;text-overflow:ellipsis}
+.care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
+.care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
+/* A finished stage keeps a full accent track. Turning the live stage's track
+   grey so the fill had somewhere to travel left "done" and "not started"
+   looking the same, so a patient who had finished the whole questionnaire saw
+   an almost empty bar (client, 1 Sep). */
+.care-journey__step.is-done::after{background:var(--color-accent)}
+/* Client, 1 Sep: bigger, and the live stage in brand blue rather than ink —
+   the accent is what the rest of the app uses to say "you are here". Past and
+   future stages stay grey, so there is still only one stage being pointed at. */
+/* The current stage is the one fact the header has to carry, so its name is
+   set in bold, not semibold, against the two it sits between (client, 10 Sep). */
+.care-journey__step.is-current .care-journey__name{color:var(--color-accent);font-weight:var(--fw-bold)}
+/* The live stage keeps a grey track — the accent on it is the fill, and a
+   track already fully blue would leave nothing for the fill to travel across. */
+.care-journey__step.is-current::after{background:var(--color-line)}
+.care-journey__current{display:none}
 @media(max-width:780px){
-  .care-journey{display:flex;padding:10px 12px 9px;gap:8px}
-  .care-journey__steps{gap:5px}
-  .care-journey__step{height:3px;padding:0;border-radius:var(--radius-pill)}
-  .care-journey__dot,.care-journey__name{display:none}
-  .care-journey__current{display:grid}
-  .care-journey__current small{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+  .care-journey{display:block;padding:10px 12px 12px}
+  .care-journey__steps{gap:7px}
+  .care-journey__step{grid-template-rows:auto 3px;gap:7px}
+  .care-journey__name{display:block;font-size:12px}
   .screen__subprogress{padding-block:7px}
   .screen__subprogress .progress{height:2px}
 }
 @media(max-width:420px){
-  .care-journey__current{grid-template-columns:auto minmax(0,1fr) auto auto;gap:5px}
-  .care-journey__current small{grid-column:3;grid-row:1;max-width:84px;font-size:9px}
-  .care-journey__current em{grid-column:4;grid-row:1}
+  .care-journey__steps{gap:6px}
+  .care-journey__name{font-size:11.5px}
 }
 
 /* Address search, sitting over the map like a real map app's. */
@@ -2128,8 +2663,6 @@ body.lang-th *{letter-spacing:normal}
    certificate they forward to an employer, should look issued rather than
    look like another app screen, so the sheet keeps a plain white face and
    the tab row stays visibly secondary to it. */
-.doc-tabs{flex-wrap:wrap}
-.doc-tabs .btn[aria-selected="true"]{background:var(--color-bg-2);color:var(--color-ink)}
 .doc-sheet{background:var(--color-surface)}
 /* A receipt reads across, not down: label on the left, value on the right. The
    shared .kv-list stacks them, which is right for a profile and wrong here. */
@@ -2163,12 +2696,16 @@ body.lang-th *{letter-spacing:normal}
    avatar used where a doctor is one option among several to pick. */
 .consult-doctor-photo{width:40px;height:40px;flex:none;border-radius:50%;
   object-fit:cover;object-position:50% 22%}
+/* The face belongs with the name it identifies, on the value side of the row.
+   Parked on the far left it collided with the label instead. */
+.doctor-value{display:inline-flex;align-items:center;gap:var(--sp-2);min-width:0}
+.doctor-value>strong{min-width:0;text-align:right}
 
 /* Intake screens sit on the app canvas rather than the default white surface,
    on the screen and its answer cards alike. Client 16 Aug: cool grey, so these
    read from the same tokens as every other screen instead of a warm hardcode. */
 #intake1,#intake2,#intake3,#intake4,#intake5,#intake-concern,#intake-general{
-  --intake-cream:var(--color-bg);
+  --intake-cream:var(--surface-page);
   background:var(--intake-cream);
 }
 #intake1 .screen__top,#intake2 .screen__top,#intake3 .screen__top,#intake4 .screen__top,#intake5 .screen__top,#intake-concern .screen__top,#intake-general .screen__top,
@@ -2177,21 +2714,687 @@ body.lang-th *{letter-spacing:normal}
   background:var(--intake-cream);
 }
 #intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option,#intake-concern .option,#intake-general .option{
-  background:var(--color-bg-2);
-}
-/* The ไม่มี/มี toggle's selected state used the site-wide dark-navy
-   "selected" treatment, which read as too heavy against the grey
-   intake screens. One step darker than the option cards keeps the same soft
-   palette, now in the cool family rather than a warm hardcode. */
-#intake-general .partner-binary__option[aria-checked="true"]{
-  background:var(--color-line-strong);
-  color:var(--color-ink);
-  box-shadow:none;
+  background:var(--surface-card-raised);
 }
 /* Consultation-fee summary cards read as two stacked white-on-white outlined
    boxes. Flatten them to a solid tinted panel instead of a bordered/shadowed card. */
-#consultpay .card,#consultpay-gw .card,#consultpay-fail .card{
-  background:var(--color-bg-2);
-  border:0;
-  box-shadow:none;
+/* Was a grey card on a white screen; the base card is now the lighter surface
+   on a darker page, so this override is no longer needed. */
+
+
+/* ---- Status pills --------------------------------------------------------
+   One pill per state, each reading from the state palette so two different
+   statuses can never render as the same chip. */
+.badge--progress{background:var(--state-progress);color:var(--state-progress-ink)}
+.badge--active{background:var(--state-active);color:var(--state-active-ink)}
+.badge--done{background:var(--state-neutral);color:var(--state-neutral-ink)}
+
+/* ---- Home primary action -------------------------------------------------
+   The old quick row was four icons of which three duplicated the bottom nav
+   (Track order and History are the Activities tab; Refer belongs in Settings).
+   Only "new consult" was unique to this screen, so it stops being a 4th icon
+   and becomes the one thing the home screen asks you to do. */
+.home-cta{
+  display:flex;align-items:center;gap:var(--sp-4);width:100%;
+  padding:var(--sp-4) var(--sp-5);
+  /* Same geometry token as every other action, and the slate blue rather than
+     ink — this is the one thing on the home screen we want tapped. */
+  border-radius:var(--button-radius);
+  background:var(--color-accent);color:#fff;
+  text-decoration:none;cursor:pointer;
+  transition:transform var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out);
 }
+.home-cta:hover{background:var(--theme-accent-hover,var(--color-accent))}
+.home-cta:active{transform:scale(.99)}
+/* display:flex above beats the hidden attribute on its own. */
+.home-cta[hidden]{display:none}
+/* One quiet line, not a second primary action. Sized like a notice: it tells
+   the patient the appointment is close and gets out of the way. */
+.followup-toast{width:100%;display:flex;align-items:center;gap:var(--sp-2);
+  min-height:44px;padding:10px var(--sp-3);border:0;border-radius:var(--radius-sm);
+  background:var(--color-accent-soft);color:var(--color-accent);
+  font:inherit;font-size:13px;font-weight:var(--fw-medium);text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform var(--dur-micro) var(--ease-out),opacity var(--dur-micro) var(--ease-out)}
+.followup-toast[hidden]{display:none}
+.followup-toast .ui-icon{width:17px;height:17px;flex:none}
+/* One line always: the date makes this long enough to wrap on a small phone. */
+.followup-toast__text{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.followup-toast__go{flex:none;display:grid;place-items:center;opacity:.65}
+.followup-toast__go svg{width:15px;height:15px}
+.followup-toast:active{transform:scale(.99);opacity:.75}
+.followup-toast:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+/* The label is short and fixed; it was breaking mid-word ("ถัด / ไป") to make
+   room for a long date and doctor name. Hold the label, wrap the value. */
+.followup-row{align-items:flex-start;gap:var(--sp-4);
+  padding:var(--sp-2) var(--sp-3);background:var(--color-bg-soft);border-radius:var(--radius-xs)}
+.followup-row>.hint{flex:none;white-space:nowrap}
+.followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3}
+/* A date plus the doctor's full name does not fit beside its label on a phone —
+   it was breaking into three ragged lines. Stack it there instead. */
+@media(max-width:430px){
+  .followup-row{flex-direction:column;align-items:flex-start;gap:2px}
+  .followup-row>strong{text-align:left}
+}
+.home-cta__copy{display:grid;gap:3px;min-width:0;flex:1}
+.home-cta__copy strong{font-size:var(--fs-md);font-weight:var(--fw-semibold);line-height:1.3}
+.home-cta__go{background:rgba(255,255,255,.18)}
+.home-cta__copy span{color:rgba(255,255,255,.85);font-size:var(--fs-sm);line-height:1.4}
+/* The two banner versions stack in the same grid cell; only one is ever shown.
+   Restated at the same specificity as the rule above so the wrapper itself is
+   not dimmed — only the sub-line inside it is. */
+.home-cta__copy .home-cta__variant{display:grid;gap:3px;color:#fff;font-size:inherit}
+.home-cta__copy .home-cta__variant[hidden]{display:none}
+/* Thai runs คุณหมอนรินทร์ together; English needs the space in "Dr. Narin".
+   The space belongs to the join, not to either string, so the language decides
+   it — every คุณหมอ<span data-doctor-name> in the app read "Dr.Narin" before. */
+html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
+.home-cta__go{
+  display:grid;place-items:center;width:38px;height:38px;flex:none;
+  border-radius:50%;background:rgba(255,255,255,.14);
+}
+.home-cta__go svg{width:19px;height:19px}
+
+/* Profile is a care-return surface, not a settings summary. The four shortcuts
+   put the repeat actions (follow-up, refill, booking and urgent consult) before
+   the longer treatment history while keeping the assigned doctor visible. */
+.profile-quick{display:flex;flex-direction:column;gap:var(--sp-4);padding:0;
+  border:0;border-radius:0;background:transparent;box-shadow:none}
+.profile-quick__meta{justify-content:flex-end}
+/* Client, 1 Sep: "เอากรอบ...ตรงควิกเมนูออก ไม่สวยไม่คลีน". Each action used to
+   carry two nested containers — a bordered sunken plate and a white disc behind
+   the icon — so four actions put eight boxes across the top of the home screen
+   and the eye had to get past all of them to reach the four words that actually
+   say what the buttons do. The plate and the disc are both gone: the icon sits
+   on the page in brand blue and the label carries the meaning, which is what
+   the patient reads anyway. Nothing here draws a box. */
+.profile-quick__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.profile-quick__action{min-width:0;display:flex;flex-direction:column;align-items:center;
+  gap:var(--sp-2);padding:var(--sp-2) 2px;border:0;border-radius:var(--radius-sm);
+  background:transparent;color:inherit;text-align:center;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:transform .12s ease,opacity .12s ease}
+.profile-quick__icon{width:auto;height:auto;flex:none;display:grid;place-items:center;
+  border-radius:0;background:none;color:var(--color-accent)}
+.profile-quick__icon .ui-icon{width:26px;height:26px;stroke-width:1.7}
+.profile-quick__action>span:last-child{min-width:0;display:grid;gap:1px;justify-items:center}
+/* The label is the only thing identifying the action now, so it gets the ink
+   and the weight the plate used to take. One line — these wrap into nonsense. */
+.profile-quick__action strong{font-size:12.5px;line-height:1.3;font-weight:var(--fw-medium);
+  color:var(--color-accent);white-space:nowrap}
+/* Client, 1 Sep: no descriptions under the quick menu — the label is the
+   whole of it. */
+/* The follow-up is the one the patient is most likely to want, and it used to
+   be a filled blue tile. Colour carries that now instead of a box; the blue
+   banner underneath is still the loud version of the same action. */
+.profile-quick__action--primary strong{font-weight:var(--fw-semibold)}
+/* With no plate there is no fill to darken on press, so the whole item answers. */
+.profile-quick__action:active{transform:scale(.94);opacity:.65}
+@media(hover:hover){
+  .profile-quick__action:hover strong{color:var(--color-accent)}
+}
+.profile-quick__action:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:760px){
+  .profile-quick{padding:0;gap:var(--sp-3)}
+  .profile-quick__grid{gap:4px}
+  .profile-quick__action{padding:2px 1px;gap:7px}
+  .profile-quick__icon .ui-icon{width:25px;height:25px}
+  .profile-quick__action strong{font-size:12px}
+}
+@media(max-width:360px){
+  .profile-quick__action strong{font-size:11px}
+  .profile-quick__icon .ui-icon{width:23px;height:23px}
+}
+
+/* The map picker rides above the sticky primary action as a floating pill, so
+   it stays reachable while the form scrolls (client, 19 Aug). */
+.address-footer{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)}
+/* The footer sliced the form off with a hard white edge, so a half-shown card
+   read as broken rather than as "there is more below" (client, 19 Aug). The
+   scroll now fades into the footer instead of being cut at it. */
+.address-footer::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:20px;pointer-events:none;
+  background:linear-gradient(to top,var(--surface-page),color-mix(in srgb,var(--surface-page) 0%,transparent))}
+/* Filled blue, not a white pill on a white form (client, 23 Aug): people were
+   not finding it, which is why so many typed the whole address by hand. */
+.address-map-pill{align-self:center;display:inline-flex;align-items:center;gap:8px;
+  min-height:40px;padding:0 var(--sp-4);border:1px solid var(--color-accent);
+  border-radius:var(--radius-pill);background:var(--color-accent);color:#fff;
+  font-size:var(--fs-sm);font-weight:var(--fw-semibold);box-shadow:var(--shadow-sm);cursor:pointer}
+.address-map-pill:hover{border-color:var(--color-accent-strong,var(--color-accent));
+  background:color-mix(in srgb,var(--color-accent) 88%,#000)}
+.address-map-pill .ui-icon{width:16px;height:16px}
+/* An error message under one field must not drag its neighbour's label out of
+   line: the row aligns at the top, not at the baseline of the taller column. */
+.field-row{align-items:flex-start}
+.field-row>.field{display:flex;flex-direction:column}
+.field-row>.field>.input,.field-row>.field>.select{margin-top:auto}
+
+/* Documents the payment releases. Locked rows are flat and quiet: they are a
+   statement of what is being bought, not something to tap (client, 19 Aug). */
+.doc-row--locked{cursor:default;background:var(--color-bg-2);box-shadow:none}
+.doc-row--locked:hover,.doc-row--locked:focus-visible{transform:none;box-shadow:none}
+.doc-row--locked .doc-row__icon{background:var(--color-surface);color:var(--color-ink-3)}
+.doc-row--locked .doc-row__body strong{color:var(--color-ink-2);font-weight:var(--fw-medium)}
+.doc-row__action--locked{display:grid;place-items:center;color:var(--color-ink-3);background:transparent;padding:0}
+.doc-row__action--locked .ui-icon{width:16px;height:16px}
+
+/* A step's own action: small, inline under the step it belongs to, never a
+   page-level primary (client, 19 Aug). */
+.timeline .step__action{display:inline-flex;align-items:center;margin-top:6px;padding:6px 12px;
+  border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.timeline .step__action:hover{background:var(--color-bg-2)}
+.timeline .step__action[hidden]{display:none}
+
+/* The search box carries the same clear button as the fields below it. */
+.address-search__field{position:relative}
+.address-search__field .field__clear{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
+.address-search__field > input.input{padding-right:44px}
+
+/* ---------- Refill: pick which prescriptions to re-order (27 Aug) ---------- */
+/* Multi-choice, so every row carries a tick and the screen keeps one CTA. */
+.refill-option{width:100%;display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-2) var(--sp-2);border:1px solid transparent;border-radius:var(--radius-md);
+  background:var(--color-surface);color:var(--color-ink);text-align:left;cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.refill-option+.refill-option{margin-top:var(--sp-1)}
+.refill-option__tick{flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;
+  border:1.5px solid var(--color-line-strong);border-radius:6px;background:var(--color-surface);
+  color:#fff;transition:background var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.refill-option__tick .ui-icon{opacity:0}
+.refill-option[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.refill-option[aria-checked="true"] .refill-option__tick{background:var(--color-accent);border-color:var(--color-accent)}
+.refill-option[aria-checked="true"] .refill-option__tick .ui-icon{opacity:1}
+.refill-option__body{flex:1;min-width:0;display:grid;gap:1px}
+/* One medicine, one line (house rule 4). The thumb and the price are both
+   fixed so the name gets whatever is left rather than wrapping into two. */
+.refill-option__body strong{font-weight:var(--fw-semibold);font-size:var(--fs-sm);line-height:1.25}
+.refill-option .med-thumb{flex:0 0 40px;width:40px;height:40px}
+.refill-option .price{flex:0 0 auto;white-space:nowrap;font-size:var(--fs-sm)}
+/* Out of allowance: shown so the patient knows it exists, not offered. */
+.refill-option.is-unavailable{cursor:default;opacity:.62}
+.refill-option.is-unavailable .refill-option__tick{border-style:dashed}
+
+/* ---------- Home treatment card: the card is the tap target (28 Aug) ---------- */
+/* Five buttons across two cards was the clutter. The card opens its own refill;
+   the follow-up keeps its entry point in the banner above. */
+.treatment-card{width:100%;position:relative;display:flex;flex-direction:column;gap:var(--sp-3);
+  text-align:left;color:var(--color-ink);cursor:pointer;
+  transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.treatment-card:active{transform:scale(.995)}
+.treatment-card:hover{box-shadow:var(--shadow-card-raised)}
+.treatment-card .between{width:100%}
+.treatment-card>.between:first-child{padding-right:22px}
+.treatment-card__go{position:absolute;top:var(--sp-3);right:var(--sp-3);width:18px;height:18px;
+  color:var(--color-ink-3)}
+.treatment-card__go svg{width:18px;height:18px}
+@media(prefers-reduced-motion:reduce){.treatment-card:active{transform:none}}
+/* One regular doctor per patient; changing them is a conversation with a person,
+   so this is a quiet line rather than a control (28 Aug). */
+.care-team-note{display:flex;align-items:flex-start;gap:var(--sp-2);
+  padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-xs);
+  background:var(--color-bg-soft);line-height:1.45}
+.care-team-note .ui-icon{flex:none;margin-top:2px;color:var(--color-accent)}
+
+/* Documents are a first-class return destination on the profile. This row is
+   deliberately quieter than the four quick actions, but large enough to read
+   as a complete library rather than one treatment's attachment. */
+.profile-documents-link{width:100%;display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);
+  background:var(--color-surface);box-shadow:var(--shadow-card);color:var(--color-ink);text-align:left;cursor:pointer}
+.profile-documents-link:hover,.profile-documents-link:focus-visible{border-color:var(--color-accent);outline:none}
+.profile-documents-link__icon{width:40px;height:40px;display:grid;place-items:center;flex:none;
+  border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-accent)}
+.profile-documents-link__icon .ui-icon{width:21px;height:21px}
+.profile-documents-link__body{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+.profile-documents-link__body strong{font-size:var(--fs-base);font-weight:var(--fw-semibold)}
+.profile-documents-link__body span{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.profile-documents-link__go{flex:none;color:var(--color-ink-3)}
+
+/* Client treatment-detail structure (30 Aug): one dated record with two tabs.
+   The treatment plan is the default view; medicines stay one tap away without
+   repeating the whole home card or turning the detail header into a hero. */
+/* align-content:start, not the grid default. "normal" behaves as stretch, which
+   shared the leftover height between the two auto rows and pushed the record
+   card half a screen below the tab switch (client, 10 Sep). */
+.treatment-detail{
+  display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:var(--sp-3);
+  max-width:880px;width:100%;margin-inline:auto
+}
+/* Both tab panels occupy the same grid slot and inherit the exact same inset.
+   Reset the generic stack margins here so switching tabs cannot change the
+   card position merely because the visible panel is a different DOM sibling. */
+.treatment-detail.stack-3>*+*{margin-top:0}
+/* The switch is the shared segmented control now. Icons and labels share one
+   centred row so every tab keeps the same rhythm in both languages. */
+.treatment-detail__switch{width:100%}
+.treatment-detail__switch .partner-binary__option{display:flex;align-items:center;justify-content:center;gap:6px}
+.treatment-detail__switch .partner-binary__option .ui-icon{width:18px;height:18px;flex:none;stroke-width:1.9}
+.treatment-detail__switch .partner-binary__option span{min-width:0;white-space:nowrap}
+.treatment-detail__panel{width:100%;min-width:0;margin:0}
+.treatment-detail__panel[hidden]{display:none}
+/* Freed from the tab strip, the record is an ordinary card again: its own top
+   border and all four corners, instead of the flat-topped shape it needed while
+   the tabs were glued on. */
+.treatment-record{width:100%;min-width:0;margin:0;padding:var(--sp-5);border:1px solid var(--color-line);
+  border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-card)}
+.treatment-record__date{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2)}
+/* The status rides here, beside the date, so the title below gets the full
+   width and stays on one line. */
+.treatment-record__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.treatment-record__head>.badge,.treatment-record__head>.hint{flex:none}
+.treatment-detail__summary,.treatment-detail__medicine-head{display:block;min-width:0}
+.treatment-detail__summary .eyebrow,.treatment-detail__medicine-head .eyebrow{margin-bottom:4px}
+/* One block for the doctor and the appointment with them (client, 1 Sep): the
+   name was on the screen three times, so the plate lives out here and holds
+   both, rather than each part carrying its own. */
+.treatment-care{padding:var(--sp-3);border-radius:var(--radius-sm);background:var(--color-bg-soft)}
+.treatment-care__next{display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--sp-3);margin-top:var(--sp-3);padding-top:var(--sp-3);
+  border-top:1px solid var(--color-line)}
+.treatment-care__next small{color:var(--color-ink-3)}
+.treatment-care__next strong{text-align:right;font-size:var(--fs-sm);line-height:1.3}
+.treatment-doctor{display:flex;align-items:center;gap:var(--sp-3);padding:0;
+  border:0;border-radius:0;background:none}
+.treatment-doctor .avatar{background:var(--color-surface);color:var(--color-accent)}
+.treatment-doctor>span:last-child{display:grid;gap:1px}.treatment-doctor small{color:var(--color-ink-3)}
+.treatment-detail__grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}
+/* Client, 1 Sep: keep the panel, drop the stroke. The tinted plate is what
+   groups a label with its text; the 1px line around it was the part that made
+   a card of plain reading matter look like a form to fill in. Same as the
+   house rule for cards — a soft fill and no outline. */
+.treatment-detail__info{padding:var(--sp-4);border:0;border-radius:var(--radius-sm);background:var(--color-bg-soft)}
+.treatment-detail__info p{margin:0;line-height:1.6}
+.treatment-detail__medications{border:0;border-radius:var(--radius-md);overflow:hidden}
+@media(max-width:620px){
+  .treatment-record{padding:var(--sp-4);border-radius:var(--radius-sm)}
+  .treatment-detail__summary .h2,.treatment-detail__medicine-head .h2{font-size:20px}
+  .treatment-doctor{width:100%;gap:10px;padding:0}
+  .treatment-doctor .avatar{width:36px;height:36px;font-size:13px}
+  .treatment-doctor strong{font-size:14px;line-height:1.25}
+  .treatment-doctor small{font-size:11px;line-height:1.25}
+  .treatment-detail__grid{grid-template-columns:1fr}
+  .treatment-detail__info{padding:var(--sp-3)}
+  .treatment-detail__medicine-head{align-items:flex-start;gap:var(--sp-2)}
+}
+
+/* ---------- Appointment booking (SCR-007B, 31 Aug) ---------- */
+/* Sexual health books a time instead of queueing. Two single choices — a day,
+   then a time — then a commit, so the screen keeps its CTA. */
+.appointment-lead{margin:0}
+.appointment-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+/* Client, 1 Sep: same language as the rest of the app — a soft plate and no
+   stroke, and the selection carries the accent as a fill rather than an outline.
+   Eight outlined white boxes on a grey page was the pattern already rejected on
+   the quick menu and on treatment detail. */
+.appointment-day{display:grid;gap:2px;padding:11px 4px;border:0;
+  border-radius:var(--radius-sm);background:var(--color-bg-soft);color:var(--color-ink);
+  text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.appointment-day__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.appointment-day__date{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.appointment-day[aria-checked="true"]{background:var(--color-accent);color:#fff}
+.appointment-day[aria-checked="true"] .appointment-day__date{color:rgba(255,255,255,.8)}
+.appointment-day:active,.appointment-slot:active{transform:scale(.97)}
+.appointment-day:focus-visible,.appointment-slot:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+
+.appointment-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.appointment-slot{min-height:44px;padding:0 4px;border:0;
+  border-radius:var(--radius-sm);background:var(--color-bg-soft);color:var(--color-ink);
+  font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.appointment-slot[aria-checked="true"]{background:var(--color-accent);color:#fff}
+/* Taken slots stay visible so the day does not look emptier than it is — but
+   they sit back on the page rather than carrying a plate of their own, so the
+   free ones are what the eye lands on. */
+.appointment-slot.is-taken{background:transparent;color:var(--color-ink-3);
+  cursor:default;text-decoration:line-through;opacity:.55}
+@media(max-width:360px){
+  .appointment-slots{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* ---------- Delivery tracking: arrival first ----------
+   The screen used to open on a parcel number. What a patient checks it for is
+   when the medicine arrives and who is bringing it, so the window leads and the
+   trail, the pharmacy and the courier follow (client, 10 Sep). */
+.delivery-eta{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border-radius:var(--radius-lg);background:var(--color-accent);color:var(--color-on-accent)}
+/* The rider button leaves this row once the order is delivered, and without a
+   reserved height the whole card shrank, so the same order changed size as it
+   progressed. The row keeps the button's height either way (client, 11 Sep). */
+.delivery-eta__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:32px}
+.delivery-eta__label{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:rgba(255,255,255,.72)}
+.delivery-eta__rider{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;
+  border:1px solid rgba(255,255,255,.28);border-radius:var(--radius-pill);
+  background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.delivery-eta__rider:hover{background:rgba(255,255,255,.2)}
+.delivery-eta__rider:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.delivery-eta__time{font-size:30px;font-weight:var(--fw-bold);line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.delivery-eta__state{font-size:var(--fs-sm);color:rgba(255,255,255,.82)}
+
+.delivery-place{display:flex;align-items:center;gap:var(--sp-3)}
+.delivery-place__icon{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--surface-sunken);color:var(--color-ink-2)}
+.delivery-place__body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.delivery-place__body strong{font-size:var(--fs-sm)}
+
+.delivery-facts{display:flex;flex-direction:column;gap:var(--sp-3)}
+.delivery-fact{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:start;gap:2px var(--sp-3)}
+.delivery-fact__icon{grid-column:1;grid-row:1 / span 2;align-self:center;display:grid;place-items:center;color:var(--color-ink-3)}
+.delivery-fact__label{grid-column:2;font-size:var(--fs-xs);color:var(--color-ink-3)}
+.delivery-fact__value{grid-column:2;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
+.delivery-fact__call{margin-left:6px;color:var(--color-accent);font-weight:var(--fw-semibold);white-space:nowrap}
+
+
+/* ---------- Activity: one feed with a filter over it ----------
+   The filter is the app's segmented control, sized to however many segments it
+   holds, with the icon beside its label. */
+.activity-filters{grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none;height:46px}
+.activity-filters .activity-filter{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 8px;font-size:13px}
+.activity-filters .activity-filter .ui-icon{width:17px;height:17px;flex:none}
+.activity-filters .activity-filter span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.activity-list{display:flex;flex-direction:column;gap:var(--sp-3)}
+.activity-card{display:flex;flex-direction:column;gap:var(--sp-3);width:100%;padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);
+  color:inherit;font:inherit;text-align:left;cursor:pointer;
+  transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
+.activity-card:hover{border-color:var(--color-line-strong);box-shadow:var(--shadow-sm)}
+.activity-card:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.activity-card[hidden]{display:none}
+.activity-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+.activity-card__date{display:flex;flex-direction:column;align-items:flex-end;gap:2px;
+  font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2);text-align:right}
+.activity-card__date small{font-size:11px;font-weight:var(--fw-regular);color:var(--color-ink-3)}
+.activity-card__thumbs{display:flex;gap:var(--sp-2)}
+.activity-card__thumb{flex:none;width:56px;height:56px;display:grid;place-items:center;overflow:hidden;
+  border-radius:var(--radius-md);background:var(--surface-sunken)}
+.activity-card__thumb img{width:100%;height:100%;object-fit:contain}
+.activity-card__ref{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.activity-card__doctor{display:flex;align-items:center;gap:var(--sp-3)}
+.activity-card__avatar{flex:none;width:44px;height:44px;border-radius:var(--radius-pill);object-fit:cover}
+.activity-card__doctor-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.activity-card__doctor-body strong{font-size:var(--fs-sm)}
+.activity-card__doctor-body em{font-style:normal;font-size:var(--fs-xs);color:var(--color-accent);font-weight:var(--fw-medium)}
+.activity-card__foot{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
+  padding-top:var(--sp-3);border-top:1px solid var(--color-line);
+  font-size:var(--fs-xs);color:var(--color-ink-3)}
+.activity-card__foot strong{font-size:var(--fs-base);color:var(--color-ink);font-variant-numeric:tabular-nums}
+.activity-empty{padding:var(--sp-6) 0;color:var(--color-ink-3);font-size:var(--fs-sm);text-align:center}
+.activity-empty[hidden]{display:none}
+
+/* Closing reassurance on the tracking screen: quiet, not a banner. */
+/* margin:0 cancelled the stack spacing above it, so the strip sat flush on the
+   card it follows, and it ended a hand's width from the bottom nav. It carries
+   its own spacing on both sides instead. */
+/* A quiet line, not a pill: the fill made a footnote look like a control at the
+   end of a screen full of cards (client, 11 Sep). */
+.delivery-discreet{display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:var(--sp-2) 0 var(--sp-4);padding:6px 0;
+  background:transparent;color:var(--color-ink-3);font-size:var(--fs-xs);text-align:center}
+.delivery-discreet .ui-icon{flex:none;color:var(--color-accent)}
+
+
+
+/* Medicine detail: what it is for, how to take it, what it can do. */
+.doc-med{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-3) 0}
+.doc-med+.doc-med{border-top:1px solid var(--color-line)}
+.doc-med__head{display:flex;align-items:center;gap:var(--sp-3)}
+.doc-med__thumb{flex:none}
+.doc-med__title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.doc-med__title strong{font-size:var(--fs-base);line-height:1.3}
+.doc-med__purpose{margin:0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.5}
+.doc-med__facts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.doc-med__facts li{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:start;gap:var(--sp-3);
+  font-size:var(--fs-sm);line-height:1.5;color:var(--color-ink-2)}
+.doc-med__facts .ui-icon{margin-top:2px;color:var(--color-accent)}
+.doc-med__facts li:last-child .ui-icon{color:var(--color-warning,#B4791F)}
+
+
+/* Referral sheet: the code is the one thing to read, so it sits on its own. */
+.referral-code{display:flex;flex-direction:column;gap:4px;align-items:center;
+  padding:var(--sp-4);border:1px dashed var(--color-accent);border-radius:var(--radius-md);
+  background:var(--color-accent-soft);text-align:center}
+.referral-code__label{font-size:var(--fs-xs);color:var(--color-ink-2)}
+.referral-code__value{font-size:var(--fs-lg);font-weight:var(--fw-bold);letter-spacing:.06em;color:var(--color-accent)}
+.referral-terms{display:flex;flex-direction:column;gap:6px;margin:0;padding-left:var(--sp-5);
+  color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.5}
+
+/* ---------- Treatment card: the whole case at a glance ----------
+   The card carried a name, a medicine list and two dates. A patient checking on
+   a course of treatment also wants to know who is looking after it, how far
+   through it they are and how much medicine is left, so the card answers all of
+   that without being opened (client, 10 Sep). */
+.treatment-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);width:100%;padding-right:22px}
+.treatment-card__title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.treatment-card__title strong{font-size:var(--fs-md);line-height:1.3}
+.treatment-card__programme{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.treatment-card__meta{display:flex;flex-wrap:wrap;gap:6px var(--sp-4)}
+.treatment-meta{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--color-ink-2)}
+.treatment-meta .ui-icon{flex:none;color:var(--color-ink-3)}
+
+/* The rider sits inside its timeline step, so it lines up with the step's hint
+   rather than forming a row of its own. */
+.timeline .delivery-rider{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.timeline .delivery-rider[hidden]{display:none}
+
+/* ---------- Phone field with a dialling code ----------
+   The code sits inside the same outline as the number, so the pair reads as one
+   control rather than a select that happens to be next to an input. */
+.phone-field{position:relative;display:flex;align-items:stretch;width:100%;min-width:0}
+.phone-field__country{display:inline-flex;align-items:center;gap:6px;flex:none;
+  height:var(--control-h);padding:0 10px 0 var(--sp-3);
+  border:1px solid var(--color-line-strong);border-right:0;
+  border-radius:var(--control-radius) 0 0 var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
+.phone-field__country:hover{border-color:var(--color-ink-3)}
+.phone-field__country:focus-visible{outline:3px solid var(--color-focus);outline-offset:-1px}
+.phone-field__flag{font-size:16px;line-height:1}
+.phone-field__dial{font-variant-numeric:tabular-nums}
+.phone-field__caret{width:7px;height:7px;flex:none;border-right:1.6px solid var(--color-ink-3);border-bottom:1.6px solid var(--color-ink-3);transform:translateY(-2px) rotate(45deg)}
+.phone-field__country[aria-expanded="true"] .phone-field__caret{transform:translateY(1px) rotate(-135deg)}
+.phone-field__input.input{border-radius:0 var(--control-radius) var(--control-radius) 0;min-width:0}
+
+.phone-field__menu{position:absolute;z-index:20;top:calc(100% + 6px);left:0;
+  width:min(320px,100%);max-height:300px;display:flex;flex-direction:column;gap:6px;
+  padding:8px;overflow:hidden;
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);
+  background:var(--color-surface);box-shadow:var(--shadow-lg,0 18px 44px rgba(16,28,48,.18))}
+.phone-field__menu[hidden]{display:none}
+.phone-field__search.input{height:var(--control-h-sm);flex:none;font-size:var(--fs-sm)}
+.phone-field__list{margin:0;padding:0;overflow-y:auto;list-style:none}
+.phone-field__list li[hidden]{display:none}
+.phone-field__option{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
+  width:100%;min-height:40px;padding:6px 8px;border:0;border-radius:var(--radius-sm);
+  background:transparent;color:var(--color-ink);font:inherit;font-size:var(--fs-sm);text-align:left;cursor:pointer}
+.phone-field__option:hover,.phone-field__option:focus-visible{background:var(--surface-sunken);outline:none}
+.phone-field__option-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-field__option-dial{color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+/* A dialling code plus a number does not fit half a row on a phone: the number
+   was clipped to "08x-x" beside the name. The row wraps and the pair takes a
+   line of its own; forcing the width without allowing the wrap only collapsed
+   the field beside it. */
+.field-row:has(.phone-field){flex-wrap:wrap}
+.field-row:has(.phone-field)>.field{flex:1 1 100%}
+/* The two destinations share the row evenly in either language. */
+.treatment-detail__switch{grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none}
+
+/* The plan on the documents screen. No inner container: the sheet is already a
+   card, and a grey box inside a white card inside a grey screen was three
+   surfaces deep for one paragraph (client, 10 Sep). */
+.doc-plan__block{display:flex;flex-direction:column;gap:6px}
+.doc-plan__block p{margin:0;line-height:1.6}
+.doc-plan__care{display:flex;flex-direction:column;gap:var(--sp-3);
+  padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+.doc-plan__next{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)}
+.doc-plan__next small{color:var(--color-ink-3)}
+.doc-plan__next strong{text-align:right;font-size:var(--fs-sm);line-height:1.3}
+.doc-plan .treatment-doctor .avatar{background:var(--surface-sunken)}
+
+/* Same on the record screen: the diagnosis, the plan and the doctor read as
+   sections of one sheet rather than three grey tiles stacked on it. */
+.treatment-detail__info{padding:0;background:transparent}
+.treatment-care{padding:var(--sp-4) 0 0;border-top:1px solid var(--color-line);border-radius:0;background:transparent}
+.treatment-doctor .avatar{background:var(--surface-sunken)}
+.treatment-detail__medications{display:flex;flex-direction:column;gap:var(--sp-3)}
+
+/* The clinician's note, on both the record and the documents screen. */
+.doc-soap{display:flex;flex-direction:column;gap:var(--sp-4)}
+.doc-soap__block{display:flex;flex-direction:column;gap:var(--sp-2)}
+.doc-soap__block[hidden]{display:none}
+.doc-soap__title{margin:0;color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-bold);line-height:1.35}
+.doc-soap__title em{font-style:normal;font-weight:var(--fw-medium);color:var(--color-ink-3)}
+.doc-soap__block--plan{padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-accent-soft)}
+.doc-soap__block--plan .doc-soap__title em{color:var(--color-ink-2)}
+
+/* ---------- The app is a phone app ----------
+   Every screen filled whatever width the browser gave it, so on a laptop a form
+   field ran the width of the window and the OTP boxes were as wide as cards.
+   The content column is now a phone's width and stops at a tablet's; the screen
+   itself still owns the full surface, so headers, footers and the bottom nav
+   stay anchored to the edges (client, 10 Sep). */
+/* The call stage and the chat thread are excluded: their children are either
+   positioned against the screen edges or aligned left and right by sender, and
+   a centred column would break both. */
+.screen__body:not(.callstage):not(.chat-body)>*,
+.screen__footer>*{
+  width:100%;
+  max-width:var(--app-content-max,600px);
+  margin-inline:auto;
+}
+.bottomnav,.screen__top{max-width:none}
+/* Leading the record, the doctor block sits above the note rather than closing
+   it, so its rule sits under it instead of over it (client, 11 Sep). */
+.treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
+.treatment-record__certificate{display:flex;flex-direction:column;gap:var(--sp-3);
+  padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+.treatment-record__certificate .h3{margin:3px 0 0;font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+
+/* My Documents: search first, then one date-sorted list. There are no document
+   type tabs here because search must span every certificate, prescription and
+   receipt at once. */
+.my-documents{max-width:880px;width:100%;margin-inline:auto}
+.my-documents__intro{display:flex;flex-direction:column;gap:var(--sp-4)}
+.my-documents__intro .h1{margin:3px 0 0}
+.my-documents__search{display:flex;align-items:center;gap:var(--sp-3);height:48px;
+  padding:0 var(--sp-4);border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);color:var(--color-ink-3)}
+.my-documents__search:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-focus)}
+.my-documents__search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--color-ink);font:inherit}
+.my-documents__search input::placeholder{color:var(--color-ink-3)}
+.my-documents__toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.my-documents__toolbar .section-label{margin:0}
+.my-documents__sort{width:auto;min-width:132px;height:40px;padding-block:0}
+.my-documents__list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.my-document{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto}
+.my-document[hidden]{display:none}
+.my-document__date{color:var(--color-ink-3);font-size:var(--fs-xs);white-space:nowrap}
+.my-document__go{color:var(--color-ink-3)}
+.my-documents__empty{min-height:240px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:var(--sp-2);border:1px dashed var(--color-line-strong);border-radius:var(--radius-md);
+  color:var(--color-ink-3);text-align:center}
+.my-documents__empty[hidden]{display:none}
+.my-documents__empty .ui-icon{width:30px;height:30px;color:var(--color-accent)}
+.my-documents__empty strong{color:var(--color-ink)}
+.my-documents__empty span{font-size:var(--fs-sm)}
+@media(max-width:560px){
+  .my-document{grid-template-columns:auto minmax(0,1fr) auto}
+  .my-document__date{display:none}
+  .my-documents__intro .h1{font-size:var(--fs-xl)}
+}
+
+/* What is in the parcel, on the tracking screen. */
+.delivery-items{display:flex;flex-direction:column;gap:var(--sp-3)}
+.delivery-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px var(--sp-3)}
+.delivery-item__name{grid-column:1;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
+.delivery-item__note{grid-column:1;font-size:var(--fs-xs);color:var(--color-ink-3)}
+.delivery-item__price{grid-column:2;grid-row:1 / span 2;align-self:center;font-size:var(--fs-sm);font-variant-numeric:tabular-nums}
+.delivery-item--total{padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
+.delivery-item--total .delivery-item__name,
+.delivery-item--total .delivery-item__price{font-weight:var(--fw-bold)}
+.delivery-item--total .delivery-item__price{grid-row:1}
+/* A text link on a timeline step, set against the step's own first line. */
+.timeline .step--with-link{position:relative;padding-right:84px}
+.timeline .step__link{position:absolute;top:-2px;right:0;padding:2px 0;border:0;background:transparent;
+  color:var(--color-accent);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.timeline .step__link:hover{color:var(--color-accent-strong,var(--color-accent))}
+.timeline .step__link:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px;border-radius:4px}
+
+/* ---------- Password set-up and log-in ----------
+   The reveal toggle sits inside the field rather than beside it, so the field
+   keeps the same box as every other input on the form. The rules are listed
+   under the field and tick as they are met, rather than appearing as an error
+   after the button is pressed (client, 12 Sep). */
+.password-field{position:relative;display:block}
+.password-field .input{width:100%;padding-right:var(--sp-8)}
+.password-field__toggle{
+  position:absolute;
+  top:50%;
+  right:var(--sp-2);
+  display:grid;
+  width:var(--control-h-sm,36px);
+  height:var(--control-h-sm,36px);
+  place-items:center;
+  border:0;
+  border-radius:var(--radius-pill);
+  background:transparent;
+  color:var(--color-ink-3);
+  cursor:pointer;
+  transform:translateY(-50%);
+}
+.password-field__toggle:hover{background:var(--color-surface-2)}
+.password-field__toggle svg{width:18px;height:18px}
+.password-rules{
+  display:grid;
+  gap:var(--sp-1);
+  margin:var(--sp-2) 0 0;
+  padding:0;
+  list-style:none;
+}
+.password-rules li{
+  display:flex;
+  align-items:center;
+  gap:var(--sp-2);
+  color:var(--color-ink-3);
+  font-size:var(--fs-xs);
+}
+.password-rules li svg{width:14px;height:14px;flex:none}
+.password-rules li.is-met{color:var(--color-success,#1f7a4d)}
+.password-mismatch{color:var(--color-danger)}
+.auth-screen__forgot{align-self:center;margin-top:var(--sp-2)}
+
+/* The connector below the step in progress draws itself toward the next dot,
+   so the trail reads as moving rather than as a static list with one dot lit
+   (client, 12 Sep). The line holds once it arrives, then starts again. */
+.timeline .step.active:not(:last-child)::after{
+  background-color:var(--color-line);
+  background-image:linear-gradient(var(--color-accent),var(--color-accent));
+  background-repeat:no-repeat;
+  background-size:100% 0%;
+  animation:timeline-run 1.9s var(--ease,cubic-bezier(.4,0,.2,1)) infinite;
+}
+@keyframes timeline-run{
+  0%,6%{background-size:100% 0%}
+  62%,100%{background-size:100% 100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .timeline .step.active:not(:last-child)::after{animation:none;background-size:100% 100%}
+}
+
+/* A destructive row carries its colour on the icon as well as the label, so
+   the row reads as one thing rather than a red word beside a grey mark. */
+.setting-row--danger strong{color:var(--color-danger)}
+.setting-row--danger .ic{color:var(--color-danger);background:var(--color-danger-soft,rgba(190,63,52,.1))}
+.setting-row--danger .ic svg{stroke:currentColor}
+
+/* The issued documents are the real files. Each is shown inline as its
+   rendered page, because the browser's own PDF viewer is a dark panel at this
+   size and some phones refuse to inline one at all. The file is the link
+   underneath, for anyone who wants to keep or print it. */
+.doc-pdf{
+  overflow:hidden;
+  border:1px solid var(--color-line);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+}
+.doc-pdf__page{display:block;width:100%;height:auto}
+.doc-pdf__page + .doc-pdf__page{border-top:1px solid var(--color-line)}
+.doc-pdf__open{width:100%}

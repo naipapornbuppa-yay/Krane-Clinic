@@ -1,7 +1,7 @@
 (() => {
   const translations = {
     en: {
-      announcementPromo: "Special offer: Free doctor consultation through <strong>1 January 2027</strong>",
+      announcementPromo: "Special offer: Join today and get your first doctor consultation free",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",
@@ -29,6 +29,8 @@
       navGuarantee: "The Krane guarantee",
       navDoctors: "Our doctors",
       login: "Log in",
+      profile: "Profile",
+      logout: "Log out",
       chooseCare: "Choose your care",
       healthArticles: "Health articles",
       language: "Language",
@@ -36,16 +38,21 @@
       online: "100% private consultations",
       certified: "Licensed doctors",
       discreet: "Discreet delivery nationwide",
-      heroTitle: "Confident health,<br>cared for by Krane",
-      bannerWeightTitle: "Lose weight safely<br>with GLP-1s",
+      heroEyebrow: "Online medical clinic",
+      heroTitle: "Consult a doctor online.<br>Continue your care at home.",
+      heroLead: "Start with your concern, speak with a licensed doctor, receive a personal treatment plan and get medicine delivered discreetly.",
+      heroJourneyAssess: "Choose your health concern",
+      heroJourneyConsult: "Consult a doctor online",
+      heroJourneyDeliver: "Continue care at home",
+      bannerWeightTitle: "Weight-loss plan",
       bannerWeightNew: "Latest generation",
       bannerWeightOffer: "Special price",
       bannerWeightProducts: "Mounjaro · Ozempic · Wegovy*",
       bannerWeightCta: "Start now",
-      bannerEdTitle: "Feel more confident<br>about men's health (ED)",
+      bannerEdTitle: "Men's sexual performance restoration plan",
       bannerEdProducts: "Sildenafil · Tadalafil*",
       bannerEdCta: "Start now",
-      bannerHairTitle: "Targeted<br>hair restoration",
+      bannerHairTitle: "Hair restoration plan",
       bannerHairProducts: "Finasteride 1 mg · Minoxidil 5%*",
       bannerHairCta: "Start now",
       bannerSkinKicker: "Skin & healthy ageing",
@@ -89,9 +96,11 @@
       hormone: "Hormones & TRT",
       mind: "Focus & mind",
       general: "General symptoms / Not sure",
+      comingSoon: "Coming soon",
       confidenceEyebrow: "Private men's health care",
-      confidenceTitle: "Feel close again,<br>with confidence",
-      confidenceLead: "Consult a doctor privately, one-to-one, with care options tailored to you.",
+      confidenceTitle: "Regain your confidence",
+      confidenceLead: "Start with a private doctor consultation, then choose the care approach that fits you.",
+      confidenceScroll: "Scroll to continue",
       confidenceCta: "Consult now",
       confidenceProofTitle: "Private 1-to-1 consultation",
       confidenceProofBody: "With a licensed doctor",
@@ -99,7 +108,7 @@
       licensedDoctors: "Licensed doctors",
       howKicker: "How it works",
       trustKicker: "The Krane standard of care",
-      trustTitle: "Confidence at every step",
+      trustTitle: "Real doctors. Authentic medicine. Protected data.",
       trustClinicEyebrow: "Licensed clinic",
       trustClinicTitle: "Private 1-to-1 telemedicine",
       trustClinicBody: "Telemedicine services are provided by licensed doctors.",
@@ -107,8 +116,9 @@
       trustMedicineEyebrow: "Authentic medicine, delivered home",
       trustMedicineTitle: "Medicine and delivery assurance",
       trustMedicineBody: "Delivered nationwide by the Fascino pharmacy network in discreet packaging.",
-      trustSecurityEyebrow: "International security standards",
+      trustSecurityEyebrow: "Powered by INET",
       trustSecurityTitle: "Powered by INET",
+      trustSecurityProvider: "INET infrastructure certified across three ISO standards.",
       privacyKicker: "Your health space",
       privacyTitle: "We care about your privacy",
       privacyLead: "Your health and treatment data is used for care with your consent, with access limited by professional role.",
@@ -120,12 +130,45 @@
       privacyShareBody: "We do not disclose your data to third parties unless you consent or the law requires it.",
       howTitle: "Start care in three steps",
       step1Title: "Complete a health assessment",
-      step1Body: "Take 1–2 minutes to choose an assessment for your concern and share key information before the consultation.",
+      step1Body: "Take 1 to 2 minutes to choose an assessment for your concern and share key information before the consultation.",
       step2Title: "Consult a doctor online",
       step2Body: "Speak privately 1-to-1 by video. Your doctor will assess your symptoms, explain options and precautions, and build a suitable plan. Switch to voice or chat when convenient.",
       step3Title: "Pay and await home delivery",
       step3Body: "After a prescription is issued, Krane delivers nationwide in discreet packaging. Bangkok and express-service areas may receive medicine in as little as two hours.*",
       howNote: "*Delivery time depends on location, order time, pharmacy availability and delivery conditions.",
+      howMockNext: "Next",
+      howMockVideo: "Video",
+      howMockChat: "Chat",
+      howMockDoctorLive: "Consulting your doctor",
+      howMockDoctorName: "Dr Nicha Wattanakul",
+      howMockIntakeProgress: "Health assessment · 1 / 7",
+      howMockDoctorMessage: "I have one more question about your symptoms.",
+      howMockPatientMessage: "Sure. It has been happening every day.",
+      howMockDoctorPlan: "Thank you. I'll explain the care options that may suit you.",
+      howMockTyping: "Doctor is typing",
+      howMockOnline: "Online",
+      howMockToday: "Today",
+      howMockInput: "Type a message",
+      howMockTracking: "Delivery tracking",
+      howMockTrackingReady: "Medicine prepared",
+      howMockTrackingRider: "Rider has collected your order",
+      howMockTrackingCurrent: "Out for delivery",
+      howMockOrderLoading: "Confirming your order",
+      howMockOrderLoadingBody: "Krane is preparing your information",
+      howMockOrderSuccess: "Your order is confirmed",
+      howMockOrderSuccessBody: "Payment and prescription confirmed",
+      howMockTrackingNumber: "Tracking number",
+      howMockOrderStatus: "Out for delivery",
+      howMockOrderEta: "Arriving by 6:00 PM",
+      howMockConfirmed: "Confirmed",
+      howMockPreparing: "Preparing",
+      howMockRider: "On the way",
+      howMockDelivered: "Delivered",
+      howMockDiscreet: "Discreet package · Track every stage",
+      weightOralTagType: "Oral medication",
+      weightOralTagRx: "Doctor prescribed",
+      weightOralTitle: "Oral medication options",
+      weightOralCopy: "Your doctor considers your health and goals.",
       protocolKicker: "Authentic medicine, delivered home",
       protocolTitle: "Doctor prescribed.<br>Pharmacist dispensed.",
       protocolLead: "Medicine and delivery assured through the Fascino pharmacy network in discreet packaging.",
@@ -163,6 +206,16 @@
       closingLead: "Complete a five-minute digital assessment and begin a direct medical conversation with a specialist.",
       consultNow: "Consult a doctor",
       footerIntro: "Premium clinical solutions for modern men, powered by medical science and personalised to support your health journey.",
+      hairTitlePrefix: "Proven care for ",
+      hairTitleEmphasis: "thicker hair",
+      hairTitleSuffix: "",
+      hairProductsLabel: "Hair-loss products",
+      hairProductsEyebrow: "Medication options selected by a doctor",
+      hairProductsTitle: "Hair-loss medication options",
+      hairProductOral: "Oral medication",
+      hairProductTopical: "Topical treatment",
+      hairProductPrescription: "As prescribed",
+      hairProductDisclaimer: "*Medication and dose depend on your doctor's assessment and prescription.",
       footerDisclaimer: "*Disclaimer: Telemedicine services are provided by independent licensed clinics partnered with Krane Clinic. Prescriptions depend on a doctor's clinical assessment. This website is for information only and does not replace medical advice.",
       services: "Services",
       hairShort: "Hair loss",
@@ -182,10 +235,371 @@
     }
   };
 
+  /* The client-working draft adds short, visual-first Thai copy that is not
+     shared with the application shell. Keep it bilingual without bloating the
+     global translation contract: text nodes remember their Thai source and
+     receive a page-local English equivalent when the language changes. */
+  const draftEnglishText = new Map([
+    ["ข้ามไปยังเนื้อหาหลัก", "Skip to main content"],
+    ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
+    ["วิธีการทำงาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["บทความสุขภาพ", "Health articles"],
+    ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
+    ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
+    ["เร็ว ๆ นี้", "Coming soon"], ["ภาษา", "Language"], ["ภาษาไทย", "Thai"], ["เข้าสู่ระบบ", "Log in"],
+    ["ผู้ใช้ Krane", "Krane member"], ["บัญชีผู้ใช้", "Account"], ["โปรไฟล์", "Profile"], ["ออกจากระบบ", "Log out"],
+    ["เมนูหลัก", "Main menu"],
+    ["แพทย์ออนไลน์ของคุณ", "Your online doctor"], ["พร้อมให้คำปรึกษาเสมอ", "ready whenever you are"],
+    ["เริ่มจากเรื่องที่กังวล คุยกับแพทย์ที่มีใบอนุญาต รับแผนการรักษาเฉพาะบุคคล และจัดส่งยาอย่างมิดชิด", "Start with your concern, speak with a licensed doctor, receive a personalised care plan and discreet home delivery."],
+    ["ส่งถึงบ้าน", "Delivered home"], ["จัดส่งทั่วประเทศในบรรจุภัณฑ์มิดชิด", "Nationwide delivery in discreet packaging"],
+    ["แพทย์มีใบอนุญาต", "Licensed doctors"], ["ปรึกษาส่วนตัวแบบ 1 ต่อ 1", "Private one-to-one consultation"],
+    ["ข้อมูลเป็นส่วนตัว", "Private by design"], ["ดูแลตามมาตรฐานความปลอดภัย", "Protected to recognised security standards"],
+    ["แผนลดน้ำหนัก", "Weight-loss plan"], ["ดูแลโดยแพทย์แบบเฉพาะบุคคล", "Personalised doctor-led care"],
+    ["เริ่มตอนนี้", "Start now"], ["แผนฟื้นฟูเส้นผม", "Hair restoration plan"],
+    ["แผนฟื้นฟูสมรรถภาพเพศชาย", "Men's performance care"],
+    ["*แนวทางการรักษาและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Treatment and medication options depend on a doctor's assessment"],
+    ["ออนไลน์ 100%", "100% online"], ["เริ่มดูแลได้ใน 3 ขั้นตอน", "Start care in three steps"],
+    ["ตอบแบบประเมิน", "Complete an assessment"], ["เลือกเรื่องที่กังวล ใช้เวลาเพียง 1–2 นาที", "Choose your concern in just 1–2 minutes"],
+    ["คุยกับแพทย์", "Speak with a doctor"], ["ปรึกษาส่วนตัวผ่านวิดีโอ เสียง หรือแชท", "Consult privately by video, voice or chat"],
+    ["รับการดูแลถึงบ้าน", "Continue care at home"], ["รับแผนการรักษาและจัดส่งยาอย่างมิดชิด", "Receive your care plan and discreet delivery"],
+    ["พร้อมคุยกับแพทย์", "Ready to meet your doctor"], ["ออนไลน์ · เป็นส่วนตัว", "Online · Private"], ["เริ่มดูแล", "Start care"],
+    ["จัดการน้ำหนัก", "Weight management"], ["แผนลดน้ำหนักที่ออกแบบเพื่อคุณ", "A weight-loss plan designed for you"],
+    ["ที่ออกแบบเพื่อคุณ", "designed for you"], ["ดูรายละเอียด", "Learn more"], ["ประเมินโดยแพทย์", "Doctor assessed"],
+    ["เริ่มจากสุขภาพจริง", "Begin with your real health"], ["ไม่ใช่สูตรสำเร็จ", "not a one-size-fits-all formula"],
+    ["เป้าหมาย แผนการดูแล และตัวเลือกยาขึ้นอยู่กับการประเมินรายบุคคล", "Goals, care plans and medication options are based on an individual medical assessment."],
+    ["เริ่มประเมิน", "Start assessment"], ["เป้าหมายของคุณ", "Your goal"], ["ลดอย่างปลอดภัย", "Lose weight safely"],
+    ["และทำต่อได้จริง", "and make it sustainable"], ["คุมความอยากอาหาร", "Manage appetite"], ["ปรับพฤติกรรม", "Build lasting habits"],
+    ["ติดตามกับแพทย์", "Doctor follow-up"], ["เสียงจากผู้ใช้งาน Krane", "A Krane member"],
+    ["“รู้สึกว่ามีคนดูแลจริง ๆ แผนชัด เข้าใจง่าย และคุยกับหมอได้โดยไม่ต้องเดินทาง”", "“I felt genuinely supported. The plan was clear, easy to understand and I could speak with a doctor without travelling.”"],
+    ["ผลลัพธ์จากการติดตาม", "Progress over time"], ["ติดตามการเปลี่ยนแปลงอย่างเป็นระบบ", "Track progress consistently"],
+    ["น้ำหนัก · ติดตามผลตามระยะเวลาที่แพทย์แนะนำ", "Weight care · follow-up on your doctor's recommended schedule"],
+    ["*ผลลัพธ์และความเหมาะสมของการรักษาแตกต่างกันในแต่ละบุคคล", "*Results and treatment suitability vary by individual."],
+    ["สุขภาพเส้นผม", "Hair health"], ["ดูแลผมร่วง", "Target hair loss"], ["แบบตรงจุด", "at the source"],
+    ["ติดตามอย่างต่อเนื่อง", "Ongoing follow-up"], ["ติดตามผลต่อเนื่อง", "Ongoing follow-up"], ["รู้สาเหตุ", "Understand the cause"], ["ก่อนเริ่มดูแล", "before starting care"],
+    ["แพทย์ประเมินรูปแบบผมร่วง ประวัติสุขภาพ และเป้าหมายของคุณ", "A doctor assesses your hair-loss pattern, health history and goals."],
+    ["ติดตามจากมุมเดิม", "Track from the same angle"], ["เห็นความเปลี่ยนแปลงชัดขึ้น", "See changes more clearly"],
+    ["วางแผนเป็นระยะ", "Review at each stage"], ["ปรับตามการตอบสนองของคุณ", "Adjust to your response"],
+    ["แพทย์ดูแลต่อเนื่อง", "Ongoing doctor care"], ["ไม่ต้องลองผิดลองถูกคนเดียว", "No more guessing alone"],
+    ["เป็นส่วนตัว", "Private"], ["ดูแลได้จากที่บ้าน", "Care from home"],
+    ["*ภาพประกอบเพื่อสื่อรูปแบบการติดตาม ผลลัพธ์แตกต่างกันในแต่ละบุคคล", "*Images illustrate the follow-up format. Results vary by individual."],
+    ["กลับมาใกล้ชิด", "Feel close again"], ["อย่างมั่นใจอีกครั้ง", "with confidence"], ["คุยได้อย่างเป็นส่วนตัว", "A private conversation"],
+    ["เรื่องสำคัญ", "Important concerns"], ["ไม่ควรต้องเดาเอง", "should not leave you guessing"],
+    ["ปรึกษาแพทย์แบบ 1 ต่อ 1 พร้อมทางเลือกที่เหมาะกับสุขภาพของคุณ", "Speak privately one-to-one with a doctor about options suited to your health."],
+    ["มั่นใจขึ้น", "Feel more confident"], ["โดยไม่เสียความเป็นส่วนตัว", "without giving up privacy"], ["คุยกับแพทย์ส่วนตัว", "Private doctor consultation"],
+    ["แผนเฉพาะบุคคล", "Personalised plan"], ["จัดส่งมิดชิด", "Discreet delivery"],
+    ["“ขั้นตอนไม่ยุ่งยาก กล้าคุยมากกว่าที่คิด และเข้าใจทางเลือกของตัวเองชัดขึ้น”", "“The process was simple. I felt comfortable talking and understood my options much more clearly.”"],
+    ["คุยเรื่องสุขภาพผู้ชาย", "Talk about men's health"], ["ปรึกษาแพทย์ออนไลน์", "Consult online"], ["กลับมาใกล้ชิดอย่างมั่นใจ", "Feel close again with confidence"],
+    ["*แนวทางการดูแลและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Care and medication options depend on a doctor's assessment."],
+    ["เราไม่ใช่แค่คลินิกทั่วไป แต่เราคือ", "We are more than a clinic. We are a"],
+    ["แพลตฟอร์มให้บริการแพทย์ทางไกล", "licensed telemedicine platform"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
+    ["ดูแลครบในที่เดียว", "Complete care in one place"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
+    ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
+    ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],
+    ["คุ้มครองตาม PDPA", "Protected under PDPA"], ["ข้อมูลสุขภาพของคุณถูกใช้เพื่อการดูแลตามความยินยอมเท่านั้น", "Your health data is used for care only with your consent"],
+    ["ปลอดภัยตามมาตรฐานสากล", "Protected to international standards"], ["โครงสร้างพื้นฐานโดย INET พร้อมมาตรฐาน ISO ครบ 3 ด้าน", "INET infrastructure certified across three ISO standards"],
+    ["โครงสร้างพื้นฐานพร้อมมาตรฐานความปลอดภัยระดับสากล", "Infrastructure backed by international security standards"],
+    ["แพทย์ของ Krane", "Krane doctors"], ["ทีมแพทย์ที่ดูแล", "The medical team behind"], ["ทุกการตัดสินใจ", "every decision"],
+    ["ทุกแผนเริ่มจากข้อมูลสุขภาพจริง และอยู่ภายใต้การประเมินของแพทย์ที่มีใบอนุญาต", "Every plan begins with your real health information and a licensed doctor's assessment."],
+    ["พบทีมแพทย์ของเรา", "Meet our medical team"], ["พญ. กรผกา ขันติโกสุม ว.", "Dr Kornpaka Khantikhosum"], ["เส้นผมและผิวหนัง", "Hair and dermatology"],
+    ["ตจวิทยา (ผิวหนัง)", "Dermatology"], ["นพ. ไพรัช เกตุรัตนกุล ว.", "Dr Phairat Keturanakul"], ["ผู้อำนวยการแพทย์", "Medical director"],
+    ["อายุรศาสตร์ · โรคระบบการหายใจ", "Internal medicine · Respiratory medicine"], ["อ.นพ. พหล สโรจวิสุทธิ์ ว.", "Dr Pahol Sarojvisut"],
+    ["การลดน้ำหนัก", "Weight management"], ["อายุรศาสตร์ · โภชนศาสตร์คลินิก", "Internal medicine · Clinical nutrition"],
+    ["อ.นพ. ชวลิต หงส์เลิศสกุล ว.", "Dr Chawalit Honglertsakul"], ["สุขภาพทางเพศ", "Sexual health"], ["ศัลยศาสตร์ยูโรวิทยา", "Urology"],
+    ["ดูประวัติเต็ม", "View full profile"], ["โภชนศาสตร์คลินิก", "Clinical nutrition"], ["ความเชี่ยวชาญ", "Specialty"], ["การศึกษาและการอบรม", "Education and training"],
+    ["ประสบการณ์การดูแลที่ง่ายและเป็นส่วนตัว", "Simple, private care experiences"], ["เรื่องจริง", "Real stories"], ["จากผู้ใช้งาน", "from our members"],
+    ["“ดีมากและบริการดีมาก”", "“Excellent care and service”"], ["คุณ @bright.mind", "@bright.mind"],
+    ["อ่านต่อเมื่ออยากรู้เพิ่ม", "Read more when you want to know more"], ["ผมร่วง · อ่าน 4 นาที", "Hair loss · 4 min read"],
+    ["ผมร่วง · อ่าน 3 นาที", "Hair loss · 3 min read"], ["น้ำหนัก · อ่าน 6 นาที", "Weight · 6 min read"],
+    ["ฟีนาสเตอไรด์ได้ผลจริงไหม", "Does finasteride work?"], ["ไมน็อกซิดิล ต้องคาดหวังอะไรบ้าง", "What to expect from minoxidil"],
+    ["ลดน้ำหนักอย่างปลอดภัยใต้การดูแลแพทย์", "Safe weight loss with medical care"], ["ดูบทความทั้งหมด", "View all articles"],
+    ["พร้อมเริ่มหรือยัง", "Ready to begin?"], ["ดูแลสุขภาพ", "Take care of your health"], ["ได้ง่ายกว่าที่คิด", "more easily than you think"],
+    ["ปรึกษาแพทย์เลย", "Consult a doctor"], ["บริการ", "Services"], ["เส้นผม", "Hair"], ["เกี่ยวกับ", "About"], ["มาตรฐานของเรา", "Our standards"],
+    ["กฎหมาย & ติดต่อ", "Legal & contact"], ["นโยบายความเป็นส่วนตัว", "Privacy policy"], ["ความเป็นส่วนตัว", "Privacy"], ["ข้อกำหนด", "Terms"],
+    ["© 2026 Krane Clinic สงวนลิขสิทธิ์", "© 2026 Krane Clinic. All rights reserved."],
+    ["*บริการการแพทย์ทางไกลให้บริการโดยแพทย์ที่มีใบอนุญาต ตัวเลือกการสั่งยาขึ้นอยู่กับการประเมินทางคลินิก ข้อมูลบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อให้ข้อมูลเท่านั้นและไม่ทดแทนคำแนะนำทางการแพทย์", "*Telemedicine is provided by licensed doctors. Prescriptions depend on a clinical assessment. This website is for information only and does not replace medical advice."],
+    ["เรื่องราวจากสมาชิก Krane", "A Krane member story"],
+    ["ปรึกษาออนไลน์", "Online consultation"],
+    ["เริ่มจากสาเหตุ แล้ววางแผนให้เหมาะกับคุณ", "Start with the cause, then build the right plan for you"],
+    ["แผนดูแลจากสาเหตุ", "Cause-led care plan"],
+    ["ประเมินรูปแบบผมร่วง ประวัติสุขภาพ และเป้าหมายของคุณ", "Assess your hair-loss pattern, health history and goals"],
+    ["เฉพาะจุด", "Targeted"], ["ตามแพทย์สั่ง", "As prescribed"],
+    ["ผลิตภัณฑ์ชนิดหยด", "Dropper treatment"],
+    ["หนึ่งในรูปแบบการดูแลที่แพทย์อาจพิจารณาตามความเหมาะสม", "One care option a doctor may consider when appropriate"],
+    ["ใช้ง่าย", "Easy to use"], ["ผลิตภัณฑ์ชนิดปั๊ม", "Pump treatment"],
+    ["ออกแบบให้ใช้ต่อเนื่องตามคำแนะนำและแผนที่แพทย์กำหนด", "Designed for consistent use based on your doctor's guidance and plan"],
+    ["ปรับแผน", "Adjust the plan"], ["ดูแลต่อเนื่องกับแพทย์", "Ongoing doctor-led care"],
+    ["ติดตามความเปลี่ยนแปลงและทบทวนแผนเมื่อข้อมูลสุขภาพเปลี่ยนไป", "Track changes and review the plan when your health information changes"],
+    ["เรื่องไหนที่คุณกังวล?", "What concerns you most?"],
+    ["ผมบางกลางศีรษะ", "Thinning at the crown"], ["แนวผมและขมับ", "Hairline and temples"],
+    ["ผมร่วงมากกว่าปกติ", "More shedding than usual"],
+    ["คำตอบจะพาคุณไปเริ่มแบบประเมินสุขภาพเส้นผม", "Your answer will take you to the hair-health assessment"],
+    ["“พอรู้สาเหตุที่เป็นไปได้ ก็เลิกลองผลิตภัณฑ์ไปเรื่อยและเริ่มดูแลอย่างมีแผน”", "“Once I understood the likely cause, I stopped trying random products and started following a plan.”"],
+    ["ประเมินผมร่วง", "Hair-loss assessment"],
+    ["“การถ่ายรูปจากมุมเดิมช่วยให้เห็นความเปลี่ยนแปลงชัดกว่าการส่องกระจกทุกวัน”", "“Photos from the same angle showed the change more clearly than checking the mirror every day.”"],
+    ["“มีแพทย์ช่วยทบทวนแผน ทำให้รู้ว่าควรทำต่อหรือปรับตรงไหน”", "“Having a doctor review the plan helped me know what to continue and what to adjust.”"],
+    ["เห็นความเปลี่ยนแปลงจากมุมเดิม", "See change from the same angle"],
+    ["เส้นผม · ติดตามผลตามระยะเวลาที่แพทย์แนะนำ", "Hair · Follow-up timing is based on your doctor's advice"],
+    ["แข็ง", "Stronger"], ["แรงกว่าเดิม", "than before"],
+    ["ดูแลอย่างเป็นส่วนตัวและเหมาะกับคุณ", "Private care, tailored to you"],
+    ["ยารับประทาน", "Oral medicine"], ["ตามแพทย์สั่ง", "Prescription only"],
+    ["ซิลเดนาฟิล", "Sildenafil"], ["ทาดาลาฟิล", "Tadalafil"],
+    ["100 มก.", "100 mg"], ["20 มก.", "20 mg"],
+    ["ยาเม็ดเคลือบฟิล์ม บรรจุ 4 เม็ดต่อกล่อง", "Film-coated tablets · 4 tablets per box"],
+    ["เม็ดสีฟ้าทรงข้าวหลามตัด มีอักษร VGR 100", "Blue diamond-shaped tablet marked VGR 100"],
+    ["เม็ดสีเหลืองทรงอัลมอนด์ มีอักษร C 20", "Yellow almond-shaped tablet marked C 20"],
+    ["สิ่งที่คุณอยากดูแล?", "What would you like help with?"], ["ความมั่นใจ", "Confidence"],
+    ["สมรรถภาพทางเพศ", "Sexual performance"], ["คุยอย่างเป็นส่วนตัว", "Talk privately"],
+    ["“คุยกับแพทย์ได้เป็นส่วนตัว ทำให้ตัดสินใจจากข้อมูลแทนการเดาเอง”", "“A private conversation with a doctor helped me decide from real information instead of guessing.”"],
+    ["“การติดตามผลช่วยให้รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”", "“Follow-up made it clear how to continue care without trial and error.”"],
+    ["มีแผนดูแล", "Guided care"], ["ตามแผนแพทย์", "Doctor-led"],
+    ["สุขภาพผู้ชาย · ประสบการณ์และแผนการดูแลแตกต่างกันในแต่ละบุคคล", "Men's health · Experiences and care plans vary by individual"],
+    ["*รูปแบบผลิตภัณฑ์และแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์", "*Product formats and care plans depend on a doctor's assessment."],
+    ["*ตัวเลือกยาและแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์", "*Medicine options and care plans depend on a doctor's assessment."],
+    ["*ตัวเลือกยาและแผนการดูแลขึ้นอยู่กับการประเมินของแพทย์ ไม่ใช่ทุกตัวเลือกจะเหมาะกับทุกคน", "*Medicine options and care plans depend on a doctor's assessment. Not every option is suitable for everyone."],
+    ["ประสบการณ์ที่ติดตามได้", "Progress you can track"],
+    ["จากความกังวลสู่แผนดูแลที่ชัดเจน", "From concern to a clear care plan"],
+    ["ทำไมต้อง", "Why"],
+    ["การดูแลสุขภาพสำหรับผู้ชายยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ", "Modern men's healthcare grounded in medical science, with personalised plans designed around you."],
+    ["มิติใหม่ในการ", "A new approach to"], ["ลดน้ำหนัก", "weight loss"],
+    ["แบบรับประทาน", "Oral"], ["GLP-1 แบบรับประทาน", "Oral GLP-1"],
+    ["ตัวเลือกแบบเม็ดที่แพทย์อาจพิจารณาตามสุขภาพและเป้าหมาย", "A tablet option a doctor may consider based on your health and goals"],
+    ["คุณ พ., 36 ปี", "P., age 36"], ["คุณ ม., 41 ปี", "M., age 41"],
+    ["คุณ อ., 33 ปี", "O., age 33"], ["คุณ น., 38 ปี", "N., age 38"],
+    ["คุณ ต., 34 ปี", "T., age 34"], ["คุณ ว., 41 ปี", "W., age 41"],
+    ["คุณ ม., 38 ปี", "M., age 38"], ["คุณ ก., 39 ปี", "K., age 39"],
+    ["คุณ ธ., 45 ปี", "T., age 45"], ["คุณ ร., 42 ปี", "R., age 42"],
+    ["ฟังจากคนที่เริ่มก่อนคุณ", "Hear from people who started before you"],
+    ["“ตอนแรกไม่กล้าเล่าให้ใครฟัง พอได้คุยกับแพทย์ก็รู้ว่าเป็นเรื่องที่ดูแลได้”", "“At first I was afraid to tell anyone. Speaking with a doctor helped me understand that it can be treated.”"],
+    ["“ได้คุยเป็นส่วนตัวจริง ๆ เลยตัดสินใจจากข้อมูลแทนการเดาเอง”", "“The conversation was genuinely private, so I could decide from facts instead of guessing.”"],
+    ["“พอมีการติดตามผล ก็รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”", "“Follow-up made it clear how to continue care without trial and error.”"]
+  ]);
+
+  const draftEnglishAttributes = new Map([
+    ["ทำไมต้อง Krane", "Why Krane"],
+    ["เลื่อนดูตัวเลือกดูแลเส้นผม", "Browse hair-care options"],
+    ["รายการตัวเลือกดูแลเส้นผมแบบเลื่อนได้", "Scrollable list of hair-care options"],
+    ["ผลลัพธ์ก่อนและหลังการติดตามเส้นผม", "Hair follow-up before-and-after results"],
+    ["ผลลัพธ์เส้นผมคู่ที่ 1", "Hair result pair 1"], ["ผลลัพธ์เส้นผมคู่ที่ 2", "Hair result pair 2"],
+    ["ผลลัพธ์เส้นผมคู่ที่ 3", "Hair result pair 3"], ["เลือกผลลัพธ์เส้นผม", "Select a hair result"],
+    ["ผลลัพธ์ก่อนหน้า", "Previous result"], ["ผลลัพธ์ถัดไป", "Next result"],
+    ["เลื่อนดูตัวเลือกสุขภาพผู้ชาย", "Browse men's-health options"],
+    ["รายการตัวเลือกสุขภาพผู้ชายแบบเลื่อนได้", "Scrollable list of men's-health options"],
+    ["ความเห็นจากผู้รับการดูแลด้านสุขภาพผู้ชาย", "Men's-health member stories"],
+    ["ประสบการณ์ก่อนและหลังเริ่มแผนดูแลสุขภาพผู้ชาย", "Experiences before and after starting men's-health care"],
+    ["ประสบการณ์การดูแลคู่ที่ 1", "Care experience pair 1"], ["ประสบการณ์การดูแลคู่ที่ 2", "Care experience pair 2"],
+    ["ประสบการณ์การดูแลคู่ที่ 3", "Care experience pair 3"], ["เลือกประสบการณ์การดูแล", "Select a care experience"],
+    ["ประสบการณ์ก่อนหน้า", "Previous experience"], ["ประสบการณ์ถัดไป", "Next experience"],
+    ["ประสบการณ์ที่ 1", "Experience 1"], ["ประสบการณ์ที่ 2", "Experience 2"], ["ประสบการณ์ที่ 3", "Experience 3"],
+    ["เลือกบทความ", "Select an article"], ["บทความที่ 1", "Article 1"], ["บทความที่ 2", "Article 2"],
+    ["บทความที่ 3", "Article 3"], ["บทความที่ 4", "Article 4"],
+    ["เม็ดยาแบบไม่แสดงตราสินค้า", "Unbranded medicine tablet"],
+    ["ปากกาลดน้ำหนักแบบไม่แสดงตราสินค้า", "Unbranded weight-management injection pens"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 1", "Abdomen before and after care-plan follow-up, pair 1"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 2", "Abdomen before and after care-plan follow-up, pair 2"],
+    ["ภาพหน้าท้องก่อนและหลังการติดตามแผนดูแล คู่ที่ 3", "Abdomen before and after care-plan follow-up, pair 3"],
+    ["ชุดผลิตภัณฑ์ดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care products"],
+    ["ขวดหยดสำหรับการดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care dropper bottle"],
+    ["ขวดปั๊มสำหรับการดูแลเส้นผมแบบไม่แสดงตราสินค้า", "Unbranded hair-care pump bottle"],
+    ["ภาพสื่อถึงการติดตามแผนดูแล", "Visual representing ongoing care-plan follow-up"],
+    ["ภาพเปรียบเทียบเส้นผมบริเวณกลางศีรษะก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Crown before and after follow-up, photographed from the same angle and lighting"],
+    ["ภาพเปรียบเทียบแนวผมและขมับก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Hairline and temples before and after follow-up, photographed from the same angle and lighting"],
+    ["ภาพเปรียบเทียบผมบางแบบกระจายก่อนและหลังการติดตาม จากมุมและแสงเดียวกัน", "Diffuse thinning before and after follow-up, photographed from the same angle and lighting"],
+    ["เม็ดยาทาดาลาฟิลแบบไม่แสดงตราสินค้า", "Unbranded tadalafil tablets"],
+    ["โทรศัพท์สำหรับวิดีโอปรึกษาแพทย์ออนไลน์", "Phone showing an online doctor consultation"],
+    ["แพทย์กำลังติดตามและทบทวนแผนการดูแล", "Doctor reviewing and following up on a care plan"],
+    ["ภาพสื่อถึงความกังวลก่อนเริ่มปรึกษา", "Visual representing concern before consultation"],
+    ["ภาพสื่อถึงการเริ่มดูแลอย่างเป็นส่วนตัว", "Visual representing the start of private care"],
+    ["ภาพสื่อถึงการพูดคุยเรื่องสุขภาพกับคู่", "Visual representing a conversation about health with a partner"],
+    ["ภาพสื่อถึงความมั่นใจหลังได้รับข้อมูลและคำแนะนำ", "Visual representing confidence after receiving information and guidance"],
+    ["ภาพผลิตภัณฑ์แบบไม่แสดงตราสินค้า", "Unbranded product image"],
+    ["ภาพผลิตภัณฑ์แบบไม่แสดงตราสินค้าในอีกมุมหนึ่ง", "Unbranded product image from another angle"],
+    ["ตรากระทรวงสาธารณสุข", "Ministry of Public Health emblem"],
+    ["เครื่องหมายรับรอง ISO/IEC 27001:2022 ที่ INET ใช้", "INET ISO/IEC 27001:2022 certification mark"],
+    ["เครื่องหมายรับรอง ISO 27018:2019 ที่ INET ใช้", "INET ISO 27018:2019 certification mark"],
+    ["เครื่องหมายรับรอง ISO/IEC 20000-1:2018 ที่ INET ใช้", "INET ISO/IEC 20000-1:2018 certification mark"],
+    ["พญ. กรผกา ขันติโกสุม", "Dr Kornpaka Khantikosum"],
+    ["นพ. ไพรัช เกตุรัตนกุล", "Dr Pairat Ketrattanakul"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ก., 39 ปี", "Play interview with K., age 39"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ธ., 45 ปี", "Play interview with T., age 45"],
+    ["เล่นคลิปสัมภาษณ์ คุณ ร., 42 ปี", "Play interview with R., age 42"],
+    ["รีวิวจากสมาชิก", "Member reviews"],
+    ["รีวิวจากสมาชิก แถวบน", "Member reviews, top row"],
+    ["รีวิวจากสมาชิก แถวล่าง", "Member reviews, bottom row"]
+  ]);
+
+  const applyDraftLanguage = (lang) => {
+    const root = document.querySelector(".landing-figma-draft");
+    if (!root || typeof document.createTreeWalker !== "function") return;
+    const showText = globalThis.NodeFilter?.SHOW_TEXT || 4;
+    const walker = document.createTreeWalker(root, showText);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent || parent.closest("script,style,[data-i18n]")) return;
+      if (node.__kraneThai == null) node.__kraneThai = node.nodeValue;
+      if (lang === "th") { node.nodeValue = node.__kraneThai; return; }
+      const source = node.__kraneThai;
+      const trimmed = source.trim();
+      if (!/[ก-๙]/.test(trimmed)) { node.nodeValue = source; return; }
+      const translated = draftEnglishText.get(trimmed);
+      // Leave copy that is not in this page-specific dictionary untouched so the
+      // complete TH/EN layer can translate it next. Replacing unknown Thai copy
+      // with the brand name hid missing translations and produced misleading UI.
+      node.nodeValue = translated ? source.replace(trimmed, translated) : source;
+    });
+    root.querySelectorAll("[aria-label],[placeholder],[title],[alt]").forEach((element) => {
+      ["aria-label", "placeholder", "title", "alt"].forEach((attribute) => {
+        if (!element.hasAttribute(attribute)) return;
+        const cacheKey = `kraneThai${attribute.replace("-", "")}`;
+        if (!element.dataset[cacheKey]) element.dataset[cacheKey] = element.getAttribute(attribute);
+        const source = element.dataset[cacheKey];
+        element.setAttribute(attribute, lang === "en" ? (draftEnglishAttributes.get(source) || source) : source);
+      });
+    });
+  };
+
   const menu = document.querySelector("#mobile-menu");
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
   const mobileQuery = window.matchMedia("(max-width: 880px)");
+  const FLOW_STATE_KEY = "krane-p01-flow-state-v1";
+  const AUTH_PROFILE_KEY = "krane-auth-profile-v1";
+  const headerProfile = document.querySelector("[data-header-profile]");
+  const headerLogin = document.querySelector(".header-login");
+  const profileLogin = document.querySelector("[data-profile-login]");
+  const profileTrigger = document.querySelector("[data-profile-trigger]");
+  const profileMenu = document.querySelector("[data-profile-menu]");
+  const profilePicture = document.querySelector("[data-profile-picture]");
+  const profileFallback = document.querySelector("[data-profile-fallback]");
+  const profileName = document.querySelector("[data-profile-name]");
+  const profileProvider = document.querySelector("[data-profile-provider]");
+  const mobileLogin = document.querySelector("[data-mobile-login]");
+
+  function readSessionValue(key) {
+    try { return JSON.parse(window.sessionStorage.getItem(key) || "{}"); }
+    catch (_) { return {}; }
+  }
+
+  function safeProfilePicture(value) {
+    if (!value || typeof value !== "string") return "";
+    try {
+      const url = new URL(value, window.location.href);
+      return ["https:", "http:", "blob:"].includes(url.protocol) ? url.href : "";
+    } catch (_) { return ""; }
+  }
+
+  function resolveLandingAuth() {
+    const flow = readSessionValue(FLOW_STATE_KEY);
+    const stored = readSessionValue(AUTH_PROFILE_KEY);
+    const injected = window.__KRANE_AUTH__ && typeof window.__KRANE_AUTH__ === "object" ? window.__KRANE_AUTH__ : {};
+    /* A verified code no longer means a finished account: sign-up ends at the
+       password, so someone who stopped at that step is still logged out here
+       (client, 12 Sep). */
+    const authenticated = injected.authenticated ?? stored.authenticated ?? Boolean(
+      flow.otpVerified && flow.passwordSet &&
+      (flow.accountCreated || flow.returningIdentityValid || flow.identityVerified)
+    );
+    const provider = injected.provider || stored.provider || flow.authProvider || "";
+    return {
+      authenticated:Boolean(authenticated),
+      provider,
+      displayName:injected.displayName || stored.displayName || flow.profileDisplayName || flow.patientName || "ผู้ใช้ Krane",
+      pictureUrl:safeProfilePicture(
+        injected.pictureUrl || stored.pictureUrl || flow.lineProfilePictureUrl || flow.profilePictureUrl || ""
+      )
+    };
+  }
+
+  function closeProfileMenu({ restoreFocus = false } = {}) {
+    if (!profileMenu || profileMenu.hidden) return;
+    profileMenu.hidden = true;
+    profileTrigger?.setAttribute("aria-expanded", "false");
+    if (restoreFocus) profileTrigger?.focus();
+  }
+
+  function renderLandingAuth() {
+    const auth = resolveLandingAuth();
+    const lang = document.documentElement.lang === "en" ? "en" : "th";
+    headerProfile?.classList.toggle("is-authenticated", auth.authenticated);
+    if (headerLogin) headerLogin.hidden = auth.authenticated;
+    if (profileLogin) profileLogin.hidden = auth.authenticated;
+    if (profileTrigger) {
+      profileTrigger.hidden = !auth.authenticated;
+      profileTrigger.setAttribute("aria-label", lang === "en" ? "Open profile menu" : "เปิดเมนูโปรไฟล์");
+    }
+    if (profileName) profileName.textContent = auth.displayName;
+    if (profileProvider) {
+      profileProvider.textContent = auth.provider
+        ? `${auth.provider} ${lang === "en" ? "account" : "บัญชี"}`
+        : (lang === "en" ? "Krane account" : "บัญชี Krane");
+    }
+    if (profilePicture) {
+      profilePicture.hidden = !auth.pictureUrl;
+      if (auth.pictureUrl) profilePicture.src = auth.pictureUrl;
+      else profilePicture.removeAttribute("src");
+    }
+    if (profileFallback) {
+      profileFallback.hidden = Boolean(auth.pictureUrl);
+    }
+    if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+    if (mobileLogin) {
+      mobileLogin.hidden = false;
+      mobileLogin.href = auth.authenticated ? "krane-b2c.html#profile" : "krane-b2c.html#login";
+      mobileLogin.dataset.route = auth.authenticated ? "profile" : "login";
+      mobileLogin.textContent = auth.authenticated
+        ? (lang === "en" ? "Profile" : "โปรไฟล์")
+        : (lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+    }
+    if (!auth.authenticated) closeProfileMenu();
+  }
+
+  function logoutLandingUser() {
+    try {
+      window.sessionStorage.removeItem(AUTH_PROFILE_KEY);
+      window.sessionStorage.removeItem(FLOW_STATE_KEY);
+      window.sessionStorage.removeItem("krane-p01-intake-draft-v2");
+      window.sessionStorage.removeItem("krane-p01-consent-records-v1");
+    } catch (_) {}
+    window.__KRANE_AUTH__ = { authenticated:false };
+    closeProfileMenu();
+    closeMenu();
+    renderLandingAuth();
+  }
+
+  profileTrigger?.addEventListener("click", () => {
+    if (!profileMenu) return;
+    const open = profileMenu.hidden;
+    profileMenu.hidden = !open;
+    profileTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) profileMenu.querySelector("[role='menuitem']")?.focus();
+  });
+  profilePicture?.addEventListener("error", () => {
+    profilePicture.hidden = true;
+    profilePicture.removeAttribute("src");
+    if (profileFallback) profileFallback.hidden = false;
+  });
+  document.querySelectorAll("[data-profile-logout]").forEach((button) => {
+    button.addEventListener("click", logoutLandingUser);
+  });
+  document.addEventListener("click", (event) => {
+    if (headerProfile && event.target instanceof Element && !headerProfile.contains(event.target)) closeProfileMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && profileMenu && !profileMenu.hidden) closeProfileMenu({ restoreFocus:true });
+  });
+  window.addEventListener("pageshow", renderLandingAuth);
+  window.addEventListener("focus", renderLandingAuth);
+  document.addEventListener("krane:authchange", renderLandingAuth);
+  document.addEventListener("krane:languagechange", renderLandingAuth);
+  window.KraneLandingAuth = {
+    sync(profile = {}) {
+      try { window.sessionStorage.setItem(AUTH_PROFILE_KEY, JSON.stringify(profile)); } catch (_) {}
+      window.__KRANE_AUTH__ = profile;
+      renderLandingAuth();
+    },
+    logout:logoutLandingUser
+  };
+  renderLandingAuth();
 
   function menuIsOpen() {
     return menu && (menu.open || menu.hasAttribute("open"));
@@ -197,7 +611,10 @@
     menuOpen?.setAttribute("aria-expanded", "true");
     if (typeof menu.showModal === "function") menu.showModal();
     else menu.setAttribute("open", "");
-    requestAnimationFrame(() => menu.querySelector("nav summary, nav > a")?.focus());
+    // Focus the panel, not the first link: focusing a link painted a focus ring
+    // on it every time the drawer opened, which read as a stuck selection.
+    // Screen readers still enter the dialog, and Tab goes to the links from here.
+    requestAnimationFrame(() => menu.querySelector(".mobile-menu__head")?.focus());
   }
 
   function closeMenu({ restoreFocus = false } = {}) {
@@ -297,6 +714,7 @@
       const translated = lang === "en" ? translations.en[element.dataset.i18n] : element.dataset.th;
       if (translated != null) element.innerHTML = translated;
     });
+    applyDraftLanguage(lang);
     languageSelects.forEach((select) => { select.value = lang; });
     menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
     menuClose?.setAttribute("aria-label", lang === "th" ? "ปิดเมนู" : "Close menu");
@@ -330,8 +748,12 @@
     } catch (_) {}
   }));
 
+  /* ?lang=en works on the app, so it has to work here too. A shared link into
+     the English site should not land in Thai (client audit, 19 Aug). */
   let initialLanguage = "th";
   try { initialLanguage = localStorage.getItem("krane_lang") || "th"; } catch (_) {}
+  if (/[?&#]lang=en\b/.test(location.href)) initialLanguage = "en";
+  else if (/[?&#]lang=th\b/.test(location.href)) initialLanguage = "th";
   setLanguage(initialLanguage);
 
   window.addEventListener("message", (event) => {
@@ -376,17 +798,134 @@
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  // Hero cards alternate as one coordinated set between human context and
+  // product photography, so the mosaic always reads as a single campaign.
+  class ServiceCarouselCard {
+    constructor(element) {
+      this.element = element;
+      this.productImage = element.querySelector("[data-banner-product-src]");
+      this.images = [...element.querySelectorAll(".banner-swap__image")];
+    }
+
+    setFrame(showProduct) {
+      this.element.classList.toggle("is-product-frame", showProduct);
+      this.images.forEach((image) => {
+        const isProductImage = image.classList.contains("banner-swap__image--product");
+        const isActive = showProduct ? isProductImage : !isProductImage;
+        image.classList.toggle("is-active", isActive);
+        image.setAttribute("aria-hidden", String(!isActive));
+      });
+    }
+  }
+
+  const swapBanners = [...document.querySelectorAll("[data-banner-swap]")]
+    .map((element) => new ServiceCarouselCard(element));
+  const swapTimers = new Set();
+  let bannerProductsReady = false;
+  const clearBannerSwapTimers = () => {
+    swapTimers.forEach((timer) => window.clearTimeout(timer));
+    swapTimers.clear();
+    swapBanners.forEach((banner) => banner.setFrame(true));
+  };
+  const queueBannerSwap = (banner, delay, showProduct = true) => {
+    const timer = window.setTimeout(() => {
+      swapTimers.delete(timer);
+      if (document.hidden || reducedMotionQuery.matches) return;
+      banner.setFrame(showProduct);
+      queueBannerSwap(banner, 6800, !showProduct);
+    }, delay);
+    swapTimers.add(timer);
+  };
+  const startBannerSwaps = () => {
+    clearBannerSwapTimers();
+    if (!bannerProductsReady || document.hidden || reducedMotionQuery.matches) return;
+    swapBanners.forEach((banner) => queueBannerSwap(banner, 3600));
+  };
+  const loadBannerProductImages = () => {
+    const productImages = swapBanners
+      .map((banner) => banner.productImage)
+      .filter(Boolean);
+    return Promise.all(productImages.map((image) => new Promise((resolve) => {
+      if (image.complete && image.currentSrc) {
+        resolve();
+        return;
+      }
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+      image.src = image.dataset.bannerProductSrc;
+    })));
+  };
+  const hydrateBannerProducts = () => {
+    loadBannerProductImages().then(() => {
+      bannerProductsReady = true;
+      startBannerSwaps();
+    });
+  };
+  const scheduleBannerProductHydration = () => window.setTimeout(hydrateBannerProducts, 250);
+  if (document.readyState === "complete") scheduleBannerProductHydration();
+  else window.addEventListener("load", scheduleBannerProductHydration, { once: true });
+  reducedMotionQuery.addEventListener?.("change", startBannerSwaps);
+  document.addEventListener("visibilitychange", startBannerSwaps);
+
   // iOS Safari only applies the :active pseudo-class once a touch listener is
   // bound somewhere in the document, so tap micro-interactions need this.
   document.addEventListener("touchstart", () => {}, { passive: true });
   const confidenceVideo = document.querySelector(".confidence-campaign__video");
+  let confidenceVideoLoaded = false;
   const syncConfidenceVideoMotion = () => {
-    if (!confidenceVideo) return;
+    if (!confidenceVideo || !confidenceVideoLoaded) return;
     if (reducedMotionQuery.matches) confidenceVideo.pause();
     else confidenceVideo.play().catch(() => {});
   };
-  syncConfidenceVideoMotion();
+  const loadConfidenceVideo = () => {
+    if (!confidenceVideo || confidenceVideoLoaded) return;
+    const source = confidenceVideo.querySelector("[data-video-src]");
+    if (!source) return;
+    source.src = source.dataset.videoSrc;
+    confidenceVideoLoaded = true;
+    confidenceVideo.load();
+    syncConfidenceVideoMotion();
+  };
+  if (confidenceVideo && "IntersectionObserver" in window) {
+    const confidenceVideoObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      confidenceVideoObserver.disconnect();
+      loadConfidenceVideo();
+    }, { rootMargin: "0px", threshold: 0.1 });
+    confidenceVideoObserver.observe(confidenceVideo);
+  } else if (confidenceVideo) {
+    window.addEventListener("load", loadConfidenceVideo, { once: true });
+  }
   reducedMotionQuery.addEventListener?.("change", syncConfidenceVideoMotion);
+
+  const confidenceStory = document.querySelector("[data-confidence-story]");
+  let confidenceStoryFrame = 0;
+  const updateConfidenceStory = () => {
+    confidenceStoryFrame = 0;
+    if (!confidenceStory) return;
+    if (reducedMotionQuery.matches) {
+      confidenceStory.style.setProperty("--confidence-scale", "1");
+      confidenceStory.style.setProperty("--confidence-copy-y", "0px");
+      confidenceStory.style.setProperty("--confidence-copy-opacity", "1");
+      return;
+    }
+    const bounds = confidenceStory.getBoundingClientRect();
+    const travel = Math.max(1, bounds.height - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, -bounds.top / travel));
+    confidenceStory.style.setProperty("--confidence-scale", (1.03 + progress * .06).toFixed(3));
+    confidenceStory.style.setProperty("--confidence-copy-y", `${(18 - progress * 36).toFixed(1)}px`);
+    confidenceStory.style.setProperty("--confidence-copy-opacity", (.86 + progress * .14).toFixed(3));
+  };
+  const queueConfidenceStoryUpdate = () => {
+    if (!confidenceStory || confidenceStoryFrame) return;
+    confidenceStoryFrame = window.requestAnimationFrame(updateConfidenceStory);
+  };
+  if (confidenceStory) {
+    updateConfidenceStory();
+    window.addEventListener("scroll", queueConfidenceStoryUpdate, { passive: true });
+    window.addEventListener("resize", queueConfidenceStoryUpdate);
+    reducedMotionQuery.addEventListener?.("change", queueConfidenceStoryUpdate);
+  }
 
   const careHeroArt = document.querySelector("[data-care-hero-art]");
   const careHeroCard = careHeroArt?.closest(".care-banner--weight");
@@ -412,12 +951,14 @@
   const revealGroups = [
     [".treatments .service-card", 55, "scale"],
     [".compliance__group:first-child > div", 55, "scale"],
+    // Trust cards arrive one at a time, so each credential is read on its own.
+    [".trust-card", 150, ""],
     [".steps > li", 75, ""],
     [".protocol__heading > *", 90, ""],
     [".product-stage, .protocol .carousel-footer", 90, "scale"],
     [".benefits > li", 55, ""],
     [".guarantee__copy", 0, ""],
-    [".experts .section-heading, .expert-card, .experts .carousel-footer", 55, ""],
+    [".experts .section-heading, .expert-card", 55, ""],
     [".review-collage, .reviews__copy", 100, ""],
     [".closing__copy, .footer__main, .footer__bottom", 85, ""]
   ];
@@ -431,6 +972,782 @@
       revealItems.push(element);
     });
   });
+
+  /* Reviews drift on their own instead of waiting to be swiped. Driven by
+     scrollLeft because the columns are display:contents and there is no track
+     element to translate. Pauses while the pointer is down or hovering, and
+     never starts for reduced motion. */
+  (function autoScrollReviews() {
+    const collage = document.querySelector(".review-collage");
+    if (!collage || reducedMotionQuery.matches) return;
+    let paused = false;
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    ["pointerenter", "pointerdown", "focusin"].forEach((e) => collage.addEventListener(e, pause));
+    ["pointerleave", "pointerup", "focusout"].forEach((e) => collage.addEventListener(e, resume));
+
+    let last = 0;
+    const SPEED = 22; // px per second
+    function step(now) {
+      const dt = last ? (now - last) / 1000 : 0;
+      last = now;
+      const max = collage.scrollWidth - collage.clientWidth;
+      if (!paused && max > 4) {
+        let next = collage.scrollLeft + SPEED * dt;
+        if (next >= max - 0.5) next = 0;
+        collage.scrollLeft = next;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  })();
+
+  /* Privacy rail: the row of assurance cards is tied to the page scroll, so it
+     travels left as the section rises through the viewport and right again on
+     the way back up. Driven by scrollLeft rather than a transform so the rail
+     stays a real scroller you can still swipe; the lerp means a manual swipe
+     is reclaimed smoothly instead of snapping. The icons carry a second,
+     faster drift so the row reads as two planes. */
+  (function privacyRailParallax() {
+    const rail = document.querySelector("[data-privacy-rail]");
+    if (!rail || reducedMotionQuery.matches) return;
+    const section = rail.closest(".privacy-section");
+    if (!section) return;
+    const icons = Array.from(rail.querySelectorAll(".privacy-card__icon"));
+
+    let paused = false;
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    ["pointerdown", "touchstart", "focusin"].forEach((e) => rail.addEventListener(e, pause, { passive: true }));
+    ["pointerup", "pointercancel", "touchend", "focusout"].forEach((e) => rail.addEventListener(e, resume, { passive: true }));
+
+    let frameId = 0;
+    function schedule() { if (!frameId) frameId = requestAnimationFrame(tick); }
+    function tick() {
+      frameId = 0;
+      /* Measured on the rail, not the section: keyed to the section the row had
+         already drifted to the second card by the time it scrolled into view,
+         because most of the section's travel happens while the cards are still
+         below the fold. Zero until the rail has actually arrived, its top has
+         come up past START of the viewport, then one full rail-height plus
+         that distance of scrolling to cross the whole row. */
+      /* The heading arrives first, then the row starts moving (client, 19 Aug).
+         Progress opens at the scroll position where the section heading reaches
+         the top of the viewport under the sticky header, and closes when the
+         rail's bottom rises to a fifth of the way up the screen, so the first
+         card is whole at the start and the last card whole at the end. */
+      const rect = rail.getBoundingClientRect();
+      const heading = section.querySelector(".privacy-section__copy") || section;
+      const headingRect = heading.getBoundingClientRect();
+      const headerHeight = document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
+      const start = headingRect.top + window.scrollY - headerHeight - 12;
+      const end = rect.bottom + window.scrollY - window.innerHeight * 0.2;
+      const span = end - start;
+      if (span <= 0) return;
+      const raw = Math.min(1, Math.max(0, (window.scrollY - start) / span));
+      /* Reach both ends a little early: an exact 0 or 1 only happens at one
+         pixel of scroll. */
+      const PAD = 0.06;
+      const progress = Math.min(1, Math.max(0, (raw - PAD) / (1 - PAD * 2)));
+      const max = rail.scrollWidth - rail.clientWidth;
+      const drift = (progress - 0.5) * -30;
+      icons.forEach((icon, index) => {
+        icon.style.setProperty("--icon-drift", `${(drift * (1 + index * 0.4)).toFixed(2)}px`);
+      });
+      if (paused || max <= 4) return;
+      const target = progress * max;
+      const delta = target - rail.scrollLeft;
+      /* Snap inside 1.5px: a sub-pixel step can be rounded away by the scroll
+         container, which left the row parked a few pixels short of the end with
+         the last card clipped. */
+      if (Math.abs(delta) < 1.5) {
+        rail.scrollLeft = target;
+        return;
+      }
+      rail.scrollLeft += delta * 0.11;
+      schedule();
+    }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    schedule();
+  })();
+
+  /* The connector line draws downward and each picture lifts in as the reader
+     scrolls past that step, rather than firing once on a timer (client,
+     19 Aug). The CSS reads --step-progress; 1 means fully drawn. */
+  (function stepsScrollProgress() {
+    const items = Array.from(document.querySelectorAll(".steps > li"));
+    if (!items.length) return;
+    if (reducedMotionQuery.matches) {
+      items.forEach((item) => item.style.setProperty("--step-progress", "1"));
+      return;
+    }
+    let frameId = 0;
+    const schedule = () => { if (!frameId) frameId = requestAnimationFrame(tick); };
+    function tick() {
+      frameId = 0;
+      const viewport = window.innerHeight;
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        // Starts as the step's top crosses 88% of the viewport, complete by 40%.
+        const span = viewport * 0.48;
+        const progress = Math.min(1, Math.max(0, (viewport * 0.88 - rect.top) / span));
+        item.style.setProperty("--step-progress", progress.toFixed(3));
+      });
+    }
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    schedule();
+  })();
+
+  /* UT-20: the three How-it-works cards demonstrate the real product instead
+     of using generic illustrations. The scenes advance only while this section
+     is visible and stop entirely when reduced motion is requested. */
+  (function howFlowMocks() {
+    const intakeMock = document.querySelector('[data-how-mock="intake"]');
+    const consultMock = document.querySelector('[data-how-mock="consult"]');
+    const deliveryMock = document.querySelector('[data-how-mock="delivery"]');
+    const section = document.querySelector('#how');
+    if (!intakeMock || !consultMock || !deliveryMock || !section) return;
+
+    const intakeScenes = {
+      th: [
+        { question:'กังวลเรื่องใดเป็นพิเศษ?', options:['ผมร่วง','ดูแลน้ำหนัก','สุขภาพเพศชาย'], selected:0 },
+        { question:'อาการนี้เริ่มมานานแค่ไหน?', options:['ไม่เกิน 1 เดือน','1–6 เดือน','มากกว่า 6 เดือน'], selected:1 },
+        { question:'มีโรคประจำตัวหรือไม่?', options:['ไม่มี','มี','ไม่แน่ใจ'], selected:0 }
+      ],
+      en: [
+        { question:'What would you like help with?', options:['Hair loss','Weight care',"Men's health"], selected:0 },
+        { question:'How long has this affected you?', options:['Under 1 month','1–6 months','Over 6 months'], selected:1 },
+        { question:'Do you have any health conditions?', options:['No','Yes','Not sure'], selected:0 }
+      ]
+    };
+    const deliveryStatuses = {
+      th:['ยืนยันคำสั่งซื้อแล้ว','เภสัชกรกำลังจัดยา','ไรเดอร์กำลังจัดส่ง','ส่งถึงคุณแล้ว'],
+      en:['Order confirmed','Pharmacist preparing','Courier on the way','Delivered']
+    };
+    let intakeIndex = 0;
+    let consultMode = 'video';
+    let deliveryIndex = 0;
+    let mockTimer = 0;
+
+    function renderHowMocks() {
+      const lang = document.documentElement.lang === 'en' ? 'en' : 'th';
+      const scene = intakeScenes[lang][intakeIndex];
+      const question = intakeMock.querySelector('[data-how-intake-question]');
+      const count = intakeMock.querySelector('[data-how-intake-count]');
+      const progress = intakeMock.querySelector('[data-how-intake-progress]');
+      const options = intakeMock.querySelector('[data-how-intake-options]');
+      if (question) question.textContent = scene.question;
+      if (count) count.textContent = `${intakeIndex + 1} / ${intakeScenes[lang].length}`;
+      if (progress) progress.style.width = `${((intakeIndex + 1) / intakeScenes[lang].length) * 100}%`;
+      if (options) options.innerHTML = scene.options.map((option,index) =>
+        `<span class="${index === scene.selected ? 'is-selected' : ''}">${option}</span>`
+      ).join('');
+
+      consultMock.dataset.mode = consultMode;
+      deliveryMock.dataset.deliveryStage = String(deliveryIndex);
+      const status = deliveryMock.querySelector('[data-how-delivery-status]');
+      if (status) status.textContent = deliveryStatuses[lang][deliveryIndex];
+      deliveryMock.querySelectorAll('[data-track-index]').forEach((item,index) => {
+        item.classList.toggle('is-done', index < deliveryIndex);
+        item.classList.toggle('is-current', index === deliveryIndex);
+      });
+    }
+
+    function advanceHowMocks() {
+      intakeIndex = (intakeIndex + 1) % 3;
+      consultMode = consultMode === 'video' ? 'chat' : 'video';
+      deliveryIndex = (deliveryIndex + 1) % 4;
+      renderHowMocks();
+    }
+    function startHowMocks() {
+      if (mockTimer || reducedMotionQuery.matches) return;
+      mockTimer = window.setInterval(advanceHowMocks, 2400);
+    }
+    function stopHowMocks() {
+      window.clearInterval(mockTimer);
+      mockTimer = 0;
+    }
+
+    document.addEventListener('krane:languagechange', renderHowMocks);
+    renderHowMocks();
+    if (reducedMotionQuery.matches) return;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) startHowMocks();
+        else stopHowMocks();
+      }, { threshold:0.18, rootMargin:'12% 0px' }).observe(section);
+    } else {
+      startHowMocks();
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopHowMocks();
+    });
+  })();
+
+  /* Keep the doctor centred in the phone and demonstrate that the same private
+     consultation can continue in chat. The inner scene only runs while its
+     carousel slide is active and visible; reduced-motion users keep video. */
+  (function consultPhoneSwitcher() {
+    const consult = document.querySelector('[data-how-consult-switch]');
+    const section = document.querySelector('#how');
+    const slide = consult?.closest('[data-how-slide]');
+    if (!consult || !section || !slide) return;
+
+    let mode = 'video';
+    let timer = 0;
+    let visible = false;
+
+    function render() {
+      consult.dataset.mode = mode;
+    }
+    function stop() {
+      window.clearInterval(timer);
+      timer = 0;
+    }
+    function start() {
+      stop();
+      if (!visible || !slide.classList.contains('is-current') || reducedMotionQuery.matches || document.hidden) return;
+      timer = window.setInterval(() => {
+        mode = mode === 'video' ? 'chat' : 'video';
+        render();
+      }, 3200);
+    }
+    function sync() {
+      if (slide.classList.contains('is-current')) {
+        mode = 'video';
+        render();
+        start();
+      } else {
+        stop();
+      }
+    }
+
+    new MutationObserver(sync).observe(slide, { attributes:true, attributeFilter:['class'] });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        sync();
+      }, { threshold:.18, rootMargin:'10% 0px' }).observe(section);
+    } else {
+      visible = true;
+      sync();
+    }
+    document.addEventListener('visibilitychange', sync);
+    render();
+  })();
+
+  /* The delivery phone follows the production journey instead of presenting a
+     single invented card: Krane prepares the order, confirms it, then opens
+     the same compact progress hierarchy used by the patient app. */
+  (function deliveryPhoneSequence() {
+    const delivery = document.querySelector('[data-how-delivery-sequence]');
+    const section = document.querySelector('#how');
+    const slide = delivery?.closest('[data-how-slide]');
+    if (!delivery || !section || !slide) return;
+
+    const states = ['loading', 'success', 'progress'];
+    const delays = [2600, 1400, 5000];
+    let stateIndex = 0;
+    let timer = 0;
+    let visible = false;
+
+    function render() {
+      delivery.dataset.deliveryState = states[stateIndex];
+    }
+    function stop() {
+      window.clearTimeout(timer);
+      timer = 0;
+    }
+    function schedule() {
+      stop();
+      if (!visible || !slide.classList.contains('is-current') || reducedMotionQuery.matches || document.hidden) return;
+      timer = window.setTimeout(() => {
+        stateIndex = (stateIndex + 1) % states.length;
+        render();
+        schedule();
+      }, delays[stateIndex]);
+    }
+    function sync() {
+      if (reducedMotionQuery.matches) {
+        stateIndex = 2;
+        render();
+        stop();
+        return;
+      }
+      if (slide.classList.contains('is-current')) {
+        stateIndex = 0;
+        render();
+        schedule();
+      } else {
+        stop();
+      }
+    }
+
+    new MutationObserver(sync).observe(slide, { attributes:true, attributeFilter:['class'] });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        sync();
+      }, { threshold:.18, rootMargin:'10% 0px' }).observe(section);
+    } else {
+      visible = true;
+      sync();
+    }
+    document.addEventListener('visibilitychange', sync);
+    render();
+  })();
+
+  /* UT-26: Figma's 3-step scene becomes three full-width snap frames. The
+     browser owns the actual horizontal scroll (so touch, trackpad and keyboard
+     remain native); this controller only keeps the rails, active state and
+     opt-in autoplay in sync. */
+  (function howCarousel() {
+    const section = document.querySelector('[data-how-carousel]');
+    const viewport = section?.querySelector('[data-how-viewport]');
+    const slides = section ? [...section.querySelectorAll('[data-how-slide]')] : [];
+    const indicators = section ? [...section.querySelectorAll('.figma-how__indicators [data-how-go]')] : [];
+    const count = section?.querySelector('[data-how-count]');
+    if (!section || !viewport || slides.length < 2) return;
+
+    const AUTO_DELAY = 8000;
+    let activeIndex = 0;
+    let autoTimer = 0;
+    let scrollFrame = 0;
+    let settleTimer = 0;
+    let isVisible = false;
+    let isPointerDown = false;
+    let resumeTimer = 0;
+
+    function normalizeIndex(index) {
+      return (index + slides.length) % slides.length;
+    }
+
+    function slideScrollLeft(slide) {
+      return slide.offsetLeft - slides[0].offsetLeft;
+    }
+
+    function stopAuto() {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    }
+
+    function canAutoPlay() {
+      return isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+    }
+
+    function scheduleAuto(delay = AUTO_DELAY) {
+      stopAuto();
+      if (!canAutoPlay()) return;
+      autoTimer = window.setTimeout(() => {
+        goTo(activeIndex + 1, true);
+      }, delay);
+    }
+
+    function setActive(index) {
+      const nextIndex = normalizeIndex(index);
+      if (activeIndex === nextIndex && section.dataset.howReady === 'true') return;
+      activeIndex = nextIndex;
+      section.dataset.howActive = String(activeIndex);
+      section.dataset.howReady = 'true';
+      slides.forEach((slide, slideIndex) => {
+        const current = slideIndex === activeIndex;
+        slide.classList.toggle('is-current', current);
+        slide.toggleAttribute('inert', !current);
+        slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      });
+      indicators.forEach((indicator, indicatorIndex) => {
+        const current = indicatorIndex === activeIndex;
+        indicator.classList.toggle('is-current', current);
+        if (current) indicator.setAttribute('aria-current', 'step');
+        else indicator.removeAttribute('aria-current');
+      });
+      if (count) count.textContent = `${activeIndex + 1} / ${slides.length}`;
+    }
+
+    function goTo(index, fromAuto = false) {
+      const nextIndex = normalizeIndex(index);
+      setActive(nextIndex);
+      const left = slideScrollLeft(slides[nextIndex]);
+      viewport.scrollTo({ left, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+      scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1800);
+    }
+
+    function updateFromScroll() {
+      scrollFrame = 0;
+      const width = viewport.clientWidth || 1;
+      const scrollLeft = viewport.scrollLeft;
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slideScrollLeft(slide) - scrollLeft);
+        const proximity = Math.max(0, 1 - distance / width);
+        slide.style.setProperty('--how-proximity', proximity.toFixed(3));
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      if (nearestDistance <= width * .48) setActive(nearestIndex);
+      window.clearTimeout(settleTimer);
+      if (isVisible) settleTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY + 800), 180);
+    }
+
+    viewport.addEventListener('scroll', () => {
+      stopAuto();
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateFromScroll);
+    }, { passive: true });
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    section.querySelectorAll('[data-how-go]').forEach((button) => {
+      button.addEventListener('click', () => goTo(Number(button.dataset.howGo || 0)));
+    });
+    section.querySelector('[data-how-prev]')?.addEventListener('click', () => goTo(activeIndex - 1));
+    section.querySelector('[data-how-next]')?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    viewport.addEventListener('pointerdown', () => {
+      isPointerDown = true;
+      stopAuto();
+    }, { passive: true });
+    const releasePointer = () => {
+      isPointerDown = false;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY + 1200), 900);
+    };
+    viewport.addEventListener('pointerup', releasePointer, { passive: true });
+    viewport.addEventListener('pointercancel', releasePointer, { passive: true });
+
+    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusout', () => window.setTimeout(scheduleAuto, 0));
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) scheduleAuto(3000);
+        else stopAuto();
+      }, { threshold: .34 }).observe(section);
+    } else {
+      isVisible = true;
+      scheduleAuto(3000);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else scheduleAuto();
+    });
+    reducedMotionQuery.addEventListener?.('change', () => {
+      if (reducedMotionQuery.matches) stopAuto();
+      else scheduleAuto();
+    });
+    window.addEventListener('resize', () => {
+      viewport.scrollLeft = slideScrollLeft(slides[activeIndex]);
+      updateFromScroll();
+    }, { passive: true });
+
+    setActive(0);
+    updateFromScroll();
+  })();
+
+  /* UT-33: keep the product catalogue a native horizontal scroller and add
+     predictable controls for people who do not discover drag/trackpad input. */
+  (function weightProductRail() {
+    document.querySelectorAll('[data-weight-products]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-product-viewport]');
+    const cards = [...section.querySelectorAll('.weight-product-card')];
+    const previous = section.querySelector('[data-weight-product-prev]');
+    const next = section.querySelector('[data-weight-product-next]');
+    if (!viewport || cards.length < 2) return;
+
+    let updateFrame = 0;
+
+    function cardStep() {
+      const style = window.getComputedStyle(section.querySelector('.weight-catalogue__track'));
+      const gap = Number.parseFloat(style.columnGap || style.gap) || 0;
+      return cards[0].getBoundingClientRect().width + gap;
+    }
+
+    function updateControls() {
+      updateFrame = 0;
+      const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+      if (previous) previous.disabled = viewport.scrollLeft <= 2;
+      if (next) next.disabled = viewport.scrollLeft >= max - 2;
+    }
+
+    function move(direction) {
+      viewport.scrollBy({
+        left:direction * cardStep(),
+        behavior:reducedMotionQuery.matches ? 'auto' : 'smooth'
+      });
+    }
+
+    previous?.addEventListener('click', () => move(-1));
+    next?.addEventListener('click', () => move(1));
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      move(event.key === 'ArrowRight' ? 1 : -1);
+    });
+    viewport.addEventListener('scroll', () => {
+      if (!updateFrame) updateFrame = window.requestAnimationFrame(updateControls);
+    }, { passive:true });
+    window.addEventListener('resize', updateControls, { passive:true });
+    updateControls();
+    });
+  })();
+
+  /* The approved weight layout includes an auto-swiping testimonial panel.
+     Autoplay stops while the panel is focused, touched, offscreen, hidden or
+     reduced-motion is requested; arrows/dots and native swipe still work. */
+  (function weightTestimonialCarousel() {
+    document.querySelectorAll('[data-weight-testimonials]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-testimonial-viewport]');
+    const slides = [...section.querySelectorAll('[data-weight-testimonial-slide]')];
+    const dots = [...section.querySelectorAll('[data-weight-testimonial-go]')];
+    if (!viewport || slides.length < 2) return;
+
+    const AUTO_DELAY = 5200;
+    let activeIndex = 0;
+    let autoTimer = 0;
+    let settleTimer = 0;
+    let scrollFrame = 0;
+    let isVisible = false;
+    let isPointerDown = false;
+
+    function normalize(index) {
+      return (index + slides.length) % slides.length;
+    }
+
+    function stopAuto() {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    }
+
+    function canAutoPlay() {
+      return isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+    }
+
+    function scheduleAuto(delay = AUTO_DELAY) {
+      stopAuto();
+      if (!canAutoPlay()) return;
+      autoTimer = window.setTimeout(() => goTo(activeIndex + 1, true), delay);
+    }
+
+    function setActive(index) {
+      activeIndex = normalize(index);
+      section.dataset.weightTestimonialActive = String(activeIndex);
+      slides.forEach((slide, slideIndex) => {
+        const current = slideIndex === activeIndex;
+        slide.classList.toggle('is-current', current);
+        slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      });
+      dots.forEach((dot, dotIndex) => {
+        const current = dotIndex === activeIndex;
+        dot.classList.toggle('is-current', current);
+        if (current) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function goTo(index, fromAuto = false) {
+      const nextIndex = normalize(index);
+      setActive(nextIndex);
+      viewport.scrollTo({
+        left:slides[nextIndex].offsetLeft,
+        behavior:reducedMotionQuery.matches ? 'auto' : 'smooth'
+      });
+      scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1200);
+    }
+
+    function updateFromScroll() {
+      scrollFrame = 0;
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - viewport.scrollLeft);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      if (nearestDistance <= viewport.clientWidth * .48) setActive(nearestIndex);
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY), 220);
+    }
+
+    viewport.addEventListener('scroll', () => {
+      stopAuto();
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateFromScroll);
+    }, { passive:true });
+    viewport.addEventListener('pointerdown', () => {
+      isPointerDown = true;
+      stopAuto();
+    }, { passive:true });
+    const releasePointer = () => {
+      isPointerDown = false;
+      window.setTimeout(() => scheduleAuto(AUTO_DELAY + 800), 350);
+    };
+    viewport.addEventListener('pointerup', releasePointer, { passive:true });
+    viewport.addEventListener('pointercancel', releasePointer, { passive:true });
+    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusout', () => window.setTimeout(() => scheduleAuto(AUTO_DELAY), 0));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    section.querySelector('[data-weight-testimonial-prev]')?.addEventListener('click', () => goTo(activeIndex - 1));
+    section.querySelector('[data-weight-testimonial-next]')?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) scheduleAuto(2600);
+        else stopAuto();
+      }, { threshold:.35 }).observe(section);
+    } else {
+      isVisible = true;
+      scheduleAuto(2600);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else scheduleAuto();
+    });
+    reducedMotionQuery.addEventListener?.('change', () => {
+      if (reducedMotionQuery.matches) stopAuto();
+      else scheduleAuto();
+    });
+    window.addEventListener('resize', () => {
+      viewport.scrollLeft = slides[activeIndex].offsetLeft;
+    }, { passive:true });
+
+    setActive(0);
+    });
+  })();
+
+  /* Three before/after pairs remain swipeable as native scroll content. The
+     carousel advances only while visible and idle, and keeps arrows, dots,
+     keyboard input, and reduced-motion behavior in sync. */
+  (function weightResultsCarousel() {
+    document.querySelectorAll('[data-weight-results]').forEach((section) => {
+    const viewport = section.querySelector('[data-weight-result-viewport]');
+    const slides = [...section.querySelectorAll('[data-weight-result-slide]')];
+    const dots = [...section.querySelectorAll('[data-weight-result-go]')];
+    if (!viewport || slides.length < 2) return;
+
+    const AUTO_DELAY = 5600;
+    let activeIndex = 0;
+    let autoTimer = 0;
+    let settleTimer = 0;
+    let scrollFrame = 0;
+    let isVisible = false;
+    let isPointerDown = false;
+
+    const normalize = (index) => (index + slides.length) % slides.length;
+    const stopAuto = () => {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    };
+    const canAutoPlay = () => isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+
+    function scheduleAuto(delay = AUTO_DELAY) {
+      stopAuto();
+      if (!canAutoPlay()) return;
+      autoTimer = window.setTimeout(() => goTo(activeIndex + 1, true), delay);
+    }
+
+    function setActive(index) {
+      activeIndex = normalize(index);
+      section.dataset.weightResultActive = String(activeIndex);
+      slides.forEach((slide, slideIndex) => {
+        const current = slideIndex === activeIndex;
+        slide.classList.toggle('is-current', current);
+        slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      });
+      dots.forEach((dot, dotIndex) => {
+        const current = dotIndex === activeIndex;
+        dot.classList.toggle('is-current', current);
+        if (current) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function goTo(index, fromAuto = false) {
+      const nextIndex = normalize(index);
+      setActive(nextIndex);
+      viewport.scrollTo({
+        left:slides[nextIndex].offsetLeft,
+        behavior:reducedMotionQuery.matches ? 'auto' : 'smooth'
+      });
+      scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1200);
+    }
+
+    function updateFromScroll() {
+      scrollFrame = 0;
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - viewport.scrollLeft);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      if (nearestDistance <= viewport.clientWidth * .48) setActive(nearestIndex);
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => scheduleAuto(AUTO_DELAY), 220);
+    }
+
+    viewport.addEventListener('scroll', () => {
+      stopAuto();
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateFromScroll);
+    }, { passive:true });
+    viewport.addEventListener('pointerdown', () => {
+      isPointerDown = true;
+      stopAuto();
+    }, { passive:true });
+    const releasePointer = () => {
+      isPointerDown = false;
+      window.setTimeout(() => scheduleAuto(AUTO_DELAY + 800), 350);
+    };
+    viewport.addEventListener('pointerup', releasePointer, { passive:true });
+    viewport.addEventListener('pointercancel', releasePointer, { passive:true });
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusout', () => window.setTimeout(() => scheduleAuto(AUTO_DELAY), 0));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    section.querySelector('[data-weight-result-prev]')?.addEventListener('click', () => goTo(activeIndex - 1));
+    section.querySelector('[data-weight-result-next]')?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) scheduleAuto(2800);
+        else stopAuto();
+      }, { threshold:.3 }).observe(section);
+    } else {
+      isVisible = true;
+      scheduleAuto(2800);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else scheduleAuto();
+    });
+    reducedMotionQuery.addEventListener?.('change', () => {
+      if (reducedMotionQuery.matches) stopAuto();
+      else scheduleAuto();
+    });
+    window.addEventListener('resize', () => {
+      viewport.scrollLeft = slides[activeIndex].offsetLeft;
+    }, { passive:true });
+
+    setActive(0);
+    });
+  })();
 
   document.body.classList.add("motion-enabled");
   requestAnimationFrame(() => document.body.classList.add("motion-loaded"));
@@ -578,55 +1895,6 @@
     });
   });
 
-  const expertViewport = document.querySelector("[data-expert-viewport]");
-  const expertCards = [...document.querySelectorAll(".expert-card")];
-  const expertButtons = [...document.querySelectorAll("[data-expert-direction]")];
-  const expertIndex = document.querySelector("[data-expert-index]");
-  const expertDots = [...document.querySelectorAll(".experts .carousel-indicator i")];
-  let expertScrollFrame = 0;
-
-  function expertStep() {
-    if (!expertViewport || !expertCards.length) return 0;
-    const track = expertViewport.querySelector(".expert-track");
-    const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
-    return expertCards[0].getBoundingClientRect().width + gap;
-  }
-
-  function syncExpertCarousel() {
-    expertScrollFrame = 0;
-    if (!expertViewport || !expertCards.length) return;
-    const step = expertStep() || 1;
-    const maxIndex = expertCards.length - 1;
-    const current = Math.max(0, Math.min(maxIndex, Math.round(expertViewport.scrollLeft / step)));
-    const maxScroll = Math.max(0, expertViewport.scrollWidth - expertViewport.clientWidth);
-    if (expertIndex) expertIndex.textContent = String(current + 1).padStart(2, "0");
-    expertDots.forEach((dot, index) => {
-      dot.style.background = index === current ? "#0f172a" : "#cbd5e1";
-    });
-    expertButtons.forEach((button) => {
-      const direction = Number(button.dataset.expertDirection);
-      button.disabled = direction < 0 ? expertViewport.scrollLeft <= 2 : expertViewport.scrollLeft >= maxScroll - 2;
-    });
-  }
-
-  expertButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!expertViewport) return;
-      const step = expertStep();
-      const current = Math.round(expertViewport.scrollLeft / (step || 1));
-      const next = Math.max(0, Math.min(expertCards.length - 1, current + Number(button.dataset.expertDirection)));
-      expertViewport.scrollTo({
-        left: next * step,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
-      });
-    });
-  });
-  expertViewport?.addEventListener("scroll", () => {
-    if (!expertScrollFrame) expertScrollFrame = requestAnimationFrame(syncExpertCarousel);
-  }, { passive: true });
-  window.addEventListener("resize", syncExpertCarousel, { passive: true });
-  syncExpertCarousel();
-
   const expertProfiles = {
     "1": {
       name: "นพ. ไพรัช เกตุรัตนกุล ว.",
@@ -681,7 +1949,8 @@
     expertDialogBio.textContent = profile.bio;
     expertDialogSpecialty.textContent = profile.specialty;
     expertDialogEducation.textContent = profile.education;
-    expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
+    // The sheet no longer carries a CTA; keep the link in sync if one returns.
+    if (expertDetailLink) expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
     document.body.classList.add("expert-open");
     expertDialog.showModal();
     requestAnimationFrame(() => expertDialogClose?.focus());
@@ -851,6 +2120,51 @@
     reviewAnimationFrame = requestAnimationFrame(animateReviews);
   }
 
+  const articlesRail = document.querySelector(".articles-row");
+  const articleCards = articlesRail ? [...articlesRail.children] : [];
+  const articleDots = [...document.querySelectorAll("[data-articles-go]")];
+  let articleRailFrame = 0;
+
+  function setCurrentArticle(index) {
+    articleDots.forEach((dot, dotIndex) => {
+      const current = dotIndex === index;
+      dot.classList.toggle("is-current", current);
+      if (current) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  }
+
+  function updateCurrentArticle() {
+    articleRailFrame = 0;
+    if (!articlesRail || !articleCards.length) return;
+    const firstOffset = articleCards[0].offsetLeft;
+    const closest = articleCards.reduce((best, card, index) => {
+      const distance = Math.abs(card.offsetLeft - firstOffset - articlesRail.scrollLeft);
+      return distance < best.distance ? { index, distance } : best;
+    }, { index:0, distance:Infinity });
+    setCurrentArticle(closest.index);
+  }
+
+  if (articlesRail && articleCards.length && articleDots.length) {
+    articlesRail.addEventListener("scroll", () => {
+      if (!articleRailFrame) articleRailFrame = requestAnimationFrame(updateCurrentArticle);
+    }, { passive:true });
+    articleDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        const index = Number(dot.dataset.articlesGo || 0);
+        const card = articleCards[index];
+        if (!card) return;
+        articlesRail.scrollTo({
+          left:card.offsetLeft - articleCards[0].offsetLeft,
+          behavior:reducedMotionQuery.matches ? "auto" : "smooth"
+        });
+        setCurrentArticle(index);
+      });
+    });
+    window.addEventListener("resize", updateCurrentArticle, { passive:true });
+    updateCurrentArticle();
+  }
+
   const memberCount = document.querySelector("[data-member-count]");
   const memberCountTarget = Number(memberCount?.dataset.countTarget || 3000);
   let memberCountStarted = false;
@@ -926,6 +2240,166 @@
   window.addEventListener("scroll", requestMobileCtaUpdate, { passive: true });
   window.addEventListener("resize", requestMobileCtaUpdate, { passive: true });
   updateMobileCta();
+
+  /* Section parallax. Each [data-parallax] drifts by its own speed against the
+     section's progress through the viewport, so the copy and the list separate
+     slightly as you scroll past. Progress is measured from the section, not the
+     page, so the drift is zero at the edges and never leaves the rounded block.
+     Reduced motion opts out entirely rather than merely shortening it. */
+  const parallaxNodes = [...document.querySelectorAll("[data-parallax]")].map((node) => ({
+    node,
+    speed: Number(node.dataset.parallaxSpeed || 0.022),
+    host: node
+  }));
+
+  function updateParallax() {
+    parallaxFrame = null;
+    if (reducedMotionQuery.matches) {
+      parallaxNodes.forEach(({ node }) => node.style.removeProperty("--parallax-y"));
+      return;
+    }
+    const viewport = window.innerHeight || 1;
+    parallaxNodes.forEach(({ node, speed, host }) => {
+      const rect = host.getBoundingClientRect();
+      if (rect.bottom < -200 || rect.top > viewport + 200) return;
+      // -1 .. 1 across the pass, 0 when the section is centred.
+      const progress = (rect.top + rect.height / 2 - viewport / 2) / (viewport / 2 + rect.height / 2);
+      node.style.setProperty("--parallax-y", `${(progress * speed * rect.height).toFixed(1)}px`);
+    });
+  }
+
+  let parallaxFrame = null;
+  function requestParallax() {
+    if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateParallax);
+  }
+  if (parallaxNodes.length) {
+    window.addEventListener("scroll", requestParallax, { passive: true });
+    window.addEventListener("resize", requestParallax, { passive: true });
+    reducedMotionQuery.addEventListener?.("change", requestParallax);
+    updateParallax();
+  }
+
+  /* The positioning statement lights word by word as the section crosses the
+     viewport, so the sentence reads at the pace it is scrolled rather than
+     arriving all at once (client, 10 Sep). Words are wrapped once; the scroll
+     handler only moves a count, so nothing is measured per frame. */
+  (function litPositioningStatement() {
+    const section = document.querySelector(".positioning-section");
+    if (!section) return;
+    const lines = [...section.querySelectorAll("p, h2")];
+    if (!lines.length) return;
+
+    /* Thai does not put spaces between words, so splitting on whitespace lit the
+       whole sentence in four jumps. Intl.Segmenter finds real Thai word
+       boundaries without cutting through a cluster and stranding its tone mark;
+       whitespace is the fallback where it is missing. */
+    const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
+      ? new Intl.Segmenter("th", { granularity: "word" })
+      : null;
+    const segment = (text) => segmenter
+      ? [...segmenter.segment(text)].map((part) => part.segment)
+      : text.split(/(\s+)/);
+
+    const words = [];
+    lines.forEach((line) => {
+      const parts = segment(line.textContent);
+      line.textContent = "";
+      parts.forEach((part) => {
+        if (!part.trim()) {
+          line.append(part);
+          return;
+        }
+        const word = document.createElement("span");
+        word.className = "positioning-word";
+        word.textContent = part;
+        line.append(word);
+        words.push(word);
+      });
+    });
+    section.classList.add("is-lit-ready");
+
+    if (reducedMotionQuery.matches) {
+      words.forEach((word) => word.classList.add("is-lit"));
+      return;
+    }
+
+    let lit = -1;
+    let frame = 0;
+    function paint() {
+      frame = 0;
+      /* Measured on the text, not the section. The section is a tall block with
+         the sentence floating in the middle of it, so pacing the reveal by the
+         section's own height meant the last words only lit once the sentence had
+         already scrolled off the top. It finishes while the whole sentence is
+         still on screen. */
+      const first = lines[0].getBoundingClientRect();
+      const last = lines[lines.length - 1].getBoundingClientRect();
+      const textTop = first.top;
+      const textHeight = Math.max(1, last.bottom - first.top);
+      const view = window.innerHeight || 800;
+      const start = view * 0.88;
+      const end = view * 0.34;
+      const span = Math.max(1, textHeight + (start - end) * 0.55);
+      const progress = Math.min(1, Math.max(0, (start - textTop) / span));
+      const next = Math.round(progress * words.length);
+      if (next === lit) return;
+      lit = next;
+      words.forEach((word, index) => word.classList.toggle("is-lit", index < next));
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    paint();
+  })();
+
+  /* One phrase to a screen, swapped by scroll position rather than by a timer.
+     The section becomes a tall track with a sticky screen inside it, so the
+     page keeps moving while the phrase changes in place. Each phrase owns an
+     equal slice of that track: it rises in over the first part of its slice,
+     holds, then leaves over the last part. The closing note belongs to the
+     final phrase and stays once it has arrived. */
+  (function scrollPhrases() {
+    const block = document.querySelector("[data-scroll-reveal]");
+    if (!block) return;
+    const phrases = [...block.querySelectorAll("[data-phrase]")];
+    if (!phrases.length) return;
+    // A screen per phrase, plus one screen for the last one to hold on.
+    block.style.setProperty("--phrase-track", (phrases.length + 1) * 100 + "svh");
+    block.classList.add("is-phrase-ready");
+    if (reducedMotionQuery.matches) return;
+
+    const ease = (t) => t * t * (3 - 2 * t);
+    const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+    let frame = 0;
+    function paint() {
+      frame = 0;
+      const box = block.getBoundingClientRect();
+      const view = window.innerHeight || 800;
+      const travel = Math.max(1, box.height - view);
+      const progress = clamp01(-box.top / travel);
+      const slice = 1 / phrases.length;
+      // In and out take a third of a slice each, so a phrase is fully present
+      // for the middle third and the change reads as continuous.
+      const edge = slice * 0.34;
+
+      phrases.forEach((phrase, index) => {
+        const from = index * slice;
+        const inAmt = ease(clamp01((progress - from) / edge));
+        const last = index === phrases.length - 1;
+        const outAmt = last ? 0 : ease(clamp01((progress - (from + slice - edge)) / edge));
+        const shown = inAmt * (1 - outAmt);
+        phrase.style.opacity = shown.toFixed(3);
+        phrase.style.transform = "translateY(" + ((1 - inAmt) * 26 - outAmt * 22).toFixed(2) + "px)";
+      });
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(paint); }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    paint();
+  })();
 
   if (window.lucide) {
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });

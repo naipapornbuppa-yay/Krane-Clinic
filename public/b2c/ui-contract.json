@@ -1,0 +1,643 @@
+{
+  "_": [
+    "Locked UI contract for the Krane B2C prototype.",
+    "Everything listed here was agreed with the client and must not disappear.",
+    "b2c/tools/contract-check.mjs asserts every line of this file against the",
+    "running page; CI fails the build if something has been removed.",
+    "Adding to this file is normal. Removing from it needs the client to say so,",
+    "and the reason belongs in the commit message and in _removed below."
+  ],
+  "_removed": [
+    "noslots (SCR-007), 31 Aug: a second design for picking a consultation time,",
+    "reachable only from the demo rail's error link. #appointment (SCR-007B) now",
+    "owns that job for every route, so the two patterns no longer disagree in the",
+    "same build. Client approved retiring it before the round-2 test link.",
+    "refill (SCR-059), 1 Sep: a whole screen for ticking prescriptions before the",
+    "checkout. Client: the patient already knows what they take, so #refill-sheet",
+    "asks which prescription (or all of them) and hands the answer straight to",
+    "#payment, the same checkout every other order goes through.",
+    "scroll-text landing band, 11 Sep: the message no longer opens the page. It",
+    "moved into the empty space after the positioning statement, where the word",
+    "by word rise has room to read and does not compete with the hero headline.",
+    "treatment-detail Documents tab, 11 Sep: client moved the medical certificate",
+    "to the end of the treatment plan and the receipt to the paid tracking step.",
+    "All documents are now indexed by the searchable My Documents profile page."
+  ],
+  "screens": [
+    "account",
+    "activity",
+    "address",
+    "address-map",
+    "appointment",
+    "appointment-booked",
+    "article",
+    "articles",
+    "choosedoc",
+    "conditions",
+    "consent-terms",
+    "consult",
+    "consultpay",
+    "consultpay-fail",
+    "consultpay-gw",
+    "delivery-quote",
+    "empty-activities",
+    "empty-history",
+    "feedback",
+    "feedbackdone",
+    "history",
+    "identity",
+    "ineligible",
+    "insurance",
+    "insurance-result",
+    "intake-concern",
+    "intake-edu",
+    "intake-general",
+    "intake1",
+    "intake2",
+    "intake3",
+    "intake4",
+    "intake5",
+    "landing",
+    "login",
+    "matching",
+    "my-documents",
+    "notifications",
+    "nurse",
+    "onboard1",
+    "onboard2",
+    "onboard3",
+    "otp",
+    "partner-idcard",
+    "partner-insurance",
+    "partner-nurse",
+    "partner-nurse-session",
+    "partner-patient-info",
+    "partner-phr",
+    "patient-info",
+    "payfail",
+    "payment",
+    "payment-gw",
+    "payment-success",
+    "pharmacy-search",
+    "pharmacyissue",
+    "pharmacypending",
+    "preloader",
+    "prescription",
+    "profile",
+    "referral",
+    "rx-plan",
+    "rx-writing",
+    "settings",
+    "signup",
+    "social-confirm",
+    "tracking",
+    "upload-rx",
+    "video",
+    "waitroom"
+  ],
+  "components": [
+    {
+      "selector": "#csat-modal [data-csat-submit]",
+      "why": "Review after the medicine arrives. Went missing once already."
+    },
+    {
+      "selector": "#csat-modal [data-csat-advice]",
+      "why": "Doctor advice rating."
+    },
+    {
+      "selector": "#csat-modal [data-csat-platform]",
+      "why": "App experience rating."
+    },
+    {
+      "selector": "#csat-modal [data-csat-quality]",
+      "why": "Video and sound quality rating."
+    },
+    {
+      "selector": "#tracking [data-delivery-confirm]",
+      "why": "Patient confirms receipt on the Delivered step."
+    },
+    {
+      "selector": "#health-history-modal",
+      "why": "Three safety questions, asked at confirmation."
+    },
+    {
+      "selector": "#waitroom-expired-modal [data-waitroom-retry]",
+      "why": "Missing the 5-minute entry window has to offer a re-match, not a dead end."
+    },
+    {
+      "selector": "#waitroom [data-wait-timer]",
+      "why": "The entry window is counted down on the waiting room, not left implicit."
+    },
+    {
+      "selector": "#signup-done-modal",
+      "why": "Registration-complete confirmation after OTP."
+    },
+    {
+      "selector": "#payment-method-modal [data-method-option]",
+      "why": "Payment method sheet, tap to commit."
+    },
+    {
+      "selector": "[data-refill-open]",
+      "why": "Every route into a refill: the quick menu, the treatment detail and the demo rail."
+    },
+    {
+      "selector": "#refill-sheet [data-refill-choice]",
+      "why": "Refill asks which prescription, or all of them, then goes straight to the checkout. Replaced the #refill screen."
+    },
+    {
+      "selector": "#refill-sheet .modal-dialog__close[data-refill-sheet-close]",
+      "why": "The refill picker needs an explicit close control in addition to its dismissible scrim."
+    },
+    {
+      "selector": "#prescription [data-doc='summary']",
+      "why": "Consultation summary document."
+    },
+    {
+      "selector": "#prescription [data-doc='rx']",
+      "why": "Prescription document."
+    },
+    {
+      "selector": "#prescription [data-doc='cert']",
+      "why": "Medical certificate."
+    },
+    {
+      "selector": "#prescription [data-doc='receipt']",
+      "why": "Receipt."
+    },
+    {
+      "selector": "#tracking [data-doc-open='receipt']",
+      "why": "Receipt is linked from the paid step in order tracking."
+    },
+    {
+      "selector": "#treatment-plan-panel [data-doc-open='cert']",
+      "why": "The treatment's medical certificate is the final section of its treatment plan."
+    },
+    {
+      "selector": "#profile [data-go='my-documents']",
+      "why": "Profile entry point for the searchable document library."
+    },
+    {
+      "selector": "#my-documents [data-document-search]",
+      "why": "Patients can search all of their documents."
+    },
+    {
+      "selector": "#my-documents [data-document-sort]",
+      "why": "Patients can order documents by newest or oldest date."
+    },
+    {
+      "selector": "#my-documents [data-document-item]",
+      "why": "The document library contains date-indexed document rows."
+    },
+    {
+      "selector": "#address [data-address-search]",
+      "why": "Address search box with suggestions."
+    },
+    {
+      "selector": "#address [data-address-suggestions]",
+      "why": "Suggestion dropdown."
+    },
+    {
+      "selector": "#address [data-go='address-map']",
+      "why": "Map picker entry point."
+    },
+    {
+      "selector": "#address-map [data-osm-map]",
+      "why": "Real OpenStreetMap tiles."
+    },
+    {
+      "selector": "#address-map [data-address-map-confirm]",
+      "why": "Confirming the pin returns to the form."
+    },
+    {
+      "selector": "#address .form-group",
+      "why": "Address fields stay grouped, not one flat run.",
+      "minCount": 3
+    },
+    {
+      "selector": "#address .field__clear",
+      "why": "Every address field can be cleared.",
+      "minCount": 8
+    },
+    {
+      "selector": "#conditions [data-category-list]",
+      "why": "Category grid. Its container was dropped once and blanked the screen."
+    },
+    {
+      "selector": "#conditions [data-condition-list]",
+      "why": "Second-step condition list."
+    },
+    {
+      "selector": "#waitroom .info-chip",
+      "why": "Camera/mic precondition as a one-line chip."
+    },
+    {
+      "selector": "#video .call-btn--end",
+      "why": "Hang-up control."
+    },
+    {
+      "selector": "#consult [data-live-pill]",
+      "why": "Live-call pill in chat."
+    },
+    {
+      "selector": "#profile .home-cta",
+      "why": "Home primary action."
+    },
+    {
+      "selector": "#csat-modal [data-csat-close]",
+      "why": "The review is a request after delivery, not a gate — it must be closeable."
+    },
+    {
+      "selector": "#delivery-quote use[href='#krane-state-delivery-quote']",
+      "why": "The quote screen uses the house state illustration, like every other flow screen. The crane flipbook was tried here on 20 Aug and reverted on 23 Aug — it belongs to the app's own boot screen."
+    },
+    {
+      "selector": "#delivery-quote [data-delivery-quote-timer]",
+      "why": "One state with a counter, not two headings in five seconds."
+    },
+    {
+      "selector": "#payment [data-payment-address-row]",
+      "why": "The address the quote returns to. Checkout scrolls to it and pulses it."
+    },
+    {
+      "selector": "#pharmacypending [data-prep-title]",
+      "why": "Post-payment pharmacy screen runs two stages in one heading: packing, then packed."
+    },
+    {
+      "selector": "#activity [data-order-progress] .order-progress__step",
+      "why": "Orders carry their own progress bar in Activity once the pharmacy is done.",
+      "minCount": 4
+    },
+    {
+      "selector": "#appointment [data-appointment-slot]",
+      "why": "Sexual health books a time instead of matching a doctor; the slot picker is the screen.",
+      "minCount": 6
+    },
+    {
+      "selector": "#appointment [data-appointment-day]",
+      "why": "Booking spans more than today, so the day picker must stay.",
+      "minCount": 3
+    }
+  ],
+  "flows": [
+    {
+      "name": "Authenticated profile actions reuse the current session",
+      "enter": "#profile",
+      "authSeed": {
+        "authenticated": true,
+        "provider": "LINE",
+        "displayName": "มะลิ สุธิดา"
+      },
+      "assertBeforeClick": [
+        {
+          "activeScreen": "profile"
+        }
+      ],
+      "click": "[data-profile-followup]",
+      "assert": [
+        {
+          "activeScreen": "intake-general"
+        }
+      ]
+    },
+    {
+      "name": "General consultation intake paginates one question per page",
+      "enter": "#intake1?entry=direct&category=general",
+      "assert": [
+        {
+          "activeScreen": "intake1"
+        },
+        {
+          "countAtLeast": [
+            "[data-intake-question]",
+            3
+          ]
+        },
+        {
+          "visibleOnly": "[data-intake-question]"
+        }
+      ]
+    },
+    {
+      "name": "Confirming receipt asks for the review",
+      "enter": "#tracking",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "consentsComplete": true,
+        "identityVerified": true,
+        "patientInfoComplete": true,
+        "directGeneralHealthComplete": true,
+        "consultationFeeAcknowledged": true,
+        "consultationPaid": true
+      },
+      "assert": [
+        {
+          "visible": "#csat-modal"
+        }
+      ],
+      "assertBeforeClick": [
+        {
+          "activeScreen": "tracking"
+        }
+      ],
+      "click": "[data-track-step='delivered'] [data-delivery-confirm]"
+    },
+    {
+      "name": "Direct access never asks for an ID card",
+      "enter": "#identity",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true
+      },
+      "assert": [
+        {
+          "activeScreen": "patient-info"
+        }
+      ]
+    },
+    {
+      "name": "Tracking offers the receipt confirmation on the Delivered step",
+      "enter": "#tracking",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "consentsComplete": true,
+        "identityVerified": true,
+        "patientInfoComplete": true,
+        "directGeneralHealthComplete": true,
+        "consultationFeeAcknowledged": true,
+        "consultationPaid": true
+      },
+      "assert": [
+        {
+          "activeScreen": "tracking"
+        },
+        {
+          "visible": "[data-track-step='delivered'] [data-delivery-confirm]"
+        }
+      ]
+    },
+    {
+      "name": "Sexual health matches, fails, then books a time",
+      "why": "New, 31 Aug: the route to test is matching flagging no doctor and forcing a booking, not a booking screen on its own. Entering at #matching and waiting out the timer asserts the whole beat, so a regression that skips the match attempt fails the build.",
+      "enter": "#matching?entry=direct&category=sexual-health",
+      "waitBefore": 13000,
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "consentsComplete": true,
+        "patientInfoComplete": true,
+        "directGeneralHealthComplete": true,
+        "consultationFeeAcknowledged": true
+      },
+      "assert": [
+        {
+          "activeScreen": "appointment"
+        },
+        {
+          "visible": "#appointment [data-appointment-confirm]"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "name": "No eyebrow/kicker labels on the condition page",
+      "page": "condition-detail.html?condition=weight",
+      "absent": ".eyebrow, .condition-hero__kicker, .detail-kicker, .section-kicker"
+    },
+    {
+      "name": "No kicker labels on the doctors page",
+      "page": "doctors.html",
+      "absent": ".eyebrow, .detail-kicker, .section-kicker"
+    },
+    {
+      "name": "No kicker labels on the landing page",
+      "page": "krane-b2c-landing.html",
+      "absent": ".eyebrow, .detail-kicker, .section-kicker"
+    },
+    {
+      "name": "Only the current Krane wordmark is used",
+      "page": "krane-b2c-landing.html",
+      "absent": "img[src*='krane-logo-navy'], img[src*='krane-logo-cream'], img[src*='krane-logo-15jul'], img[src*='krane-logo-16jul'], img[src*='krane-clinic-logo'], img[src*='_retired-logos']"
+    },
+    {
+      "name": "Only the current Krane wordmark is used in the app",
+      "page": "krane-b2c.html",
+      "absent": "img[src*='krane-logo-navy'], img[src*='krane-logo-cream'], img[src*='krane-logo-15jul'], img[src*='krane-logo-16jul'], img[src*='krane-clinic-logo'], img[src*='_retired-logos']"
+    },
+    {
+      "name": "Scroll text follows the positioning statement",
+      "page": "krane-b2c-landing.html",
+      "count": [".positioning-section + .scroll-text[data-scroll-reveal]", 1]
+    },
+    {
+      "name": "Scroll text never opens the page",
+      "page": "krane-b2c-landing.html",
+      "absent": "main > .scroll-text:first-child"
+    },
+    {
+      "name": "Skip link never takes layout space",
+      "page": "krane-b2c-landing.html",
+      "maxHeight": [
+        ".skip-link",
+        2
+      ]
+    },
+    {
+      "name": "Skip link never takes layout space (service pages)",
+      "page": "condition-detail.html?condition=weight",
+      "maxHeight": [
+        ".skip-link",
+        2
+      ]
+    },
+    {
+      "name": "Drawer carries exactly one action",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        ".mobile-menu__actions .button",
+        1
+      ]
+    },
+    {
+      "name": "Drawer action fills the drawer width",
+      "page": "krane-b2c-landing.html",
+      "openDrawer": true,
+      "fillsParent": [
+        ".mobile-menu__actions .button",
+        0.95
+      ]
+    },
+    {
+      "name": "Drawer action fills the drawer width (service pages)",
+      "page": "condition-detail.html?condition=weight",
+      "openDrawer": true,
+      "fillsParent": [
+        ".mobile-menu__actions .button",
+        0.95
+      ]
+    },
+    {
+      "name": "Actions are rounded rectangles, never pills",
+      "page": "krane-b2c.html",
+      "noPillButtons": true
+    },
+    {
+      "name": "Every treatment-detail tab has a leading icon",
+      "page": "krane-b2c.html",
+      "count": [
+        "#treatment-detail [data-treatment-tab] .ui-icon",
+        2
+      ]
+    },
+    {
+      "name": "Treatment detail no longer has a Documents tab",
+      "page": "krane-b2c.html",
+      "absent": "#treatment-detail [data-treatment-tab='docs']"
+    },
+    {
+      "name": "Receipt is not duplicated in treatment detail",
+      "page": "krane-b2c.html",
+      "absent": "#treatment-detail [data-doc-open='receipt']"
+    },
+    {
+      "name": "ED product artwork stays fully inside its service card",
+      "page": "krane-b2c-landing.html",
+      "containedImage": [
+        "#services [data-category='sexual-health'] .service-tile__bg--ed-product",
+        "#services [data-category='sexual-health']"
+      ]
+    },
+    {
+      "name": "Every how-it-works step uses a live app preview",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        ".figma-how__slide iframe.figma-how__live",
+        3
+      ]
+    },
+    {
+      "name": "Every how-it-works step keeps the iPhone device frame",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        ".figma-how__slide img.figma-how__device",
+        3
+      ]
+    },
+    {
+      "name": "How-it-works does not fall back to editorial illustrations",
+      "page": "krane-b2c-landing.html",
+      "absent": ".figma-how__slide img.figma-how__illustration"
+    },
+    {
+      "name": "Weight catalogue contains medicine cards only",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        "#weight-program .weight-product-card[data-medicine]",
+        4
+      ]
+    },
+    {
+      "name": "Men's-health catalogue contains medicine products only",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        "#ed-program .weight-product-card[data-medicine]",
+        4
+      ]
+    },
+    {
+      "name": "Men's-health catalogue has no service filler cards",
+      "page": "krane-b2c-landing.html",
+      "absent": "#ed-program .weight-product-card:not([data-medicine])"
+    },
+    {
+      "name": "Weight medicine cards use transparent die-cut artwork",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        "#weight-program .weight-product-card__image--weight-medicine[src*='weight-diecut-v1/']",
+        4
+      ]
+    },
+    {
+      "name": "Weight catalogue has no lifestyle or follow-up filler cards",
+      "page": "krane-b2c-landing.html",
+      "absent": "#weight-program .weight-product-card:not([data-medicine])"
+    },
+    {
+      "name": "English mode leaves no Thai on the landing page",
+      "page": "krane-b2c-landing.html?lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "English mode leaves no Thai on the doctors page",
+      "page": "doctors.html?lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "English mode leaves no Thai on a condition page",
+      "page": "condition-detail.html?condition=ed&lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "English mode leaves no Thai on a doctor profile",
+      "page": "doctor-detail.html?lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "English mode leaves no Thai on the adviser page",
+      "page": "advisor-detail.html?lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "English mode leaves no Thai in the app",
+      "page": "krane-b2c.html?lang=en",
+      "noThaiInEnglish": true
+    },
+    {
+      "name": "Checkout reads in delivery-app order",
+      "page": "krane-b2c.html#payment",
+      "order": [
+        "#payment .screen__body",
+        [
+          "[data-fulfillment-mode-option]",
+          "[data-payment-address-row]",
+          "[data-delivery-option]",
+          ".checkout-final-summary",
+          "[data-payment-addons]",
+          "[data-payment-method]"
+        ]
+      ],
+      "why": "Client, 1 Sep, after auditing Grab: the bill follows the basket it totals, before the optional add-ons and the payment method."
+    },
+    {
+      "name": "Navigation bar stays a floating capsule, not a docked bar",
+      "page": "krane-b2c.html#profile",
+      "box": [
+        ".screen.active .bottomnav",
+        {
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "Navigation bar keeps the pill behind the active icon",
+      "page": "krane-b2c.html#profile",
+      "box": [
+        ".screen.active .bottomnav a[aria-current='page'] .ic",
+        {
+          "width": 52,
+          "height": 40
+        }
+      ]
+    }
+  ]
+}
