@@ -8555,3 +8555,210 @@ html[lang="en"] .landing-figma-draft #ed-title{
     border-radius:56px 56px 0 0 !important;
   }
 }
+
+
+/* ---------- Card rails: one behaviour for every carousel ----------
+   Articles, doctors and reviews were three different shapes on a phone: one
+   card filling the screen, one card and a sliver, and a marquee with uneven
+   gutters. They now all run edge to edge with the same gap and show several
+   cards at once, so a rail reads as a rail (client, 12 Sep). */
+@media (max-width: 760px){
+  /* The articles sat on a white panel that boxed the rail in. The rail is the
+     section now, and it reaches both screen edges. */
+  .landing-figma-draft .articles-section--figma{
+    padding:34px 0 26px !important;
+    border-radius:0 !important;
+    background:transparent !important;
+  }
+  .landing-figma-draft .articles-section--figma .section-heading{
+    padding-inline:18px;
+  }
+  .landing-figma-draft .articles-section--figma .articles-row{
+    grid-auto-columns:calc((100vw - 66px) / 3.5) !important;
+    gap:10px !important;
+    padding:4px 18px 12px !important;
+    scroll-padding-inline:18px;
+  }
+  .landing-figma-draft .article-card__thumb{
+    aspect-ratio:1/1;
+    height:auto !important;
+  }
+  .landing-figma-draft .article-card__meta{display:none !important}
+  .landing-figma-draft .article-card__title{
+    font-size:12px !important;
+    line-height:1.35 !important;
+  }
+  .landing-figma-draft .article-card__body{padding:10px 2px 0 !important}
+
+  /* Three doctors visible, on the same rhythm as the articles. */
+  .landing-figma-draft .experts--figma .expert-track{
+    grid-auto-columns:calc((100vw - 56px) / 3) !important;
+    gap:10px !important;
+  }
+  .landing-figma-draft .experts--figma .expert-card__media{
+    height:132px !important;
+  }
+  .landing-figma-draft .experts--figma .expert-card h3{font-size:13px !important;line-height:1.3 !important}
+  .landing-figma-draft .experts--figma .expert-card strong{font-size:11px !important}
+  .landing-figma-draft .experts--figma .expert-card p{font-size:11px !important}
+  .landing-figma-draft .experts--figma .expert-card__body{padding:10px 10px 12px !important}
+  .landing-figma-draft .experts--figma .expert-card__bio-link{font-size:11px !important;margin-top:8px !important}
+
+  /* The review rails ran a 12px gutter between tiles but a different one
+     between the two rails, so the block looked mis-set. One value now. */
+  .landing-figma-draft .reviews--figma .review-collage{gap:10px !important}
+  .landing-figma-draft .review-rail + .review-rail{margin-top:10px !important}
+  .landing-figma-draft .review-marquee{gap:10px !important}
+}
+
+/* The section jump reads as the same control as the programme sections use,
+   rather than a quieter outline of its own. */
+.landing-figma-draft .experts__jump{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  height:48px;
+  padding:0 22px;
+  border:0;
+  border-radius:var(--radius-pill,999px);
+  background:var(--landing-navy,#111b30);
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  text-decoration:none;
+}
+.landing-figma-draft .experts__jump i,
+.landing-figma-draft .experts__jump svg{width:18px;height:18px}
+
+/* ---------- Reviews run as columns on a desktop ----------
+   Two rails passing left and right suits a phone, where the screen is narrow
+   and tall content has nowhere to go. On a wide screen the same rails read
+   better as columns travelling up and down (client, 12 Sep). */
+@media (min-width: 900px){
+  .landing-figma-draft .reviews--figma .review-collage{
+    flex-direction:row !important;
+    justify-content:center !important;
+    gap:20px !important;
+    height:620px !important;
+    align-items:stretch !important;
+  }
+  /* Held to the tile's own portrait width: stretched across half the block
+     they became landscape, which is not the shape these clips are. */
+  .landing-figma-draft .reviews--figma .review-rail{
+    flex:0 1 240px !important;
+    min-width:0 !important;
+    max-width:240px !important;
+    height:100% !important;
+  }
+  .landing-figma-draft .reviews--figma .review-marquee{
+    flex-direction:column !important;
+    width:100% !important;
+    height:max-content !important;
+    animation-name:review-drift-down !important;
+  }
+  .landing-figma-draft .reviews--figma .review-marquee--b{
+    animation-name:review-drift-up !important;
+  }
+  .landing-figma-draft .reviews--figma .review-marquee figure{
+    width:100% !important;
+    height:282px !important;
+  }
+}
+@keyframes review-drift-down{
+  from{transform:translate3d(0,-50%,0)}
+  to{transform:translate3d(0,0,0)}
+}
+@keyframes review-drift-up{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(0,-50%,0)}
+}
+
+/* ---------- Carousel controls sit on one line ----------
+   The programme carousel put its arrows against the section gutter while the
+   before-and-after slider used its own 16px inset, so the two rows of arrows
+   on the same section did not line up (client, 12 Sep). */
+.landing-figma-draft .weight-results__controls{
+  right:var(--page-gutter,18px) !important;
+  left:var(--page-gutter,18px) !important;
+}
+@media (max-width: 760px){
+  .landing-figma-draft .weight-results__controls{
+    right:18px !important;
+    left:18px !important;
+  }
+  /* Item 9: with the proof strip moved above it, the headline block has to
+     give back the height it was taking, so the cards reach the first screen. */
+  .landing-figma-draft .hero-draft__intro .hero__intro-copy h1{
+    font-size:clamp(30px,8.4vw,38px) !important;
+    line-height:1.12 !important;
+  }
+  .landing-figma-draft .hero-draft__intro .hero__lead{
+    margin-top:8px !important;
+    font-size:14px !important;
+  }
+  .landing-figma-draft .hero-draft__marquee{
+    margin-bottom:14px !important;
+  }
+}
+
+
+/* ---------- The phone is a frame laid over the app ----------
+   The app used to be sized into the frame's cutout and drawn on top of it,
+   which is why the bezel never looked even: any rounding error showed as a
+   thicker edge on one side. The frame is now a PNG with its screen knocked
+   out, sitting above the app, and the app simply fills the screen opening and
+   overshoots it slightly. The frame does the cropping, so the bezel is as even
+   as the artwork is (client, 12 Sep). */
+.landing-figma-draft .figma-how__device{
+  z-index:6 !important;
+}
+/* The app runs to the edges of the opening, as it would on a real handset, so
+   the strip above it is a status bar in the app's own canvas colour rather
+   than a gap. It sits under the frame and over the app. */
+.landing-figma-draft .figma-how__visual--app::before{
+  z-index:5 !important;
+  border-radius:0 !important;
+  background:#f7f7f7 !important;
+}
+@media (max-width: 760px){
+  .landing-figma-draft .figma-how__live{
+    top:46px !important;
+    height:776px !important;
+    border-radius:0 !important;
+    transform:translateX(-50%) scale(.5128) !important;
+  }
+  .landing-figma-draft .figma-how__visual--app::before{
+    top:25px !important;
+    left:50% !important;
+    width:200px !important;
+    height:22px !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1399px){
+  .landing-figma-draft .figma-how__live{
+    top:85px !important;
+    height:785px !important;
+    border-radius:0 !important;
+    transform:translateX(-50%) scale(.5385) !important;
+  }
+  .landing-figma-draft .figma-how__visual--app::before{
+    top:62px !important;
+    left:50% !important;
+    width:210px !important;
+    height:24px !important;
+  }
+}
+@media (min-width: 1400px){
+  .landing-figma-draft .figma-how__live{
+    top:102px !important;
+    height:783px !important;
+    border-radius:0 !important;
+    transform:translateX(-50%) scale(.5769) !important;
+  }
+  .landing-figma-draft .figma-how__visual--app::before{
+    top:77px !important;
+    left:50% !important;
+    width:225px !important;
+    height:26px !important;
+  }
+}
