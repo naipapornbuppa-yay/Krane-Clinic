@@ -1315,10 +1315,10 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .experts--figma .experts__directory{margin-top:56px;overflow:visible}
 .landing-figma-draft .experts--figma .expert-track{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:0}
 .landing-figma-draft .experts--figma .expert-card{width:auto;min-width:0;overflow:hidden;border:0;border-radius:28px;background:#fff}
-.landing-figma-draft .experts--figma .expert-card__media{height:320px;border-radius:0;background:#d5dce5}
-.landing-figma-draft .experts--figma .expert-card__body{padding:22px}
+.landing-figma-draft .experts--figma .expert-card__media{height:264px;border-radius:0;background:#d5dce5}
+.landing-figma-draft .experts--figma .expert-card__body{padding:16px 18px 18px}
 .landing-figma-draft .experts--figma .expert-card h3{font-size:18px}
-.landing-figma-draft .experts--figma .expert-card p{min-height:44px;margin-top:14px;font-size:12px}
+.landing-figma-draft .experts--figma .expert-card p{min-height:0;margin-top:8px;font-size:12px}
 
 .landing-figma-draft .reviews--figma{min-height:860px;display:grid;grid-template-columns:.72fr 1.28fr;gap:60px;align-items:center;padding:80px;border-radius:64px;background:#fff}
 .reviews--figma .reviews__copy{padding:0}
@@ -1462,7 +1462,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   .landing-figma-draft .experts--figma .expert-viewport{overflow-x:auto}
   .landing-figma-draft .experts--figma .expert-track{width:max-content;display:flex;gap:12px}
   .landing-figma-draft .experts--figma .expert-card{width:270px}
-  .landing-figma-draft .experts--figma .expert-card__media{height:300px}
+  .landing-figma-draft .experts--figma .expert-card__media{height:224px}
 
   .landing-figma-draft .reviews--figma{min-height:0;display:flex;flex-direction:column;padding:58px 18px 30px;border-radius:36px}
   .reviews--figma .reviews__copy{align-items:center;text-align:center}
@@ -3399,6 +3399,7 @@ body.expert-open{overflow:hidden}
 .experts .expert-card:hover,.experts .expert-card:focus-visible{transform:translateY(-5px);box-shadow:none}
 .expert-card__media{position:relative;display:block;width:100%;height:390px;overflow:hidden;background:#ece9e5}
 .expert-card__media>img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .55s var(--ease)}
+.expert-card__media>img.expert-card__photo--client{object-position:center 0}
 .expert-card__media>img.expert-card__photo--zoom{object-position:center 16%;transform:scale(1.07);transform-origin:center 24%}
 .expert-card:hover .expert-card__media>img{transform:scale(1.035)}
 .expert-card:hover .expert-card__media>img.expert-card__photo--zoom{transform:scale(1.1)}
@@ -3411,8 +3412,8 @@ body.expert-open{overflow:hidden}
 .expert-card__body{display:block;padding:22px 0 0}
 .experts .expert-card h3{min-height:0;font-size:22px;font-weight:600;line-height:1.45}
 .experts .expert-card strong{display:block;min-height:0;margin-top:3px;color:#252d3b;font-size:14px;font-weight:500;line-height:1.5}
-.experts .expert-card p{display:block;min-height:68px;margin-top:22px;color:#505c70;font-size:14px;line-height:1.6}
-.expert-card__bio-link{display:inline-block;margin-top:24px;border-bottom:1px solid currentColor;font-size:14px;font-weight:600;line-height:1.8}
+.experts .expert-card p{display:block;min-height:0;margin-top:10px;color:#505c70;font-size:14px;line-height:1.6}
+.expert-card__bio-link{display:inline-block;margin-top:16px;border-bottom:1px solid currentColor;font-size:14px;font-weight:600;line-height:1.8;text-decoration:none}
 
 /* Shell comes from .drawer in site-header.css; only content styles below. */
 .expert-dialog__media{height:min(50vh,500px);overflow:hidden;background:#e9e5df}
@@ -8270,7 +8271,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 .landing-figma-draft .trust-rail{
   width:100%;
-  padding-block:22px;
+  padding-block:26px 38px;
   overflow:hidden;
   overflow:clip;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);
@@ -8320,7 +8321,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 @media (max-width: 760px){
   .landing-figma-draft .trust-section--figma .trust-marquee{margin-inline:-18px;width:calc(100% + 36px)}
-  .landing-figma-draft .trust-rail{padding-block:12px}
+  .landing-figma-draft .trust-rail{padding-block:20px 34px}
   .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{
     width:210px!important;flex-basis:210px!important;padding:18px 16px!important
   }
@@ -8349,41 +8350,70 @@ html[lang="en"] .landing-figma-draft #ed-title{
    scrolled, staggered so the line arrives at the pace it is read. Until the
    script has wrapped the words the block renders normally, so it is never left
    invisible with no way to reveal it (client, 11 Sep). */
+/* ---------- Scroll text: one phrase to a screen ----------
+   The band used to hold both lines at once and light them word by word. The
+   reference gives each phrase the whole screen and swaps them as the page is
+   scrolled, so the section is tall and its contents stick while you travel
+   through it. Until the script runs, the phrases render as a plain stacked
+   list, so the copy is never left invisible (client, 12 Sep). */
 .scroll-text{
+  position:relative;
   margin-inline:var(--page-gutter);
-  padding-block:clamp(36px,4.4vw,64px);
+}
+.scroll-text__viewport{
   display:flex;
   flex-direction:column;
   gap:clamp(8px,1vw,16px);
 }
-.scroll-text__line{
+.scroll-text__phrase{
   margin:0;
-  max-width:22ch;
+  /* Narrow enough that a phrase sitting right actually reads as sitting right:
+     at full width there was nowhere for it to move (client, 12 Sep). */
+  max-width:min(78%,16ch);
   color:var(--landing-navy,#1A1E28);
-  font-size:clamp(28px,4.4vw,60px);
+  font-size:clamp(34px,9vw,76px);
   font-weight:600;
-  line-height:1.2;
-  letter-spacing:-.04em;
+  line-height:1.08;
+  letter-spacing:-.045em;
   text-wrap:balance;
 }
-/* The second line answers the first, so it reads as the description under a
-   statement rather than a second statement of equal weight (client, 11 Sep). */
-.scroll-text__line--accent{
-  max-width:46ch;
+/* The closing pair answers the three that came before it, so it carries the
+   accent colour while keeping the same weight on screen (client, 12 Sep). */
+.scroll-text__phrase--accent{
   color:var(--draft-blue,#2E5BD8);
-  font-size:clamp(15px,1.35vw,19px);
-  font-weight:500;
-  line-height:1.55;
-  letter-spacing:0;
 }
-.scroll-text.is-reveal-ready .reveal-word{
-  display:inline-block;
+
+/* Once the script has measured it, the section becomes a tall track with a
+   sticky screen inside, and the phrases stack on top of each other. */
+.scroll-text.is-phrase-ready{
+  height:var(--phrase-track,320svh);
+}
+.scroll-text.is-phrase-ready .scroll-text__viewport{
+  position:sticky;
+  top:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  align-content:center;
+  height:100svh;
+}
+/* The phrases alternate sides so the eye moves across the screen as it moves
+   down it, rather than every line starting from the same margin. */
+.scroll-text.is-phrase-ready .scroll-text__phrase{
+  grid-area:1/1;
+  justify-self:start;
+  text-align:left;
   opacity:0;
-  transform:translateY(20px);
+  transform:translateY(26px);
   will-change:opacity,transform;
 }
+.scroll-text.is-phrase-ready .scroll-text__phrase:nth-of-type(even){
+  justify-self:end;
+  text-align:right;
+}
 @media(prefers-reduced-motion:reduce){
-  .scroll-text.is-reveal-ready .reveal-word{opacity:1;transform:none}
+  .scroll-text.is-phrase-ready{height:auto}
+  .scroll-text.is-phrase-ready .scroll-text__viewport{position:static;height:auto;display:flex}
+  .scroll-text.is-phrase-ready .scroll-text__phrase{opacity:1;transform:none}
 }
 
 /* 11 Sep 2026 — lock the landing mosaic and care journey to one shared
@@ -8446,5 +8476,38 @@ html[lang="en"] .landing-figma-draft #ed-title{
     max-width:12ch;
     font-size:clamp(34px,9.6vw,40px);
     line-height:1.1;
+  }
+}
+
+
+/* ---------- Doctor card ----------
+   Three faults, each from a rule later in this file than the one it overrode.
+   The link kept the browser's underline under its own border, so it read as a
+   double rule. The second doctor's portrait started 8% down, which took the top
+   of her head off. And the card reserved a photo taller than it needed, so it
+   ran past the fold on a phone (client, 12 Sep). */
+.landing-figma-draft .experts--figma .expert-card__bio-link{
+  text-decoration:none;
+}
+.landing-figma-draft .experts--figma #doctor-2 .expert-card__media > img{
+  object-position:center 0;
+}
+@media (max-width: 760px){
+  .landing-figma-draft .experts--figma #doctor-2 .expert-card__media > img{
+    object-position:center 0;
+  }
+  .landing-figma-draft .experts--figma .expert-card__media{
+    height:200px;
+  }
+}
+
+/* The dark review band met the section above it on a hard square edge while
+   every other block on the page is rounded (client, 12 Sep). */
+.landing-figma-draft .reviews--figma{
+  border-radius:36px 36px 0 0;
+}
+@media (min-width: 761px){
+  .landing-figma-draft .reviews--figma{
+    border-radius:56px 56px 0 0;
   }
 }
