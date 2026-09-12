@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260912-doctor-button-blue-v3";
+    const release = "20260912-phone-frame-overlay-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260912-doctor-button-blue-v3">
-<link rel="stylesheet" href="components.css?v=20260912-doctor-button-blue-v3">
-<link rel="stylesheet" href="custom-select.css?v=20260912-doctor-button-blue-v3">
-<link rel="stylesheet" href="state-illustrations.css?v=20260912-doctor-button-blue-v3">
-<link rel="stylesheet" href="platform-compat.css?v=20260912-doctor-button-blue-v3">
+<link rel="stylesheet" href="design-tokens.css?v=20260912-phone-frame-overlay-v1">
+<link rel="stylesheet" href="components.css?v=20260912-phone-frame-overlay-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260912-phone-frame-overlay-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260912-phone-frame-overlay-v1">
+<link rel="stylesheet" href="platform-compat.css?v=20260912-phone-frame-overlay-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260912-doctor-button-blue-v3" defer></script>
-<script src="i18n.js?v=20260912-doctor-button-blue-v3" defer></script>
-<script src="../krane-golden-patient.js?v=20260912-doctor-button-blue-v3" defer></script>
+<script src="custom-select.js?v=20260912-phone-frame-overlay-v1" defer></script>
+<script src="i18n.js?v=20260912-phone-frame-overlay-v1" defer></script>
+<script src="../krane-golden-patient.js?v=20260912-phone-frame-overlay-v1" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -968,7 +968,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260912-doctor-button-blue-v3" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260912-phone-frame-overlay-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -3732,9 +3732,9 @@
 
 
 
-  <script src="assets/lucide.min.js?v=20260912-doctor-button-blue-v3"></script>
-  <script src="b2c-icons.js?v=20260912-doctor-button-blue-v3"></script>
-  <script src="qa-session-reset.js?v=20260912-doctor-button-blue-v3"></script>
+  <script src="assets/lucide.min.js?v=20260912-phone-frame-overlay-v1"></script>
+  <script src="b2c-icons.js?v=20260912-phone-frame-overlay-v1"></script>
+  <script src="qa-session-reset.js?v=20260912-phone-frame-overlay-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -11121,6 +11121,8 @@
     const params=new URLSearchParams(location.search);
     const demoStage=params.get('demoStage');
     const demoStatus=params.get('demoStatus');
+    const demoCategory=params.get('category');
+    if(demoCategory) setSelectedCategory(demoCategory);
     if(demoStage){
       seedPartnerStage(demoStage);
       seedClinicalDemoStage(demoStage);
@@ -11132,6 +11134,17 @@
     }
   })();
   if(location.hash) applyHash();
+  else if(window.kraneDemoStage){
+    /* Embedded landing showcases opt in with ?demoStage= rather than a hash.
+       Open that seeded screen immediately so the live UI sits inside the phone
+       overlay instead of briefly (or permanently) showing the landing page. */
+    history=seededHistory(window.kraneDemoStage);
+    show(window.kraneDemoStage,false);
+  }
+  else if(window.kraneDemoStatus){
+    history=seededHistory('tracking');
+    show('tracking',false);
+  }
   else {
     history=['landing'];
     show('landing',false);
