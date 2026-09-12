@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260912-card-rails-v2";
+    const release = "20260912-password-auth-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260912-card-rails-v2">
-<link rel="stylesheet" href="components.css?v=20260912-card-rails-v2">
-<link rel="stylesheet" href="custom-select.css?v=20260912-card-rails-v2">
-<link rel="stylesheet" href="state-illustrations.css?v=20260912-card-rails-v2">
-<link rel="stylesheet" href="platform-compat.css?v=20260912-card-rails-v2">
+<link rel="stylesheet" href="design-tokens.css?v=20260912-password-auth-v1">
+<link rel="stylesheet" href="components.css?v=20260912-password-auth-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260912-password-auth-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260912-password-auth-v1">
+<link rel="stylesheet" href="platform-compat.css?v=20260912-password-auth-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260912-card-rails-v2" defer></script>
-<script src="i18n.js?v=20260912-card-rails-v2" defer></script>
-<script src="../krane-golden-patient.js?v=20260912-card-rails-v2" defer></script>
+<script src="custom-select.js?v=20260912-password-auth-v1" defer></script>
+<script src="i18n.js?v=20260912-password-auth-v1" defer></script>
+<script src="../krane-golden-patient.js?v=20260912-password-auth-v1" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -968,7 +968,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260912-card-rails-v2" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260912-password-auth-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1430,7 +1430,7 @@
       <div class="auth-screen__panel">
         <div class="auth-screen__intro">
           <h2 class="h1">Create your secure care account</h2>
-          <p class="muted">We'll text a one-time code (OTP). No password needed.</p>
+          <p class="muted">ยืนยันเบอร์ด้วยรหัส OTP แล้วตั้งรหัสผ่านสำหรับเข้าสู่ระบบครั้งต่อไป</p>
         </div>
         <div class="auth-screen__form">
           <div class="field"><label class="sr-only" for="signup-phone">Phone number</label><div class="phone-field" data-phone-field><button class="phone-field__country" type="button" data-phone-country-trigger aria-expanded="false" aria-haspopup="listbox" aria-label="เลือกรหัสประเทศ"><span class="phone-field__flag" data-phone-flag>🇹🇭</span><span class="phone-field__dial" data-phone-dial>+66</span><span class="phone-field__caret" aria-hidden="true"></span></button><input class="input phone-field__input" id="signup-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="Phone number"></div></div>
@@ -1457,8 +1457,10 @@
         </div>
         <div class="auth-screen__intro"><h2 class="h1">Welcome back</h2><p class="muted">Let’s get you logged in.</p></div>
         <div class="auth-screen__form">
-          <div class="field"><label class="sr-only" for="login-phone">Phone number</label><div class="phone-field" data-phone-field><button class="phone-field__country" type="button" data-phone-country-trigger aria-expanded="false" aria-haspopup="listbox" aria-label="เลือกรหัสประเทศ"><span class="phone-field__flag" data-phone-flag>🇹🇭</span><span class="phone-field__dial" data-phone-dial>+66</span><span class="phone-field__caret" aria-hidden="true"></span></button><input class="input phone-field__input" id="login-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="Phone number"></div></div>
-          <button class="btn btn--primary" data-login-phone>Continue to log in</button>
+          <div class="field"><label class="sr-only" for="login-phone">เบอร์โทรศัพท์</label><div class="phone-field" data-phone-field><button class="phone-field__country" type="button" data-phone-country-trigger aria-expanded="false" aria-haspopup="listbox" aria-label="เลือกรหัสประเทศ"><span class="phone-field__flag" data-phone-flag>🇹🇭</span><span class="phone-field__dial" data-phone-dial>+66</span><span class="phone-field__caret" aria-hidden="true"></span></button><input class="input phone-field__input" id="login-phone" type="tel" inputmode="tel" maxlength="12" autocomplete="tel" placeholder="เบอร์โทรศัพท์"></div></div>
+          <div class="field"><label class="sr-only" for="login-password">รหัสผ่าน</label><div class="password-field"><input class="input" id="login-password" type="password" autocomplete="current-password" placeholder="รหัสผ่าน"><button class="password-field__toggle" type="button" data-password-toggle="login-password" aria-label="แสดงรหัสผ่าน"><i data-lucide="eye"></i></button></div></div>
+          <button class="btn btn--primary" data-login-submit>เข้าสู่ระบบ</button>
+          <button class="textlink auth-screen__forgot" type="button" data-login-forgot>ลืมรหัสผ่าน?</button>
         </div>
         <div class="auth-screen__separator"><span>Or other log-in options</span></div>
         <div class="stack-2 auth-screen__social">
@@ -1471,6 +1473,38 @@
   </section>
 
   <!-- Social OAuth callback confirmation: explicit bridge between LINE/Google and the app -->
+  <!-- Sign-up now ends in a password, so a returning patient logs in with one
+       instead of waiting for another SMS. The same screen serves the reset
+       path, with its own title (client, 12 Sep). -->
+  <section class="screen auth-screen" id="set-password">
+    <div class="screen__top auth-screen__top"><button class="back" data-back>‹</button><span class="ttl" data-password-heading>ตั้งรหัสผ่าน</span></div>
+    <div class="screen__body auth-screen__body">
+      <div class="auth-screen__panel">
+        <div class="auth-screen__intro">
+          <h2 class="h1" data-password-title>ตั้งรหัสผ่าน</h2>
+          <p class="muted" data-password-lead>ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านไว้เข้าสู่ระบบครั้งต่อไปได้เลย</p>
+        </div>
+        <div class="auth-screen__form stack-3">
+          <div class="field">
+            <label for="new-password">รหัสผ่าน</label>
+            <div class="password-field"><input class="input" id="new-password" type="password" autocomplete="new-password" placeholder="อย่างน้อย 8 ตัวอักษร"><button class="password-field__toggle" type="button" data-password-toggle="new-password" aria-label="แสดงรหัสผ่าน"><i data-lucide="eye"></i></button></div>
+            <ul class="password-rules" data-password-rules>
+              <li data-password-rule="length"><i data-lucide="circle"></i><span>อย่างน้อย 8 ตัวอักษร</span></li>
+              <li data-password-rule="letter"><i data-lucide="circle"></i><span>มีตัวอักษรภาษาอังกฤษ</span></li>
+              <li data-password-rule="number"><i data-lucide="circle"></i><span>มีตัวเลข</span></li>
+            </ul>
+          </div>
+          <div class="field">
+            <label for="confirm-password">ยืนยันรหัสผ่าน</label>
+            <div class="password-field"><input class="input" id="confirm-password" type="password" autocomplete="new-password" placeholder="พิมพ์รหัสผ่านอีกครั้ง"><button class="password-field__toggle" type="button" data-password-toggle="confirm-password" aria-label="แสดงรหัสผ่าน"><i data-lucide="eye"></i></button></div>
+            <p class="hint password-mismatch" data-password-match hidden>รหัสผ่านทั้งสองช่องยังไม่ตรงกัน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-password-save disabled>บันทึกรหัสผ่านและไปต่อ</button></div>
+  </section>
+
   <section class="screen" id="social-confirm">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Confirm your account</span></div>
     <div class="screen__body stack-4">
@@ -3727,9 +3761,9 @@
 
 
 
-  <script src="assets/lucide.min.js?v=20260912-card-rails-v2"></script>
-  <script src="b2c-icons.js?v=20260912-card-rails-v2"></script>
-  <script src="qa-session-reset.js?v=20260912-card-rails-v2"></script>
+  <script src="assets/lucide.min.js?v=20260912-password-auth-v1"></script>
+  <script src="b2c-icons.js?v=20260912-password-auth-v1"></script>
+  <script src="qa-session-reset.js?v=20260912-password-auth-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -3966,6 +4000,8 @@
     draftReady:false,
     accountCreated:false,
     otpVerified:false,
+    passwordSet:false,
+    passwordResetPending:false,
     patientInfoComplete:false,
     identityVerified:false,
     returningIdentityValid:false,
@@ -4113,7 +4149,7 @@
   function persistFlowState(){ writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
     Object.assign(flowState,{
-      draftReady:false,accountCreated:false,otpVerified:false,patientInfoComplete:false,
+      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
       phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
@@ -6971,7 +7007,7 @@
     const directGate=target==='intake-general' && flowState.entryChannel==='direct';
     if(!REQUIRED_CARE_TARGETS.has(target) && !directGate) return;
     Object.assign(flowState,{
-      draftReady:true,accountCreated:true,otpVerified:true,consentsComplete:true,
+      draftReady:true,accountCreated:true,otpVerified:true,passwordSet:true,consentsComplete:true,
       patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
     });
     if(directGate){
@@ -8159,11 +8195,13 @@
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
+      if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
       // The fee no longer gates this page — it now comes before payment.
     }
     if(target==='signup' && !flowState.draftReady) return 'intake1';
+    if(target==='set-password' && !flowState.otpVerified && !flowState.passwordResetPending) return 'login';
     if(target==='otp' && !flowState.accountCreated && !flowState.partnerPhoneOtpPending && !flowState.phoneOtpPending) return flowState.draftReady ? 'signup' : 'intake1';
     if(target==='identity'){
       // Asked for on a route that no longer has this step: send them on.
@@ -8171,12 +8209,14 @@
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
+      if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
     }
     if(target==='patient-info'){
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
+      if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(identityRequired() && !flowState.identityVerified && !flowState.returningIdentityValid) return 'identity';
     }
@@ -8192,6 +8232,7 @@
       if(!flowState.draftReady) return 'intake1';
       if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
+      if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
       if(!flowState.patientInfoComplete) return 'patient-info';
       return 'identity';
@@ -9026,6 +9067,64 @@
       pictureUrl:flowState.lineProfilePictureUrl || flowState.profilePictureUrl || ''
     });
   }
+  /* ---- Password set-up ----------------------------------------------------
+     The rules are checked as the field is typed rather than on submit, so the
+     patient is not told what was wrong only after pressing the button. The
+     screen is shared by first sign-up and password reset; only the wording and
+     what happens on save differ. */
+  const PASSWORD_RULES={
+    length:value => value.length>=8,
+    letter:value => /[A-Za-z]/.test(value),
+    number:value => /\d/.test(value)
+  };
+  function passwordRuleState(value){
+    return Object.entries(PASSWORD_RULES).map(([name,test]) => [name,test(value)]);
+  }
+  function syncPasswordScreen(){
+    const reset=Boolean(flowState.passwordResetPending);
+    const heading=document.querySelector('[data-password-heading]');
+    const title=document.querySelector('[data-password-title]');
+    const lead=document.querySelector('[data-password-lead]');
+    const save=document.querySelector('[data-password-save]');
+    if(heading) heading.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
+    if(title) title.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
+    if(lead) lead.textContent=reset
+      ? 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านใหม่เพื่อเข้าสู่ระบบ'
+      : 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านไว้เข้าสู่ระบบครั้งต่อไปได้เลย';
+    if(save) save.textContent=reset ? 'บันทึกรหัสผ่านใหม่' : 'บันทึกรหัสผ่านและไปต่อ';
+    syncPasswordValidity();
+  }
+  function syncPasswordValidity(){
+    const pw=document.getElementById('new-password');
+    const confirm=document.getElementById('confirm-password');
+    const save=document.querySelector('[data-password-save]');
+    const mismatch=document.querySelector('[data-password-match]');
+    if(!pw || !confirm || !save) return;
+    const value=pw.value;
+    const states=passwordRuleState(value);
+    states.forEach(([name,ok]) => {
+      const row=document.querySelector('[data-password-rule="'+name+'"]');
+      if(row) row.classList.toggle('is-met',ok);
+    });
+    const strong=states.every(([,ok]) => ok);
+    const matched=confirm.value.length>0 && confirm.value===value;
+    if(mismatch) mismatch.hidden=!(confirm.value.length>0 && !matched);
+    save.disabled=!(strong && matched);
+  }
+  document.addEventListener('input', e => {
+    if(e.target.id==='new-password' || e.target.id==='confirm-password') syncPasswordValidity();
+  });
+  document.body.addEventListener('click', e => {
+    const toggle=e.target.closest('[data-password-toggle]');
+    if(!toggle) return;
+    const field=document.getElementById(toggle.dataset.passwordToggle);
+    if(!field) return;
+    const showing=field.type==='text';
+    field.type=showing ? 'password' : 'text';
+    toggle.setAttribute('aria-label',showing ? 'แสดงรหัสผ่าน' : 'ซ่อนรหัสผ่าน');
+    toggle.classList.toggle('is-showing',!showing);
+  });
+
   function completeAuthentication(destination){
     applyAuthenticatedAccount({returning:socialCompletesAuth || Boolean(flowState.returningLogin)});
     if(flowState.draftReady){
@@ -9178,19 +9277,44 @@
       });
       return;
     }
-    const phoneLogin = e.target.closest('[data-login-phone]');
-    if(phoneLogin){
+    /* A returning patient signs in with the password they set, so there is no
+       second SMS on the ordinary path. The code is only asked for again when
+       the password has to be replaced (client, 12 Sep). */
+    const loginSubmit = e.target.closest('[data-login-submit]');
+    if(loginSubmit){
       const phone=document.getElementById('login-phone').value.trim();
+      const password=document.getElementById('login-password').value;
       if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์','warning'); return; }
       if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
-      submitOnce('login-phone',phoneLogin,() => {
+      if(!password){ showActionToast('กรุณากรอกรหัสผ่าน','warning'); document.getElementById('login-password')?.focus(); return; }
+      submitOnce('login-submit',loginSubmit,() => {
         flowState.accountCreated=true;
+        flowState.otpVerified=true;
+        flowState.passwordSet=true;
         flowState.returningIdentityValid=true;
         flowState.returningLogin=true;
         flowState.verifiedPhone=phone;
         persistFlowState();
-        show('otp');
+        applyAuthenticatedAccount({returning:true});
+        const patientPhone=document.getElementById('patient-phone');
+        if(patientPhone) patientPhone.value=phone;
+        showActionToast('เข้าสู่ระบบแล้ว','success');
+        show(nextAfterAuthentication());
       });
+      return;
+    }
+    const loginForgot = e.target.closest('[data-login-forgot]');
+    if(loginForgot){
+      const phone=document.getElementById('login-phone').value.trim();
+      if(!isValidThaiMobile(phone)){ showActionToast('กรอกเบอร์โทรศัพท์ก่อน แล้วเราจะส่งรหัส OTP ไปให้','warning'); document.getElementById('login-phone')?.focus(); return; }
+      flowState.accountCreated=true;
+      flowState.returningIdentityValid=true;
+      flowState.returningLogin=true;
+      flowState.passwordResetPending=true;
+      flowState.verifiedPhone=phone;
+      persistFlowState();
+      showActionToast('ส่งรหัส OTP ไปที่เบอร์ของคุณแล้ว','success');
+      show('otp');
       return;
     }
     const authComplete = e.target.closest('[data-auth-complete]');
@@ -9254,12 +9378,43 @@
         return;
       }
       submitOnce('otp',authComplete,() => {
-        const returning=Boolean(flowState.returningLogin);
-        applyAuthenticatedAccount({returning});
+        flowState.otpVerified=true;
         const patientPhone=document.getElementById('patient-phone');
         if(patientPhone) patientPhone.value=flowState.verifiedPhone;
-        if(returning){
-          showActionToast('เข้าสู่ระบบแล้ว','success');
+        persistFlowState();
+        // Both paths end at the password: a new account sets one, a reset
+        // replaces one. The account is only authenticated after that.
+        syncPasswordScreen();
+        show('set-password');
+      });
+      return;
+    }
+    const passwordSave = e.target.closest('[data-password-save]');
+    if(passwordSave){
+      const pw=document.getElementById('new-password');
+      const confirm=document.getElementById('confirm-password');
+      const value=pw?.value || '';
+      if(!passwordRuleState(value).every(([,ok]) => ok)){
+        showActionToast('รหัสผ่านต้องยาวอย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข','warning');
+        pw?.focus();
+        return;
+      }
+      if(confirm?.value!==value){
+        showActionToast('รหัสผ่านทั้งสองช่องยังไม่ตรงกัน','warning');
+        confirm?.focus();
+        return;
+      }
+      submitOnce('set-password',passwordSave,() => {
+        const reset=Boolean(flowState.passwordResetPending);
+        flowState.passwordSet=true;
+        flowState.passwordResetPending=false;
+        persistFlowState();
+        if(pw) pw.value='';
+        if(confirm) confirm.value='';
+        syncPasswordValidity();
+        applyAuthenticatedAccount({returning:reset || Boolean(flowState.returningLogin)});
+        if(reset){
+          showActionToast('ตั้งรหัสผ่านใหม่แล้ว','success');
           show(nextAfterAuthentication());
           return;
         }
