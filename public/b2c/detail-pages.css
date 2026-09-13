@@ -236,3 +236,201 @@ body.doctor-dialog-open{overflow:hidden}
   .doctor-profile-dialog__cta{width:100%;justify-content:space-between}
 }
 @media(prefers-reduced-motion:reduce){.doctor-profile-dialog,.doctor-profile-dialog::backdrop{animation:none}}
+
+/* ============================================================
+   Public detail system, 13 Sep 2026
+   ------------------------------------------------------------
+   The condition, doctor directory and doctor profile journeys all use the
+   same editorial grammar as the landing page: a neutral canvas, large
+   rounded section plates, quiet borders, one strong colour field and
+   consistent pill-shaped actions.  These rules are intentionally scoped to
+   the two doctor-page body classes so the older in-app detail screens are
+   unaffected.
+   ============================================================ */
+body.doctors-index-page,
+body.doctor-detail-page{
+  --public-paper:#f4f4f3;
+  --public-ink:#1a1e28;
+  --public-blue:#395aa4;
+  --public-blue-soft:#dfe7f2;
+  --public-navy:#1c3e56;
+  --public-line:rgba(26,30,40,.13);
+  background:var(--public-paper);color:var(--public-ink)
+}
+body.doctors-index-page .detail-page,
+body.doctor-detail-page .detail-page{
+  width:100%;max-width:none;display:flex;flex-direction:column;gap:16px;
+  padding:16px clamp(16px,3vw,40px) 40px
+}
+
+/* Doctor directory */
+.doctors-index-page .doctors-about{
+  position:relative;isolation:isolate;max-width:none;min-height:440px;margin:0;
+  display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
+  padding:clamp(40px,6vw,84px);border-radius:64px;
+  background:
+    radial-gradient(circle at 84% 10%,rgba(255,255,255,.9) 0 7%,transparent 7.2%),
+    radial-gradient(circle at 82% 16%,rgba(57,90,164,.16),transparent 30%),
+    linear-gradient(135deg,#e8edf3 0%,#d7e1ec 100%)
+}
+.doctors-index-page .doctors-about::after{
+  content:"";position:absolute;z-index:-1;top:-28%;right:-3%;width:min(44vw,560px);
+  aspect-ratio:1;border:1px solid rgba(57,90,164,.18);border-radius:50%
+}
+.doctors-index-page .doctors-about .detail-kicker{color:var(--public-blue)}
+.doctors-index-page .doctors-about h1{
+  max-width:10ch;margin:16px 0 0;font-size:clamp(52px,7.2vw,104px);
+  font-weight:600;line-height:.98;letter-spacing:-.055em
+}
+.doctors-index-page .doctors-about>p:last-child{
+  max-width:61ch;margin:28px 0 0;color:#4b5263;font-size:clamp(17px,1.5vw,21px);line-height:1.7
+}
+.doctors-index-page .doctor-directory{
+  margin:0;padding:clamp(24px,3.5vw,48px);border-radius:64px;background:#fff
+}
+.doctors-index-page .doctor-directory__grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:14px
+}
+.doctors-index-page .doctor-directory-card{
+  grid-template-columns:1fr;min-width:0;border:1px solid var(--public-line);
+  border-radius:32px;background:#f8f8f7;box-shadow:none
+}
+.doctors-index-page .doctor-directory-card__media{aspect-ratio:4/5;background:#dfe7ef}
+.doctors-index-page .doctor-directory-card__media>img{object-position:center 8%}
+.doctors-index-page .doctor-directory-card__media--identity{
+  background:linear-gradient(145deg,#dfe7f2,#eef1f5)
+}
+.doctors-index-page .doctor-directory-card__body{min-height:250px;padding:22px}
+.doctors-index-page .doctor-directory-card__body>strong{font-size:clamp(17px,1.45vw,21px)}
+.doctors-index-page .doctor-directory-card__body>small{color:var(--public-blue)}
+.doctors-index-page .doctor-directory-card__body>em{color:var(--public-blue)}
+
+/* Shared editorial process section */
+.doctors-index-page .doctor-work,
+.doctor-detail-page .doctor-work{
+  margin:0;padding:clamp(44px,6vw,88px);border:0;border-radius:64px;
+  background:var(--public-navy);color:#fff
+}
+.doctors-index-page .doctor-work__header h2,
+.doctor-detail-page .doctor-work__header h2{
+  font-size:clamp(48px,6.2vw,88px);font-weight:600;line-height:1;letter-spacing:-.05em
+}
+.doctors-index-page .doctor-work__header>p:last-child,
+.doctor-detail-page .doctor-work__header>p:last-child,
+.doctors-index-page .doctor-work__copy p,
+.doctor-detail-page .doctor-work__copy p{color:rgba(255,255,255,.72)}
+.doctors-index-page .doctor-work__number,
+.doctor-detail-page .doctor-work__number{border-color:rgba(255,255,255,.45);color:#fff}
+.doctors-index-page .doctor-work__copy h3,
+.doctor-detail-page .doctor-work__copy h3{font-weight:600}
+.doctors-index-page .doctor-work__media,
+.doctor-detail-page .doctor-work__media{border-radius:36px}
+
+.doctors-index-page .doctors-articles{
+  margin:0;padding:clamp(40px,5vw,72px);border-radius:64px;background:#fff
+}
+.doctors-index-page .doctors-articles__header .detail-kicker{color:var(--public-blue)}
+.doctors-index-page .doctors-articles__header h2{
+  margin:14px 0 0;font-size:clamp(44px,5.6vw,76px);font-weight:600;line-height:1;letter-spacing:-.045em
+}
+.doctors-index-page .doctors-articles__row{
+  grid-auto-columns:min(38%,420px);gap:16px;margin-top:40px
+}
+.doctors-index-page .article-card{border:1px solid var(--public-line);border-radius:28px;box-shadow:none}
+.doctors-index-page .article-card__body{padding:22px 24px 26px}
+.doctors-index-page .article-card strong{font-size:20px;font-weight:600}
+.doctors-index-page .doctors-closing{
+  margin:0;padding:clamp(52px,7vw,100px) 32px;border:0;border-radius:64px;
+  background:var(--public-blue);color:#fff
+}
+.doctors-index-page .doctors-closing .detail-kicker{color:rgba(255,255,255,.72)}
+.doctors-index-page .doctors-closing h2{font-weight:600}
+.doctors-index-page .doctors-closing .detail-cta{background:#fff;color:var(--public-ink)}
+.doctors-index-page .doctors-closing .detail-cta--ghost{border-color:rgba(255,255,255,.58);background:transparent;color:#fff}
+.doctors-index-page .detail-note{margin:0}
+
+/* Individual doctor profile */
+.doctor-detail-page .detail-nav{
+  top:12px;min-height:76px;margin:0;padding:12px 20px;border:1px solid rgba(26,30,40,.06);
+  border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(26,30,40,.08);
+  backdrop-filter:blur(18px)
+}
+.doctor-detail-page .detail-back{border-color:var(--public-line);border-radius:999px;background:transparent}
+.doctor-detail-page .detail-hero{
+  min-height:680px;margin:0;grid-template-columns:minmax(360px,.92fr) minmax(0,1.08fr);gap:0;
+  overflow:hidden;border-radius:64px;background:var(--public-blue-soft)
+}
+.doctor-detail-page .detail-media{min-height:680px;border-radius:0;background:#cedbea}
+.doctor-detail-page .detail-copy{padding:clamp(44px,6vw,92px)}
+.doctor-detail-page .detail-kicker{color:var(--public-blue)}
+.doctor-detail-page .detail-copy h1{
+  max-width:11ch;margin-top:18px;font-size:clamp(48px,6vw,84px);font-weight:600;
+  line-height:1.02;letter-spacing:-.05em
+}
+.doctor-detail-page .detail-role{font-size:clamp(18px,1.7vw,23px)}
+.doctor-detail-page .detail-facts>div{border-color:var(--public-line)}
+.doctor-detail-page .detail-cta{border-radius:999px;background:var(--public-ink)}
+.doctor-detail-page .detail-grid{
+  margin:0;padding:clamp(24px,3.5vw,48px);gap:14px;border-radius:64px;background:#fff
+}
+.doctor-detail-page .detail-card{
+  min-height:260px;padding:30px;border:1px solid var(--public-line);border-radius:32px;background:#f7f7f6
+}
+.doctor-detail-page .detail-card__number{display:inline-grid;place-items:center;width:40px;height:40px;border:1px solid var(--public-line);border-radius:50%}
+.doctor-detail-page .detail-card h2{font-size:clamp(22px,2vw,30px)}
+.doctor-detail-page .detail-note{margin:0}
+
+@media(hover:hover){
+  .doctors-index-page .doctor-directory-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(26,30,40,.1)}
+  .doctors-index-page .article-card:hover{transform:translateY(-3px)}
+}
+@media(max-width:1050px){
+  .doctors-index-page .doctor-directory__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .doctors-index-page .doctor-directory-card{grid-template-columns:minmax(150px,.72fr) minmax(0,1.28fr)}
+  .doctors-index-page .doctor-directory-card__media{aspect-ratio:auto}
+  .doctors-index-page .doctor-directory-card__body{min-height:230px}
+  .doctors-index-page .doctors-articles__row{grid-auto-columns:min(62%,380px)}
+}
+@media(max-width:820px){
+  body.doctors-index-page .detail-page,
+  body.doctor-detail-page .detail-page{padding:12px;gap:12px}
+  .doctors-index-page .doctors-about,
+  .doctors-index-page .doctor-directory,
+  .doctors-index-page .doctor-work,
+  .doctors-index-page .doctors-articles,
+  .doctors-index-page .doctors-closing,
+  .doctor-detail-page .detail-hero,
+  .doctor-detail-page .detail-grid,
+  .doctor-detail-page .doctor-work{border-radius:40px}
+  .doctor-detail-page .detail-hero{grid-template-columns:1fr;min-height:0}
+  .doctor-detail-page .detail-media{min-height:0;height:min(78vw,560px)}
+  .doctor-detail-page .detail-copy{padding:40px 28px 48px}
+  .doctor-detail-page .detail-grid{grid-template-columns:1fr}
+  .doctor-detail-page .detail-card{min-height:0}
+}
+@media(max-width:560px){
+  .doctors-index-page .doctors-about{min-height:500px;padding:32px 24px}
+  .doctors-index-page .doctors-about h1{font-size:56px}
+  .doctors-index-page .doctors-about>p:last-child{font-size:16px}
+  .doctors-index-page .doctor-directory{padding:16px}
+  .doctors-index-page .doctor-directory__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .doctors-index-page .doctor-directory-card{grid-template-columns:1fr;border-radius:22px}
+  .doctors-index-page .doctor-directory-card__media{aspect-ratio:1/1.08}
+  .doctors-index-page .doctor-directory-card__body{min-height:164px;padding:14px}
+  .doctors-index-page .doctor-directory-card__body>strong{font-size:15px}
+  .doctors-index-page .doctor-directory-card__body>small{font-size:11px}
+  .doctors-index-page .doctor-work,
+  .doctor-detail-page .doctor-work{padding:40px 20px}
+  .doctors-index-page .doctor-work__header h2,
+  .doctor-detail-page .doctor-work__header h2{font-size:44px}
+  .doctors-index-page .doctors-articles{padding:40px 20px}
+  .doctors-index-page .doctors-articles__row{grid-auto-columns:84%;margin-top:28px}
+  .doctors-index-page .doctors-closing{padding:52px 22px}
+  .doctor-detail-page .detail-nav{top:8px;min-height:66px;padding:10px 12px}
+  .doctor-detail-page .detail-hero{border-radius:36px}
+  .doctor-detail-page .detail-media{height:104vw;max-height:440px}
+  .doctor-detail-page .detail-copy{padding:32px 22px 38px}
+  .doctor-detail-page .detail-copy h1{font-size:43px}
+  .doctor-detail-page .detail-grid{padding:16px;border-radius:36px}
+  .doctor-detail-page .detail-card{padding:22px;border-radius:24px}
+}

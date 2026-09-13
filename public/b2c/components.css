@@ -718,6 +718,25 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .option .opt-check{margin-left:auto;width:var(--selection-size);height:var(--selection-size);border-radius:var(--selection-radius);border:var(--selection-border-width) solid var(--color-line-strong);flex:none;display:grid;place-items:center;background:var(--color-surface);transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
 .option[aria-selected="true"] .opt-check{background:var(--color-accent);border-color:var(--color-accent);animation:check-pop var(--dur-base) var(--ease-spring)}
 .option[aria-selected="true"] .opt-check::after{content:"";width:66%;height:66%;background:var(--color-on-accent);-webkit-mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");mask:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+/* Landing phone demos press the real intake controls without submitting them.
+   This gives the embedded, non-interactive phone a readable tap/ripple beat
+   while leaving the actual intake click handler and saved draft untouched. */
+.option.is-showcase-tap{animation:showcase-option-tap 560ms var(--ease-out)}
+.option.is-showcase-tap .opt-check{position:relative}
+.option.is-showcase-tap .opt-check::before{
+  content:"";position:absolute;inset:-9px;border:2px solid color-mix(in srgb,var(--color-accent) 48%,transparent);
+  border-radius:inherit;pointer-events:none;animation:showcase-option-ring 560ms var(--ease-out) both
+}
+@keyframes showcase-option-tap{
+  0%,100%{transform:scale(1)}
+  34%{transform:scale(.975)}
+  62%{transform:scale(1.008)}
+}
+@keyframes showcase-option-ring{
+  0%{opacity:0;transform:scale(.55)}
+  28%{opacity:1}
+  100%{opacity:0;transform:scale(1.45)}
+}
 /* disabled / coming-soon: intentionally inactive, not broken */
 .option--soon{cursor:default;opacity:.6;background:var(--color-bg);border-style:dashed;box-shadow:none}
 .option--soon:hover{border-color:var(--color-line-strong);transform:none;box-shadow:none}
@@ -1476,8 +1495,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 #video .call-self--camera{top:16px;right:16px;width:86px;height:108px;border:0;border-radius:20px;background:#2f425d;box-shadow:0 12px 30px rgba(16,28,43,.25)}
 /* Self-view: the Krane mark on a soft gradient, with the caption as a strip
    along the bottom edge so the tile reads as a picture, not a label. */
-#video .call-self--brand{overflow:hidden;padding:0;gap:0;place-items:center;background:#000}
-#video .call-self--brand .call-self__mark{width:62px;height:auto;opacity:1;filter:none}
+#video .call-self--brand{overflow:hidden;padding:0;gap:0;place-items:center;background:var(--color-accent)}
+/* The k is cut from the wordmark itself, so the self view carries the real
+   letterform rather than a lookalike from a system font (client, 13 Sep). */
+#video .call-self--brand .call-self__mark{width:auto;height:44px;opacity:1;filter:none}
 #video .call-fab{right:16px;bottom:122px;background:var(--color-accent)}
 #video .callstage--live .call-controls{bottom:48px}
 #video .callstage--live .call-btn{background:rgba(29,43,63,.72)}
@@ -1543,6 +1564,14 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .setting-row .ic svg{width:19px;height:19px}
 .setting-row .grow{min-width:0}
 .setting-row .chev{color:var(--color-ink-3);margin-left:auto}
+.setting-row--language{cursor:default}
+.setting-language__select{flex:none;width:148px;height:40px;margin-left:auto;padding:0 12px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.setting-row--language>.custom-select{flex:none;width:148px!important;margin-left:auto}
+.setting-row--language .custom-select__trigger{height:40px;min-height:40px;padding-inline:14px;border-radius:var(--radius-pill);font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.setting-row--language .custom-select__menu{left:auto;width:180px}
+@media(max-width:380px){
+  .setting-language__select,.setting-row--language>.custom-select{width:132px!important}
+}
 /* A group title on the address form is the same thing as a section label
    anywhere else, so it is the same rule rather than a second, slightly larger
    and darker style (client, 20 Aug). */
@@ -2750,20 +2779,122 @@ body.lang-th *{letter-spacing:normal}
 .home-cta[hidden]{display:none}
 /* One quiet line, not a second primary action. Sized like a notice: it tells
    the patient the appointment is close and gets out of the way. */
-.followup-toast{width:100%;display:flex;align-items:center;gap:var(--sp-2);
-  min-height:44px;padding:10px var(--sp-3);border:0;border-radius:var(--radius-sm);
-  background:var(--color-accent-soft);color:var(--color-accent);
-  font:inherit;font-size:13px;font-weight:var(--fw-medium);text-align:left;cursor:pointer;
+.followup-toast{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
+  min-height:68px;padding:11px 12px;border:0;border-radius:18px;
+  background:linear-gradient(135deg,var(--color-accent-soft),color-mix(in srgb,var(--color-accent-soft) 60%,var(--color-surface)));
+  color:var(--color-ink);font:inherit;text-align:left;cursor:pointer;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-accent) 13%,transparent);
   -webkit-tap-highlight-color:transparent;
-  transition:transform var(--dur-micro) var(--ease-out),opacity var(--dur-micro) var(--ease-out)}
+  transition:transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
 .followup-toast[hidden]{display:none}
-.followup-toast .ui-icon{width:17px;height:17px;flex:none}
-/* One line always: the date makes this long enough to wrap on a small phone. */
-.followup-toast__text{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.followup-toast__go{flex:none;display:grid;place-items:center;opacity:.65}
-.followup-toast__go svg{width:15px;height:15px}
+.followup-toast__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;
+  background:color-mix(in srgb,var(--color-accent) 12%,var(--color-surface));color:var(--color-accent)}
+.followup-toast .ui-icon{width:21px;height:21px;flex:none}
+.followup-toast__text{min-width:0;display:grid;gap:2px}
+.followup-toast__text strong{min-width:0;font-size:14px;font-weight:var(--fw-semibold);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.followup-toast__text small{min-width:0;color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-medium);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.followup-toast__state{flex:none;padding:6px 10px;border-radius:var(--radius-pill);background:rgba(255,255,255,.62);
+  color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);white-space:nowrap}
+.followup-toast:disabled,.followup-toast[aria-disabled="true"]{opacity:1;cursor:not-allowed}
+.followup-toast.is-ready{background:var(--color-accent);color:var(--color-on-accent);box-shadow:var(--shadow-sm)}
+.followup-toast.is-ready .followup-toast__icon{background:rgba(255,255,255,.16);color:inherit}
+.followup-toast.is-ready .followup-toast__text small{color:rgba(255,255,255,.78)}
+.followup-toast.is-ready .followup-toast__state{background:#fff;color:var(--color-accent)}
 .followup-toast:active{transform:scale(.99);opacity:.75}
 .followup-toast:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+@media(max-width:420px){
+  .followup-toast{grid-template-columns:auto minmax(0,1fr);padding:10px}
+  .followup-toast__state{grid-column:2;justify-self:start;padding:4px 8px}
+}
+
+/* Follow-up hub: a single scannable list. Appointment rows no longer compete
+   with a large dashboard hero or split into asymmetric columns (client, 13 Sep). */
+#followups{background:var(--color-bg)}
+#followups .screen__top{background:var(--color-bg)}
+#followups .screen__body{background:var(--color-bg)}
+.followups-page{width:100%;max-width:900px;margin-inline:auto;gap:clamp(28px,5vw,44px)}
+.followups-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-6);padding:8px 2px 26px;border-bottom:1px solid var(--color-line)}
+.followups-intro__copy{display:grid;gap:8px;max-width:640px}
+.followups-intro__copy .eyebrow{color:var(--color-accent)}
+.followups-intro h1{margin:0;font-family:var(--font-display);font-size:clamp(34px,5vw,48px);font-weight:var(--fw-semibold);line-height:1.08;letter-spacing:-.025em}
+.followups-intro p{max-width:58ch;margin:0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.6}
+.followups-overview{flex:none;display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid var(--color-line);border-radius:var(--radius-pill);background:var(--color-surface)}
+.followups-overview__dot{width:8px;height:8px;border-radius:50%;background:var(--state-positive-ink);box-shadow:0 0 0 5px var(--state-positive)}
+.followups-overview>span:last-child{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+.followups-overview strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.followups-overview small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.followups-section{display:grid;gap:var(--sp-4)}
+.followups-section__head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-4)}
+.followups-section__head>div{display:grid;gap:5px}
+.followups-section__head h2{margin:0;font-family:var(--font-display);font-size:clamp(21px,3vw,30px);font-weight:var(--fw-semibold);letter-spacing:-.015em}
+.followups-section__count{padding:6px 10px;border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink-2);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.followups-list{display:grid;grid-template-columns:1fr;gap:12px}
+.followup-case{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 132px;align-items:center;gap:var(--sp-4);min-height:0;padding:20px 22px;border:1px solid var(--color-line);border-radius:22px;background:var(--color-surface);box-shadow:0 8px 24px rgba(17,27,48,.045)}
+.followup-case::before{content:"";position:absolute;left:-1px;top:22px;bottom:22px;width:3px;border-radius:0 3px 3px 0;background:transparent}
+.followup-case--featured{border-color:color-mix(in srgb,var(--color-accent) 22%,var(--color-line));background:linear-gradient(110deg,color-mix(in srgb,var(--color-accent-soft) 35%,var(--color-surface)),var(--color-surface) 56%)}
+.followup-case--featured::before{background:var(--color-accent)}
+.followup-case__identity{display:flex;align-items:center;gap:var(--sp-4);min-width:0}
+.followup-case__icon{flex:none;width:46px;height:46px;display:grid;place-items:center;border-radius:15px;background:var(--color-accent-soft);color:var(--color-accent)}
+.followup-case__appointment{display:grid;justify-items:start;gap:8px}
+.followup-case__status{padding:6px 10px;border-radius:var(--radius-pill);background:var(--color-warning-soft);color:var(--color-warning);font-size:11px;font-weight:var(--fw-semibold);white-space:nowrap}
+.followup-case__status--quiet{background:var(--color-bg-2);color:var(--color-ink-2)}
+.followup-case__copy{display:grid;gap:5px;min-width:0}
+.followup-case__programme{color:var(--color-accent);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.followup-case__copy h3{margin:0;font-family:var(--font-display);font-size:clamp(18px,2.2vw,22px);line-height:1.25;font-weight:var(--fw-semibold)}
+.followup-case__copy p{display:flex;align-items:center;gap:7px;margin:2px 0 0;color:var(--color-ink-2);font-size:var(--fs-sm)}
+.followup-case__timer{display:flex;align-items:baseline;gap:6px;padding:0;background:transparent;color:var(--color-ink);font-variant-numeric:tabular-nums}
+.followup-case__timer small{color:var(--color-ink-3);font-size:10px}
+.followup-case__timer strong{font-size:15px;font-weight:var(--fw-semibold);letter-spacing:.02em}
+.followup-case__actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;justify-self:stretch;gap:7px;margin:0;padding-top:14px;border-top:1px solid var(--color-line)}
+.followup-case__actions--single{grid-template-columns:1fr;justify-self:end;width:min(100%,220px)}
+.followup-case__actions .btn{min-width:0;margin:0}
+.followup-case__actions .btn--secondary{background:var(--color-bg-2)}
+.followup-case__actions .btn--primary:disabled{background:var(--color-line-strong);color:var(--color-ink-3)}
+.followups-history{padding-bottom:var(--sp-5)}
+.followup-history-row{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:16px 18px;
+  border:0;border-radius:18px;background:var(--color-surface);color:var(--color-ink);font:inherit;text-align:left;cursor:pointer;box-shadow:0 8px 24px rgba(17,27,48,.05)}
+.followup-history-row__icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:var(--state-positive);color:var(--state-positive-ink)}
+.followup-history-row>span:nth-child(2){display:grid;gap:2px}
+.followup-history-row strong{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.followup-history-row small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.followup-history-row>svg{color:var(--color-ink-3)}
+@media(max-width:760px){
+  .followups-page{gap:24px}
+  .followups-intro{align-items:flex-start;padding-bottom:20px}
+  .followups-intro h1{font-size:32px}
+  .followups-intro p{max-width:42ch}
+  .followup-case{grid-template-columns:minmax(0,1fr) 120px;padding:18px;border-radius:20px}
+  .followup-case__identity{grid-column:1}
+  .followup-case__appointment{grid-column:2;grid-row:1}
+  .followup-case__actions{grid-column:1/-1;grid-template-columns:1fr 1fr;padding-top:16px;border-top:1px solid var(--color-line)}
+  .followup-case__actions .btn{width:100%}
+  .followup-case__actions--single{grid-template-columns:1fr;justify-self:end;width:min(100%,220px)}
+}
+@media(max-width:520px){
+  .followups-page{gap:20px}
+  .followups-intro{display:grid;gap:12px;padding-bottom:16px}
+  .followups-intro__copy{gap:5px}
+  .followups-intro h1{font-size:28px}
+  .followups-intro p{font-size:12px;line-height:1.45}
+  .followups-overview{justify-self:start}
+  .followups-section{gap:12px}
+  .followups-section__head h2{font-size:23px}
+  .followup-case{grid-template-columns:1fr;gap:9px;padding:14px;border-radius:18px}
+  .followup-case__identity,.followup-case__appointment{grid-column:1;grid-row:auto}
+  .followup-case__identity{gap:10px;align-items:flex-start}
+  .followup-case__icon{width:38px;height:38px;border-radius:12px}
+  .followup-case__copy{gap:3px}
+  .followup-case__programme{font-size:11px}
+  .followup-case__copy h3{font-size:17px;line-height:1.22}
+  .followup-case__copy p{gap:5px;margin-top:1px;font-size:12px}
+  .followup-case__appointment{display:flex;align-items:center;justify-content:space-between}
+  .followup-case__status{padding:5px 8px;font-size:10px}
+  .followup-case__timer small{font-size:9px}
+  .followup-case__timer strong{font-size:13px}
+  .followup-case__actions{grid-template-columns:1fr 1fr;gap:6px;padding-top:10px}
+  .followup-case__actions .btn{min-height:40px;padding:8px 10px;font-size:12px;white-space:nowrap}
+  .followup-case__actions--single{grid-template-columns:1fr;justify-self:end;width:min(100%,168px)}
+}
 /* The label is short and fixed; it was breaking mid-word ("ถัด / ไป") to make
    room for a long date and doctor name. Hold the label, wrap the value. */
 .followup-row{align-items:flex-start;gap:var(--sp-4);
@@ -3056,19 +3187,20 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    The screen used to open on a parcel number. What a patient checks it for is
    when the medicine arrives and who is bringing it, so the window leads and the
    trail, the pharmacy and the courier follow (client, 10 Sep). */
-.delivery-eta{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border-radius:var(--radius-lg);background:var(--color-accent);color:var(--color-on-accent)}
+.delivery-eta{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border:1px solid color-mix(in srgb,var(--color-accent) 16%,transparent);border-radius:var(--radius-lg);
+  background:color-mix(in srgb,var(--color-accent) 7%,var(--color-surface));color:var(--color-ink);box-shadow:var(--shadow-card-raised)}
 /* The rider button leaves this row once the order is delivered, and without a
    reserved height the whole card shrank, so the same order changed size as it
    progressed. The row keeps the button's height either way (client, 11 Sep). */
 .delivery-eta__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:32px}
-.delivery-eta__label{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:rgba(255,255,255,.72)}
+.delivery-eta__label{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3)}
 .delivery-eta__rider{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;
-  border:1px solid rgba(255,255,255,.28);border-radius:var(--radius-pill);
-  background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
-.delivery-eta__rider:hover{background:rgba(255,255,255,.2)}
+  border:1px solid color-mix(in srgb,var(--color-accent) 24%,transparent);border-radius:var(--radius-pill);
+  background:rgba(255,255,255,.72);color:var(--color-accent-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
+.delivery-eta__rider:hover{background:#fff}
 .delivery-eta__rider:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
 .delivery-eta__time{font-size:30px;font-weight:var(--fw-bold);line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.delivery-eta__state{font-size:var(--fs-sm);color:rgba(255,255,255,.82)}
+.delivery-eta__state{font-size:var(--fs-sm);color:var(--color-ink-2)}
 
 .delivery-place{display:flex;align-items:center;gap:var(--sp-3)}
 .delivery-place__icon{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--surface-sunken);color:var(--color-ink-2)}
@@ -3100,6 +3232,10 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .activity-card:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
 .activity-card[hidden]{display:none}
 .activity-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3)}
+.activity-card__type{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--radius-pill);
+  background:var(--color-bg-2);color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);line-height:1;white-space:nowrap}
+.activity-card__type .ui-icon{width:14px;height:14px}
+.activity-card__state{display:flex;flex-direction:column;align-items:flex-end;gap:7px;min-width:0}
 .activity-card__date{display:flex;flex-direction:column;align-items:flex-end;gap:2px;
   font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2);text-align:right}
 .activity-card__date small{font-size:11px;font-weight:var(--fw-regular);color:var(--color-ink-3)}
@@ -3107,7 +3243,6 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .activity-card__thumb{flex:none;width:56px;height:56px;display:grid;place-items:center;overflow:hidden;
   border-radius:var(--radius-md);background:var(--surface-sunken)}
 .activity-card__thumb img{width:100%;height:100%;object-fit:contain}
-.activity-card__ref{font-size:var(--fs-xs);color:var(--color-ink-3)}
 .activity-card__doctor{display:flex;align-items:center;gap:var(--sp-3)}
 .activity-card__avatar{flex:none;width:44px;height:44px;border-radius:var(--radius-pill);object-fit:cover}
 .activity-card__doctor-body{display:flex;flex-direction:column;gap:2px;min-width:0}

@@ -1130,6 +1130,22 @@
     "เติมยาได้ไม่เกินจำนวนที่แพทย์อนุมัติ":"You can refill up to the amount your doctor approved.",
     "มีใบสั่งยาจากที่อื่น":"I have a prescription from another clinic",
     "นัดติดตามผล":"Follow-up",
+    "ติดตามผลของฉัน":"My follow-ups",
+    "การดูแลต่อเนื่อง":"Ongoing care",
+    "ดูนัดที่กำลังจะมาถึงและกลับไปดูแผนการรักษาของคุณได้จากที่เดียว":"See upcoming appointments and revisit your treatment plans in one place.",
+    "2 เคส":"2 cases",
+    "กำลังรักษา":"Active",
+    "กำลังจะมาถึง":"Upcoming",
+    "นัดหมายถัดไป":"Next appointments",
+    "2 นัด":"2 appointments",
+    "ภายใน 24 ชั่วโมง":"Within 24 hours",
+    "การนอนและความเครียด":"Sleep & stress",
+    "นัดติดตามผลกับคุณหมอนรินทร์":"Follow-up with Dr. Narin",
+    "เริ่มใน":"Starts in",
+    "เข้าได้ก่อนนัด 10 นาที":"Opens 10 minutes before",
+    "ติดตามผลที่ผ่านมา":"Past follow-ups",
+    "ติดตามการนอน ครั้งที่ 1":"Sleep follow-up · Visit 1",
+    "เสร็จสิ้นแล้ว":"Completed",
     "เลือกจากแพทย์ที่มีใบอนุญาตและพร้อมให้คำปรึกษา":"Choosing from licensed doctors who are available now.",
     "กำลังหาแพทย์ให้คุณ":"Finding your doctor",
     "ผลวินิจฉัยและยาพร้อมแล้ว":"Your plan is ready",
@@ -1585,6 +1601,7 @@
     "อานนท์ พ.":"Anon P.",
     "มะลิ":"Mali",
     "ไทย":"Thai",
+    "ภาษาไทย":"Thai",
     "กำลังเตรียม":"Preparing",
     "ได้รับของแล้ว":"I have received it",
     "เล่าให้เราฟังว่าอะไรดี หรืออะไรที่เราทำได้ดีกว่านี้…":"Tell us what went well, or what we could do better…",
@@ -1744,6 +1761,23 @@
     "จัดยาแล้ว":"Packed",
     "กำลังจัดส่ง":"On the way",
     "ได้รับแล้ว":"Delivered",
+    "กิจกรรมของฉัน":"My activity",
+    "กรองกิจกรรม":"Filter activity",
+    "โปรแกรมการรักษา":"Treatment programmes",
+    "คำสั่งซื้อยา":"Medicine orders",
+    "ยา":"Medicine",
+    "โปรแกรม":"Programme",
+    "13 ก.ย. 2026":"13 Sep 2026",
+    "12 ก.ย. 2026":"12 Sep 2026",
+    "ถึงประมาณ 18:00 น.":"Expected by 18:00",
+    "ร้านยารับคำสั่งซื้อแล้ว":"The pharmacy accepted the order",
+    "ปรึกษาสำเร็จ":"Consultation completed",
+    "จบโปรแกรมแล้ว":"Programme completed",
+    "โปรแกรม 3 เดือน":"3-month programme",
+    "เลขที่อ้างอิง #KR-10170":"Reference #KR-10170",
+    "เลขที่อ้างอิง #KR-10042":"Reference #KR-10042",
+    "เปิดโปรแกรมการรักษา #KR-10170":"Open treatment programme #KR-10170",
+    "เปิดโปรแกรมการรักษา #KR-10042":"Open treatment programme #KR-10042",
     "เอกสารของฉัน":"My Documents",
     "ใบสั่งยา ใบรับรองแพทย์ และใบเสร็จทั้งหมด":"All prescriptions, medical certificates and receipts",
     "เอกสารการรักษา":"Treatment document",
@@ -1857,6 +1891,13 @@
     [].forEach.call(document.querySelectorAll("[data-lang] .lang__opt, .lang .lang__opt"), function (x) {
       if (x.dataset.lng) x.classList.toggle("is-active", (x.dataset.lng === "th") === th);
     });
+    /* Every compact header and the named Settings dropdown reflect the same
+       saved choice. Assigning the native value does not emit change, so this
+       cannot recurse through the listener below. */
+    [].forEach.call(document.querySelectorAll("select[data-language]"), function (select) {
+      select.value = th ? "th" : "en";
+    });
+    if (window.kraneSyncSelects) window.kraneSyncSelects(document);
   }
   function observeOn() {
     /* Watched in both languages: screens rendered after load carry Thai that

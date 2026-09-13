@@ -8743,6 +8743,22 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 .landing-figma-draft .experts__jump i,
 .landing-figma-draft .experts__jump svg{width:18px;height:18px}
+.landing-figma-draft .experts--figma .experts__jump{
+  border-color:transparent !important;
+  background:var(--draft-blue,#5871b5) !important;
+  color:#fff !important;
+  box-shadow:0 10px 24px rgba(88,113,181,.24);
+  transition:background-color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.landing-figma-draft .experts--figma .experts__jump:hover{
+  background:#4d66a6 !important;
+  box-shadow:0 14px 30px rgba(88,113,181,.3);
+  transform:translateY(-1px);
+}
+.landing-figma-draft .experts--figma .experts__jump:focus-visible{
+  outline:3px solid rgba(88,113,181,.32);
+  outline-offset:4px;
+}
 
 /* ---------- Reviews run as columns on a desktop ----------
    Two rails passing left and right suits a phone, where the screen is narrow
@@ -8956,5 +8972,90 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .experts--figma .expert-card p,
   .landing-figma-draft .experts--figma .expert-card__bio-link{
     font-size:10px !important;
+  }
+}
+
+/* ---------- Phone demo: one clipped screen, one transparent frame ----------
+   The animated app is clipped by a screen window that shares its centre and
+   dimensions with the transparent opening in the PNG above it. Nothing from
+   the iframe can paint outside the handset, and the frame never sits behind
+   the screen. */
+.landing-figma-draft .figma-how__visual--app{
+  --phone-frame-size:632px;
+  --phone-frame-top:0px;
+  --phone-screen-top:76px;
+  --phone-screen-width:226px;
+  --phone-screen-height:480px;
+  --phone-screen-radius:34px;
+  --phone-app-top:26px;
+  --phone-app-height:783px;
+  --phone-app-scale:.5769;
+}
+.landing-figma-draft .figma-how__visual--app::before,
+.landing-figma-draft .figma-how__visual--app::after{
+  content:none !important;
+  display:none !important;
+}
+.landing-figma-draft .figma-how__screen-window{
+  position:absolute;
+  z-index:4;
+  top:var(--phone-screen-top);
+  left:50%;
+  width:var(--phone-screen-width);
+  height:var(--phone-screen-height);
+  overflow:hidden;
+  overflow:clip;
+  border:0;
+  border-radius:var(--phone-screen-radius);
+  background:#f7f7f7;
+  transform:translateX(-50%);
+  isolation:isolate;
+}
+.landing-figma-draft .figma-how__screen-window .figma-how__live{
+  top:var(--phone-app-top) !important;
+  left:50% !important;
+  width:390px !important;
+  height:var(--phone-app-height) !important;
+  max-width:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  transform:translateX(-50%) scale(var(--phone-app-scale)) !important;
+  transform-origin:top center !important;
+}
+.landing-figma-draft .figma-how__visual--app .figma-how__device{
+  z-index:6 !important;
+  top:var(--phone-frame-top) !important;
+  left:50% !important;
+  width:var(--phone-frame-size) !important;
+  height:var(--phone-frame-size) !important;
+  max-width:none !important;
+  object-fit:contain !important;
+  transform:translateX(-50%) !important;
+  filter:none !important;
+}
+@media (min-width:761px) and (max-width:1399px){
+  .landing-figma-draft .figma-how__visual--app{
+    --phone-frame-size:590px;
+    --phone-frame-top:-10px;
+    --phone-screen-top:61px;
+    --phone-screen-width:210px;
+    --phone-screen-height:448px;
+    --phone-screen-radius:31px;
+    --phone-app-top:24px;
+    --phone-app-height:785px;
+    --phone-app-scale:.5385;
+  }
+}
+@media (max-width:760px){
+  .landing-figma-draft .figma-how__visual--app{
+    --phone-frame-size:555px;
+    --phone-frame-top:-42px;
+    --phone-screen-top:25px;
+    --phone-screen-width:200px;
+    --phone-screen-height:422px;
+    --phone-screen-radius:30px;
+    --phone-app-top:22px;
+    --phone-app-height:776px;
+    --phone-app-scale:.5128;
   }
 }
