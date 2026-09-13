@@ -189,6 +189,7 @@
     "Weight care & metabolism":"ดูแลน้ำหนักและระบบเผาผลาญ","Weight goals, metabolic health and doctor-led treatment options.":"เป้าหมายน้ำหนัก สุขภาพเมตาบอลิก และแนวทางรักษาที่แพทย์ดูแล","Hormones & TRT":"ฮอร์โมนและ TRT",
     "Sexual health":"สุขภาพเพศชาย","ED, performance concerns and related men's health questions.":"ปัญหาสมรรถภาพ และเรื่องสุขภาพเพศชายอื่น ๆ",
     "Sleep & stress":"การนอนและความเครียด","Sleep quality, stress, energy and daily functioning.":"คุณภาพการนอน ความเครียด พลังงาน และการใช้ชีวิตประจำวัน",
+    "Balanced Sleep Programme":"ปรับการนอนให้กลับมาสมดุล","Ongoing Hair Recovery":"ฟื้นฟูเส้นผมอย่างต่อเนื่อง",
     "Everyday health":"สุขภาพทั่วไป","General symptoms, wellness checks and care navigation.":"อาการทั่วไป ตรวจสุขภาพ และคำแนะนำการดูแล",
     "Choose a category":"เลือกหมวด","Choose a condition":"เลือกอาการ","What are you particularly concerned about?":"กังวลเรื่องใดเป็นพิเศษ","Pick the closest match. You can still explain the details during intake.":"เลือกที่ใกล้เคียงที่สุด อธิบายรายละเอียดเพิ่มได้ตอนทำแบบสอบถาม",
     "Hair loss":"ผมร่วง","Skin concern":"ปัญหาผิว","Erectile dysfunction":"ภาวะหย่อนสมรรถภาพ","Launch":"เปิดให้บริการ","Soon":"เร็ว ๆ นี้","General":"ทั่วไป",
