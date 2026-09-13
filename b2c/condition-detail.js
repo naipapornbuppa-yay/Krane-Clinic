@@ -414,6 +414,11 @@
   setText("[data-products-lead]", data.productsLead);
   setText("[data-medical-note]", data.medicalNote);
   setText("[data-safety]", data.safety);
+  const safetyImage = document.querySelector("[data-safety-image]");
+  if (safetyImage && data.products?.[0]?.[3]) {
+    safetyImage.src = data.products[0][3];
+    safetyImage.alt = data.products[0][0];
+  }
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
   document.querySelectorAll("[data-intake-link]").forEach((link) => {
