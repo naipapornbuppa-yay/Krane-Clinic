@@ -3516,16 +3516,28 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   .my-documents__intro .h1{font-size:var(--fs-xl)}
 }
 
-/* What is in the parcel, on the tracking screen. */
-.delivery-items{display:flex;flex-direction:column;gap:var(--sp-3)}
-.delivery-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px var(--sp-3)}
-.delivery-item__name{grid-column:1;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
-.delivery-item__note{grid-column:1;font-size:var(--fs-xs);color:var(--color-ink-3)}
-.delivery-item__price{grid-column:2;grid-row:1 / span 2;align-self:center;font-size:var(--fs-sm);font-variant-numeric:tabular-nums}
-.delivery-item--total{padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
+/* What is in the parcel, on the tracking screen. The rows mirror checkout:
+   product and description on the left, then price and prescribed quantity as
+   a right-aligned two-line stack. */
+.delivery-items{display:flex;flex-direction:column;gap:0}
+.delivery-item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-3) 0}
+.delivery-item+.delivery-item{border-top:1px solid var(--color-line)}
+.delivery-item__thumb{width:48px;height:48px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--color-line);border-radius:var(--radius-md);background:#fff}
+.delivery-item__thumb img{width:100%;height:100%;display:block;object-fit:contain}
+.delivery-item__body{display:flex;min-width:0;flex-direction:column;gap:2px}
+.delivery-item__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.delivery-item__description{font-size:var(--fs-xs);line-height:1.4;color:var(--color-ink-3)}
+.delivery-item__meta{align-self:stretch;display:flex;flex:none;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:2px;text-align:right;white-space:nowrap}
+.delivery-item__price{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);font-variant-numeric:tabular-nums}
+.delivery-item__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+.delivery-item--total{grid-template-columns:minmax(0,1fr) auto;padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
 .delivery-item--total .delivery-item__name,
 .delivery-item--total .delivery-item__price{font-weight:var(--fw-bold)}
-.delivery-item--total .delivery-item__price{grid-row:1}
+.delivery-item--total .delivery-item__price{grid-column:2;grid-row:1}
+@media(max-width:560px){
+  .delivery-item{grid-template-columns:44px minmax(0,1fr) auto;gap:var(--sp-2)}
+  .delivery-item__thumb{width:44px;height:44px}
+}
 /* A text link on a timeline step, set against the step's own first line. */
 .timeline .step--with-link{position:relative;padding-right:84px}
 .timeline .step__link{position:absolute;top:-2px;right:0;padding:2px 0;border:0;background:transparent;
