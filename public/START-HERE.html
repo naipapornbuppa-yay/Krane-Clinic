@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Krane Clinic client QA review.">
+  <title>Krane Clinic · Client QA Review</title>
+  <link rel="stylesheet" href="./client-start.css?v=20260804gate">
+</head>
+<body>
+  <main class="start-shell">
+    <!-- The gate is the logo and one password field. Nothing else. -->
+    <section class="access-gate" data-access-gate aria-labelledby="access-title">
+      <h1 id="access-title" class="sr-only">Krane Clinic</h1>
+      <img class="start-logo" src="./assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane">
+      <form class="access-form" data-access-form novalidate>
+        <label class="sr-only" for="access-code">Access code</label>
+        <div class="access-field">
+          <input id="access-code" name="access-code" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" placeholder="Access code" aria-describedby="access-message" required autofocus>
+          <button type="submit" aria-label="เข้าสู่ตัวอย่างงาน"><span aria-hidden="true">&rarr;</span></button>
+        </div>
+        <p class="access-message" id="access-message" data-access-message aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Shown only after the code is accepted. Same four destinations and the
+         same hrefs as before, including ?entry=partner. Headings, subtitle and
+         the mobile note are gone; the routing is untouched. -->
+    <section class="portal-section" data-portal hidden aria-label="Krane Clinic applications">
+      <img class="start-logo" src="./assets/krane-logo-16aug26-2.svg?v=20260816-logo-16aug26-2-v1" width="1059" height="280" alt="Krane">
+      <nav class="portal-list">
+        <a class="portal-card" href="./b2c/krane-b2c.html?entry=partner#consent-terms">
+          <span class="portal-copy"><strong>เข้าผ่านองค์กรพันธมิตร</strong></span>
+          <span class="portal-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="portal-card" href="./b2c/krane-b2c.html#landing">
+          <span class="portal-copy"><strong>แอปผู้รับบริการ</strong></span>
+          <span class="portal-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="portal-card" href="./cms/cms-doctor.html">
+          <span class="portal-copy"><strong>พอร์ทัลแพทย์</strong></span>
+          <span class="portal-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="portal-card" href="./cms/cms-admin.html">
+          <span class="portal-copy"><strong>พอร์ทัลผู้ดูแล</strong></span>
+          <span class="portal-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </nav>
+    </section>
+  </main>
+
+  <script>
+    /* Access mechanism is unchanged: same code, same sessionStorage key, same
+       destinations. Only the markup around it was stripped. The lucide script
+       is gone because the portal icons it drew are gone. */
+    (() => {
+      const gate = document.querySelector('[data-access-gate]');
+      const portal = document.querySelector('[data-portal]');
+      const form = document.querySelector('[data-access-form]');
+      const input = document.querySelector('#access-code');
+      const message = document.querySelector('[data-access-message]');
+      const readAccess = () => {
+        try { return sessionStorage.getItem('krane-qa-access'); }
+        catch { return null; }
+      };
+      const rememberAccess = () => {
+        try { sessionStorage.setItem('krane-qa-access', 'granted'); }
+        catch { /* Some mobile in-app browsers block storage; access still continues. */ }
+      };
+      const showPortal = () => {
+        gate.hidden = true;
+        portal.hidden = false;
+      };
+      if (readAccess() === 'granted') showPortal();
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (input.value === ['2','3','4'].join('')) {
+          rememberAccess();
+          message.textContent = '';
+          showPortal();
+          return;
+        }
+        message.textContent = 'รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง';
+        input.select();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1084 @@
+/* ============================================================
+   KRANE CMS / BACK OFFICE, semantic, token-driven classes.
+   Brand values come from design-tokens.css (single source of truth).
+   No utility-class framework (no Tailwind). One meaningful class
+   per component/part; every value via a CSS variable.
+   ============================================================ */
+
+:root{
+  --rail-w:248px;            /* sidebar width (structural frame, like --mobile-frame) */
+  --top-h:64px;              /* top bar height */
+
+  /* ---- CMS-grade component tokens (premium-admin, blue-forward) ----
+     Scoped to the back office only (cms.css is loaded by krane-cms.html alone).
+     The patient app keeps design-tokens.css untouched. Identity split:
+     BLACK carries navigation, structure, ink, headings and filters;
+     BLUE carries primary actions, focus, process steppers and active data states. */
+  --cms-blue:        var(--color-blue);
+  --cms-blue-hover:  var(--color-blue-hover);
+  --cms-blue-soft:   var(--color-blue-soft);
+  --cms-blue-ink:    var(--color-on-blue);
+  --cal-month-min:   760px;
+  --cal-day-min:     680px;
+
+  /* denser radii than the consumer app: rounded-rectangle, not pills */
+  --r-btn:10px;
+  --r-control:var(--control-radius); /* inputs / selects / textareas share the product control geometry */
+  --r-panel:14px;              /* cards / panels */
+  --r-kpi:12px;
+  --r-chip:9px;                /* filter chips + segmented controls (squarer) */
+
+  /* tighter control sizing for data density */
+  --ctrl-h:38px;
+  --ctrl-h-sm:30px;
+  --focus-ring:0 0 0 3px color-mix(in srgb,var(--cms-blue) 22%,transparent);
+
+  /* ---- Surface system (visual pass, 26 Jul) ----
+     Separation comes from surface tone, spacing and elevation, not from strokes.
+     --cms-hairline is the only border a card may carry, uniform on all four sides
+     (WORKING-RULES 1), and it is deliberately near-invisible. Every value here is
+     derived from a design-tokens.css colour, so a rebrand still touches only :root. */
+  --cms-hairline:      var(--color-line);
+  --cms-canvas:        var(--color-cms-canvas);            /* warm off-white page */
+  --cms-surface:       var(--color-surface);               /* white primary panel */
+  --cms-surface-sunk:  color-mix(in srgb,var(--color-bg-2) 62%,var(--color-surface));
+  --cms-surface-quiet: color-mix(in srgb,var(--color-bg-2) 34%,var(--color-surface));
+  --cms-tint-accent:   color-mix(in srgb,var(--color-accent) 6%,var(--color-surface));
+  --cms-tint-powder:   color-mix(in srgb,var(--color-powder) 34%,var(--color-surface));
+  --cal-line:          color-mix(in srgb,var(--color-ink) 5%,var(--color-surface));
+
+  /* ---- Appointment chip families: one tonal system, three levels of emphasis ----
+     powder neutral (scheduled) < muted teal (needs the doctor now) with completed
+     stepped back to a quiet warm neutral. No stray green or amber. */
+  --chip-neutral-bg:   color-mix(in srgb,var(--color-powder) 62%,var(--color-surface));
+  --chip-neutral-ink:  var(--color-schedule-ink);
+  --chip-active-bg:    color-mix(in srgb,var(--color-accent) 30%,var(--color-surface));
+  --chip-active-ink:   var(--color-ink);
+  --chip-quiet-bg:     color-mix(in srgb,var(--color-bg-2) 45%,var(--color-surface));
+  --chip-quiet-ink:    var(--color-ink-2);
+
+  /* medicine glyph used as a mask inside empty product thumbnails (colour comes from a token) */
+  --ic-pill:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='8' width='16' height='7' rx='3.5' transform='rotate(-45 12 11)'/%3E%3Cpath d='m8 7 8 8'/%3E%3C/svg%3E");
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font-base);color:var(--color-ink);background:var(--color-cms-canvas);font-size:var(--fs-base);line-height:var(--lh-base);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-family:var(--font-display);line-height:var(--lh-tight);letter-spacing:var(--tracking-tight)}
+button{font-family:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ---------- App shell ---------- */
+.cms{display:flex;min-height:100vh}
+/* One quiet warm canvas. The old cool-grey gradient fought every white surface on
+   top of it and made the page read as two colour systems. */
+.cms-main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative;isolation:isolate;overflow:hidden;
+  background:var(--cms-canvas)}
+
+/* ---------- Sidebar ---------- */
+/* The rail separates from the canvas by tone (white against warm off-white), so it
+   needs no divider rule down its edge. */
+.cms-rail{width:var(--rail-w);flex:none;background:var(--cms-surface);border-right:0;
+  display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-4) var(--sp-3);position:sticky;top:0;height:100vh;overflow-y:auto}
+.cms-rail__brand{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-2) var(--sp-4)}
+.cms-rail__brand img{height:16px;width:auto;display:block}
+.cms-rail__role{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-accent-ink);
+  background:var(--color-accent-soft);border-radius:var(--radius-pill);padding:2px 9px;letter-spacing:.04em;text-transform:uppercase}
+.cms-rail__group{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--color-ink-3);
+  font-weight:var(--fw-semibold);margin:var(--sp-4) var(--sp-2) var(--sp-2)}
+.cms-rail__link{display:flex;align-items:center;gap:var(--sp-3);padding:9px var(--sp-3);border-radius:var(--radius-sm);
+  color:var(--color-ink-2);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer}
+.cms-rail__link:hover{background:var(--cms-surface-quiet);color:var(--color-ink)}
+/* Active nav is a filled deep-teal surface. Inactive stays text-led and quiet. */
+.cms-rail__link.is-active{background:var(--color-accent);color:var(--color-on-accent);box-shadow:var(--shadow-sm)}
+.cms-rail__link .ic{width:18px;height:18px;flex:none;display:grid;place-items:center}
+.cms-rail__link .ic svg{width:18px;height:18px}
+.cms-rail__link .count{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);
+  background:var(--color-bg-2);color:var(--color-ink-2);border-radius:var(--radius-pill);padding:1px 7px}
+.cms-rail__link.is-active .count{background:rgba(255,255,255,.2);color:var(--color-on-accent)}
+/* prototype-only marker: nav items that demo a state and are not a real product menu */
+.cms-rail__demo{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-medium);opacity:.6;white-space:nowrap}
+
+/* drawer footer: holds the language toggle on mobile (hidden on desktop, where it lives in the top bar) */
+.cms-rail__foot{padding:var(--sp-3) var(--sp-2) var(--sp-1);display:none}
+
+/* admin-only items hidden in doctor role (body.role-doctor) */
+body.role-doctor .admin-only{display:none}
+
+/* ---------- Top bar ---------- */
+.cms-top{height:var(--top-h);flex:none;display:flex;align-items:center;gap:var(--sp-4);
+  padding:0 var(--sp-5);background:var(--cms-surface);border-bottom:1px solid var(--cms-hairline);position:sticky;top:0;z-index:20}
+/* Search reads as a soft filled well, not a boxed field. */
+.cms-top__search{flex:1;max-width:420px;display:flex;align-items:center;gap:var(--sp-2);
+  background:var(--cms-surface-sunk);border:1px solid transparent;border-radius:var(--r-control);padding:7px var(--sp-4);color:var(--color-ink-3);
+  transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
+.cms-top__search:focus-within{border-color:var(--cms-blue);box-shadow:var(--focus-ring);background:var(--color-surface)}
+.cms-top__search input{flex:1;border:0;background:transparent;font:inherit;color:var(--color-ink);outline:none}
+.cms-top__spacer{flex:1}
+.cms-top__user{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.cms-top__user .avatar{width:32px;height:32px;border-radius:var(--radius-pill);background:var(--color-accent-soft);
+  color:var(--color-accent-ink);display:grid;place-items:center;font-weight:var(--fw-semibold);font-size:var(--fs-sm)}
+
+/* mobile menu button + drawer scrim (both hidden until the mobile breakpoint) */
+.cms-nav-toggle{display:none;width:38px;height:38px;flex:none;place-items:center;cursor:pointer;
+  border:1px solid var(--color-line-strong);border-radius:var(--r-btn);background:var(--color-surface);color:var(--color-ink-2)}
+.cms-nav-toggle:hover{background:var(--color-bg-2);color:var(--color-ink)}
+.cms-scrim{display:none;position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--color-ink) 42%,transparent)}
+
+/* role switch (segmented) */
+/* Segmented controls sit in the fixed-height top bar. Options use a fixed height +
+   centred flex + line-height:1 so switching to Thai (taller glyphs: tone marks and
+   lower vowels) can't grow the control and shift the layout. */
+.roleswitch{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--color-line-strong);border-radius:var(--r-chip);background:var(--color-bg-soft);padding:3px}
+.roleswitch__opt{appearance:none;display:inline-flex;align-items:center;justify-content:center;height:26px;line-height:1;
+  border:0;background:transparent;color:var(--color-ink-2);font-size:var(--fs-sm);
+  font-weight:var(--fw-semibold);padding:0 15px;cursor:pointer;border-radius:calc(var(--r-chip) - 3px)}
+.roleswitch__opt.is-active{background:var(--color-accent);color:var(--color-on-accent)}
+
+/* TH/EN language toggle (F02) */
+.lang{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--color-line-strong);border-radius:var(--r-chip);background:var(--color-bg-soft);padding:3px}
+.lang__opt{appearance:none;display:inline-flex;align-items:center;justify-content:center;height:26px;line-height:1;
+  border:0;background:transparent;color:var(--color-ink-2);font-size:var(--fs-xs);font-weight:var(--fw-semibold);padding:0 12px;cursor:pointer;border-radius:calc(var(--r-chip) - 3px)}
+.lang__opt.is-active{background:var(--color-accent);color:var(--color-on-accent)}
+
+/* ---------- Page / content ---------- */
+.cms-body{flex:1;overflow-y:auto;padding:var(--sp-5) var(--sp-6);position:relative;z-index:1}
+.page{display:none}
+.page.is-active{display:block}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-5)}
+.page-head__t{font-size:var(--fs-xl);font-weight:var(--fw-bold)}
+.page-head__s{color:var(--color-ink-2);font-size:var(--fs-sm);margin-top:4px}
+.page-actions{display:flex;gap:var(--sp-2);align-items:center}
+
+/* breadcrumb / back */
+.crumb{display:inline-flex;align-items:center;gap:6px;color:var(--cms-blue);font-size:var(--fs-sm);
+  font-weight:var(--fw-semibold);cursor:pointer;margin-bottom:var(--sp-3)}
+.crumb:hover{color:var(--cms-blue-hover);text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- Panels / cards ---------- */
+.panel{background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--r-panel);
+  box-shadow:var(--shadow-sm);padding:var(--sp-5)}
+.panel--flush{padding:0;overflow:hidden}
+.panel__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--color-line)}
+.panel__title{font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+.stack{display:flex;flex-direction:column;gap:var(--sp-4)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4)}
+.row{display:flex;align-items:center;gap:var(--sp-3)}
+.between{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.grow{flex:1;min-width:0}
+.muted{color:var(--color-ink-2)}
+.hint{color:var(--color-ink-3);font-size:var(--fs-sm)}
+.label{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--color-ink-3);font-weight:var(--fw-semibold)}
+
+/* ---------- KPI cards ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-4);margin-bottom:var(--sp-5)}
+.kpi{background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--r-kpi);
+  padding:var(--sp-4);box-shadow:var(--shadow-sm)}
+.kpi__n{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:var(--fw-bold);line-height:1;letter-spacing:var(--tracking-tight)}
+.kpi__l{color:var(--color-ink-2);font-size:var(--fs-sm);margin-top:6px}
+.kpi__d{font-size:var(--fs-xs);font-weight:var(--fw-semibold);margin-top:8px;color:var(--color-ink-3)}
+.kpi__d--up{color:var(--color-success)}
+.kpi__d--warn{color:var(--color-warning)}
+
+/* ---------- Doctor home: clinical priorities, not generic analytics ---------- */
+[hidden]{display:none!important}
+.doctor-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3);margin-bottom:var(--sp-5)}
+.doctor-kpi{min-height:132px;display:flex;flex-direction:column;justify-content:space-between;padding:var(--sp-4);
+  background:var(--color-surface);border:1px solid var(--color-line);border-radius:var(--r-kpi);box-shadow:none}
+.doctor-kpi--attention,.doctor-kpi--next{background:var(--color-surface);border-color:var(--color-line)}
+.doctor-kpi__label{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2)}
+.doctor-kpi__label::before{content:"";width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-line-strong)}
+.doctor-kpi--attention .doctor-kpi__label::before{background:var(--color-warning)}
+.doctor-kpi--next .doctor-kpi__label::before{background:var(--color-blue)}
+.doctor-kpi--followup .doctor-kpi__label::before{background:var(--color-danger)}
+.doctor-kpi:nth-child(2) .doctor-kpi__label::before{background:var(--color-success)}
+.doctor-kpi__value{font-family:var(--font-display);font-size:var(--fs-2xl);font-weight:var(--fw-bold);line-height:1;color:var(--color-ink)}
+.doctor-kpi__value--time{font-size:var(--fs-xl)}
+.doctor-kpi__meta{font-size:var(--fs-xs);color:var(--color-ink-3);font-weight:var(--fw-medium)}
+.doctor-work-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:var(--sp-4);align-items:start}
+.doctor-day,.doctor-tasks{padding:0;overflow:hidden}
+.doctor-day .panel__head,.doctor-tasks .panel__head{min-height:72px}
+.doctor-case-row{appearance:none;width:100%;display:grid;grid-template-columns:56px 34px minmax(0,1fr) auto;align-items:center;
+  gap:var(--sp-3);padding:13px var(--sp-5);border:0;border-bottom:1px solid var(--color-line);background:var(--color-surface);
+  color:var(--color-ink);font:inherit;text-align:left;cursor:pointer;transition:background var(--dur-micro) var(--ease-out)}
+.doctor-case-row:hover{background:var(--color-bg-soft)}
+.doctor-case-row--waiting{background:var(--color-surface)}
+.doctor-case-row--waiting:hover{background:var(--color-bg-soft)}
+.doctor-case-row__time{font-size:var(--fs-sm);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
+.doctor-case-row .avatar{width:34px;height:34px;border-radius:var(--radius-pill);display:grid;place-items:center;
+  background:var(--color-info-soft);color:var(--color-info);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.doctor-case-row__patient{display:flex;flex-direction:column;min-width:0}
+.doctor-case-row__patient b{font-size:var(--fs-sm)}
+.doctor-case-row__patient small{color:var(--color-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doctor-day__more{display:block;padding:13px var(--sp-5);color:var(--color-blue);font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer}
+.doctor-day__more:hover{color:var(--color-blue-hover);background:var(--color-bg-soft)}
+.doctor-task{appearance:none;width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;
+  padding:var(--sp-4) var(--sp-5);border:0;border-bottom:1px solid var(--color-line);background:var(--color-surface);color:var(--color-ink);
+  font:inherit;text-align:left;cursor:pointer;transition:background var(--dur-micro) var(--ease-out)}
+.doctor-task:hover{background:var(--color-bg-soft)}
+.doctor-task>span:nth-child(2){display:flex;flex-direction:column;min-width:0}
+.doctor-task small{color:var(--color-ink-3);margin-top:2px}
+.doctor-task__icon{width:38px;height:38px;border-radius:var(--radius-sm);display:grid;place-items:center;background:var(--color-info-soft);color:var(--color-info)}
+.doctor-task__icon svg{width:19px;height:19px}
+.doctor-tasks__note{display:flex;flex-direction:column;gap:4px;margin:var(--sp-4);padding:var(--sp-4);border-radius:var(--radius-sm);
+  background:var(--color-bg-soft);color:var(--color-ink-2);font-size:var(--fs-xs)}
+.doctor-tasks__note b{color:var(--color-ink)}
+.offline-state{min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:var(--sp-8) var(--sp-5);border:1px solid var(--color-line);border-radius:var(--r-panel);background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.offline-state__icon{width:76px;height:76px;border-radius:var(--radius-pill);display:grid;place-items:center;
+  background:var(--color-info-soft);color:var(--color-info);margin-bottom:var(--sp-4)}
+.offline-state__icon svg{width:32px;height:32px}
+.offline-state h2{font-size:var(--fs-xl)}
+.offline-state p{max-width:44ch;margin:var(--sp-3) 0 var(--sp-5);color:var(--color-ink-2)}
+.offline-state small{max-width:48ch;margin-top:var(--sp-4);color:var(--color-ink-3)}
+
+/* ---------- Doctor signature ---------- */
+.signature-preview{min-height:156px;display:flex;align-items:center;justify-content:center;position:relative;padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--r-panel);background:var(--color-bg-soft);overflow:hidden}
+.signature-preview img{display:block;max-width:min(100%,360px);max-height:106px;object-fit:contain}
+.signature-preview .badge{position:absolute;right:var(--sp-3);bottom:var(--sp-3)}
+
+/* ---------- Admin operations overview ---------- */
+.ops-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.ops-kpi{min-height:124px;display:flex;flex-direction:column;justify-content:space-between;padding:var(--sp-4);
+  border:1px solid var(--color-line);border-radius:var(--r-kpi);background:var(--color-surface)}
+.ops-kpi__label{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink-2)}
+.ops-kpi__label::before{content:"";width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-line-strong)}
+.ops-kpi--attention .ops-kpi__label::before{background:var(--color-warning)}
+.ops-kpi:nth-child(2) .ops-kpi__label::before{background:var(--color-success)}
+.ops-kpi:nth-child(3) .ops-kpi__label::before{background:var(--color-warning)}
+.ops-kpi:nth-child(4) .ops-kpi__label::before{background:var(--color-blue)}
+.ops-kpi__value{font-family:var(--font-display);font-size:var(--fs-2xl);font-weight:var(--fw-bold);line-height:1}
+.ops-kpi__meta{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3)}
+.admin-case-filters{margin-bottom:var(--sp-4)}
+.admin-overview-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:var(--sp-4);align-items:start}
+.admin-overview-grid>.panel{min-width:0}
+.admin-health{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden}
+.admin-health>div:first-child{padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--color-line)}
+.health-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:13px var(--sp-5);border-bottom:1px solid var(--color-line);font-size:var(--fs-sm)}
+.health-state{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.health-state i{width:8px;height:8px;border-radius:var(--radius-pill);background:currentColor}
+.health-state--ok{color:var(--color-success)}
+.health-state--watch{color:var(--color-warning)}
+.admin-health__foot{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-xs);color:var(--color-ink-3)}
+
+/* ---------- Table ---------- */
+.table{width:100%;border-collapse:collapse;font-size:var(--fs-sm)}
+.table th{text-align:left;font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-ink-3);
+  font-weight:var(--fw-semibold);padding:10px var(--sp-4);border-bottom:1px solid var(--color-line-strong);
+  background:var(--color-bg-soft);position:sticky;top:0;z-index:1}
+.table td{padding:11px var(--sp-4);border-bottom:1px solid var(--color-line);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table tbody tr{cursor:pointer}
+.table tbody tr:hover{background:var(--cms-blue-soft)}
+.table .strong{font-weight:var(--fw-semibold);color:var(--color-ink)}
+.table .sub{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.table .badge{
+  line-height:1.3;
+  white-space:nowrap;
+}
+.table-empty td{padding:var(--sp-6) var(--sp-4);text-align:center;color:var(--color-ink-3);cursor:default}
+.table-empty:hover{background:transparent}
+.cell-user{display:flex;align-items:center;gap:var(--sp-3)}
+.cell-user .avatar{width:32px;height:32px;border-radius:var(--radius-pill);background:var(--color-accent-soft);
+  color:var(--color-accent-ink);display:grid;place-items:center;font-weight:var(--fw-semibold);font-size:var(--fs-xs);flex:none}
+
+/* ---------- Badges / status pills (one consistent treatment) ---------- */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);
+  padding:3px 10px;border-radius:var(--radius-pill);background:var(--color-bg-2);color:var(--color-ink-2)}
+.badge .dot{width:7px;height:7px;border-radius:var(--radius-pill);background:currentColor}
+.badge--ok{background:var(--color-accent-soft);color:var(--color-accent-ink)}
+.badge--go{background:var(--color-schedule);color:var(--color-schedule-ink)}
+.badge--warn{background:var(--color-warning-soft);color:var(--color-warning)}
+.badge--danger{background:var(--color-danger-soft);color:var(--color-danger)}
+.badge--done{background:var(--color-success-soft);color:var(--color-success)}
+.badge--mute{background:var(--color-bg-2);color:var(--color-ink-3)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:var(--ctrl-h);padding:0 var(--sp-5);
+  border-radius:var(--button-radius);font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;border:1px solid transparent;white-space:nowrap}
+.btn--primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink);box-shadow:var(--shadow-sm)}
+.btn--primary:hover{background:var(--btn-primary-bg-hover);box-shadow:var(--shadow-md)}
+.btn--secondary{background:var(--color-surface);color:var(--color-ink);border-color:var(--color-line-strong)}
+.btn--secondary:hover{background:var(--color-bg-2)}
+.btn--ghost{background:transparent;color:var(--color-ink-2)}
+.btn--ghost:hover{background:var(--color-glass-strong);color:var(--color-ink)}
+.btn--sm{height:var(--ctrl-h-sm);padding:0 var(--sp-3);font-size:var(--fs-xs)}
+.btn--danger{background:transparent;color:var(--color-danger);border-color:color-mix(in srgb,var(--color-danger) 40%,transparent)}
+.btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-surface))}
+.btn--block{width:100%}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+
+/* ---------- Inputs ---------- */
+.field{display:block}
+.field>label{display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:6px}
+.input,.select,.textarea{width:100%;height:var(--ctrl-h);padding:0 var(--sp-3);border:1px solid var(--color-line-strong);
+  border-radius:var(--r-control);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm)}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23575f6a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.textarea{height:auto;min-height:96px;padding:var(--sp-3)}
+.input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--cms-blue);box-shadow:var(--focus-ring)}
+.input:disabled,.select:disabled,.textarea:disabled{background:var(--color-bg-soft);color:var(--color-ink-3);cursor:not-allowed}
+
+/* shared CMS select: consistent menu surface across Doctor/Admin and browsers */
+.cms-select{position:relative;display:inline-flex;width:100%;height:var(--ctrl-h);min-width:0;vertical-align:middle}
+.cms-select__native{position:absolute!important;width:1px!important;height:1px!important;margin:0!important;padding:0!important;border:0!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+.cms-select__trigger{appearance:none;width:100%;height:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);padding:0 var(--sp-3);
+  border:1px solid var(--color-line-strong);border-radius:var(--r-control);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium);text-align:left;cursor:pointer;transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
+.cms-select__trigger:hover{border-color:var(--color-ink-3);background:var(--color-bg-soft)}
+.cms-select__trigger:focus-visible,.cms-select.is-open .cms-select__trigger{outline:none;border-color:var(--color-blue);box-shadow:var(--focus-ring)}
+.cms-select__value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cms-select__chevron{width:16px;height:16px;flex:none;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out)}
+.cms-select.is-open .cms-select__chevron{transform:rotate(180deg)}
+.cms-select.is-disabled{opacity:.55;pointer-events:none}
+.cms-select__menu{position:fixed;z-index:1000;width:max-content;max-width:min(320px,calc(100vw - 24px));max-height:280px;overflow:auto;padding:5px;
+  border:1px solid var(--color-line-strong);border-radius:var(--r-control);background:var(--color-surface);box-shadow:var(--shadow-lg)}
+.cms-select__option{appearance:none;width:100%;min-height:38px;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:7px 10px;
+  border:0;border-radius:var(--radius-xs);background:transparent;color:var(--color-ink-2);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium);text-align:left;white-space:nowrap;cursor:pointer}
+.cms-select__option:hover,.cms-select__option:focus-visible{outline:none;background:var(--color-bg-soft);color:var(--color-ink)}
+.cms-select__option.is-selected{background:var(--color-bg-2);color:var(--color-ink);font-weight:var(--fw-semibold)}
+.cms-select__check{width:16px;height:16px;flex:none;color:var(--color-blue);opacity:0}
+.cms-select__option.is-selected .cms-select__check{opacity:1}
+.cms-select--calendar{width:auto;min-width:112px;height:36px;margin-left:auto}
+.cms-select--calendar .cms-select__trigger{font-weight:var(--fw-semibold)}
+
+/* filter chips */
+.chips{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.chip{border:1px solid var(--color-line-strong);background:var(--color-surface);color:var(--color-ink-2);
+  border-radius:var(--r-chip);padding:6px 13px;font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer}
+.chip:hover{border-color:var(--color-ink-3);color:var(--color-ink)}
+.chip.is-active{background:var(--color-accent);color:var(--color-on-accent);border-color:var(--color-accent)}
+
+/* ---------- Consultation split ---------- */
+.consult{display:grid;grid-template-columns:1fr 340px;gap:var(--sp-5);align-items:start}
+.chat{display:flex;flex-direction:column;gap:var(--sp-3);min-height:420px}
+.chat__thread{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);background:var(--color-bg);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);min-height:340px}
+.bubble{max-width:78%;padding:10px var(--sp-4);border-radius:var(--radius-lg);font-size:var(--fs-sm)}
+.bubble--in{background:var(--color-surface);border:1px solid var(--color-line-strong);align-self:flex-start;border-bottom-left-radius:var(--radius-xs)}
+.bubble--out{background:var(--color-accent);color:var(--color-on-accent);align-self:flex-end;border-bottom-right-radius:var(--radius-xs)}
+.composer{display:flex;gap:var(--sp-2)}
+.consult-slot{display:inline-flex;align-items:center;gap:var(--sp-2);height:var(--ctrl-h);padding:0 var(--sp-3);border:1px solid var(--color-line-strong);border-radius:var(--r-chip);background:var(--color-glass-strong);font-size:var(--fs-xs);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+.consult-slot strong{color:var(--color-ink);font-size:var(--fs-sm)}
+.consult-slot.is-warning{background:var(--color-warning-soft);border-color:color-mix(in srgb,var(--color-warning) 36%,transparent);color:var(--color-warning)}
+.consult-slot.is-warning strong{color:var(--color-warning)}
+.ctx{position:sticky;top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-4)}
+.ctx__sec{border-bottom:1px solid var(--color-line);padding-bottom:var(--sp-3)}
+.ctx__sec:last-child{border-bottom:0}
+.kv{display:flex;justify-content:space-between;gap:var(--sp-3);padding:3px 0;font-size:var(--fs-sm)}
+.kv .k{color:var(--color-ink-3)}
+/* Safety lines are a cleared state far more often than a problem, so the calm
+   teal reading is the default and amber is opt-in. Amber on "no allergies
+   declared" made good news look like a flag the doctor had to act on. */
+.alertline{display:flex;gap:8px;padding:10px var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--color-accent-soft);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.alertline--warn{background:color-mix(in srgb,var(--color-warning) 14%,var(--color-surface));color:var(--color-warning)}
+
+/* ---------- Prescribe (SKU picker) ---------- */
+.sku{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border:1px solid var(--color-line);
+  border-radius:var(--radius-sm);background:var(--color-surface);cursor:pointer}
+.sku:hover{border-color:var(--cms-blue);background:var(--cms-blue-soft)}
+.sku__thumb{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--color-bg-2);flex:none;display:grid;place-items:center}
+.sku__thumb::before{content:"";width:20px;height:20px;background:var(--cms-blue);
+  -webkit-mask:var(--ic-pill) center/contain no-repeat;mask:var(--ic-pill) center/contain no-repeat}
+.sku__price{margin-left:auto;font-weight:var(--fw-semibold)}
+.rx-item{display:flex;gap:var(--sp-3);padding:var(--sp-4) 0;border-bottom:1px solid var(--color-line)}
+.rx-item:last-child{border-bottom:0}
+
+/* ---------- Schedule grid ---------- */
+.sched-stats{display:flex;gap:var(--sp-3);margin-bottom:var(--sp-4);flex-wrap:wrap}
+.sched-stat{display:flex;align-items:baseline;gap:8px;background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-md);padding:10px var(--sp-4);box-shadow:var(--shadow-sm)}
+.sched-stat b{font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-bold)}
+.sched-stat span{color:var(--color-ink-2);font-size:var(--fs-sm)}
+.weeknav{display:inline-flex;align-items:center;gap:var(--sp-2)}
+.weeknav__btn{width:32px;height:32px;border-radius:var(--radius-pill);border:1px solid var(--color-line-strong);
+  background:var(--color-surface);display:grid;place-items:center;cursor:pointer;color:var(--color-ink-2)}
+.weeknav__btn:hover{background:var(--color-bg-2);color:var(--color-ink)}
+.weeknav__range{font-weight:var(--fw-semibold);font-size:var(--fs-sm);min-width:120px;text-align:center}
+
+.cal{display:grid;grid-template-columns:60px repeat(7,1fr);gap:6px;font-size:var(--fs-xs)}
+.cal__h{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0;color:var(--color-ink-3);font-weight:var(--fw-semibold)}
+.cal__h .d{font-size:var(--fs-sm);color:var(--color-ink)}
+.cal__h.is-today .d{color:var(--color-on-accent);background:var(--color-accent);width:24px;height:24px;border-radius:var(--radius-pill);display:grid;place-items:center}
+.cal__h.is-today .w{color:var(--color-accent-ink)}
+.cal__t{color:var(--color-ink-3);text-align:right;padding-right:8px;align-self:center}
+.cal__slot{height:34px;border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-surface);
+  cursor:pointer;display:grid;place-items:center;font-weight:var(--fw-semibold);transition:border-color .12s,background .12s}
+.cal__slot:hover{border-color:var(--color-line-strong)}
+.cal__slot.is-on{background:var(--color-accent-soft);border-color:var(--color-accent-soft);color:var(--color-accent-ink)}
+.cal__slot.is-on:hover{border-color:var(--color-accent)}
+.cal__slot.is-booked{background:var(--cms-blue);border-color:var(--cms-blue);color:var(--cms-blue-ink);cursor:default}
+.cal__slot.is-booked:hover{border-color:var(--cms-blue)}
+.cal__col-today{box-shadow:inset 0 0 0 1.5px var(--color-accent-soft);border-radius:var(--radius-sm)}
+
+/* ---------- Doctor patient calendar: month and day views ---------- */
+.calendar-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.calendar-stats>div{display:flex;flex-direction:column;gap:3px;padding:var(--sp-3) var(--sp-4);border:1px solid var(--color-line);
+  border-radius:var(--r-kpi);background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.calendar-stats b{font-family:var(--font-display);font-size:var(--fs-lg);line-height:1.2}
+.calendar-stats span{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.calendar-panel{padding:0;overflow:hidden}
+.cal-toolbar{min-height:64px;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--color-line)}
+.cal-toolbar__nav{display:inline-flex;align-items:center;gap:4px}
+.cal-toolbar__title{min-width:148px;font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+.calendar-scroll{overflow-x:auto}
+.doctor-cal-month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));min-width:var(--cal-month-min);background:var(--color-line)}
+.month-head{padding:10px;text-align:center;background:var(--color-bg-2);color:var(--color-ink-2);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.month-day{min-height:118px;padding:9px;background:var(--color-surface);box-shadow:inset 0 0 0 .5px var(--color-line);overflow:hidden}
+.month-day.is-out{background:var(--color-bg-soft);color:var(--color-ink-3)}
+.month-day__number{width:28px;height:28px;display:grid;place-items:center;margin-bottom:5px;border-radius:var(--radius-pill);
+  border:0;background:transparent;color:inherit;font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;cursor:pointer}
+.month-day.is-today .month-day__number{background:var(--color-ink);color:var(--color-on-dark)}
+.cal-event{appearance:none;width:100%;display:block;margin-top:5px;padding:5px 7px;border:1px solid var(--color-line-strong);
+  border-radius:var(--radius-xs);background:var(--color-schedule);color:var(--color-schedule-ink);font:inherit;font-size:var(--fs-xs);
+  font-weight:var(--fw-semibold);line-height:1.3;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.cal-event:hover{background:var(--color-schedule-hover)}
+.cal-event--waiting{background:var(--color-warning-soft);color:var(--color-warning);border-color:var(--color-warning)}
+.cal-event--waiting:hover{background:var(--color-warning-soft)}
+.cal-event--done{background:var(--color-success-soft);color:var(--color-success);border-color:var(--color-success)}
+.cal-event--done:hover{background:var(--color-success-soft)}
+.cal-more{display:block;margin:6px 4px 0;color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.doctor-cal-day{display:grid;grid-template-columns:76px minmax(0,1fr);min-width:var(--cal-day-min)}
+.day-time{padding:var(--sp-3);border-top:1px solid var(--color-line);color:var(--color-ink-3);font-size:var(--fs-xs);text-align:right;font-variant-numeric:tabular-nums}
+.day-lane{min-height:76px;padding:7px var(--sp-3);border-top:1px solid var(--color-line);border-left:1px solid var(--color-line);background:var(--color-surface)}
+.day-event{appearance:none;width:min(620px,92%);min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  padding:8px var(--sp-3);border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-schedule);
+  color:var(--color-schedule-ink);font:inherit;text-align:left;cursor:pointer}
+.day-event:hover{background:var(--color-schedule-hover)}
+.day-event--waiting{background:var(--color-warning-soft);color:var(--color-warning)}
+.day-event--done{background:var(--color-success-soft);color:var(--color-success)}
+.day-event span{display:flex;flex-direction:column}.day-event small{font-weight:var(--fw-medium);opacity:.88}
+.cal-legend{display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;padding:var(--sp-3) var(--sp-4);border-top:1px solid var(--color-line);font-size:var(--fs-xs);color:var(--color-ink-2)}
+.cal-legend>span{display:inline-flex;align-items:center;gap:6px}
+.cal-legend__swatch{width:12px;height:12px;border-radius:4px;border:1px solid var(--color-line-strong);background:var(--color-schedule)}
+.cal-legend__swatch--waiting{background:var(--color-warning-soft)}
+.cal-legend__swatch--done{background:var(--color-success-soft)}
+.cal-legend small{margin-left:auto;color:var(--color-ink-3)}
+
+/* ---------- Horizontal status stepper ---------- */
+.hstep{display:flex;gap:0;margin:var(--sp-4) 0}
+.hstep__s{flex:1;text-align:center;position:relative;font-size:var(--fs-xs);color:var(--color-ink-3)}
+.hstep__s::before{content:"";display:block;width:14px;height:14px;border-radius:var(--radius-pill);
+  background:var(--color-surface);border:2px solid var(--color-line-strong);margin:0 auto 6px;position:relative;z-index:2}
+.hstep__s::after{content:"";position:absolute;top:7px;left:-50%;width:100%;height:2px;background:var(--color-line-strong);z-index:1}
+.hstep__s:first-child::after{display:none}
+.hstep__s.done{color:var(--color-ink)}
+.hstep__s.done::before{background:var(--cms-blue);border-color:var(--cms-blue)}
+.hstep__s.done::after{background:var(--cms-blue)}
+.hstep__s.active{color:var(--cms-blue);font-weight:var(--fw-semibold)}
+.hstep__s.active::before{border-color:var(--cms-blue);box-shadow:0 0 0 3px var(--cms-blue-soft)}
+.hstep__s.active::after{background:var(--cms-blue)}
+
+/* ---------- On-call status pill + toggle ---------- */
+.oncall{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-sm);font-weight:var(--fw-semibold);
+  color:var(--color-success);background:var(--color-success-soft);border-radius:var(--radius-pill);padding:6px 13px}
+.oncall__dot{width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-success)}
+.oncall.is-off{color:var(--color-ink-3);background:var(--color-bg-2)}
+.oncall.is-off .oncall__dot{background:var(--color-ink-3)}
+
+/* ---------- Incoming "patient ready" card ---------- */
+.ready{display:flex;align-items:center;gap:var(--sp-4);border:1px solid var(--color-line);
+  background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);box-shadow:var(--shadow-md)}
+.ready__icon{width:46px;height:46px;border-radius:var(--radius-pill);background:var(--color-accent);color:var(--color-on-accent);
+  display:grid;place-items:center;flex:none;position:relative}
+.ready__icon::after{content:"";position:absolute;inset:-5px;border-radius:var(--radius-pill);border:2px solid var(--color-accent-soft);animation:ringpulse 1.8s ease-out infinite}
+@keyframes ringpulse{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.25);opacity:0}}
+.ready__name{font-family:var(--font-display);font-weight:var(--fw-bold);font-size:var(--fs-md)}
+.ready__count{font-family:var(--font-display);font-weight:var(--fw-bold);font-size:var(--fs-xl);color:var(--color-warning);min-width:62px;text-align:right}
+.ready.is-handled{opacity:.55;filter:saturate(.4)}
+@media(prefers-reduced-motion:reduce){.ready__icon::after{animation:none}}
+
+/* admit banner on the pre-consult screen */
+.admit-banner{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);padding:var(--sp-4);
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);margin-bottom:var(--sp-5)}
+.admit-banner__icon{width:44px;height:44px;display:grid;place-items:center;flex:none;border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-on-dark)}
+.admit-banner__icon svg{width:21px;height:21px}
+.admit-banner__copy{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.45}
+.admit-banner__title-row{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.admit-banner__title-row strong{font-family:var(--font-display);font-size:var(--fs-md);line-height:1.25;color:var(--color-ink)}
+.admit-banner>.btn{min-width:154px}
+
+/* ---------- Empty state ---------- */
+.empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3);padding:var(--sp-8) var(--sp-5)}
+.empty-state__art{width:72px;height:72px;border-radius:var(--radius-lg);background:var(--color-bg-2);color:var(--color-ink-3);display:grid;place-items:center}
+.empty-state h2{font-size:var(--fs-lg)}
+.empty-state .muted{max-width:42ch}
+
+/* ---------- Editor (CMS article) ---------- */
+.editor{display:grid;grid-template-columns:1fr 320px;gap:var(--sp-5);align-items:start}
+
+/* ---------- Shared CMS surface material ----------
+   Was a frosted-glass veil over a cool grey gradient: it tinted every panel a
+   different value depending on what sat behind it, which is why the screen never
+   read as one system. Panels are now solid white on a warm off-white canvas and
+   are lifted by elevation, with a hairline kept uniform on all four sides so a
+   card never gains a single-sided edge (WORKING-RULES 1). */
+.panel,.kpi,.doctor-kpi,.ops-kpi,.calendar-stats>div,.offline-state,.admit-banner{
+  background:var(--cms-surface);border-color:var(--cms-hairline);box-shadow:var(--shadow-sm);
+  -webkit-backdrop-filter:none;backdrop-filter:none}
+.doctor-kpi--attention,.doctor-kpi--next{background:var(--cms-surface);border-color:var(--cms-hairline)}
+.admit-banner{background:var(--cms-surface)}
+.panel__head{border-color:var(--cms-hairline);background:transparent}
+.doctor-case-row,.doctor-case-row--waiting,.doctor-task{background:transparent;border-color:var(--cms-hairline)}
+.doctor-case-row:hover,.doctor-case-row--waiting:hover,.doctor-task:hover{background:var(--cms-surface-quiet)}
+.table th{background:var(--cms-surface-quiet);border-color:var(--cms-hairline);-webkit-backdrop-filter:none;backdrop-filter:none}
+.table td,.health-row,.cfg-row{border-color:var(--cms-hairline)}
+.table tbody tr:hover{background:var(--cms-surface-quiet)}
+.signature-preview{background:var(--cms-surface-sunk);border-color:transparent}
+
+@media(max-width:1080px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid-2,.consult,.editor{grid-template-columns:1fr}
+  .consult{}
+}
+@media(max-width:980px){
+  .doctor-work-grid,.admin-overview-grid{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .doctor-kpis,.calendar-stats,.ops-kpis{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  /* sidebar becomes an off-canvas drawer, reachable from the menu button */
+  .cms-nav-toggle{display:grid}
+  .cms-rail{position:fixed;top:0;left:0;height:100vh;width:min(280px,84vw);z-index:50;
+    transform:translateX(-100%);transition:transform var(--dur-base) var(--ease-out)}
+  .cms.nav-open .cms-rail{transform:none;box-shadow:var(--shadow-lg)}
+  .cms.nav-open .cms-scrim{display:block}
+  /* tighten chrome for narrow screens */
+  .cms-body{padding:var(--sp-4)}
+  /* single-row header: menu, search (grows), avatar. Language moves into the drawer. */
+  .cms-top{height:var(--top-h);padding:0 var(--sp-4);gap:var(--sp-3)}
+  .cms-top__search{flex:1;min-width:0;max-width:none}
+  .cms-top__spacer{display:none}
+  .cms-top .lang{display:none}
+  .cms-top__user span[data-user-name]{display:none}
+  .cms-rail__foot{display:block}
+  /* patient-ready card: let items wrap instead of squishing to one word per line */
+  .ready{flex-wrap:wrap;row-gap:var(--sp-3)}
+  .ready__count{min-width:0;text-align:left}
+  /* wide tables scroll horizontally inside their panel rather than crushing columns */
+  .panel--flush{overflow-x:auto}
+  .table{min-width:560px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr}
+  .page-head{align-items:flex-start}
+  .page-actions{flex-wrap:wrap}
+  /* config rows: control drops under its label instead of overflowing */
+  .cfg-row{flex-wrap:wrap}
+  .cfg-row .cfg-ctl{margin-left:0}
+  .cal-toolbar{flex-wrap:wrap}
+  .cal-toolbar__title{order:4;width:100%}
+  .cms-select--calendar{margin-left:auto}
+  .admit-banner{grid-template-columns:auto minmax(0,1fr)}
+  .admit-banner>.btn{grid-column:1/-1;width:100%}
+  .doctor-case-row{grid-template-columns:48px 32px minmax(0,1fr)}
+  .doctor-case-row .badge{grid-column:3;justify-self:start}
+}
+@media(max-width:520px){
+  /* drop the name text, keep the avatar; stack KPIs one-up */
+  .cms-top__user span[data-user-name]{display:none}
+  .kpis{grid-template-columns:1fr}
+  .doctor-kpis,.calendar-stats{grid-template-columns:1fr}
+  .ops-kpis{grid-template-columns:1fr}
+  .doctor-kpi{min-height:116px}
+  .doctor-case-row{padding-inline:var(--sp-4)}
+  .doctor-case-row .avatar{display:none}
+  .doctor-case-row{grid-template-columns:48px minmax(0,1fr)}
+  .doctor-case-row .badge{grid-column:2}
+  .btn{padding:0 var(--sp-4)}
+}
+
+/* ============================================================
+   MOTION SYSTEM (parity with the patient app; tokens in design-tokens.css)
+   go() adds .is-entering to the incoming page for one staggered pass.
+   ============================================================ */
+@keyframes cms-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.page.is-entering>*{animation:cms-rise var(--dur-page) var(--ease-out) both}
+.page.is-entering>*:nth-child(1){animation-delay:0ms}
+.page.is-entering>*:nth-child(2){animation-delay:50ms}
+.page.is-entering>*:nth-child(3){animation-delay:100ms}
+.page.is-entering>*:nth-child(4){animation-delay:150ms}
+.page.is-entering>*:nth-child(n+5){animation-delay:190ms}
+.btn{transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.cms-rail__link{transition:background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.table tbody tr{transition:background var(--dur-micro) var(--ease-out)}
+.kpi{transition:transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-glass)}
+
+/* ---------- Switch (config toggles) ---------- */
+.switch{position:relative;width:44px;height:26px;flex:none;display:inline-block}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.switch .track{position:absolute;inset:0;background:var(--color-line-strong);border-radius:var(--radius-pill);transition:background var(--dur-micro) var(--ease-out)}
+.switch .thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:var(--radius-pill);background:var(--color-surface);transition:transform var(--dur-base) var(--ease-spring);box-shadow:var(--shadow-sm)}
+.switch input:checked+.track{background:var(--color-accent)}
+.switch input:checked+.track+.thumb{transform:translateX(18px)}
+
+/* ---------- Config rows (channels & platform rules) ---------- */
+.cfg-row{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-4);border-bottom:1px solid var(--color-line)}
+.cfg-row:last-child{border-bottom:0}
+.cfg-row .cfg-t{font-weight:var(--fw-semibold)}
+.cfg-row .cfg-s{font-size:var(--fs-sm);color:var(--color-ink-3);margin-top:2px}
+.cfg-row .cfg-ctl{margin-left:auto;display:flex;align-items:center;gap:var(--sp-3);flex:none}
+
+/* ---------- Action toast (saved / added feedback) ---------- */
+.cms-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);opacity:0;pointer-events:none;
+  background:var(--color-ink);color:var(--color-surface);font-size:var(--fs-sm);font-weight:var(--fw-medium);
+  padding:10px 18px;border-radius:var(--radius-pill);box-shadow:var(--shadow-lg);z-index:60;
+  transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out)}
+.cms-toast.is-on{opacity:1;transform:translate(-50%,0)}
+
+@media(prefers-reduced-motion:reduce){
+  .page.is-entering>*{animation:none}
+  .btn,.cms-rail__link,.table tbody tr,.kpi,.switch .track,.switch .thumb,.cms-toast{transition:none}
+}
+
+/* ---------- Thai letter-spacing fix ----------
+   Thai should never carry letter-spacing (tracking spreads Thai clusters oddly and the
+   tone marks / lower vowels drift). When Thai is the active language (body.lang-th, set
+   by i18n.js), neutralise all tracking that was tuned for Latin chrome: uppercase labels,
+   table headers, nav group titles, and the tight-tracked display headings. */
+body.lang-th *{letter-spacing:normal}
+
+
+/* ---------- Doctor availability setup ---------- */
+.avail-list{display:flex;flex-direction:column}
+.avail-row{display:grid;grid-template-columns:minmax(150px,1fr) auto minmax(90px,auto);align-items:center;gap:var(--sp-4);padding:var(--sp-3) 0}
+.avail-row+.avail-row{border-top:1px solid var(--color-line)}
+.avail-row__day{display:flex;align-items:center;gap:var(--sp-3);cursor:pointer;min-width:0}
+.avail-row__day b{font-weight:var(--fw-semibold)}
+.avail-row__times{display:flex;align-items:center;gap:var(--sp-2)}
+.avail-row__times .input{width:118px}
+.avail-row__to{color:var(--color-ink-3);font-size:var(--fs-sm)}
+.avail-row__note{color:var(--color-ink-3);font-size:var(--fs-sm);text-align:right}
+.avail-row.is-off .avail-row__times{opacity:.45;pointer-events:none}
+.avail-exception{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-bg-soft)}
+.avail-exception b{display:block;font-weight:var(--fw-semibold)}
+.avail-open{margin:0;padding-left:var(--sp-5);color:var(--color-ink-2);font-size:var(--fs-sm);line-height:1.9}
+.page-actions--sticky{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-4);margin-top:var(--sp-4);padding:var(--sp-3) var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm)}
+@media(max-width:720px){
+  .avail-row{grid-template-columns:1fr;gap:var(--sp-2)}
+  .avail-row__note{text-align:left}
+  .page-actions--sticky{flex-direction:column;align-items:stretch}
+}
+
+
+/* ---------- Calendar: doctor shift planning ---------- */
+.cal-add{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.cal-view{width:auto;min-width:120px}
+.shift-chip{display:inline-block;margin-top:4px;padding:3px 8px;border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
+.shift-chip--off{background:var(--color-bg-2);color:var(--color-ink-3)}
+.shift-chip.is-custom{box-shadow:inset 0 0 0 1px var(--color-accent-ink)}
+.calendar-panel.is-shift-mode .month-day{cursor:pointer}
+.calendar-panel.is-shift-mode .month-day.is-off{background:var(--color-bg-2)}
+.cal-legend__swatch--work{background:var(--color-accent-soft)}
+.cal-legend__swatch--off{background:var(--color-bg-2)}
+.shift-editor{margin-top:var(--sp-3);padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface)}
+.shift-editor__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3)}
+.shift-editor__choices{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.shift-choice{padding:8px 14px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer}
+.shift-choice:hover{border-color:var(--color-accent);background:var(--color-bg-soft)}
+.shift-editor__times{display:flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-3)}
+.shift-editor__times .input{width:120px}
+@media(max-width:640px){.shift-editor__times{flex-wrap:wrap}}
+
+
+/* Tags read at a glance: a deeper tint plus a hairline of the ink colour, so the
+   state is legible at 12px without turning the table into a colour chart. */
+.badge--ok{background:var(--color-accent-soft);color:var(--color-ink)}
+.badge--go{background:var(--color-schedule);color:var(--color-schedule-ink)}
+.badge--warn{background:var(--color-warning-soft);color:var(--color-warning)}
+.badge--danger{background:var(--color-danger-soft);color:var(--color-danger)}
+.badge--done{background:var(--color-success-soft);color:var(--color-success)}
+.badge--mute{background:var(--color-bg-2);color:var(--color-ink-2)}
+/* Upcoming events keep the neutral tint but gain an edge against the white cell. */
+.cal-event{border-color:var(--color-line-strong);color:var(--color-ink)}
+
+
+/* ---------- CMS modal (shift entry) ---------- */
+.cms-modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:var(--sp-4)}
+.cms-modal[hidden]{display:none}
+.cms-modal__scrim{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:rgba(43,43,43,.42);cursor:pointer}
+.cms-modal__dialog{position:relative;width:min(420px,100%);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:0 24px 60px rgba(43,43,43,.24);overflow:hidden}
+.cms-modal__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-4);border-bottom:1px solid var(--color-line)}
+.cms-modal__head h2{margin:0;font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+.cms-modal__close{border:0;background:transparent;color:var(--color-ink-3);font-size:22px;line-height:1;cursor:pointer;padding:0 4px}
+.cms-modal__body{display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4)}
+.cms-modal__foot{display:flex;justify-content:flex-end;gap:var(--sp-2);padding:var(--sp-4);border-top:1px solid var(--color-line);background:var(--color-bg-soft)}
+.shift-kind{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--color-line);border-radius:var(--radius-pill);background:var(--color-bg-soft)}
+.shift-kind__btn{padding:7px 16px;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer}
+.shift-kind__btn.is-active{background:var(--color-accent);color:var(--color-on-accent)}
+.shift-modal__times{display:flex;align-items:center;gap:var(--sp-2)}
+.shift-modal__times .input{width:130px}
+body.modal-open{overflow:hidden}
+.calendar-panel .month-day.is-off{background:var(--color-bg-2)}
+
+/* ---------- Calendar toolbar: one control height ----------
+   The bar mixed three sizes: btn--sm used --ctrl-h-sm, the enhanced select used
+   the full --ctrl-h, and the arrows were a hard-coded 32px. Everything in the bar
+   is now locked to the same height and radius so the row reads as one unit. */
+.cal-toolbar{min-height:60px;gap:var(--sp-2);padding:var(--sp-3) var(--sp-4);flex-wrap:nowrap}
+.cal-toolbar>*{flex:none}
+.cal-toolbar .btn,
+.cal-toolbar .btn--sm,
+.cal-toolbar .cms-select,
+.cal-toolbar .select{height:36px;min-height:36px;border-radius:var(--radius-pill)}
+.cal-toolbar .btn--sm{padding-inline:var(--sp-4);font-size:var(--fs-sm)}
+.cal-toolbar .weeknav__btn{width:36px;height:36px}
+.cal-toolbar__nav{gap:var(--sp-1)}
+.cal-toolbar__title{min-width:0;margin-inline:var(--sp-2) var(--sp-3);font-size:var(--fs-md);white-space:nowrap}
+.cal-toolbar .cms-select,
+.cal-toolbar .cal-view{width:auto;min-width:126px}
+.cal-toolbar .cms-select__trigger{height:36px;border-radius:var(--radius-pill)}
+@media(max-width:860px){
+  .cal-toolbar{flex-wrap:wrap;min-height:0}
+  .cal-toolbar__title{order:-1;width:100%;margin-inline:0}
+  .cal-add{margin-left:auto}
+}
+
+/* ---------- Availability page layout ----------
+   Panels were direct children of .page with no spacing, so their borders sat flush
+   against each other and read as one overlapping block. The page stacks them with
+   a gap, and .panel__body restores the padding that panel--flush removes. */
+.page.is-active#availability{display:flex;flex-direction:column;gap:var(--sp-5)}
+.panel__body{padding:var(--sp-5)}
+.panel--flush .panel__head{margin:0}
+#availability .grid-2{align-items:start}
+#availability .page-actions--sticky{margin-top:0}
+
+/* Rail watermark: the wordmark only, since the header already carries the full
+   lockup. Rendered as an image because a CSS mask on this file renders empty. */
+.cms-rail__watermark{width:100%;flex:none;margin-top:auto;padding:var(--sp-4) var(--sp-2) var(--sp-3);pointer-events:none}
+.cms-rail__watermark img{width:100%;height:auto;display:block;opacity:.16}
+
+/* ============================================================
+   VISUAL PASS, 26 Jul: tone over outlines
+   ------------------------------------------------------------
+   Layout, information architecture, copy and behaviour are unchanged. This block
+   only changes how the surfaces read: fewer strokes, more surface separation.
+   Rules of thumb applied throughout:
+     1. A border is the last resort. Reach for surface tint, spacing, radius and
+        elevation first.
+     2. If a border survives, it is --cms-hairline and it runs on all four sides.
+     3. One accent. Deep teal carries primary action, selection and the live state.
+        Powder grey-blue carries neutral data. Nothing else introduces a hue.
+   ============================================================ */
+
+/* ---------- Controls: filled and quiet, not boxed ---------- */
+.input,.select,.textarea{background:var(--cms-surface-sunk);border-color:transparent}
+.input:hover,.select:hover,.textarea:hover{border-color:transparent;background:var(--color-bg-2)}
+.input:focus,.select:focus,.textarea:focus{background:var(--cms-surface);border-color:var(--color-accent);box-shadow:var(--focus-ring)}
+.input:disabled,.select:disabled,.textarea:disabled{background:var(--cms-surface-quiet)}
+.cms-select__trigger{background:var(--cms-surface-sunk);border-color:transparent}
+.cms-select__trigger:hover{background:var(--color-bg-2);border-color:transparent}
+.cms-select__trigger:focus-visible,.cms-select.is-open .cms-select__trigger{background:var(--cms-surface);border-color:var(--color-accent)}
+.cms-select__menu{border-color:var(--cms-hairline);box-shadow:var(--shadow-lg)}
+.cms-select__option.is-selected{background:var(--color-accent-soft);color:var(--color-accent-ink)}
+.cms-select__check{color:var(--color-accent)}
+/* Segmented controls lose their outer ring and rely on the sunk track instead. */
+.roleswitch,.lang,.shift-kind{border-color:transparent;background:var(--cms-surface-sunk)}
+.chip{background:var(--cms-surface-sunk);border-color:transparent}
+.chip:hover{background:var(--color-bg-2);border-color:transparent;color:var(--color-ink)}
+.btn--secondary{background:var(--cms-surface-sunk);border-color:transparent}
+.btn--secondary:hover{background:var(--color-bg-2)}
+.btn--ghost:hover{background:var(--cms-surface-sunk)}
+.cms-nav-toggle{border-color:transparent;background:var(--cms-surface-sunk)}
+.weeknav__btn{border-color:transparent;background:transparent;color:var(--color-ink-2)}
+.weeknav__btn:hover{background:var(--cms-surface-sunk);color:var(--color-ink)}
+
+/* ---------- Top stat cards: soft filled panels, number-led ---------- */
+.calendar-stats>div{gap:var(--sp-1);padding:var(--sp-4);border-color:var(--cms-hairline);box-shadow:var(--shadow-sm)}
+.calendar-stats b{font-size:var(--fs-xl);font-weight:var(--fw-bold);color:var(--color-ink);line-height:1.1}
+.calendar-stats span{font-size:var(--fs-sm);color:var(--color-ink-3);font-weight:var(--fw-medium)}
+
+/* ---------- Calendar: one primary surface ----------
+   Toolbar, grid and legend now share a single white card. The dividing rules that
+   used to cut the card into three boxes are gone; padding does that job. */
+.calendar-panel{border-color:var(--cms-hairline);box-shadow:var(--shadow-md);border-radius:var(--r-panel)}
+.cal-toolbar{border-bottom:0;padding:var(--sp-4) var(--sp-4) var(--sp-3)}
+.cal-toolbar__title{font-weight:var(--fw-bold);color:var(--color-ink)}
+.cal-toolbar .select,.cal-toolbar .cal-view,.cal-toolbar .cms-select__trigger{background:var(--cms-surface-sunk);border-color:transparent}
+.calendar-scroll{padding:0 var(--sp-4) var(--sp-2)}
+
+/* Grid lines: a single hairline gap instead of a ring around every cell. */
+.doctor-cal-month{gap:1px;background:var(--cal-line);border-radius:var(--radius-xs);overflow:hidden}
+.month-head{background:var(--cms-surface-quiet);padding:var(--sp-2) var(--sp-3) var(--sp-3);text-align:left;
+  color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.month-day{box-shadow:none;background:var(--cms-surface);padding:var(--sp-2)}
+.month-day.is-out{background:var(--cms-surface-quiet);color:var(--color-ink-3)}
+/* Weekend columns: a powder-grey-blue whisper, not a blue block. Columns 6 and 7. */
+.doctor-cal-month>*:nth-child(7n+6),.doctor-cal-month>*:nth-child(7n){background:var(--cms-tint-powder)}
+.doctor-cal-month>.month-head:nth-child(7n+6),.doctor-cal-month>.month-head:nth-child(7n){background:var(--cms-surface-quiet)}
+.month-day.is-out:nth-child(7n+6),.month-day.is-out:nth-child(7n){background:var(--cms-surface-quiet)}
+/* Today: a quiet teal wash plus a filled marker. No ring, no outline. */
+.month-day.is-today{background:var(--cms-tint-accent)}
+.month-day.is-today .month-day__number{background:var(--color-accent);color:var(--color-on-accent)}
+.month-day__number:hover{background:var(--cms-surface-sunk)}
+.month-day.is-today .month-day__number:hover{background:var(--color-accent-hover)}
+/* Non-working days sit one step deeper in the same powder tint as the weekend
+   columns, so "closed" reads as tone rather than as another colour. */
+.calendar-panel .month-day.is-off,.calendar-panel.is-shift-mode .month-day.is-off{
+  background:color-mix(in srgb,var(--color-powder) 40%,var(--color-surface))}
+
+/* ---------- Appointment chips: one tonal family ----------
+   Emphasis, not decoration: waiting (needs you now) sits deepest in teal,
+   scheduled sits mid in powder, completed steps back to a quiet warm neutral. */
+.cal-event{border:0;padding:5px var(--sp-2);border-radius:var(--radius-xs);
+  background:var(--chip-neutral-bg);color:var(--chip-neutral-ink)}
+.cal-event:hover{background:color-mix(in srgb,var(--chip-neutral-bg) 82%,var(--color-ink))}
+.cal-event--waiting,.cal-event--waiting:hover{background:var(--chip-active-bg);color:var(--chip-active-ink);border:0}
+.cal-event--waiting:hover{background:color-mix(in srgb,var(--chip-active-bg) 86%,var(--color-accent))}
+.cal-event--done,.cal-event--done:hover{background:var(--chip-quiet-bg);color:var(--chip-quiet-ink);border:0;font-weight:var(--fw-medium)}
+.cal-more{color:var(--color-ink-3);font-weight:var(--fw-medium)}
+/* Aqua tints are light, so they carry navy ink rather than the accent ink, which
+   only just missed AA at 12px. */
+.shift-chip{background:var(--color-accent-soft);color:var(--color-ink)}
+.shift-chip--off{background:var(--cms-surface-sunk);color:var(--color-ink-3)}
+.shift-chip.is-custom{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-accent) 40%,transparent)}
+
+/* ---------- Day view: hairline rhythm, no vertical rule ---------- */
+.doctor-cal-day{background:var(--cms-surface);border-radius:var(--radius-xs);overflow:hidden}
+.day-time{border-top-color:var(--cal-line);color:var(--color-ink-3);font-weight:var(--fw-medium)}
+.day-lane{border-top-color:var(--cal-line);border-left:0;background:transparent}
+.doctor-cal-day>*:nth-child(1),.doctor-cal-day>*:nth-child(2){border-top:0}
+.day-event{border:0;background:var(--chip-neutral-bg);color:var(--chip-neutral-ink);box-shadow:var(--shadow-sm)}
+.day-event:hover{background:color-mix(in srgb,var(--chip-neutral-bg) 82%,var(--color-ink))}
+.day-event--waiting{background:var(--chip-active-bg);color:var(--chip-active-ink)}
+.day-event--waiting:hover{background:color-mix(in srgb,var(--chip-active-bg) 86%,var(--color-accent))}
+.day-event--done{background:var(--chip-quiet-bg);color:var(--chip-quiet-ink)}
+.day-event--done:hover{background:var(--color-bg-2)}
+
+/* ---------- Legend: swatches match the chips exactly ---------- */
+.cal-legend{border-top-color:var(--cms-hairline);padding:var(--sp-3) var(--sp-4) var(--sp-4);color:var(--color-ink-2)}
+.cal-legend__swatch{border:0;border-radius:var(--radius-xs);background:var(--chip-neutral-bg)}
+.cal-legend__swatch--waiting{background:var(--chip-active-bg)}
+.cal-legend__swatch--done{background:var(--chip-quiet-bg)}
+.cal-legend__swatch--work{background:var(--color-accent-soft)}
+.cal-legend__swatch--off{background:var(--cms-surface-sunk)}
+
+/* ---------- Remaining strokes across the back office ---------- */
+.panel__head,.cfg-row,.rx-item,.avail-row+.avail-row,.ctx__sec,.cms-modal__head,.cms-modal__foot{border-color:var(--cms-hairline)}
+.cms-modal__dialog{border-color:transparent;box-shadow:var(--shadow-lg)}
+.cms-modal__foot{background:var(--cms-surface-sunk)}
+.sku{border-color:var(--cms-hairline)}
+.sku:hover{border-color:transparent;background:var(--color-accent-soft)}
+/* The chat sat directly on the page canvas at almost the same value, so it read as
+   loose text rather than a conversation. It is now a card in its own right: white
+   panel, sunken thread inside it, white bubbles on top. Three clear steps. */
+.chat{background:var(--cms-surface);border:1px solid var(--cms-hairline);border-radius:var(--r-panel);
+  box-shadow:var(--shadow-sm);padding:var(--sp-4);gap:var(--sp-4)}
+.chat__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.chat__head .hint{font-weight:var(--fw-regular)}
+.chat__thread{background:var(--color-bg-2);border-color:transparent;border-radius:var(--radius-md);min-height:260px}
+.bubble--in{border-color:transparent;background:var(--cms-surface);box-shadow:var(--shadow-sm)}
+.composer .input{background:var(--cms-surface-sunk)}
+.composer .input:focus{background:var(--cms-surface)}
+.consult-slot,.avail-exception,.shift-editor,.page-actions--sticky,.offline-state,.admit-banner,.ready{border-color:var(--cms-hairline)}
+.shift-choice{border-color:transparent;background:var(--cms-surface-sunk)}
+.shift-choice:hover{border-color:transparent;background:var(--color-accent-soft)}
+.empty-state__art{background:var(--cms-surface-sunk)}
+.hstep__s::before{border-color:var(--color-line-strong)}
+
+/* ---------- Consultation history rows (pre-consult panel) ----------
+   Same affordance as the queue rows on the dashboard: a full-width button, a
+   quiet icon, and the status carried by the badge. Separation between rows is a
+   hairline, never a coloured edge. */
+.history-row{appearance:none;width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-5);border:0;border-bottom:1px solid var(--cms-hairline);background:transparent;color:var(--color-ink);
+  font:inherit;text-align:left;cursor:pointer;transition:background var(--dur-micro) var(--ease-out)}
+.history-row:hover{background:var(--cms-surface-quiet)}
+.history-row:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.history-row__icon{width:38px;height:38px;border-radius:var(--radius-sm);display:grid;place-items:center;
+  background:var(--color-accent-soft);color:var(--color-ink)}
+.history-row__icon svg{width:19px;height:19px}
+.history-row__body{display:flex;flex-direction:column;min-width:0}
+.history-row__body b{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.history-row__body small{color:var(--color-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-foot{padding:var(--sp-3) var(--sp-5) var(--sp-4)}
+
+/* ---------- Consultation room (F13/F14) ----------
+   Video is the default state. Voice is a fallback, so the stage keeps its shape
+   and swaps its content rather than collapsing, which stops the page jumping
+   when a camera goes off mid-sentence. */
+.room{--room-shell:color-mix(in srgb,var(--color-ink) 94%,var(--color-brand-black));
+  --room-stage:color-mix(in srgb,var(--color-ink) 78%,var(--color-brand-black));
+  --room-ink:var(--color-surface);
+  --room-ink-quiet:color-mix(in srgb,var(--color-surface) 68%,transparent);
+  border-radius:var(--r-panel);overflow:hidden;background:var(--room-shell);color:var(--room-ink);box-shadow:var(--shadow-md)}
+/* Meeting bar: the provider is named, so nobody mistakes this for Krane's own stack. */
+.room__bar{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-4);font-size:var(--fs-xs)}
+.room__provider{display:inline-flex;align-items:center;gap:6px;font-weight:var(--fw-semibold);letter-spacing:.01em}
+.room__provider svg{width:15px;height:15px}
+.room__meta{color:var(--room-ink-quiet);font-variant-numeric:tabular-nums}
+.room__meta--secure{display:inline-flex;align-items:center;gap:5px}
+.room__meta--secure svg{width:13px;height:13px}
+.room__rec{display:inline-flex;align-items:center;gap:6px;color:var(--room-ink-quiet)}
+.room__rec i{width:7px;height:7px;border-radius:var(--radius-pill);background:var(--color-danger);flex:none}
+.room__timer{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--room-ink-quiet)}
+/* Stage: the participant video fills the frame, the way a real call does. */
+/* Fixed height rather than an aspect ratio: the panel width varies with the context
+   column, and a ratio box left letterboxed gaps beside the video. */
+.room__stage{position:relative;height:380px;background:var(--room-stage);overflow:hidden}
+.room__tile{position:relative;width:100%;height:100%;overflow:hidden;background:var(--room-stage)}
+.room__video{width:100%;height:100%;object-fit:cover;display:block}
+.room__tile--self{position:absolute;top:var(--sp-3);right:var(--sp-3);width:22%;min-width:132px;height:auto;
+  aspect-ratio:4 / 3;border-radius:var(--radius-xs);box-shadow:var(--shadow-md)}
+.room__label{position:absolute;left:var(--sp-3);bottom:var(--sp-3);padding:3px 9px;border-radius:var(--radius-xs);
+  background:color-mix(in srgb,var(--color-brand-black) 62%,transparent);color:var(--room-ink);
+  font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.room__tile--self .room__label{left:6px;bottom:6px;padding:2px 7px}
+/* Camera off is Zoom's own avatar tile, not a Krane message panel. */
+.room__tile-off{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:var(--sp-2);background:var(--room-stage)}
+.room__avatar{width:72px;height:72px;border-radius:var(--radius-pill);display:grid;place-items:center;
+  background:color-mix(in srgb,var(--color-surface) 14%,transparent);font-family:var(--font-display);
+  font-size:var(--fs-xl);font-weight:var(--fw-bold)}
+.room__tile--self .room__avatar{width:38px;height:38px;font-size:var(--fs-sm)}
+.room__tile-off-text{font-size:var(--fs-sm);color:var(--room-ink-quiet)}
+.room__tile--self .room__tile-off-text{display:none}
+.room.is-remote-off .room__tile--remote .room__tile-off,
+.room.is-self-off .room__tile--self .room__tile-off{display:flex}
+/* Controls: Zoom's own labels and order, so the build matches what the doctor sees. */
+/* The grid track needs an explicit zero minimum, otherwise the control bar's own
+   width becomes the column's minimum and pushes the context panel off screen. */
+.consult{grid-template-columns:minmax(0,1fr) 340px}
+.consult>.stack,.room{min-width:0}
+.room__controls{display:flex;align-items:center;gap:var(--sp-1);padding:var(--sp-2) var(--sp-3);overflow-x:auto;scrollbar-width:none}
+.room__controls::-webkit-scrollbar{display:none}
+.room__ctl{appearance:none;display:inline-flex;align-items:center;gap:7px;height:var(--ctrl-h);padding:0 var(--sp-3);
+  border:0;border-radius:var(--radius-xs);background:transparent;color:var(--room-ink);
+  font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-medium);cursor:pointer;white-space:nowrap;flex:none;
+  transition:background var(--dur-micro) var(--ease-out)}
+.room__ctl svg{width:19px;height:19px;flex:none}
+/* Thai control labels run longer than the English ones and must not wrap to two
+   lines inside a fixed-height bar. */
+.room__ctl span{white-space:nowrap}
+.room__ctl:hover{background:color-mix(in srgb,var(--color-surface) 12%,transparent)}
+.room__ctl[aria-pressed="true"]{color:var(--color-danger-soft)}
+.room__ctl--icon{padding-inline:var(--sp-2);gap:5px}
+.room__count{font-style:normal;font-size:var(--fs-xs);font-weight:var(--fw-semibold);
+  background:color-mix(in srgb,var(--color-surface) 18%,transparent);border-radius:var(--radius-pill);padding:0 6px}
+.room__ctl--leave{margin-left:auto;padding-inline:var(--sp-4);border-radius:var(--radius-pill);
+  background:var(--color-danger);font-weight:var(--fw-semibold)}
+.room__ctl--leave:hover{background:color-mix(in srgb,var(--color-danger) 82%,var(--color-brand-black))}
+/* prototype chrome: the remote tile doubles as the patient's camera control so the
+   camera-off state stays demonstrable with no fake button in Zoom's toolbar. */
+.room__tile--remote{cursor:pointer}
+/* Krane's own line, outside the embed: why the room changed and how to get video back. */
+.room__notice{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;
+  padding:var(--sp-3) var(--sp-4);background:var(--color-accent-hover);font-size:var(--fs-sm);color:var(--room-ink-quiet)}
+.room[data-room-mode="ended"] .room__stage,.room[data-room-mode="ended"] .room__controls{display:none}
+.room[data-room-mode="ended"] .room__notice{background:var(--color-ink)}
+@media(max-width:860px){
+  .room__stage{height:260px}
+  .room__ctl--leave{margin-left:auto}
+  .room__bar{flex-wrap:wrap;row-gap:var(--sp-1)}
+  .room__timer{margin-left:0}
+}
+
+/* ---------- Date and time pickers ----------
+   The native browser popover is square, blue and English only. These replace it
+   with the CMS surface system: soft filled trigger, rounded panel, teal
+   selection. The real input stays in the DOM holding the value. */
+.cms-picker{position:relative;display:inline-flex;width:100%;height:var(--ctrl-h);min-width:0;vertical-align:middle}
+.cms-picker__native{position:absolute!important;width:1px!important;height:1px!important;margin:0!important;padding:0!important;
+  border:0!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+.cms-picker__trigger{appearance:none;width:100%;height:100%;display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sp-2);padding:0 var(--sp-3);border:1px solid transparent;border-radius:var(--r-control);
+  background:var(--cms-surface-sunk);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);
+  font-weight:var(--fw-medium);text-align:left;cursor:pointer;font-variant-numeric:tabular-nums;
+  transition:background var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
+.cms-picker__trigger:hover{background:var(--color-bg-2)}
+.cms-picker__trigger:focus-visible,.cms-picker.is-open .cms-picker__trigger{outline:none;background:var(--cms-surface);
+  border-color:var(--color-accent);box-shadow:var(--focus-ring)}
+.cms-picker__value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cms-picker.is-empty .cms-picker__value{color:var(--color-ink-3)}
+.cms-picker__icon{width:17px;height:17px;flex:none;color:var(--color-ink-3)}
+.cms-picker.is-disabled{opacity:.55;pointer-events:none}
+/* Panel: same rounded, borderless surface as the rest of the back office. */
+.cms-picker__pop{position:fixed;z-index:1000;padding:var(--sp-3);border-radius:var(--r-panel);
+  background:var(--cms-surface);box-shadow:var(--shadow-lg)}
+.cms-picker__pop--date{width:290px}
+.cms-picker__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-bottom:var(--sp-2)}
+.cms-picker__month{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.cms-picker__nav{width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:var(--radius-pill);
+  background:transparent;color:var(--color-ink-2);font-size:var(--fs-md);line-height:1;cursor:pointer}
+.cms-picker__nav:hover{background:var(--cms-surface-sunk);color:var(--color-ink)}
+.cms-picker__weekdays,.cms-picker__grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cms-picker__weekdays span{padding:4px 0;text-align:center;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-3)}
+.cms-picker__day{height:34px;border:0;border-radius:var(--radius-xs);background:transparent;color:var(--color-ink);
+  font:inherit;font-size:var(--fs-sm);font-variant-numeric:tabular-nums;cursor:pointer;
+  transition:background var(--dur-micro) var(--ease-out)}
+.cms-picker__day:hover{background:var(--cms-surface-sunk)}
+.cms-picker__day.is-out{color:var(--color-ink-3)}
+.cms-picker__day.is-today{font-weight:var(--fw-bold);color:var(--color-accent-ink)}
+.cms-picker__day.is-selected{background:var(--color-accent);color:var(--color-on-accent);font-weight:var(--fw-semibold)}
+.cms-picker__day.is-selected:hover{background:var(--color-accent-hover)}
+.cms-picker__day:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.cms-picker__foot{display:flex;justify-content:flex-end;margin-top:var(--sp-2)}
+.cms-picker__today{border:0;background:transparent;color:var(--color-accent);font:inherit;font-size:var(--fs-sm);
+  font-weight:var(--fw-semibold);cursor:pointer;padding:6px 8px;border-radius:var(--radius-xs)}
+.cms-picker__today:hover{background:var(--color-accent-soft)}
+/* Time: a scannable list rather than a stepper, since clinic hours land on the quarter. */
+.cms-picker__pop--time{width:132px;padding:var(--sp-2)}
+.cms-picker__times{max-height:248px;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.cms-picker__time{border:0;border-radius:var(--radius-xs);background:transparent;color:var(--color-ink-2);
+  font:inherit;font-size:var(--fs-sm);font-variant-numeric:tabular-nums;text-align:left;padding:7px 10px;cursor:pointer}
+.cms-picker__time:hover{background:var(--cms-surface-sunk);color:var(--color-ink)}
+.cms-picker__time.is-selected{background:var(--color-accent);color:var(--color-on-accent);font-weight:var(--fw-semibold)}
+.cms-picker__time:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+/* The width rules were written for the bare input, which the picker now wraps. */
+.avail-row__times .cms-picker{width:118px}
+.shift-editor__times .cms-picker{width:120px}
+.shift-modal__times .cms-picker{width:130px}
+
+/* ---------- Consultation record screen ---------- */
+.record-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:var(--sp-4);align-items:start}
+/* A note is a quiet filled block. Author and time sit above the body so a note
+   from another doctor is never mistaken for your own. */
+.note-entry{padding:var(--sp-4);border-radius:var(--radius-sm);background:var(--cms-surface-sunk)}
+.note-entry__head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-2)}
+.note-entry__head b{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.note-entry__body{margin:0;color:var(--color-ink-2);font-size:var(--fs-sm);line-height:var(--lh-base)}
+.record-rx{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) 0;border-bottom:1px solid var(--cms-hairline)}
+.record-rx:last-of-type{border-bottom:0}
+.record-rx__body{display:flex;flex-direction:column;flex:1;min-width:0}
+.record-rx__body small{color:var(--color-ink-3);font-size:var(--fs-sm)}
+.record-empty{padding:var(--sp-4);border-radius:var(--radius-sm);background:var(--cms-surface-sunk);color:var(--color-ink-2);font-size:var(--fs-sm)}
+/* Patient photos. Big enough to judge a hairline at a glance, and each one opens
+   full size. The frame is a filled surface, so a slow or missing image degrades
+   to an honest blank panel rather than a broken-image icon. */
+.record-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--sp-3)}
+.record-photo{appearance:none;display:flex;flex-direction:column;gap:var(--sp-2);padding:0;border:0;background:transparent;
+  color:inherit;font:inherit;text-align:left;cursor:pointer}
+.record-photo img{width:100%;aspect-ratio:3 / 4;object-fit:cover;display:block;border-radius:var(--radius-sm);
+  background:var(--cms-surface-sunk);transition:transform var(--dur-micro) var(--ease-out)}
+.record-photo:hover img{transform:scale(1.01)}
+.record-photo:focus-visible{outline:none}
+.record-photo:focus-visible img{box-shadow:var(--focus-ring)}
+.record-photo.is-missing img{visibility:hidden}
+.record-photo.is-missing{position:relative}
+.record-photo__cap{display:flex;flex-direction:column}
+.record-photo__cap b{font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+.record-photo__cap small{color:var(--color-ink-3)}
+.panel__head--bare{padding:0;border-bottom:0}
+.cms-modal__dialog--wide{width:min(560px,100%)}
+.photo-viewer__body{padding:var(--sp-4);background:var(--cms-surface-sunk)}
+.photo-viewer__body img{width:100%;max-height:70vh;object-fit:contain;display:block;border-radius:var(--radius-sm)}
+@media(max-width:980px){.record-grid{grid-template-columns:1fr}}
+
+/* ---- client-demo scoping (prototype chrome, remove after the demo) ----
+   Marks rows that are outside the golden demo flow. Scope and status are shown by a
+   badge plus dimming only, never by a coloured single-sided edge (DESIGN.md 7c). */
+.demo-out-of-scope{opacity:.42}
+.demo-out-of-scope:hover{background:none}
+.golden-demo-tag{margin-left:var(--sp-2)}
+.golden-order-summary{margin-bottom:var(--sp-4)}
+
+/* Kept for the fulfilment line in Admin, which flips between resolved and stalled. */
+.alertline--ok{background:color-mix(in srgb,var(--color-success) 12%,var(--color-surface));
+  color:var(--color-success)}
