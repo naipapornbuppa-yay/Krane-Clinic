@@ -253,6 +253,7 @@
     ["ส่งถึงบ้าน", "Delivered home"], ["จัดส่งทั่วประเทศในบรรจุภัณฑ์มิดชิด", "Nationwide delivery in discreet packaging"],
     ["แพทย์มีใบอนุญาต", "Licensed doctors"], ["ปรึกษาส่วนตัวแบบ 1 ต่อ 1", "Private one-to-one consultation"],
     ["ข้อมูลเป็นส่วนตัว", "Private by design"], ["ดูแลตามมาตรฐานความปลอดภัย", "Protected to recognised security standards"],
+    ["เวลาทำการ 09:00-24:00 น.", "Open daily 09:00-24:00"], ["เปิดให้บริการทุกวัน", "Open every day"],
     ["แผนลดน้ำหนัก", "Weight-loss plan"], ["ดูแลโดยแพทย์แบบเฉพาะบุคคล", "Personalised doctor-led care"],
     ["เริ่มตอนนี้", "Start now"], ["แผนฟื้นฟูเส้นผม", "Hair restoration plan"],
     ["แผนฟื้นฟูสมรรถภาพเพศชาย", "Men's performance care"],
