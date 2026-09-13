@@ -638,10 +638,6 @@
     menuOpen?.setAttribute("aria-expanded", "false");
   });
   menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => closeMenu()));
-  mobileQuery.addEventListener("change", (event) => {
-    if (!event.matches) closeMenu();
-  });
-
   const navMenus = [...document.querySelectorAll("[data-nav-menu]")];
   const hoverNavQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
   let navCloseTimer = 0;
