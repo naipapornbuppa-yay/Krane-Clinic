@@ -2356,6 +2356,44 @@ body.modal-open{overflow:hidden}
 .typing .t-dot:nth-child(3){animation-delay:.3s}
 @keyframes typing-bob{0%,60%,100%{transform:none;opacity:.45}30%{transform:translateY(-4px);opacity:1}}
 
+/* The landing-page phone is a conversation demo, not a prescription preview.
+   Incoming and outgoing messages enter from their own side so the exchange
+   reads as a real back-and-forth, while the production consultation keeps its
+   normal prescription hand-off below. The active selector restarts the sequence
+   every time the showcase cycles back from video to chat. */
+#consult.consult--showcase-chat [data-rx-bar],
+#consult.consult--showcase-chat [data-plan-card]{display:none!important}
+#consult.consult--showcase-chat .bubble--in{
+  --chat-enter-x:-20px;
+  --chat-overshoot-x:3px;
+}
+#consult.consult--showcase-chat .bubble--out{
+  --chat-enter-x:20px;
+  --chat-overshoot-x:-3px;
+}
+#consult.consult--showcase-chat.active .chat-body>.bubble{
+  opacity:0;
+  animation:consult-chat-bubble-in 480ms var(--ease-spring) both;
+}
+#consult.consult--showcase-chat.active .chat-body>.bubble:nth-of-type(1){animation-delay:120ms}
+#consult.consult--showcase-chat.active .chat-body>.bubble:nth-of-type(2){animation-delay:540ms}
+#consult.consult--showcase-chat.active .chat-body>.bubble:nth-of-type(3){animation-delay:960ms}
+#consult.consult--showcase-chat.active .chat-body>.bubble:nth-of-type(4){animation-delay:1380ms}
+#consult.consult--showcase-chat.active .chat-body>.bubble:nth-of-type(5){animation-delay:1800ms}
+#consult.consult--showcase-chat.active .chat-body>.typing{
+  opacity:0;
+  animation:consult-chat-typing-in 300ms var(--ease-out) 2320ms both;
+}
+@keyframes consult-chat-bubble-in{
+  0%{opacity:0;transform:translateX(var(--chat-enter-x)) scale(.94)}
+  68%{opacity:1;transform:translateX(var(--chat-overshoot-x)) scale(1.015)}
+  100%{opacity:1;transform:none}
+}
+@keyframes consult-chat-typing-in{
+  from{opacity:0;transform:translateX(-12px) scale(.96)}
+  to{opacity:1;transform:none}
+}
+
 /* ---------- Determinate matching bar (finding your doctor) ---------- */
 .matchbar{height:6px;border-radius:var(--radius-pill);background:var(--color-bg-2);overflow:hidden;width:100%}
 .matchbar>span{display:block;height:100%;width:0;background:var(--color-accent);border-radius:inherit}
@@ -2446,6 +2484,8 @@ body.modal-open{overflow:hidden}
   .matchbar>span{width:100%}
   .stage-link>span{transform:scaleX(1)}
   .btn,.option,.choice-card,.choice-card .cc-chev{transition:none}
+  #consult.consult--showcase-chat.active .chat-body>.bubble,
+  #consult.consult--showcase-chat.active .chat-body>.typing{opacity:1;animation:none}
 }
 
 /* Thai letter-spacing fix: Thai never takes tracking. body.lang-th is set by i18n.js. */
