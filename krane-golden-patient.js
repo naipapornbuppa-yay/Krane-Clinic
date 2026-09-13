@@ -50,47 +50,14 @@
     updateTracking();
   }
 
-  /* Thai labels are set here rather than left to i18n.js, which renders the shared state
-     word "Dispatched" as "จัดส่งแล้ว" and contradicts the timeline step "กำลังจัดส่ง"
-     on the same screen. These match the admin status control's wording. */
-  const statusTH = {
-    "Order received": "ชำระแล้ว",
-    "Pharmacy accepted": "ร้านยารับออเดอร์",
-    "Preparing": "กำลังเตรียม",
-    "Dispatched": "กำลังจัดส่ง",
-    "Delivered": "จัดส่งสำเร็จ"
-  };
-
+  /* The app owns the order's stage: one table in krane-b2c.html drives the
+     timeline, the header badge and the activity card together. This overlay
+     used to light steps by their position in a seven-row timeline, so once the
+     timeline became five rows its default "Preparing" lit "out for delivery"
+     under a header that said preparing (client, 13 Sep). It now only asks the
+     app to redraw when the admin CMS moves the order. */
   function updateTracking() {
-    const tracking = document.getElementById("tracking");
-    if (!tracking) return;
-    const state = demo.readState();
-    const steps = Array.from(tracking.querySelectorAll(".timeline .step"));
-    const indexByStatus = {
-      "Order received": 1,
-      "Pharmacy accepted": 2,
-      "Preparing": 3,
-      "Dispatched": 5,
-      "Delivered": 6
-    };
-    const activeIndex = indexByStatus[state.fulfilmentStatus] == null ? 3 : indexByStatus[state.fulfilmentStatus];
-    steps.forEach(function (step, index) {
-      step.classList.toggle("done", index < activeIndex || (state.fulfilmentStatus === "Delivered" && index <= activeIndex));
-      step.classList.toggle("active", index === activeIndex && state.fulfilmentStatus !== "Delivered");
-    });
-    let badge = tracking.querySelector("[data-golden-tracking-status]");
-    if (!badge) {
-      const top = tracking.querySelector(".screen__top");
-      if (!top) return;
-      badge = document.createElement("span");
-      badge.dataset.goldenTrackingStatus = "";
-      /* Status is a badge, never a coloured edge (WORKING-RULES rule 1). */
-      badge.className = "badge badge--ok";
-      top.appendChild(badge);
-    }
-    badge.textContent = isThai()
-      ? (statusTH[state.fulfilmentStatus] || state.fulfilmentStatus)
-      : state.fulfilmentStatus;
+    if (typeof window.kraneSyncOrderProgress === "function") window.kraneSyncOrderProgress();
   }
 
   document.addEventListener("click", function (event) {

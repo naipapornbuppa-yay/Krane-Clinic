@@ -54,10 +54,11 @@
     });
     document.querySelectorAll('.bottomnav a').forEach(function (link) {
       var target = link.dataset.go || '';
-      // The first tab is the home dashboard, not a profile — this script paints
-      // over the inline sprite, so the glyph has to change here too.
+      // The first tab is the home dashboard, not a profile, and the last tab is the
+      // account (client, 13 Sep). This script paints over the inline sprite, so the
+      // glyphs have to change here too.
       var name = target === 'profile' ? 'house' : target.includes('activit') || target === 'tracking' ? 'package' :
-        target === 'notifications' ? 'bell' : target === 'settings' ? 'sliders-horizontal' : 'house';
+        target === 'notifications' ? 'bell' : target === 'settings' ? 'user-round' : 'house';
       setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
     });
     document.querySelectorAll('.notif').forEach(function (row) {
