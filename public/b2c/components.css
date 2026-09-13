@@ -2969,11 +2969,11 @@ body.lang-th *{letter-spacing:normal}
 }
 /* The label is short and fixed; it was breaking mid-word ("ถัด / ไป") to make
    room for a long date and doctor name. Hold the label, wrap the value. */
-.followup-details{display:grid;padding:4px var(--sp-3);background:var(--color-bg-soft);border-radius:var(--radius-xs)}
+.followup-details{display:grid;padding:4px var(--sp-3);background:rgba(255,255,255,.14);border-radius:var(--radius-xs)}
 .followup-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:var(--sp-3);padding:7px 0}
-.followup-row+.followup-row{border-top:1px solid var(--color-line)}
-.followup-row>.hint{min-width:0}
-.followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3}
+.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.55)}
+.followup-row>.hint{min-width:0;color:rgba(255,255,255,.68)}
+.followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3;color:#fff}
 @media(max-width:430px){
   .followup-details{padding-inline:10px}
   .followup-row{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:8px}
@@ -3121,14 +3121,22 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 /* Five buttons across two cards was the clutter. The card opens its own refill;
    the follow-up keeps its entry point in the banner above. */
 .treatment-card{width:100%;position:relative;display:flex;flex-direction:column;gap:var(--sp-3);
-  text-align:left;color:var(--color-ink);cursor:pointer;
-  transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+  --treatment-campaign:var(--color-accent-soft);
+  --treatment-surface:#666e9f;
+  overflow:hidden;text-align:left;color:#fff;cursor:pointer;
+  border:0;background:var(--treatment-surface);
+  transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.treatment-card[data-category="sleep-stress"]{--treatment-campaign:var(--color-accent-soft);--treatment-surface:#666e9f}
+/* Match the landing-page campaign families, but deepen them to the same visual
+   weight as the supplied periwinkle card so white clinical copy stays legible. */
+.treatment-card[data-category="hair-skin"]{--treatment-campaign:#86afa4;--treatment-surface:#5f817a}
+#profile .treatment-card{border:0;box-shadow:0 8px 24px color-mix(in srgb,var(--treatment-surface) 22%,rgba(17,27,48,.08))}
 .treatment-card:active{transform:scale(.995)}
-.treatment-card:hover{box-shadow:var(--shadow-card-raised)}
+.treatment-card:hover{box-shadow:0 12px 30px color-mix(in srgb,var(--treatment-surface) 30%,rgba(17,27,48,.12))}
 .treatment-card .between{width:100%}
 .treatment-card>.between:first-child{padding-right:22px}
 .treatment-card__go{position:absolute;top:var(--sp-3);right:var(--sp-3);width:18px;height:18px;
-  color:var(--color-ink-3)}
+  color:rgba(255,255,255,.72)}
 .treatment-card__go svg{width:18px;height:18px}
 @media(prefers-reduced-motion:reduce){.treatment-card:active{transform:none}}
 /* One regular doctor per patient; changing them is a conversation with a person,
@@ -3307,27 +3315,26 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .activity-card__type{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--radius-pill);
   background:var(--color-bg-2);color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);line-height:1;white-space:nowrap}
 .activity-card__type .ui-icon{width:14px;height:14px}
-.activity-card__state{display:flex;flex-direction:column;align-items:flex-end;gap:7px;min-width:0}
-.activity-card__date{display:flex;flex-direction:column;align-items:flex-end;gap:2px;
-  font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2);text-align:right}
+/* Category, not status: each family keeps one quiet, repeatable colour while
+   the right-hand badge remains reserved for fulfilment/progress state. */
+.activity-card__type--medicine{background:var(--state-progress);color:var(--state-progress-ink)}
+.activity-card__type--program{background:#ebe5f5;color:#5b437f}
+.activity-card__type--general{background:var(--state-positive);color:var(--state-positive-ink)}
+.activity-card__tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+/* The date is how a reader finds an order in a list of them, so it takes the
+   top right at reading weight instead of sitting small under the badge. */
+.activity-card__date{display:flex;flex:none;flex-direction:column;align-items:flex-end;gap:2px;
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--color-ink);
+  text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .activity-card__date small{font-size:11px;font-weight:var(--fw-regular);color:var(--color-ink-3)}
-.activity-card__thumbs{display:flex;gap:var(--sp-2)}
-.activity-card__thumb{flex:none;width:56px;height:56px;display:grid;place-items:center;overflow:hidden;
-  border-radius:var(--radius-md);background:var(--surface-sunken)}
-.activity-card__thumb img{width:100%;height:100%;object-fit:contain}
 .activity-card__doctor{display:flex;align-items:center;gap:var(--sp-3)}
 .activity-card__avatar{flex:none;width:44px;height:44px;border-radius:var(--radius-pill);object-fit:cover}
 .activity-card__doctor-body{display:flex;flex-direction:column;gap:2px;min-width:0}
 .activity-card__doctor-body strong{font-size:var(--fs-sm)}
 .activity-card__doctor-body em{font-style:normal;font-size:var(--fs-xs);color:var(--color-accent);font-weight:var(--fw-medium)}
 .activity-card--program{gap:10px}
-.activity-card--program .activity-card__head{align-items:center}
-.activity-card--program .activity-card__state{gap:0}
 .activity-card--program .activity-card__doctor{align-items:flex-start}
 .activity-card--program .activity-card__avatar{width:40px;height:40px}
-.activity-card__program-time{display:flex;flex-wrap:wrap;gap:2px 8px;margin-top:3px;
-  color:var(--color-ink-3);font-size:11px;line-height:1.35;font-variant-numeric:tabular-nums}
-.activity-card__program-time small{font:inherit;color:inherit}
 .activity-card--program .activity-card__foot{padding-top:10px}
 .activity-card__foot{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
   padding-top:var(--sp-3);border-top:1px solid var(--color-line);
@@ -3380,8 +3387,8 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    that without being opened (client, 10 Sep). */
 .treatment-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);width:100%;padding-right:22px}
 .treatment-card__title{display:flex;flex-direction:column;gap:2px;min-width:0}
-.treatment-card__title strong{font-size:var(--fs-md);line-height:1.3}
-.treatment-card__programme{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.treatment-card__title strong{font-size:var(--fs-md);line-height:1.3;color:#fff}
+.treatment-card__programme{font-size:var(--fs-xs);color:rgba(255,255,255,.68)}
 .treatment-card__meta{display:flex;flex-wrap:wrap;gap:6px var(--sp-4)}
 .treatment-meta{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--color-ink-2)}
 .treatment-meta .ui-icon{flex:none;color:var(--color-ink-3)}
@@ -3516,16 +3523,28 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   .my-documents__intro .h1{font-size:var(--fs-xl)}
 }
 
-/* What is in the parcel, on the tracking screen. */
-.delivery-items{display:flex;flex-direction:column;gap:var(--sp-3)}
-.delivery-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px var(--sp-3)}
-.delivery-item__name{grid-column:1;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink)}
-.delivery-item__note{grid-column:1;font-size:var(--fs-xs);color:var(--color-ink-3)}
-.delivery-item__price{grid-column:2;grid-row:1 / span 2;align-self:center;font-size:var(--fs-sm);font-variant-numeric:tabular-nums}
-.delivery-item--total{padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
+/* What is in the parcel, on the tracking screen. The rows mirror checkout:
+   product and description on the left, then price and prescribed quantity as
+   a right-aligned two-line stack. */
+.delivery-items{display:flex;flex-direction:column;gap:0}
+.delivery-item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-3) 0}
+.delivery-item+.delivery-item{border-top:1px solid var(--color-line)}
+.delivery-item__thumb{width:48px;height:48px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--color-line);border-radius:var(--radius-md);background:#fff}
+.delivery-item__thumb img{width:100%;height:100%;display:block;object-fit:contain}
+.delivery-item__body{display:flex;min-width:0;flex-direction:column;gap:2px}
+.delivery-item__name{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink)}
+.delivery-item__description{font-size:var(--fs-xs);line-height:1.4;color:var(--color-ink-3)}
+.delivery-item__meta{align-self:stretch;display:flex;flex:none;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:2px;text-align:right;white-space:nowrap}
+.delivery-item__price{font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+.delivery-item__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+.delivery-item--total{grid-template-columns:minmax(0,1fr) auto;padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
 .delivery-item--total .delivery-item__name,
 .delivery-item--total .delivery-item__price{font-weight:var(--fw-bold)}
-.delivery-item--total .delivery-item__price{grid-row:1}
+.delivery-item--total .delivery-item__price{grid-column:2;grid-row:1;color:var(--color-ink)}
+@media(max-width:560px){
+  .delivery-item{grid-template-columns:44px minmax(0,1fr) auto;gap:var(--sp-2)}
+  .delivery-item__thumb{width:44px;height:44px}
+}
 /* A text link on a timeline step, set against the step's own first line. */
 .timeline .step--with-link{position:relative;padding-right:84px}
 .timeline .step__link{position:absolute;top:-2px;right:0;padding:2px 0;border:0;background:transparent;

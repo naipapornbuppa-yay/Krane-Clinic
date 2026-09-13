@@ -78,6 +78,8 @@
     "ปรึกษาหมอส่วนตัว 1 ต่อ 1":"Private 1-to-1 doctor consultation",
     "แพทย์มีใบอนุญาต":"Licensed doctors",
     "เริ่มทันที 100% ออนไลน์":"Start instantly, 100% online",
+    "เวลาทำการ 09:00-24:00 น.":"Open daily 09:00-24:00",
+    "เปิดให้บริการทุกวัน":"Open every day",
     "เริ่มง่าย ๆ เพียง 3 ขั้นตอน":"Three simple steps",
     "เลือกเรื่องที่กังวลและตอบคำถามสุขภาพเบื้องต้น ใช้เวลาเพียง 1–2 นาที":"Choose what concerns you and answer a short health questionnaire. It takes just 1–2 minutes.",
     "มิติใหม่ในการลดน้ำหนัก":"A new approach to weight loss",

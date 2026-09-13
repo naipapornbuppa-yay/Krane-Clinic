@@ -1,7 +1,8 @@
 (() => {
   const translations = {
     en: {
-      announcementPromo: "Special offer: Join today and get your first doctor consultation free",
+      announcementPromo: "Special! Join today and consult for free",
+      announcementPromoCta: "Start now",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",
@@ -253,6 +254,7 @@
     ["ส่งถึงบ้าน", "Delivered home"], ["จัดส่งทั่วประเทศในบรรจุภัณฑ์มิดชิด", "Nationwide delivery in discreet packaging"],
     ["แพทย์มีใบอนุญาต", "Licensed doctors"], ["ปรึกษาส่วนตัวแบบ 1 ต่อ 1", "Private one-to-one consultation"],
     ["ข้อมูลเป็นส่วนตัว", "Private by design"], ["ดูแลตามมาตรฐานความปลอดภัย", "Protected to recognised security standards"],
+    ["เวลาทำการ 09:00-24:00 น.", "Open daily 09:00-24:00"], ["เปิดให้บริการทุกวัน", "Open every day"],
     ["แผนลดน้ำหนัก", "Weight-loss plan"], ["ดูแลโดยแพทย์แบบเฉพาะบุคคล", "Personalised doctor-led care"],
     ["เริ่มตอนนี้", "Start now"], ["แผนฟื้นฟูเส้นผม", "Hair restoration plan"],
     ["แผนฟื้นฟูสมรรถภาพเพศชาย", "Men's performance care"],
@@ -289,8 +291,8 @@
     ["“ขั้นตอนไม่ยุ่งยาก กล้าคุยมากกว่าที่คิด และเข้าใจทางเลือกของตัวเองชัดขึ้น”", "“The process was simple. I felt comfortable talking and understood my options much more clearly.”"],
     ["คุยเรื่องสุขภาพผู้ชาย", "Talk about men's health"], ["ปรึกษาแพทย์ออนไลน์", "Consult online"], ["กลับมาใกล้ชิดอย่างมั่นใจ", "Feel close again with confidence"],
     ["*แนวทางการดูแลและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Care and medication options depend on a doctor's assessment."],
-    ["เราไม่ใช่แค่คลินิกทั่วไป แต่เราคือ", "We are more than a clinic. We are a"],
-    ["แพลตฟอร์มให้บริการแพทย์ทางไกล", "licensed telemedicine platform"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
+    ["เราคือ แพลตฟอร์มให้บริการแพทย์ทางไกล ที่ออกแบบมาเพื่อช่วยให้คุณ", "We are a telemedicine platform designed to help you"],
+    ["บรรลุเป้าหมายสุขภาพ", "reach your health goals"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
     ["ดูแลครบในที่เดียว", "Complete care in one place"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
     ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
     ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],

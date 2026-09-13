@@ -1276,7 +1276,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 
 .positioning-section{min-height:760px;display:flex;flex-direction:column;justify-content:center;padding:80px;border-radius:64px;background:#fff}
 .positioning-section p,.positioning-section h2{max-width:1120px;font-size:clamp(56px,5.55vw,80px);font-weight:600;line-height:1.18;letter-spacing:-.055em}
-.positioning-section h2{color:var(--draft-blue)}
+.positioning-section h2{color:var(--draft-blue);font-weight:700}
 
 .landing-figma-draft .trust-section--figma{padding:96px 64px;border-radius:64px;background:transparent}
 .trust-section--figma .section-heading>p{color:var(--draft-blue);font-size:14px;font-weight:600}
@@ -1351,7 +1351,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 
 @media(max-width:1100px){
   .landing-figma-draft .hero-draft__intro{grid-template-columns:1fr;gap:24px;padding-inline:32px}
-  .hero-draft__benefits{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .hero-draft__benefits{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
   .hero-draft__benefits li{border:0;padding:12px 0}
   .landing-figma-draft .trust-grid--open{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:36px}
   .landing-figma-draft .trust-grid--open .trust-card:nth-child(2){border-right:0}
@@ -4707,7 +4707,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     object-position:60% center!important;
   }
   a[data-category="sexual-health"].care-banner-grid__sub .banner-swap__image--lifestyle{
-    content:url("assets/figma-draft-20260830/hero-ed-lifestyle-hands-focus-v3.png");
+    content:url("assets/figma-draft-20260830/hero-ed-lifestyle-french-manicure-v4.png");
     object-position:70% center!important;
   }
 }
@@ -6386,14 +6386,73 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   background:var(--draft-blue,#5871b5);
   color:#fff;
 }
+@keyframes announcement-drop-in{
+  0%{opacity:0;transform:translate3d(0,-115%,0)}
+  62%{opacity:1;transform:translate3d(0,7px,0)}
+  80%{transform:translate3d(0,-3px,0)}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+.landing-figma-draft .announcement--promo{
+  transform-origin:top center;
+  animation:announcement-drop-in 720ms cubic-bezier(.22,.8,.3,1) both;
+  will-change:opacity,transform;
+}
 .landing-figma-draft .announcement__group{
   min-height:32px;
+  gap:6px;
   padding-inline:24px;
   white-space:nowrap;
+}
+.landing-figma-draft .announcement--promo .announcement__group>*:not(:last-child)::after{
+  content:none;
 }
 .landing-figma-draft .announcement span,
 .landing-figma-draft .announcement strong{
   font:400 14px/1.2 "Prompt","Noto Sans Thai","Inter",sans-serif;
+}
+.landing-figma-draft .announcement__cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:24px;
+  padding:3px 10px 3px 12px;
+  gap:7px;
+  border-radius:999px;
+  background:rgba(15,31,73,.18);
+  color:inherit;
+  font:600 14px/1.2 "Prompt","Noto Sans Thai","Inter",sans-serif;
+  text-decoration:none;
+  transition:background-color 180ms ease,transform 180ms ease;
+}
+.landing-figma-draft .announcement__cta::after{
+  content:"→";
+  display:inline-block;
+  font:600 18px/1 "Inter",sans-serif;
+  transition:transform 220ms cubic-bezier(.22,.8,.3,1);
+}
+.landing-figma-draft .announcement__cta:hover,
+.landing-figma-draft .announcement__cta:focus-visible{
+  background:rgba(15,31,73,.28);
+  transform:translateY(-1px);
+}
+.landing-figma-draft .announcement__cta:hover::after,
+.landing-figma-draft .announcement__cta:focus-visible::after{
+  transform:translateX(4px);
+}
+.landing-figma-draft .announcement__cta:focus-visible{
+  outline:2px solid rgba(255,255,255,.9);
+  outline-offset:1px;
+}
+@media(prefers-reduced-motion:reduce){
+  .landing-figma-draft .announcement--promo{
+    animation:none;
+    opacity:1;
+    transform:none;
+  }
+  .landing-figma-draft .announcement__cta,
+  .landing-figma-draft .announcement__cta::after{
+    transition:none;
+  }
 }
 .landing-figma-draft .site-header{
   position:sticky;
@@ -6556,7 +6615,8 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     padding-inline:12px;
   }
   .landing-figma-draft .announcement span,
-  .landing-figma-draft .announcement strong{font-size:11px}
+  .landing-figma-draft .announcement strong,
+  .landing-figma-draft .announcement__cta{font-size:14px}
   .landing-figma-draft .site-header{
     top:8px;
     width:calc(100% - 24px);
