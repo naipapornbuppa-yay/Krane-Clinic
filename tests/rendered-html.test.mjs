@@ -1217,7 +1217,9 @@ test("all canonical B2C brand placements use the new Krane wordmark without clin
   const doctor = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
   const advisor = await readFile(path.join(publicRoot, "b2c/advisor-detail.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
-  const canonicalBrand = /krane-logo-16aug26-2\.svg\?v=20260816-logo-16aug26-2-v1/;
+  // The wordmark file is what this test is about. The ?v= key rolls with every
+  // release, so match any key rather than pinning one and failing each deploy.
+  const canonicalBrand = /krane-logo-16aug26-2\.svg\?v=[A-Za-z0-9._-]+/;
 
   assert.match(screenFragment(patient, "profile"), canonicalBrand);
   assert.match(patient, new RegExp(canonicalBrand.source, "g"));
