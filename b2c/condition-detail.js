@@ -416,6 +416,12 @@
   setText("[data-safety]", data.safety);
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
+  const safetyLink = document.querySelector(".safety__button");
+  if (safetyLink && key === "weight") {
+    safetyLink.href = "glp1-safety.html";
+    safetyLink.textContent = "อ่านข้อมูลความปลอดภัย";
+  }
+
   document.querySelectorAll("[data-intake-link]").forEach((link) => {
     // A condition detail is always a Krane-direct entry. Carry that context in
     // the deep link so a previous Partner session cannot hide the intake
