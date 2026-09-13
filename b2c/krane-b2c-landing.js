@@ -1,7 +1,8 @@
 (() => {
   const translations = {
     en: {
-      announcementPromo: "Special offer: Join today and get your first doctor consultation free",
+      announcementPromo: "Special! Join today and consult for free",
+      announcementPromoCta: "Start now",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",
