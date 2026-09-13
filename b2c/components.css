@@ -2969,11 +2969,11 @@ body.lang-th *{letter-spacing:normal}
 }
 /* The label is short and fixed; it was breaking mid-word ("ถัด / ไป") to make
    room for a long date and doctor name. Hold the label, wrap the value. */
-.followup-details{display:grid;padding:4px var(--sp-3);background:color-mix(in srgb,var(--treatment-campaign, var(--color-bg-soft)) 12%,var(--color-bg-soft));border-radius:var(--radius-xs)}
+.followup-details{display:grid;padding:4px var(--sp-3);background:rgba(255,255,255,.14);border-radius:var(--radius-xs)}
 .followup-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:var(--sp-3);padding:7px 0}
-.followup-row+.followup-row{border-top:1px solid var(--color-line)}
-.followup-row>.hint{min-width:0}
-.followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3}
+.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.55)}
+.followup-row>.hint{min-width:0;color:rgba(255,255,255,.68)}
+.followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3;color:#fff}
 @media(max-width:430px){
   .followup-details{padding-inline:10px}
   .followup-row{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:8px}
@@ -3122,25 +3122,21 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    the follow-up keeps its entry point in the banner above. */
 .treatment-card{width:100%;position:relative;display:flex;flex-direction:column;gap:var(--sp-3);
   --treatment-campaign:var(--color-accent-soft);
-  overflow:hidden;text-align:left;color:var(--color-ink);cursor:pointer;
-  border:1px solid color-mix(in srgb,var(--treatment-campaign) 64%,var(--color-line));
-  background:linear-gradient(105deg,
-    color-mix(in srgb,var(--treatment-campaign) 32%,var(--color-surface)) 0%,
-    color-mix(in srgb,var(--treatment-campaign) 14%,var(--color-surface)) 58%,
-    var(--color-surface) 100%);
+  --treatment-surface:#666e9f;
+  overflow:hidden;text-align:left;color:#fff;cursor:pointer;
+  border:0;background:var(--treatment-surface);
   transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
-.treatment-card::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--treatment-campaign)}
-.treatment-card[data-category="sleep-stress"]{--treatment-campaign:var(--color-accent-soft)}
-/* The hair campaign uses #86afa4 on the landing service card. Keep that exact
-   family here, then mix it into white so clinical content retains its contrast. */
-.treatment-card[data-category="hair-skin"]{--treatment-campaign:#86afa4}
-#profile .treatment-card{border:1px solid color-mix(in srgb,var(--treatment-campaign) 64%,var(--color-line));box-shadow:0 8px 24px color-mix(in srgb,var(--treatment-campaign) 18%,rgba(17,27,48,.07))}
+.treatment-card[data-category="sleep-stress"]{--treatment-campaign:var(--color-accent-soft);--treatment-surface:#666e9f}
+/* Match the landing-page campaign families, but deepen them to the same visual
+   weight as the supplied periwinkle card so white clinical copy stays legible. */
+.treatment-card[data-category="hair-skin"]{--treatment-campaign:#86afa4;--treatment-surface:#5f817a}
+#profile .treatment-card{border:0;box-shadow:0 8px 24px color-mix(in srgb,var(--treatment-surface) 22%,rgba(17,27,48,.08))}
 .treatment-card:active{transform:scale(.995)}
-.treatment-card:hover{border-color:color-mix(in srgb,var(--treatment-campaign) 86%,var(--color-line));box-shadow:var(--shadow-card-raised)}
+.treatment-card:hover{box-shadow:0 12px 30px color-mix(in srgb,var(--treatment-surface) 30%,rgba(17,27,48,.12))}
 .treatment-card .between{width:100%}
 .treatment-card>.between:first-child{padding-right:22px}
 .treatment-card__go{position:absolute;top:var(--sp-3);right:var(--sp-3);width:18px;height:18px;
-  color:var(--color-ink-3)}
+  color:rgba(255,255,255,.72)}
 .treatment-card__go svg{width:18px;height:18px}
 @media(prefers-reduced-motion:reduce){.treatment-card:active{transform:none}}
 /* One regular doctor per patient; changing them is a conversation with a person,
@@ -3397,8 +3393,8 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    that without being opened (client, 10 Sep). */
 .treatment-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);width:100%;padding-right:22px}
 .treatment-card__title{display:flex;flex-direction:column;gap:2px;min-width:0}
-.treatment-card__title strong{font-size:var(--fs-md);line-height:1.3}
-.treatment-card__programme{font-size:var(--fs-xs);color:var(--color-ink-3)}
+.treatment-card__title strong{font-size:var(--fs-md);line-height:1.3;color:#fff}
+.treatment-card__programme{font-size:var(--fs-xs);color:rgba(255,255,255,.68)}
 .treatment-card__meta{display:flex;flex-wrap:wrap;gap:6px var(--sp-4)}
 .treatment-meta{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--color-ink-2)}
 .treatment-meta .ui-icon{flex:none;color:var(--color-ink-3)}
