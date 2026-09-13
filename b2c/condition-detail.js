@@ -456,7 +456,23 @@
      needed, short course — shown as a tag on the photo (client, 18 Aug). */
   if (products) products.innerHTML = (data.products || []).map(([title, form, body, photo, kind, tag]) => `
     <article class="product-card" data-product-kind="${kind}">
-      <span class="product-card__stage"><img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt="">${tag ? `<span class="product-card__tag">${tag}</span>` : ""}</span>
+      <div class="product-card__gallery" data-product-gallery>
+        <span class="product-card__stage" data-gallery-stage data-gallery-view="front">
+          <img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt="${title}">
+          ${tag ? `<span class="product-card__tag">${tag}</span>` : ""}
+        </span>
+        <div class="product-card__thumbs" role="group" aria-label="เลือกรูปภาพ ${title}">
+          ${[
+            ["front", "ภาพผลิตภัณฑ์"],
+            ["detail", "ภาพระยะใกล้"],
+            ["angle", "ภาพอีกมุม"]
+          ].map(([view, label], index) => `
+            <button class="product-card__thumb${index === 0 ? " is-active" : ""}" type="button" data-gallery-view="${view}" aria-label="${label}" aria-pressed="${index === 0 ? "true" : "false"}">
+              <img src="${photo}" width="96" height="96" loading="lazy" decoding="async" alt="">
+            </button>
+          `).join("")}
+        </div>
+      </div>
       <div class="product-card__copy">
         <span class="product-card__form">${form}</span>
         <strong>${title}</strong>
@@ -464,6 +480,19 @@
       </div>
     </article>
   `).join("");
+
+  products?.addEventListener("click", (event) => {
+    const thumb = event.target.closest(".product-card__thumb[data-gallery-view]");
+    const gallery = thumb?.closest("[data-product-gallery]");
+    const stage = gallery?.querySelector("[data-gallery-stage]");
+    if (!thumb || !gallery || !stage) return;
+    stage.dataset.galleryView = thumb.dataset.galleryView;
+    gallery.querySelectorAll(".product-card__thumb").forEach((button) => {
+      const isActive = button === thumb;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  });
 
   /* Reading list: the shared library filtered to this condition's tag, so the
      page never links out to an article about a different concern. */
