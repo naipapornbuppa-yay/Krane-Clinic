@@ -494,6 +494,45 @@
     });
   });
 
+  /* Reuse the product-card source of truth for the comparison matrix. This
+     prevents medicine artwork or copy from drifting between sections. */
+  const comparison = document.querySelector("[data-comparison]");
+  const comparisonProducts = (data.products || []).slice(0, 3);
+  const reviewByKind = {
+    pen: "ข้อบ่งใช้ ข้อห้าม และการติดตามหลังเริ่มยา",
+    injection: "ผลตรวจ ข้อห้าม และแผนติดตามเป็นระยะ",
+    oral: "โรคประจำตัว ยาที่ใช้อยู่ และความเสี่ยงเฉพาะบุคคล",
+    topical: "ตำแหน่งที่ใช้ ความไวของผิว และอาการระคายเคือง"
+  };
+  setText("[data-comparison-title]", `เปรียบเทียบ ${comparisonProducts.length} ทางเลือก`);
+  setText("[data-comparison-lead]", "ดูรูปแบบการใช้และข้อพิจารณาของแต่ละทางเลือก ก่อนคุยกับแพทย์เพื่อเลือกแผนที่เหมาะกับคุณ");
+  if (comparison) {
+    const rows = [
+      ["วิธีใช้", comparisonProducts.map(([, form]) => form)],
+      ["รูปแบบการดูแล", comparisonProducts.map(([, , , , , tag]) => tag || "ตามแพทย์แนะนำ")],
+      ["แพทย์พิจารณาจาก", comparisonProducts.map(([, , , , kind]) => reviewByKind[kind] || "อาการ ประวัติสุขภาพ และเป้าหมายของคุณ")],
+      ["สิ่งที่ควรรู้", comparisonProducts.map(([, , body]) => body)]
+    ];
+    comparison.style.setProperty("--compare-count", comparisonProducts.length);
+    comparison.innerHTML = `
+      <div class="comparison-row comparison-row--head" role="row">
+        <div class="comparison-corner" role="columnheader"><span>ทางเลือก</span><strong>เทียบทีละข้อ</strong></div>
+        ${comparisonProducts.map(([title, form, , photo]) => `
+          <div class="comparison-product" role="columnheader">
+            <span class="comparison-product__image"><img src="${photo}" width="144" height="144" loading="lazy" decoding="async" alt=""></span>
+            <span><strong>${title}</strong><small>${form}</small></span>
+          </div>
+        `).join("")}
+      </div>
+      ${rows.map(([label, values]) => `
+        <div class="comparison-row" role="row">
+          <div class="comparison-label" role="rowheader">${label}</div>
+          ${values.map((value) => `<div class="comparison-value" role="cell">${value}</div>`).join("")}
+        </div>
+      `).join("")}
+    `;
+  }
+
   /* Reading list: the shared library filtered to this condition's tag, so the
      page never links out to an article about a different concern. */
   const articles = document.querySelector("[data-articles]");
