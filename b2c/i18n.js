@@ -1787,6 +1787,8 @@
     "กรองกิจกรรม":"Filter activity",
     "โปรแกรมการรักษา":"Treatment programmes",
     "คำสั่งซื้อยา":"Medicine orders",
+    "ผลการปรึกษา":"Consultation results",
+    "รายการสั่งซื้อ":"Orders",
     "ยา":"Medicine",
     "โปรแกรม":"Programme",
     "อาการป่วยทั่วไป":"General care",
