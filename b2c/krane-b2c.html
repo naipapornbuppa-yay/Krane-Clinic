@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260913-login-structure-v1";
+    const release = "20260913-intake-hims-structure-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,13 +38,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260913-login-structure-v1">
-<link rel="stylesheet" href="components.css?v=20260913-login-structure-v1">
+<link rel="stylesheet" href="components.css?v=20260913-intake-hims-structure-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260913-login-structure-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260913-login-structure-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260913-login-structure-v1">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260913-login-structure-v1" defer></script>
-<script src="i18n.js?v=20260913-login-structure-v1" defer></script>
+<script src="i18n.js?v=20260913-intake-hims-structure-v1" defer></script>
 <script src="../krane-golden-patient.js?v=20260913-login-structure-v1" defer></script>
 
 <style>
@@ -1239,7 +1239,9 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Currently under specialist care for this issue</span></span><span class="opt-check"></span></button>
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these apply</span></span><span class="opt-check"></span></button>
         </div>
+        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">This confirms whether online care is safe for you today.</p></aside>
       </div>
+    </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="intake5" data-flag-go="ineligible">Continue</button></div>
   </section>
 
@@ -1248,6 +1250,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Add a photo of the area you're concerned about</h2></div>
+      <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span></p>
 
       <div class="stack-2">
         <div class="section-label">ตัวอย่างมุมที่แพทย์ต้องใช้</div>
@@ -1336,6 +1339,7 @@
           <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
           <div class="up-thumbs shared-concern-grid__wide" data-partner-photo-thumbs aria-live="polite"></div>
         </div>
+        <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Your answers stay private and are used only for this consultation.</span></p>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
@@ -1366,6 +1370,8 @@
           <div class="field grow"><label for="intake-height">ส่วนสูง (ซม.)</label><input class="input" id="intake-height" inputmode="numeric" placeholder="เช่น 175"></div>
           <div class="field grow"><label for="intake-weight">น้ำหนัก (กก.)</label><input class="input" id="intake-weight" inputmode="numeric" placeholder="เช่น 70"></div>
         </div>
+        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">Age, sex at birth, height and weight can affect which care options are safe for you.</p></aside>
+        <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching" data-general-health-submit>ยืนยันข้อมูลและดำเนินการต่อ</button></div>
@@ -5509,6 +5515,39 @@
      one screen, and the shared health profile is one complete form just like
      the insurance journey. */
   const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
+  const INTAKE_GUIDANCE = {
+    intake1:[{
+      question:0,
+      copy:'Your symptoms help the doctor choose the right questions and care pathway.'
+    }],
+    intake2:[{
+      question:0,
+      copy:'This helps the doctor understand how much the concern affects your daily life.',
+      privacy:true
+    }],
+    intake3:[{
+      question:0,
+      copy:'Knowing what you have tried helps the doctor avoid repeating care that did not work.',
+      privacy:true
+    }]
+  };
+  function addIntakeQuestionGuidance(screenId,questions){
+    (INTAKE_GUIDANCE[screenId] || []).forEach(item => {
+      const question=questions[item.question];
+      if(!question || question.querySelector('[data-intake-guidance]')) return;
+      const aside=document.createElement('aside');
+      aside.className='intake-explainer';
+      aside.dataset.intakeGuidance='';
+      aside.innerHTML='<strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">'+item.copy+'</p>';
+      question.appendChild(aside);
+      if(item.privacy){
+        const privacy=document.createElement('p');
+        privacy.className='intake-privacy-note';
+        privacy.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span>';
+        question.appendChild(privacy);
+      }
+    });
+  }
   function intakeQuestionPageState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     const body = screen?.querySelector('.screen__body');
@@ -5603,6 +5642,7 @@
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
     });
+    addIntakeQuestionGuidance(screen.id,questions);
     /* The screen title stayed huge on every page while the question itself sat
        in a small grey label — the hierarchy read backwards (client, 18 Aug).
        When a page carries exactly one labelled question, that label becomes the
