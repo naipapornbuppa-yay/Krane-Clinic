@@ -3554,3 +3554,36 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .doc-pdf__page{display:block;width:100%;height:auto}
 .doc-pdf__page + .doc-pdf__page{border-top:1px solid var(--color-line)}
 .doc-pdf__open{width:100%}
+
+/* ---------- The showcase phone needs a bottom safe band ----------
+   In the how-it-works section this app is laid under a phone frame whose PNG
+   crops it at the screen opening. Every surface that draws to the last pixel of
+   the viewport, the call caption sitting 8px off the floor and the tracking
+   list scrolling under the floating nav, was arriving at that edge mid-line and
+   reading as a broken crop rather than the end of a screen. A real handset
+   keeps a home indicator band clear for exactly this reason, so the demo copy
+   does the same: the screen reserves the band, and because the padding sits on
+   .screen the band takes that screen's own background, including the black of
+   a live call. */
+html.is-demo-embed .screen{padding-bottom:14px}
+html.is-demo-embed .callstage--live .call-hint{bottom:12px}
+
+/* ---------- The order summary shows quantities, editing is a mode ----------
+   Carrying a live plus and minus beside every line made the summary read like
+   a cart the moment it opened, when its job is to state what is being paid for
+   (client, 13 Sep). The controls now appear only after the reader asks for
+   them, the way a delivery app does it: the header carries the edit action, and
+   the row keeps the number and its unit either way so nothing jumps when the
+   mode changes. */
+.checkout-head__edit{
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-accent-ink);
+  font-size:var(--fs-sm);
+  font-weight:var(--fw-semibold);
+  cursor:pointer;
+}
+.checkout-head__edit:hover{text-decoration:underline}
+.checkout-order:not(.is-editing) .qty-btn{display:none}
+.checkout-order:not(.is-editing) .qty{gap:var(--sp-1)}
