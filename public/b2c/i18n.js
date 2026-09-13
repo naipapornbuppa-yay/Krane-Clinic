@@ -444,7 +444,7 @@
     "Progress review":"ทบทวนความคืบหน้า",
     "Usually a short chat, about 10 minutes. Video is available if the doctor needs a closer look.":"ปกติเป็นแชทสั้น ๆ ราว 10 นาที เปิดวิดีโอได้หากแพทย์ต้องการดูใกล้ขึ้น",
     /* ---- coverage pass 11 (follow-up merged into the profile treatment card) ---- */
-    "2 Sep 2026":"2 ก.ย. 2026","12 Sep 2026":"12 ก.ย. 2026","Next follow-up":"นัดติดตามครั้งถัดไป","12 Sep 2026 · Dr. Narin":"12 ก.ย. 2026 · คุณหมอนรินทร์ ทานากะ","Start follow-up":"เริ่มติดตามผล",
+    "2 Sep 2026":"2 ก.ย. 2026","12 Sep 2026":"12 ก.ย. 2026","Next follow-up":"นัดติดตามครั้งถัดไป","Case doctor":"คุณหมอเจ้าของเคส","12 Sep 2026 · Dr. Narin":"12 ก.ย. 2026 · คุณหมอนรินทร์ ทานากะ","Start follow-up":"เริ่มติดตามผล",
     /* ---- coverage pass 12 (medical certificate add-on at consult-fee checkout) ---- */
     "Medical certificate":"ใบรับรองแพทย์",
     "Issued by your doctor after the consultation. A signed PDF appears in your documents.":"ออกโดยแพทย์ของคุณหลังการปรึกษา ไฟล์ PDF พร้อมลายเซ็นจะอยู่ในเอกสารของคุณ",
@@ -1491,7 +1491,7 @@
     "เติมยาได้ในอีก 24 วัน":"Refill available in 24 days",
     "เติมยาตามแผนเดิม":"Refill this plan",
     "เมนูด่วน":"Quick menu","กลับเข้าสู่การดูแลได้ทันที":"Pick your care back up",
-    "คุณหมอนรินทร์":"Dr. Narin","ติดตามผล":"Follow up","นัดที่กำลังจะถึง":"Upcoming",
+    "คุณหมอนรินทร์":"Dr. Narin","คุณหมอเจ้าของเคส":"Case doctor","ติดตามผล":"Follow up","นัดที่กำลังจะถึง":"Upcoming",
     "เติมยา":"Refill","จากแผนเดิม":"From your plan","นัดหมายใหม่":"New appointment",
     "เริ่มเรื่องใหม่":"New concern","กับคุณหมอประจำ":"With your doctor",
     "26 ส.ค. 2026":"26 Aug 2026","เลือกเวลา":"Pick a time",

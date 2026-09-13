@@ -5022,6 +5022,13 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .hero-draft__intro{
     width:100%;height:204px;grid-template-columns:minmax(0,1fr) 363px;gap:32px;align-items:center;padding:0
   }
+
+  /* The marquee comes first in the markup so the reassurance row sits above the
+     headline on a phone. On a desktop canvas the headline owns the wide column
+     on the left and the three points sit beside it, so the two swap tracks here
+     rather than the markup changing and taking the phone order with it. */
+  .landing-figma-draft .hero-draft__intro .hero__intro-copy{grid-column:1;grid-row:1}
+  .landing-figma-draft .hero-draft__intro .hero-draft__marquee{grid-column:2;grid-row:1}
   .landing-figma-draft .hero__intro-copy{max-width:none;display:flex;flex-direction:column;gap:32px}
   .landing-figma-draft .hero h1{
     max-width:none;margin:0;color:#000;font-size:62px;line-height:72px;font-weight:600;letter-spacing:1px;white-space:nowrap
@@ -5677,6 +5684,13 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     align-items:center;
     padding-inline:32px;
   }
+
+  /* The marquee comes first in the markup so the reassurance row sits above the
+     headline on a phone. On a desktop canvas the headline owns the wide column
+     on the left and the three points sit beside it, so the two swap tracks here
+     rather than the markup changing and taking the phone order with it. */
+  .landing-figma-draft .hero-draft__intro .hero__intro-copy{grid-column:1;grid-row:1}
+  .landing-figma-draft .hero-draft__intro .hero-draft__marquee{grid-column:2;grid-row:1}
   .landing-figma-draft .hero__intro-copy{max-width:none}
   .landing-figma-draft .hero h1{
     max-width:none;
@@ -6226,19 +6240,29 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     height:2264px!important;
     min-height:2264px;
   }
+  /* These were the Figma frame's own numbers, a 1512px canvas pulled 232px to
+     the right. On any narrower screen the block hung that far past the page,
+     .page-section clipped it, and the part it clipped held the end of the rail
+     and the previous/next arrows: the reader could never reach the last card.
+     The rail bleeds to the section's own right padding instead, which is what
+     the base rules already did. */
   .landing-figma-draft .weight-catalogue{
-    width:1512px;
-    max-width:none;
-    height:632px;
+    width:100%;
+    max-width:1280px;
+    height:auto;
     margin-top:40px;
-    margin-right:-232px;
+    margin-right:0;
     margin-left:0;
   }
+  /* Same Figma numbers as the block above: a 1512px heading indented 222px,
+     which left the title floating away from the cards it introduces and ran
+     the row off the page. It sits on the section's own left edge, in line with
+     the first card. */
   .landing-figma-draft .weight-catalogue__heading{
-    width:1512px;
+    width:100%;
     height:32px;
     display:block;
-    padding-left:222px;
+    padding-left:0;
   }
   .landing-figma-draft .weight-catalogue__heading p,
   .landing-figma-draft .weight-catalogue__controls,
@@ -6254,17 +6278,23 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     letter-spacing:-.047px;
     white-space:nowrap;
   }
+  /* The viewport was 32px shorter than its own track, so a rail meant to move
+     sideways answered a trackpad with a vertical scroll. It now takes the
+     height of the track and refuses the vertical axis outright, and the track
+     carries the same padding on both ends so the last card clears the edge the
+     way the first one does. */
   .landing-figma-draft .weight-catalogue__viewport{
-    width:1512px;
-    height:548px;
+    width:calc(100% + 80px);
+    height:auto;
     margin-top:16px;
-    margin-right:0;
-    scroll-padding-inline-start:222px;
+    margin-right:-80px;
+    overflow-y:hidden;
+    scroll-padding-inline-start:0;
   }
   .landing-figma-draft .weight-catalogue__track{
-    min-height:580px;
+    min-height:0;
     gap:10px;
-    padding:32px 0 32px 222px;
+    padding:32px 80px 32px 0;
   }
   .landing-figma-draft .weight-engagement{margin-top:40px}
   .landing-figma-draft .weight-results{
@@ -9059,3 +9089,14 @@ html[lang="en"] .landing-figma-draft #ed-title{
     --phone-app-scale:.5128;
   }
 }
+
+/* ---------- A sideways rail answers only the sideways axis ----------
+   overflow-x:auto turns on both axes, so any rail whose content ended up a few
+   pixels taller than its box answered a trackpad with a vertical nudge and the
+   cards drifted out of frame (client, 13 Sep). These rails are horizontal by
+   definition; the vertical axis is refused outright rather than left to depend
+   on whether the arithmetic happens to come out even. */
+.weight-catalogue__viewport,
+.weight-testimonials__viewport,
+.weight-results__grid,
+.articles-row{overflow-y:hidden}
