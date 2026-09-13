@@ -1410,6 +1410,14 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .bottomnav a .ic{position:relative;display:grid;place-items:center;
   width:52px;height:40px;border-radius:20px;
   transition:background var(--dur-base) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+/* This demo always has unread activity. Keep the indicator on the bell itself
+   (including while the Alerts tab is open) so the state survives navigation. */
+.bottomnav a[data-go="notifications"] .ic::after{content:"";position:absolute;
+  top:5px;right:8px;width:8px;height:8px;border-radius:50%;
+  background:var(--color-danger-strong);
+  box-shadow:0 0 0 2px var(--color-surface);pointer-events:none}
+.bottomnav a[data-go="notifications"][aria-current="page"] .ic::after{
+  box-shadow:0 0 0 2px var(--color-accent-soft)}
 .bottomnav a svg{width:24px;height:24px}
 .bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
 .bottomnav a[aria-current="page"]{color:var(--color-ink)}
