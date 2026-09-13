@@ -14,7 +14,7 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;background:var(--detail-paper)}
+html{scroll-behavior:smooth;scroll-padding-top:164px;background:var(--detail-paper)}
 body{margin:0;background:var(--detail-paper);color:var(--detail-ink);font-family:"Noto Sans Thai","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body.menu-open{overflow:hidden}
 button,select{font:inherit}
@@ -38,6 +38,19 @@ main[data-tone="mind"]{--detail-tone:#68758e;--detail-tone-deep:#38445d;--detail
 .button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--detail-blue) 48%,transparent);outline-offset:4px}
 
 main{display:flex;flex-direction:column;gap:var(--detail-gap);padding:32px 0 var(--detail-gap)}
+
+/* Guide-style table of contents: each tab is a real section anchor and the
+   current chapter follows the reader. The rail borrows the clarity of an
+   editorial guide while retaining the active concern colour. */
+.condition-sections{position:sticky;z-index:42;top:84px;align-self:stretch;margin-inline:var(--detail-page-gutter);padding:7px;border:1px solid rgba(26,30,40,.08);border-radius:24px;background:rgba(255,255,255,.9);box-shadow:0 14px 34px rgba(23,28,40,.09);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.condition-sections__viewport{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.condition-sections__viewport::-webkit-scrollbar{display:none}
+.condition-sections__tab{display:flex;min-width:0;min-height:58px;align-items:center;gap:10px;padding:9px 12px;border-radius:17px;color:var(--detail-muted);transition:background .22s var(--detail-ease),color .22s var(--detail-ease),transform .22s var(--detail-ease)}
+.condition-sections__tab:hover{background:var(--detail-tone-soft,#f1ddd4);color:var(--detail-tone-ink,#6f2d15);transform:translateY(-1px)}
+.condition-sections__tab span{display:grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border:1px solid currentColor;border-radius:50%;font:600 10px/1 "Inter",sans-serif;opacity:.62}
+.condition-sections__tab strong{min-width:0;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
+.condition-sections__tab.is-active{background:var(--detail-tone-deep,#8e3611);color:#fff;box-shadow:0 8px 18px color-mix(in srgb,var(--detail-tone-deep,#8e3611) 24%,transparent)}
+.condition-sections__tab.is-active span{border-color:rgba(255,255,255,.52);background:rgba(255,255,255,.12);opacity:1}
 
 /* Hero: the same full-bleed editorial treatment used by the landing cards,
    expanded into a generous page-opening chapter. */
@@ -70,7 +83,7 @@ main{display:flex;flex-direction:column;gap:var(--detail-gap);padding:32px 0 var
    the landing page rather than the old full-width rectangular bands. */
 .content-section,.price-clarity,.care-proof,.closing-cta,footer{margin-inline:var(--detail-page-gutter);border-radius:var(--detail-section-radius)}
 .content-section{padding:var(--detail-section-pad)}
-.content-section[id]{scroll-margin-top:100px}
+.content-section[id]{scroll-margin-top:164px}
 .eyebrow{margin:0;color:var(--detail-muted);font-size:12px;font-weight:600;line-height:1.5;letter-spacing:.02em}
 .section-heading{max-width:800px}
 .section-heading h2,.knowledge h2,.safety h2,.closing-cta h2{margin:12px 0 0;font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;font-size:clamp(40px,4.2vw,60px);font-weight:600;line-height:1.12;letter-spacing:-.04em;text-wrap:balance}
@@ -218,6 +231,7 @@ footer img{width:104px;height:auto;filter:brightness(0) invert(1)}
   :root{--detail-page-gutter:16px;--detail-section-pad:clamp(48px,5vw,68px);--page-gutter:16px}
   .condition-hero__copy{width:min(700px,68%);padding-inline:52px}
   .care-proof{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .condition-sections__viewport{grid-auto-flow:column;grid-auto-columns:minmax(154px,1fr);grid-template-columns:none}
   .care-proof>div:nth-child(2){border-right:0}
   .care-proof>div:nth-child(-n+2){border-bottom:1px solid var(--detail-line)}
   .personalize__steps{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -239,7 +253,14 @@ footer img{width:104px;height:auto;filter:brightness(0) invert(1)}
 
 @media(max-width:640px){
   :root{--detail-page-gutter:10px;--detail-section-pad:52px 20px;--detail-section-radius:36px;--detail-card-radius:24px;--detail-gap:10px;--page-gutter:10px}
+  html{scroll-padding-top:132px}
   main{padding-top:18px}
+  .condition-sections{top:70px;margin-inline:10px;padding:6px;border-radius:20px}
+  .condition-sections__viewport{grid-auto-columns:142px;gap:3px}
+  .condition-sections__tab{min-height:50px;gap:8px;padding:7px 10px;border-radius:15px}
+  .condition-sections__tab span{width:24px;height:24px;flex-basis:24px;font-size:9px}
+  .condition-sections__tab strong{font-size:11px}
+  .content-section[id]{scroll-margin-top:132px}
   .condition-hero{min-height:720px}
   .condition-hero::after{right:-45%;bottom:-18%;width:120vw}
   .condition-hero__image{object-position:64% center}

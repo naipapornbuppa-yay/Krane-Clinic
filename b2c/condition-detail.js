@@ -487,6 +487,70 @@
     }
   }
 
+  /* The guide rail is a compact table of contents, not a separate carousel.
+     It mirrors the active chapter as the page moves and keeps that chapter in
+     view inside the horizontal mobile rail. */
+  const sectionNav = document.querySelector("[data-section-nav]");
+  const sectionTabs = Array.from(document.querySelectorAll("[data-section-tab]"));
+  const sectionTargets = sectionTabs
+    .map((tab) => ({ tab, section: document.getElementById(tab.dataset.sectionTab) }))
+    .filter(({ section }) => section);
+
+  const setActiveSection = (id, bringIntoView = true) => {
+    sectionTabs.forEach((tab) => {
+      const active = tab.dataset.sectionTab === id;
+      tab.classList.toggle("is-active", active);
+      if (active) {
+        tab.setAttribute("aria-current", "location");
+        if (bringIntoView) {
+          const rail = tab.parentElement;
+          const centeredLeft = tab.offsetLeft - ((rail.clientWidth - tab.offsetWidth) / 2);
+          rail.scrollTo({ left: Math.max(0, centeredLeft), behavior: "smooth" });
+        }
+      } else {
+        tab.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  if (sectionNav && sectionTargets.length) {
+    let sectionFrame = 0;
+    const syncActiveSection = () => {
+      sectionFrame = 0;
+      const readingLine = sectionNav.getBoundingClientRect().bottom + 48;
+      let current = sectionTargets[0];
+      sectionTargets.forEach((candidate) => {
+        if (candidate.section.getBoundingClientRect().top <= readingLine) current = candidate;
+      });
+      setActiveSection(current.tab.dataset.sectionTab);
+    };
+    const requestSectionSync = () => {
+      if (sectionFrame) return;
+      sectionFrame = requestAnimationFrame(syncActiveSection);
+    };
+
+    sectionTabs.forEach((tab) => {
+      tab.addEventListener("click", (event) => {
+        const id = tab.dataset.sectionTab;
+        const target = document.getElementById(id);
+        if (!target) return;
+        event.preventDefault();
+        if (window.location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
+        setActiveSection(id);
+        const scrollMargin = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+        const targetTransform = getComputedStyle(target).transform;
+        const revealOffset = targetTransform === "none" ? 0 : new DOMMatrixReadOnly(targetTransform).m42;
+        window.scrollTo({
+          top: window.scrollY + target.getBoundingClientRect().top - revealOffset - scrollMargin,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+        });
+      });
+    });
+    window.addEventListener("scroll", requestSectionSync, { passive: true });
+    window.addEventListener("resize", requestSectionSync, { passive: true });
+    requestSectionSync();
+  }
+
   /* The landing page reveals one editorial chapter at a time. Detail pages
      use the same restrained movement so the system feels related without
      turning clinical content into a showreel. */
