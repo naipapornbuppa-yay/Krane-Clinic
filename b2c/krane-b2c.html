@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260914-treatment-headings-thai-v1";
+    const release = "20260914-activity-program-detail-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260914-treatment-headings-thai-v1">
-<link rel="stylesheet" href="components.css?v=20260914-treatment-headings-thai-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260914-treatment-headings-thai-v1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260914-treatment-headings-thai-v1">
-<link rel="stylesheet" href="platform-compat.css?v=20260914-treatment-headings-thai-v1">
+<link rel="stylesheet" href="design-tokens.css?v=20260914-activity-program-detail-v1">
+<link rel="stylesheet" href="components.css?v=20260914-activity-program-detail-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260914-activity-program-detail-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260914-activity-program-detail-v1">
+<link rel="stylesheet" href="platform-compat.css?v=20260914-activity-program-detail-v1">
 <script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260914-treatment-headings-thai-v1" defer></script>
-<script src="i18n.js?v=20260914-treatment-headings-thai-v1" defer></script>
-<script src="../krane-golden-patient.js?v=20260914-treatment-headings-thai-v1" defer></script>
+<script src="custom-select.js?v=20260914-activity-program-detail-v1" defer></script>
+<script src="i18n.js?v=20260914-activity-program-detail-v1" defer></script>
+<script src="../krane-golden-patient.js?v=20260914-activity-program-detail-v1" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -3057,7 +3057,7 @@
           </span>
           <span class="activity-card__foot"><span>Ref. no. · KR-10288</span><strong>฿ 320</strong></span>
         </button>
-        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-go="history" aria-label="เปิดโปรแกรมการรักษา #KR-10170">
+        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-treatment-open data-treatment-source-category="hair-skin" aria-label="เปิดโปรแกรมการรักษา #KR-10170">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i>โปรแกรม</span>            <span class="badge badge--done">ปรึกษาสำเร็จ</span></span>
             <span class="activity-card__date">12 พ.ค. 2026<small>20:20 - 20:35</small></span>
@@ -3070,7 +3070,7 @@
         </button>
         <!-- A course that has ended is a record, not a treatment in progress, so
              it lives here rather than on the home list (client, 11 Sep). -->
-        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-go="history" aria-label="เปิดโปรแกรมการรักษา #KR-10042">
+        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-treatment-open data-category="hair-skin" data-treatment-title="โปรแกรมดูแลผิว" data-treatment-date="28/02/2026" data-treatment-rx="RX-2026-10042" data-treatment-diagnosis="ดูแลผิวครบตามแผน" data-treatment-plan="จบโปรแกรมการรักษาตามแผนแล้ว สามารถกลับมาปรึกษาแพทย์ได้เมื่อมีอาการหรือข้อกังวลใหม่" data-treatment-note='{"goals":["ดูแลผิวให้แข็งแรงและลดอาการระคายเคือง"],"findings":["อาการโดยรวมดีขึ้นหลังดูแลต่อเนื่องครบ 3 เดือน"],"assessment":["ตอบสนองต่อแผนการรักษาได้ดี"],"plan":["ดูแลผิวตามคำแนะนำเดิม","กลับมาปรึกษาแพทย์เมื่อมีอาการใหม่"]}' data-treatment-medicines='[]' aria-label="เปิดโปรแกรมการรักษา #KR-10042">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i>โปรแกรม</span>            <span class="badge">จบโปรแกรมแล้ว</span></span>
             <span class="activity-card__date">28 ก.พ. 2026<small>โปรแกรม 3 เดือน</small></span>
@@ -6436,11 +6436,19 @@
   }
   function openTreatmentDetail(card){
     if(!card) return;
+    /* Activity cards are intentionally compact, but opening one must land on
+       the same complete clinical record as its matching profile card. */
+    const sourceCategory=card.dataset.treatmentSourceCategory;
+    if(sourceCategory){
+      const source=document.querySelector(`#profile [data-treatment-open][data-category="${sourceCategory}"]`);
+      if(source) card=source;
+    }
     if(card.dataset.category) setSelectedCategory(card.dataset.category);
     /* The card head became .treatment-card__title, and the only .between left on
        the card is the follow-up row, so this had started naming the treatment
        after its next appointment date. */
-    const title=card.querySelector('.treatment-card__title strong')?.textContent.trim()
+    const title=card.dataset.treatmentTitle
+      || card.querySelector('.treatment-card__title strong')?.textContent.trim()
       || card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
     const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
     const diagnosis=card.dataset.treatmentDiagnosis || '';
