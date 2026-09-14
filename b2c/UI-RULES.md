@@ -35,6 +35,24 @@ only when the client asks for it, and the reason goes in the commit message.
 - A prompt that only qualifies the one above it (a duration, a unit) folds into that
   question instead of taking its own page.
 - The `n / N` counter rides on whichever heading is showing.
+- **A concern's questions come from the client's clinical set, in the client's
+  order** (obesity, 13 Sep: "obesity intake Qs" in the progress doc, with the
+  doctor's SOP behind it). `intakeTemplates[concern]` is the whole content of a
+  screen body, and each child of that body becomes a page — so a set of six
+  questions does not need six screens, and the order never has to be rearranged
+  to fit the slots that exist.
+- **The BMI is shown, not enforced.** It is the indication the SOP screens on,
+  so the patient sees it the moment both numbers are in rather than hearing it
+  first from the doctor — but eligibility stays the doctor's call, and nothing
+  in the intake blocks on it.
+- **A screening answer is never a dead end.** The obesity set asks seven yes/no
+  questions: five are contraindications for the GLP-1 medicines and two are
+  looking for another cause of the weight. A "yes" is recorded for the doctor to
+  read before the consultation (SOP step 3), not routed to `#ineligible` — the
+  client's own note says the remaining precautions are not absolute, and telling
+  a patient they are ineligible is a clinical call, not a form's.
+- Seven yes/no rows are the app's binary control, one line each, not fourteen
+  option buttons.
 
 ## 3. Buttons
 
