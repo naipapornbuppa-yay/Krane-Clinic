@@ -1115,6 +1115,44 @@
   /* Thai written straight into the markup, mapped back to English. Grouped in
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
+    /* Tracking, follow-ups, activity and the treatment record (14 Sep). */
+    "แก้ไขจำนวน":"Edit quantity",
+    "ดูตำแหน่ง":"See location",
+    "เสร็จสิ้นแล้ว":"Completed",
+    "1 ครั้ง":"Once",
+    "ถึงประมาณ":"Arriving about",
+    "ร้านยากำลังจัดยา":"The pharmacy is preparing your medicine",
+    "ดูใบเสร็จ":"View the receipt",
+    "รอดำเนินการ":"Pending",
+    "ขนส่ง":"Courier",
+    "ผู้รับ":"Recipient",
+    "จัดส่งมิดชิด":"Discreet delivery",
+    "ไม่ระบุชื่อยาบนบรรจุภัณฑ์":"No medicine name on the packaging",
+    "รายการที่สั่ง":"Items ordered",
+    "Lalamove ภายในวัน":"Lalamove, same day",
+    "แนะนำเพื่อน":"Refer a friend",
+    "รักษาโรคอ้วน":"Obesity treatment",
+    "ดูแผนการรักษา":"View the treatment plan",
+    "อาการที่พบ":"Symptoms found",
+    "ผลการวินิจฉัย":"Diagnosis",
+    "ทั้งหมด":"All",
+    "แผนฟื้นฟูเส้นผม ฟีนาสเตอไรด์และไมน็อกซิดิล":"Hair recovery plan, finasteride and minoxidil",
+    "โปรแกรมดูแลผิว ครบตามแผน":"Skin care programme, completed as planned",
+    "ภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้":"Early hereditary hair loss (androgenetic alopecia). No signs that call for further investigation at this point.",
+    "เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์":"Start the medicine on prescription RX-2026-10293 and take it every day. Results usually show after three to six months of continuous use. Photograph the area each month from the same angle and distance. Stop the medicine and contact your doctor if you develop a rash, itching or anything unusual.",
+    /* The set-password screen (14 Sep). Both the markup copy and the string the
+       script swaps in on the reset path, so the screen reads in English either
+       way it is reached. */
+    "ยืนยันเบอร์ด้วยรหัส OTP แล้วตั้งรหัสผ่านสำหรับเข้าสู่ระบบครั้งต่อไป":"Confirm your number with the OTP, then set a password for next time.",
+    "ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านไว้เข้าสู่ระบบครั้งต่อไปได้เลย":"Your number is confirmed. Set a password to sign in next time.",
+    "ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านใหม่เพื่อเข้าสู่ระบบ":"Your number is confirmed. Set a new password to sign in.",
+    "ตั้งรหัสผ่าน":"Set a password",
+    "รหัสผ่าน":"Password",
+    "ยืนยันรหัสผ่าน":"Confirm password",
+    "มีตัวอักษรภาษาอังกฤษ":"Contains a Latin letter",
+    "มีตัวเลข":"Contains a number",
+    "มีอักขระพิเศษ เช่น ! @ # ?":"Contains a symbol, such as ! @ # ?",
+    "บันทึกรหัสผ่านและไปต่อ":"Save the password and continue",
     /* Strings the app grew after the language rule last ran clean (14 Sep):
        the password and country-code controls, the upload-prescription action,
        and the quantity steppers, whose aria-labels became Thai. */
@@ -1880,12 +1918,51 @@
     [/^เติมยา 1 รายการ · (฿\s?[\d,.]+)$/, "Refill 1 item · $1"],
     [/^เติมยา (\d+) รายการ · (฿\s?[\d,.]+)$/, "Refill $1 items · $2"],
     [/^จองเวลา (.+)$/, "Book $1"],
-    [/^([\d.,]+) กม\.$/, "$1 km"]
+    [/^([\d.,]+) กม\.$/, "$1 km"],
+    /* Weights, appointment counts and dates are generated, so a fixed table can
+       never hold them — the number moves every time the fixture does. */
+    [/^([\d.,]+) กก\.$/, "$1 kg"],
+    [/^1 นัด$/, "1 appointment"],
+    [/^(\d+) นัด$/, "$1 appointments"],
+    [/^ติดตามการควบคุมน้ำหนัก ครั้งที่ (\d+)$/, "Weight follow-up $1"]
   ];
+  /* Thai month abbreviations, so a generated date reads in English without one
+     table entry per date. Every date in the app is written by a fixture that
+     moves with today, so the literals were going stale the moment the fixture
+     changed — the last set went stale when a follow-up's condition was renamed
+     and its whole "MC-… · date · condition" line stopped matching. A pattern
+     cannot map a month name on its own (the replacement is a static string), so
+     this runs as its own pass after the patterns. */
+  var TH_MONTHS = {
+    "ม.ค.":"Jan","ก.พ.":"Feb","มี.ค.":"Mar","เม.ย.":"Apr","พ.ค.":"May","มิ.ย.":"Jun",
+    "ก.ค.":"Jul","ส.ค.":"Aug","ก.ย.":"Sep","ต.ค.":"Oct","พ.ย.":"Nov","ธ.ค.":"Dec"
+  };
+  var TH_DATE = /(\d{1,2})\s(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)(\s\d{4})?/g;
+  function englishDates(thai) {
+    if (!TH_DATE.test(thai)) return undefined;
+    TH_DATE.lastIndex = 0;
+    var swapped = thai.replace(TH_DATE, function (all, day, month, year) {
+      return day + " " + TH_MONTHS[month] + (year || "");
+    });
+    /* Only the date changed; anything else Thai in the string still needs its
+       own entry, so hand it back for the caller to translate the rest. */
+    return swapped;
+  }
   function englishFor(thai) {
     if (EN[thai] !== undefined) return EN[thai];
     for (var i = 0; i < EN_PATTERNS.length; i++) {
       if (EN_PATTERNS[i][0].test(thai)) return thai.replace(EN_PATTERNS[i][0], EN_PATTERNS[i][1]);
+    }
+    var dated = englishDates(thai);
+    if (dated !== undefined && dated !== thai) {
+      /* The date is now English. If the rest of the line has an entry of its own
+         the table finds it; otherwise the dated form is still an improvement. */
+      var whole = EN[dated];
+      if (whole !== undefined) return whole;
+      return dated.replace(/[\u0e00-\u0e7f]+(\s[\u0e00-\u0e7f]+)*/g, function (thaiRun) {
+        var piece = EN[thaiRun.trim()];
+        return piece !== undefined ? piece : thaiRun;
+      });
     }
     return undefined;
   }
