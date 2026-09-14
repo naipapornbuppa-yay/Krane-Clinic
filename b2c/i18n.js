@@ -7,6 +7,10 @@
    ============================================================ */
 (function () {
   var TH = {
+    /* Written in English in the markup and again by the script, so Thai mode
+     left the whole sentence in English. No rule catches English stranded in
+     Thai — the contract only checks the other direction. */
+    "Payment is complete. Open the receipt from the paid step in order tracking while the pharmacy prepares your medicine.":"ชำระเงินเรียบร้อยแล้ว เปิดใบเสร็จได้จากขั้นตอนที่ชำระแล้วในหน้าติดตามคำสั่งซื้อ ระหว่างที่ร้านยากำลังจัดยาให้คุณ",
     /* SCR-010 draft plan preview: draft only, quantities not final. */
     "Draft only, 2 items, 1 month supply. Final quantity is confirmed when the doctor issues the plan.":"ตัวอย่างเท่านั้น 2 รายการ สำหรับ 1 เดือน จำนวนจริงยืนยันเมื่อแพทย์ออกแผนการรักษา",
 
@@ -1118,6 +1122,8 @@
     /* Tracking, follow-ups, activity and the treatment record (14 Sep). */
     "แก้ไขจำนวน":"Edit quantity",
     "ดูตำแหน่ง":"See location",
+    "ส่งถึงเมื่อ":"Delivered at",
+    "ไรเดอร์ ณัฐพงษ์ ด.":"Rider Nattapong D.",
     "เสร็จสิ้นแล้ว":"Completed",
     "1 ครั้ง":"Once",
     "ถึงประมาณ":"Arriving about",
@@ -1896,6 +1902,20 @@
     "MC-2026-10293 · 30 มิ.ย. 2026 · ผมร่วง":"MC-2026-10293 · 30 Jun 2026 · Hair loss"
   };
   var EN = {}, TH_FROM_EN = {};
+  /* TH is the English-source table: English key, Thai value. Its Thai side is a
+     perfectly good Thai -> English pair too, and for years it was not being used
+     as one — so a screen written in Thai stayed Thai in English mode even when
+     the very same sentence already had an English source ten lines up. Five
+     rounds of this reached the client as "still Thai" reports, each fixed by
+     copying one more pair across by hand.
+
+     The reverse is built here instead. EN_FROM_TH is applied second so an
+     explicit Thai -> English pair always wins over the derived one, and a Thai
+     value that two English keys share keeps whichever came first rather than
+     flapping. This can only add translations where there were none: the lookup
+     is an exact match on a whole string, so nothing that already translated
+     changes. */
+  for (var _kenth in TH) { if (EN[TH[_kenth]] === undefined) EN[TH[_kenth]] = _kenth; }
   for (var _kthen in EN_FROM_TH) { EN[_kthen] = EN_FROM_TH[_kthen]; TH_FROM_EN[EN_FROM_TH[_kthen]] = _kthen; }
   var THAI_RE = /[ก-฾เ-๛]/;
 
@@ -1922,6 +1942,7 @@
     /* Weights, appointment counts and dates are generated, so a fixed table can
        never hold them — the number moves every time the fixture does. */
     [/^([\d.,]+) กก\.$/, "$1 kg"],
+    [/^ได้รับแล้ว · (\d{2}\/\d{2}\/\d{2} \d{2}:\d{2})$/, "Delivered · $1"],
     [/^1 นัด$/, "1 appointment"],
     [/^(\d+) นัด$/, "$1 appointments"],
     [/^ติดตามการควบคุมน้ำหนัก ครั้งที่ (\d+)$/, "Weight follow-up $1"]
