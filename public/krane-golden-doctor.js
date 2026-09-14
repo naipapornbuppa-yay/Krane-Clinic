@@ -13,14 +13,14 @@
     [/Mali B\.(?:\s*\(Demo\))?/g, f.patient.name],
     [/Dr\. Narin(?:\s+Tanaka|\s+T\.)?/g, f.doctor.name],
     [/12 Sep 2026/g, f.treatment.followUp],
-    [/12 ก\.ย\. 2026/g, "26 ส.ค. 2026"]
+    [/12 ก\.ย\. 2026/g, f.treatment.followUpTH]
   ];
 
   function applyFixture() {
     demo.replaceText(document.body, pairs);
     const followUp = document.querySelector("[data-golden-follow-up]");
     const thai = document.querySelector('.lang__opt[data-lng="th"].is-active');
-    if (followUp) followUp.value = thai ? "26 ส.ค. 2026" : f.treatment.followUp;
+    if (followUp) followUp.value = thai ? f.treatment.followUpTH : f.treatment.followUp;
   }
 
   document.querySelectorAll("[data-patient]").forEach(function (row) {

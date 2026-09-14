@@ -17,7 +17,7 @@
   /* Each pattern also matches the value it produces, so repeat passes are a no-op. */
   /* The follow-up dates are not rewritten here any more. The app generates them
      from data-followup-offset so they move with the real date, and these two
-     pairs stamped a fixed calendar date back over that — which is what made the
+     pairs stamped a fixed calendar date back over that, which is what made the
      three-day reminder disappear a few days after the fixture was written. They
      also collapsed both treatment cards onto one date, so the case that is
      deliberately outside the reminder window stopped being demonstrable. */
@@ -44,7 +44,7 @@
        [data-payment-address] with a fixed demo string regardless of whether an
        address had actually been confirmed, so the row read as filled while the
        checkout CTA and delivery-fee estimate correctly still read as unconfirmed
-       — a patient could see a delivery address before choosing one. The app owns
+       , so a patient could see a delivery address before choosing one. The app owns
        that row: syncDeliveryAddress() already renders it from the real
        addressConfirmed state. */
     updateTracking();

@@ -1366,7 +1366,10 @@ test("golden record cannot regress fulfilment and shares one follow-up date", as
   const doctor = await readFile(path.join(publicRoot, "cms/cms-doctor.html"), "utf8");
   const adminOverlay = await readFile(path.join(publicRoot, "krane-golden-admin.js"), "utf8");
   assert.doesNotMatch(doctorOverlay, /consultationStatus:\s*"Plan sent",\s*fulfilmentStatus/);
-  assert.match(fixture, /followUp:\s*"26 Aug 2026"/);
+  // The follow-up moves with the real date since 1 Sep, so the fixture and the
+  // doctor overlay both read it from one relative date instead of a pinned one.
+  assert.match(fixture, /followUp:\s*relativeDate\(FOLLOW_UP_OFFSET_DAYS, false\)/);
+  assert.match(doctorOverlay, /followUp\.value = thai \? f\.treatment\.followUpTH : f\.treatment\.followUp/);
   assert.match(doctor, /data-golden-follow-up value="26 ส\.ค\. 2026"/);
   assert.match(adminOverlay, /"Dispatched":\s*"ไรเดอร์รับสินค้าแล้ว กำลังจัดส่งให้ผู้ป่วย"/);
 });

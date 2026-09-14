@@ -416,6 +416,12 @@
   setText("[data-safety]", data.safety);
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
+  const safetyLink = document.querySelector(".safety__button");
+  if (safetyLink && key === "weight") {
+    safetyLink.href = "glp1-safety.html";
+    safetyLink.textContent = "อ่านข้อมูลความปลอดภัย";
+  }
+
   document.querySelectorAll("[data-intake-link]").forEach((link) => {
     // A condition detail is always a Krane-direct entry. Carry that context in
     // the deep link so a previous Partner session cannot hide the intake
@@ -456,7 +462,23 @@
      needed, short course — shown as a tag on the photo (client, 18 Aug). */
   if (products) products.innerHTML = (data.products || []).map(([title, form, body, photo, kind, tag]) => `
     <article class="product-card" data-product-kind="${kind}">
-      <span class="product-card__stage"><img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt="">${tag ? `<span class="product-card__tag">${tag}</span>` : ""}</span>
+      <div class="product-card__gallery" data-product-gallery>
+        <span class="product-card__stage" data-gallery-stage data-gallery-view="front">
+          <img src="${photo}" width="768" height="768" loading="lazy" decoding="async" alt="${title}">
+          ${tag ? `<span class="product-card__tag">${tag}</span>` : ""}
+        </span>
+        <div class="product-card__thumbs" role="group" aria-label="เลือกรูปภาพ ${title}">
+          ${[
+            ["front", "ภาพผลิตภัณฑ์"],
+            ["detail", "ภาพระยะใกล้"],
+            ["angle", "ภาพอีกมุม"]
+          ].map(([view, label], index) => `
+            <button class="product-card__thumb${index === 0 ? " is-active" : ""}" type="button" data-gallery-view="${view}" aria-label="${label}" aria-pressed="${index === 0 ? "true" : "false"}">
+              <img src="${photo}" width="96" height="96" loading="lazy" decoding="async" alt="">
+            </button>
+          `).join("")}
+        </div>
+      </div>
       <div class="product-card__copy">
         <span class="product-card__form">${form}</span>
         <strong>${title}</strong>
@@ -464,6 +486,58 @@
       </div>
     </article>
   `).join("");
+
+  products?.addEventListener("click", (event) => {
+    const thumb = event.target.closest(".product-card__thumb[data-gallery-view]");
+    const gallery = thumb?.closest("[data-product-gallery]");
+    const stage = gallery?.querySelector("[data-gallery-stage]");
+    if (!thumb || !gallery || !stage) return;
+    stage.dataset.galleryView = thumb.dataset.galleryView;
+    gallery.querySelectorAll(".product-card__thumb").forEach((button) => {
+      const isActive = button === thumb;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  });
+
+  /* Reuse the product-card source of truth for the comparison matrix. This
+     prevents medicine artwork or copy from drifting between sections. */
+  const comparison = document.querySelector("[data-comparison]");
+  const comparisonProducts = (data.products || []).slice(0, 3);
+  const reviewByKind = {
+    pen: "ข้อบ่งใช้ ข้อห้าม และการติดตามหลังเริ่มยา",
+    injection: "ผลตรวจ ข้อห้าม และแผนติดตามเป็นระยะ",
+    oral: "โรคประจำตัว ยาที่ใช้อยู่ และความเสี่ยงเฉพาะบุคคล",
+    topical: "ตำแหน่งที่ใช้ ความไวของผิว และอาการระคายเคือง"
+  };
+  setText("[data-comparison-title]", `เปรียบเทียบ ${comparisonProducts.length} ทางเลือก`);
+  setText("[data-comparison-lead]", "ดูรูปแบบการใช้และข้อพิจารณาของแต่ละทางเลือก ก่อนคุยกับแพทย์เพื่อเลือกแผนที่เหมาะกับคุณ");
+  if (comparison) {
+    const rows = [
+      ["วิธีใช้", comparisonProducts.map(([, form]) => form)],
+      ["รูปแบบการดูแล", comparisonProducts.map(([, , , , , tag]) => tag || "ตามแพทย์แนะนำ")],
+      ["แพทย์พิจารณาจาก", comparisonProducts.map(([, , , , kind]) => reviewByKind[kind] || "อาการ ประวัติสุขภาพ และเป้าหมายของคุณ")],
+      ["สิ่งที่ควรรู้", comparisonProducts.map(([, , body]) => body)]
+    ];
+    comparison.style.setProperty("--compare-count", comparisonProducts.length);
+    comparison.innerHTML = `
+      <div class="comparison-row comparison-row--head" role="row">
+        <div class="comparison-corner" role="columnheader"><span>ทางเลือก</span><strong>เทียบทีละข้อ</strong></div>
+        ${comparisonProducts.map(([title, form, , photo]) => `
+          <div class="comparison-product" role="columnheader">
+            <span class="comparison-product__image"><img src="${photo}" width="144" height="144" loading="lazy" decoding="async" alt=""></span>
+            <span><strong>${title}</strong><small>${form}</small></span>
+          </div>
+        `).join("")}
+      </div>
+      ${rows.map(([label, values]) => `
+        <div class="comparison-row" role="row">
+          <div class="comparison-label" role="rowheader">${label}</div>
+          ${values.map((value) => `<div class="comparison-value" role="cell">${value}</div>`).join("")}
+        </div>
+      `).join("")}
+    `;
+  }
 
   /* Reading list: the shared library filtered to this condition's tag, so the
      page never links out to an article about a different concern. */
@@ -485,6 +559,70 @@
         </a></li>
       `).join("");
     }
+  }
+
+  /* The guide rail is a compact table of contents, not a separate carousel.
+     It mirrors the active chapter as the page moves and keeps that chapter in
+     view inside the horizontal mobile rail. */
+  const sectionNav = document.querySelector("[data-section-nav]");
+  const sectionTabs = Array.from(document.querySelectorAll("[data-section-tab]"));
+  const sectionTargets = sectionTabs
+    .map((tab) => ({ tab, section: document.getElementById(tab.dataset.sectionTab) }))
+    .filter(({ section }) => section);
+
+  const setActiveSection = (id, bringIntoView = true) => {
+    sectionTabs.forEach((tab) => {
+      const active = tab.dataset.sectionTab === id;
+      tab.classList.toggle("is-active", active);
+      if (active) {
+        tab.setAttribute("aria-current", "location");
+        if (bringIntoView) {
+          const rail = tab.parentElement;
+          const centeredLeft = tab.offsetLeft - ((rail.clientWidth - tab.offsetWidth) / 2);
+          rail.scrollTo({ left: Math.max(0, centeredLeft), behavior: "smooth" });
+        }
+      } else {
+        tab.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  if (sectionNav && sectionTargets.length) {
+    let sectionFrame = 0;
+    const syncActiveSection = () => {
+      sectionFrame = 0;
+      const readingLine = sectionNav.getBoundingClientRect().bottom + 48;
+      let current = sectionTargets[0];
+      sectionTargets.forEach((candidate) => {
+        if (candidate.section.getBoundingClientRect().top <= readingLine) current = candidate;
+      });
+      setActiveSection(current.tab.dataset.sectionTab);
+    };
+    const requestSectionSync = () => {
+      if (sectionFrame) return;
+      sectionFrame = requestAnimationFrame(syncActiveSection);
+    };
+
+    sectionTabs.forEach((tab) => {
+      tab.addEventListener("click", (event) => {
+        const id = tab.dataset.sectionTab;
+        const target = document.getElementById(id);
+        if (!target) return;
+        event.preventDefault();
+        if (window.location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
+        setActiveSection(id);
+        const scrollMargin = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+        const targetTransform = getComputedStyle(target).transform;
+        const revealOffset = targetTransform === "none" ? 0 : new DOMMatrixReadOnly(targetTransform).m42;
+        window.scrollTo({
+          top: window.scrollY + target.getBoundingClientRect().top - revealOffset - scrollMargin,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+        });
+      });
+    });
+    window.addEventListener("scroll", requestSectionSync, { passive: true });
+    window.addEventListener("resize", requestSectionSync, { passive: true });
+    requestSectionSync();
   }
 
   /* The landing page reveals one editorial chapter at a time. Detail pages

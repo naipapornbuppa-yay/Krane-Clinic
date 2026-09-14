@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260913-order-stage-sync-v1";
+    const release = "20260914-rider-pickup-v2";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260913-order-stage-sync-v1">
-<link rel="stylesheet" href="components.css?v=20260913-order-stage-sync-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260913-order-stage-sync-v1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260913-order-stage-sync-v1">
-<link rel="stylesheet" href="platform-compat.css?v=20260913-order-stage-sync-v1">
-<script src="../krane-golden-fixture.js"></script>
-<script src="custom-select.js?v=20260913-order-stage-sync-v1" defer></script>
-<script src="i18n.js?v=20260913-order-stage-sync-v1" defer></script>
-<script src="../krane-golden-patient.js?v=20260913-order-stage-sync-v1" defer></script>
+<link rel="stylesheet" href="design-tokens.css?v=20260914-rider-pickup-v2">
+<link rel="stylesheet" href="components.css?v=20260914-rider-pickup-v2">
+<link rel="stylesheet" href="custom-select.css?v=20260914-rider-pickup-v2">
+<link rel="stylesheet" href="state-illustrations.css?v=20260914-rider-pickup-v2">
+<link rel="stylesheet" href="platform-compat.css?v=20260914-rider-pickup-v2">
+<script src="../krane-golden-fixture.js?v=20260914-rider-pickup-v2"></script>
+<script src="custom-select.js?v=20260914-rider-pickup-v2" defer></script>
+<script src="i18n.js?v=20260914-rider-pickup-v2" defer></script>
+<script src="../krane-golden-patient.js?v=20260914-rider-pickup-v2" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -805,7 +805,7 @@
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260913-order-stage-sync-v1" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260914-rider-pickup-v2" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
     <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
@@ -972,7 +972,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260913-order-stage-sync-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260914-rider-pickup-v2" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1239,7 +1239,9 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Currently under specialist care for this issue</span></span><span class="opt-check"></span></button>
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these apply</span></span><span class="opt-check"></span></button>
         </div>
+        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">This confirms whether online care is safe for you today.</p></aside>
       </div>
+    </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="intake5" data-flag-go="ineligible">Continue</button></div>
   </section>
 
@@ -1248,31 +1250,32 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Add a photo of the area you're concerned about</h2></div>
+      <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span></p>
 
       <div class="stack-2">
         <div class="section-label">ตัวอย่างมุมที่แพทย์ต้องใช้</div>
         <ol class="photo-guide">
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260913-order-stage-sync-v1" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">แนวไรผมด้านหน้า</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260913-order-stage-sync-v1" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">กลางศีรษะ</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260913-order-stage-sync-v1" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ขม่อมด้านหลัง</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260913-order-stage-sync-v1" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ด้านข้างและขมับ</span>
           </li>
@@ -1336,6 +1339,7 @@
           <input id="partner-photo-input" class="sr-only" type="file" accept="image/*" multiple data-partner-photo-input>
           <div class="up-thumbs shared-concern-grid__wide" data-partner-photo-thumbs aria-live="polite"></div>
         </div>
+        <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Your answers stay private and are used only for this consultation.</span></p>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete>ถัดไป</button></div>
@@ -1366,6 +1370,8 @@
           <div class="field grow"><label for="intake-height">ส่วนสูง (ซม.)</label><input class="input" id="intake-height" inputmode="numeric" placeholder="เช่น 175"></div>
           <div class="field grow"><label for="intake-weight">น้ำหนัก (กก.)</label><input class="input" id="intake-weight" inputmode="numeric" placeholder="เช่น 70"></div>
         </div>
+        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">Age, sex at birth, height and weight can affect which care options are safe for you.</p></aside>
+        <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching" data-general-health-submit>ยืนยันข้อมูลและดำเนินการต่อ</button></div>
@@ -1699,7 +1705,7 @@
         <div class="between">
           <span class="muted">คุณหมอที่รับเคส</span>
           <span class="doctor-value">
-            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260913-order-stage-sync-v1" alt="" width="40" height="40">
+            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260914-rider-pickup-v2" alt="" width="40" height="40">
             <strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong>
           </span>
         </div>
@@ -1842,7 +1848,7 @@
         <!-- One active ingredient per row. A fixed-dose combination wrote its
              three ingredients into one name and wrapped over four lines
              (client, 19 Aug), so the sample uses single-ingredient products. -->
-        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260913-order-stage-sync-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
+        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint plan-item__gist">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</div></div><span class="price">฿ 94 · 1 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint plan-item__gist">แก้ปวด ลดไข้</div></div><span class="price">฿ 40 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Naproxen 250 mg</div><div class="hint plan-item__gist">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</div></div><span class="price">฿ 134 · 1 แผง</span></div>
@@ -1877,7 +1883,7 @@
         <span class="call-fab__badge" data-consult-unread-badge hidden aria-hidden="true">1</span>
       </button>
       <div class="call-remote call-remote--video">
-        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260913-order-stage-sync-v1" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
+        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260914-rider-pickup-v2" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
         <div class="call-remote__identity">
           <div class="call-name">Dr. Narin</div>
           <div class="call-status" data-call-status>Video consultation · 02:14</div>
@@ -2153,7 +2159,7 @@
       </header>
       <div class="checkout-order checkout-order--editor">
         <div class="checkout-order__item" data-order-item="cough">
-          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260913-order-stage-sync-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
           <span class="checkout-order__body"><span class="checkout-order__name">Dextromethorphan 15 mg</span><span class="checkout-order__note">ลดอาการไอ</span></span>
           <span class="checkout-order__price" data-order-price>฿ 170</span>
           <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="Dextromethorphan 15 mg quantity">
@@ -2273,7 +2279,7 @@
             <span class="checkout-order__price" data-payment-consultation>฿ 350</span>
           </div>
           <div class="checkout-order__item" data-order-item="cough">
-            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260913-order-stage-sync-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Dextromethorphan 15 mg</span>
               <span class="checkout-order__note">ลดอาการไอ</span>
@@ -2608,6 +2614,10 @@
             <span class="delivery-fact__label">ที่อยู่</span>
             <span class="delivery-fact__value" data-delivery-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</span>
           </div>
+          <div class="delivery-privacy-toast" role="note">
+            <span class="delivery-privacy-toast__icon" aria-hidden="true"><i data-lucide="shield-check" class="ui-icon ui-icon--sm"></i></span>
+            <span><strong>จัดส่งมิดชิด</strong><small>ไม่ระบุชื่อยาบนบรรจุภัณฑ์</small></span>
+          </div>
         </div>
       </div>
       <!-- What is actually in the parcel. The basket is the checkout's job, but
@@ -2617,9 +2627,6 @@
         <span class="section-label">รายการที่สั่ง</span>
         <div class="card card--pad-sm delivery-items" data-delivery-items></div>
       </div>
-      <!-- The last thing on the screen is the promise a patient waiting on this
-           delivery is most likely to be anxious about (client, 10 Sep). -->
-      <p class="delivery-discreet"><i data-lucide="shield-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>จัดส่งมิดชิด ไม่ระบุชื่อยา</span></p>
     </div>
     <nav class="bottomnav">
       <a data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
@@ -2660,7 +2667,7 @@
   <section class="screen screen--web" id="profile">
     <header class="screen__top profile-shell-nav">
       <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane home">
-        <img src="../assets/krane-logo-16aug26-2.svg?v=20260913-order-stage-sync-v1" width="1059" height="280" alt="Krane">
+        <img src="../assets/krane-logo-16aug26-2.svg?v=20260914-rider-pickup-v2" width="1059" height="280" alt="Krane">
       </a>
       <nav class="profile-shell-nav__links" aria-label="เมนูหลัก">
         <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
@@ -2724,30 +2731,29 @@
         <span class="followup-toast__state" data-home-followup-state>รอเวลา</span>
       </button>
 
-      <!-- F05 update (client 20 Jun): a patient can have multiple active treatments and orders.
-           Each treatment is its own card; in-flight orders stack in an "Active orders" list. -->
+      <!-- A patient can have multiple active treatments. The profile mirrors the
+           three programmes currently offered by Krane: weight, hair and ED. -->
       <div class="stack-3">
-        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><span class="section-count">2</span></div>
-        <!-- Client, 27 Aug: every case is under a doctor, so every card shows its
-             follow-up. Client, 28 Aug: the card itself is the affordance — five
-             buttons across two cards was the clutter. Tapping a card opens its
+        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><span class="section-count">3</span></div>
+        <!-- Every case is under a doctor, so every card shows its follow-up.
+             The card itself is the affordance. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sleep-stress" data-treatment-date="26/08/2026" data-treatment-refill-text="9 วัน · เติมยาได้ 4 ก.ย. 2026" data-treatment-rx="RX-2026-10288" data-treatment-note='{"goals":["หลับได้ภายใน 30 นาทีหลังเข้านอน","ตื่นเป็นเวลาและไม่ง่วงระหว่างวัน"],"findings":["นอนไม่หลับต่อเนื่องประมาณ 3 เดือน","ตื่นกลางดึกเฉลี่ย 2 ครั้งต่อคืน","ความเครียดจากงานเป็นปัจจัยกระตุ้นหลัก"],"assessment":["ภาวะนอนไม่หลับร่วมกับความเครียด","ยังไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติม"],"plan":["ใช้เมลาโทนินตามแผน วันละ 1 เม็ด ก่อนนอน","เข้านอนและตื่นเวลาเดิมทุกวัน รวมถึงวันหยุด","เลี่ยงคาเฟอีนหลังบ่ายสามโมง","บันทึกเวลานอนและระดับความเครียดทุกสัปดาห์","ประเมินอีกครั้งในการนัดติดตามผล"]}' data-treatment-medicines='[{"name":"Melatonin 5 mg","photo":"assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260913-order-stage-sync-v1","kind":"ยาช่วยการนอนหลับ","purpose":"ใช้ปรับรอบการนอนให้หลับง่ายขึ้นและตื่นเป็นเวลา","facts":["รับประทานครั้งละ 1 เม็ด","วันละ 1 ครั้ง ก่อนนอน 30 นาที","ต่อเนื่อง 30 วัน หรือจนกว่าการนอนจะเป็นเวลา","อาจง่วงต่อเนื่องถึงตอนเช้าในบางราย"]}]' data-treatment-diagnosis="ภาวะนอนไม่หลับร่วมกับความเครียด" data-treatment-plan="ติดตามคุณภาพการนอนและระดับความเครียดต่อเนื่อง ใช้ยาตามแผนเดิม และประเมินอีกครั้งในการนัดติดตามผล">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="weight" data-treatment-date="20/06/2026" data-treatment-refill-text="12 วัน · เติมยาได้ 17 ก.ย. 2026" data-treatment-rx="RX-2026-10288" data-treatment-note='{"goals":["ลดน้ำหนักอย่างปลอดภัยและยั่งยืน","ลดรอบเอวและความเสี่ยงจากโรคอ้วน"],"findings":["น้ำหนักเริ่มต้น 89.0 กก. ปัจจุบัน 82.6 กก.","น้ำหนักลดลง 7.2% จากน้ำหนักเริ่มต้น","รับประทานอาหารและออกกำลังกายตามแผนได้สม่ำเสมอ"],"assessment":["โรคอ้วนที่ตอบสนองต่อแผนการรักษา","ยังไม่พบอาการไม่พึงประสงค์ที่ต้องหยุดการรักษา"],"plan":["ใช้ยาตามใบสั่งยาและขนาดที่แพทย์กำหนด","ชั่งน้ำหนักสัปดาห์ละครั้งในช่วงเวลาเดิม","เน้นโปรตีน ผัก และน้ำให้เพียงพอ","ติดตามอาการและประเมินแผนอีกครั้งตามนัด"]}' data-treatment-medicines='[{"name":"Semaglutide","photo":"assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png","kind":"ยาควบคุมน้ำหนักชนิดฉีด","purpose":"ใช้ร่วมกับการปรับพฤติกรรมเพื่อดูแลโรคอ้วนตามที่แพทย์ประเมิน","ordered":true,"facts":["ฉีดสัปดาห์ละครั้งตามขนาดที่แพทย์กำหนด","ใช้วันเดิมของแต่ละสัปดาห์","ติดตามน้ำหนักและอาการทางระบบทางเดินอาหาร","หากมีอาการรุนแรงให้หยุดยาและติดต่อแพทย์"]},{"name":"Tirzepatide","photo":"assets/medicine/weight-diecut-v1/mounjaro-kwikpen-diecut-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับการดูแลโรคอ้วนเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ฉีดสัปดาห์ละครั้งตามคำสั่งแพทย์","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกันโดยไม่ได้รับคำแนะนำ","ติดตามผลข้างเคียงตามนัด"]}]' data-treatment-diagnosis="โรคอ้วนที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ดำเนินแผนควบคุมน้ำหนักต่อเนื่อง ใช้ยาตามใบสั่งแพทย์ และติดตามน้ำหนัก รอบเอว และอาการทุกสัปดาห์">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
-              <strong>Balanced Sleep Programme</strong>
-              <span class="treatment-card__programme">Sleep &amp; stress</span>
+              <strong>Safe Weight Progress</strong>
+              <span class="treatment-card__programme">Obesity treatment</span>
             </span>
             <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
           <span class="followup-details">
-            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="sleep-stress" data-followup-offset="1" data-followup-demo-minutes="1438" data-followup-iso="2026-09-14">14 Sep 2026</span></strong></span>
             <span class="followup-row"><span class="hint">Case doctor</span><strong>Dr. Narin Tanaka</strong></span>
+            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="1438" data-followup-iso="2026-09-14">14 Sep 2026</span></strong></span>
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-refill-text="24 วัน · เติมยาได้ 19 ก.ย. 2026" data-treatment-rx="RX-2026-10293" data-treatment-note='{"goals":["ชะลอผมร่วงบริเวณกลางศีรษะและกรอบหน้า","เห็นความหนาแน่นของเส้นผมเพิ่มขึ้นภายใน 6 เดือน"],"findings":["ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน","ไม่เคยใช้ยาหรือผลิตภัณฑ์รักษาผมร่วงมาก่อน","จากภาพถ่าย แนวผมด้านหน้าร่นขึ้นเล็กน้อย หนังศีรษะไม่มีผื่นหรือการอักเสบ"],"assessment":["ภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น","ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้"],"plan":["เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน","ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน","ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม","หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์"]}' data-treatment-medicines='[{"name":"Loratadine 10 mg","photo":"assets/medicine/real-v1/loratadine-loreze-10mg.jpg","kind":"ยาแก้แพ้ชนิดไม่ง่วงซึม","purpose":"ใช้ลดอาการแพ้ ผื่นคัน ลมพิษ และลดน้ำมูก","facts":["รับประทานครั้งละ 1 เม็ด","วันละ 1 ครั้ง เวลาเดิมทุกวัน","ต่อเนื่อง 30 วัน หรือจนกว่าอาการจะดีขึ้น","อาจมีอาการปากแห้ง หรือง่วงเล็กน้อยในบางราย"]},{"name":"Paracetamol 500 mg","photo":"assets/medicine/real-v1/paracetamol-para-gpo-500mg.png","kind":"ยาแก้ปวด ลดไข้","purpose":"ใช้บรรเทาอาการปวดและลดไข้","facts":["รับประทานครั้งละ 1 ถึง 2 เม็ด","เมื่อมีอาการ ห่างกันอย่างน้อย 4 ถึง 6 ชั่วโมง","ไม่เกิน 8 เม็ดต่อวัน","เลี่ยงการดื่มแอลกอฮอล์ระหว่างใช้ยา"]}]' data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="รับประทานยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-refill-text="24 วัน · เติมยาได้ 19 ก.ย. 2026" data-treatment-rx="RX-2026-10293" data-treatment-note='{"goals":["ชะลอผมร่วงบริเวณกลางศีรษะและกรอบหน้า","เห็นความหนาแน่นของเส้นผมเพิ่มขึ้นภายใน 6 เดือน"],"findings":["ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน","แนวผมด้านหน้าร่นขึ้นเล็กน้อย","หนังศีรษะไม่มีผื่นหรือการอักเสบ"],"assessment":["ภาวะผมร่วงจากพันธุกรรมระยะเริ่มต้น","ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้"],"plan":["ใช้ยาตามใบสั่งยา RX-2026-10293 อย่างต่อเนื่อง","ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน","ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม","หากมีอาการผิดปกติให้หยุดยาและติดต่อแพทย์"]}' data-treatment-medicines='[{"name":"Finasteride 1 mg","photo":"assets/medicine/finasteride-bottle-cutout.png","kind":"ยารับประทานสำหรับผมร่วง","purpose":"ช่วยชะลอผมร่วงจากพันธุกรรมตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานครั้งละ 1 เม็ด","วันละ 1 ครั้ง เวลาเดิมทุกวัน","ควรใช้ต่อเนื่องตามแผนแพทย์","หากมีอาการผิดปกติให้ติดต่อแพทย์"]},{"name":"Minoxidil 5% topical","photo":"assets/medicine/minoxidil-pump-cutout.png","kind":"ยาทาสำหรับผมร่วง","purpose":"ช่วยกระตุ้นการงอกและเพิ่มความหนาแน่นของเส้นผม","ordered":true,"facts":["ใช้บนหนังศีรษะที่แห้งตามปริมาณที่แพทย์แนะนำ","ล้างมือหลังใช้ทุกครั้ง","หลีกเลี่ยงการสัมผัสดวงตา","อาจระคายเคืองหนังศีรษะในบางราย"]},{"name":"Dutasteride 0.5 mg","photo":"assets/medicine/real-v1/generic-tablet-blister-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับผมร่วงจากพันธุกรรมเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["ใช้ตามใบสั่งแพทย์เท่านั้น","แพทย์จะประเมินประวัติสุขภาพก่อนเริ่มยา","ไม่ควรปรับขนาดยาด้วยตนเอง","ติดตามผลตามนัด"]}]' data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ใช้ยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับคุณหมอนรินทร์ตามนัด">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
               <strong>Ongoing Hair Recovery</strong>
@@ -2757,17 +2763,28 @@
           </span>
           <!-- F24 (client): follow-up lives inside the treatment card, not on a separate page -->
           <span class="followup-details">
-            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="hair-skin" data-followup-offset="11" data-followup-iso="2026-09-24">24 Sep 2026</span></strong></span>
             <span class="followup-row"><span class="hint">Case doctor</span><strong>Dr. Narin Tanaka</strong></span>
+            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="hair-skin" data-followup-offset="11" data-followup-iso="2026-09-24">24 Sep 2026</span></strong></span>
+          </span>
+          <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sexual-health" data-treatment-date="18/07/2026" data-treatment-refill-text="18 วัน · เติมยาได้ 25 ก.ย. 2026" data-treatment-rx="RX-2026-10304" data-treatment-note='{"goals":["กลับมามั่นใจในความสัมพันธ์","คงการแข็งตัวได้เพียงพอสำหรับกิจกรรมทางเพศ"],"findings":["มีอาการเป็นบางครั้งในช่วง 4 เดือนที่ผ่านมา","ไม่มีอาการเจ็บหน้าอกหรือเป็นลมขณะออกแรง","ไม่ได้ใช้ยาไนเตรตหรือยาแก้เจ็บหน้าอก"],"assessment":["ภาวะหย่อนสมรรถภาพระดับเล็กน้อยถึงปานกลาง","เหมาะสำหรับติดตามผลผ่านระบบแพทย์ทางไกล"],"plan":["ใช้ยาตามใบสั่งแพทย์ก่อนกิจกรรมทางเพศ","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ใช้เกินขนาดหรือความถี่ที่แพทย์กำหนด","ติดต่อแพทย์ทันทีหากมีอาการผิดปกติรุนแรง"]}' data-treatment-medicines='[{"name":"Sildenafil 50 mg","photo":"assets/medicine/ed-sheet-v1/viagra-100mg-vgr100-cutout.png","kind":"ยารับประทานสำหรับภาวะหย่อนสมรรถภาพ","purpose":"ช่วยเพิ่มการไหลเวียนเลือดเมื่อมีการกระตุ้นทางเพศตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานตามขนาดที่แพทย์กำหนด","ใช้ก่อนกิจกรรมทางเพศตามคำแนะนำ","ห้ามใช้ร่วมกับยาไนเตรต","หากมีอาการเจ็บหน้าอกหรืออาการรุนแรงให้ไปโรงพยาบาล"]},{"name":"Tadalafil 10 mg","photo":"assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับภาวะหย่อนสมรรถภาพที่ออกฤทธิ์นานกว่า","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกัน","ติดตามอาการและผลข้างเคียงกับแพทย์"]}]' data-treatment-diagnosis="ภาวะหย่อนสมรรถภาพที่ตอบสนองต่อการรักษา" data-treatment-plan="ใช้ยาตามใบสั่งแพทย์เฉพาะเมื่อจำเป็น หลีกเลี่ยงยาที่มีข้อห้ามร่วม และติดตามผลตามนัด">
+          <span class="treatment-card__head">
+            <span class="treatment-card__title">
+              <strong>Confidence Recovery Programme</strong>
+              <span class="treatment-card__programme">Erectile dysfunction</span>
+            </span>
+            <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
+          </span>
+          <span class="followup-details">
+            <span class="followup-row"><span class="hint">Case doctor</span><strong>Dr. Narin Tanaka</strong></span>
+            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="sexual-health" data-followup-offset="18" data-followup-iso="2026-10-01">1 Oct 2026</span></strong></span>
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
 
-        <!-- Client, 28 Aug: one doctor looks after every case — a regular doctor,
-             not a different name per condition. Changing that doctor is rare and
-             handled by a person, so it is a quiet line here rather than a control
-             that implies self-service. -->
-        <p class="hint care-team-note"><i data-lucide="user-round-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>หากต้องการเปลี่ยนแพทย์ ติดต่อแอดมินได้ที่ LINE @kraneclinic หรือ care@kraneclinic.com</span></p>
+        <!-- Keep care support available as a quiet, consistent line beneath the active cases. -->
+        <p class="hint care-team-note"><i data-lucide="user-round-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>หากต้องการสอบถามเพิ่มเติม ติดต่อ LINE @kraneclinic</span></p>
 
 
         <!-- Client (5 Jul): orders live on the Activity tab, not the profile -->
@@ -2813,16 +2830,16 @@
       <section class="followups-section" aria-labelledby="followups-upcoming-title">
         <div class="followups-section__head">
           <div><span class="eyebrow">กำลังจะมาถึง</span><h2 id="followups-upcoming-title">นัดหมายถัดไป</h2></div>
-          <span class="followups-section__count">2 นัด</span>
+          <span class="followups-section__count">3 นัด</span>
         </div>
         <div class="followups-list">
-          <article class="followup-case followup-case--featured" data-followup-case-card="sleep-stress">
+          <article class="followup-case followup-case--featured" data-followup-case-card="weight">
             <div class="followup-case__identity">
-              <span class="followup-case__icon"><i data-lucide="moon-star" class="ui-icon" aria-hidden="true"></i></span>
+              <span class="followup-case__icon"><i data-lucide="scale" class="ui-icon" aria-hidden="true"></i></span>
               <div class="followup-case__copy">
-                <span class="followup-case__programme">การนอนและความเครียด</span>
+                <span class="followup-case__programme">รักษาโรคอ้วน</span>
                 <h3>นัดติดตามผลกับคุณหมอนรินทร์</h3>
-                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="sleep-stress" data-followup-offset="1" data-followup-demo-minutes="1438">14 ก.ย. 2026</span></p>
+                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="1438">14 ก.ย. 2026</span></p>
               </div>
             </div>
             <div class="followup-case__appointment">
@@ -2833,8 +2850,8 @@
               </div>
             </div>
             <div class="followup-case__actions">
-              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="sleep-stress">ดูแผนการรักษา</button>
-              <button class="btn btn--primary btn--sm" type="button" data-followup-join data-category="sleep-stress" disabled aria-disabled="true"><i data-lucide="video" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-join-label>เข้าได้ก่อนนัด 10 นาที</span></button>
+              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="weight">ดูแผนการรักษา</button>
+              <button class="btn btn--primary btn--sm" type="button" data-followup-join data-category="weight" disabled aria-disabled="true"><i data-lucide="video" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-join-label>เข้าได้ก่อนนัด 10 นาที</span></button>
             </div>
           </article>
 
@@ -2854,6 +2871,23 @@
               <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="hair-skin">ดูแผนการรักษา</button>
             </div>
           </article>
+
+          <article class="followup-case" data-followup-case-card="sexual-health">
+            <div class="followup-case__identity">
+              <span class="followup-case__icon"><i data-lucide="heart-pulse" class="ui-icon" aria-hidden="true"></i></span>
+              <div class="followup-case__copy">
+                <span class="followup-case__programme">ฟื้นฟูสมรรถภาพเพศชาย</span>
+                <h3>นัดติดตามผลกับคุณหมอนรินทร์</h3>
+                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="sexual-health" data-followup-offset="18">1 ต.ค. 2026</span></p>
+              </div>
+            </div>
+            <div class="followup-case__appointment">
+              <span class="followup-case__status followup-case__status--quiet">นัดหมายแล้ว</span>
+            </div>
+            <div class="followup-case__actions followup-case__actions--single">
+              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="sexual-health">ดูแผนการรักษา</button>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -2861,9 +2895,9 @@
         <div class="followups-section__head">
           <div><span class="eyebrow">History</span><h2 id="followups-history-title">ติดตามผลที่ผ่านมา</h2></div>
         </div>
-        <button class="followup-history-row" type="button" data-followup-case-open="sleep-stress">
+        <button class="followup-history-row" type="button" data-followup-case-open="weight">
           <span class="followup-history-row__icon"><i data-lucide="circle-check-big" class="ui-icon" aria-hidden="true"></i></span>
-          <span><strong>ติดตามการนอน ครั้งที่ 1</strong><small>26 ส.ค. 2026 · เสร็จสิ้นแล้ว</small></span>
+          <span><strong>ติดตามการควบคุมน้ำหนัก ครั้งที่ 1</strong><small>26 ส.ค. 2026 · เสร็จสิ้นแล้ว</small></span>
           <i data-lucide="chevron-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i>
         </button>
       </section>
@@ -2917,15 +2951,15 @@
               <ul class="doc-summary-list" data-treatment-goals></ul>
             </div>
             <div class="doc-soap__block">
-              <h3 class="doc-soap__title">อาการที่พบ <em>(Subjective, Objective)</em></h3>
+              <h3 class="doc-soap__title">อาการที่พบ</h3>
               <ul class="doc-summary-list" data-treatment-findings></ul>
             </div>
             <div class="doc-soap__block">
-              <h3 class="doc-soap__title">ผลการวินิจฉัย <em>(Assessment)</em></h3>
+              <h3 class="doc-soap__title">ผลการวินิจฉัย</h3>
               <ul class="doc-summary-list" data-treatment-assessment></ul>
             </div>
             <div class="doc-soap__block doc-soap__block--plan">
-              <h3 class="doc-soap__title">แผนการรักษา <em>(Plan)</em></h3>
+              <h3 class="doc-soap__title">แผนการรักษา</h3>
               <ul class="doc-summary-list" data-treatment-planlist></ul>
             </div>
           </div>
@@ -2949,14 +2983,6 @@
              wants the same facts wherever they open it (client, 10 Sep). -->
         <article class="treatment-record stack-4 doc-sheet">
           <div class="between"><div><strong>Krane Clinic · ใบสั่งยา</strong><div class="hint">สั่งโดย คุณหมอนรินทร์ ทานากะ · ใบอนุญาต ว.42317</div></div><span class="badge badge--ok">ใช้ได้</span></div>
-          <div class="divider"></div>
-          <div class="kv-list stack-3">
-            <div class="between"><span class="muted">คำวินิจฉัย</span><strong data-treatment-rx-diagnosis>ผมร่วงจากพันธุกรรม</strong></div>
-            <div class="between"><span class="muted">เลขที่ใบสั่งยา</span><strong data-treatment-rx-number>RX-2026-10293</strong></div>
-            <div class="between"><span class="muted">วันที่ออกใบสั่งยา</span><strong data-treatment-detail-date>30/06/2026</strong></div>
-            <div class="between"><span class="muted">วันนัดติดตาม</span><strong data-treatment-rx-followup data-followup-date data-followup-offset="11">12 Sep 2026</strong></div>
-            <div class="between"><span class="muted">ยาคงเหลือ</span><strong data-treatment-detail-refill>เติมยาได้ในอีก 24 วัน</strong></div>
-          </div>
           <div class="divider"></div>
           <div class="section-label">ยาและเวชภัณฑ์</div>
           <div class="treatment-detail__medications" data-treatment-detail-medications></div>
@@ -2991,9 +3017,9 @@
           <span class="doc-row__body"><strong>ใบเสร็จรับเงิน</strong><span class="hint">RC-2026-10293 · 11 ก.ย. 2026 · ผมร่วง</span></span>
           <span class="my-document__date">11 ก.ย. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
         </button>
-        <button class="doc-row my-document" type="button" data-doc-open="cert" data-document-item data-document-date="2026-08-26" data-document-search-text="ใบรับรองแพทย์ MC-2026-10288 การนอน ความเครียด คุณหมอนรินทร์">
+        <button class="doc-row my-document" type="button" data-doc-open="cert" data-document-item data-document-date="2026-08-26" data-document-search-text="ใบรับรองแพทย์ MC-2026-10288 โรคอ้วน ควบคุมน้ำหนัก คุณหมอนรินทร์">
           <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">MC-2026-10288 · 26 ส.ค. 2026 · การนอนและความเครียด</span></span>
+          <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">MC-2026-10288 · 26 ส.ค. 2026 · รักษาโรคอ้วน</span></span>
           <span class="my-document__date">26 ส.ค. 2026</span><i data-lucide="chevron-right" class="ui-icon ui-icon--sm my-document__go" aria-hidden="true"></i>
         </button>
         <button class="doc-row my-document" type="button" data-doc-open="rx" data-document-item data-document-date="2026-06-30" data-document-search-text="ใบสั่งยา RX-2026-10293 ผมร่วง Loratadine Paracetamol">
@@ -3033,16 +3059,16 @@
            label rather than stacked over it (client, 11 Sep). -->
       <div class="partner-binary partner-binary--accent activity-filters" role="tablist" aria-label="กรองกิจกรรม">
         <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="true" data-activity-filter="all"><i data-lucide="layout-grid" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ทั้งหมด</span></button>
-        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>โปรแกรมการรักษา</span></button>
-        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>คำสั่งซื้อยา</span></button>
+        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ผลการปรึกษา</span></button>
+        <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รายการสั่งซื้อ</span></button>
       </div>
       <div class="activity-list" data-activity-list>
         <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10293">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--active" data-order-progress-badge>กำลังจัดส่ง</span></span>
-            <span class="activity-card__date">13 ก.ย. 2026<small>ถึงประมาณ 18:00 น.</small></span>
+            <span class="activity-card__date">13 ก.ย. 2026<small data-order-progress-note>ไรเดอร์กำลังไปส่ง</small></span>
           </span>
-          <span class="activity-card__foot"><span>Ref. no. · KR-10293</span><strong>฿ 558</strong></span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10293</span><strong data-order-total>฿ 558</strong></span>
         </button>
         <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10288">
           <span class="activity-card__head">
@@ -3051,7 +3077,7 @@
           </span>
           <span class="activity-card__foot"><span>Ref. no. · KR-10288</span><strong>฿ 320</strong></span>
         </button>
-        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-go="history" aria-label="เปิดโปรแกรมการรักษา #KR-10170">
+        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-treatment-open data-treatment-source-category="hair-skin" aria-label="เปิดโปรแกรมการรักษา #KR-10170">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i>โปรแกรม</span>            <span class="badge badge--done">ปรึกษาสำเร็จ</span></span>
             <span class="activity-card__date">12 พ.ค. 2026<small>20:20 - 20:35</small></span>
@@ -3060,11 +3086,11 @@
             <img class="activity-card__avatar" src="assets/doctor-profile-male-2026-07-25.png" width="256" height="256" loading="lazy" decoding="async" alt="">
             <span class="activity-card__doctor-body"><strong>คุณหมอนรินทร์ ทานากะ</strong><em>แผนฟื้นฟูเส้นผม ฟีนาสเตอไรด์และไมน็อกซิดิล</em></span>
           </span>
-          <span class="activity-card__foot"><span>Ref. no. · KR-10170</span><strong>฿ 350</strong></span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10170</span></span>
         </button>
         <!-- A course that has ended is a record, not a treatment in progress, so
              it lives here rather than on the home list (client, 11 Sep). -->
-        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-go="history" aria-label="เปิดโปรแกรมการรักษา #KR-10042">
+        <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-treatment-open data-category="hair-skin" data-treatment-title="โปรแกรมดูแลผิว" data-treatment-date="28/02/2026" data-treatment-rx="RX-2026-10042" data-treatment-diagnosis="ดูแลผิวครบตามแผน" data-treatment-plan="จบโปรแกรมการรักษาตามแผนแล้ว สามารถกลับมาปรึกษาแพทย์ได้เมื่อมีอาการหรือข้อกังวลใหม่" data-treatment-note='{"goals":["ดูแลผิวให้แข็งแรงและลดอาการระคายเคือง"],"findings":["อาการโดยรวมดีขึ้นหลังดูแลต่อเนื่องครบ 3 เดือน"],"assessment":["ตอบสนองต่อแผนการรักษาได้ดี"],"plan":["ดูแลผิวตามคำแนะนำเดิม","กลับมาปรึกษาแพทย์เมื่อมีอาการใหม่"]}' data-treatment-medicines='[]' aria-label="เปิดโปรแกรมการรักษา #KR-10042">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--program"><i data-lucide="clipboard-list" class="ui-icon ui-icon--sm" aria-hidden="true"></i>โปรแกรม</span>            <span class="badge">จบโปรแกรมแล้ว</span></span>
             <span class="activity-card__date">28 ก.พ. 2026<small>โปรแกรม 3 เดือน</small></span>
@@ -3073,7 +3099,7 @@
             <img class="activity-card__avatar" src="assets/doctor-profile-male-2026-07-25.png" width="256" height="256" loading="lazy" decoding="async" alt="">
             <span class="activity-card__doctor-body"><strong>คุณหมอนรินทร์ ทานากะ</strong><em>โปรแกรมดูแลผิว ครบตามแผน</em></span>
           </span>
-          <span class="activity-card__foot"><span>Ref. no. · KR-10042</span><strong>฿ 2,140</strong></span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10042</span></span>
         </button>
       </div>
       <p class="activity-empty" data-activity-empty hidden>ยังไม่มีกิจกรรมในหมวดนี้</p>
@@ -3648,7 +3674,7 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260913-order-stage-sync-v1"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260913-order-stage-sync-v1" width="560" height="360" alt=""></picture>
+          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260914-rider-pickup-v2"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260914-rider-pickup-v2" width="560" height="360" alt=""></picture>
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -3838,9 +3864,9 @@
 
 
 
-  <script src="assets/lucide.min.js?v=20260913-order-stage-sync-v1"></script>
-  <script src="b2c-icons.js?v=20260913-order-stage-sync-v1"></script>
-  <script src="qa-session-reset.js?v=20260913-order-stage-sync-v1"></script>
+  <script src="assets/lucide.min.js?v=20260914-rider-pickup-v2"></script>
+  <script src="b2c-icons.js?v=20260914-rider-pickup-v2"></script>
+  <script src="qa-session-reset.js?v=20260914-rider-pickup-v2"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -5509,6 +5535,39 @@
      one screen, and the shared health profile is one complete form just like
      the insurance journey. */
   const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
+  const INTAKE_GUIDANCE = {
+    intake1:[{
+      question:0,
+      copy:'Your symptoms help the doctor choose the right questions and care pathway.'
+    }],
+    intake2:[{
+      question:0,
+      copy:'This helps the doctor understand how much the concern affects your daily life.',
+      privacy:true
+    }],
+    intake3:[{
+      question:0,
+      copy:'Knowing what you have tried helps the doctor avoid repeating care that did not work.',
+      privacy:true
+    }]
+  };
+  function addIntakeQuestionGuidance(screenId,questions){
+    (INTAKE_GUIDANCE[screenId] || []).forEach(item => {
+      const question=questions[item.question];
+      if(!question || question.querySelector('[data-intake-guidance]')) return;
+      const aside=document.createElement('aside');
+      aside.className='intake-explainer';
+      aside.dataset.intakeGuidance='';
+      aside.innerHTML='<strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">'+item.copy+'</p>';
+      question.appendChild(aside);
+      if(item.privacy){
+        const privacy=document.createElement('p');
+        privacy.className='intake-privacy-note';
+        privacy.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span>';
+        question.appendChild(privacy);
+      }
+    });
+  }
   function intakeQuestionPageState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;
     const body = screen?.querySelector('.screen__body');
@@ -5603,6 +5662,7 @@
     questions.forEach((question,index) => {
       question.dataset.intakeQuestion=String(index+1);
     });
+    addIntakeQuestionGuidance(screen.id,questions);
     /* The screen title stayed huge on every page while the question itself sat
        in a small grey label — the hierarchy read backwards (client, 18 Aug).
        When a page carries exactly one labelled question, that label becomes the
@@ -6396,11 +6456,19 @@
   }
   function openTreatmentDetail(card){
     if(!card) return;
+    /* Activity cards are intentionally compact, but opening one must land on
+       the same complete clinical record as its matching profile card. */
+    const sourceCategory=card.dataset.treatmentSourceCategory;
+    if(sourceCategory){
+      const source=document.querySelector(`#profile [data-treatment-open][data-category="${sourceCategory}"]`);
+      if(source) card=source;
+    }
     if(card.dataset.category) setSelectedCategory(card.dataset.category);
     /* The card head became .treatment-card__title, and the only .between left on
        the card is the follow-up row, so this had started naming the treatment
        after its next appointment date. */
-    const title=card.querySelector('.treatment-card__title strong')?.textContent.trim()
+    const title=card.dataset.treatmentTitle
+      || card.querySelector('.treatment-card__title strong')?.textContent.trim()
       || card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
     const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
     const diagnosis=card.dataset.treatmentDiagnosis || '';
@@ -6458,7 +6526,7 @@
     const medicines=detail.querySelector('[data-treatment-detail-medications]');
     let list=[];
     try{ list=JSON.parse(card.dataset.treatmentMedicines || '[]'); }catch(err){ list=[]; }
-    medicines.replaceChildren(...list.map(item => {
+    const makeMedicineBlock=(item) => {
       const block=document.createElement('div');
       block.className='doc-med';
       const head=document.createElement('div');
@@ -6509,6 +6577,27 @@
       });
       block.append(facts);
       return block;
+    };
+    const medicineGroups=[
+      {key:'ordered',title:'รายการที่สั่งซื้อ',items:list.filter(item => item.ordered !== false)},
+      {key:'not-ordered',title:'รายการที่ไม่ได้สั่งซื้อ',items:list.filter(item => item.ordered === false)}
+    ];
+    medicines.replaceChildren(...medicineGroups.filter(group => group.items.length).map(group => {
+      const section=document.createElement('section');
+      section.className=`treatment-medicine-group treatment-medicine-group--${group.key}`;
+      const heading=document.createElement('h3');
+      heading.className='treatment-medicine-group__title';
+      const label=document.createElement('span');
+      label.textContent=group.title;
+      const count=document.createElement('span');
+      count.className='treatment-medicine-group__count';
+      count.textContent=`${group.items.length} รายการ`;
+      heading.append(label,count);
+      const contents=document.createElement('div');
+      contents.className='treatment-medicine-group__items';
+      contents.replaceChildren(...group.items.map(makeMedicineBlock));
+      section.append(heading,contents);
+      return section;
     }));
     // The blocks are built after the page's icon pass, so run it over them.
     if(window.krane_normalizeIcons) window.krane_normalizeIcons();
@@ -11002,12 +11091,36 @@
      advances it. Steps before the active one are done, the active one runs, and
      everything after it waits. */
   const ORDER_STAGES={
-    'Order received':   {active:'prepared',label:'กำลังจัดยา',tone:'progress'},
-    'Pharmacy accepted':{active:'prepared',label:'กำลังจัดยา',tone:'progress'},
-    'Preparing':        {active:'prepared',label:'กำลังจัดยา',tone:'progress'},
-    'Dispatched':       {active:'out',label:'กำลังจัดส่ง',tone:'active'},
-    'Delivered':        {active:null,label:'จัดส่งสำเร็จ',tone:'done'}
+    'Order received':   {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
+    'Pharmacy accepted':{active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
+    'Preparing':        {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
+    'Rider pickup':     {active:'dispatch',label:'ไรเดอร์กำลังเข้าไปรับของ',tone:'progress',note:'ไรเดอร์กำลังไปรับยา'},
+    'Dispatched':       {active:'out',label:'กำลังจัดส่ง',tone:'active',note:'ไรเดอร์กำลังไปส่ง'},
+    'Delivered':        {active:null,label:'จัดส่งสำเร็จ',tone:'done',note:'จัดส่งสำเร็จแล้ว'}
   };
+  /* One figure for what this order charged, read by the parcel list and the
+     activity card alike, so the two can never show different totals for the
+     same order (client, 14 Sep). Checkout records it at payment; until then it
+     is worked out the way checkout works it out. Whatever of the consultation
+     fee is left after the goods is what this payment carried for it. */
+  function orderChargeSummary(){
+    const pickup=flowState.orderState.fulfillmentMode==='pickup';
+    const method=pickup ? 'pickup' : (flowState.orderState.paidDeliveryMethod || flowState.orderState.deliveryMethod || 'same-day');
+    const subtotal=medicineSubtotal();
+    const addon=selectedAddOnTotal();
+    const delivery=hasFulfillableItems() && !pickup ? deliveryFeeFor(method) : 0;
+    const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
+    const promo=appliedPromo ? Math.max(0,Number(appliedPromo.amount) || 0) : 0;
+    const goods=subtotal+addon+delivery-credit;
+    const recorded=Number(flowState.orderState.paidAmount);
+    const total=flowState.orderState.paidAmount!=null && Number.isFinite(recorded)
+      ? Math.max(0,recorded)
+      : Math.max(0,consultationBalanceDue()+goods-promo);
+    const consultationCharged=flowState.orderState.checkoutOrigin==='refill'
+      ? 0
+      : Math.max(0,Math.min(CONSULTATION_FEE_BAHT,total+promo-goods));
+    return {method,subtotal,addon,delivery,credit,promo,total,consultationCharged};
+  }
   const ORDER_STEP_ORDER=['paid','prepared','dispatch','out','delivered'];
   function orderFulfilmentStatus(){
     if(flowState.orderDelivered) return 'Delivered';
@@ -11046,6 +11159,9 @@
       badge.textContent=stage.label;
       badge.className='badge badge--'+stage.tone;
     });
+    document.querySelectorAll('[data-order-progress-note]').forEach(note => { note.textContent=stage.note; });
+    const charge=orderChargeSummary();
+    document.querySelectorAll('[data-order-total]').forEach(amount => { amount.textContent=baht(charge.total); });
     syncTrackingDetails(delivered);
   }
   window.kraneSyncOrderProgress=syncTrackingDelivery;
@@ -11101,19 +11217,21 @@
        what was actually paid for including anything declined at checkout. */
     const items=screen.querySelector('[data-delivery-items]');
     if(items){
+      const charge=orderChargeSummary();
       const rows=[];
-      /* The consultation is part of what this order paid for, so it leads the
-         list the way it leads checkout (client, 13 Sep). Anything a plan
-         covered still shows its price but does not count towards the total. */
+      /* The list reads like the receipt: every line this order involved, then
+         the one amount it charged, which is the same amount the activity card
+         shows. The consultation leads it the way it leads checkout; when it was
+         settled before this payment, or a plan covered it, the line says so
+         rather than adding to the total (client, 13 and 14 Sep). */
       const consultationRow=document.querySelector('#payment [data-order-consultation]');
-      if(consultationRow){
+      if(consultationRow && flowState.orderState.checkoutOrigin!=='refill'){
         const covered=Math.max(0,Math.min(CONSULTATION_FEE_BAHT,Number(flowState.coverage?.consultationCredit || 0)));
         rows.push({
           name:consultationRow.querySelector('.checkout-order__name')?.textContent || 'ค่าปรึกษาแพทย์',
           description:consultationRow.querySelector('.checkout-order__note')?.textContent || '',
-          quantity:covered ? 'อยู่ในสิทธิ์' : '1 ครั้ง',
+          quantity:charge.consultationCharged>0 ? '1 ครั้ง' : (covered ? 'อยู่ในสิทธิ์' : 'ชำระแล้วตอนปรึกษา'),
           price:CONSULTATION_FEE_BAHT,
-          charge:CONSULTATION_FEE_BAHT-covered,
           icon:consultationRow.querySelector('.checkout-order__thumb')
         });
       }
@@ -11134,10 +11252,23 @@
         const photo=paymentRow?.querySelector('.checkout-order__thumb img')?.getAttribute('src') || '';
         rows.push({name,description,quantity:'1 ชิ้น',price,photo});
       });
-      const total=rows.reduce((sum,row) => sum+(row.charge ?? row.price),0);
+      if(hasFulfillableItems()){
+        const courierIcon=screen.querySelector('[data-delivery-courier]')?.closest('.delivery-fact')?.querySelector('.delivery-fact__icon');
+        rows.push({
+          name:charge.method==='pickup' ? 'รับยาที่ร้าน' : 'ค่าจัดส่ง',
+          description:charge.method==='pickup' ? 'ร้านยาฟาสซิโน' : charge.method==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove ภายในวัน',
+          quantity:'',
+          price:charge.delivery,
+          priceText:charge.delivery ? '' : 'ฟรี',
+          icon:courierIcon
+        });
+      }
+      if(charge.credit) rows.push({name:'สิทธิ์ประกันค่ายา',description:'',quantity:'',price:-charge.credit});
+      if(charge.promo) rows.push({name:'ส่วนลด',description:appliedPromo?.code || '',quantity:'',price:-charge.promo});
       items.replaceChildren(...rows.map(row => {
         const line=document.createElement('div');
-        line.className='delivery-item';
+        // A credit or a discount has no picture, so it takes the two-column row.
+        line.className=row.photo || row.icon ? 'delivery-item' : 'delivery-item delivery-item--adjust';
         if(row.photo){
           const thumb=document.createElement('span');
           thumb.className='delivery-item__thumb';
@@ -11169,7 +11300,7 @@
         meta.className='delivery-item__meta';
         const price=document.createElement('span');
         price.className='delivery-item__price';
-        price.textContent=baht(row.price);
+        price.textContent=row.priceText || (row.price<0 ? '−'+baht(-row.price) : baht(row.price));
         const quantity=document.createElement('span');
         quantity.className='delivery-item__quantity';
         quantity.textContent=row.quantity;
@@ -11182,10 +11313,10 @@
         foot.className='delivery-item delivery-item--total';
         const label=document.createElement('span');
         label.className='delivery-item__name';
-        label.textContent='รวม '+rows.length+' รายการ';
+        label.textContent='ยอดชำระ';
         const price=document.createElement('span');
         price.className='delivery-item__price';
-        price.textContent=baht(total);
+        price.textContent=baht(charge.total);
         foot.append(label,price);
         items.append(foot);
       }
@@ -11969,88 +12100,88 @@
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260913-order-stage-sync-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260913-order-stage-sync-v1" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260913-order-stage-sync-v1" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260914-rider-pickup-v2" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260914-rider-pickup-v2" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
