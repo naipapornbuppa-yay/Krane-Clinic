@@ -1115,6 +1115,40 @@
   /* Thai written straight into the markup, mapped back to English. Grouped in
      screen order so a new screen's strings have an obvious home. */
   var EN_FROM_TH = {
+    /* Strings the app grew after the language rule last ran clean (14 Sep):
+       the password and country-code controls, the upload-prescription action,
+       and the quantity steppers, whose aria-labels became Thai. */
+    "อัพโหลดใบสั่งยา":"Upload prescription",
+    "เลือกรหัสประเทศ":"Select country code",
+    "แสดงรหัสผ่าน":"Show password",
+    "อย่างน้อย 8 ตัวอักษร":"At least 8 characters",
+    "พิมพ์รหัสผ่านอีกครั้ง":"Re-enter your password",
+    "จำนวน Dextromethorphan 15 mg":"Dextromethorphan 15 mg quantity",
+    "จำนวน Loratadine 10 mg":"Loratadine 10 mg quantity",
+    "จำนวน Paracetamol 500 mg":"Paracetamol 500 mg quantity",
+    "จำนวน Naproxen 250 mg":"Naproxen 250 mg quantity",
+    /* Remove-from-basket, document and order-card labels, plus the follow-up
+       chart summary — all aria-labels, so only the attribute pass sees them. */
+    "นำ Biotin + Zinc ออกจากคำสั่งซื้อ":"Remove Biotin + Zinc from the order",
+    "นำ กล่องจัดยาแบบพกพา ออกจากคำสั่งซื้อ":"Remove the pocket pill case from the order",
+    "นำ กระเป๋าจัดเก็บผลิตภัณฑ์ ออกจากคำสั่งซื้อ":"Remove the storage pouch from the order",
+    "แนวโน้มน้ำหนัก 8 สัปดาห์ ลดลงจาก 89 กิโลกรัมเป็น 82.6 กิโลกรัม":"Eight-week weight trend, down from 89 kg to 82.6 kg",
+    "เปิดใบรับรองแพทย์":"Open the medical certificate",
+    "เปิดคำสั่งซื้อ #KR-10293":"Open order #KR-10293",
+    "เปิดคำสั่งซื้อ #KR-10288":"Open order #KR-10288",
+    /* Demo rail: not patient-facing, but it is on the page, so English mode
+       has to reach it like everything else. */
+    "SID ซ้ำ = ใช้หน้าจอเดียวกัน":"Repeated SID = the same screen",
+    "ยืนยันรหัส OTP":"Confirm the OTP",
+    "ความยินยอม 2 รายการ":"Two consents",
+    "ยืนยันข้อมูลสุขภาพ":"Confirm the health details",
+    "Direct gate · ทุกครั้งก่อนเข้าห้องรอ":"Direct gate · every time, before the waiting room",
+    "ตรวจสอบสิทธิ์ประกัน":"Check insurance entitlement",
+    "เข้าผ่านประกัน":"Entered through insurance",
+    "สิทธิ์และการชำระเงิน":"Entitlement and payment",
+    "ส่งต่อแพทย์":"Referral to a doctor",
+    "ต้องคัดกรองโดยพยาบาล":"Nurse screening required",
+    "วิดีโอคัดกรองโดยพยาบาล":"Nurse video screening",
     /* Authenticated patient-hub capsule navigation (3 Sep). */
     "เมนูหลัก":"Main navigation",
     "เมนูหลักบนมือถือ":"Mobile main navigation",
