@@ -1502,7 +1502,7 @@
     "เติมยาตามแผนเดิม":"Refill this plan",
     "เมนูด่วน":"Quick menu","กลับเข้าสู่การดูแลได้ทันที":"Pick your care back up",
     "คุณหมอนรินทร์":"Dr. Narin","คุณหมอเจ้าของเคส":"Case doctor","ติดตามผล":"Follow up","นัดที่กำลังจะถึง":"Upcoming",
-    "เติมยา":"Refill","จากแผนเดิม":"From your plan","นัดหมายใหม่":"New appointment",
+    "เติมยา":"Refill","จากแผนเดิม":"From your plan","นัดหมายด่วน":"Urgent appointment",
     "เริ่มเรื่องใหม่":"New concern","กับคุณหมอประจำ":"With your doctor",
     "26 ส.ค. 2026":"26 Aug 2026","เลือกเวลา":"Pick a time",
     /* Thai written straight into the markup during the recent redesign
