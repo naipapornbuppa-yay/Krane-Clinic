@@ -245,7 +245,7 @@
     ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
     ["อาการที่เราดูแล", "Conditions we treat"], ["โรคอ้วน / การลดน้ำหนัก", "Obesity / Weight loss"],
     ["ผมบาง ผมร่วง", "Thinning hair / Hair loss"], ["ภาวะหย่อนสมรรถภาพทางเพศ", "Erectile dysfunction"], ["เจ็บป่วยทั่วไป", "General health"],
-    ["วิธีการทำงาน", "How it works"], ["วิธีใช้งาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["ทีมแพทย์ของเรา", "Our medical team"], ["บทความสุขภาพ", "Health articles"],
+    ["อัพโหลดใบสั่งยา", "Upload prescription"], ["วิธีการทำงาน", "How it works"], ["วิธีใช้งาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["ทีมแพทย์ของเรา", "Our medical team"], ["บทความสุขภาพ", "Health articles"],
     ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
     ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
     ["เร็ว ๆ นี้", "Coming soon"], ["ภาษา", "Language"], ["ภาษาไทย", "Thai"], ["เข้าสู่ระบบ", "Log in"],
