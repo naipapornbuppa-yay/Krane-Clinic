@@ -14,12 +14,16 @@
     [/Dr\. Narin(?:\s+Tanaka|\s+T\.)?/g, f.doctor.name]
   ];
 
-  /* Same wording as the patient tracking badge and the admin status control, so the two
-     checkpoints never describe the same stage with different Thai words. */
+  /* The golden order's delivery status reads exactly what the patient's tracking
+     badge reads at the same stage, so checkpoints 4 and 5 never describe one stage
+     two ways. Until 14 Sep this table claimed to match the patient badge while
+     saying "กำลังเตรียม" against the patient's "กำลังจัดยา". The step names in
+     the status control stay operational and are not translated here. */
   const statusTH = {
-    "Order received": "ชำระแล้ว",
-    "Pharmacy accepted": "ร้านยารับออเดอร์",
-    "Preparing": "กำลังเตรียม",
+    "Order received": "กำลังจัดยา",
+    "Pharmacy accepted": "กำลังจัดยา",
+    "Preparing": "กำลังจัดยา",
+    "Rider pickup": "ไรเดอร์กำลังเข้าไปรับของ",
     "Dispatched": "กำลังจัดส่ง",
     "Delivered": "จัดส่งสำเร็จ"
   };
@@ -27,6 +31,7 @@
     "Order received": "ได้รับคำสั่งซื้อแล้ว รอร้านยารับออเดอร์",
     "Pharmacy accepted": "ร้านยารับออเดอร์แล้ว กำลังเตรียมยา",
     "Preparing": "ไม่มีปัญหาค้างอยู่ กำลังจัดยาตามกรอบเวลาให้บริการปกติ",
+    "Rider pickup": "ร้านยาจัดยาเสร็จแล้ว ไรเดอร์กำลังเข้าไปรับของ",
     "Dispatched": "ไรเดอร์รับสินค้าแล้ว กำลังจัดส่งให้ผู้ป่วย",
     "Delivered": "จัดส่งสำเร็จแล้ว ไม่ต้องดำเนินการเพิ่มเติม"
   };
@@ -139,8 +144,10 @@
   if (update) update.addEventListener("click", function () {
     const select = document.querySelector("[data-status-select]");
     if (!select) return;
+    /* Rider pickup is its own shared stage now; only the admin's "Paid" and "Out
+       for delivery" are spelled differently from the shared status names. */
     const sharedStatus = select.value === "Paid" ? "Order received" :
-      select.value === "Out for delivery" || select.value === "Rider pickup" ? "Dispatched" : select.value;
+      select.value === "Out for delivery" ? "Dispatched" : select.value;
     demo.writeState({ fulfilmentStatus: sharedStatus });
   });
 

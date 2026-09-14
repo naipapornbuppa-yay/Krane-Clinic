@@ -2802,7 +2802,13 @@ body.lang-th *{letter-spacing:normal}
    title is absolutely positioned between the back button and the right edge, so
    without this it prints straight over the badge. */
 .screen__top:has(> [data-order-progress-badge]) > .ttl{position:static;left:auto;right:auto;
-  text-align:left;pointer-events:auto}
+  text-align:left;pointer-events:auto;flex:none}
+/* The order number is what the bar is for, so it is never the part that gives way.
+   A stage whose name is longer than the room beside it ("ไรเดอร์กำลังเข้าไปรับของ"
+   on a 360-375px phone) drops its badge to a second line, still on the right,
+   rather than cutting the title to "#KR-10..." or shortening the stage name the
+   timeline uses (client, 14 Sep). Shorter stages stay on one line. */
+.screen__top:has(> [data-order-progress-badge]){flex-wrap:wrap;row-gap:var(--sp-2)}
 .screen__top > [data-order-progress-badge]{margin-left:auto;flex:none;white-space:nowrap}
 
 /* Doctor photo on the consultation payment card: a real face, not the letter
@@ -3632,6 +3638,10 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .delivery-item--total .delivery-item__name,
 .delivery-item--total .delivery-item__price{font-weight:var(--fw-bold)}
 .delivery-item--total .delivery-item__price{grid-column:2;grid-row:1;justify-self:end;text-align:right;color:var(--color-ink)}
+/* A plan credit or a discount has no picture, so it takes the total's two columns,
+   and its amount reads as money coming off rather than another charge. */
+.delivery-item.delivery-item--adjust{grid-template-columns:minmax(0,1fr) auto}
+.delivery-item--adjust .delivery-item__price{color:var(--color-success,#1f7a4d)}
 @media(max-width:560px){
   .delivery-item{grid-template-columns:44px minmax(0,1fr) auto;gap:var(--sp-2)}
   .delivery-item__thumb{width:44px;height:44px}

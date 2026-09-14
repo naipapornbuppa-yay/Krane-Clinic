@@ -8,7 +8,7 @@
   /* The follow-up used to be a fixed calendar date. The patient app only shows
      its reminder inside the three days before the appointment, so a fixed date
      meant the demo silently lost that reminder a few days after the date was
-     written — mid-testing-round, with nobody told. It is one day out from
+     written, mid-testing-round and with nobody told. It is one day out from
      whenever the demo is opened now, and the clinic side reads the same
      appointment, so the two never disagree. */
   const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -70,7 +70,11 @@
   });
 
   const storageKey = "krane-golden-demo-state-v1";
-  const allowedStatuses = ["Order received", "Pharmacy accepted", "Preparing", "Dispatched", "Delivered"];
+  /* "Rider pickup" is its own stage. The admin status control always offered it,
+     but it was folded into "Dispatched" here, so choosing it told the patient the
+     order was already out for delivery while the rider was still on the way to
+     collect it (client, 14 Sep). */
+  const allowedStatuses = ["Order received", "Pharmacy accepted", "Preparing", "Rider pickup", "Dispatched", "Delivered"];
 
   function readState() {
     try {
