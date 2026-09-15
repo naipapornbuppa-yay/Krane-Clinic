@@ -6639,21 +6639,13 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     height:40px;
     min-height:40px;
   }
-  .landing-figma-draft .drawer.mobile-menu{
-    width:min(360px,calc(100vw - 20px));
-    height:calc(100dvh - 20px);
-    margin:10px 10px 10px auto;
-    padding:18px;
-    border-radius:28px;
-  }
-  .landing-figma-draft .mobile-menu nav{gap:4px}
-  .landing-figma-draft .mobile-menu nav>a{
-    min-height:52px;
-    padding:0 14px;
-    border:0;
-    border-radius:14px;
-    background:#f4f5f7;
-  }
+  /* Client, 15 Sep: this was a 366px-wide rounded card floating 12px inside a
+     390px screen, so the slide-in from the right read as a sheet dropping over
+     the page — there was no page left beside it to slide across. The shared
+     drawer in site-header.css is the one the service pages use: flush to the
+     right edge, full height, square, narrow enough to leave the page visible
+     behind it. The landing uses that now rather than its own shape. */
+  .landing-figma-draft .mobile-menu nav{gap:0}
 }
 
 /* UT-34 — preserve the flat Figma product-card language in both carousel
@@ -9170,14 +9162,20 @@ html[lang="en"] .landing-figma-draft #ed-title{
   flex:none;
 }
 .landing-figma-draft .drawer.mobile-menu{
-  width:min(520px,calc(100vw - 24px));
+  /* Client, 15 Sep: a side drawer, not a floating card. It used to be
+     100vw-24px wide with a 30px radius and a 12px margin, which on a phone left
+     no page beside it — so sliding in from the right read as a sheet dropping
+     over the top. Flush to the right edge, full height, square, and narrow
+     enough that the page stays visible behind it, the same shape the service
+     pages already use. */
+  width:min(380px,86%);
   max-width:none;
-  height:calc(100dvh - 24px);
-  max-height:calc(100dvh - 24px);
-  margin:12px 12px 12px auto;
-  padding:22px 24px 24px;
-  border:1px solid rgba(17,27,48,.08);
-  border-radius:30px;
+  height:100dvh;
+  max-height:100dvh;
+  margin:0 0 0 auto;
+  padding:20px;
+  border:0;
+  border-radius:0;
   background:#fff;
   box-shadow:-24px 0 70px rgba(17,27,48,.24);
 }
@@ -9275,7 +9273,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
   font-size:17px;
 }
 @keyframes care-menu-enter{
-  from{opacity:.5;transform:translateX(calc(100% + 24px))}
+  from{opacity:.5;transform:translateX(100%)}
   to{opacity:1;transform:translateX(0)}
 }
 @keyframes care-accordion-enter{
@@ -9285,12 +9283,12 @@ html[lang="en"] .landing-figma-draft #ed-title{
 
 @media(max-width:760px){
   .landing-figma-draft .drawer.mobile-menu{
-    width:calc(100vw - 24px);
-    height:calc(100dvh - 24px);
-    max-height:calc(100dvh - 24px);
-    margin:12px 12px 12px auto;
-    padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));
-    border-radius:26px;
+    width:min(380px,86%);
+    height:100dvh;
+    max-height:100dvh;
+    margin:0 0 0 auto;
+    padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));
+    border-radius:0;
   }
   .landing-figma-draft .mobile-menu__head{min-height:64px;padding-bottom:12px}
   .landing-figma-draft .mobile-menu__head img{width:132px}
@@ -9363,20 +9361,12 @@ html[lang="en"] .landing-figma-draft #ed-title{
   min-height:44px;
   display:flex;
   align-items:center;
-  padding:6px 8px 6px 22px;
+  padding:6px 8px;
   color:#596579;
   font-size:16px;
   font-weight:500;
 }
-.landing-figma-draft .mobile-care-menu__list a::before{
-  content:"";
-  position:absolute;
-  left:2px;
-  width:7px;
-  height:7px;
-  border:1.5px solid #73819a;
-  border-radius:50%;
-}
+
 .landing-figma-draft .mobile-care-menu__list a:hover{
   color:var(--landing-blue);
   transform:translateX(3px);
@@ -9384,21 +9374,14 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .landing-figma-draft .mobile-menu nav>a{
   position:relative;
   min-height:54px;
-  padding:0 4px 0 26px;
+  padding:0 4px;
   border-bottom:1px solid var(--landing-line);
   border-radius:0;
   background:transparent;
   font-size:19px;
 }
-.landing-figma-draft .mobile-menu nav>a::before{
-  content:"";
-  position:absolute;
-  left:4px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--landing-blue);
-}
+/* No bullets. A navigation row is not a list item to tick off, and eight blue
+   dots down the drawer were the loudest thing on it (client, 15 Sep). */
 .landing-figma-draft .mobile-menu nav>a:hover{
   background:transparent;
   color:var(--landing-blue);
