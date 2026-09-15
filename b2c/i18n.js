@@ -1122,6 +1122,16 @@
     /* Tracking, follow-ups, activity and the treatment record (14 Sep). */
     "แก้ไขจำนวน":"Edit quantity",
     "ดูตำแหน่ง":"See location",
+    /* The order states added to Activity so the whole life of an order can be
+       walked in a test (client, 15 Sep). */
+    "ไรเดอร์กำลังไปส่ง":"Rider on the way",
+    "รอยืนยันรับของ":"Awaiting your confirmation",
+    "ถึงแล้ว กดยืนยันเมื่อได้รับยา":"Arrived. Confirm once you have the medicine.",
+    "ส่งสำเร็จ":"Delivered",
+    "ได้รับแล้ว 14:20":"Received 14:20",
+    "เปิดคำสั่งซื้อ #KR-10276":"Open order #KR-10276",
+    "เปิดคำสั่งซื้อ #KR-10265":"Open order #KR-10265",
+    "เปิดคำสั่งซื้อ #KR-10254":"Open order #KR-10254",
     /* Refill sheet, now named after the real treatments. */
     "ลดน้ำหนักอย่างปลอดภัย":"Safe weight progress",
     "ฟื้นฟูเส้นผมอย่างต่อเนื่อง":"Ongoing hair recovery",

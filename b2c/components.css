@@ -157,18 +157,26 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-screen--login .auth-screen__panel{width:min(100%,520px);gap:var(--sp-5)}
 .auth-screen--login .auth-screen__intro{align-items:flex-start;text-align:left}
 .auth-screen--login .auth-screen__intro .h1{font-size:clamp(34px,5vw,44px);font-weight:var(--fw-semibold);letter-spacing:-.03em}
+/* Client, 15 Sep: these two read as unproportioned. The box stood 77px tall
+   around a 38px control, and the phone number began about 40px clear of the
+   dial code it belongs to — the country button dropped its left padding but the
+   input kept its own, so the two halves of one number were pushed apart. The
+   box is tighter now, the label sits closer to the value it names, and every
+   control in the field shares one left edge. */
 .auth-login-field{
-  padding:10px 14px 8px;border:1.5px solid var(--color-line-strong);border-radius:18px;
+  padding:8px 14px 6px;border:1.5px solid var(--color-line-strong);border-radius:16px;
   background:color-mix(in srgb,var(--color-accent-soft) 44%,var(--color-surface));
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
 .auth-login-field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
-.auth-login-field>label{margin:0 0 1px;font-size:12px;font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.auth-login-field>label{display:block;margin:0;font-size:12px;line-height:1.5;font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .auth-login-field .input,.auth-login-field .phone-field__country{
-  height:38px;border:0;background:transparent;box-shadow:none
+  height:34px;border:0;background:transparent;box-shadow:none
 }
-.auth-login-field .phone-field__country{padding-left:0}
-.auth-login-field .phone-field__input.input{padding-right:0}
+.auth-login-field .phone-field__country{padding-left:0;padding-right:8px}
+/* The dial code and the number are one value: a single gap between them, not
+   the country button's padding plus the input's. */
+.auth-login-field .phone-field__input.input{padding-left:0;padding-right:0}
 .auth-login-field .password-field .input{padding-left:0}
 .auth-login-field .input:focus{border-color:transparent;box-shadow:none}
 .auth-screen--login .auth-screen__forgot{align-self:flex-end;margin-top:-2px;font-weight:var(--fw-semibold);color:var(--color-accent)}
