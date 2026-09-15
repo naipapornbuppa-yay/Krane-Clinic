@@ -3052,7 +3052,9 @@ body.lang-th *{letter-spacing:normal}
    room for a long date and doctor name. Hold the label, wrap the value. */
 .followup-details{display:grid;padding:4px var(--sp-3);background:rgba(255,255,255,.14);border-radius:var(--radius-xs)}
 .followup-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:var(--sp-3);padding:7px 0}
-.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.55)}
+/* Client, 15 Sep: fainter. At .55 the rule read as a table border across a
+   coloured card; it only has to separate two lines. */
+.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.22)}
 .followup-row>.hint{min-width:0;color:rgba(255,255,255,.68)}
 .followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3;color:#fff}
 @media(max-width:430px){
@@ -3214,7 +3216,11 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .treatment-card[data-category="hair-skin"]{--treatment-campaign:#86afa4;--treatment-surface:#5f817a}
 .treatment-card[data-category="sexual-health"]{--treatment-campaign:#2c5c78;--treatment-surface:#1d465e}
 #profile .treatment-card{border:0;box-shadow:0 8px 24px color-mix(in srgb,var(--treatment-surface) 22%,rgba(17,27,48,.08))}
-#profile .treatment-card .badge--ok{background:var(--color-success);color:#fff}
+/* Client, 15 Sep: the status tag is a white chip with green text, not a
+   filled green pill. On a coloured card the filled pill was a second block
+   of colour competing with the card itself; white lifts it off every card
+   tone equally and keeps the green as the meaning rather than the shape. */
+#profile .treatment-card .badge--ok{background:#fff;color:var(--color-success);border:0}
 .treatment-card:active{transform:scale(.995)}
 .treatment-card:hover{box-shadow:0 12px 30px color-mix(in srgb,var(--treatment-surface) 30%,rgba(17,27,48,.12))}
 .treatment-card .between{width:100%}
@@ -3809,3 +3815,8 @@ html.is-demo-embed .callstage--live .call-hint{bottom:12px}
   .obesity-risk-list .partner-history-field{flex-direction:column;align-items:stretch;gap:var(--sp-2)}
   .obesity-risk-list .partner-binary{width:100%}
 }
+
+/* The medicine list heads the longest block on the treatment record, so it is
+   titled rather than labelled (client, 15 Sep). The rule above it went with the
+   label: the heading already separates the two sections. */
+.treatment-detail__section-title{margin:var(--sp-2) 0 0;font-size:18px;font-weight:var(--fw-semibold);line-height:1.35;letter-spacing:-.01em}

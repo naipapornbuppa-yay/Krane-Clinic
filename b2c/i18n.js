@@ -1122,6 +1122,12 @@
     /* Tracking, follow-ups, activity and the treatment record (14 Sep). */
     "แก้ไขจำนวน":"Edit quantity",
     "ดูตำแหน่ง":"See location",
+    /* Refill sheet, now named after the real treatments. */
+    "ลดน้ำหนักอย่างปลอดภัย":"Safe weight progress",
+    "ฟื้นฟูเส้นผมอย่างต่อเนื่อง":"Ongoing hair recovery",
+    "กลับมามั่นใจอีกครั้ง":"Confidence again",
+    "โปรแกรมดูแลผิว":"Skin care programme",
+    "ภาวะหย่อนสมรรถภาพ":"Erectile dysfunction",
     "ส่งถึงเมื่อ":"Delivered at",
     "ไรเดอร์ ณัฐพงษ์ ด.":"Rider Nattapong D.",
     "เสร็จสิ้นแล้ว":"Completed",
