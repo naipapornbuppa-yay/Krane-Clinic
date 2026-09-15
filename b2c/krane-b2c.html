@@ -8735,6 +8735,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(id==='address-map') window.setTimeout(setupAddressMap,0);
     if(id==='tracking' || id==='activity') syncTrackingDelivery();
+    if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
     if(id==='my-documents') refreshMyDocuments();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
@@ -11333,6 +11334,38 @@
     if(window.kraneDemoStage && !window.kraneDemoStatus) return 'Dispatched';
     const status=window.KraneGoldenDemo?.readState().fulfilmentStatus;
     return ORDER_STAGES[status] ? status : 'Dispatched';
+  }
+  /* Client, 15 Sep: the order sat on "Preparing" and never moved, so the rest
+     of its life could not be reached — not the rider, not the confirm button on
+     the Delivered step, and not the review that follows confirming. The same
+     problem the follow-up countdown had: a demo frozen short of the part worth
+     seeing. While tracking is open the order walks itself to the rider and then
+     out for delivery, and stops there: arriving is the courier's to announce,
+     but "ได้รับของแล้ว" is the patient's to press, so the last step waits for
+     them. ?demoStatus= still pins any stage directly. */
+  const TRACKING_DEMO_STEP_MS=9000;
+  let trackingDemoTimer=0;
+  function stopTrackingDemoWalk(){
+    window.clearTimeout(trackingDemoTimer);
+    trackingDemoTimer=0;
+  }
+  function startTrackingDemoWalk(){
+    stopTrackingDemoWalk();
+    if(reduceMotion) return;
+    const demo=window.KraneGoldenDemo;
+    if(!demo || flowState.orderDelivered) return;
+    if(new URLSearchParams(location.search).get('demoStatus')) return;
+    const walk=['Rider pickup','Dispatched'];
+    const step=() => {
+      if(!document.getElementById('tracking')?.classList.contains('active')) return;
+      const now=demo.readState().fulfilmentStatus;
+      const next=walk[walk.indexOf(now)+1] ?? (walk.includes(now) ? null : walk[0]);
+      if(!next) return;
+      demo.advanceFulfilment(next);
+      syncTrackingDelivery();
+      trackingDemoTimer=window.setTimeout(step,TRACKING_DEMO_STEP_MS);
+    };
+    trackingDemoTimer=window.setTimeout(step,TRACKING_DEMO_STEP_MS);
   }
   function syncTrackingDelivery(){
     const status=orderFulfilmentStatus();
