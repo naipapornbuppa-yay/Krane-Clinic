@@ -65,7 +65,13 @@
       shortAddress: "เดอะ เบส พาร์ค เวสต์ · ห้อง 22/418",
       branch: "Fascino Ari",
       paymentStatus: "Paid",
-      defaultStatus: "Preparing"
+      /* The demo order opens out for delivery, not preparing. The contract asks
+         for the confirm button on the Delivered step to be reachable the moment
+         tracking opens, and a tester needs to press it to see the delivered
+         state and the review at all — at "Preparing" both were unreachable.
+         The earlier stages still read as done in the timeline above it, and the
+         Activity list carries them as cards of their own. */
+      defaultStatus: "Dispatched"
     })
   });
 
