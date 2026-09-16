@@ -131,6 +131,7 @@ button{color:inherit}
 .brand img{width:116px;height:auto;object-fit:contain;object-position:left center}
 .mobile-menu__brand{display:flex;align-items:center;gap:10px}
 .mobile-menu__brand img{width:112px;height:auto;object-fit:contain;object-position:left center}
+.mobile-menu__brand .brand__clinic{font-size:23px}
 .desktop-nav{height:40px;display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,34px);white-space:nowrap}
 .desktop-nav a{position:relative;font-size:14px;font-weight:500;color:#343434;transition:color .2s ease}
 .desktop-nav a:hover{color:var(--landing-blue)}
@@ -681,8 +682,15 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .footer__main{display:flex;align-items:flex-start;justify-content:space-between;gap:80px}
 .footer__brand{width:473px;flex:none}
 .footer__brand img{width:140px;height:auto;max-height:36px;object-fit:contain;object-position:left}
+.footer__wordmark{display:flex;align-items:center;gap:2px}
+.footer__wordmark .brand__clinic{font-size:26px}
 .footer__brand p{width:320px;margin-top:20px;font-size:14px;line-height:1.5}
 .footer__brand small{display:block;margin-top:20px;font-size:10px;line-height:1.6}
+/* The registered clinic name and licence number are a legal identity, not fine
+   print, so they sit a step above the telemedicine disclaimer and keep their
+   own spacing when the two stack. */
+.footer__brand .footer__licence{margin-top:16px;font-size:12.5px;line-height:1.5;letter-spacing:.01em}
+.footer__brand .footer__licence+small{margin-top:12px}
 .footer__links{display:grid;grid-template-columns:repeat(3,max-content);gap:80px}
 .footer__links>div{display:flex;flex-direction:column;gap:16px;font-size:14px}
 .footer__links strong{font-weight:600}
@@ -1348,6 +1356,8 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .closing--figma .closing__copy .button{background:var(--draft-closing-ink);color:#fff}
 .closing--figma .footer{margin:0 -64px;padding:64px;border-radius:64px 64px 0 0;background:#1e2532;color:#fff}
 .closing--figma .footer__brand small{color:rgba(255,255,255,.58)}
+.landing-figma-draft .closing--figma .footer__brand .footer__licence,
+.closing--figma .footer__brand .footer__licence{color:rgba(255,255,255,.82)}
 
 @media(max-width:1100px){
   .landing-figma-draft .hero-draft__intro{grid-template-columns:1fr;gap:24px;padding-inline:32px}
@@ -5107,7 +5117,11 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .closing--figma .footer{height:545px;margin:0;padding:60px;border-radius:64px;background:var(--draft-footer);color:#fff}
   .landing-figma-draft .closing--figma .footer__main{gap:48px}
   .landing-figma-draft .closing--figma .footer__brand{width:380px}
-  .landing-figma-draft .closing--figma .footer__brand img{width:310px;max-height:none}
+  /* The logo gives up the width the second word needs so the lockup still fits
+     the brand column and never runs into the link grid. */
+  .landing-figma-draft .closing--figma .footer__brand img{width:238px;max-height:none}
+  .landing-figma-draft .closing--figma .footer__wordmark{gap:15px}
+  .landing-figma-draft .closing--figma .footer__wordmark .brand__clinic{font-size:43px}
   .landing-figma-draft .closing--figma .footer__brand p{width:360px}
   .landing-figma-draft .closing--figma .footer__brand small{color:rgba(255,255,255,.62)}
   .landing-figma-draft .closing--figma .footer__links{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
@@ -9406,4 +9420,22 @@ html[lang="en"] .landing-figma-draft #ed-title{
 @media(prefers-reduced-motion:reduce){
   .landing-figma-draft .mobile-care-menu__list{animation:none}
   .landing-figma-draft .mobile-care-menu summary svg{transition:none}
+}
+
+/* Brand lockup on the narrowest phones.
+   The landing header carries its own logo widths, so the shared narrow-width
+   rules in site-header.css cannot reach it. Below ~365px the capsule cannot
+   hold "krane clinic" next to the language control, the avatar and the burger,
+   so the logo gives up width rather than letting the second word run under the
+   actions. */
+@media(max-width:365px){
+  .landing-figma-draft .site-header .brand{padding-right:4px}
+  .landing-figma-draft .site-header .brand img{width:80px}
+  .landing-figma-draft .site-header .brand__clinic{font-size:18px}
+  .landing-figma-draft .site-header .brand:has(> .brand__clinic){gap:5px}
+}
+@media(max-width:340px){
+  .landing-figma-draft .site-header .brand img{width:68px}
+  .landing-figma-draft .site-header .brand__clinic{font-size:15px}
+  .landing-figma-draft .site-header .brand:has(> .brand__clinic){gap:4px}
 }

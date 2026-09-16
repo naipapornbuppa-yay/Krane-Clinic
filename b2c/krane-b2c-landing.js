@@ -319,6 +319,7 @@
     ["ปรึกษาแพทย์เลย", "Consult a doctor"], ["บริการ", "Services"], ["เส้นผม", "Hair"], ["เกี่ยวกับ", "About"], ["มาตรฐานของเรา", "Our standards"],
     ["กฎหมาย & ติดต่อ", "Legal & contact"], ["นโยบายความเป็นส่วนตัว", "Privacy policy"], ["ความเป็นส่วนตัว", "Privacy"], ["ข้อกำหนด", "Terms"],
     ["© 2026 Krane Clinic สงวนลิขสิทธิ์", "© 2026 Krane Clinic. All rights reserved."],
+    ["เครน คลินิกเวชกรรม 10101017669", "Krane Medical Clinic 10101017669"],
     ["*บริการการแพทย์ทางไกลให้บริการโดยแพทย์ที่มีใบอนุญาต ตัวเลือกการสั่งยาขึ้นอยู่กับการประเมินทางคลินิก ข้อมูลบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อให้ข้อมูลเท่านั้นและไม่ทดแทนคำแนะนำทางการแพทย์", "*Telemedicine is provided by licensed doctors. Prescriptions depend on a clinical assessment. This website is for information only and does not replace medical advice."],
     ["เรื่องราวจากสมาชิก Krane", "A Krane member story"],
     ["ปรึกษาออนไลน์", "Online consultation"],

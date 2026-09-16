@@ -1321,6 +1321,16 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
 .screen__top .back .bk-lbl{display:none}
 .screen__top .ttl{min-width:0;font-weight:var(--fw-semibold);font-size:var(--fs-base);overflow-wrap:anywhere}
+/* Questionnaire pages name the clinic above the page title. The pager swaps the
+   body one question at a time and leaves this bar in place, so the eyebrow is
+   on every page of the intake without repeating it per question. */
+.screen__top .ttl__brand{
+  display:block;font-size:10px;line-height:1.2;
+  font-weight:var(--fw-semibold);letter-spacing:.16em;text-transform:lowercase;
+  color:var(--color-ink-3);
+}
+.screen__top .ttl__text{display:block}
+.screen__top .ttl:has(> .ttl__brand){line-height:1.25}
 /* Chat header: title left of a live pill, both on the same optical centre.
    The pill replaces the in-thread "call still running" bar. */
 .screen__top--chat{gap:var(--sp-3)}
@@ -1341,6 +1351,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @keyframes live-pulse{0%,100%{opacity:1}50%{opacity:.66}}
 @media(prefers-reduced-motion:reduce){.live-pill,.live-pill__dot{animation:none}}
 .screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* The education interstitial has no page title under the clinic line, so that
+   line takes its place in the row rather than floating over the progress bar
+   the way a centred title does. */
+.screen__top > .ttl:not(:has(> .ttl__text)){position:static;left:auto;right:auto;flex:none;text-align:left}
 /* Per-question progress lifted out of the top bar to sit under the main
    care stepper on questionnaire screens. Same row layout the top bar used. */
 .screen__subprogress{display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);background:var(--color-surface);flex:none}
