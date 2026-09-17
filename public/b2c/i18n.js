@@ -86,6 +86,7 @@
     "First time here?":"เพิ่งใช้ Krane ครั้งแรก?",
     "Create an account":"สร้างบัญชี",
     "Continue with Apple":"ดำเนินการต่อด้วย Apple",
+    "Continue with LINE":"ดำเนินการต่อด้วย LINE",
     "Log in with LINE":"ดำเนินการด้วย LINE",
     "Sign up with Google":"ดำเนินการด้วย Google",
     "Sign up with LINE":"ดำเนินการด้วย LINE",

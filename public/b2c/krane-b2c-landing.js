@@ -777,7 +777,12 @@
           // tab cannot keep an older intake mapping in memory. The versioned href
           // also makes the category part of the canonical fallback URL.
           if (link.dataset.route === "intake1" && link.dataset.category) {
-            window.top.location.assign(link.href);
+            // The reload has to name the category and the screen, or the app
+            // opens on its landing again instead of the questionnaire.
+            const target = new URL(link.href, window.location.href);
+            target.searchParams.set("category", link.dataset.category);
+            target.hash = "intake1";
+            window.top.location.assign(target.href);
             return;
           }
           window.parent.postMessage({
