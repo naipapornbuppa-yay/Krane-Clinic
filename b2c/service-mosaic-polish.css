@@ -1138,3 +1138,64 @@ body.landing-figma-draft #services#services [data-banner-swap] .service-carousel
 }
 .landing-figma-draft .site-header .desktop-nav .nav-menu__menu{ top: 48px; width: 300px; }
 .landing-figma-draft .site-header .desktop-nav .nav-menu__menu a{ font-size: 14px; }
+
+/* ---- One CTA for the three service cards (client, 17 Sep) ----
+   The lead card and the two smaller cards drew "เริ่มตอนนี้" from different
+   rules, so in the lifestyle frame the smaller cards' button grew to
+   142-173 x 54-65px beside a 132-144 x 44-49px one. Every card, in both frames,
+   now takes the same button: the size the lead card already used, from the
+   same corner inset. On a phone they stay icon-only, the same 36px circle, with
+   the corner inset of the card titles. */
+body.landing-figma-draft #services#services [data-banner-swap] .service-carousel-card__cta{
+  width: auto !important;
+  height: auto !important;
+  min-width: clamp(132px, 10vw, 156px) !important;
+  min-height: clamp(44px, 3.4vw, 52px) !important;
+  padding: 10px 18px !important;
+  gap: 12px !important;
+  font-size: 13px !important;
+  right: var(--service-card-inset) !important;
+  bottom: var(--service-card-inset) !important;
+}
+@media (max-width: 760px){
+  body.landing-figma-draft #services#services [data-banner-swap] .service-carousel-card__cta{
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    right: 18px !important;
+    bottom: 18px !important;
+  }
+}
+@media (max-width: 400px){
+  body.landing-figma-draft #services#services [data-banner-swap] .service-carousel-card__cta{
+    right: 16px !important;
+    bottom: 16px !important;
+  }
+}
+
+/* ---- Hero copy on the card grid's edge (client, 17 Sep) ----
+   The service grid is inset clamp(20px, 2.8vw, 54px) from each side of the
+   hero, but the heading, lead and benefit list sat 0 to 32px in, so the
+   heading started up to 40px left of the cards. The intro now uses the grid's
+   inset; on a phone, where the grid is 12px in and the intro 4px, the copy
+   takes the 8px difference. */
+.landing-figma-draft .hero .hero-draft__intro{
+  padding-left: clamp(20px, 2.8vw, 54px) !important;
+  padding-right: clamp(20px, 2.8vw, 54px) !important;
+}
+@media (max-width: 760px){
+  .landing-figma-draft .hero .hero-draft__intro{
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+  .landing-figma-draft .hero .hero-draft__intro .hero__intro-copy{ padding-inline: 8px; }
+}
+
+/* The promo bar's arrow is the same icon as the card buttons, not a text glyph. */
+.landing-figma-draft .announcement__cta::after{ content: none !important; }
+.landing-figma-draft .announcement__cta{ gap: 8px; }
+.landing-figma-draft .announcement__cta svg{ width: 16px; height: 16px; flex: none; transition: transform 220ms cubic-bezier(.22,.8,.3,1); }
+.landing-figma-draft .announcement__cta:hover svg,
+.landing-figma-draft .announcement__cta:focus-visible svg{ transform: translateX(3px); }
