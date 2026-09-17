@@ -131,6 +131,7 @@ button{color:inherit}
 .brand img{width:116px;height:auto;object-fit:contain;object-position:left center}
 .mobile-menu__brand{display:flex;align-items:center;gap:10px}
 .mobile-menu__brand img{width:112px;height:auto;object-fit:contain;object-position:left center}
+.mobile-menu__brand .brand__clinic{font-size:23px}
 .desktop-nav{height:40px;display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,34px);white-space:nowrap}
 .desktop-nav a{position:relative;font-size:14px;font-weight:500;color:#343434;transition:color .2s ease}
 .desktop-nav a:hover{color:var(--landing-blue)}
@@ -681,8 +682,15 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .footer__main{display:flex;align-items:flex-start;justify-content:space-between;gap:80px}
 .footer__brand{width:473px;flex:none}
 .footer__brand img{width:140px;height:auto;max-height:36px;object-fit:contain;object-position:left}
+.footer__wordmark{display:flex;align-items:center;gap:2px}
+.footer__wordmark .brand__clinic{font-size:26px}
 .footer__brand p{width:320px;margin-top:20px;font-size:14px;line-height:1.5}
 .footer__brand small{display:block;margin-top:20px;font-size:10px;line-height:1.6}
+/* The registered clinic name and licence number are a legal identity, not fine
+   print, so they sit a step above the telemedicine disclaimer and keep their
+   own spacing when the two stack. */
+.footer__brand .footer__licence{margin-top:16px;font-size:12.5px;line-height:1.5;letter-spacing:.01em}
+.footer__brand .footer__licence+small{margin-top:12px}
 .footer__links{display:grid;grid-template-columns:repeat(3,max-content);gap:80px}
 .footer__links>div{display:flex;flex-direction:column;gap:16px;font-size:14px}
 .footer__links strong{font-weight:600}
@@ -1348,6 +1356,8 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .closing--figma .closing__copy .button{background:var(--draft-closing-ink);color:#fff}
 .closing--figma .footer{margin:0 -64px;padding:64px;border-radius:64px 64px 0 0;background:#1e2532;color:#fff}
 .closing--figma .footer__brand small{color:rgba(255,255,255,.58)}
+.landing-figma-draft .closing--figma .footer__brand .footer__licence,
+.closing--figma .footer__brand .footer__licence{color:rgba(255,255,255,.82)}
 
 @media(max-width:1100px){
   .landing-figma-draft .hero-draft__intro{grid-template-columns:1fr;gap:24px;padding-inline:32px}
@@ -5107,7 +5117,11 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .closing--figma .footer{height:545px;margin:0;padding:60px;border-radius:64px;background:var(--draft-footer);color:#fff}
   .landing-figma-draft .closing--figma .footer__main{gap:48px}
   .landing-figma-draft .closing--figma .footer__brand{width:380px}
-  .landing-figma-draft .closing--figma .footer__brand img{width:310px;max-height:none}
+  /* The logo gives up the width the second word needs so the lockup still fits
+     the brand column and never runs into the link grid. */
+  .landing-figma-draft .closing--figma .footer__brand img{width:238px;max-height:none}
+  .landing-figma-draft .closing--figma .footer__wordmark{gap:15px}
+  .landing-figma-draft .closing--figma .footer__wordmark .brand__clinic{font-size:43px}
   .landing-figma-draft .closing--figma .footer__brand p{width:360px}
   .landing-figma-draft .closing--figma .footer__brand small{color:rgba(255,255,255,.62)}
   .landing-figma-draft .closing--figma .footer__links{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
@@ -6639,21 +6653,13 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     height:40px;
     min-height:40px;
   }
-  .landing-figma-draft .drawer.mobile-menu{
-    width:min(360px,calc(100vw - 20px));
-    height:calc(100dvh - 20px);
-    margin:10px 10px 10px auto;
-    padding:18px;
-    border-radius:28px;
-  }
-  .landing-figma-draft .mobile-menu nav{gap:4px}
-  .landing-figma-draft .mobile-menu nav>a{
-    min-height:52px;
-    padding:0 14px;
-    border:0;
-    border-radius:14px;
-    background:#f4f5f7;
-  }
+  /* Client, 15 Sep: this was a 366px-wide rounded card floating 12px inside a
+     390px screen, so the slide-in from the right read as a sheet dropping over
+     the page — there was no page left beside it to slide across. The shared
+     drawer in site-header.css is the one the service pages use: flush to the
+     right edge, full height, square, narrow enough to leave the page visible
+     behind it. The landing uses that now rather than its own shape. */
+  .landing-figma-draft .mobile-menu nav{gap:0}
 }
 
 /* UT-34 — preserve the flat Figma product-card language in both carousel
@@ -9170,14 +9176,20 @@ html[lang="en"] .landing-figma-draft #ed-title{
   flex:none;
 }
 .landing-figma-draft .drawer.mobile-menu{
-  width:min(520px,calc(100vw - 24px));
+  /* Client, 15 Sep: a side drawer, not a floating card. It used to be
+     100vw-24px wide with a 30px radius and a 12px margin, which on a phone left
+     no page beside it — so sliding in from the right read as a sheet dropping
+     over the top. Flush to the right edge, full height, square, and narrow
+     enough that the page stays visible behind it, the same shape the service
+     pages already use. */
+  width:min(380px,86%);
   max-width:none;
-  height:calc(100dvh - 24px);
-  max-height:calc(100dvh - 24px);
-  margin:12px 12px 12px auto;
-  padding:22px 24px 24px;
-  border:1px solid rgba(17,27,48,.08);
-  border-radius:30px;
+  height:100dvh;
+  max-height:100dvh;
+  margin:0 0 0 auto;
+  padding:20px;
+  border:0;
+  border-radius:0;
   background:#fff;
   box-shadow:-24px 0 70px rgba(17,27,48,.24);
 }
@@ -9275,7 +9287,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
   font-size:17px;
 }
 @keyframes care-menu-enter{
-  from{opacity:.5;transform:translateX(calc(100% + 24px))}
+  from{opacity:.5;transform:translateX(100%)}
   to{opacity:1;transform:translateX(0)}
 }
 @keyframes care-accordion-enter{
@@ -9285,12 +9297,12 @@ html[lang="en"] .landing-figma-draft #ed-title{
 
 @media(max-width:760px){
   .landing-figma-draft .drawer.mobile-menu{
-    width:calc(100vw - 24px);
-    height:calc(100dvh - 24px);
-    max-height:calc(100dvh - 24px);
-    margin:12px 12px 12px auto;
-    padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));
-    border-radius:26px;
+    width:min(380px,86%);
+    height:100dvh;
+    max-height:100dvh;
+    margin:0 0 0 auto;
+    padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));
+    border-radius:0;
   }
   .landing-figma-draft .mobile-menu__head{min-height:64px;padding-bottom:12px}
   .landing-figma-draft .mobile-menu__head img{width:132px}
@@ -9363,20 +9375,12 @@ html[lang="en"] .landing-figma-draft #ed-title{
   min-height:44px;
   display:flex;
   align-items:center;
-  padding:6px 8px 6px 22px;
+  padding:6px 8px;
   color:#596579;
   font-size:16px;
   font-weight:500;
 }
-.landing-figma-draft .mobile-care-menu__list a::before{
-  content:"";
-  position:absolute;
-  left:2px;
-  width:7px;
-  height:7px;
-  border:1.5px solid #73819a;
-  border-radius:50%;
-}
+
 .landing-figma-draft .mobile-care-menu__list a:hover{
   color:var(--landing-blue);
   transform:translateX(3px);
@@ -9384,21 +9388,14 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .landing-figma-draft .mobile-menu nav>a{
   position:relative;
   min-height:54px;
-  padding:0 4px 0 26px;
+  padding:0 4px;
   border-bottom:1px solid var(--landing-line);
   border-radius:0;
   background:transparent;
   font-size:19px;
 }
-.landing-figma-draft .mobile-menu nav>a::before{
-  content:"";
-  position:absolute;
-  left:4px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--landing-blue);
-}
+/* No bullets. A navigation row is not a list item to tick off, and eight blue
+   dots down the drawer were the loudest thing on it (client, 15 Sep). */
 .landing-figma-draft .mobile-menu nav>a:hover{
   background:transparent;
   color:var(--landing-blue);
@@ -9423,4 +9420,22 @@ html[lang="en"] .landing-figma-draft #ed-title{
 @media(prefers-reduced-motion:reduce){
   .landing-figma-draft .mobile-care-menu__list{animation:none}
   .landing-figma-draft .mobile-care-menu summary svg{transition:none}
+}
+
+/* Brand lockup on the narrowest phones.
+   The landing header carries its own logo widths, so the shared narrow-width
+   rules in site-header.css cannot reach it. Below ~365px the capsule cannot
+   hold "krane clinic" next to the language control, the avatar and the burger,
+   so the logo gives up width rather than letting the second word run under the
+   actions. */
+@media(max-width:365px){
+  .landing-figma-draft .site-header .brand{padding-right:4px}
+  .landing-figma-draft .site-header .brand img{width:80px}
+  .landing-figma-draft .site-header .brand__clinic{font-size:18px}
+  .landing-figma-draft .site-header .brand:has(> .brand__clinic){gap:5px}
+}
+@media(max-width:340px){
+  .landing-figma-draft .site-header .brand img{width:68px}
+  .landing-figma-draft .site-header .brand__clinic{font-size:15px}
+  .landing-figma-draft .site-header .brand:has(> .brand__clinic){gap:4px}
 }

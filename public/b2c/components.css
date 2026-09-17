@@ -157,18 +157,26 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-screen--login .auth-screen__panel{width:min(100%,520px);gap:var(--sp-5)}
 .auth-screen--login .auth-screen__intro{align-items:flex-start;text-align:left}
 .auth-screen--login .auth-screen__intro .h1{font-size:clamp(34px,5vw,44px);font-weight:var(--fw-semibold);letter-spacing:-.03em}
+/* Client, 15 Sep: these two read as unproportioned. The box stood 77px tall
+   around a 38px control, and the phone number began about 40px clear of the
+   dial code it belongs to — the country button dropped its left padding but the
+   input kept its own, so the two halves of one number were pushed apart. The
+   box is tighter now, the label sits closer to the value it names, and every
+   control in the field shares one left edge. */
 .auth-login-field{
-  padding:10px 14px 8px;border:1.5px solid var(--color-line-strong);border-radius:18px;
+  padding:8px 14px 6px;border:1.5px solid var(--color-line-strong);border-radius:16px;
   background:color-mix(in srgb,var(--color-accent-soft) 44%,var(--color-surface));
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
 .auth-login-field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
-.auth-login-field>label{margin:0 0 1px;font-size:12px;font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.auth-login-field>label{display:block;margin:0;font-size:12px;line-height:1.5;font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .auth-login-field .input,.auth-login-field .phone-field__country{
-  height:38px;border:0;background:transparent;box-shadow:none
+  height:34px;border:0;background:transparent;box-shadow:none
 }
-.auth-login-field .phone-field__country{padding-left:0}
-.auth-login-field .phone-field__input.input{padding-right:0}
+.auth-login-field .phone-field__country{padding-left:0;padding-right:8px}
+/* The dial code and the number are one value: a single gap between them, not
+   the country button's padding plus the input's. */
+.auth-login-field .phone-field__input.input{padding-left:0;padding-right:0}
 .auth-login-field .password-field .input{padding-left:0}
 .auth-login-field .input:focus{border-color:transparent;box-shadow:none}
 .auth-screen--login .auth-screen__forgot{align-self:flex-end;margin-top:-2px;font-weight:var(--fw-semibold);color:var(--color-accent)}
@@ -1313,6 +1321,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
 .screen__top .back .bk-lbl{display:none}
 .screen__top .ttl{min-width:0;font-weight:var(--fw-semibold);font-size:var(--fs-base);overflow-wrap:anywhere}
+.screen__top .ttl__text{display:block}
 /* Chat header: title left of a live pill, both on the same optical centre.
    The pill replaces the in-thread "call still running" bar. */
 .screen__top--chat{gap:var(--sp-3)}
@@ -1333,6 +1342,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 @keyframes live-pulse{0%,100%{opacity:1}50%{opacity:.66}}
 @media(prefers-reduced-motion:reduce){.live-pill,.live-pill__dot{animation:none}}
 .screen__top:has(> .back)> .ttl{position:absolute;left:64px;right:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* The education interstitial has no page title under the clinic line, so that
+   line takes its place in the row rather than floating over the progress bar
+   the way a centred title does. */
+.screen__top > .ttl:not(:has(> .ttl__text)){position:static;left:auto;right:auto;flex:none;text-align:left}
 /* Per-question progress lifted out of the top bar to sit under the main
    care stepper on questionnaire screens. Same row layout the top bar used. */
 .screen__subprogress{display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);width:100%;min-width:0;max-width:100%;border-bottom:1px solid var(--color-line);background:var(--color-surface);flex:none}
@@ -2860,8 +2873,10 @@ body.lang-th *{letter-spacing:normal}
 #intake1 .stack-3,#intake2 .stack-3,#intake3 .stack-3,#intake4 .stack-3{gap:16px}
 #intake1 .option .opt-title,#intake2 .option .opt-title,#intake3 .option .opt-title,#intake4 .option .opt-title{font-size:17px}
 #intake1 .option .opt-sub,#intake2 .option .opt-sub,#intake3 .option .opt-sub,#intake4 .option .opt-sub{margin-top:4px;font-size:14px;line-height:1.45}
-.intake-explainer{display:grid;gap:7px;margin-top:18px;padding:18px 20px;border:0;border-radius:16px;background:var(--color-accent-soft);color:var(--color-ink-2)}
-.intake-explainer__title{color:var(--color-accent);font-size:14px;font-weight:var(--fw-semibold);line-height:1.35}
+/* "Why we ask" is a note beside the question, not part of the answer, so it takes
+   the soft notice yellow rather than the selection blue (client, 17 Sep). */
+.intake-explainer{display:grid;gap:7px;margin-top:18px;padding:18px 20px;border:0;border-radius:16px;background:var(--surface-notice);color:var(--color-ink-2)}
+.intake-explainer__title{color:var(--surface-notice-ink);font-size:14px;font-weight:var(--fw-semibold);line-height:1.35}
 .intake-explainer__copy{margin:0;font-size:13px;line-height:1.55}
 .intake-privacy-note{display:flex;align-items:flex-start;gap:8px;margin:12px 0 0;color:var(--color-accent);font-size:12px;font-weight:var(--fw-medium);line-height:1.45}
 .intake-privacy-note svg{width:16px;height:16px;flex:none;margin-top:1px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -2913,14 +2928,17 @@ body.lang-th *{letter-spacing:normal}
    the patient the appointment is close and gets out of the way. */
 .followup-toast{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
   min-height:68px;padding:11px 12px;border:0;border-radius:18px;
-  background:linear-gradient(135deg,var(--color-accent-soft),color-mix(in srgb,var(--color-accent-soft) 60%,var(--color-surface)));
+  /* Waiting for the visit reads as a notice, in the same yellow as the payment
+     deadline, and turns into the blue action only when the room opens
+     (client, 17 Sep). */
+  background:var(--surface-notice);
   color:var(--color-ink);font:inherit;text-align:left;cursor:pointer;
-  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-accent) 13%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--surface-notice-ink) 16%,transparent);
   -webkit-tap-highlight-color:transparent;
   transition:transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out)}
 .followup-toast[hidden]{display:none}
 .followup-toast__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;
-  background:color-mix(in srgb,var(--color-accent) 12%,var(--color-surface));color:var(--color-accent)}
+  background:color-mix(in srgb,var(--surface-notice-ink) 12%,var(--color-surface));color:var(--surface-notice-ink)}
 .followup-toast .ui-icon{width:21px;height:21px;flex:none}
 .followup-toast__text{min-width:0;display:grid;gap:2px}
 .followup-toast__text strong{min-width:0;font-size:14px;font-weight:var(--fw-semibold);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -3052,7 +3070,9 @@ body.lang-th *{letter-spacing:normal}
    room for a long date and doctor name. Hold the label, wrap the value. */
 .followup-details{display:grid;padding:4px var(--sp-3);background:rgba(255,255,255,.14);border-radius:var(--radius-xs)}
 .followup-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:var(--sp-3);padding:7px 0}
-.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.55)}
+/* Client, 15 Sep: fainter. At .55 the rule read as a table border across a
+   coloured card; it only has to separate two lines. */
+.followup-row+.followup-row{border-top:1px solid rgba(255,255,255,.22)}
 .followup-row>.hint{min-width:0;color:rgba(255,255,255,.68)}
 .followup-row>strong{min-width:0;text-align:right;font-size:var(--fs-sm);line-height:1.3;color:#fff}
 @media(max-width:430px){
@@ -3092,7 +3112,7 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
    say what the buttons do. The plate and the disc are both gone: the icon sits
    on the page in brand blue and the label carries the meaning, which is what
    the patient reads anyway. Nothing here draws a box. */
-.profile-quick__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.profile-quick__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-2)}
 .profile-quick__action{min-width:0;display:flex;flex-direction:column;align-items:center;
   gap:var(--sp-2);padding:var(--sp-2) 2px;border:0;border-radius:var(--radius-sm);
   background:transparent;color:inherit;text-align:center;cursor:pointer;
@@ -3107,10 +3127,6 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   color:var(--color-accent);white-space:nowrap}
 /* Client, 1 Sep: no descriptions under the quick menu — the label is the
    whole of it. */
-/* The follow-up is the one the patient is most likely to want, and it used to
-   be a filled blue tile. Colour carries that now instead of a box; the blue
-   banner underneath is still the loud version of the same action. */
-.profile-quick__action--primary strong{font-weight:var(--fw-semibold)}
 /* With no plate there is no fill to darken on press, so the whole item answers. */
 .profile-quick__action:active{transform:scale(.94);opacity:.65}
 @media(hover:hover){
@@ -3214,7 +3230,11 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .treatment-card[data-category="hair-skin"]{--treatment-campaign:#86afa4;--treatment-surface:#5f817a}
 .treatment-card[data-category="sexual-health"]{--treatment-campaign:#2c5c78;--treatment-surface:#1d465e}
 #profile .treatment-card{border:0;box-shadow:0 8px 24px color-mix(in srgb,var(--treatment-surface) 22%,rgba(17,27,48,.08))}
-#profile .treatment-card .badge--ok{background:var(--color-success);color:#fff}
+/* Client, 15 Sep: the status tag is a white chip with green text, not a
+   filled green pill. On a coloured card the filled pill was a second block
+   of colour competing with the card itself; white lifts it off every card
+   tone equally and keeps the green as the meaning rather than the shape. */
+#profile .treatment-card .badge--ok{background:#fff;color:var(--color-success);border:0}
 .treatment-card:active{transform:scale(.995)}
 .treatment-card:hover{box-shadow:0 12px 30px color-mix(in srgb,var(--treatment-surface) 30%,rgba(17,27,48,.12))}
 .treatment-card .between{width:100%}
@@ -3579,9 +3599,12 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 /* Leading the record, the doctor block sits above the note rather than closing
    it, so its rule sits under it instead of over it (client, 11 Sep). */
 .treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
-.treatment-record__certificate{display:flex;flex-direction:column;gap:var(--sp-3);
+.treatment-record__certificate{display:flex;flex-direction:column;gap:0;
   padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
-.treatment-record__certificate .h3{margin:3px 0 0;font-size:var(--fs-md);font-weight:var(--fw-semibold)}
+.treatment-record__certificate-card{min-height:64px}
+.treatment-record__certificate-go{flex:none;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out)}
+.treatment-record__certificate-card:hover .treatment-record__certificate-go,
+.treatment-record__certificate-card:focus-visible .treatment-record__certificate-go{transform:translateX(3px)}
 
 /* My Documents: search first, then one date-sorted list. There are no document
    type tabs here because search must span every certificate, prescription and
@@ -3634,9 +3657,10 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .delivery-item__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
 /* Two classes, because the phone rule below resets .delivery-item to the three
    product columns and was squeezing the total's label into the thumbnail slot. */
-.delivery-item.delivery-item--total{grid-template-columns:minmax(0,1fr) auto;padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
+.delivery-item.delivery-item--total{width:100%;grid-template-columns:minmax(0,1fr) max-content;padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
 .delivery-item--total .delivery-item__name,
 .delivery-item--total .delivery-item__price{font-weight:var(--fw-bold)}
+.delivery-item--total .delivery-item__name{min-width:0;white-space:nowrap}
 .delivery-item--total .delivery-item__price{grid-column:2;grid-row:1;justify-self:end;text-align:right;color:var(--color-ink)}
 /* A plan credit or a discount has no picture, so it takes the total's two columns,
    and its amount reads as money coming off rather than another charge. */
@@ -3786,4 +3810,66 @@ html.is-demo-embed .callstage--live .call-hint{bottom:12px}
 }
 @media(max-width:600px){
   :is(#intake1,#intake2,#intake3,#intake4,#intake5,#intake-concern,#intake-general) .stack-3>*+*{margin-top:12px}
+}
+
+/* Obesity intake (client, 13 Sep). The BMI line answers the number the patient
+   just typed, so it sits under the two fields rather than in a panel of its own.
+   The seven screening rows reuse the app's binary control: one line each, the
+   question on the left and ใช่/ไม่ on the right, so a seven-item checklist reads
+   as a list and not as fourteen buttons. */
+.obesity-bmi{display:flex;align-items:baseline;gap:var(--sp-2);padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-bg-soft)}
+.obesity-bmi__label{color:var(--color-ink-2);font-size:var(--fs-sm)}
+.obesity-bmi__value{margin-left:auto;font-size:22px;font-weight:var(--fw-semibold);line-height:1}
+.obesity-bmi__unit{color:var(--color-ink-3);font-size:12px}
+.obesity-risk-list{display:flex;flex-direction:column;gap:var(--sp-3)}
+.obesity-risk-list .partner-history-field{display:flex;align-items:center;gap:var(--sp-3);margin:0;padding:0;border:0}
+.obesity-risk-list legend{flex:1;min-width:0;float:none;padding:0;font-size:14px;font-weight:var(--fw-regular);line-height:1.5}
+.obesity-risk-list .partner-binary{flex:0 0 auto;width:132px;padding:4px;background:var(--color-field)}
+@media(max-width:420px){
+  .obesity-risk-list .partner-history-field{flex-direction:column;align-items:stretch;gap:var(--sp-2)}
+  .obesity-risk-list .partner-binary{width:100%}
+}
+
+/* The medicine list heads the longest block on the treatment record, so it is
+   titled rather than labelled (client, 15 Sep). The rule above it went with the
+   label: the heading already separates the two sections. */
+.treatment-detail__section-title{margin:var(--sp-2) 0 0;font-size:18px;font-weight:var(--fw-semibold);line-height:1.35;letter-spacing:-.01em}
+
+/* A refill that is not due yet, or "all" when only one is open, leaves the sheet. */
+#refill-sheet .option[hidden]{display:none}
+
+/* ---------- The intake opens the way hims.com's questionnaire does ----------
+   The Krane wordmark sits above the question on the left, where the eyebrow in
+   the app bar used to name the clinic; the heading stands alone with no line
+   under it; the action is a full-width pill (client, 17 Sep). The wordmark is a
+   pseudo-element because the one-question walker treats every child of the
+   body as a question. */
+#intake1 .screen__body::before,#intake2 .screen__body::before,#intake3 .screen__body::before,#intake4 .screen__body::before,#intake5 .screen__body::before,#intake-concern .screen__body::before,#intake-general .screen__body::before,#intake-edu .screen__body::before{
+  /* The same lockup as the home header, "krane" art with "clinic" set in type
+     beside it, in its proportions (logo 112x31 with 24px type), smaller here. */
+  content:"clinic";display:block;flex:none;align-self:flex-start;justify-self:start;height:22px;margin-bottom:28px;padding-left:88px;
+  background:url("../assets/krane-logo-16aug26-2.svg") left center/auto 22px no-repeat;
+  font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:22px;
+  letter-spacing:-.01em;white-space:nowrap;color:var(--color-ink);
+}
+#intake1 .screen__body > :first-child + .common-group,#intake2 .screen__body > :first-child + .common-group,#intake3 .screen__body > :first-child + .common-group,#intake4 .screen__body > :first-child + .common-group,#intake5 .screen__body > :first-child + .common-group{padding-top:0;border-top:0}
+#intake1 .screen__footer .btn--primary,#intake2 .screen__footer .btn--primary,#intake3 .screen__footer .btn--primary,#intake4 .screen__footer .btn--primary,#intake5 .screen__footer .btn--primary,#intake-concern .screen__footer .btn--primary,#intake-general .screen__footer .btn--primary,#intake-edu .screen__footer .btn--primary{border-radius:var(--radius-pill)}
+/* hims.com's measure, keeping our own progress bar and app bar: a quiet
+   wordmark, a medium-weight question that reads as a sentence rather than a
+   banner, and shorter answer cards with more air between them (client, 17 Sep). */
+#intake1 .screen__body .h1,#intake2 .screen__body .h1,#intake3 .screen__body .h1,#intake4 .screen__body .h1,#intake5 .screen__body .h1,
+#intake1 [data-intake-question] .intake-question__title,#intake2 [data-intake-question] .intake-question__title,#intake3 [data-intake-question] .intake-question__title,#intake4 [data-intake-question] .intake-question__title,#intake5 [data-intake-question] .intake-question__title{
+  font-size:clamp(28px,3.4vw,38px);font-weight:var(--fw-medium);line-height:1.25;letter-spacing:-.02em;
+}
+#intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option{min-height:76px;padding:18px 20px;border-radius:12px}
+#intake1 .stack-3,#intake2 .stack-3,#intake3 .stack-3,#intake4 .stack-3,#intake5 .stack-3{gap:20px}
+#intake1 .option .opt-title,#intake2 .option .opt-title,#intake3 .option .opt-title,#intake4 .option .opt-title,#intake5 .option .opt-title{font-size:17px;font-weight:var(--fw-medium)}
+@media(max-width:760px){
+  #intake1 .screen__body::before,#intake2 .screen__body::before,#intake3 .screen__body::before,#intake4 .screen__body::before,#intake5 .screen__body::before,#intake-concern .screen__body::before,#intake-general .screen__body::before,#intake-edu .screen__body::before{height:18px;margin-bottom:20px;padding-left:72px;background-size:auto 18px;font-size:14px;line-height:18px}
+  #intake1 .screen__body,#intake2 .screen__body,#intake3 .screen__body,#intake4 .screen__body,#intake5 .screen__body{padding:24px 20px 28px}
+  #intake1 .screen__body .h1,#intake2 .screen__body .h1,#intake3 .screen__body .h1,#intake4 .screen__body .h1,#intake5 .screen__body .h1{margin-bottom:0;font-size:26px;line-height:1.28}
+  #intake1 [data-intake-question] .intake-question__title,#intake2 [data-intake-question] .intake-question__title,#intake3 [data-intake-question] .intake-question__title,#intake4 [data-intake-question] .intake-question__title,#intake5 [data-intake-question] .intake-question__title{margin-bottom:16px;font-size:26px;line-height:1.28}
+  #intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option{min-height:64px;padding:16px 18px}
+  #intake1 .stack-3,#intake2 .stack-3,#intake3 .stack-3,#intake4 .stack-3,#intake5 .stack-3{gap:14px}
+  #intake1 .option .opt-title,#intake2 .option .opt-title,#intake3 .option .opt-title,#intake4 .option .opt-title,#intake5 .option .opt-title{font-size:16px}
 }

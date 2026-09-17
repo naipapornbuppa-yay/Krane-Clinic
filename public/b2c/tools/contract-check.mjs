@@ -115,6 +115,16 @@ for (const flow of contract.flows) {
     /* Seeded flow state, so a deep link lands where the flow really is instead
        of being bounced back to the questionnaire by the route guard. The seed
        merges over the app's defaults, exactly like a resumed session. */
+    /* Every flow shares one browser context, so whatever a flow leaves in
+       storage is the next flow's starting state. "Confirming receipt asks for
+       the review" clicks the confirm button, which writes the order to
+       Delivered — and the flow after it then opened tracking on an order that
+       was already confirmed and reported the confirm button missing. It was not
+       missing; it was correctly gone. Each flow starts from a clean demo order
+       now, so a flow's result depends only on itself. */
+    await page.addInitScript(key => {
+      try { sessionStorage.removeItem(key); localStorage.removeItem(key); } catch { /* private mode */ }
+    }, 'krane-golden-demo-state-v1');
     if (flow.seed) {
       await page.addInitScript(([key, seed]) => {
         try { sessionStorage.setItem(key, JSON.stringify(seed)); } catch { /* private mode */ }

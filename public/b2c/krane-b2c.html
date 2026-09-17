@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260914-rider-pickup-v2";
+    const release = "20260917-intake-hims-v2";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260914-rider-pickup-v2">
-<link rel="stylesheet" href="components.css?v=20260914-rider-pickup-v2">
-<link rel="stylesheet" href="custom-select.css?v=20260914-rider-pickup-v2">
-<link rel="stylesheet" href="state-illustrations.css?v=20260914-rider-pickup-v2">
-<link rel="stylesheet" href="platform-compat.css?v=20260914-rider-pickup-v2">
-<script src="../krane-golden-fixture.js?v=20260914-rider-pickup-v2"></script>
-<script src="custom-select.js?v=20260914-rider-pickup-v2" defer></script>
-<script src="i18n.js?v=20260914-rider-pickup-v2" defer></script>
-<script src="../krane-golden-patient.js?v=20260914-rider-pickup-v2" defer></script>
+<link rel="stylesheet" href="design-tokens.css?v=20260917-intake-hims-v2">
+<link rel="stylesheet" href="components.css?v=20260917-intake-hims-v2">
+<link rel="stylesheet" href="custom-select.css?v=20260917-intake-hims-v2">
+<link rel="stylesheet" href="state-illustrations.css?v=20260917-intake-hims-v2">
+<link rel="stylesheet" href="platform-compat.css?v=20260917-intake-hims-v2">
+<script src="../krane-golden-fixture.js?v=20260917-intake-hims-v2"></script>
+<script src="custom-select.js?v=20260917-intake-hims-v2" defer></script>
+<script src="i18n.js?v=20260917-intake-hims-v2" defer></script>
+<script src="../krane-golden-patient.js?v=20260917-intake-hims-v2" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -381,6 +381,18 @@
       object-fit: contain;
       object-position: left center;
     }
+    /* The logo art is "krane" alone; the registered name is Krane Clinic, so
+       the second word is set in type next to it and tracks the logo's size. */
+    #profile .profile-shell-nav__brand { gap: 6px; }
+    #profile .profile-shell-nav__brand .brand__clinic {
+      font-family: "Prompt", "Noto Sans Thai", system-ui, sans-serif;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+      color: currentColor;
+    }
     #profile .profile-shell-nav__links {
       display: flex;
       align-items: stretch;
@@ -623,6 +635,7 @@
       }
       #profile .profile-shell-nav__brand { min-width: 0; margin-right: auto; }
       #profile .profile-shell-nav__brand img { width: 101px; max-height: 28px; }
+      #profile .profile-shell-nav__brand .brand__clinic { font-size: 22px; }
       #profile .profile-shell-nav__links { display: none; }
       #profile .profile-shell-nav__actions { gap: 6px; }
       #profile .profile-shell-nav__language { min-height: 42px; padding-right: 0; }
@@ -709,6 +722,7 @@
         box-shadow: 0 10px 26px rgba(17, 24, 39, .10), 0 2px 8px rgba(17, 24, 39, .04);
       }
       #profile .profile-shell-nav__brand img { width: 94px; max-height: 25px; }
+      #profile .profile-shell-nav__brand .brand__clinic { font-size: 20px; }
       #profile .profile-shell-nav__actions { gap: 3px; }
       #profile .profile-shell-nav__language { padding-right: 0; }
       #profile .profile-shell-nav__language select { min-width: 29px; font-size: 13px; }
@@ -805,7 +819,7 @@
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260914-rider-pickup-v2" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260917-intake-hims-v2" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
     <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
@@ -972,7 +986,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260914-rider-pickup-v2" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260917-intake-hims-v2" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1137,7 +1151,7 @@
   <!-- ===================== DIRECT INTAKE Q1 (KRANE-F02 · SCR-DIR-02) =====================
        Direct services branch here, converge on safety and optional photo, then save before F03. -->
   <section class="screen" id="intake1" data-screen-code="SCR-DIR-02">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:14%"></span></div></div><span class="hint">1 / 7</span></div>
     <div class="screen__body stack-5">
       <div><h2 class="h1">What are you noticing right now?</h2></div>
       <div class="stack-3">
@@ -1169,7 +1183,7 @@
 
   <!-- ===================== INTAKE Q2 (concern detail, adapted per service) ===================== -->
   <section class="screen" id="intake2">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:29%"></span></div></div><span class="hint">2 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:29%"></span></div></div><span class="hint">2 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Tell us more about this concern</h2></div>
       <div class="common-group">
@@ -1196,7 +1210,7 @@
 
   <!-- ===================== INTAKE Q3 (previous care for this concern) ===================== -->
   <section class="screen" id="intake3">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:43%"></span></div></div><span class="hint">3 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:43%"></span></div></div><span class="hint">3 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">What have you tried for this concern?</h2></div>
       <div class="common-group">
@@ -1226,9 +1240,12 @@
 
   <!-- ===================== INTAKE Q4 (urgent warning signs) ===================== -->
   <section class="screen" id="intake4">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:57%"></span></div></div><span class="hint">4 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:57%"></span></div></div><span class="hint">4 / 7</span></div>
     <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">Do any urgent warning signs apply today?</h2><p class="hint">If symptoms are severe or life-threatening, seek emergency care now.</p></div>
+      <!-- The question page carries only the question, the way hims.com lays it out;
+           the emergency instruction that sat under the heading joins the page's
+           own note below the answers (client, 17 Sep). -->
+      <div class="stack-2"><h2 class="h1">Do any urgent warning signs apply today?</h2></div>
       <!-- The heading already says what this is. A second label over the same
            list only repeated it (client, 19 Aug). -->
       <div class="common-group">
@@ -1239,7 +1256,7 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Currently under specialist care for this issue</span></span><span class="opt-check"></span></button>
           <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these apply</span></span><span class="opt-check"></span></button>
         </div>
-        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">This confirms whether online care is safe for you today.</p></aside>
+        <aside class="intake-explainer"><strong class="intake-explainer__title">Why we ask</strong><p class="intake-explainer__copy">This confirms whether online care is safe for you today.</p><p class="intake-explainer__copy">If symptoms are severe or life-threatening, seek emergency care now.</p></aside>
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="intake5" data-flag-go="ineligible">Continue</button></div>
@@ -1247,7 +1264,7 @@
 
   <!-- ===================== INTAKE Q5 (optional photo, condition-specific services only) ===================== -->
   <section class="screen" id="intake5">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div><span class="hint">5 / 7</span></div>
     <div class="screen__body stack-5">
       <div class="stack-2"><h2 class="h1">Add a photo of the area you're concerned about</h2></div>
       <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span></p>
@@ -1257,25 +1274,25 @@
         <ol class="photo-guide">
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260917-intake-hims-v2" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">แนวไรผมด้านหน้า</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260917-intake-hims-v2" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">กลางศีรษะ</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260917-intake-hims-v2" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ขม่อมด้านหลัง</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260914-rider-pickup-v2" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260917-intake-hims-v2" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ด้านข้างและขมับ</span>
           </li>
@@ -1297,7 +1314,7 @@
 
   <!-- ===================== INTAKE · SHARED CONCERN DETAILS ===================== -->
   <section class="screen" id="intake-concern">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:86%"></span></div></div><span class="hint">6 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
       <div class="stack-2"><h2 class="h1">อาการที่ต้องการปรึกษา</h2><p class="muted">กรอกรายละเอียดอาการ ระยะเวลา และสิ่งที่ลองทำแล้ว เพื่อช่วยให้แพทย์ประเมินได้แม่นยำขึ้น</p></div>
       <div class="card card--pad-sm shared-concern-card" data-shared-concern>
@@ -1347,7 +1364,7 @@
 
   <!-- ===================== SHARED GENERAL HEALTH · Partner SCR-003 / Direct SCR-DIR-02E ===================== -->
   <section class="screen" id="intake-general">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl" data-general-health-title>ซักประวัติ</span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text" data-general-health-title>ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
       <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
       <aside class="followup-prefill" data-followup-prefill hidden aria-live="polite">
@@ -1379,7 +1396,7 @@
 
   <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
   <section class="screen" id="intake-edu">
-    <div class="screen__top"><button class="back" data-back>‹</button><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">Almost done</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"></span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">Almost done</span></div>
     <div class="screen__body edu-body">
       <div class="edu-eyebrow">While a doctor reviews your answers</div>
       <p class="edu-text">Factors like <span class="hl">aging</span>, <span class="hl">family history</span> and <span class="hl">stress</span> can drive hair shedding and thinning.</p>
@@ -1705,7 +1722,7 @@
         <div class="between">
           <span class="muted">คุณหมอที่รับเคส</span>
           <span class="doctor-value">
-            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260914-rider-pickup-v2" alt="" width="40" height="40">
+            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260917-intake-hims-v2" alt="" width="40" height="40">
             <strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong>
           </span>
         </div>
@@ -1848,7 +1865,7 @@
         <!-- One active ingredient per row. A fixed-dose combination wrote its
              three ingredients into one name and wrapped over four lines
              (client, 19 Aug), so the sample uses single-ingredient products. -->
-        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
+        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-intake-hims-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint plan-item__gist">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</div></div><span class="price">฿ 94 · 1 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint plan-item__gist">แก้ปวด ลดไข้</div></div><span class="price">฿ 40 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Naproxen 250 mg</div><div class="hint plan-item__gist">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</div></div><span class="price">฿ 134 · 1 แผง</span></div>
@@ -1883,7 +1900,7 @@
         <span class="call-fab__badge" data-consult-unread-badge hidden aria-hidden="true">1</span>
       </button>
       <div class="call-remote call-remote--video">
-        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260914-rider-pickup-v2" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
+        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260917-intake-hims-v2" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
         <div class="call-remote__identity">
           <div class="call-name">Dr. Narin</div>
           <div class="call-status" data-call-status>Video consultation · 02:14</div>
@@ -2159,7 +2176,7 @@
       </header>
       <div class="checkout-order checkout-order--editor">
         <div class="checkout-order__item" data-order-item="cough">
-          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-intake-hims-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
           <span class="checkout-order__body"><span class="checkout-order__name">Dextromethorphan 15 mg</span><span class="checkout-order__note">ลดอาการไอ</span></span>
           <span class="checkout-order__price" data-order-price>฿ 170</span>
           <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="Dextromethorphan 15 mg quantity">
@@ -2279,7 +2296,7 @@
             <span class="checkout-order__price" data-payment-consultation>฿ 350</span>
           </div>
           <div class="checkout-order__item" data-order-item="cough">
-            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260914-rider-pickup-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-intake-hims-v2" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Dextromethorphan 15 mg</span>
               <span class="checkout-order__note">ลดอาการไอ</span>
@@ -2666,8 +2683,8 @@
   <!-- ===================== PROFILE (home, bottom nav) ===================== -->
   <section class="screen screen--web" id="profile">
     <header class="screen__top profile-shell-nav">
-      <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane home">
-        <img src="../assets/krane-logo-16aug26-2.svg?v=20260914-rider-pickup-v2" width="1059" height="280" alt="Krane">
+      <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane Clinic home">
+        <img src="../assets/krane-logo-16aug26-2.svg?v=20260917-intake-hims-v2" width="1059" height="280" alt="Krane"><span class="brand__clinic">clinic</span>
       </a>
       <nav class="profile-shell-nav__links" aria-label="เมนูหลัก">
         <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
@@ -2700,11 +2717,12 @@
       </div>
     </header>
     <div class="screen__body stack-5">
+      <!-- Follow-up is not a quick action any more (client, 17 Sep): the banner below
+           already carries the booked visit, and the list stays in the menu. -->
       <section class="profile-quick" aria-label="เมนูด่วน">
         <div class="profile-quick__grid">
-          <button class="profile-quick__action profile-quick__action--primary" type="button" data-go="followups"><span class="profile-quick__icon"><i data-lucide="calendar-check-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>ติดตามผล</strong></span></button>
           <button class="profile-quick__action" type="button" data-refill-open><span class="profile-quick__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><span><strong>เติมยา</strong></span></button>
-          <button class="profile-quick__action" type="button" data-profile-new-appointment><span class="profile-quick__icon"><i data-lucide="calendar-plus-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>นัดหมายใหม่</strong></span></button>
+          <button class="profile-quick__action" type="button" data-profile-new-appointment><span class="profile-quick__icon"><i data-lucide="calendar-plus-2" class="ui-icon" aria-hidden="true"></i></span><span><strong>นัดหมายด่วน</strong></span></button>
           <button class="profile-quick__action" type="button" data-profile-referral><span class="profile-quick__icon"><i data-lucide="user-round-plus" class="ui-icon" aria-hidden="true"></i></span><span><strong>แนะนำเพื่อน</strong></span></button>
         </div>
       </section>
@@ -2749,7 +2767,7 @@
           </span>
           <span class="followup-details">
             <span class="followup-row"><span class="hint">Case doctor</span><strong>Dr. Narin Tanaka</strong></span>
-            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="1438" data-followup-iso="2026-09-14">14 Sep 2026</span></strong></span>
+            <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="12" data-followup-iso="2026-09-14">14 Sep 2026</span></strong></span>
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
@@ -2839,7 +2857,7 @@
               <div class="followup-case__copy">
                 <span class="followup-case__programme">รักษาโรคอ้วน</span>
                 <h3>นัดติดตามผลกับคุณหมอนรินทร์</h3>
-                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="1438">14 ก.ย. 2026</span></p>
+                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="12">14 ก.ย. 2026</span></p>
               </div>
             </div>
             <div class="followup-case__appointment">
@@ -2920,7 +2938,7 @@
            the plan where it belongs. -->
       <div class="partner-binary partner-binary--accent treatment-detail__switch" role="tablist" aria-label="ข้อมูลการรักษา">
         <button class="partner-binary__option is-active" type="button" role="tab" aria-selected="true" aria-controls="treatment-plan-panel" data-treatment-tab="plan"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i><span>แผนการรักษา</span></button>
-        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>รายการยา</span></button>
+        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>ใบสั่งยา</span></button>
       </div>
 
       <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
@@ -2939,7 +2957,7 @@
             </div>
             <div class="treatment-care__next">
               <small>นัดติดตามผลครั้งถัดไป</small>
-              <strong data-treatment-detail-followup data-followup-date data-followup-offset="1">2 Sep 2026</strong>
+              <strong data-treatment-detail-followup data-followup-date data-followup-time data-followup-offset="1">2 Sep 2026 · 10:00 น.</strong>
             </div>
           </section>
           <!-- The plan reads as the note a clinician writes: goal, findings,
@@ -2963,15 +2981,11 @@
               <ul class="doc-summary-list" data-treatment-planlist></ul>
             </div>
           </div>
-          <section class="treatment-record__certificate" aria-labelledby="treatment-certificate-title">
-            <div class="treatment-detail__medicine-head">
-              <div class="eyebrow">เอกสารการรักษา</div>
-              <h3 class="h3" id="treatment-certificate-title">ใบรับรองแพทย์</h3>
-            </div>
-            <button class="doc-row" type="button" data-doc-open="cert">
+          <section class="treatment-record__certificate" aria-label="เอกสารการรักษา">
+            <button class="doc-row treatment-record__certificate-card" type="button" data-doc-open="cert" aria-label="เปิดใบรับรองแพทย์">
               <span class="doc-row__icon"><i data-lucide="file-badge" class="ui-icon" aria-hidden="true"></i></span>
-              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong><span class="hint">ออกโดยแพทย์ผู้ตรวจ · เปิดดูหรือดาวน์โหลด</span></span>
-              <span class="doc-row__action">ดู</span>
+              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong></span>
+              <i data-lucide="chevron-right" class="ui-icon ui-icon--sm treatment-record__certificate-go" aria-hidden="true"></i>
             </button>
           </section>
         </article>
@@ -2982,11 +2996,25 @@
              documents screen shows, because a patient checking their medicine
              wants the same facts wherever they open it (client, 10 Sep). -->
         <article class="treatment-record stack-4 doc-sheet">
-          <div class="between"><div><strong>Krane Clinic · ใบสั่งยา</strong><div class="hint">สั่งโดย คุณหมอนรินทร์ ทานากะ · ใบอนุญาต ว.42317</div></div><span class="badge badge--ok">ใช้ได้</span></div>
-          <div class="divider"></div>
-          <div class="section-label">ยาและเวชภัณฑ์</div>
+          <div class="treatment-record__head">
+            <div class="treatment-record__date">วันที่ <span data-treatment-detail-date>30/06/2026</span></div>
+            <span class="badge badge--ok" data-treatment-detail-status>เป็นไปตามแผน</span>
+          </div>
+          <div class="treatment-detail__summary">
+            <div class="eyebrow">การรักษาที่กำลังดำเนินอยู่</div><h2 class="h2" data-treatment-detail-title>ผมร่วง</h2>
+          </div>
+          <section class="treatment-care treatment-care--lead">
+            <div class="treatment-doctor">
+              <span class="avatar">น</span>
+              <span><small>คุณหมอประจำ</small><strong>คุณหมอนรินทร์ ทานากะ</strong><small>เลขใบประกอบวิชาชีพ ว.42317</small></span>
+            </div>
+          </section>
+          <!-- Client, 15 Sep: no rule here, and the section carries a real
+               title rather than a quiet grey label — it heads the longest block
+               on the screen. -->
+          <h3 class="treatment-detail__section-title">ยาและเวชภัณฑ์</h3>
           <div class="treatment-detail__medications" data-treatment-detail-medications></div>
-          <button class="btn btn--primary" type="button" data-refill-open>เติมยาตามแผนเดิม</button>
+          <button class="btn btn--primary" type="button" data-refill-treatment>เติมยาตามแผนเดิม</button>
         </article>
       </section>
 
@@ -3076,6 +3104,32 @@
             <span class="activity-card__date">12 ก.ย. 2026<small>ร้านยารับคำสั่งซื้อแล้ว</small></span>
           </span>
           <span class="activity-card__foot"><span>Ref. no. · KR-10288</span><strong>฿ 320</strong></span>
+        </button>
+        <!-- Client, 15 Sep: the list only ever showed an order being prepared,
+             so the later half of an order's life could not be tested. The three
+             below complete it — on the way, arrived but not yet acknowledged,
+             and closed. The first card above stays driven by the live demo
+             order, so it moves as the tester walks the flow. -->
+        <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10276">
+          <span class="activity-card__head">
+            <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--active">กำลังจัดส่ง</span></span>
+            <span class="activity-card__date">11 ก.ย. 2026<small>ไรเดอร์กำลังไปส่ง</small></span>
+          </span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10276</span><strong>฿ 1,240</strong></span>
+        </button>
+        <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10265">
+          <span class="activity-card__head">
+            <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--warn">รอยืนยันรับของ</span></span>
+            <span class="activity-card__date">9 ก.ย. 2026<small>ถึงแล้ว กดยืนยันเมื่อได้รับยา</small></span>
+          </span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10265</span><strong>฿ 868</strong></span>
+        </button>
+        <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10254">
+          <span class="activity-card__head">
+            <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--done">ส่งสำเร็จ</span></span>
+            <span class="activity-card__date">8 ก.ย. 2026<small>ได้รับแล้ว 14:20</small></span>
+          </span>
+          <span class="activity-card__foot"><span>Ref. no. · KR-10254</span><strong>฿ 450</strong></span>
         </button>
         <button class="activity-card activity-card--program" type="button" data-activity-type="program" data-treatment-open data-treatment-source-category="hair-skin" aria-label="เปิดโปรแกรมการรักษา #KR-10170">
           <span class="activity-card__head">
@@ -3674,7 +3728,7 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260914-rider-pickup-v2"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260914-rider-pickup-v2" width="560" height="360" alt=""></picture>
+          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260917-intake-hims-v2"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260917-intake-hims-v2" width="560" height="360" alt=""></picture>
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -3822,13 +3876,17 @@
     <h2 id="refill-sheet-title">เติมยาจากใบสั่งไหน</h2>
     <p id="refill-sheet-description">เลือกใบสั่งยาที่ยังไม่หมดอายุ แล้วไปหน้าสั่งซื้อได้เลย</p>
     <div class="payment-method-list" role="listbox" aria-label="ใบสั่งยาที่เติมยาได้">
-      <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="hair-loss" data-refill-expires="2026-12-12">
+      <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="weight" data-refill-expires="2026-12-12">
         <span class="opt-icon" data-icon-ready="pill"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span>
-        <span class="opt-body"><span class="opt-title">ผมร่วง</span><span class="opt-sub">Loratadine 10 mg, Paracetamol 500 mg</span></span><span class="opt-check"></span>
+        <span class="opt-body"><span class="opt-title">ลดน้ำหนักอย่างปลอดภัย</span><span class="opt-sub">รักษาโรคอ้วน</span></span><span class="opt-check"></span>
       </button>
-      <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="allergy" data-refill-expires="2027-01-08">
+      <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="hair-skin" data-refill-expires="2027-01-08">
         <span class="opt-icon" data-icon-ready="pill"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span>
-        <span class="opt-body"><span class="opt-title">ภูมิแพ้</span><span class="opt-sub">Dextromethorphan 15 mg, Loratadine 10 mg</span></span><span class="opt-check"></span>
+        <span class="opt-body"><span class="opt-title">ฟื้นฟูเส้นผมอย่างต่อเนื่อง</span><span class="opt-sub">ผมร่วงและหนังศีรษะ</span></span><span class="opt-check"></span>
+      </button>
+      <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="sexual-health" data-refill-expires="2027-02-04">
+        <span class="opt-icon" data-icon-ready="pill"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="opt-body"><span class="opt-title">กลับมามั่นใจอีกครั้ง</span><span class="opt-sub">ภาวะหย่อนสมรรถภาพ</span></span><span class="opt-check"></span>
       </button>
       <button class="option payment-method-option" type="button" aria-selected="false" data-refill-choice="all">
         <span class="opt-icon" data-icon-ready="layers"><i data-lucide="layers" class="ui-icon" aria-hidden="true"></i></span>
@@ -3836,11 +3894,11 @@
       </button>
       <div class="option is-unavailable" aria-disabled="true">
         <span class="opt-icon" data-icon-ready="ban"><i data-lucide="ban" class="ui-icon" aria-hidden="true"></i></span>
-        <span class="opt-body"><span class="opt-title">ดูแลผิว</span><span class="opt-sub">ใบสั่งยาหมดอายุ ต้องปรึกษาแพทย์ใหม่</span></span>
+        <span class="opt-body"><span class="opt-title">โปรแกรมดูแลผิว</span><span class="opt-sub">ใบสั่งยาหมดอายุ ต้องปรึกษาแพทย์ใหม่</span></span>
       </div>
     </div>
     <p class="hint">เติมยาได้ไม่เกินจำนวนที่แพทย์อนุมัติ</p>
-    <div class="modal-dialog__actions"><button class="btn btn--ghost" type="button" data-go="upload-rx" data-refill-sheet-close>มีใบสั่งยาจากที่อื่น</button></div>
+    <div class="modal-dialog__actions"><button class="btn btn--ghost" type="button" data-go="upload-rx" data-refill-sheet-close>อัพโหลดใบสั่งยา</button></div>
   </section>
 </div>
 
@@ -3864,9 +3922,9 @@
 
 
 
-  <script src="assets/lucide.min.js?v=20260914-rider-pickup-v2"></script>
-  <script src="b2c-icons.js?v=20260914-rider-pickup-v2"></script>
-  <script src="qa-session-reset.js?v=20260914-rider-pickup-v2"></script>
+  <script src="assets/lucide.min.js?v=20260917-intake-hims-v2"></script>
+  <script src="b2c-icons.js?v=20260917-intake-hims-v2"></script>
+  <script src="qa-session-reset.js?v=20260917-intake-hims-v2"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -5336,32 +5394,128 @@
           <button class="option" data-multi><span class="opt-body"><span class="opt-title">Scalp discomfort or visible change</span></span><span class="opt-check"></span></button>
         </div></div>`
     },
+
+    /* Obesity / weight loss, 13 Sep: these are the client's own questions, from
+       "obesity intake Qs" in the progress doc, in the client's order. The doctor's
+       SOP behind them screens the indication by BMI first, then the other causes
+       of obesity and the contraindications for the NuSH (GLP-1) medicines, before
+       a doctor ever sees the case. Each block below is one page: the intake
+       pager splits the body's children, so six questions across three screens
+       read one at a time. */
     weight:{
       intake1:`
-        <div><h2 class="h1">What is your main weight-care goal?</h2></div>
-        <div class="stack-3">
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Lose weight</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Maintain weight after previous loss</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Improve metabolic health</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Check whether medical treatment could be suitable</span></span><span class="opt-check"></span></button>
+        <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
+        <div class="common-group">
+          <div class="section-label">คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง</div>
+          <div class="stack-3">
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">ปากกาลดน้ำหนัก GLP-1</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">ยาเม็ด GLP-1</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">อยากให้แพทย์แนะนำ</span></span><span class="opt-check"></span></button>
+          </div>
+          <aside class="intake-explainer" data-intake-guidance><strong class="intake-explainer__title">ทำไมเราถึงถาม</strong><p class="intake-explainer__copy">แพทย์เริ่มจากสิ่งที่คุณมีในใจ แล้วประเมินว่าแนวทางนั้นเหมาะกับคุณจริงหรือไม่ ไม่ใช่จ่ายตามที่ขอ</p></aside>
+        </div>
+        <div class="common-group">
+          <div class="section-label">เคยลองลดน้ำหนักผ่านยาประเภท GLP-1 แล้วหรือยัง</div>
+          <div class="stack-3">
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">ยังไม่เคย นี่เป็นครั้งแรก</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">เคยลองแล้ว</span></span><span class="opt-check"></span></button>
+          </div>
         </div>`,
       intake2:`
-        <div><h2 class="h1">How has your weight changed over the past 6 months?</h2></div>
-        <div class="stack-3">
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has increased steadily</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has gone up and down</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has stayed similar but is difficult to reduce</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">It has decreased without me trying</span></span><span class="opt-check"></span></button>
+        <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
+        <div class="common-group">
+          <div class="section-label">ทำไมวันนี้ถึงอยากเริ่มลดน้ำหนัก</div>
+          <p class="hint">เลือกได้มากกว่า 1 ข้อ</p>
+          <div class="stack-3">
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">สุขภาพโดยรวมที่ดีขึ้น</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">รู้สึกและคุณภาพชีวิตดีขึ้น</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">มั่นใจมากขึ้น</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">ได้ใส่เสื้อผ้าที่อยากใส่</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">ลดความเสี่ยงเกิดโรคแทรกซ้อน</span></span><span class="opt-check"></span></button>
+            <button class="option" data-multi><span class="opt-body"><span class="opt-title">อื่น ๆ</span></span><span class="opt-check"></span></button>
+          </div>
+          <aside class="intake-explainer" data-intake-guidance><strong class="intake-explainer__title">ทำไมเราถึงถาม</strong><p class="intake-explainer__copy">เป้าหมายของคุณเป็นตัวตั้งของแผน แพทย์จะช่วยดูว่าเป็นเป้าที่ทำได้จริงและปลอดภัย</p></aside>
+          <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"></path><path d="m9 12 2 2 4-4"></path></svg><span>เป็นส่วนตัว · เปิดให้เฉพาะแพทย์ที่ดูแลคุณ</span></p>
         </div>`,
       intake3:`
-        <div><h2 class="h1">What have you already tried for weight management?</h2></div>
-        <div class="stack-3">
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Food or calorie plan</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Exercise program</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Dietitian or structured weight program</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Prescription or over-the-counter medicine</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">GLP-1 or another injection</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">I have not tried a structured plan</span></span><span class="opt-check"></span></button>
+        <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
+        <div class="common-group">
+          <div class="section-label">ส่วนสูงและน้ำหนักปัจจุบัน</div>
+          <div class="partner-health-grid">
+            <div class="field grow"><label for="obesity-height">ส่วนสูง (ซม.)</label><input class="input" id="obesity-height" inputmode="numeric" data-obesity-metric="height" placeholder="เช่น 170"></div>
+            <div class="field grow"><label for="obesity-weight">น้ำหนัก (กก.)</label><input class="input" id="obesity-weight" inputmode="numeric" data-obesity-metric="weight" placeholder="เช่น 85"></div>
+          </div>
+          <!-- The BMI is the indication the doctor's SOP screens on, so it is
+               shown the moment both numbers exist rather than kept back. -->
+          <div class="obesity-bmi" data-obesity-bmi hidden role="status" aria-live="polite">
+            <span class="obesity-bmi__label">BMI ของคุณ</span>
+            <strong class="obesity-bmi__value" data-obesity-bmi-value>—</strong>
+            <span class="obesity-bmi__unit">กก./ม.²</span>
+          </div>
+          <aside class="intake-explainer" data-intake-guidance><strong class="intake-explainer__title">ทำไมเราถึงถาม</strong><p class="intake-explainer__copy">BMI คือข้อบ่งใช้ที่แพทย์ต้องประเมินก่อนพิจารณายาลดน้ำหนัก ตัวเลขนี้จึงมาก่อนการปรึกษา</p></aside>
+          <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"></path><path d="m9 12 2 2 4-4"></path></svg><span>เป็นส่วนตัว · เปิดให้เฉพาะแพทย์ที่ดูแลคุณ</span></p>
+        </div>
+        <div class="common-group">
+          <div class="section-label">เป้าหมายน้ำหนักที่ต้องการ</div>
+          <p class="hint">แพทย์จะช่วยแนะนำขั้นตอน เพื่อให้คุณลดน้ำหนักได้อย่างมีคุณภาพและดูแลสุขภาพไปพร้อมกัน</p>
+          <div class="field"><label for="obesity-target">น้ำหนักเป้าหมาย (กก.)</label><input class="input" id="obesity-target" inputmode="numeric" data-obesity-metric="target" placeholder="เช่น 72"></div>
+        </div>`,
+      intake4:`
+        <div class="stack-2"><h2 class="h1">มีข้อใดต่อไปนี้ตรงกับคุณหรือไม่</h2><p class="hint">คำตอบชุดนี้คัดกรองสาเหตุอื่นของน้ำหนักเกิน และข้อห้ามของยาลดน้ำหนัก ก่อนแพทย์พิจารณาสั่งจ่าย</p></div>
+        <div class="common-group">
+          <div class="obesity-risk-list">
+            <fieldset class="partner-history-field" data-obesity-risk="hypothyroid">
+              <legend>มีอาการผมร่วง ท้องผูกเรื้อรัง หนาวง่ายกว่าปกติ รู้สึกเชื่องช้า</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="อาการที่เข้าได้กับภาวะพร่องไทรอยด์">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="cushing">
+              <legend>มีอาการหน้าท้องแตกลายงาสีชมพูม่วง ต้นแขนต้นขาอ่อนแรง จุดช้ำเลือดง่ายตามตัว หน้าแดงง่ายกว่าคนทั่วไป</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="อาการที่เข้าได้กับโรคคุชชิง">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="mtc">
+              <legend>มีประวัติสมาชิกในครอบครัวเป็นมะเร็งไทรอยด์ชนิดเมดัลลารี (Medullary Thyroid Carcinoma)</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ประวัติครอบครัวมะเร็งไทรอยด์ชนิดเมดัลลารี">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="esrd">
+              <legend>ปัจจุบันเป็นโรคไตวายระยะที่ 5 (ESRD)</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="โรคไตวายระยะที่ 5">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="cirrhosis">
+              <legend>ปัจจุบันเป็นโรคตับแข็งเรื้อรังระยะสุดท้าย (Child-Pugh C)</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="โรคตับแข็งระยะสุดท้าย">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="pancreatitis">
+              <legend>เคยมีอาการตับอ่อนอักเสบไม่ทราบสาเหตุ</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ประวัติตับอ่อนอักเสบไม่ทราบสาเหตุ">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+            <fieldset class="partner-history-field" data-obesity-risk="pregnancy">
+              <legend>กำลังตั้งครรภ์หรือให้นมบุตร</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="กำลังตั้งครรภ์หรือให้นมบุตร">
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
+                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
+              </div>
+            </fieldset>
+          </div>
+          <aside class="intake-explainer"><strong class="intake-explainer__title">ทำไมเราถึงถาม</strong><p class="intake-explainer__copy">ห้าข้อหลังเป็นข้อห้ามของยากลุ่ม GLP-1 สองข้อแรกช่วยหาสาเหตุอื่นของน้ำหนักเกินที่ควรตรวจเพิ่มที่โรงพยาบาล</p></aside>
+          <p class="hint">ข้อควรระวังอื่น เช่น เบาหวานขึ้นตา นิ่วในถุงน้ำดีที่ยังไม่ได้ผ่าตัด กรดไหลย้อนรุนแรง หรือการเคลื่อนไหวของลำไส้ผิดปกติ แพทย์จะแนะนำเพิ่มเติมระหว่างปรึกษา เพราะไม่ใช่ข้อห้ามเด็ดขาด</p>
         </div>`
     },
     hormone:{
@@ -6287,9 +6441,12 @@
     let when;
     const seededMinutes=Number(node.dataset.followupDemoMinutes);
     if(Number.isFinite(seededMinutes)){
-      /* The default review state is visibly inside the 24-hour window. These
-         URL states make the locked and ready variants directly testable without
-         changing the real ten-minute rule. */
+      /* Client, 15 Sep: the seeded appointment sits twelve minutes out, so a
+         testing session starts locked, and the tester watches it cross the
+         ten-minute line and open the room on its own — the transition was the
+         part nobody could see. At 1438 minutes the join button could never be
+         reached in a session at all. The ten-minute rule itself is untouched;
+         ?demoFollowup=ready and =now still jump straight to either state. */
       const demoMinutes=followUpDemoState==='ready' ? 8 : followUpDemoState==='now' ? 0 : seededMinutes;
       when=new Date(Date.now()+(demoMinutes*60000));
       when.setMilliseconds(0);
@@ -6307,6 +6464,12 @@
     const months=thai ? FOLLOWUP_MONTHS_TH : FOLLOWUP_MONTHS_EN;
     return `${when.getDate()} ${months[when.getMonth()]} ${when.getFullYear()}`;
   }
+  function formatFollowUpTime(when){
+    if(!when || Number.isNaN(when.getTime())) return '';
+    const pad=value => String(value).padStart(2,'0');
+    const time=`${pad(when.getHours())}:${pad(when.getMinutes())}`;
+    return document.documentElement.lang==='th' ? `${time} น.` : time;
+  }
   function syncFollowUpDates(){
     document.querySelectorAll('[data-followup-date][data-followup-offset]').forEach(node => {
       const when=followUpAppointmentFor(node);
@@ -6314,7 +6477,9 @@
       const pad=value => String(value).padStart(2,'0');
       node.setAttribute('data-followup-iso',`${when.getFullYear()}-${pad(when.getMonth()+1)}-${pad(when.getDate())}`);
       node.setAttribute('data-followup-at',when.toISOString());
-      const text=formatFollowUpDate(when);
+      const text=node.hasAttribute('data-followup-time')
+        ? `${formatFollowUpDate(when)} · ${formatFollowUpTime(when)}`
+        : formatFollowUpDate(when);
       if(node.textContent!==text) node.textContent=text;
     });
   }
@@ -6363,9 +6528,15 @@
       const status=card.querySelector('[data-followup-case-status]');
       const join=card.querySelector('[data-followup-join]');
       if(countdown) countdown.textContent=formatFollowUpCountdown(remaining);
+      /* "Within 24 hours" is true of an appointment twelve minutes away and
+         tells the patient nothing. Inside the hour the status names how close
+         it is; the countdown underneath carries the exact time either way. */
+      const soon=remaining>FOLLOWUP_JOIN_MS && remaining<=60*60*1000;
       if(status) status.textContent=ready
         ? (thai ? 'เข้าห้องได้แล้ว' : 'Room is open')
-        : (thai ? 'ภายใน 24 ชั่วโมง' : 'Within 24 hours');
+        : soon
+          ? (thai ? 'ใกล้ถึงเวลานัด' : 'Starting soon')
+          : (thai ? 'ภายใน 24 ชั่วโมง' : 'Within 24 hours');
       if(join){
         join.disabled=!ready;
         join.setAttribute('aria-disabled',String(!ready));
@@ -6486,13 +6657,10 @@
     const followupNode=card.querySelector('.followup-row [data-followup-date]');
     const detail=document.getElementById('treatment-detail');
     if(!detail) return;
-    /* Written defensively: the medicine tab has been rebuilt around the
-       prescription and no longer carries its own title node, and a hard
-       dereference here threw before the screen was ever shown, so tapping a
-       treatment card did nothing at all. */
+    /* Both tabs repeat the same case identity. Keep every matching node in
+       sync so switching tabs never changes the apparent treatment. */
     const setDetail=(selector,value) => {
-      const node=detail.querySelector(selector);
-      if(node) node.textContent=value;
+      detail.querySelectorAll(selector).forEach(node => { node.textContent=value; });
     };
     setDetail('[data-treatment-detail-title]',title);
     setDetail('[data-treatment-detail-status]',status);
@@ -6700,7 +6868,7 @@
     // where that base is genuinely generic. Never let it inherit another
     // concern's set: add an explicit template, or add the screen to
     // GENERAL_COMPACT_SKIPPED_SCREENS.
-    ['intake1','intake2','intake3'].forEach(id => {
+    ['intake1','intake2','intake3','intake4'].forEach(id => {
       const body = document.querySelector(`#${id} .screen__body`);
       if(!body) return;
       // Cache the AUTHORED markup, never the enhanced markup. Reading innerHTML
@@ -7590,10 +7758,29 @@
      two prescriptions that share a medicine take the larger allowance, not the
      sum of the two. */
   const REFILL_PRESCRIPTIONS={
-    'hair-loss':{quantities:{loratadine:1,paracetamol:2}},
-    allergy:{quantities:{cough:2,loratadine:1}}
+    'hair-skin':{quantities:{loratadine:1,paracetamol:2}},
+    weight:{quantities:{cough:2,loratadine:1}},
+    'sexual-health':{quantities:{naproxen:1}}
   };
   const refillSheet=document.getElementById('refill-sheet');
+  /* Each treatment card says when its refill opens ("เติมยาได้ 19 ก.ย. 2026"),
+     but the sheet only checked whether the prescription had expired, so it
+     offered every refill at once while the cards said two of them were not due
+     yet (client, 17 Sep). The sheet reads the date from the card, so the two
+     can never disagree. */
+  const REFILL_THAI_MONTHS={'ม.ค.':0,'ก.พ.':1,'มี.ค.':2,'เม.ย.':3,'พ.ค.':4,'มิ.ย.':5,'ก.ค.':6,'ส.ค.':7,'ก.ย.':8,'ต.ค.':9,'พ.ย.':10,'ธ.ค.':11};
+  function treatmentRefillOpensOn(category){
+    const card=document.querySelector(`#profile .treatment-card[data-category="${category}"]`);
+    const match=(card?.dataset.treatmentRefillText || '').match(/เติมยาได้\s+(\d{1,2})\s+(\S+)\s+(\d{4})/);
+    if(!match || REFILL_THAI_MONTHS[match[2]]==null) return null;
+    return {date:new Date(Number(match[3]),REFILL_THAI_MONTHS[match[2]],Number(match[1])),label:`${match[1]} ${match[2]} ${match[3]}`};
+  }
+  function availableRefillKeys(){
+    if(!refillSheet?.dataset.refillGated) return Object.keys(REFILL_PRESCRIPTIONS);
+    return [...refillSheet.querySelectorAll('[data-refill-choice]')]
+      .map(option => option.dataset.refillChoice)
+      .filter(key => REFILL_PRESCRIPTIONS[key]);
+  }
   function openRefillSheet(){
     if(!refillSheet) return;
     const today=new Date(); today.setHours(0,0,0,0);
@@ -7603,6 +7790,19 @@
       option.classList.add('is-unavailable');
       option.removeAttribute('data-refill-choice');
     });
+    refillSheet.querySelectorAll('[data-refill-choice]:not([data-refill-choice="all"])').forEach(option => {
+      const opens=treatmentRefillOpensOn(option.dataset.refillChoice);
+      if(!opens || opens.date<=today) return;
+      const sub=option.querySelector('.opt-sub');
+      if(sub) sub.textContent='เติมยาได้ '+opens.label;
+      option.setAttribute('aria-disabled','true');
+      option.classList.add('is-unavailable');
+      option.removeAttribute('data-refill-choice');
+    });
+    refillSheet.dataset.refillGated='1';
+    // "All refillable" only means something when more than one refill is open.
+    const allOption=refillSheet.querySelector('[data-refill-choice="all"]');
+    if(allOption) allOption.hidden=availableRefillKeys().length<2;
     refillSheet.querySelectorAll('[data-refill-choice]').forEach(el => el.setAttribute('aria-selected','false'));
     refillSheet.hidden=false;
     refillSheet.setAttribute('aria-hidden','false');
@@ -7617,9 +7817,9 @@
   }
   function startRefill(choice){
     const picks = choice==='all'
-      ? Object.keys(REFILL_PRESCRIPTIONS)
+      ? availableRefillKeys()
       : (REFILL_PRESCRIPTIONS[choice] ? [choice] : []);
-    if(!picks.length) return;
+    if(!picks.length) return false;
     const quantities={cough:0,loratadine:0,paracetamol:0,naproxen:0};
     picks.forEach(key => {
       Object.entries(REFILL_PRESCRIPTIONS[key].quantities).forEach(([med,qty]) => {
@@ -7641,8 +7841,17 @@
     closeRefillSheet();
     refreshMedicationCheckout();
     show('payment');
+    return true;
   }
   document.body.addEventListener('click', event => {
+    /* Client, 15 Sep: pressing refill from inside a treatment already answers
+       the sheet's only question — this is that treatment's prescription — so it
+       goes straight to the checkout. The sheet is for the quick menu, which is
+       reached with no treatment in hand. */
+    if(event.target.closest('[data-refill-treatment]')){
+      if(!startRefill(selectedCategoryId)) openRefillSheet();
+      return;
+    }
     if(event.target.closest('[data-refill-open]')){ openRefillSheet(); return; }
     if(event.target.closest('[data-refill-sheet-close]')){ closeRefillSheet(); return; }
     const choice=event.target.closest('#refill-sheet [data-refill-choice]');
@@ -8319,6 +8528,27 @@
     writeLocalJson(FOLLOWUP_RECORD_KEY,records);
     return next;
   }
+  /* BMI is the indication the doctor's SOP screens on (>=27.5 with a
+     weight-related condition, per the Thai FDA labelling the client quoted), so
+     the patient sees it the moment both numbers are in rather than hearing it
+     first from the doctor. It is shown, never used to gate: the eligibility
+     call is the doctor's. */
+  function syncObesityBmi(){
+    const row=document.querySelector('[data-obesity-bmi]');
+    if(!row) return;
+    const height=Number(document.getElementById('obesity-height')?.value);
+    const weight=Number(document.getElementById('obesity-weight')?.value);
+    const metres=height/100;
+    const ready=height>0 && weight>0 && metres>0;
+    const value=row.querySelector('[data-obesity-bmi-value]');
+    if(value) value.textContent = ready ? (weight/(metres*metres)).toFixed(1) : '\u2014';
+    row.hidden=!ready;
+  }
+  document.body.addEventListener('input', event => {
+    if(!event.target.closest('[data-obesity-metric]')) return;
+    syncObesityBmi();
+    saveIntakeDraft();
+  });
   function saveIntakeDraft(){
     const fields={};
     INTAKE_DRAFT_SCREENS.forEach(screenId => {
@@ -8335,6 +8565,10 @@
       if(!screen) return;
       options[screenId]=[...screen.querySelectorAll('.option[aria-selected]')].map(option => option.getAttribute('aria-selected'));
     });
+    const obesityRisk={};
+    document.querySelectorAll('[data-obesity-risk]').forEach(group => {
+      obesityRisk[group.dataset.obesityRisk]=group.querySelector('[data-obesity-risk-choice][aria-checked="true"]')?.dataset.obesityRiskChoice || 'no';
+    });
     const compactHistory={};
     document.querySelectorAll('#health-history-modal [data-direct-history]').forEach(group => {
       compactHistory[group.dataset.directHistory]=group.querySelector('[data-direct-history-choice][aria-checked="true"]')?.dataset.directHistoryChoice || 'none';
@@ -8344,7 +8578,7 @@
       relief:document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]')?.dataset.partnerReliefValue || ''
     };
     writeSessionJson(DRAFT_KEY,{
-      selectedCategoryId,selectedConditionId,fields,options,compactHistory,sharedConcern,
+      selectedCategoryId,selectedConditionId,fields,options,compactHistory,obesityRisk,sharedConcern,
       savedAt:new Date().toISOString(),
       complete:flowState.draftReady
     });
@@ -8365,6 +8599,12 @@
       const options=[...document.querySelectorAll(`#${screenId} .option[aria-selected]`)];
       states.forEach((value,index) => { if(options[index]) options[index].setAttribute('aria-selected',value); });
     });
+    Object.entries(draft.obesityRisk || {}).forEach(([name,value]) => {
+      document.querySelectorAll(`[data-obesity-risk="${name}"] [data-obesity-risk-choice]`).forEach(option => {
+        option.setAttribute('aria-checked',String(option.dataset.obesityRiskChoice===value));
+      });
+    });
+    syncObesityBmi();
     Object.entries(draft.compactHistory || {}).forEach(([name,value]) => {
       const group=document.querySelector(`#health-history-modal [data-direct-history="${name}"]`);
       if(group) setDirectHistoryChoice(group,value==='yes');
@@ -8544,6 +8784,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(id==='address-map') window.setTimeout(setupAddressMap,0);
     if(id==='tracking' || id==='activity') syncTrackingDelivery();
+    if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
     if(id==='my-documents') refreshMyDocuments();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
@@ -9806,6 +10047,19 @@
       const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
       setPartnerHistoryChoice(group,hasDetails);
       if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
+      return;
+    }
+    /* Obesity screening (client, 13 Sep): seven yes/no rows, each its own
+       radiogroup. A "yes" is never a dead end here — the doctor's SOP has the
+       doctor read these before deciding, and two of the seven are looking for
+       another cause of the weight rather than a contraindication. */
+    const obesityRiskChoice=e.target.closest('[data-obesity-risk-choice]');
+    if(obesityRiskChoice){
+      const group=obesityRiskChoice.closest('[data-obesity-risk]');
+      group?.querySelectorAll('[data-obesity-risk-choice]').forEach(option => {
+        option.setAttribute('aria-checked',String(option===obesityRiskChoice));
+      });
+      saveIntakeDraft();
       return;
     }
     const directHistoryChoice=e.target.closest('[data-direct-history-choice]');
@@ -11130,6 +11384,38 @@
     const status=window.KraneGoldenDemo?.readState().fulfilmentStatus;
     return ORDER_STAGES[status] ? status : 'Dispatched';
   }
+  /* Client, 15 Sep: the order sat on "Preparing" and never moved, so the rest
+     of its life could not be reached — not the rider, not the confirm button on
+     the Delivered step, and not the review that follows confirming. The same
+     problem the follow-up countdown had: a demo frozen short of the part worth
+     seeing. While tracking is open the order walks itself to the rider and then
+     out for delivery, and stops there: arriving is the courier's to announce,
+     but "ได้รับของแล้ว" is the patient's to press, so the last step waits for
+     them. ?demoStatus= still pins any stage directly. */
+  const TRACKING_DEMO_STEP_MS=9000;
+  let trackingDemoTimer=0;
+  function stopTrackingDemoWalk(){
+    window.clearTimeout(trackingDemoTimer);
+    trackingDemoTimer=0;
+  }
+  function startTrackingDemoWalk(){
+    stopTrackingDemoWalk();
+    if(reduceMotion) return;
+    const demo=window.KraneGoldenDemo;
+    if(!demo || flowState.orderDelivered) return;
+    if(new URLSearchParams(location.search).get('demoStatus')) return;
+    const walk=['Rider pickup','Dispatched'];
+    const step=() => {
+      if(!document.getElementById('tracking')?.classList.contains('active')) return;
+      const now=demo.readState().fulfilmentStatus;
+      const next=walk[walk.indexOf(now)+1] ?? (walk.includes(now) ? null : walk[0]);
+      if(!next) return;
+      demo.advanceFulfilment(next);
+      syncTrackingDelivery();
+      trackingDemoTimer=window.setTimeout(step,TRACKING_DEMO_STEP_MS);
+    };
+    trackingDemoTimer=window.setTimeout(step,TRACKING_DEMO_STEP_MS);
+  }
   function syncTrackingDelivery(){
     const status=orderFulfilmentStatus();
     const stage=ORDER_STAGES[status];
@@ -12100,88 +12386,88 @@
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260914-rider-pickup-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260917-intake-hims-v2" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260914-rider-pickup-v2" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260914-rider-pickup-v2" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260917-intake-hims-v2" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260917-intake-hims-v2" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
