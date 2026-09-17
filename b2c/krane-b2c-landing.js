@@ -29,7 +29,7 @@
       navHow: "How it works",
       navGuarantee: "The Krane guarantee",
       navDoctors: "Our doctors",
-      login: "Log in",
+      login: "Log In",
       profile: "Profile",
       logout: "Log out",
       chooseCare: "Choose your care",
@@ -248,7 +248,7 @@
     ["อัพโหลดใบสั่งยา", "Upload prescription"], ["วิธีการทำงาน", "How it works"], ["วิธีใช้งาน", "How it works"], ["แพทย์ของเรา", "Our doctors"], ["ทีมแพทย์ของเรา", "Our medical team"], ["บทความสุขภาพ", "Health articles"],
     ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
     ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
-    ["เร็ว ๆ นี้", "Coming soon"], ["ภาษา", "Language"], ["ภาษาไทย", "Thai"], ["เข้าสู่ระบบ", "Log in"],
+    ["เร็ว ๆ นี้", "Coming soon"], ["ภาษา", "Language"], ["ภาษาไทย", "Thai"], ["เข้าสู่ระบบ", "Log In"],
     ["ผู้ใช้ Krane", "Krane member"], ["บัญชีผู้ใช้", "Account"], ["โปรไฟล์", "Profile"], ["ออกจากระบบ", "Log out"],
     ["เมนูหลัก", "Main menu"],
     ["แพทย์ออนไลน์ของคุณ", "Your online doctor"], ["พร้อมให้คำปรึกษาเสมอ", "ready whenever you are"],
@@ -546,14 +546,18 @@
     if (profileFallback) {
       profileFallback.hidden = Boolean(auth.pictureUrl);
     }
-    if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+    if (profileLogin) profileLogin.setAttribute("aria-label", lang === "en" ? "Log In" : "เข้าสู่ระบบ");
     if (mobileLogin) {
       mobileLogin.hidden = false;
-      mobileLogin.href = auth.authenticated ? "krane-b2c.html#profile" : "krane-b2c.html#login";
-      mobileLogin.dataset.route = auth.authenticated ? "profile" : "login";
+      // The drawer's account button is "Log In" when signed out and "Log out"
+      // when signed in, never "Profile" (client, 17 Sep). Log out is handled by
+      // the capture listener below, before the route handler can navigate.
+      mobileLogin.href = "krane-b2c.html#login";
+      mobileLogin.dataset.route = "login";
+      mobileLogin.dataset.mobileAuth = auth.authenticated ? "logout" : "login";
       mobileLogin.textContent = auth.authenticated
-        ? (lang === "en" ? "Profile" : "โปรไฟล์")
-        : (lang === "en" ? "Log in" : "เข้าสู่ระบบ");
+        ? (lang === "en" ? "Log out" : "ออกจากระบบ")
+        : (lang === "en" ? "Log In" : "เข้าสู่ระบบ");
     }
     if (!auth.authenticated) closeProfileMenu();
   }
@@ -586,6 +590,13 @@
   document.querySelectorAll("[data-profile-logout]").forEach((button) => {
     button.addEventListener("click", logoutLandingUser);
   });
+  document.addEventListener("click", (event) => {
+    const button = event.target instanceof Element ? event.target.closest("[data-mobile-login]") : null;
+    if (!button || button.dataset.mobileAuth !== "logout") return;
+    event.preventDefault();
+    event.stopPropagation();
+    logoutLandingUser();
+  }, true);
   document.addEventListener("click", (event) => {
     if (headerProfile && event.target instanceof Element && !headerProfile.contains(event.target)) closeProfileMenu();
   });
