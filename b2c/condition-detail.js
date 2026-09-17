@@ -121,8 +121,8 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "แพทย์เลือกรูปแบบและขนาดยาจากข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพของคุณ",
       products: [
-        ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/condition-detail/products-diecut-v1/weight-pen.png", "pen", "ใช้ต่อเนื่อง"],
-        ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ใช้ต่อเนื่อง"]
+          ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png", "pen", "ใช้ต่อเนื่อง"],
+          ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/medicine/weight-diecut-v1/rybelsus-bottles-diecut-v1.png", "oral", "ใช้ต่อเนื่อง"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
