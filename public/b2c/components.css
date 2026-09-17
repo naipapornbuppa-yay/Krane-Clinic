@@ -188,10 +188,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    text one tap away. It reuses the consent page's check control. */
 .signup-consent{display:grid;gap:10px;margin:4px 0 0;padding:14px 16px;border:1px solid var(--color-line);border-radius:16px;background:var(--color-surface)}
 .signup-consent__legend{float:left;width:100%;margin:0 0 4px;padding:0;color:var(--color-ink-2);font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
-.signup-consent__row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.signup-consent__row .consent-agree{flex:1;min-width:0;align-items:flex-start;font-size:var(--fs-sm);line-height:1.45;color:var(--color-ink)}
+.signup-consent__row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.signup-consent__row .consent-agree{flex:1;min-width:0;align-items:center;font-size:var(--fs-sm);line-height:1.45;color:var(--color-ink)}
+.signup-consent__row .consent-agree .check{margin-top:0}
 .signup-consent__row .consent-agree strong{font-weight:var(--fw-semibold)}
-.signup-consent__more{flex:none;width:auto;margin:1px 0 0;padding:0;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-accent);white-space:nowrap}
+.signup-consent__more{flex:none;width:auto;margin:0;padding:0;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-accent);white-space:nowrap}
 .signup-consent__optional{color:var(--color-ink-3)}
 .signup-consent__hint{margin:2px 0 0;color:var(--color-ink-3);font-size:var(--fs-xs)}
 .signup-consent__hint[hidden]{display:none}
@@ -302,7 +303,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-duration-units button[aria-selected="true"]{background:var(--color-surface);color:var(--color-ink);box-shadow:0 1px 2px rgba(18,24,36,.06),0 2px 8px rgba(18,24,36,.08)}
 .partner-duration-units button:active{transform:scale(.97)}
 .intake-duration-field{gap:8px}
-.intake-duration-control{max-width:620px}
+/* The duration control spans the question column like the field above it (client, 17 Sep). */
+.intake-duration-control{max-width:none}
 /* Sits inline at the end of the heading itself instead of on its own line below it. */
 .h1:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 /* One page, one question — so the question itself is the heading. The screen
@@ -2977,6 +2979,10 @@ body.lang-th *{letter-spacing:normal}
 .followup-toast.is-ready .followup-toast__icon{background:rgba(255,255,255,.16);color:inherit}
 .followup-toast.is-ready .followup-toast__text small{color:rgba(255,255,255,.78)}
 .followup-toast.is-ready .followup-toast__state{background:#fff;color:var(--color-accent)}
+/* Once the room is open the "Join" pill pulses so it is noticed (client, 17 Sep). */
+.followup-toast.is-ready .followup-toast__state{animation:followup-join-pulse 1.4s var(--ease-out) infinite}
+@keyframes followup-join-pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.75)}70%{box-shadow:0 0 0 10px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+@media(prefers-reduced-motion:reduce){.followup-toast.is-ready .followup-toast__state{animation:none}}
 .followup-toast:active{transform:scale(.99);opacity:.75}
 .followup-toast:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
 @media(max-width:420px){
@@ -3592,6 +3598,9 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .treatment-detail__medications{display:flex;flex-direction:column;gap:var(--sp-3)}
 .treatment-medicine-group{display:flex;flex-direction:column;gap:var(--sp-2)}
 .treatment-medicine-group+.treatment-medicine-group{margin-top:var(--sp-3);padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
+/* The medicines list clips its overflow, which shaved the first Thai glyph of
+   "รายการที่สั่งซื้อ"; the list gets 4px of room either side (client, 17 Sep). */
+.treatment-detail__medications{margin-inline:-4px;padding-inline:4px}
 .treatment-medicine-group__title{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin:0;
   color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1.4}
 .treatment-medicine-group__count{font-weight:var(--fw-medium);white-space:nowrap}
@@ -3928,6 +3937,30 @@ html.is-demo-embed #video .call-hint{display:none}
 .screen__body:not(.callstage):not(.chat-body) > .intake-lockup{--lockup-h:24px;margin-inline:0;display:block;flex:none;align-self:flex-start;justify-self:start;width:calc(var(--lockup-h) * 192.93 / 30.5);height:var(--lockup-h);margin-bottom:28px;background:var(--color-accent);-webkit-mask:url("../assets/krane-clinic-lockup-v1.svg") left center/contain no-repeat;mask:url("../assets/krane-clinic-lockup-v1.svg") left center/contain no-repeat}
 @media(max-width:760px){.screen__body:not(.callstage):not(.chat-body) > .intake-lockup{--lockup-h:20px;margin-bottom:20px}}
 /* In the app bar the lockup replaces the page title (client, 17 Sep). */
+.screen__top > .ttl.ttl--lockup.ttl--lockup{position:absolute;left:64px;right:64px;font-size:0;text-align:center;pointer-events:none}
 .screen__top .ttl--lockup .ttl__text{display:none}
 .screen__top .ttl--lockup .intake-lockup{--lockup-h:22px;display:block;width:calc(var(--lockup-h) * 192.93 / 30.5);height:var(--lockup-h);margin-inline:auto;background:var(--color-accent);-webkit-mask:url("../assets/krane-clinic-lockup-v1.svg") left center/contain no-repeat;mask:url("../assets/krane-clinic-lockup-v1.svg") left center/contain no-repeat}
 @media(max-width:760px){.screen__top .ttl--lockup .intake-lockup{--lockup-h:18px}}
+
+/* Frequency slider (client, 17 Sep): four labelled stops, the track filled up to
+   the chosen one in the accent. */
+.frequency-grid{align-items:start}
+.frequency-field{display:grid;gap:10px}
+.frequency-slider{--frequency-fill:0%;width:100%;height:28px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+.frequency-slider:focus-visible{outline:none}
+.frequency-slider::-webkit-slider-runnable-track{height:6px;border-radius:var(--radius-pill);background:linear-gradient(90deg,var(--color-accent) var(--frequency-fill),var(--color-line) var(--frequency-fill))}
+.frequency-slider::-moz-range-track{height:6px;border-radius:var(--radius-pill);background:var(--color-line)}
+.frequency-slider::-moz-range-progress{height:6px;border-radius:var(--radius-pill);background:var(--color-accent)}
+.frequency-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-9px;border:2px solid var(--color-accent);border-radius:50%;background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.frequency-slider::-moz-range-thumb{width:20px;height:20px;border:2px solid var(--color-accent);border-radius:50%;background:var(--color-surface)}
+.frequency-slider:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--color-accent-soft)}
+.frequency-slider__stops{display:grid;grid-template-columns:repeat(4,1fr);color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.3}
+.frequency-slider__stops span{text-align:center}
+.frequency-slider__stops span:first-child{text-align:left}
+.frequency-slider__stops span:last-child{text-align:right}
+.frequency-slider__stops .is-active{color:var(--color-accent);font-weight:var(--fw-semibold)}
+
+/* Choose a condition (client, 17 Sep): the app bar and the progress bar share
+   the 600px column the condition cards sit in, and the Krane | clinic lockup
+   stands in for the title, as on the intake pages. */
+#conditions .screen__top,#conditions .care-journey{padding-inline:max(16px,calc((100% - var(--app-content-max,600px)) / 2))}
