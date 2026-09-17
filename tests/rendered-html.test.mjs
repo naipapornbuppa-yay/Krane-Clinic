@@ -1211,7 +1211,7 @@ test("doctor profile explains how Krane clinicians shape and follow care", async
   assert.match(css, /@media\(max-width:860px\)\{[\s\S]*\.doctor-work__story,.doctor-work__story--reverse\{grid-template-columns:1fr/);
 });
 
-test("canonical B2C brand placements use the Krane wordmark, and the landing the Krane | clinic lockup", async () => {
+test("canonical B2C brand placements use the Krane wordmark, and the landing and home header the Krane | clinic lockup", async () => {
   const patient = await readFile(path.join(publicRoot, "b2c/krane-b2c.html"), "utf8");
   const landing = await readFile(path.join(publicRoot, "b2c/krane-b2c-landing.html"), "utf8");
   const doctor = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
@@ -1221,7 +1221,8 @@ test("canonical B2C brand placements use the Krane wordmark, and the landing the
   // release, so match any key rather than pinning one and failing each deploy.
   const canonicalBrand = /krane-logo-16aug26-2\.svg\?v=[A-Za-z0-9._-]+/;
 
-  assert.match(screenFragment(patient, "profile"), canonicalBrand);
+  // The home header matches the landing's lockup (client, 17 Sep).
+  assert.match(screenFragment(patient, "profile"), /<img class="brand-lockup" src="\.\.\/assets\/krane-clinic-lockup-v1\.svg\?v=[A-Za-z0-9._-]+"/);
   assert.match(patient, new RegExp(canonicalBrand.source, "g"));
   // The landing's header, mobile menu and footer carry the brand's horizontal
   // lockup, the same one the intake uses, instead of the art with "clinic"
