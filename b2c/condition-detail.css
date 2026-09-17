@@ -43,13 +43,20 @@ main{display:flex;flex-direction:column;gap:var(--detail-gap);padding:32px 0 var
    current chapter follows the reader. The rail borrows the clarity of an
    editorial guide while retaining the active concern colour. */
 .condition-sections{position:sticky;z-index:42;top:84px;width:min(1180px,calc(100% - (var(--detail-page-gutter) * 2)));align-self:center;margin-top:-66px;padding:7px;border:2px solid var(--detail-tone,#be7d61);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 18px 38px rgba(23,28,40,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.condition-sections__viewport{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.condition-sections__viewport{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;isolation:isolate}
 .condition-sections__viewport::-webkit-scrollbar{display:none}
-.condition-sections__tab{display:flex;min-width:0;min-height:58px;align-items:center;justify-content:center;gap:4px;padding:9px 12px;border-radius:999px;color:var(--detail-ink);transition:background .22s var(--detail-ease),color .22s var(--detail-ease),transform .22s var(--detail-ease)}
-.condition-sections__tab:hover{background:var(--detail-tone-soft,#f1ddd4);color:var(--detail-tone-ink,#6f2d15);transform:translateY(-1px)}
+.condition-sections__indicator{position:absolute;z-index:0;top:0;bottom:0;left:0;width:var(--section-indicator-width,0);border-radius:999px;background:var(--detail-ink);box-shadow:0 10px 24px rgba(23,28,40,.18);opacity:0;pointer-events:none;transform:translate3d(var(--section-indicator-x,0),0,0)}
+.condition-sections__viewport.is-indicator-ready .condition-sections__indicator{opacity:1;transition:width .42s var(--detail-ease),transform .42s var(--detail-ease),opacity .18s ease}
+.condition-sections__tab{position:relative;z-index:1;display:flex;min-width:0;min-height:58px;align-items:center;justify-content:center;gap:4px;padding:9px 12px;border-radius:999px;color:var(--detail-ink);transition:color .24s var(--detail-ease),transform .2s var(--detail-ease)}
+.condition-sections__tab::before{content:"";position:absolute;z-index:-1;inset:3px;border-radius:inherit;background:var(--detail-tone-soft,#f1ddd4);opacity:0;transform:scale(.94);transition:opacity .2s ease,transform .28s var(--detail-ease)}
+.condition-sections__tab:hover:not(.is-active){color:var(--detail-tone-ink,#6f2d15);transform:translateY(-1px)}
+.condition-sections__tab:hover:not(.is-active)::before{opacity:1;transform:scale(1)}
+.condition-sections__tab:active{transform:scale(.97)}
+.condition-sections__tab:focus-visible{outline:0}
+.condition-sections__tab:focus-visible::after{content:"";position:absolute;inset:3px;border:2px solid var(--detail-blue);border-radius:inherit}
 .condition-sections__tab span{flex:0 0 auto;font:600 11px/1 "Inter",sans-serif}
 .condition-sections__tab strong{min-width:0;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
-.condition-sections__tab.is-active{background:var(--detail-ink);color:#fff;box-shadow:none}
+.condition-sections__tab.is-active{color:#fff}
 
 /* Hero: a clean editorial split keeps the message and treatment image distinct.
    The image never sits behind the copy, which also removes the decorative arcs. */

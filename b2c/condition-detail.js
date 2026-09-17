@@ -565,26 +565,48 @@
      It mirrors the active chapter as the page moves and keeps that chapter in
      view inside the horizontal mobile rail. */
   const sectionNav = document.querySelector("[data-section-nav]");
+  const sectionViewport = sectionNav?.querySelector(".condition-sections__viewport");
+  const sectionIndicator = sectionViewport?.querySelector(".condition-sections__indicator");
   const sectionTabs = Array.from(document.querySelectorAll("[data-section-tab]"));
   const sectionTargets = sectionTabs
     .map((tab) => ({ tab, section: document.getElementById(tab.dataset.sectionTab) }))
     .filter(({ section }) => section);
 
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let indicatorReadyFrame = 0;
+  const moveSectionIndicator = (tab) => {
+    if (!sectionViewport || !sectionIndicator || !tab) return;
+    sectionViewport.style.setProperty("--section-indicator-x", `${tab.offsetLeft}px`);
+    sectionViewport.style.setProperty("--section-indicator-width", `${tab.offsetWidth}px`);
+    if (!sectionViewport.classList.contains("is-indicator-ready") && !indicatorReadyFrame) {
+      indicatorReadyFrame = requestAnimationFrame(() => {
+        indicatorReadyFrame = 0;
+        sectionViewport.classList.add("is-indicator-ready");
+      });
+    }
+  };
+
   const setActiveSection = (id, bringIntoView = true) => {
+    let activeTab = null;
     sectionTabs.forEach((tab) => {
       const active = tab.dataset.sectionTab === id;
       tab.classList.toggle("is-active", active);
       if (active) {
+        activeTab = tab;
         tab.setAttribute("aria-current", "location");
-        if (bringIntoView) {
-          const rail = tab.parentElement;
-          const centeredLeft = tab.offsetLeft - ((rail.clientWidth - tab.offsetWidth) / 2);
-          rail.scrollTo({ left: Math.max(0, centeredLeft), behavior: "smooth" });
-        }
       } else {
         tab.removeAttribute("aria-current");
       }
     });
+    if (!activeTab) return;
+    moveSectionIndicator(activeTab);
+    if (bringIntoView && sectionViewport) {
+      const centeredLeft = activeTab.offsetLeft - ((sectionViewport.clientWidth - activeTab.offsetWidth) / 2);
+      sectionViewport.scrollTo({
+        left: Math.max(0, centeredLeft),
+        behavior: prefersReducedMotion.matches ? "auto" : "smooth"
+      });
+    }
   };
 
   if (sectionNav && sectionTargets.length) {
@@ -621,7 +643,14 @@
       });
     });
     window.addEventListener("scroll", requestSectionSync, { passive: true });
-    window.addEventListener("resize", requestSectionSync, { passive: true });
+    if ("ResizeObserver" in window && sectionViewport) {
+      new ResizeObserver(() => {
+        const activeTab = sectionTabs.find((tab) => tab.classList.contains("is-active"));
+        moveSectionIndicator(activeTab);
+      }).observe(sectionViewport);
+    } else {
+      window.addEventListener("resize", requestSectionSync, { passive: true });
+    }
     requestSectionSync();
   }
 
