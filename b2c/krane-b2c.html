@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260917-auth-fixes-v1";
+    const release = "20260918-safety-menu-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -37,15 +37,15 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260917-auth-fixes-v1">
-<link rel="stylesheet" href="components.css?v=20260917-auth-fixes-v1">
-<link rel="stylesheet" href="custom-select.css?v=20260917-auth-fixes-v1">
-<link rel="stylesheet" href="state-illustrations.css?v=20260917-auth-fixes-v1">
-<link rel="stylesheet" href="platform-compat.css?v=20260917-auth-fixes-v1">
-<script src="../krane-golden-fixture.js?v=20260917-auth-fixes-v1"></script>
-<script src="custom-select.js?v=20260917-auth-fixes-v1" defer></script>
-<script src="i18n.js?v=20260917-auth-fixes-v1" defer></script>
-<script src="../krane-golden-patient.js?v=20260917-auth-fixes-v1" defer></script>
+<link rel="stylesheet" href="design-tokens.css?v=20260918-safety-menu-v1">
+<link rel="stylesheet" href="components.css?v=20260918-safety-menu-v1">
+<link rel="stylesheet" href="custom-select.css?v=20260918-safety-menu-v1">
+<link rel="stylesheet" href="state-illustrations.css?v=20260918-safety-menu-v1">
+<link rel="stylesheet" href="platform-compat.css?v=20260918-safety-menu-v1">
+<script src="../krane-golden-fixture.js?v=20260918-safety-menu-v1"></script>
+<script src="custom-select.js?v=20260918-safety-menu-v1" defer></script>
+<script src="i18n.js?v=20260918-safety-menu-v1" defer></script>
+<script src="../krane-golden-patient.js?v=20260918-safety-menu-v1" defer></script>
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -442,6 +442,68 @@
       opacity: 1;
       transform: scaleX(1);
     }
+    /* "อาการที่เราดูแล" opens a panel, like the landing header. */
+    #profile .profile-shell-nav__menu { position: relative; display: flex; align-items: stretch; }
+    #profile .profile-shell-nav__menu > summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 0 0;
+      color: var(--profile-nav-ink);
+      font-size: clamp(12px, 1.05vw, 15px);
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      list-style: none;
+      cursor: pointer;
+    }
+    #profile .profile-shell-nav__menu > summary::-webkit-details-marker { display: none; }
+    #profile .profile-shell-nav__menu > summary svg { width: 16px; height: 16px; transition: transform .18s ease; }
+    #profile .profile-shell-nav__menu[open] > summary,
+    #profile .profile-shell-nav__menu > summary:hover { color: var(--profile-nav-blue); }
+    #profile .profile-shell-nav__menu[open] > summary svg { transform: rotate(180deg); }
+    #profile .profile-shell-nav__menu-list {
+      position: absolute;
+      top: calc(100% - 6px);
+      left: -16px;
+      z-index: 20;
+      display: grid;
+      width: 280px;
+      padding: 8px;
+      border: 1px solid rgba(17, 24, 39, .07);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 22px 55px rgba(17, 24, 39, .18);
+    }
+    #profile .profile-shell-nav__links .profile-shell-nav__menu-list a {
+      justify-content: space-between;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 13px;
+      font-size: 14px;
+      text-align: left;
+    }
+    #profile .profile-shell-nav__links .profile-shell-nav__menu-list a::after {
+      position: static;
+      width: 7px;
+      height: 7px;
+      margin-right: 4px;
+      border-top: 1.8px solid #758095;
+      border-right: 1.8px solid #758095;
+      border-radius: 0;
+      background: none;
+      opacity: 1;
+      transform: rotate(45deg);
+    }
+    #profile .profile-shell-nav__links .profile-shell-nav__menu-list a:hover,
+    #profile .profile-shell-nav__links .profile-shell-nav__menu-list a:focus-visible { background: #eef3fc; }
+    #profile .profile-shell-nav__drawer-label {
+      margin: 6px 16px 2px;
+      color: #758095;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    #profile .profile-shell-nav__drawer-rule { margin: 6px 12px; border: 0; border-top: 1px solid rgba(17, 24, 39, .08); }
     #profile .profile-shell-nav__actions {
       display: flex;
       align-items: center;
@@ -841,7 +903,7 @@
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
   <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260917-auth-fixes-v1" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
+    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/krane-logo-16aug26-2.svg?v=20260918-safety-menu-v1" width="1059" height="280" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
     <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
 
     <details class="rail-group" open>
@@ -1009,7 +1071,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260917-auth-fixes-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260918-safety-menu-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -1297,25 +1359,25 @@
         <ol class="photo-guide">
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260917-auth-fixes-v1" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png?v=20260918-safety-menu-v1" alt="ภาพวาดตัวอย่างแนวไรผมจากด้านหน้า โดยเปิดหน้าผากและขมับให้เห็นชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">แนวไรผมด้านหน้า</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260917-auth-fixes-v1" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png?v=20260918-safety-menu-v1" alt="ภาพวาดตัวอย่างกลางศีรษะจากด้านบน โดยก้มหน้าให้เห็นหนังศีรษะชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">กลางศีรษะ</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260917-auth-fixes-v1" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png?v=20260918-safety-menu-v1" alt="ภาพวาดตัวอย่างขม่อมและด้านหลังศีรษะจากมุมสูงเล็กน้อย" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ขม่อมด้านหลัง</span>
           </li>
           <li class="photo-guide__item">
             <span class="photo-guide__figure">
-              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260917-auth-fixes-v1" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
+              <img class="photo-guide__img" src="assets/intake/illustrated-v1/hair-angle-side-mascot-v2-cutout-v1.png?v=20260918-safety-menu-v1" alt="ภาพวาดตัวอย่างด้านข้าง โดยเปิดเส้นผมให้เห็นแนวขมับและใบหูชัด" loading="lazy" onerror="this.closest('.photo-guide__figure').classList.add('is-empty')">
             </span>
             <span class="photo-guide__label">ด้านข้างและขมับ</span>
           </li>
@@ -1763,7 +1825,7 @@
         <div class="between">
           <span class="muted">คุณหมอที่รับเคส</span>
           <span class="doctor-value">
-            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260917-auth-fixes-v1" alt="" width="40" height="40">
+            <img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260918-safety-menu-v1" alt="" width="40" height="40">
             <strong>คุณหมอ<span data-doctor-name>นรินทร์</span></strong>
           </span>
         </div>
@@ -1906,7 +1968,7 @@
         <!-- One active ingredient per row. A fixed-dose combination wrote its
              three ingredients into one name and wrapped over four lines
              (client, 19 Aug), so the sample uses single-ingredient products. -->
-        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-auth-fixes-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
+        <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260918-safety-menu-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Dextromethorphan 15 mg</div><div class="hint plan-item__gist">ลดอาการไอ</div></div><span class="price">฿ 170 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Loratadine 10 mg</div><div class="hint plan-item__gist">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</div></div><span class="price">฿ 94 · 1 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Paracetamol 500 mg</div><div class="hint plan-item__gist">แก้ปวด ลดไข้</div></div><span class="price">฿ 40 · 2 แผง</span></div>
         <div class="plan-item" style="border:0;padding:var(--sp-2) 0"><span class="thumb med-thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Naproxen 250 mg</div><div class="hint plan-item__gist">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</div></div><span class="price">฿ 134 · 1 แผง</span></div>
@@ -1941,7 +2003,7 @@
         <span class="call-fab__badge" data-consult-unread-badge hidden aria-hidden="true">1</span>
       </button>
       <div class="call-remote call-remote--video">
-        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260917-auth-fixes-v1" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
+        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260918-safety-menu-v1" alt="คุณหมอนรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
         <div class="call-remote__identity">
           <div class="call-name">Dr. Narin</div>
           <div class="call-status" data-call-status>Video consultation · 02:14</div>
@@ -2217,7 +2279,7 @@
       </header>
       <div class="checkout-order checkout-order--editor">
         <div class="checkout-order__item" data-order-item="cough">
-          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-auth-fixes-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+          <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260918-safety-menu-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
           <span class="checkout-order__body"><span class="checkout-order__name">Dextromethorphan 15 mg</span><span class="checkout-order__note">ลดอาการไอ</span></span>
           <span class="checkout-order__price" data-order-price>฿ 170</span>
           <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="Dextromethorphan 15 mg quantity">
@@ -2337,7 +2399,7 @@
             <span class="checkout-order__price" data-payment-consultation>฿ 350</span>
           </div>
           <div class="checkout-order__item" data-order-item="cough">
-            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260917-auth-fixes-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260918-safety-menu-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Dextromethorphan 15 mg</span>
               <span class="checkout-order__note">ลดอาการไอ</span>
@@ -2728,15 +2790,23 @@
   <section class="screen screen--web" id="profile">
     <header class="screen__top profile-shell-nav">
       <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane Clinic home">
-        <img class="brand-lockup" src="../assets/krane-clinic-lockup-v1.svg?v=20260917-auth-fixes-v1" width="193" height="31" alt="Krane Clinic">
+        <img class="brand-lockup" src="../assets/krane-clinic-lockup-v1.svg?v=20260918-safety-menu-v1" width="193" height="31" alt="Krane Clinic">
       </a>
+      <!-- Same items as the landing drawer (client, 18 Sep). -->
       <nav class="profile-shell-nav__links" aria-label="เมนูหลัก">
-        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
-        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#ed-program">ฟื้นฟูสมรรถภาพเพศชาย</a>
-        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#hair-program">ผม &amp; ผิว</a>
-        <a class="is-current" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how" aria-current="page">วิธีการทำงาน</a>
-        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#experts">แพทย์ของเรา</a>
-        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#articles-preview">บทความสุขภาพ</a>
+        <details class="profile-shell-nav__menu">
+          <summary>อาการที่เราดูแล<i data-lucide="chevron-down" aria-hidden="true"></i></summary>
+          <div class="profile-shell-nav__menu-list">
+            <a href="condition-detail.html?condition=weight">โรคอ้วน / การลดน้ำหนัก</a>
+            <a href="condition-detail.html?condition=hair-loss">ผมบาง ผมร่วง</a>
+            <a href="condition-detail.html?condition=ed">ภาวะหย่อนสมรรถภาพทางเพศ</a>
+            <a href="#intake1" data-go="intake1" data-category="general">เจ็บป่วยทั่วไป</a>
+          </div>
+        </details>
+        <a href="#upload-rx" data-go="upload-rx">อัพโหลดใบสั่งยา</a>
+        <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how">วิธีการทำงาน</a>
+        <a href="doctors.html">ทีมแพทย์ของเรา</a>
+        <a href="#articles" data-go="articles">บทความสุขภาพ</a>
       </nav>
       <div class="profile-shell-nav__actions">
         <label class="profile-shell-nav__language">
@@ -2750,12 +2820,16 @@
         <details class="profile-shell-nav__mobile">
           <summary aria-label="เปิดเมนูหลัก"><i data-lucide="menu" aria-hidden="true"></i></summary>
           <nav class="profile-shell-nav__drawer" aria-label="เมนูหลักบนมือถือ">
-            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#weight-program">น้ำหนัก</a>
-            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#ed-program">ฟื้นฟูสมรรถภาพเพศชาย</a>
-            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#hair-program">ผม &amp; ผิว</a>
-            <a class="is-current" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how" aria-current="page">วิธีการทำงาน</a>
-            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#experts">แพทย์ของเรา</a>
-            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#articles-preview">บทความสุขภาพ</a>
+            <p class="profile-shell-nav__drawer-label">อาการที่เราดูแล</p>
+            <a href="condition-detail.html?condition=weight">โรคอ้วน / การลดน้ำหนัก</a>
+            <a href="condition-detail.html?condition=hair-loss">ผมบาง ผมร่วง</a>
+            <a href="condition-detail.html?condition=ed">ภาวะหย่อนสมรรถภาพทางเพศ</a>
+            <a href="#intake1" data-go="intake1" data-category="general">เจ็บป่วยทั่วไป</a>
+            <hr class="profile-shell-nav__drawer-rule">
+            <a href="#upload-rx" data-go="upload-rx">อัพโหลดใบสั่งยา</a>
+            <a href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#how">วิธีการทำงาน</a>
+            <a href="doctors.html">ทีมแพทย์ของเรา</a>
+            <a href="#articles" data-go="articles">บทความสุขภาพ</a>
           </nav>
         </details>
       </div>
@@ -3062,7 +3136,7 @@
           <div class="divider"></div>
           <div class="doc-sign treatment-signature">
             <span class="hint">ลงชื่อแพทย์ผู้สั่งยา</span>
-            <img class="doc-sign__mark" src="../assets/doctor-signature.png?v=20260917-auth-fixes-v1" width="450" height="168" alt="ลายเซ็นคุณหมอนรินทร์ ทานากะ" decoding="async">
+            <img class="doc-sign__mark" src="../assets/doctor-signature.png?v=20260918-safety-menu-v1" width="450" height="168" alt="ลายเซ็นคุณหมอนรินทร์ ทานากะ" decoding="async">
             <strong>คุณหมอนรินทร์ ทานากะ</strong>
             <span class="hint">ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ ว.42317</span>
           </div>
@@ -3780,7 +3854,7 @@
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
         <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true">
-          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260917-auth-fixes-v1"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260917-auth-fixes-v1" width="560" height="360" alt=""></picture>
+          <picture class="krane-state-art krane-paper-crane-picture" aria-hidden="true"><source media="(prefers-reduced-motion: reduce)" srcset="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260918-safety-menu-v1"><img src="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260918-safety-menu-v1" width="560" height="360" alt=""></picture>
         </span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
@@ -3857,6 +3931,7 @@
               </div>
             </fieldset>
     </div>
+    <div class="alert alert--warning" data-obesity-risk-warning role="status" hidden><span class="a-ic"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span><div><div class="a-title">ยาลดน้ำหนักทางออนไลน์อาจไม่ปลอดภัยสำหรับคุณ</div><div class="hint">หากตอบ "ใช่" ข้อใดข้อหนึ่ง แพทย์แนะนำให้พบแพทย์ด้วยตนเองก่อนเริ่มยา</div></div></div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-obesity-risk-confirm>ยืนยันและไปต่อ</button><button class="btn btn--ghost" type="button" data-obesity-risk-close>ย้อนกลับ</button></div>
   </section>
 </div>
@@ -4027,9 +4102,9 @@
 
 
 
-  <script src="assets/lucide.min.js?v=20260917-auth-fixes-v1"></script>
-  <script src="b2c-icons.js?v=20260917-auth-fixes-v1"></script>
-  <script src="qa-session-reset.js?v=20260917-auth-fixes-v1"></script>
+  <script src="assets/lucide.min.js?v=20260918-safety-menu-v1"></script>
+  <script src="b2c-icons.js?v=20260918-safety-menu-v1"></script>
+  <script src="qa-session-reset.js?v=20260918-safety-menu-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -10285,6 +10360,7 @@
       group?.querySelectorAll('[data-obesity-risk-choice]').forEach(option => {
         option.setAttribute('aria-checked',String(option===obesityRiskChoice));
       });
+      syncObesityRiskWarning();
       saveIntakeDraft();
       return;
     }
@@ -10846,7 +10922,8 @@
       if(go.dataset.flagGo && scr && scr.querySelector('.option[data-flag][aria-selected="true"]')){
         show(go.dataset.flagGo); return;
       }
-      if(go.dataset.go==='intake4' && scr?.id==='intake3' && intakeConcernKey()==='weight' && flowState.entryChannel!=='partner'){
+      if(go.dataset.go==='intake4' && (scr?.id==='intake3' || scr?.id==='ineligible') && intakeConcernKey()==='weight' && flowState.entryChannel!=='partner'){
+        if(scr.id==='ineligible') show('intake3');
         openObesityRiskModal();
         return;
       }
@@ -11897,8 +11974,18 @@
   }
 
   const obesityRiskModal = document.getElementById('obesity-risk-modal');
+  /* Client, 18 Sep: a "ใช่" to any GLP-1 exclusion stops online care. The sheet
+     warns as soon as one is ticked, and confirming routes to in-person care. */
+  function obesityRiskFlagged(){
+    return Boolean(obesityRiskModal?.querySelector('[data-obesity-risk-choice="yes"][aria-checked="true"]'));
+  }
+  function syncObesityRiskWarning(){
+    const warning=obesityRiskModal?.querySelector('[data-obesity-risk-warning]');
+    if(warning) warning.hidden=!obesityRiskFlagged();
+  }
   function openObesityRiskModal(){
     if(!obesityRiskModal){ finishDirectF02(); return; }
+    syncObesityRiskWarning();
     obesityRiskModal.hidden = false;
     obesityRiskModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
@@ -11919,6 +12006,11 @@
       }
       if(!event.target.closest('[data-obesity-risk-confirm]')) return;
       closeObesityRiskModal();
+      if(obesityRiskFlagged()){
+        saveIntakeDraft();
+        show('ineligible');
+        return;
+      }
       finishDirectF02();
     });
     document.addEventListener('keydown', event => {
@@ -12645,88 +12737,88 @@
     </g>
 
     <symbol id="krane-state-consult-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/consult-payment-failed.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-failed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-failed.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-payment-success" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/payment-success.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-roles-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/no-slots.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-waiting-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-roles-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-quote" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-quote.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-search" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-search.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-medicine-preparing" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/medicine-preparing.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-pharmacy-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/pharmacy-confirmed.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-delivery-unavailable" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/delivery-unavailable.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-order-confirmed" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/order-confirmed.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-in-person" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/in-person-roles-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-feedback" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/feedback-roles-v1.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-activities" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <symbol id="krane-state-empty-history" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-history.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
 
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260917-auth-fixes-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260918-safety-menu-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260917-auth-fixes-v1" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260917-auth-fixes-v1" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260918-safety-menu-v1" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260918-safety-menu-v1" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
     </symbol>
   </defs>
 </svg>
