@@ -11,3 +11,8 @@ Registration and product-description checks:
 
 - Thai FDA TALAFIL-20 registration: https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/pop-up_drug_ex.aspx?Newcode=U1DR1A1052630005511C
 - Lilly CIALIS product monograph (20 mg is a yellow, almond-shaped tablet marked C20): https://pi.lilly.com/ca/cialis-ca-pm.pdf
+
+Unbranded versions (client, 18 Sep: the landing shows generic names only):
+
+- `sildenafil-100mg-box-v1.png` is `sidegra-100mg-cutout.png` with the SIDEGRA wordmark painted out.
+- `tadalafil-20mg-box-v1.png` is `talafil-20mg-cutout.png` with the TALAFIL-20 wordmark and the Millimed logo painted out.
