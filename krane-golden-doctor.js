@@ -47,19 +47,13 @@
     }
   });
 
-  /* Sending a clinical plan must never create or rewind a pharmacy order. Operational
-     fulfilment advances only after the patient accepts and pays. */
-  const sendPlan = document.querySelector("#prescribe .btn--primary.btn--block");
-  if (sendPlan) {
-    sendPlan.addEventListener("click", function () {
-      demo.writeState({ consultationStatus: "Plan sent" });
-      sendPlan.textContent = "Plan sent to " + f.patient.name;
-      sendPlan.disabled = true;
-      const subtitle = document.querySelector("#prescribe .page-head__s");
-      if (subtitle) subtitle.textContent = "Plan sent · patient can now review prices and accept";
-      applyFixture();
-    });
-  }
+  /* Creating the order is the moment the plan reaches the patient. It must never
+     create or rewind a pharmacy order on its own: fulfilment advances only after the
+     patient accepts and pays. */
+  document.addEventListener("krane-doctor-order-created", function () {
+    demo.writeState({ consultationStatus: "Plan sent" });
+    applyFixture();
+  });
 
   function openHash() {
     const id = location.hash.slice(1);

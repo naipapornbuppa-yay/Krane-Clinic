@@ -1082,3 +1082,221 @@ body.modal-open{overflow:hidden}
 /* Kept for the fulfilment line in Admin, which flips between resolved and stalled. */
 .alertline--ok{background:color-mix(in srgb,var(--color-success) 12%,var(--color-surface));
   color:var(--color-success)}
+
+/* ==========================================================================
+   Doctor core flow (Doctor Manual, 17 Sep 2026): sign in, service status, the
+   patients list, the patient record tabs, SOAP, prescription and completion.
+   Status is a badge or a dot, never a coloured edge (WORKING-RULES rule 1).
+   ========================================================================== */
+
+/* The content column is the scroller, so a page change can reset it to the top
+   (go() does) and the top bar stays put. The layout used to grow with the page and
+   scroll the whole document, which left a new page opening part-way down. */
+body.role-doctor .cms{height:100vh}
+body.role-doctor .cms-body{min-height:0}
+
+/* Sign in */
+body.is-signed-out .cms,body.is-signed-out .flow-guide__list{display:none}
+.doc-auth{min-height:100vh;display:grid;place-items:center;padding:var(--sp-5);background:var(--cms-canvas)}
+.doc-auth[hidden]{display:none}
+.doc-auth__card{width:min(420px,100%);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-7) var(--sp-6);
+  background:var(--cms-surface);border-radius:var(--r-panel);box-shadow:var(--shadow-lg)}
+.doc-auth__logo{height:26px;width:auto;align-self:flex-start;filter:brightness(0)}
+.doc-auth__step{display:flex;flex-direction:column;gap:var(--sp-4)}
+.doc-auth__step[hidden]{display:none}
+.doc-auth__title{font-size:var(--fs-xl);font-weight:var(--fw-bold);margin-bottom:var(--sp-1)}
+.doc-auth__methods{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-1);padding:var(--sp-1);
+  background:var(--cms-surface-sunk);border-radius:var(--radius-pill)}
+.doc-auth__method{height:var(--ctrl-h-sm);border:0;border-radius:var(--radius-pill);background:transparent;
+  font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink-2);cursor:pointer}
+.doc-auth__method.is-active{background:var(--cms-surface);color:var(--color-ink);box-shadow:var(--shadow-sm)}
+.doc-auth__panel{display:flex;flex-direction:column;gap:var(--sp-3)}
+.doc-auth__panel[hidden]{display:none}
+.doc-auth__otp{font-size:var(--fs-lg);letter-spacing:.4em;text-align:center;font-variant-numeric:tabular-nums}
+.doc-auth__error{color:var(--color-danger);font-size:var(--fs-sm)}
+.doc-auth__error[hidden]{display:none}
+.doc-auth__note{text-align:center}
+.doc-auth__links{display:flex;justify-content:space-between;gap:var(--sp-2)}
+
+/* Top bar: status pill and account menu */
+.cms-top .oncall{margin-right:var(--sp-2)}
+.oncall--busy{color:var(--color-warning);background:var(--color-warning-soft)}
+.oncall--busy .oncall__dot{background:var(--color-warning)}
+.cms-top__account{position:relative}
+button.cms-top__user{border:0;background:transparent;font:inherit;color:inherit;cursor:pointer;
+  padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-pill)}
+button.cms-top__user:hover{background:var(--cms-surface-sunk)}
+.cms-top__user .avatar{background-size:cover;background-position:center}
+.cms-top__user .avatar.has-photo,.photo-drop__avatar.has-photo{color:transparent}
+.cms-top__chev{width:16px;height:16px;color:var(--color-ink-3)}
+.account-menu{position:absolute;right:0;top:calc(100% + var(--sp-2));z-index:40;width:240px;padding:var(--sp-2);
+  background:var(--cms-surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg)}
+.account-menu[hidden]{display:none}
+.account-menu__who{display:flex;flex-direction:column;gap:2px;padding:var(--sp-2) var(--sp-3) var(--sp-3);
+  border-bottom:1px solid var(--cms-hairline);margin-bottom:var(--sp-1)}
+.account-menu__who small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.account-menu__item{display:block;width:100%;text-align:left;border:0;background:transparent;font:inherit;
+  font-size:var(--fs-sm);color:var(--color-ink);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-sm);cursor:pointer}
+.account-menu__item:hover{background:var(--cms-surface-sunk)}
+.account-menu__item--out{color:var(--color-danger)}
+
+/* Service status switch (Available / Occupied) */
+.status-switch{display:inline-flex;gap:var(--sp-1);padding:var(--sp-1);background:var(--cms-surface-sunk);border-radius:var(--radius-pill)}
+.status-switch button{display:inline-flex;align-items:center;gap:var(--sp-2);height:var(--ctrl-h-sm);padding:0 var(--sp-4);
+  border:0;border-radius:var(--radius-pill);background:transparent;font:inherit;font-size:var(--fs-sm);
+  font-weight:var(--fw-medium);color:var(--color-ink-2);cursor:pointer}
+.status-switch__dot{width:8px;height:8px;border-radius:var(--radius-pill);background:var(--color-ink-3)}
+.status-switch [aria-checked="true"]{background:var(--cms-surface);color:var(--color-ink);box-shadow:var(--shadow-sm)}
+.status-switch [data-doctor-status="available"][aria-checked="true"] .status-switch__dot{background:var(--color-success)}
+.status-switch [data-doctor-status="occupied"][aria-checked="true"] .status-switch__dot{background:var(--color-warning)}
+.status-note{margin-bottom:var(--sp-4)}
+.status-note[hidden]{display:none}
+
+/* Patients and doctors lists */
+.consult-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-4);margin-bottom:var(--sp-4)}
+.consult-filters--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.consult-table td{white-space:nowrap}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.table tr[hidden]{display:none}
+
+/* Patient record */
+.patient-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--sp-5);align-items:start}
+.changelog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--sp-3)}
+.changelog li{font-size:var(--fs-sm);display:flex;flex-direction:column;gap:2px}
+.changelog small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.tabs{display:flex;gap:var(--sp-1);padding:var(--sp-2) var(--sp-3) 0;border-bottom:1px solid var(--cms-hairline);overflow-x:auto}
+.tabs__tab{position:relative;display:inline-flex;align-items:center;gap:var(--sp-2);height:var(--ctrl-h);padding:0 var(--sp-3);
+  border:0;background:transparent;font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink-3);
+  cursor:pointer;white-space:nowrap}
+.tabs__tab:hover{color:var(--color-ink)}
+.tabs__tab.is-active{color:var(--color-ink);font-weight:var(--fw-semibold)}
+.tabs__tab.is-active::after{content:"";position:absolute;left:var(--sp-3);right:var(--sp-3);bottom:-1px;height:2px;
+  border-radius:var(--radius-pill);background:var(--color-accent)}
+.tabs__count{min-width:18px;height:18px;padding:0 5px;border-radius:var(--radius-pill);background:var(--color-danger);
+  color:var(--color-on-accent);font-size:var(--fs-xs);font-weight:var(--fw-semibold);display:inline-grid;place-items:center}
+.tabs__count[hidden]{display:none}
+.tabs__panel{padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-3)}
+.tabs__panel[hidden]{display:none}
+.tabs__panel--flush{padding:0;gap:0}
+.tabs__bar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.table--inner{border:1px solid var(--cms-hairline);border-radius:var(--radius-md);overflow:hidden;border-collapse:separate;border-spacing:0}
+.table--inner tbody tr{cursor:default}
+.chat__thread--compact{min-height:180px}
+
+/* Consultation: SOAP and the draft prescription */
+.soap{display:flex;flex-direction:column;gap:var(--sp-3)}
+.soap .field>label{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-ink-2);margin-bottom:var(--sp-1)}
+.soap__box{min-height:64px;font-size:var(--fs-sm)}
+.draft-rx{display:flex;flex-direction:column;gap:var(--sp-2)}
+.draft-rx__row{display:flex;flex-direction:column;gap:2px;padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--cms-surface-sunk);font-size:var(--fs-sm)}
+.draft-rx__row small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.draft-rx__row--action{flex-direction:row;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.draft-rx__row--action>span:first-child{display:flex;flex-direction:column;gap:2px}
+.draft-rx--page .draft-rx__row{padding:var(--sp-3) var(--sp-4)}
+.bubble--card{padding:0;background:transparent;border:0;box-shadow:none;max-width:320px}
+.rx-card{background:var(--cms-surface);color:var(--color-ink);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);
+  overflow:hidden;font-size:var(--fs-sm)}
+.rx-card__head{padding:var(--sp-3) var(--sp-4);font-weight:var(--fw-semibold);border-bottom:1px solid var(--cms-hairline)}
+.rx-card__row{display:flex;flex-direction:column;gap:2px;padding:var(--sp-2) var(--sp-4)}
+.rx-card__row small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.rx-card__foot{padding:var(--sp-3) var(--sp-4);color:var(--color-ink-3);font-size:var(--fs-xs);background:var(--cms-surface-sunk)}
+.choice-list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.choice-row{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);
+  background:var(--cms-surface-sunk);cursor:pointer}
+.choice-row input{margin-top:3px;accent-color:var(--color-accent)}
+.choice-row span{display:flex;flex-direction:column;gap:2px;font-size:var(--fs-sm)}
+.choice-row small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.choice-row:has(input:checked){background:var(--color-accent-soft)}
+
+/* Prescription */
+.rx-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--sp-5);align-items:start}
+.rx-summary{position:sticky;top:var(--sp-4)}
+.rx-summary__total{padding-top:var(--sp-3);border-top:1px solid var(--cms-hairline);font-size:var(--fs-md)}
+.rx-summary__sign{display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-3);border-radius:var(--radius-md);background:var(--cms-surface-sunk)}
+.rx-summary__sign img{height:44px;width:auto;align-self:flex-start;mix-blend-mode:multiply}
+.rx-summary__sign small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.rx-table{border:0;border-radius:0}
+.rx-table td{vertical-align:middle}
+.rx-table .input{height:var(--ctrl-h-sm);font-size:var(--fs-sm)}
+.input--qty{width:72px}
+.rx-empty{padding:var(--sp-6) var(--sp-4);text-align:center;color:var(--color-ink-3);font-size:var(--fs-sm)}
+.rx-empty[hidden]{display:none}
+.rx-extra{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:var(--sp-4)}
+.drug-search{display:flex;align-items:flex-end;gap:var(--sp-3)}
+.drug-search .field:first-child{width:180px;flex:none}
+.drug-results{display:flex;flex-direction:column;gap:var(--sp-2);max-height:360px;overflow:auto}
+.drug-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);border-radius:var(--radius-md);background:var(--cms-surface-sunk)}
+.drug-row__body{flex:1;display:flex;flex-direction:column;gap:2px;font-size:var(--fs-sm);min-width:0}
+.drug-row__body small{color:var(--color-ink-3);font-size:var(--fs-xs)}
+.order-lines{display:flex;flex-direction:column;gap:var(--sp-1)}
+.order-lines__total{margin-top:var(--sp-2);padding-top:var(--sp-2);border-top:1px solid var(--cms-hairline)}
+.link-channels{display:flex;flex-direction:column;gap:var(--sp-2)}
+.link-copy{display:flex;gap:var(--sp-2)}
+.link-copy[hidden]{display:none}
+
+/* Completed */
+.done-state{max-width:560px;margin:var(--sp-6) auto;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-7)}
+.done-state__icon{width:48px;height:48px;border-radius:var(--radius-pill);display:grid;place-items:center;
+  background:var(--color-success-soft);color:var(--color-success)}
+.done-state__icon svg{width:24px;height:24px}
+.done-state__facts{width:100%;display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-4);
+  border-radius:var(--radius-md);background:var(--cms-surface-sunk)}
+.done-state__actions{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+
+/* Profile */
+.profile-form{max-width:640px}
+.profile-form__foot{display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3);padding-top:var(--sp-2)}
+.photo-drop{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-5);border:1.5px dashed var(--color-line-strong);
+  border-radius:var(--radius-lg);flex-wrap:wrap}
+.photo-drop.is-over{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.photo-drop__avatar{width:72px;height:72px;border-radius:var(--radius-pill);display:grid;place-items:center;flex:none;
+  background:var(--color-accent-soft) center/cover no-repeat;color:var(--color-accent-ink);font-size:var(--fs-xl);font-weight:var(--fw-semibold)}
+.photo-drop__copy{flex:1;display:flex;flex-direction:column;gap:2px;min-width:200px}
+.photo-drop__copy small{color:var(--color-ink-3);font-size:var(--fs-sm)}
+.photo-drop__actions{display:flex;gap:var(--sp-2)}
+
+/* Reviewer guide: the doctor's core flow in order (prototype only) */
+.flow-guide{position:fixed;right:var(--sp-5);bottom:var(--sp-5);z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-2)}
+.flow-guide__toggle{display:inline-flex;align-items:center;gap:var(--sp-3);height:var(--ctrl-h);padding:0 var(--sp-4);border:0;
+  border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-on-dark);font:inherit;font-size:var(--fs-sm);
+  font-weight:var(--fw-medium);box-shadow:var(--shadow-lg);cursor:pointer}
+.flow-guide__toggle b{font-variant-numeric:tabular-nums;opacity:.7;font-weight:var(--fw-semibold)}
+.flow-guide__list{order:-1;list-style:none;margin:0;padding:var(--sp-2);width:300px;background:var(--cms-surface);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);counter-reset:flow}
+.flow-guide__list[hidden]{display:none}
+.flow-guide__list button{counter-increment:flow;display:flex;align-items:center;gap:var(--sp-3);width:100%;text-align:left;
+  border:0;background:transparent;font:inherit;font-size:var(--fs-sm);color:var(--color-ink-2);padding:var(--sp-2);
+  border-radius:var(--radius-sm);cursor:pointer}
+.flow-guide__list button::before{content:counter(flow);width:22px;height:22px;flex:none;border-radius:var(--radius-pill);
+  display:grid;place-items:center;font-size:var(--fs-xs);font-weight:var(--fw-semibold);background:var(--cms-surface-sunk);color:var(--color-ink-3)}
+.flow-guide__list button:hover{background:var(--cms-surface-sunk);color:var(--color-ink)}
+.flow-guide__list button.is-done::before{background:var(--color-success-soft);color:var(--color-success)}
+.flow-guide__list button.is-current{color:var(--color-ink);font-weight:var(--fw-semibold);background:var(--cms-surface-sunk)}
+.flow-guide__list button.is-current::before{background:var(--color-accent);color:var(--color-on-accent)}
+
+/* Grid children may shrink below their tables; the tables scroll in their panel. */
+.patient-grid>*,.rx-layout>*{min-width:0}
+body.role-doctor .panel--flush{overflow-x:auto}
+.patient-tabs .tabs__panel{min-width:0;overflow-x:auto}
+
+/* A later ".consult" rule kept two columns at every width, so on a phone the
+   340px side panel left the video room no space. One column below 1080px. */
+@media (max-width:1080px){
+  .consult{grid-template-columns:minmax(0,1fr)}
+  .ctx{position:static}
+}
+@media (max-width:1100px){
+  .consult-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .patient-grid,.rx-layout{grid-template-columns:1fr}
+  .rx-summary{position:static}
+}
+@media (max-width:640px){
+  .consult-filters,.consult-filters--2,.rx-extra{grid-template-columns:1fr}
+  .drug-search{flex-wrap:wrap}
+  .drug-search .field:first-child{width:100%}
+  .cms-top .oncall{display:none}
+  .room__controls{flex-wrap:wrap;row-gap:var(--sp-2)}
+  .flow-guide{right:var(--sp-3);bottom:var(--sp-3)}
+  .done-state{padding:var(--sp-5)}
+}
