@@ -121,8 +121,8 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "แพทย์เลือกรูปแบบและขนาดยาจากข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพของคุณ",
       products: [
-        ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/condition-detail/products-diecut-v1/weight-pen.png", "pen", "ใช้ต่อเนื่อง"],
-        ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ใช้ต่อเนื่อง"]
+          ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png", "pen", "ใช้ต่อเนื่อง"],
+          ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/medicine/weight-diecut-v1/rybelsus-bottles-diecut-v1.png", "oral", "ใช้ต่อเนื่อง"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
@@ -214,7 +214,7 @@
         "ผมบางจากพันธุกรรม ผมร่วงเป็นหย่อม การอักเสบของหนังศีรษะ และผมร่วงหลังความเครียดหรือเจ็บป่วย ล้วนมีกลไกต่างกัน การรักษาที่ได้ผลกับแบบหนึ่งอาจไม่ช่วยอีกแบบเลย",
       knowledgeStats: [
         ["ราว 50%", "ผู้ชายมีผมบางจากพันธุกรรมเมื่ออายุ 50 ปี"],
-        ["3–6 เดือน", "ระยะเวลาก่อนเริ่มเห็นผลของการรักษา"],
+        ["3 ถึง 6 เดือน", "ระยะเวลาก่อนเริ่มเห็นผลของการรักษา"],
         ["ต่อเนื่อง", "หยุดใช้ยา ผมมักกลับไปร่วงเหมือนเดิม"]
       ],
       facts: [
@@ -234,7 +234,7 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "มีทั้งยาทาและยารับประทาน โดยต้องเลือกให้ตรงกับรูปแบบผมร่วงและข้อควรระวัง",
       products: [
-        ["ยาทาหนังศีรษะ", "ใช้วันละ 1–2 ครั้ง", "เช่น minoxidil ตามรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical", "ใช้ต่อเนื่อง"],
+        ["ยาทาหนังศีรษะ", "ใช้วันละ 1 ถึง 2 ครั้ง", "เช่น minoxidil ตามรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical", "ใช้ต่อเนื่อง"],
         ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral", "ใช้ต่อเนื่อง"],
         ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical", "ใช้เสริม"]
       ],
@@ -565,26 +565,48 @@
      It mirrors the active chapter as the page moves and keeps that chapter in
      view inside the horizontal mobile rail. */
   const sectionNav = document.querySelector("[data-section-nav]");
+  const sectionViewport = sectionNav?.querySelector(".condition-sections__viewport");
+  const sectionIndicator = sectionViewport?.querySelector(".condition-sections__indicator");
   const sectionTabs = Array.from(document.querySelectorAll("[data-section-tab]"));
   const sectionTargets = sectionTabs
     .map((tab) => ({ tab, section: document.getElementById(tab.dataset.sectionTab) }))
     .filter(({ section }) => section);
 
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let indicatorReadyFrame = 0;
+  const moveSectionIndicator = (tab) => {
+    if (!sectionViewport || !sectionIndicator || !tab) return;
+    sectionViewport.style.setProperty("--section-indicator-x", `${tab.offsetLeft}px`);
+    sectionViewport.style.setProperty("--section-indicator-width", `${tab.offsetWidth}px`);
+    if (!sectionViewport.classList.contains("is-indicator-ready") && !indicatorReadyFrame) {
+      indicatorReadyFrame = requestAnimationFrame(() => {
+        indicatorReadyFrame = 0;
+        sectionViewport.classList.add("is-indicator-ready");
+      });
+    }
+  };
+
   const setActiveSection = (id, bringIntoView = true) => {
+    let activeTab = null;
     sectionTabs.forEach((tab) => {
       const active = tab.dataset.sectionTab === id;
       tab.classList.toggle("is-active", active);
       if (active) {
+        activeTab = tab;
         tab.setAttribute("aria-current", "location");
-        if (bringIntoView) {
-          const rail = tab.parentElement;
-          const centeredLeft = tab.offsetLeft - ((rail.clientWidth - tab.offsetWidth) / 2);
-          rail.scrollTo({ left: Math.max(0, centeredLeft), behavior: "smooth" });
-        }
       } else {
         tab.removeAttribute("aria-current");
       }
     });
+    if (!activeTab) return;
+    moveSectionIndicator(activeTab);
+    if (bringIntoView && sectionViewport) {
+      const centeredLeft = activeTab.offsetLeft - ((sectionViewport.clientWidth - activeTab.offsetWidth) / 2);
+      sectionViewport.scrollTo({
+        left: Math.max(0, centeredLeft),
+        behavior: prefersReducedMotion.matches ? "auto" : "smooth"
+      });
+    }
   };
 
   if (sectionNav && sectionTargets.length) {
@@ -621,7 +643,14 @@
       });
     });
     window.addEventListener("scroll", requestSectionSync, { passive: true });
-    window.addEventListener("resize", requestSectionSync, { passive: true });
+    if ("ResizeObserver" in window && sectionViewport) {
+      new ResizeObserver(() => {
+        const activeTab = sectionTabs.find((tab) => tab.classList.contains("is-active"));
+        moveSectionIndicator(activeTab);
+      }).observe(sectionViewport);
+    } else {
+      window.addEventListener("resize", requestSectionSync, { passive: true });
+    }
     requestSectionSync();
   }
 
