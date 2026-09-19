@@ -560,7 +560,15 @@
     }
     syncGuide(id);
   };
-  document.addEventListener('click', e => { if (e.target.closest('.lang__opt')) setTimeout(() => { renderRx(); }, 0); });
+  /* Demo values in fields follow the language too, unless the doctor has typed over them. */
+  function syncFieldValues() {
+    const th = isThai();
+    $$('[data-value-en][data-value-th]').forEach(el => {
+      if (el.value === el.dataset.valueEn || el.value === el.dataset.valueTh) el.value = th ? el.dataset.valueTh : el.dataset.valueEn;
+    });
+  }
+  document.addEventListener('click', e => { if (e.target.closest('.lang__opt')) setTimeout(() => { renderRx(); syncFieldValues(); }, 0); });
+  syncFieldValues();
 
   renderRx();
   setStatus('available');

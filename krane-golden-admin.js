@@ -27,6 +27,24 @@
     "Dispatched": "กำลังจัดส่ง",
     "Delivered": "จัดส่งสำเร็จ"
   };
+  const statusEN = {
+    "Order received": "Preparing medicine",
+    "Pharmacy accepted": "Preparing medicine",
+    "Preparing": "Preparing medicine",
+    "Rider pickup": "Rider on the way to collect",
+    "Dispatched": "Out for delivery",
+    "Delivered": "Delivered"
+  };
+  const statusCopyEN = {
+    "Order received": "Order received. Waiting for the pharmacy to accept it.",
+    "Pharmacy accepted": "The pharmacy accepted the order and is preparing the medicine.",
+    "Preparing": "Nothing outstanding. The medicine is being prepared within the normal service window.",
+    "Rider pickup": "The pharmacy has finished. A rider is on the way to collect.",
+    "Dispatched": "The rider has collected the order and is delivering it to the patient.",
+    "Delivered": "Delivered. Nothing more to do."
+  };
+  /* Thai is the default; English only when the viewer picked EN. */
+  function thai() { return !!document.querySelector('.lang__opt[data-lng="th"].is-active'); }
   const statusCopyTH = {
     "Order received": "ได้รับคำสั่งซื้อแล้ว รอร้านยารับออเดอร์",
     "Pharmacy accepted": "ร้านยารับออเดอร์แล้ว กำลังเตรียมยา",
@@ -67,25 +85,24 @@
     summary.className = "panel stack golden-order-summary";
     summary.dataset.goldenOrderSummary = "";
     summary.innerHTML =
-      /* Labels are written in Thai directly. This panel is demo-only chrome and is not in
-         the i18n dictionary, so Thai literals keep it consistent with the rest of the
-         Thai UI without adding keys to the shared i18n.js. */
-      '<div class="between"><div><div class="panel__title">ออเดอร์สำหรับสาธิต</div><div class="hint">ข้อมูลสมมติสำหรับการนำเสนอลูกค้า</div></div><span class="badge badge--ok" data-golden-payment>' + f.order.paymentStatus + '</span></div>' +
+      /* Written in English and translated by i18n.js like every other label, so the
+         panel follows the TH/EN switch. */
+'<div class="between"><div><div class="panel__title">Demo order</div><div class="hint">Fictional data for the client presentation</div></div><span class="badge badge--ok" data-golden-payment>' + f.order.paymentStatus + '</span></div>' +
       '<div class="grid-3">' +
-      '<div class="kv"><span class="k">ผู้ป่วย</span><span class="strong">' + f.patient.name + '</span></div>' +
-      '<div class="kv"><span class="k">ออเดอร์</span><span class="strong">#' + f.order.id + '</span></div>' +
-      '<div class="kv"><span class="k">ยอดรวม</span><span class="strong">฿' + f.order.total.toLocaleString() + '</span></div>' +
+      '<div class="kv"><span class="k">Patient</span><span class="strong">' + f.patient.name + '</span></div>' +
+      '<div class="kv"><span class="k">Order</span><span class="strong">#' + f.order.id + '</span></div>' +
+      '<div class="kv"><span class="k">Order total</span><span class="strong">฿' + f.order.total.toLocaleString() + '</span></div>' +
       '</div><div class="grid-3">' +
-      '<div class="kv"><span class="k">แพทย์</span><span class="strong">' + f.doctor.name + '</span></div>' +
-      '<div class="kv"><span class="k">อาการ</span><span class="strong">ผมร่วง</span></div>' +
-      '<div class="kv"><span class="k">สถานะการจัดส่ง</span><span class="strong" data-golden-delivery></span></div>' +
+      '<div class="kv"><span class="k">Doctor</span><span class="strong">' + f.doctor.name + '</span></div>' +
+      '<div class="kv"><span class="k">Condition</span><span class="strong">Hair loss</span></div>' +
+      '<div class="kv"><span class="k">Delivery status</span><span class="strong" data-golden-delivery></span></div>' +
       '</div><div class="grid-3">' +
-      '<div class="kv"><span class="k">ค่าปรึกษา</span><span class="strong">฿' + f.consultation.fee.toLocaleString() + '</span></div>' +
-      '<div class="kv"><span class="k">ค่ายา</span><span class="strong">฿' + f.treatment.medicineFee.toLocaleString() + '</span></div>' +
-      '<div class="kv"><span class="k">รายการยา</span><span class="strong">' + f.treatment.medicines.map(function (item) { return item.name; }).join(" + ") + '</span></div>' +
+      '<div class="kv"><span class="k">Consultation fee</span><span class="strong">฿' + f.consultation.fee.toLocaleString() + '</span></div>' +
+      '<div class="kv"><span class="k">Medicine fee</span><span class="strong">฿' + f.treatment.medicineFee.toLocaleString() + '</span></div>' +
+      '<div class="kv"><span class="k">Medicines</span><span class="strong">' + f.treatment.medicines.map(function (item) { return item.name; }).join(" + ") + '</span></div>' +
       '</div>' +
-      '<div class="kv"><span class="k">ที่อยู่จัดส่ง</span><span class="strong">' + f.order.address + '</span></div>' +
-      '<div class="page-actions"><a class="btn btn--primary btn--sm" data-golden-open-tracking target="_blank" rel="noopener">เปิดหน้าติดตามพัสดุของผู้ป่วย</a></div>';
+      '<div class="kv"><span class="k">Delivery address</span><span class="strong">The Base Park West, Room 22/418, Soi Sukhumvit 77, Phra Khanong Nuea, Watthana, Bangkok 10110</span></div>' +
+      '<div class="page-actions"><a class="btn btn--primary btn--sm" data-golden-open-tracking target="_blank" rel="noopener">Open the patient\'s tracking page</a></div>';
     const firstPanel = fulfilment.querySelector(".panel");
     if (firstPanel) fulfilment.insertBefore(summary, firstPanel);
   }
@@ -98,7 +115,7 @@
     if (select && Array.from(select.options).some(function (option) { return option.value === adminValue; })) select.value = adminValue;
     if (goldenRow) {
       goldenRow.dataset.stage = adminValue;
-      goldenRow.dataset.issue = statusCopyTH[state.fulfilmentStatus] || goldenRow.dataset.issue;
+      goldenRow.dataset.issue = (thai() ? statusCopyTH : statusCopyEN)[state.fulfilmentStatus] || goldenRow.dataset.issue;
       const badge = goldenRow.children[3] && goldenRow.children[3].querySelector(".badge");
       if (badge) {
         badge.textContent = adminValue;
@@ -106,7 +123,7 @@
       }
     }
     const delivery = document.querySelector("[data-golden-delivery]");
-    if (delivery) delivery.textContent = statusTH[state.fulfilmentStatus] || state.fulfilmentStatus;
+    if (delivery) delivery.textContent = (thai() ? statusTH : statusEN)[state.fulfilmentStatus] || state.fulfilmentStatus;
     const trackingLink = document.querySelector("[data-golden-open-tracking]");
     if (trackingLink) trackingLink.href = "/b2c/krane-b2c?demoStatus=" + encodeURIComponent(state.fulfilmentStatus) + "#tracking";
     const steps = Array.from(document.querySelectorAll("[data-status-step]"));
@@ -120,7 +137,7 @@
        lifecycle stage so a dispatched order never still says it is being prepared. */
     const alertLine = document.querySelector("[data-fulfilment-issue]");
     if (alertLine) {
-      const issueCopy = statusCopyTH[state.fulfilmentStatus];
+      const issueCopy = (thai() ? statusCopyTH : statusCopyEN)[state.fulfilmentStatus];
       const positive = Boolean(issueCopy);
       alertLine.classList.toggle("alertline--ok", positive);
       alertLine.classList.toggle("alertline--warn", !positive);
@@ -168,6 +185,7 @@
   window.addEventListener("hashchange", openHash);
   window.addEventListener("storage", applyState);
   window.addEventListener("krane-demo-state", applyState);
+  document.addEventListener("click", function (event) { if (event.target.closest(".lang__opt")) setTimeout(applyState, 0); });
   applyState();
   window.addEventListener("load", function () { setTimeout(openHash, 60); }, { once: true });
   setTimeout(openHash, 0);
