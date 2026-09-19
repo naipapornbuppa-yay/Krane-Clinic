@@ -1922,6 +1922,8 @@
      weight and ED intake, sliders, signup consent, referral, the weight safety
      sheet and sample leaflets, plus the matching line in Thai ---- */
   var EN_FROM_TH_19SEP = {
+    "ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ แล้วยืนยันเบอร์ด้วยรหัส OTP":"Set a password for signing in, then verify your number with a one-time code.",
+    "ตั้งรหัสผ่านให้ครบเงื่อนไขและตรงกันทั้งสองช่อง":"Set a password that meets every rule and matches in both fields",
     "ชำระเงินเรียบร้อยแล้ว":"Payment complete",
     "ชำระเงินสำเร็จแล้ว ดูใบเสร็จได้จากขั้นชำระเงินในหน้าติดตามคำสั่งซื้อ ร้านยากำลังจัดยาและจะแจ้งเมื่อเริ่มจัดส่ง":"Payment complete. Your receipt is in the payment step of order tracking. The pharmacy is preparing your medicine and will let you know when it's on the way.",
     "กรุณาอ่านเพื่อให้ความยินยอม":"Please read before you give consent",
