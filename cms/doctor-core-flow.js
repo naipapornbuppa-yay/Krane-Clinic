@@ -1,4 +1,4 @@
-/* Doctor core flow, from the Doctor Manual (Krane Drive, 17 Sep 2026).
+/* Doctor core flow, from the Doctor Manual (Krane Drive, 19 Sep 2026).
    Sign in with OTP, set Available, open a patient, join the call, write SOAP notes,
    show the prescription in chat, finish, dispense from the Krane medicine list,
    create the order, and land on a completed consultation.
@@ -304,7 +304,8 @@
       const choice = ($('[name="dispense"]:checked') || {}).value || 'yes';
       closeModal($('[data-finish-modal]'));
       if (choice === 'yes') window.go('prescribe');
-      else complete(false, choice === 'refer');
+      else if (choice === 'refer') window.go('referral');
+      else complete(false, false);
     }
   });
 
@@ -441,7 +442,13 @@
   function setConsultStatus(label, cls) {
     const b = $('[data-consult-status]'); if (b) { b.textContent = label; b.className = 'badge ' + cls; }
   }
-  function complete(withOrder, referred) {
+  function addAuditEvent(eventName, caseCode, result) {
+    const body = $('[data-audit-rows]'); if (!body) return;
+    const row = document.createElement('tr');
+    row.innerHTML = '<td class="mono">' + clock() + ':00</td><td>' + esc(eventName) + '</td><td class="mono">' + esc(caseCode || 'CONS-2041') + '</td><td>' + esc(doctorName()) + '</td><td><span class="badge badge--done">' + esc(result || T('Recorded', 'บันทึกแล้ว')) + '</span></td>';
+    body.prepend(row);
+  }
+  function complete(withOrder, referred, referralDestination) {
     setStatus('available');
     $('[data-done-patient]').textContent = patientName();
     $('[data-done-rx]').textContent = withOrder ? 'Issued' : referred ? 'Not issued · referred' : 'None';
@@ -452,6 +459,10 @@
       : referred
         ? 'Your notes and remote-care decision are saved. Urgent or in-person care guidance was sent to the patient.'
         : 'Your notes are saved. No medicine was dispensed in this consultation.';
+    const referralRow = $('[data-done-referral-row]');
+    if (referralRow) referralRow.hidden = !referred;
+    const referralValue = $('[data-done-referral]');
+    if (referralValue) referralValue.textContent = referred ? (referralDestination || T('In-person assessment', 'ตรวจที่สถานพยาบาล')) : '-';
     setConsultStatus('Completed', 'badge--done');
     const len = $('[data-consult-length]'); if (len) len.textContent = T('14 minutes', '14 นาที');
     // The golden row in the patients list reflects the outcome.
@@ -463,9 +474,31 @@
       row.children[6].innerHTML = withOrder ? '<span class="badge badge--warn">Awaiting payment</span>' : '<span class="hint">-</span>';
       row.dataset.patientState = 'completed';
     }
-    if (withOrder) document.dispatchEvent(new CustomEvent('krane-doctor-order-created', { detail: { items: dispensed.slice(), total: rxTotal() } }));
+    if (withOrder) {
+      addAuditEvent(T('Prescription signed and order created', 'ลงนามใบสั่งยาและสร้างคำสั่งซื้อ'), 'CONS-2041 / KR-10293', T('Licence 12345', 'ใบอนุญาต 12345'));
+      document.dispatchEvent(new CustomEvent('krane-doctor-order-created', { detail: { items: dispensed.slice(), total: rxTotal() } }));
+    } else if (referred) addAuditEvent(T('Referral and escalation saved', 'บันทึกการส่งต่อและยกระดับการดูแล'), 'CONS-2041', T('Handoff documented', 'บันทึกการส่งต่อแล้ว'));
+    else addAuditEvent(T('Consultation closed without medicine', 'ปิดการปรึกษาโดยไม่จ่ายยา'), 'CONS-2041', T('Recorded', 'บันทึกแล้ว'));
     window.go('consult-done');
   }
+
+  /* ---------------------------------------------------------------- referral / escalation */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('[data-referral-save]')) return;
+    const acknowledged = $('[data-referral-ack]');
+    const statusText = $('[data-referral-status]');
+    if (acknowledged && !acknowledged.checked) {
+      if (statusText) statusText.textContent = T('Confirm that the patient understands the next step.', 'ยืนยันว่าผู้ป่วยเข้าใจขั้นตอนถัดไป');
+      return;
+    }
+    const destination = (($('[data-referral-destination]') || {}).value || '').trim();
+    if (!destination) {
+      if (statusText) statusText.textContent = T('Enter a referral destination.', 'กรอกสถานที่ส่งต่อ');
+      return;
+    }
+    if (statusText) statusText.textContent = T('Referral saved and timestamped.', 'บันทึกและประทับเวลาการส่งต่อแล้ว');
+    complete(false, true, destination);
+  });
 
   /* ---------------------------------------------------------------- profile (manual 6.2.1) */
   document.addEventListener('click', e => {
@@ -512,7 +545,7 @@
   }
 
   /* ---------------------------------------------------------------- flow guide (reviewer aid) */
-  const STEP_OF_PAGE = { login: 1, dashboard: 2, queue: 3, preconsult: 4, consult: 5, prescribe: 7, 'consult-done': 9 };
+  const STEP_OF_PAGE = { login: 1, dashboard: 2, queue: 3, preconsult: 4, record: 5, consult: 6, prescribe: 8, referral: 9, 'consult-done': 10, 'audit-log': 11 };
   const steps = $$('[data-flow-step]');
   function currentPage() { const p = $('.page.is-active'); return p ? p.id : 'dashboard'; }
   function syncGuide(page) {
