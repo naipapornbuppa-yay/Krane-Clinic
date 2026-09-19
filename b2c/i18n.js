@@ -1962,7 +1962,8 @@
     [/^ได้รับแล้ว · (\d{2}\/\d{2}\/\d{2} \d{2}:\d{2})$/, "Delivered · $1"],
     [/^1 นัด$/, "1 appointment"],
     [/^(\d+) นัด$/, "$1 appointments"],
-    [/^ติดตามการควบคุมน้ำหนัก ครั้งที่ (\d+)$/, "Weight follow-up $1"]
+    [/^ติดตามการควบคุมน้ำหนัก ครั้งที่ (\d+)$/, "Weight follow-up $1"],
+    [/^เลขอ้างอิง · ([A-Z]+-\d+)$/, "Ref. no. · $1"]
   ];
   /* Thai month abbreviations, so a generated date reads in English without one
      table entry per date. Every date in the app is written by a fixture that
