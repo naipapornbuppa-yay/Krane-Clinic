@@ -643,7 +643,7 @@
     mo = new MutationObserver(function () {
       if (!current || pending) return;
       pending = true;
-      requestAnimationFrame(function () { pending = false; observeOff(); swap(true); observeOn(); });
+      requestAnimationFrame(function () { pending = false; observeOff(); swap(current); observeOn(); }); // current, not true: a pass queued just before switching to EN must not put Thai back
     });
   }
 

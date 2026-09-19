@@ -304,7 +304,7 @@
       const choice = ($('[name="dispense"]:checked') || {}).value || 'yes';
       closeModal($('[data-finish-modal]'));
       if (choice === 'yes') window.go('prescribe');
-      else complete(false);
+      else complete(false, choice === 'refer');
     }
   });
 
@@ -441,15 +441,17 @@
   function setConsultStatus(label, cls) {
     const b = $('[data-consult-status]'); if (b) { b.textContent = label; b.className = 'badge ' + cls; }
   }
-  function complete(withOrder) {
+  function complete(withOrder, referred) {
     setStatus('available');
     $('[data-done-patient]').textContent = patientName();
-    $('[data-done-rx]').textContent = withOrder ? 'Issued' : 'None';
+    $('[data-done-rx]').textContent = withOrder ? 'Issued' : referred ? 'Not issued · referred' : 'None';
     $('[data-done-order]').textContent = withOrder ? 'KR-10293' : '-';
-    $('[data-done-order-status]').textContent = withOrder ? 'Waiting for the patient to pay' : 'No order';
+    $('[data-done-order-status]').textContent = withOrder ? 'Waiting for the patient to pay' : referred ? 'Referral guidance sent' : 'No order';
     $('[data-done-lead]').textContent = withOrder
       ? 'The prescription is saved and the order is created. The patient reviews the price and pays in the app.'
-      : 'Your notes are saved. No medicine was dispensed in this consultation.';
+      : referred
+        ? 'Your notes and remote-care decision are saved. Urgent or in-person care guidance was sent to the patient.'
+        : 'Your notes are saved. No medicine was dispensed in this consultation.';
     setConsultStatus('Completed', 'badge--done');
     const len = $('[data-consult-length]'); if (len) len.textContent = T('14 minutes', '14 นาที');
     // The golden row in the patients list reflects the outcome.
@@ -558,7 +560,15 @@
     }
     syncGuide(id);
   };
-  document.addEventListener('click', e => { if (e.target.closest('.lang__opt')) setTimeout(() => { renderRx(); }, 0); });
+  /* Demo values in fields follow the language too, unless the doctor has typed over them. */
+  function syncFieldValues() {
+    const th = isThai();
+    $$('[data-value-en][data-value-th]').forEach(el => {
+      if (el.value === el.dataset.valueEn || el.value === el.dataset.valueTh) el.value = th ? el.dataset.valueTh : el.dataset.valueEn;
+    });
+  }
+  document.addEventListener('click', e => { if (e.target.closest('.lang__opt')) setTimeout(() => { renderRx(); syncFieldValues(); }, 0); });
+  syncFieldValues();
 
   renderRx();
   setStatus('available');
