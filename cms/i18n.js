@@ -930,7 +930,6 @@
     "Delete photo":"ลบรูป",
     "Upload new signature":"อัปโหลดลายเซ็นใหม่",
     "Plan your examination days ahead. Bookings from patients appear here automatically. Switch to the day view to read a patient's details before the consultation.":"ลงตารางตรวจล่วงหน้าได้ เมื่อมีผู้ป่วยจองคิว นัดจะแสดงในตารางอัตโนมัติ เปิดมุมมองรายวันเพื่ออ่านข้อมูลผู้ป่วยก่อนให้คำปรึกษา",
-    "Doctor core flow":"เส้นทางหลักของแพทย์",
     "Sign in with OTP":"เข้าสู่ระบบด้วย OTP",
     "Home · set Available":"หน้าหลัก · ตั้งสถานะว่าง",
     "Patients · open a patient":"ผู้เข้ารับการปรึกษา · เปิดผู้ป่วย",

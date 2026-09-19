@@ -61,7 +61,6 @@
     auth.hidden = !on;
     document.body.classList.toggle('is-signed-out', on);
     if (on) { authStep('method'); const err = $('[data-auth-error]'); if (err) err.hidden = true; }
-    syncGuide(on ? 'login' : currentPage());
   }
   document.addEventListener('click', e => {
     const m = e.target.closest('[data-auth-method]');
@@ -544,40 +543,6 @@
     drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('is-over'); readPhoto(e.dataTransfer.files[0]); });
   }
 
-  /* ---------------------------------------------------------------- flow guide (reviewer aid) */
-  const STEP_OF_PAGE = { login: 1, dashboard: 2, queue: 3, preconsult: 4, record: 5, consult: 6, prescribe: 8, referral: 9, 'consult-done': 10, 'audit-log': 11 };
-  const steps = $$('[data-flow-step]');
-  function currentPage() { const p = $('.page.is-active'); return p ? p.id : 'dashboard'; }
-  function syncGuide(page) {
-    const n = STEP_OF_PAGE[page]; if (!n) return;
-    steps.forEach((b, i) => { b.classList.toggle('is-current', i + 1 === n); b.classList.toggle('is-done', i + 1 < n); });
-    const prog = $('[data-flow-progress]'); if (prog) prog.textContent = n + '/' + steps.length;
-  }
-  function goldenRow() { return $('[data-consult-rows] tr[data-code="CONS-2041"]'); }
-  function selectGolden() { const r = goldenRow(); if (r && typeof window.loadSelectedPatient === 'function') window.loadSelectedPatient(r); }
-  document.addEventListener('click', e => {
-    if (e.target.closest('[data-flow-toggle]')) {
-      const list = $('[data-flow-list]'); list.hidden = !list.hidden;
-      e.target.closest('[data-flow-toggle]').setAttribute('aria-expanded', String(!list.hidden));
-      return;
-    }
-    const step = e.target.closest('[data-flow-step]');
-    if (!step) return;
-    const s = step.dataset.flowStep;
-    if (s === 'login') { setSigned(false); try { history.replaceState(null, '', '#login'); } catch (x) {} showAuth(true); return; }
-    if (!auth.hidden) { setSigned(true); showAuth(false); }
-    if (s !== 'dashboard' && s !== 'queue') selectGolden();
-    if (s === 'finish') { window.go('consult'); openModal('[data-finish-modal]'); return; }
-    if (s === 'order') {
-      window.go('prescribe');
-      if (!saved) $('[data-rx-save]').click();
-      $('[data-order-open]').click();
-      return;
-    }
-    if (s === 'consult-done') { complete(true); return; }
-    window.go(s);
-  });
-
   /* ---------------------------------------------------------------- page hook */
   const baseGo = window.go;
   window.go = function (id, push) {
@@ -591,7 +556,6 @@
       renderRx();
       const title = $('[data-selected-prescribe-title]'); if (title) title.textContent = T('Prescription · ', 'ใบสั่งยา · ') + patientName();
     }
-    syncGuide(id);
   };
   /* Demo values in fields follow the language too, unless the doctor has typed over them. */
   function syncFieldValues() {
