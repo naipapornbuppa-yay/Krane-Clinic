@@ -4000,3 +4000,30 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .signup-consent__row{justify-content:flex-start;flex-wrap:wrap;gap:4px 10px}
 .signup-consent__row .consent-agree{flex:0 1 auto}
 .signup-consent__more{text-decoration:underline;text-underline-offset:3px}
+
+/* Floating-label fields for sign up, log in and set password (P'New, 19 Sep,
+   after hims.com and Xiaomi): one box per field, the label inside it where a
+   placeholder would be. Once the field is focused or holds a value the label
+   rises to a small title in the top corner and the value sits underneath, so
+   the field never loses its name. An error turns the box and label red. */
+.float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:58px;padding:0 16px}
+.float-field__slot{position:relative;display:block;flex:1;min-width:0}
+.float-field .input{width:100%;height:56px;padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
+.float-field .phone-field__country{height:56px;align-self:center}
+.float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
+.float-field>.password-field .input{padding-right:0}
+.float-field__slot>label{position:absolute;left:0;top:50%;margin:0;transform:translateY(-50%);
+  color:var(--color-ink-3);font-size:var(--fs-base);font-weight:var(--fw-regular);line-height:1.2;
+  white-space:nowrap;pointer-events:none;
+  transition:top var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),font-size var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.float-field__slot:focus-within>label,
+.float-field__slot>.input:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.float-field__slot:focus-within>label{color:var(--color-accent)}
+.float-field .input::placeholder{color:transparent}
+/* Error: red box, red title, message below (the mismatch line on set password). */
+.float-field.is-invalid>.phone-field,.float-field.is-invalid>.password-field,
+.float-field:has(.password-mismatch:not([hidden]))>.password-field{border-color:var(--color-danger);box-shadow:none}
+.float-field.is-invalid .float-field__slot>label,
+.float-field:has(.password-mismatch:not([hidden])) .float-field__slot>label{color:var(--color-danger)}
+.float-field .password-mismatch{margin:6px 2px 0;color:var(--color-danger);font-size:var(--fs-xs)}
+@media (prefers-reduced-motion: reduce){.float-field__slot>label{transition:none}}
