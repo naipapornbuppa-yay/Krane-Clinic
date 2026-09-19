@@ -8,6 +8,23 @@
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
+<style>
+  .clinical-record{display:grid;gap:10px}
+  .clinical-record .textarea{min-height:72px}
+  .record-state{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:4px}
+  .closeout-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:16px;align-items:start}
+  .closeout-checks{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+  .closeout-checks li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--color-line);border-radius:10px;background:var(--color-surface)}
+  .closeout-checks li>span{display:grid;gap:3px}
+  .closeout-checks li::before{content:"✓";display:grid;place-items:center;flex:0 0 22px;height:22px;border-radius:50%;background:var(--color-success-soft);color:var(--color-success);font-weight:800}
+  .decision-card{display:grid;gap:6px;width:100%;padding:14px;text-align:left;border:1px solid var(--color-line);border-radius:12px;background:var(--color-surface);color:inherit;font:inherit;cursor:pointer}
+  .decision-card:hover,.decision-card:focus-visible{border-color:var(--color-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--color-accent) 14%,transparent);outline:0}
+  .decision-card--primary{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,var(--color-surface))}
+  .decision-card--danger{border-color:var(--color-danger);background:var(--color-danger-soft)}
+  .decision-card small{color:var(--color-ink-3)}
+  .license-summary{display:grid;gap:8px;padding:12px;border:1px solid var(--color-line);border-radius:12px;background:var(--color-bg-soft)}
+  @media(max-width:900px){.closeout-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body class="role-doctor">
 
@@ -314,7 +331,7 @@
         <div class="crumb" data-page="preconsult" data-selected-patient-crumb>‹ Mali S. · pre-consult</div>
         <div class="page-head">
           <div><h1 class="page-head__t" data-selected-consult-title>Consultation · Mali S.</h1><div class="page-head__s">In room · consultation fee paid (฿350)</div></div>
-          <div class="page-actions"><span class="consult-slot" data-consult-slot><span>Time left</span><strong data-consult-remaining>11:46</strong></span><button class="btn btn--primary" data-page="prescribe">Prescribe treatment</button></div>
+          <div class="page-actions"><span class="consult-slot" data-consult-slot><span>Time left</span><strong data-consult-remaining>11:46</strong></span><button class="btn btn--primary" data-page="closeout">Complete consultation</button></div>
         </div>
         <div class="consult">
           <div class="stack">
@@ -402,7 +419,59 @@
             <div class="ctx__sec"><div class="label">Patient</div><div class="strong" data-selected-context-primary>Mali S. · 34 · male</div><div class="hint" data-selected-context-secondary>Hair loss · ID #PT-2041</div></div>
             <div class="ctx__sec"><div class="alertline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg>No known allergies</div></div>
             <div class="ctx__sec"><div class="label">Intake</div><div class="kv"><span class="k">Duration</span><span>6mo-2y</span></div><div class="kv"><span class="k">Conditions</span><span>None</span></div><div class="kv"><span class="k">Meds</span><span>None</span></div><a class="crumb" data-page="preconsult" style="margin:6px 0 0">View full intake ›</a></div>
-            <div class="ctx__sec"><div class="label">Internal notes <span class="hint">(not shown to patient)</span></div><textarea class="textarea" placeholder="Private clinical notes…">Family hx of AGA. Suitable for finasteride + minoxidil. No contraindications.</textarea></div>
+            <div class="ctx__sec clinical-record">
+              <div><div class="label">Clinical record · SOAP <span class="hint">(internal)</span></div><div class="hint">Autosaved with doctor identity, date and time.</div></div>
+              <div class="field"><label for="soap-subjective">Subjective</label><textarea class="textarea" id="soap-subjective">Increased shedding at the crown. Family history of androgenetic alopecia.</textarea></div>
+              <div class="field"><label for="soap-objective">Objective</label><textarea class="textarea" id="soap-objective">Submitted photos reviewed. Early frontal recession and crown thinning. No red-flag symptoms reported.</textarea></div>
+              <div class="field"><label for="soap-assessment">Assessment</label><textarea class="textarea" id="soap-assessment">Androgenetic alopecia, suitable for remote management.</textarea></div>
+              <div class="field"><label for="soap-plan">Plan</label><textarea class="textarea" id="soap-plan">Discuss treatment options, safety advice and follow-up. Prescription decision at closeout.</textarea></div>
+              <div class="record-state"><span class="badge badge--done">Draft saved</span><span class="hint">Dr. Narin Tanaka · licence 12345</span></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== DOCTOR · CLINICAL CLOSEOUT =====
+           A consultation cannot jump straight from the call to a medicine order.
+           The doctor first confirms the record, remote-care decision and outcome. -->
+      <section class="page" id="closeout">
+        <div class="crumb" data-page="consult">‹ Back to consultation</div>
+        <div class="page-head">
+          <div><h1 class="page-head__t" data-selected-closeout-title>Complete consultation · Mali S.</h1><div class="page-head__s">Review the clinical record before signing the outcome</div></div>
+          <div class="page-actions"><span class="badge badge--done">Identity verified · OTP</span></div>
+        </div>
+        <div class="closeout-grid">
+          <div class="stack">
+            <div class="panel stack">
+              <div class="panel__title">Clinical record ready</div>
+              <ul class="closeout-checks">
+                <li><span><b>Patient and doctor identity confirmed</b><small class="hint">Patient ID #PT-2041 · Dr. Narin Tanaka · medical licence 12345</small></span></li>
+                <li><span><b>Consultation evidence captured</b><small class="hint">Start/end time, encrypted video session, chat and participant events are linked to this visit.</small></span></li>
+                <li><span><b>SOAP note completed</b><small class="hint">Subjective, objective, assessment and plan are stored in the patient record.</small></span></li>
+                <li><span><b>Remote-care suitability documented</b><small class="hint">No urgent warning signs identified; remote management is appropriate for this visit.</small></span></li>
+              </ul>
+            </div>
+            <div class="panel stack">
+              <div class="panel__title">Choose the consultation outcome</div>
+              <button type="button" class="decision-card decision-card--primary" data-page="prescribe"><b>Prescription required</b><small>Create a signed e-prescription and treatment plan from the approved medicine list.</small></button>
+              <button type="button" class="decision-card" data-closeout-no-rx><b>No medicine · advice and follow-up only</b><small>Sign the visit summary, send care advice and return the case to completed visits.</small></button>
+              <button type="button" class="decision-card decision-card--danger" data-closeout-refer><b>Remote care is not appropriate</b><small>Document the reason and send urgent or in-person care guidance without prescribing.</small></button>
+            </div>
+          </div>
+          <aside class="stack">
+            <div class="panel stack">
+              <div class="panel__title">Visit summary</div>
+              <div class="kv"><span class="k">Patient</span><span class="strong" data-selected-closeout-patient>Mali S. · #PT-2041</span></div>
+              <div class="kv"><span class="k">Consultation</span><span class="strong">24 Jun 2026 · 11:00</span></div>
+              <div class="kv"><span class="k">Channel</span><span class="strong">Encrypted video + chat</span></div>
+              <div class="kv"><span class="k">Consent</span><span class="badge badge--done">Recorded</span></div>
+              <div class="kv"><span class="k">Record status</span><span class="badge badge--done">Ready to sign</span></div>
+            </div>
+            <div class="license-summary">
+              <div class="between"><b>Signing clinician</b><span class="badge badge--done">Verified</span></div>
+              <span>Dr. Narin Tanaka · licence 12345</span>
+              <small class="hint">Every completed outcome is timestamped and retained in the audit trail.</small>
+            </div>
           </aside>
         </div>
       </section>
@@ -428,8 +497,9 @@
             <div class="rx-item"><span class="sku__thumb"></span><div class="grow"><div class="strong">Minoxidil 5% topical</div><div class="field" style="margin-top:6px"><input class="input" value="ทา 1 มล. วันละ 2 ครั้ง"></div></div><span class="strong">฿ 450</span></div>
             <div class="between"><div><div class="label">Follow-up</div><input class="input" data-golden-follow-up value="26 ส.ค. 2026" style="width:160px"></div><div><div class="label">Refills allowed</div><input class="input" value="3" style="width:80px"></div></div>
             <div class="between"><span class="muted">Total medicine</span><span class="kpi__n" style="font-size:var(--fs-xl)">฿ 1,040</span></div>
-            <div class="hint">Signed with your uploaded signature on send. Patient reviews &amp; pays before Fascino dispatch.</div>
-            <button class="btn btn--primary btn--block">Send plan to patient</button>
+            <div class="license-summary"><div class="between"><b>E-prescription signer</b><span class="badge badge--done">Verified</span></div><span>Dr. Narin Tanaka · medical licence 12345</span><small class="hint">Signed with the uploaded signature and timestamped when sent.</small></div>
+            <div class="hint">The patient reviews and accepts the plan before payment and Fascino pharmacy fulfilment.</div>
+            <button class="btn btn--primary btn--block">Sign, send plan &amp; complete visit</button>
           </div>
         </div>
       </section>
@@ -624,9 +694,11 @@
         <div class="page-head"><div><h1 class="page-head__t">My profile</h1><div class="page-head__s">Most fields are admin-managed. You manage your signature here.</div></div></div>
         <div class="grid-2">
           <div class="panel stack">
-            <div class="panel__title">Details <span class="badge badge--mute">Admin-managed</span></div>
+            <div class="panel__title">Professional details <span class="badge badge--done">Verified</span></div>
+            <div class="license-summary"><div class="between"><b>Doctor identity</b><span class="badge badge--done">Active</span></div><small class="hint">Verified by Krane admin before this account can go on call or sign a clinical record.</small></div>
             <div class="field"><label for="doctor-profile-name">Name</label><input class="input" id="doctor-profile-name" value="Dr. Narin Tanaka" disabled=""></div>
             <div class="row"><div class="field grow"><label for="doctor-profile-licence">Licence no.</label><input class="input" id="doctor-profile-licence" value="12345" disabled=""></div><div class="field grow"><label for="doctor-profile-specialty">Specialty</label><input class="input" id="doctor-profile-specialty" value="ผิวหนัง" disabled=""></div></div>
+            <div class="field"><label for="doctor-profile-authority">Registration authority</label><input class="input" id="doctor-profile-authority" value="Medical Council of Thailand" disabled=""></div>
             <div class="field"><label for="doctor-profile-languages">Languages</label><input class="input" id="doctor-profile-languages" value="ไทย, อังกฤษ" disabled=""></div>
             <div class="field"><label for="doctor-profile-consult-types">Consultation types</label><input class="input" id="doctor-profile-consult-types" value="แชท, วิดีโอ, เสียง" disabled=""></div>
           </div>
@@ -728,6 +800,8 @@
   const selectedContextPrimary = document.querySelector('[data-selected-context-primary]');
   const selectedContextSecondary = document.querySelector('[data-selected-context-secondary]');
   const selectedPrescribeTitle = document.querySelector('[data-selected-prescribe-title]');
+  const selectedCloseoutTitle = document.querySelector('[data-selected-closeout-title]');
+  const selectedCloseoutPatient = document.querySelector('[data-selected-closeout-patient]');
   let currentPatientSelection = {name:'Mali S.',state:'waiting'};
   function loadSelectedPatient(target){
     if(!target || !target.dataset.patient) return;
@@ -794,6 +868,8 @@
     if(selectedContextPrimary) selectedContextPrimary.textContent = name + ' · ' + patient.age + ' · ' + sex;
     if(selectedContextSecondary) selectedContextSecondary.textContent = concern + ' · ID ' + patient.id;
     if(selectedPrescribeTitle) selectedPrescribeTitle.textContent = (isThai ? 'จัดทำแผนการรักษา · ' : 'Prescribe treatment · ') + name;
+    if(selectedCloseoutTitle) selectedCloseoutTitle.textContent = (isThai ? 'จบการปรึกษา · ' : 'Complete consultation · ') + name;
+    if(selectedCloseoutPatient) selectedCloseoutPatient.textContent = name + ' · ' + patient.id;
   }
   document.body.addEventListener('click', e => {
     // reassign / escalate (F12): send the matched patient back to matching
@@ -804,6 +880,10 @@
     }
     const tt = e.target.closest('[data-toast]');
     if(tt) toast(tt.dataset.toast);
+    const noRx = e.target.closest('[data-closeout-no-rx]');
+    if(noRx){ toast('Visit signed · advice and follow-up sent'); go('dashboard'); }
+    const refer = e.target.closest('[data-closeout-refer]');
+    if(refer){ toast('Referral guidance recorded and sent'); go('dashboard'); }
     const patientTarget = e.target.closest('[data-patient]');
     if(patientTarget) loadSelectedPatient(patientTarget);
     const t = e.target.closest('[data-page]');
@@ -879,6 +959,7 @@
     if(btn.hasAttribute('data-page') || btn.hasAttribute('data-toast') ||
        btn.hasAttribute('data-reassign') || btn.hasAttribute('data-oncall-toggle') ||
        btn.hasAttribute('data-go-online') || btn.hasAttribute('data-calendar-today') ||
+       btn.hasAttribute('data-closeout-no-rx') || btn.hasAttribute('data-closeout-refer') ||
        btn.hasAttribute('data-signature-upload')) return;
     const label = (btn.textContent || '').trim().replace(/\s+/g,' ');
     if(label) toast(label);

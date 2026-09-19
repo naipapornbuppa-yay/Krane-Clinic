@@ -647,6 +647,44 @@
   };
   for (var _kqa in TH_B2C_QA15) TH[_kqa] = TH_B2C_QA15[_kqa];
 
+  /* ---- doctor clinical closeout + licensing evidence ---- */
+  var TH_DOCTOR_CLOSEOUT = {
+    "Complete consultation":"จบการปรึกษา",
+    "Clinical record · SOAP":"เวชระเบียน · SOAP",
+    "(internal)":"(ภายใน)",
+    "Autosaved with doctor identity, date and time.":"บันทึกอัตโนมัติพร้อมตัวตนแพทย์ วันที่ และเวลา",
+    "Subjective":"ข้อมูลจากผู้ป่วย","Objective":"ข้อมูลตรวจประเมิน","Assessment":"การประเมิน","Plan":"แผนการดูแล",
+    "Draft saved":"บันทึกร่างแล้ว",
+    "Review the clinical record before signing the outcome":"ตรวจทานเวชระเบียนก่อนลงนามผลการปรึกษา",
+    "Identity verified · OTP":"ยืนยันตัวตนแล้ว · OTP",
+    "Clinical record ready":"เวชระเบียนพร้อมลงนาม",
+    "Patient and doctor identity confirmed":"ยืนยันตัวตนผู้ป่วยและแพทย์แล้ว",
+    "Consultation evidence captured":"บันทึกหลักฐานการปรึกษาแล้ว",
+    "Start/end time, encrypted video session, chat and participant events are linked to this visit.":"เวลาเริ่มและจบ วิดีโอที่เข้ารหัส แชท และเหตุการณ์ผู้เข้าร่วมเชื่อมกับการรับบริการครั้งนี้",
+    "SOAP note completed":"บันทึก SOAP ครบถ้วน",
+    "Subjective, objective, assessment and plan are stored in the patient record.":"ข้อมูลจากผู้ป่วย ข้อมูลตรวจประเมิน การประเมิน และแผนการดูแลถูกจัดเก็บในเวชระเบียน",
+    "Remote-care suitability documented":"บันทึกความเหมาะสมต่อการดูแลทางไกลแล้ว",
+    "No urgent warning signs identified; remote management is appropriate for this visit.":"ไม่พบสัญญาณอันตรายเร่งด่วน และการดูแลทางไกลเหมาะสมสำหรับครั้งนี้",
+    "Choose the consultation outcome":"เลือกผลการปรึกษา",
+    "Prescription required":"ต้องออกใบสั่งยา",
+    "Create a signed e-prescription and treatment plan from the approved medicine list.":"สร้างใบสั่งยาอิเล็กทรอนิกส์ที่ลงนามและแผนการรักษาจากรายการยาที่อนุมัติ",
+    "No medicine · advice and follow-up only":"ไม่จ่ายยา · ให้คำแนะนำและติดตามผล",
+    "Sign the visit summary, send care advice and return the case to completed visits.":"ลงนามสรุปการรับบริการ ส่งคำแนะนำ และย้ายเคสไปยังรายการที่เสร็จสิ้น",
+    "Remote care is not appropriate":"ไม่เหมาะกับการดูแลทางไกล",
+    "Document the reason and send urgent or in-person care guidance without prescribing.":"บันทึกเหตุผลและส่งคำแนะนำให้รับบริการเร่งด่วนหรือพบแพทย์ที่สถานพยาบาลโดยไม่สั่งยา",
+    "Visit summary":"สรุปการรับบริการ","Channel":"ช่องทาง","Encrypted video + chat":"วิดีโอเข้ารหัส + แชท","Recorded":"บันทึกแล้ว","Record status":"สถานะเวชระเบียน","Ready to sign":"พร้อมลงนาม",
+    "Signing clinician":"แพทย์ผู้ลงนาม","Verified":"ตรวจสอบแล้ว","Active":"ใช้งานได้",
+    "Every completed outcome is timestamped and retained in the audit trail.":"ผลการปรึกษาที่เสร็จสิ้นทุกครั้งจะประทับเวลาและเก็บไว้ในประวัติการตรวจสอบ",
+    "E-prescription signer":"ผู้ลงนามใบสั่งยาอิเล็กทรอนิกส์",
+    "Signed with the uploaded signature and timestamped when sent.":"ลงนามด้วยลายเซ็นที่อัปโหลดและประทับเวลาเมื่อส่ง",
+    "The patient reviews and accepts the plan before payment and Fascino pharmacy fulfilment.":"ผู้ป่วยตรวจและยอมรับแผนก่อนชำระเงินและให้ร้านยา Fascino จัดยา",
+    "Sign, send plan & complete visit":"ลงนาม ส่งแผน และจบการปรึกษา",
+    "Professional details":"ข้อมูลวิชาชีพ","Doctor identity":"ตัวตนแพทย์",
+    "Verified by Krane admin before this account can go on call or sign a clinical record.":"แอดมิน Krane ตรวจสอบก่อนบัญชีนี้จะเปิดรับเคสหรือลงนามเวชระเบียนได้",
+    "Registration authority":"หน่วยงานกำกับทะเบียน","Medical Council of Thailand":"แพทยสภา"
+  };
+  for (var _kdc in TH_DOCTOR_CLOSEOUT) TH[_kdc] = TH_DOCTOR_CLOSEOUT[_kdc];
+
   function swap(th) {
     var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode: function (n) { var p = n.parentNode && n.parentNode.nodeName; return (p === "SCRIPT" || p === "STYLE") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
