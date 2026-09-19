@@ -2317,26 +2317,40 @@
       ? [...segmenter.segment(text)].map((part) => part.segment)
       : text.split(/(\s+)/);
 
-    const words = [];
-    lines.forEach((line) => {
-      const parts = segment(line.textContent);
-      line.textContent = "";
-      parts.forEach((part) => {
-        if (!part.trim()) {
-          line.append(part);
-          return;
-        }
-        const word = document.createElement("span");
-        word.className = "positioning-word";
-        word.textContent = part;
-        line.append(word);
-        words.push(word);
+    /* Rebuilt per language (19 Sep): it used to be split once in whichever
+       language loaded, so switching left the other language's words behind.
+       Thai splits on real word boundaries, English on spaces. */
+    const sources = lines.map((line) => line.textContent);
+    let words = [];
+    function build(lang) {
+      words = [];
+      lines.forEach((line, index) => {
+        const thai = sources[index];
+        const english = lang === "en" && typeof draftEnglishText !== "undefined" ? draftEnglishText.get(thai.trim()) : null;
+        const parts = english ? english.split(/(\s+)/) : segment(thai);
+        line.textContent = "";
+        parts.forEach((part) => {
+          if (!part.trim()) {
+            line.append(part);
+            return;
+          }
+          const word = document.createElement("span");
+          word.className = "positioning-word";
+          word.textContent = part;
+          line.append(word);
+          words.push(word);
+        });
       });
-    });
+    }
+    build(document.documentElement.lang === "en" ? "en" : "th");
     section.classList.add("is-lit-ready");
 
     if (reducedMotionQuery.matches) {
       words.forEach((word) => word.classList.add("is-lit"));
+      document.addEventListener("krane:languagechange", (event) => {
+        build(event.detail && event.detail.lang);
+        words.forEach((word) => word.classList.add("is-lit"));
+      });
       return;
     }
 
@@ -2367,6 +2381,11 @@
 
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
+    document.addEventListener("krane:languagechange", (event) => {
+      build(event.detail && event.detail.lang);
+      lit = -1;
+      paint();
+    });
     paint();
   })();
 
