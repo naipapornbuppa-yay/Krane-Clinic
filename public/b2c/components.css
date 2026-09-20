@@ -192,7 +192,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .signup-consent__row .consent-agree{flex:1;min-width:0;align-items:center;font-size:var(--fs-sm);line-height:1.45;color:var(--color-ink)}
 .signup-consent__row .consent-agree .check{margin-top:0}
 .signup-consent__row .consent-agree strong{font-weight:var(--fw-semibold)}
-.signup-consent__more{flex:none;width:auto;margin:0;padding:0;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--color-accent);white-space:nowrap}
+/* Client, 20 Sep: "รายละเอียด" no longer sits on its own line. The clause the
+   patient is agreeing to is the link, inline in the sentence. */
+.signup-consent__more{display:inline;width:auto;margin:0;padding:0;font:inherit;font-weight:var(--fw-semibold);color:var(--color-accent);text-align:left}
 .signup-consent__optional{color:var(--color-ink-3)}
 .signup-consent__hint{margin:2px 0 0;color:var(--color-ink-3);font-size:var(--fs-xs)}
 .signup-consent__hint[hidden]{display:none}
@@ -3997,9 +3999,11 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    because this is agreeing to something, not picking one of several; and
    "รายละเอียด" follows its own sentence instead of floating at the far edge. */
 .consent-agree .check .box{border-radius:var(--selection-radius-check)}
-.signup-consent__row{justify-content:flex-start;flex-wrap:wrap;gap:4px 10px}
-.signup-consent__row .consent-agree{flex:0 1 auto}
-.signup-consent__more{text-decoration:underline;text-underline-offset:3px}
+.signup-consent__row{justify-content:flex-start;gap:10px}
+/* Wins over .textlink's flex box, which would push the clause onto a line of
+   its own instead of letting it wrap inside the sentence. */
+.signup-consent__more{display:inline;width:auto;margin:0;padding:0;font:inherit;font-weight:var(--fw-semibold);
+  color:var(--color-accent);text-decoration:underline;text-underline-offset:3px}
 
 /* Floating-label fields for sign up, log in and set password (P'New, 19 Sep,
    after hims.com and Xiaomi): one box per field, the label inside it where a
@@ -4009,7 +4013,6 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:58px;padding:0 16px}
 .float-field__slot{position:relative;display:block;flex:1;min-width:0}
 .float-field .input{width:100%;height:56px;padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
-.float-field .phone-field__country{height:56px;align-self:center}
 .float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
 .float-field>.password-field .input{padding-right:0}
 .float-field__slot>label{position:absolute;left:0;top:50%;margin:0;transform:translateY(-50%);
@@ -4027,7 +4030,6 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field:has(.password-mismatch:not([hidden])) .float-field__slot>label{color:var(--color-danger)}
 .float-field .password-mismatch{margin:6px 2px 0;color:var(--color-danger);font-size:var(--fs-xs)}
 @media (prefers-reduced-motion: reduce){.float-field__slot>label{transition:none}}
-/* Client, 19 Sep: the country button shows the flag only; the dial code stays
-   in the country list, where it helps someone choose. */
-.float-field .phone-field__dial{display:none}
-.float-field .phone-field__country{gap:6px;padding-right:12px}
+/* Client, 20 Sep: sign up and log in have no country button at all. The number
+   is Thai, so the flag and the dial code only crowded the field. */
+.float-field>.phone-field .float-field__slot{padding-left:0}
