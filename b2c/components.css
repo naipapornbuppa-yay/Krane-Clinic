@@ -4041,7 +4041,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field__slot:focus-within>label,
 .float-field__slot>.input:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .float-field__slot:focus-within>label{color:var(--color-accent)}
-.float-field .input::placeholder{color:transparent}
+.float-field:not(.float-field--static) .input::placeholder,
+.float-field:not(.float-field--static) .textarea::placeholder{color:transparent}
+.float-field--static .input::placeholder,.float-field--static .textarea::placeholder{color:var(--color-ink-3)}
 /* Error: red box, red title, message below (the mismatch line on set password). */
 .float-field.is-invalid>.phone-field,.float-field.is-invalid>.password-field,
 .float-field:has(.password-mismatch:not([hidden]))>.password-field{border-color:var(--color-danger);box-shadow:none}
@@ -4052,3 +4054,44 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 /* Client, 20 Sep: sign up and log in have no country button at all. The number
    is Thai, so the flag and the dial code only crowded the field. */
 .float-field>.phone-field .float-field__slot{padding-left:0}
+
+/* ---------- Floating labels, every field (client, 20 Sep) ---------- */
+/* The sign-up page's control is now the app's only text field: one outlined
+   box, the field name inside it where a placeholder would be, rising to a
+   small title as soon as the field is focused or holds a value.
+   "--static" is for a control that always shows something of its own, a
+   select, a date, or a format hint, where the name stays small. */
+.float-field>.float-field__box{
+  display:flex;align-items:stretch;min-height:58px;padding:0 16px;
+  border:1.5px solid var(--color-line-strong);border-radius:16px;background:var(--color-surface);
+  transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
+}
+.float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
+.float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.float-field .input,.float-field .select,.float-field .textarea,
+#intake-general .float-field .input,#intake-general .float-field .select{
+  height:56px;padding:20px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
+}
+.float-field .input:hover,.float-field .select:hover,.float-field .textarea:hover,
+.float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}
+.float-field .textarea{height:auto;min-height:104px;padding-top:26px;padding-bottom:12px}
+.float-field .select{cursor:pointer}
+/* A select and a date show their own content from the start, so their name
+   never drops into the middle of the box. */
+.float-field--static .float-field__slot>label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.float-field--static .float-field__slot:focus-within>label{color:var(--color-accent)}
+/* The date control draws its own box; inside a field the field's box is the
+   only one, and the value reads from the left like every other field. */
+.float-field .date-control{height:56px;align-self:center}
+.float-field .date-control__display{padding:20px 0 0;border:0;background:transparent;grid-template-columns:minmax(0,1fr) 20px;gap:8px}
+.float-field .date-control__value{text-align:left}
+.float-field .date-control__display>span:first-child{display:none}
+.float-field .date-control:focus-within .date-control__display{border-color:transparent;box-shadow:none}
+/* An invalid field turns the whole box red, the way the password box does. */
+.float-field.is-invalid>.float-field__box{border-color:var(--color-danger);box-shadow:none}
+.float-field.is-invalid .float-field__slot>label{color:var(--color-danger)}
+/* The × that clears an address field sits beside the value, not over the name. */
+.float-field>.float-field__box>.field__clear{position:static;align-self:center;flex:none;margin-left:8px}
+.field-row>.float-field>.float-field__box{margin-top:auto}
+/* A field inside a flex row has to take the row, not shrink to its text. */
+.partner-history-detail>.float-field,.row>.float-field.grow{flex:1;min-width:0}
