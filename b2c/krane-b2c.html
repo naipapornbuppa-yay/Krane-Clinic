@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-address-recipient-order-v1";
+    const release = "20260920-payment-discount-footer-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-address-recipient-order-v1">
+<link rel="stylesheet" href="components.css?v=20260920-payment-discount-footer-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2587,7 +2587,8 @@
         <span class="checkout-pay__amount">
           <span>ยอดรวม</span>
           <strong data-payment-total>฿ 558</strong>
-          <span class="checkout-pay__save" data-payment-save hidden>ประหยัด <span data-payment-save-amt>฿ 0</span> จาก <s data-payment-was>฿ 0</s></span>
+          <span class="checkout-pay__save" data-payment-save hidden>ว้าว คุณประหยัดไป <span data-payment-save-amt>฿ 0</span></span>
+          <s class="checkout-pay__was" data-payment-was hidden>฿ 0</s>
         </span>
         <button class="btn btn--primary" data-payment-go disabled aria-disabled="true"><span data-payment-cta-label>ชำระเงิน</span></button>
       </div>
@@ -5066,8 +5067,26 @@
     ? {code:flowState.orderState.promoCode,amount:Number(flowState.orderState.promoAmount)}
     : null;
   let paymentDue = 558;
+  let paymentCredit = 0;
   function currentMedicationDue(){
     return Math.max(0,paymentDue - (appliedPromo ? appliedPromo.amount : 0));
+  }
+  function syncPaymentFooterSavings(){
+    const payment=document.getElementById('payment');
+    if(!payment) return;
+    const footerBaht=amount => '฿'+Number(amount).toLocaleString('en-US');
+    const promo=Math.min(paymentDue,appliedPromo ? Math.max(0,Number(appliedPromo.amount) || 0) : 0);
+    const savings=Math.max(0,paymentCredit)+promo;
+    const due=currentMedicationDue();
+    const total=payment.querySelector('.screen__footer [data-payment-total]');
+    const saveWrap=payment.querySelector('[data-payment-save]');
+    const saveAmount=payment.querySelector('[data-payment-save-amt]');
+    const originalTotal=payment.querySelector('[data-payment-was]');
+    if(total) total.textContent=footerBaht(due);
+    if(saveWrap) saveWrap.hidden=savings<=0;
+    if(originalTotal) originalTotal.hidden=savings<=0;
+    if(saveAmount) saveAmount.textContent=footerBaht(savings);
+    if(originalTotal) originalTotal.textContent=footerBaht(due+savings);
   }
   function syncMedicationFailureAmount(amount=currentMedicationDue()){
     const failureTotal=document.querySelector('#payfail [data-payment-failure-total]');
@@ -5524,20 +5543,12 @@
       kmTarget.hidden = !known;
       if(known) kmTarget.textContent = `${flowState.orderState.address.km || '3.2'} กม.`;
     }
-    // Savings are stated plainly. No celebration copy and no emoji (DESIGN.md 7c).
-    const saveWrap = payment.querySelector('[data-payment-save]');
-    if(saveWrap){
-      saveWrap.hidden = credit <= 0;
-      const amt = payment.querySelector('[data-payment-save-amt]');
-      const was = payment.querySelector('[data-payment-was]');
-      if(amt) amt.textContent = baht(credit);
-      if(was) was.textContent = baht(subtotal + addon + delivery);
-    }
     const promoRow = payment.querySelector('[data-payment-promo-row]');
     const promoLabel = payment.querySelector('[data-payment-promo]');
     if(promoRow) promoRow.hidden = !appliedPromo;
     if(promoLabel) promoLabel.textContent = appliedPromo ? `${appliedPromo.code} · ลด ${baht(appliedPromo.amount)}` : 'ใส่โค้ดส่วนลด';
     paymentDue = due;
+    paymentCredit = Math.max(0,Number(credit) || 0);
     const finalDue=currentMedicationDue();
     flowState.orderState.amountDue=finalDue;
     const points=payment.querySelector('[data-payment-points]');
@@ -5550,6 +5561,7 @@
       const qr = screen.querySelector('svg[data-qr]');
       if(qr){ qr.dataset.qrSeed = String(finalDue); drawQR(qr); }
     });
+    syncPaymentFooterSavings();
     persistFlowState();
     syncPaymentOutcome();
     syncCheckoutReadiness();
@@ -11659,6 +11671,7 @@
       if(!screen) return;
       screen.querySelectorAll('[data-payment-total]').forEach(el => { el.textContent = baht(due); });
     });
+    syncPaymentFooterSavings();
     const checkout=document.getElementById('payment');
     if(checkout){
       checkout.querySelectorAll('[data-payment-required-section]').forEach(section => { section.hidden=due<=0; });
