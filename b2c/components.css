@@ -4118,6 +4118,240 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    is Thai, so the flag and the dial code only crowded the field. */
 .float-field>.phone-field .float-field__slot{padding-left:0}
 
+/* ---------- Payment reference layout (client, 20 Sep) ----------
+   The checkout follows the supplied delivery-app composition exactly: basket,
+   optional add-ons, a quiet subtotal, fulfilment, payment, offer, then one
+   full-width pay action. Clinical and pricing logic remain unchanged. */
+#payment{
+  --payment-gutter:18px;
+  background:#f7f7f8;
+}
+#payment>.care-journey,
+#payment .checkout-context,
+#payment .checkout-eco-option,
+#payment .checkout-reward-row,
+#payment [data-checkout-assurance]{display:none!important}
+
+#payment .payment-topbar{
+  position:relative;
+  min-height:72px;
+  justify-content:center;
+  padding:12px var(--payment-gutter);
+  background:#f7f7f8;
+}
+#payment .payment-topbar>.back{position:absolute;left:var(--payment-gutter);top:50%;transform:translateY(-50%)}
+#payment .payment-topbar__logo{width:128px;height:auto;display:block}
+#payment>.payment-deadline{
+  min-height:40px;
+  margin:8px var(--payment-gutter) 14px;
+  padding:9px 16px;
+  border-radius:999px;
+}
+
+#payment>.screen__body{
+  gap:0;
+  padding:18px var(--payment-gutter) 32px;
+  background:#f7f7f8;
+  scrollbar-gutter:auto;
+  -webkit-mask-image:none;
+  mask-image:none;
+}
+#payment>.screen__body>*+*{margin-top:26px}
+#payment [data-checkout-sequence="order"]{order:10}
+#payment [data-checkout-sequence="addons"]{order:20}
+#payment [data-checkout-sequence="total"]{order:30}
+#payment [data-checkout-sequence="fulfillment"]{order:40}
+#payment [data-checkout-sequence="address"]{order:50}
+#payment [data-checkout-sequence="delivery"]{order:60}
+#payment [data-checkout-sequence="payment"]{order:70}
+#payment [data-checkout-sequence="offers"]{order:80}
+#payment .section-label{font-size:15px;font-weight:var(--fw-semibold);color:var(--color-ink)}
+#payment .checkout-head{align-items:center}
+#payment .checkout-head__edit{display:none}
+#payment .stack-2:has(.checkout-order.is-editing) .checkout-head__edit{display:inline-flex}
+
+#payment .checkout-order{
+  border:0;
+  border-radius:22px;
+  background:var(--color-surface);
+  box-shadow:0 8px 22px rgba(27,46,66,.08);
+}
+#payment .checkout-order__item{
+  grid-template-columns:46px minmax(0,1fr) auto;
+  gap:2px 10px;
+  min-height:86px;
+  padding:14px 14px;
+}
+#payment .checkout-order__item+.checkout-order__item{border-top:1px solid #e7e9ee}
+#payment .checkout-order__thumb{
+  width:46px;
+  height:46px;
+  border:1px solid #dfe2e8;
+  border-radius:10px;
+  background:#fff;
+}
+#payment .checkout-order__thumb img{width:100%;height:100%;object-fit:contain;display:block}
+#payment .checkout-order__thumb--service{padding:0;overflow:hidden;background:#fff}
+#payment .checkout-order__thumb--service img{object-fit:cover}
+#payment .checkout-order__body{display:flex;flex-direction:column;gap:2px;align-self:center}
+#payment .checkout-order__name{font-size:15px;line-height:1.25;font-weight:var(--fw-semibold)}
+#payment .checkout-order__note{font-size:13px;line-height:1.35;color:var(--color-ink-3)}
+#payment .checkout-order__price{align-self:start;font-size:14px;line-height:1.25;font-weight:var(--fw-semibold)}
+#payment .checkout-order__price--paid{
+  grid-row:1 / span 2;
+  align-self:center;
+  display:flex;
+  align-items:baseline;
+  justify-content:flex-end;
+  gap:8px;
+}
+#payment .checkout-order__price--paid s{color:var(--color-ink-3);font-weight:var(--fw-regular)}
+#payment .checkout-order__price--paid strong{color:var(--color-ink);font-weight:var(--fw-semibold)}
+#payment .checkout-order__line-edit{
+  grid-column:2;
+  grid-row:2;
+  justify-self:start;
+  align-self:start;
+  margin:1px 0 0;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--color-accent);
+  font:inherit;
+  font-size:13px;
+  font-weight:var(--fw-semibold);
+  cursor:pointer;
+}
+#payment .checkout-order:not(.is-editing) .checkout-order__stepper{
+  grid-column:3;
+  grid-row:2;
+  justify-self:end;
+  align-self:start;
+  gap:5px;
+  margin:0;
+  color:var(--color-ink);
+}
+#payment .checkout-order.is-editing .checkout-order__line-edit{display:none}
+#payment .checkout-order__by{display:none}
+
+#payment .checkout-addon-rail{gap:12px;padding-bottom:4px}
+#payment [data-payment-addons] .checkout-head>.hint{display:none}
+#payment .checkout-addon-card{
+  flex-basis:188px;
+  min-height:150px;
+  padding:12px;
+  border-radius:16px;
+}
+#payment .checkout-addon-card__visual{height:66px}
+#payment .checkout-addon-card__visual::before{width:58px;height:58px}
+#payment .checkout-addon-card__visual img{width:70px;height:70px}
+#payment .checkout-addon-card__copy strong{font-size:13px}
+#payment .checkout-addon-card__copy span{font-size:11px}
+
+#payment .checkout-final-summary{gap:0;padding:0 2px}
+#payment .checkout-final-summary>.checkout-head,
+#payment .checkout-bill__total,
+#payment .checkout-bill__rule,
+#payment [data-payment-consultation-row]{display:none!important}
+#payment .checkout-bill{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+#payment .checkout-bill__row{
+  min-height:28px;
+  padding:3px 0;
+  color:var(--color-ink-2);
+  font-size:14px;
+}
+#payment .checkout-bill__row--delivery{margin:0;padding-top:3px;border-top:0}
+
+#payment .checkout-fulfillment-block,
+#payment [data-checkout-sequence="payment"],
+#payment [data-checkout-sequence="offers"]{
+  width:calc(100% + (var(--payment-gutter) * 2));
+  max-width:none;
+  margin-left:calc(var(--payment-gutter) * -1);
+  margin-right:calc(var(--payment-gutter) * -1);
+  padding:22px var(--payment-gutter) 0;
+  border-top:10px solid #eceef1;
+}
+#payment .checkout-fulfillment-tabs{
+  gap:4px;
+  min-height:58px;
+  padding:4px;
+  border-radius:16px;
+  background:#e8e9ed;
+}
+#payment .checkout-fulfillment-tabs button{
+  min-height:50px;
+  border-radius:12px;
+  font-size:15px;
+}
+#payment .checkout-fulfillment-tabs button[aria-selected="true"]{
+  background:var(--color-accent);
+  color:var(--color-on-accent);
+  box-shadow:none;
+}
+#payment [data-checkout-sequence="address"] .checkout-row--compact{display:none}
+#payment .checkout-row{
+  min-height:72px;
+  border-radius:22px;
+  box-shadow:0 7px 20px rgba(27,46,66,.07);
+}
+#payment .checkout-row__icon{background:#eef0f4}
+#payment [data-delivery-value="priority"],
+#payment [data-delivery-value="scheduled"]{display:none}
+#payment .checkout-delivery-option{
+  min-height:76px;
+  border-radius:18px;
+  background:var(--color-surface);
+  box-shadow:0 7px 20px rgba(27,46,66,.06);
+}
+#payment .checkout-delivery-option[aria-checked="true"]{border-width:1.5px;background:var(--color-surface)}
+#payment .checkout-delivery-option .opt-sub{display:none}
+#payment .checkout-section-link{
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--color-accent);
+  font:inherit;
+  font-size:13px;
+  font-weight:var(--fw-semibold);
+  cursor:pointer;
+}
+
+#payment .screen__footer{
+  padding:16px var(--payment-gutter) max(18px,env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.97);
+  box-shadow:0 -8px 24px rgba(27,46,66,.08);
+}
+#payment .checkout-pay{display:flex;flex-direction:column;align-items:stretch;gap:14px}
+#payment .checkout-pay__amount{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:baseline;
+  gap:3px 12px;
+}
+#payment .checkout-pay__amount>span:first-child{font-size:13px}
+#payment .checkout-pay__amount>strong{grid-column:2;grid-row:1;font-size:24px;font-weight:var(--fw-bold)}
+#payment .checkout-pay__save{grid-column:1 / -1;display:flex;justify-content:space-between;gap:12px;color:var(--color-ink-3)}
+#payment .checkout-pay__save:not([hidden]){display:flex}
+#payment .checkout-pay .btn{width:100%;min-height:56px;border-radius:14px;font-size:16px}
+
+@media(max-width:390px){
+  #payment{--payment-gutter:16px}
+  #payment .payment-topbar{min-height:66px}
+  #payment .payment-topbar__logo{width:118px}
+  #payment>.payment-deadline{margin-inline:var(--payment-gutter)}
+  #payment .checkout-order__item{grid-template-columns:44px minmax(0,1fr) auto;padding-inline:12px}
+  #payment .checkout-order__thumb{width:44px;height:44px}
+  #payment .checkout-addon-card{flex-basis:172px}
+}
+
 /* ---------- Floating labels, every field (client, 20 Sep) ---------- */
 /* The sign-up page's control is now the app's only text field: one outlined
    box, the field name inside it where a placeholder would be, rising to a
