@@ -1662,7 +1662,7 @@
        viewport rather than 210px, and the recipient name and phone sit on one
        row directly under the map. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ที่อยู่จัดส่ง</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">รายละเอียดที่อยู่</span></div>
     <div class="screen__body address-body stack-4">
       <!-- Simulated map. In-app only: nothing here navigates out to Google. -->
       <div class="address-map" data-address-map>
@@ -1699,13 +1699,20 @@
         <div class="field grow"><label for="addrProvince">จังหวัด</label><input class="input" id="addrProvince" autocomplete="off" placeholder="จังหวัด" required></div>
         <div class="field field--narrow"><label for="addrPostcode">รหัสไปรษณีย์</label><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder="10110" required></div>
       </div>
+      <fieldset class="delivery-instructions">
+        <legend>วิธีรับสินค้า</legend>
+        <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="lobby"><span><strong>วางไว้ที่ล็อบบี้</strong><small>เหมาะสำหรับคอนโดและอาคารสำนักงาน</small></span></label>
+        <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="doorstep"><span><strong>วางไว้หน้าประตู</strong><small>ไรเดอร์จะแจ้งเมื่อจัดส่งเรียบร้อย</small></span></label>
+        <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="security"><span><strong>ฝากไว้ที่ รปภ.</strong><small>ระบุชื่ออาคารหรือจุดรับในช่องด้านล่าง</small></span></label>
+        <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="hand" checked><span><strong>ส่งให้ฉันโดยตรง</strong><small>ไรเดอร์จะโทรหาเมื่อถึงจุดหมาย</small></span></label>
+      </fieldset>
       <div class="field"><label for="addrNote">หมายเหตุถึงไรเดอร์ <span class="hint">(ไม่บังคับ)</span></label><textarea class="textarea" id="addrNote" autocomplete="off" placeholder="จุดสังเกต รหัสประตู หรือวิธีค้นหาห้อง"></textarea></div>
 
       <!-- addrDistrict is kept as the composed string the payment summary and the
            km lookup already read. Never edited directly, always derived. -->
       <input type="hidden" id="addrDistrict">
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-save>บันทึกและคำนวณค่าจัดส่ง</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-address-save>ยืนยันที่อยู่</button></div>
   </section>
   <!-- The map picker modal is gone: the map on #address IS the picker now. -->
 
@@ -1754,6 +1761,11 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ตรวจสอบและชำระเงิน</span></div>
     <div class="screen__body stack-4">
 
+      <div class="checkout-context" aria-label="ข้อมูลร้านยาและเวลาคำนวณราคา">
+        <span class="checkout-context__icon" aria-hidden="true"><i data-lucide="store" class="ui-icon"></i></span>
+        <span class="checkout-context__copy"><strong>ร้านยาพาร์ตเนอร์ Krane</strong><span>ร้านยาและค่าจัดส่งจะยืนยันตามที่อยู่ของคุณ</span></span>
+      </div>
+
       <!-- 1. Order summary. The patient may still reduce or decline items before
            payment, but can never exceed the doctor's prescribed ceiling. -->
       <div class="stack-2">
@@ -1766,7 +1778,7 @@
             <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
           </div>
           <div class="checkout-order__item" data-order-item="cough">
-            <span class="checkout-order__thumb" aria-hidden="true"><i data-lucide="pill" class="ui-icon"></i></span>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/medicine/real-v1/tusspac-15-100-130.jpg" alt="" loading="lazy" decoding="async"></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Dextromethorphan HBr 15 mg + Glyceryl Guaiacolate 100 mg + Terpin Hydrate 130 mg</span>
               <span class="checkout-order__note">ลดอาการไอ ขับเสมหะ</span>
@@ -1777,7 +1789,7 @@
             <span class="checkout-order__price" data-order-price>฿ 170</span>
           </div>
           <div class="checkout-order__item" data-order-item="loratadine">
-            <span class="checkout-order__thumb" aria-hidden="true"><i data-lucide="pill" class="ui-icon"></i></span>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" alt="" loading="lazy" decoding="async"></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Loratadine 10 mg</span>
               <span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span>
@@ -1788,7 +1800,7 @@
             <span class="checkout-order__price" data-order-price>฿ 94</span>
           </div>
           <div class="checkout-order__item" data-order-item="paracetamol">
-            <span class="checkout-order__thumb" aria-hidden="true"><i data-lucide="pill" class="ui-icon"></i></span>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" alt="" loading="lazy" decoding="async"></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Paracetamol 500 mg</span>
               <span class="checkout-order__note">แก้ปวด ลดไข้</span>
@@ -1799,7 +1811,7 @@
             <span class="checkout-order__price" data-order-price>฿ 40</span>
           </div>
           <div class="checkout-order__item" data-order-item="naproxen">
-            <span class="checkout-order__thumb" aria-hidden="true"><i data-lucide="pill" class="ui-icon"></i></span>
+            <span class="checkout-order__thumb" aria-hidden="true"><img class="medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" alt="" loading="lazy" decoding="async"></span>
             <span class="checkout-order__body">
               <span class="checkout-order__name">Naproxen 250 mg</span>
               <span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span>
@@ -1813,57 +1825,11 @@
         <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
       </div>
 
-      <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
-           step first; a returning patient can review or change the saved result. -->
-      <div class="stack-2" data-fulfillment-section>
-        <span class="section-label">การจัดส่ง</span>
-        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
-          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
-          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
-          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- 3. Delivery options. Krane runs one same-day service, so this is a single
-           selected card rather than a tier list. The card shape is kept so more
-           services can be added later without changing the layout. -->
-      <div class="stack-2" data-fulfillment-section>
-        <div class="checkout-head">
-          <span class="section-label">ตัวเลือกการจัดส่ง</span>
-          <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
-        </div>
-        <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
-        <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
-          <span class="opt-body">
-            <span class="opt-title">จัดส่งภายในวัน</span>
-            <span class="opt-sub">ถึงภายใน 18:00 น. วันนี้ · คำนวณหลังใส่ที่อยู่</span>
-          </span>
-          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">ค่าประมาณ ฿80 ถึง ฿180</span>
-        </button>
-        <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
-          <span class="opt-body">
-            <span class="opt-title">จัดส่งทางไปรษณีย์</span>
-            <span class="opt-sub">ส่งพรุ่งนี้ · มีหมายเลขติดตาม</span>
-          </span>
-          <span class="checkout-order__price">ฟรี</span>
-        </button>
-      </div>
-
-      <!-- 4. How it is paid. -->
-      <div class="stack-2" data-payment-required-section>
-        <span class="section-label">วิธีชำระเงิน</span>
-        <button class="checkout-row" data-open-methods>
-          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">ชำระด้วย</span><span class="checkout-row__value" data-payment-method>QR / PromptPay</span></span>
-          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- 5. Optional retail add-ons, clearly separated from prescribed medicine. -->
+      <!-- Optional products sit directly under the basket, like the reference
+           checkout's "add items" rail, but keep Krane's clinical product cards. -->
       <div class="stack-2" data-payment-required-section data-payment-addons>
         <div class="checkout-head">
-          <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
+          <span class="section-label">เพิ่มสินค้าเสริม</span>
           <span class="hint">ไม่บังคับ</span>
         </div>
         <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
@@ -1885,6 +1851,78 @@
         </div>
       </div>
 
+      <label class="checkout-eco-option" data-fulfillment-section>
+        <span><strong>ลดบรรจุภัณฑ์ที่ไม่จำเป็น</strong><small>ใช้เฉพาะบรรจุภัณฑ์ที่จำเป็นต่อความปลอดภัยของยา</small></span>
+        <input type="checkbox" data-eco-packaging><span class="checkout-switch" aria-hidden="true"></span>
+      </label>
+
+      <!-- 2. Confirmed address summary. A fresh medicine order reaches the address
+           step first; a returning patient can review or change the saved result. -->
+      <div class="stack-2" data-fulfillment-section>
+        <div class="checkout-fulfillment-tabs" role="tablist" aria-label="รูปแบบการรับสินค้า">
+          <button type="button" role="tab" aria-selected="true" data-fulfillment-mode="delivery">จัดส่ง</button>
+          <button type="button" role="tab" aria-selected="false" data-fulfillment-mode="pickup">รับที่ร้าน</button>
+        </div>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row data-delivery-address-section>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span></span>
+          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="checkout-row checkout-row--compact" data-go="address" data-delivery-address-section>
+          <span class="checkout-row__icon"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รายละเอียดการรับสินค้า</span><span class="checkout-row__value" data-payment-address-detail>เพิ่มชั้น ห้อง และจุดวางสินค้า</span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <div class="checkout-row checkout-pickup-location" data-pickup-details hidden>
+          <span class="checkout-row__icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">จุดรับสินค้า</span><span class="checkout-row__value checkout-row__value--wrap">ร้านยาพาร์ตเนอร์ Krane · สาขาอารีย์</span><span class="checkout-row__recipient">พร้อมรับภายในประมาณ 60 นาที</span></span>
+        </div>
+      </div>
+
+      <!-- 3. Delivery options. Krane runs one same-day service, so this is a single
+           selected card rather than a tier list. The card shape is kept so more
+           services can be added later without changing the layout. -->
+      <div class="stack-2" data-fulfillment-section data-delivery-options>
+        <div class="checkout-head">
+          <span class="section-label">ตัวเลือกการจัดส่ง</span>
+          <span class="hint" data-payment-km>คำนวณหลังใส่ที่อยู่</span>
+        </div>
+        <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" aria-selected="false" data-delivery-option data-delivery-value="priority">
+          <span class="opt-body">
+            <span class="opt-title">ด่วนพิเศษ</span>
+            <span class="opt-sub">ประมาณ 60 นาที · มีการรับประกันเวลา</span>
+          </span>
+          <span class="checkout-order__price" data-payment-priority-fee data-fee-estimated="true">ค่าประมาณ ฿140</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
+          <span class="opt-body">
+            <span class="opt-title">มาตรฐาน</span>
+            <span class="opt-sub">ภายในวันนี้ก่อน 18:00 น. · มีการรับประกันเวลา</span>
+          </span>
+          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">ค่าประมาณ ฿80 ถึง ฿180</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" aria-selected="false" data-delivery-option data-delivery-value="postal">
+          <span class="opt-body"><span class="opt-title">ประหยัด</span><span class="opt-sub">1 ถึง 3 วัน · มีหมายเลขติดตาม</span></span>
+          <span class="checkout-order__price">ฟรี</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" aria-selected="false" data-delivery-option data-delivery-value="scheduled">
+          <span class="opt-body"><span class="opt-title">เลือกช่วงเวลาจัดส่ง</span><span class="opt-sub">เลือกวันที่และช่วงเวลาที่สะดวก</span></span>
+          <span class="checkout-order__price">เลือกเวลา</span>
+        </button>
+      </div>
+
+      <!-- 4. How it is paid. -->
+      <div class="stack-2" data-payment-required-section>
+        <span class="section-label">วิธีชำระเงิน</span>
+        <button class="checkout-row" data-open-methods>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">ชำระด้วย</span><span class="checkout-row__value" data-payment-method>QR / PromptPay</span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
       <!-- 6. Offers already selected earlier are applied automatically. -->
       <div class="stack-2">
         <span class="section-label">ส่วนลดและสิทธิ์</span>
@@ -1898,6 +1936,12 @@
           <span class="checkout-row__body"><span class="checkout-row__label">สิทธิ์ที่ใช้โดยอัตโนมัติ</span><span class="checkout-row__value" data-payment-insurance-label>เครดิตจากกรมธรรม์</span></span>
           <span class="badge badge--ok">ใช้แล้ว</span>
         </div>
+      </div>
+
+      <div class="checkout-reward-row" data-payment-required-section>
+        <span class="checkout-reward-row__icon" aria-hidden="true"><i data-lucide="sparkles" class="ui-icon"></i></span>
+        <span><strong>รับ Krane Points จากคำสั่งซื้อนี้</strong><small>รับคะแนนหลังชำระเงินสำเร็จ</small></span>
+        <strong data-payment-points>56 คะแนน</strong>
       </div>
 
       <!-- 7. Final calculation comes after every editable decision and discount.
@@ -1928,7 +1972,7 @@
           <strong data-payment-total>฿ 558</strong>
           <span class="checkout-pay__save" data-payment-save hidden>ประหยัด <span data-payment-save-amt>฿ 0</span> จาก <s data-payment-was>฿ 0</s></span>
         </span>
-        <button class="btn btn--primary" data-payment-go><span data-payment-cta-label>ไปหน้าชำระเงิน</span></button>
+        <button class="btn btn--primary" data-payment-go><span data-payment-cta-label>ตรวจสอบที่อยู่</span></button>
       </div>
     </div>
   </section>
@@ -3467,6 +3511,13 @@
       option.setAttribute('aria-selected',String(selected));
       option.setAttribute('aria-checked',String(selected));
     });
+    const pickup=flowState.orderState.deliveryMethod==='pickup';
+    document.querySelectorAll('[data-fulfillment-mode]').forEach(option => {
+      option.setAttribute('aria-selected',String((option.dataset.fulfillmentMode==='pickup')===pickup));
+    });
+    document.querySelectorAll('[data-delivery-address-section]').forEach(section => { section.hidden=pickup; });
+    document.querySelectorAll('[data-delivery-options]').forEach(section => { section.hidden=pickup; });
+    document.querySelectorAll('[data-pickup-details]').forEach(section => { section.hidden=!pickup; });
     const planContinue=document.querySelector('#plan [data-plan-continue]');
     if(planContinue) planContinue.textContent=hasMedicines()
       ? 'ยืนยันรายการยาและเลือกการจัดส่ง'
@@ -3486,6 +3537,7 @@
       line:String(address.line || ''),
       district:String(address.district || ''),
       note:String(address.note || ''),
+      dropoffMethod:String(address.dropoffMethod || 'hand'),
       km:String(address.km || screen.dataset.selectedKm || '3.2')
     });
   }
@@ -3502,6 +3554,14 @@
     if(row) row.classList.toggle('checkout-row--empty',!confirmed);
     const action=document.querySelector('[data-payment-address-action]');
     if(action) action.textContent=confirmed ? 'เปลี่ยนที่อยู่' : 'เพิ่มที่อยู่';
+    const detail=document.querySelector('[data-payment-address-detail]');
+    if(detail){
+      const dropoffLabels={lobby:'วางไว้ที่ล็อบบี้',doorstep:'วางไว้หน้าประตู',security:'ฝากไว้ที่ รปภ.',hand:'ส่งให้ฉันโดยตรง'};
+      const floor=address.floor ? (/^ชั้น\s/.test(address.floor) ? address.floor : `ชั้น ${address.floor}`) : '';
+      detail.textContent=confirmed
+        ? [floor,dropoffLabels[address.dropoffMethod || 'hand']].filter(Boolean).join(' · ')
+        : 'เพิ่มชั้น ห้อง และจุดวางสินค้า';
+    }
     const previewTitle=document.querySelector('[data-address-preview-title]');
     const previewDetail=document.querySelector('[data-address-preview-detail]');
     if(previewTitle) previewTitle.textContent=confirmed ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง';
@@ -3530,6 +3590,8 @@
       const input=screen.querySelector(`#${id}`);
       if(input) input.value=value || '';
     });
+    const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${address.dropoffMethod || 'hand'}"]`);
+    if(dropoff) dropoff.checked=true;
     screen.dataset.selectedKm=address.km || '3.2';
     writeDeliveryAddressDraft(screen,address);
   }
@@ -3545,7 +3607,8 @@
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
-      district:v('addrDistrict'), note:v('addrNote')
+      district:v('addrDistrict'), note:v('addrNote'),
+      dropoffMethod:document.querySelector('#address input[name="dropoffMethod"]:checked')?.value || 'hand'
     };
   }
 
@@ -3573,12 +3636,14 @@
       building:a.building, floor:a.floor, line:a.line,
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district,
-      note:a.note, km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
+      note:a.note, dropoffMethod:a.dropoffMethod,
+      km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     });
     flowState.orderState.address={
       building:a.building, floor:a.floor, line:a.line,
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district, note:a.note,
+      dropoffMethod:a.dropoffMethod,
       recipientName:a.recipientName, recipientPhone:a.recipientPhone,
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
@@ -3597,7 +3662,10 @@
   }
   function deliveryOutcomeLabel(method=flowState.orderState.paidDeliveryMethod || flowState.orderState.deliveryMethod){
     const thai=document.documentElement.lang==='th';
+    if(method==='pickup') return thai ? 'รับที่ร้าน · พร้อมภายในประมาณ 60 นาที' : 'Pickup · ready in about 60 min';
+    if(method==='priority') return thai ? 'ด่วนพิเศษ · ประมาณ 60 นาที' : 'Priority · about 60 min';
     if(method==='same-day') return thai ? 'ภายในวันนี้ · ก่อน 18:00 น.' : 'Same day · by 6pm';
+    if(method==='scheduled') return thai ? 'จัดส่งตามช่วงเวลาที่เลือก' : 'Scheduled delivery';
     return thai ? `ส่งพรุ่งนี้ · คาดว่าจะถึง ${tomorrowLabel()}` : `Ships tomorrow · arrives ${tomorrowLabel()}`;
   }
   function syncPaymentOutcome(){
@@ -3634,7 +3702,8 @@
     const slaNotice = payment.querySelector('[data-payment-sla-notice]');
     if(slaNotice) slaNotice.hidden = true;
     const deliveryLabel = payment.querySelector('[data-payment-delivery-label]');
-    if(deliveryLabel) deliveryLabel.textContent = method === 'same-day' ? 'ค่าจัดส่งภายในวัน' : 'ค่าจัดส่งทางไปรษณีย์';
+    const deliveryLabels={priority:'ค่าจัดส่งด่วนพิเศษ','same-day':'ค่าจัดส่งมาตรฐาน',postal:'ค่าจัดส่งแบบประหยัด',scheduled:'ค่าจัดส่งตามเวลา',pickup:'รับที่ร้าน'};
+    if(deliveryLabel) deliveryLabel.textContent = deliveryLabels[method] || 'ค่าจัดส่ง';
     const subtotalEl = payment.querySelector('[data-payment-subtotal]');
     const addonRow = payment.querySelector('[data-payment-addon-row]');
     const addonEl = payment.querySelector('[data-payment-addon]');
@@ -3651,6 +3720,10 @@
     const addrKnown = Boolean(flowState.orderState.addressConfirmed);
     payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => {
       el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'ค่าประมาณ ฿80 ถึง ฿180';
+      el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
+    });
+    payment.querySelectorAll('[data-payment-priority-fee]').forEach(el => {
+      el.textContent = addrKnown ? baht(deliveryFeeFor('priority')) : 'ค่าประมาณ ฿140 ถึง ฿240';
       el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
     });
     if(addonRow) addonRow.hidden=addon<=0;
@@ -3687,6 +3760,8 @@
     paymentDue = due;
     const finalDue=currentMedicationDue();
     flowState.orderState.amountDue=finalDue;
+    const points=payment.querySelector('[data-payment-points]');
+    if(points) points.textContent=`${Math.max(0,Math.floor(finalDue/10))} คะแนน`;
     const noPayment=finalDue<=0;
     payment.querySelectorAll('[data-payment-required-section]').forEach(section => { section.hidden=noPayment; });
     syncMedicationFailureAmount(finalDue);
@@ -4898,17 +4973,18 @@
     return Math.max(80,Math.ceil((80 + km * 10) / 10) * 10);
   }
   function deliveryFeeFor(method=flowState.orderState.deliveryMethod){
-    if(method!=='same-day') return 0;
+    if(method==='postal' || method==='pickup') return 0;
     const quoted=Number(flowState.orderState.deliveryQuoteAmount);
-    return flowState.orderState.deliveryQuoteStatus==='accepted' && Number.isFinite(quoted)
-      ? quoted
-      : calculatedSameDayDeliveryFee();
+    if(method===flowState.orderState.deliveryMethod && flowState.orderState.deliveryQuoteStatus==='accepted' && Number.isFinite(quoted)) return quoted;
+    const standard=calculatedSameDayDeliveryFee();
+    if(method==='priority') return standard+60;
+    return standard;
   }
   function checkoutActionState(){
     const address=flowState.orderState.address || {};
     if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
-    if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!flowState.orderState.deliveryMethod) return 'delivery-method-required';
+    if(flowState.orderState.deliveryMethod!=='pickup' && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(flowState.orderState.deliveryQuoteStatus!=='accepted' || !flowState.orderState.stockLocked) return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
@@ -4918,14 +4994,14 @@
     const button=document.querySelector('#payment [data-payment-go]');
     if(!button) return;
     const actionState=checkoutActionState();
-    const actionable=actionState==='ready' || actionState==='quote-required';
+    const actionable=['ready','quote-required','address-required','payment-method-required'].includes(actionState);
     button.setAttribute('aria-disabled',String(!actionable));
     button.disabled=!actionable;
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    if(actionState==='address-required') label.textContent='เลือกที่อยู่ก่อน';
+    if(actionState==='address-required') label.textContent='ตรวจสอบที่อยู่';
     else if(actionState==='delivery-method-required') label.textContent='เลือกวิธีจัดส่ง';
-    else if(actionState==='quote-required') label.textContent='ให้ร้านยายืนยันสต็อกและราคา';
+    else if(actionState==='quote-required') label.textContent=flowState.orderState.deliveryMethod==='pickup' ? 'ยืนยันจุดรับสินค้า' : 'ตรวจสอบค่าจัดส่ง';
     else if(actionState==='payment-method-required') label.textContent='เลือกวิธีชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(!hasFulfillableItems()) label.textContent=`ชำระค่าปรึกษา · ${baht(currentMedicationDue())}`;
@@ -4953,7 +5029,11 @@
     const consultationAmount=document.querySelector('#payment [data-payment-consultation]');
     if(consultationRow) consultationRow.hidden=consultationDue<=0;
     if(consultationAmount) consultationAmount.textContent=baht(consultationDue);
-    document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
+    document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => {
+      if(!fulfillable) section.hidden=true;
+      else if(!section.matches('[data-delivery-options]')) section.hidden=false;
+    });
+    if(fulfillable) syncOrderCheckout();
     const noFulfillmentNotice=document.querySelector('#payment [data-no-fulfillment-notice]');
     if(noFulfillmentNotice) noFulfillmentNotice.hidden=fulfillable;
     const medicineRow=document.querySelector('#payment [data-payment-medicine-row]');
@@ -5461,13 +5541,15 @@
       if(timer) timer.textContent='โดยปกติใช้เวลาไม่เกิน 10 วินาที';
       deliveryQuoteTimer=setTimeout(() => {
         if(!quoteScreen?.classList.contains('active')) return;
-        const sameDay=flowState.orderState.deliveryMethod==='same-day';
-        const estimate=sameDay ? calculatedSameDayDeliveryFee() : 0;
+        const method=flowState.orderState.deliveryMethod;
+        const estimate=deliveryFeeFor(method);
         quoteScreen.dataset.quoteState='estimated';
-        if(title) title.textContent=sameDay ? 'ตรวจสอบพื้นที่จัดส่งแล้ว' : 'เลือกจัดส่งมาตรฐานแล้ว';
-        if(copy) copy.textContent=sameDay
-          ? `ค่าจัดส่งโดยประมาณ ${baht(estimate)} · ร้านยาจะยืนยันยอดจริงในขั้นตอนถัดไป`
-          : 'จัดส่ง 1 ถึง 3 วัน · ร้านยาจะยืนยันสต็อกและยอดจริงในขั้นตอนถัดไป';
+        if(title) title.textContent=method==='pickup' ? 'ยืนยันจุดรับสินค้าแล้ว' : 'ตรวจสอบการจัดส่งแล้ว';
+        if(copy) copy.textContent=method==='pickup'
+          ? 'ร้านยาพาร์ตเนอร์กำลังยืนยันสต็อกและเวลาเตรียมสินค้า'
+          : estimate>0
+            ? `ค่าจัดส่งโดยประมาณ ${baht(estimate)} · ร้านยาจะยืนยันยอดจริงในขั้นตอนถัดไป`
+            : 'จัดส่ง 1 ถึง 3 วัน · ร้านยาจะยืนยันสต็อกและยอดจริงในขั้นตอนถัดไป';
         if(timer) timer.textContent='กำลังส่งรายการให้เภสัชกรตรวจสอบ';
         deliveryQuoteTimer=setTimeout(() => {
           if(!quoteScreen?.classList.contains('active')) return;
@@ -5588,7 +5670,7 @@
         }
         pharmacyRetryCount = 0;
         if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
-        const lockedDeliveryFee=flowState.orderState.deliveryMethod==='same-day' ? calculatedSameDayDeliveryFee() : 0;
+        const lockedDeliveryFee=deliveryFeeFor(flowState.orderState.deliveryMethod);
         flowState.orderState.deliveryQuoteStatus='accepted';
         flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
         flowState.orderState.stockLocked=true;
@@ -6351,6 +6433,16 @@
       show('delivery-quote',false);
       return;
     }
+    const fulfillmentMode=e.target.closest('[data-fulfillment-mode]');
+    if(fulfillmentMode){
+      const nextMethod=fulfillmentMode.dataset.fulfillmentMode==='pickup' ? 'pickup' : (flowState.orderState.deliveryMethod==='pickup' ? 'same-day' : flowState.orderState.deliveryMethod || 'same-day');
+      if(flowState.orderState.deliveryMethod!==nextMethod) invalidateFulfillmentQuote();
+      flowState.orderState.deliveryMethod=nextMethod;
+      deliveryMethod=nextMethod;
+      persistFlowState();
+      refreshMedicationCheckout();
+      return;
+    }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
     if(deliveryChoice){
       const nextDeliveryMethod=deliveryChoice.dataset.deliveryValue;
@@ -6940,6 +7032,14 @@
     }
     if(!e.target.closest('[data-payment-go]')) return;
     const checkoutState=checkoutActionState();
+    if(checkoutState==='address-required'){
+      show('address');
+      return;
+    }
+    if(checkoutState==='payment-method-required'){
+      openPaymentMethodModal();
+      return;
+    }
     if(checkoutState==='quote-required'){
       if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
       show('delivery-quote',false);
