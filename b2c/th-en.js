@@ -480,6 +480,7 @@
      text node and needs its own entry. */
     "แพทย์ประจำตัวที่":"Your personal doctor,",
     "คอยดูแลคุณ":"by your side",
+    "ปรึกษาแพทย์ทางไกล พร้อมรับยาตามใบสั่งแพทย์ ส่งตรงถึงบ้าน":"Telehealth consultations with prescription medicine delivered to your door",
     "ปรึกษาแพทย์ทางไกล พร้อมรับยาตามใบสั่งแพทย์":"Telehealth consultations with prescription medicine",
     "ส่งตรงถึงบ้าน":"delivered to your door",
     "โปรแกรมลดน้ำหนัก":"Weight loss programme",

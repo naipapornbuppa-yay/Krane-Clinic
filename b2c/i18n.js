@@ -1921,6 +1921,10 @@
   /* ---- patient app, full TH/EN audit · 19 Sep: Thai-source strings from the
      weight and ED intake, sliders, signup consent, referral, the weight safety
      sheet and sample leaflets, plus the matching line in Thai ---- */
+  var EN_FROM_TH_20SEP = {
+    "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว เริ่มใช้งานบัญชีของคุณได้เลย":"Your phone number is verified and your Krane account is created. Your account is ready to use.",
+    "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือตอบแบบสอบถามอาการ":"Your phone number is verified and your Krane account is created. Next, answer the health questions."
+  };
   var EN_FROM_TH_19SEP = {
     "ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ แล้วยืนยันเบอร์ด้วยรหัส OTP":"Set a password for signing in, then verify your number with a one-time code.",
     "ตั้งรหัสผ่านให้ครบเงื่อนไขและตรงกันทั้งสองช่อง":"Set a password that meets every rule and matches in both fields",
@@ -2056,6 +2060,7 @@
     "หยุดใช้เพราะผลข้างเคียง":"I stopped because of side effects"
   };
   for (var _k19 in EN_FROM_TH_19SEP) EN_FROM_TH[_k19] = EN_FROM_TH_19SEP[_k19];
+  for (var _k20 in EN_FROM_TH_20SEP) EN_FROM_TH[_k20] = EN_FROM_TH_20SEP[_k20];
   var TH_19SEP = {
     "Choosing from licensed doctors suited to general consultation.":"เลือกจากแพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องปรึกษาสุขภาพทั่วไป",
     "Choosing from licensed doctors suited to weight care assessment.":"เลือกจากแพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องประเมินการดูแลน้ำหนัก",
