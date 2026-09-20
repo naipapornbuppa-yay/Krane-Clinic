@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-payment-item-figma-v1";
+    const release = "20260920-payment-item-sheet-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-payment-item-figma-v1">
+<link rel="stylesheet" href="components.css?v=20260920-payment-item-sheet-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2435,7 +2435,7 @@
               <span class="checkout-order__note">ลดอาการไอ</span>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 170</span>
-            <button class="checkout-order__line-edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไข</button>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="จำนวน Dextromethorphan 15 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
           <div class="checkout-order__item" data-order-item="loratadine">
@@ -2445,7 +2445,7 @@
               <span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 94</span>
-            <button class="checkout-order__line-edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไข</button>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="94" aria-label="จำนวน Loratadine 10 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
           <div class="checkout-order__item" data-order-item="paracetamol">
@@ -2455,7 +2455,7 @@
               <span class="checkout-order__note">แก้ปวด ลดไข้</span>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 40</span>
-            <button class="checkout-order__line-edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไข</button>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="20" aria-label="จำนวน Paracetamol 500 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
           <div class="checkout-order__item" data-order-item="naproxen">
@@ -2465,7 +2465,7 @@
               <span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span>
             </span>
             <span class="checkout-order__price" data-order-price>฿ 134</span>
-            <button class="checkout-order__line-edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไข</button>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
           </div>
@@ -4082,6 +4082,38 @@
         <span class="opt-icon"><i data-lucide="landmark" class="ui-icon" aria-hidden="true"></i></span>
         <span class="opt-body"><span class="opt-title">โมบายล์แบงกิ้ง</span><span class="opt-sub">เปิดแอปธนาคารเพื่อยืนยันการชำระ</span></span><span class="opt-check"></span>
       </button>
+    </div>
+  </section>
+</div>
+
+<div class="modal-layer payment-item-sheet" id="payment-item-sheet" hidden aria-hidden="true">
+  <button class="modal-layer__scrim" type="button" data-payment-item-close aria-label="ปิดหน้าต่างแก้ไขรายการยา"></button>
+  <section class="modal-dialog payment-item-dialog" role="dialog" aria-modal="true" aria-labelledby="payment-item-sheet-title" aria-describedby="payment-item-sheet-description" tabindex="-1">
+    <span class="payment-item-dialog__grabber" aria-hidden="true"></span>
+    <header class="payment-item-dialog__header">
+      <h2 id="payment-item-sheet-title">แก้ไขรายการ</h2>
+      <button class="payment-item-dialog__close" type="button" data-payment-item-close aria-label="ปิด"><i data-lucide="x" class="ui-icon" aria-hidden="true"></i></button>
+    </header>
+    <div class="payment-item-dialog__product">
+      <span class="payment-item-dialog__thumb" aria-hidden="true"><img data-payment-item-image src="" alt=""></span>
+      <span class="payment-item-dialog__copy">
+        <strong data-payment-item-name>รายการยา</strong>
+        <span data-payment-item-description id="payment-item-sheet-description"></span>
+      </span>
+      <strong class="payment-item-dialog__price" data-payment-item-price>฿ 0</strong>
+    </div>
+    <div class="payment-item-dialog__quantity">
+      <span><strong>จำนวน</strong><small data-payment-item-limit>รับได้ไม่เกินจำนวนที่แพทย์สั่ง</small></span>
+      <span class="payment-item-dialog__stepper" role="group" aria-label="เลือกจำนวนยา">
+        <button type="button" data-payment-item-minus aria-label="ลดจำนวน">−</button>
+        <output data-payment-item-quantity aria-live="polite">1</output>
+        <button type="button" data-payment-item-plus aria-label="เพิ่มจำนวน">+</button>
+      </span>
+    </div>
+    <p class="payment-item-dialog__notice"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>การเปลี่ยนจำนวนไม่แก้ไขชนิดยาและขนาดยาที่แพทย์สั่ง</span></p>
+    <div class="payment-item-dialog__actions">
+      <button class="btn btn--primary" type="button" data-payment-item-save>บันทึกการแก้ไข</button>
+      <button class="payment-item-dialog__remove" type="button" data-payment-item-remove><i data-lucide="trash-2" class="ui-icon" aria-hidden="true"></i><span>ไม่รับรายการนี้</span></button>
     </div>
   </section>
 </div>
@@ -9993,6 +10025,10 @@
   document.body.addEventListener('click', e => {
     const editToggle=e.target.closest('[data-order-edit]');
     if(!editToggle) return;
+    if(editToggle.classList.contains('checkout-order__line-edit')){
+      openPaymentItemSheet(editToggle.closest('[data-order-item]'),editToggle);
+      return;
+    }
     const list=document.getElementById(editToggle.getAttribute('aria-controls'));
     if(!list) return;
     const editing=!list.classList.contains('is-editing');
@@ -11307,6 +11343,94 @@
 
   // Grab-style checkout: the method and promo rows resolve here, then the bank
   // gateway opens on the chosen method (mirrors the consultpay -> consultpay-gw hop).
+  const paymentItemSheet = document.getElementById('payment-item-sheet');
+  let paymentItemDraft = null;
+  let paymentItemReturnFocus = null;
+  function syncPaymentItemDraft(){
+    if(!paymentItemSheet || !paymentItemDraft) return;
+    const quantity=paymentItemSheet.querySelector('[data-payment-item-quantity]');
+    const price=paymentItemSheet.querySelector('[data-payment-item-price]');
+    const minus=paymentItemSheet.querySelector('[data-payment-item-minus]');
+    const plus=paymentItemSheet.querySelector('[data-payment-item-plus]');
+    const limit=paymentItemSheet.querySelector('[data-payment-item-limit]');
+    if(quantity) quantity.textContent=String(paymentItemDraft.quantity);
+    if(price) price.textContent=baht(paymentItemDraft.unit*paymentItemDraft.quantity);
+    if(minus) minus.disabled=paymentItemDraft.quantity<=0;
+    if(plus) plus.disabled=paymentItemDraft.quantity>=paymentItemDraft.max;
+    if(limit) limit.textContent=`รับได้ไม่เกิน ${paymentItemDraft.max} แผง ตามที่แพทย์สั่ง`;
+  }
+  function openPaymentItemSheet(row,trigger){
+    if(!paymentItemSheet || !row) return;
+    const key=row.dataset.orderItem;
+    const control=row.querySelector('[data-qty]');
+    if(!key || !control) return;
+    const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
+    paymentItemDraft={
+      key,
+      quantity,
+      originalQuantity:quantity,
+      max:Number(control.dataset.max || quantity),
+      unit:Number(control.dataset.unit || 0)
+    };
+    paymentItemReturnFocus=trigger || null;
+    const sourceImage=row.querySelector('.checkout-order__thumb img');
+    const image=paymentItemSheet.querySelector('[data-payment-item-image]');
+    if(image && sourceImage) image.src=sourceImage.currentSrc || sourceImage.src;
+    const name=paymentItemSheet.querySelector('[data-payment-item-name]');
+    const description=paymentItemSheet.querySelector('[data-payment-item-description]');
+    if(name) name.textContent=row.querySelector('.checkout-order__name')?.textContent.trim() || 'รายการยา';
+    if(description) description.textContent=row.querySelector('.checkout-order__note')?.textContent.trim() || '';
+    syncPaymentItemDraft();
+    paymentItemSheet.hidden=false;
+    paymentItemSheet.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    paymentItemSheet.querySelector('.payment-item-dialog')?.focus({preventScroll:true});
+  }
+  function closePaymentItemSheet(){
+    if(!paymentItemSheet || paymentItemSheet.hidden) return;
+    paymentItemSheet.hidden=true;
+    paymentItemSheet.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    paymentItemDraft=null;
+    const focusTarget=paymentItemReturnFocus;
+    paymentItemReturnFocus=null;
+    focusTarget?.focus({preventScroll:true});
+  }
+  function commitPaymentItemQuantity(quantity){
+    if(!paymentItemDraft) return;
+    const key=paymentItemDraft.key;
+    flowState.orderState.quantities[key]=Math.max(0,Math.min(paymentItemDraft.max,quantity));
+    invalidateFulfillmentQuote();
+    persistFlowState();
+    syncOrderCheckout();
+    syncDeclinedMedicines();
+    refreshMedicationCheckout();
+    closePaymentItemSheet();
+    showActionToast(quantity<=0 ? 'นำยาออกจากรายการแล้ว' : 'อัปเดตจำนวนยาแล้ว','success');
+  }
+  if(paymentItemSheet){
+    paymentItemSheet.addEventListener('click',event => {
+      if(event.target.closest('[data-payment-item-close]')){ closePaymentItemSheet(); return; }
+      if(event.target.closest('[data-payment-item-minus]') && paymentItemDraft){
+        paymentItemDraft.quantity=Math.max(0,paymentItemDraft.quantity-1);
+        syncPaymentItemDraft();
+        return;
+      }
+      if(event.target.closest('[data-payment-item-plus]') && paymentItemDraft){
+        paymentItemDraft.quantity=Math.min(paymentItemDraft.max,paymentItemDraft.quantity+1);
+        syncPaymentItemDraft();
+        return;
+      }
+      if(event.target.closest('[data-payment-item-save]') && paymentItemDraft){
+        commitPaymentItemQuantity(paymentItemDraft.quantity);
+        return;
+      }
+      if(event.target.closest('[data-payment-item-remove]')) commitPaymentItemQuantity(0);
+    });
+    paymentItemSheet.addEventListener('keydown',event => {
+      if(event.key==='Escape') closePaymentItemSheet();
+    });
+  }
   let paymentMethod = flowState.orderState.paymentMethod || 'qr';
   const paymentMethodNames = { qr:'QR / PromptPay', card:'\u0e1a\u0e31\u0e15\u0e23\u0e40\u0e04\u0e23\u0e14\u0e34\u0e15 / \u0e40\u0e14\u0e1a\u0e34\u0e15', bank:'\u0e42\u0e21\u0e1a\u0e32\u0e22\u0e25\u0e4c\u0e41\u0e1a\u0e07\u0e01\u0e34\u0e49\u0e07' };
   const paymentMethodModal = document.getElementById('payment-method-modal');
