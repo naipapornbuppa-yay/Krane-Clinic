@@ -4591,3 +4591,181 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .field-row>.float-field>.float-field__box{margin-top:auto}
 /* A field inside a flex row has to take the row, not shrink to its text. */
 .partner-history-detail>.float-field,.row>.float-field.grow{flex:1;min-width:0}
+
+/* ---------- Post-payment order journey ----------
+   Grab supplies the information hierarchy: immediate payment confidence,
+   arrival/status first, one compact order card and one route card. Krane keeps
+   its own blue, typography, clinical reassurance and quieter card treatment. */
+.postpay-screen{background:#f6f7f9}
+.postpay-screen>.care-journey{display:none!important}
+.postpay-brandbar{min-height:70px;justify-content:center;background:#f6f7f9;border-bottom:0}
+.postpay-brandbar img{width:132px;height:auto;display:block}
+.postpay-card{
+  border:1px solid rgba(18,24,36,.06);
+  border-radius:18px;
+  background:var(--color-surface);
+  box-shadow:0 1px 2px rgba(18,24,36,.04),0 8px 24px rgba(18,24,36,.06);
+}
+.postpay-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px}
+.postpay-card__head>span:first-child{display:flex;min-width:0;flex-direction:column;gap:2px}
+.postpay-card__head small{color:#657084;font-size:12px;line-height:1.4}
+.postpay-card__head strong{font-size:15px;line-height:1.4}
+.postpay-status-pill{display:inline-flex!important;align-items:center;gap:5px;flex:none!important;padding:6px 9px;border-radius:999px;background:#eaf0fb;color:var(--color-accent);font-size:11px!important;font-weight:var(--fw-semibold)}
+.postpay-status-pill .ui-icon{width:14px;height:14px}
+
+.payment-processing-view{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px 22px!important;text-align:center}
+.payment-processing-view__pulse{position:relative;width:112px;height:112px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--color-accent) 8%,#fff)}
+.payment-processing-view__pulse::before,.payment-processing-view__pulse::after{content:"";position:absolute;inset:0;border:2px solid color-mix(in srgb,var(--color-accent) 26%,transparent);border-radius:inherit;animation:postpay-pulse 1.7s ease-out infinite}
+.payment-processing-view__pulse::after{animation-delay:.55s}
+.payment-processing-view__pulse>span{position:relative;z-index:1;width:66px;height:66px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:#fff;box-shadow:0 12px 30px color-mix(in srgb,var(--color-accent) 28%,transparent)}
+.payment-processing-view__pulse .ui-icon{width:30px;height:30px}
+.payment-processing-view__copy{display:flex;flex-direction:column;gap:8px}
+.payment-processing-view__copy h2{font-size:24px}
+.payment-processing-view__copy p{margin:0;color:#657084;font-size:14px}
+.payment-processing-view__card{width:min(360px,100%);display:grid;grid-template-columns:1fr 1fr;overflow:hidden;border:1px solid #e5e8ed;border-radius:16px;background:#fff;text-align:left;box-shadow:0 8px 26px rgba(18,24,36,.05)}
+.payment-processing-view__card>span{display:flex;flex-direction:column;gap:4px;padding:14px 16px}
+.payment-processing-view__card>span+span{border-left:1px solid #e5e8ed}
+.payment-processing-view__card small{color:#657084;font-size:11px}
+.payment-processing-view__card strong{font-size:14px}
+.payment-processing-view__secure{display:flex;align-items:center;gap:7px;margin:0;color:#657084;font-size:12px}
+.payment-processing-view__secure .ui-icon{width:15px;height:15px;color:var(--color-accent)}
+@keyframes postpay-pulse{0%{opacity:.8;transform:scale(.72)}100%{opacity:0;transform:scale(1.28)}}
+
+.postpay-success{display:flex;flex-direction:column;gap:18px;padding:18px 18px 26px!important}
+.postpay-success__hero{display:flex;align-items:center;flex-direction:column;gap:8px;padding:12px 12px 2px;text-align:center}
+.postpay-success__check{width:58px;height:58px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--color-accent);color:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--color-accent) 24%,transparent)}
+.postpay-success__check .ui-icon{width:28px;height:28px;stroke-width:2.5}
+.postpay-success__hero h2{margin-top:4px;font-size:25px}
+.postpay-success__hero p{max-width:340px;margin:0;color:#657084;font-size:14px;line-height:1.55}
+.postpay-confirmation{overflow:hidden}
+.postpay-confirmation__amount{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 16px 14px;border-bottom:1px solid #eceef2;color:#657084;font-size:13px}
+.postpay-confirmation__amount strong{color:var(--color-ink);font-size:24px}
+.postpay-confirmation__meta{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:14px 16px}
+.postpay-confirmation__meta>span{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px}
+.postpay-confirmation__meta>span+span{padding-left:14px;border-left:1px solid #eceef2}
+.postpay-confirmation__meta .ui-icon{width:20px;height:20px;color:var(--color-accent)}
+.postpay-confirmation__meta>span>span{display:flex;min-width:0;flex-direction:column;gap:1px}
+.postpay-confirmation__meta small{color:#657084;font-size:11px}
+.postpay-confirmation__meta strong{overflow:hidden;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.postpay-mini-progress{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:14px 16px 16px;border-top:1px solid #eceef2}
+.postpay-mini-progress::before{content:"";position:absolute;top:29px;left:calc(16.66% + 12px);right:calc(16.66% + 12px);height:2px;background:#dde2e9}
+.postpay-mini-progress>span{position:relative;z-index:1;display:flex;align-items:center;flex-direction:column;gap:6px;color:#9198a6}
+.postpay-mini-progress .ui-icon{width:16px;height:16px}
+.postpay-mini-progress>span>i{width:30px;height:30px;display:grid;place-items:center;border:2px solid #dde2e9;border-radius:50%;background:#fff}
+.postpay-mini-progress>span.is-done>i,.postpay-mini-progress>span.is-active>i{border-color:var(--color-accent);background:var(--color-accent);color:#fff}
+.postpay-mini-progress>span.is-active>i{box-shadow:0 0 0 5px color-mix(in srgb,var(--color-accent) 12%,transparent)}
+.postpay-mini-progress small{font-size:11px;font-weight:var(--fw-medium)}
+.postpay-note,.postpay-live-note{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#eef3fb;color:#4e5a6e}
+.postpay-note>.ui-icon,.postpay-live-note>.ui-icon{width:20px;height:20px;justify-self:center;color:var(--color-accent)}
+.postpay-note>span,.postpay-live-note>span{display:flex;min-width:0;flex-direction:column;gap:2px}
+.postpay-note strong,.postpay-live-note strong{color:var(--color-ink);font-size:13px}
+.postpay-note small,.postpay-live-note small{font-size:11px;line-height:1.45}
+.postpay-success__actions{display:grid;grid-template-columns:1fr;gap:8px;padding:14px 18px max(16px,env(safe-area-inset-bottom));background:rgba(255,255,255,.96);box-shadow:0 -10px 28px rgba(18,24,36,.07)}
+.postpay-success__actions .btn{width:100%;height:48px}
+
+.postpay-tracking-topbar{min-height:68px;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid #eceef2}
+.postpay-tracking-topbar>.back{position:static;transform:none;align-self:center}
+.postpay-tracking-topbar__title{display:flex;align-items:center;justify-content:center;flex-direction:column;min-width:0;text-align:center}
+.postpay-tracking-topbar__title strong{font-size:14px;line-height:1.35}
+.postpay-tracking-topbar__title small{max-width:100%;overflow:hidden;color:var(--color-accent);font-size:11px;font-weight:var(--fw-medium);text-overflow:ellipsis;white-space:nowrap}
+.postpay-tracking-topbar__actions{display:flex;align-items:center;gap:2px}
+.postpay-tracking-topbar__actions button,.postpay-subpage-topbar>button:last-child{width:38px;height:38px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:var(--color-ink);cursor:pointer}
+.postpay-tracking-topbar__actions .ui-icon,.postpay-subpage-topbar>button:last-child .ui-icon{width:20px;height:20px}
+.postpay-tracking-body{display:flex;flex-direction:column;gap:14px;padding:14px 14px 28px!important;background:#f6f7f9}
+.postpay-tracking-hero{overflow:hidden;border:1px solid rgba(18,24,36,.06);border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(18,24,36,.04),0 8px 24px rgba(18,24,36,.05)}
+#tracking .delivery-eta{gap:5px;padding:16px 16px 12px;border:0;border-radius:0;background:#fff;box-shadow:none}
+#tracking .delivery-eta__head{min-height:26px}
+#tracking .delivery-eta__time{font-size:27px}
+#tracking .delivery-eta__state{color:var(--color-accent);font-size:13px;font-weight:var(--fw-semibold)}
+#tracking .delivery-eta__rider{min-height:30px;background:#eef3fb}
+.postpay-progress{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:14px 10px 12px;border-top:1px solid #eceef2}
+.postpay-progress::before{content:"";position:absolute;top:31px;left:10%;right:10%;height:2px;background:#dde2e9}
+.postpay-progress__step{position:relative;z-index:1;display:flex;align-items:center;flex-direction:column;gap:5px;min-width:0;text-align:center}
+.postpay-progress__step>span{width:34px;height:34px;display:grid;place-items:center;border:2px solid #dce1e8;border-radius:50%;background:#fff;color:#9299a6}
+.postpay-progress__step>span .ui-icon{width:16px;height:16px}
+.postpay-progress__step.done>span,.postpay-progress__step.active>span{border-color:var(--color-accent);background:var(--color-accent);color:#fff}
+.postpay-progress__step.active>span{box-shadow:0 0 0 5px color-mix(in srgb,var(--color-accent) 12%,transparent)}
+.postpay-progress__step strong{max-width:100%;overflow:hidden;color:#9299a6;font-size:9px;font-weight:var(--fw-medium);line-height:1.25;text-overflow:ellipsis;white-space:nowrap}
+.postpay-progress__step.done strong,.postpay-progress__step.active strong{color:var(--color-ink)}
+.postpay-progress__step .hint,.postpay-progress__step .step__link{display:none}
+.postpay-confirm-receipt{width:calc(100% - 28px);margin:0 14px 14px}
+.postpay-order-snapshot{overflow:hidden}
+.postpay-order-snapshot__thumbs{display:flex!important;flex-direction:row!important;align-items:center;padding-right:4px}
+.postpay-order-snapshot__thumbs img{width:32px;height:32px;object-fit:contain;margin-left:-8px;border:2px solid #fff;border-radius:9px;background:#f3f4f6}
+.postpay-order-snapshot__row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;border-top:1px solid #eceef2;font-size:13px}
+.postpay-order-snapshot__row span{display:flex;align-items:center;gap:8px;color:#657084}
+.postpay-order-snapshot__row .ui-icon{width:17px;height:17px;color:var(--color-accent)}
+.postpay-order-snapshot__total{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:13px 16px;border-top:1px solid #eceef2;font-size:13px}
+.postpay-order-snapshot__total strong{font-size:20px}
+.postpay-card__link{width:100%;min-height:46px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border:0;border-top:1px solid #eceef2;background:#fff;color:var(--color-accent);font:inherit;font-size:13px;font-weight:var(--fw-semibold);text-align:left;cursor:pointer}
+.postpay-card__link .ui-icon{width:18px;height:18px}
+.postpay-route-card{overflow:hidden}
+.postpay-route{display:grid;grid-template-columns:36px minmax(0,1fr);gap:0 11px;padding:2px 16px 14px}
+.postpay-route__node{grid-column:1;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#edf2fa;color:var(--color-accent)}
+.postpay-route__node .ui-icon{width:17px;height:17px}
+.postpay-route__node--origin{grid-row:1}
+.postpay-route__node--destination{grid-row:3;background:#fff1ef;color:#c8453c}
+.postpay-route__line{grid-column:1;grid-row:2;width:2px;min-height:28px;justify-self:center;background:repeating-linear-gradient(to bottom,#cbd2dc 0 4px,transparent 4px 8px)}
+.postpay-route__copy{display:flex;min-width:0;flex-direction:column;gap:2px;padding:0 0 13px}
+.postpay-route__copy:last-child{padding:0}
+.postpay-route__copy small{color:#657084;font-size:11px}
+.postpay-route__copy strong{font-size:13px;line-height:1.4}
+.postpay-route__copy em{overflow:hidden;color:#818997;font-size:11px;font-style:normal;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
+.postpay-route__copy a{color:var(--color-accent)}
+.postpay-delivery-instruction{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:8px;margin:0 16px 16px;padding:11px 12px;border-radius:12px;background:#f6f7f9}
+.postpay-delivery-instruction>.ui-icon{width:18px;height:18px;justify-self:center;color:#657084}
+.postpay-delivery-instruction>span{display:flex;min-width:0;flex-direction:column;gap:1px}
+.postpay-delivery-instruction small{color:#657084;font-size:10px}
+.postpay-delivery-instruction strong{font-size:12px;font-weight:var(--fw-medium)}
+.postpay-tracking-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.postpay-tracking-actions .btn{height:46px;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff}
+.postpay-tracking-actions .ui-icon{width:18px;height:18px}
+
+.postpay-subpage-topbar{min-height:68px;display:grid;grid-template-columns:44px 1fr 44px;padding:8px 14px;background:#fff;border-bottom:1px solid #eceef2}
+.postpay-subpage-topbar>.back{position:static;transform:none}
+.postpay-subpage-topbar>.ttl{align-self:center;text-align:center}
+.postpay-summary-body{display:flex;flex-direction:column;gap:18px;padding:16px 14px 28px!important}
+.postpay-summary-status{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px}
+.postpay-summary-status .postpay-success__check{width:42px;height:42px}
+.postpay-summary-status .postpay-success__check .ui-icon{width:20px;height:20px}
+.postpay-summary-status>span:nth-child(2){display:flex;min-width:0;flex-direction:column;gap:2px}
+.postpay-summary-status small{color:#657084;font-size:11px}
+.postpay-summary-status strong{font-size:14px}
+.postpay-summary-body>.stack-2{gap:8px}
+.postpay-summary-body .section-label{font-size:15px}
+#order-summary .delivery-items{padding:2px 14px}
+.postpay-summary-breakdown,.postpay-summary-delivery{padding:16px}
+.postpay-summary-breakdown h3,.postpay-summary-delivery h3{margin:0 0 14px;font-size:15px}
+.postpay-summary-breakdown>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0;color:#657084;font-size:13px}
+.postpay-summary-breakdown>div strong{color:var(--color-ink);font-weight:var(--fw-medium)}
+.postpay-summary-breakdown>.postpay-summary-breakdown__total{margin-top:8px;padding-top:13px;border-top:1px solid #e7e9ee;color:var(--color-ink)}
+.postpay-summary-breakdown__total strong{font-size:20px!important;font-weight:var(--fw-bold)!important}
+.postpay-summary-breakdown>.postpay-summary-breakdown__method{align-items:center;margin:10px -16px -16px;padding:13px 16px;border-top:1px solid #e7e9ee}
+.postpay-summary-breakdown__method span{display:flex;align-items:center;gap:8px}
+.postpay-summary-breakdown__method .ui-icon{width:18px;height:18px;color:var(--color-accent)}
+.postpay-summary-delivery>div{display:grid;grid-template-columns:26px minmax(0,1fr);align-items:start;gap:9px;padding:9px 0}
+.postpay-summary-delivery>div+div{border-top:1px solid #eceef2}
+.postpay-summary-delivery .ui-icon{width:18px;height:18px;margin-top:2px;color:var(--color-accent)}
+.postpay-summary-delivery>div>span{display:flex;min-width:0;flex-direction:column;gap:2px}
+.postpay-summary-delivery small{color:#657084;font-size:11px}
+.postpay-summary-delivery strong{font-size:13px;line-height:1.45}
+.postpay-summary-footer{padding:14px 18px max(16px,env(safe-area-inset-bottom));background:rgba(255,255,255,.96);box-shadow:0 -10px 28px rgba(18,24,36,.07)}
+.postpay-summary-footer .btn{width:100%;height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.postpay-summary-footer .ui-icon{width:18px;height:18px}
+
+.postpay-help-dialog{width:min(440px,100%);padding:0;overflow:hidden;background:#fff}
+.postpay-help-dialog:focus{outline:none}
+.postpay-help-dialog__body{display:flex;flex-direction:column;padding:4px 0 max(12px,env(safe-area-inset-bottom))}
+.postpay-help-dialog__body>a,.postpay-help-dialog__body>button{width:100%;min-height:68px;display:grid;grid-template-columns:42px minmax(0,1fr) 20px;align-items:center;gap:11px;padding:11px 18px;border:0;border-bottom:1px solid #eceef2;background:#fff;color:var(--color-ink);font:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.postpay-help-dialog__body>a:last-child,.postpay-help-dialog__body>button:last-child{border-bottom:0}
+.postpay-help-dialog__icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#edf2fa;color:var(--color-accent)}
+.postpay-help-dialog__icon .ui-icon{width:20px;height:20px}
+.postpay-help-dialog__body>a>span:nth-child(2),.postpay-help-dialog__body>button>span:nth-child(2){display:flex;min-width:0;flex-direction:column;gap:2px}
+.postpay-help-dialog__body strong{font-size:14px}
+.postpay-help-dialog__body small{color:#657084;font-size:11px;line-height:1.4}
+.postpay-help-dialog__body>a>.ui-icon,.postpay-help-dialog__body>button>.ui-icon{width:18px;height:18px;color:#818997}
+
+@media(max-width:36rem){
+  .postpay-help-dialog{padding:0 0 max(8px,env(safe-area-inset-bottom));border-radius:22px 22px 0 0}
+}
+@media(prefers-reduced-motion:reduce){.payment-processing-view__pulse::before,.payment-processing-view__pulse::after{animation:none}}
