@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-checkout-brandbar-v1";
+    const release = "20260920-recipient-name-fields-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-checkout-brandbar-v1">
+<link rel="stylesheet" href="components.css?v=20260920-recipient-name-fields-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2129,9 +2129,8 @@
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
   <!-- Restores the pre-160119a layout: map always visible at the top, fields
        always visible beneath it, no accordion and no card chrome in between.
-       Two things are new and were never in that version: the map is half the
-       viewport rather than 210px, and the recipient name and phone sit on one
-       row directly under the map. -->
+       Recipient details stay grouped below the delivery address, with first
+       and last name split for fulfilment labels and phone kept full-width. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
@@ -2144,9 +2143,8 @@
         <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
       </div>
 
-      <!-- Nine fields in one flat run read as a wall (client, 18 Aug). Same
-           fields, grouped by what they are about: who receives it, where it
-           goes, and how to find the door. -->
+      <!-- Fields are grouped by what they are about: where the parcel goes,
+           who receives it, and how the rider should find the door. -->
       <section class="form-group">
         <h3 class="form-group__title">ที่อยู่จัดส่ง</h3>
         <div class="field-row">
@@ -2167,9 +2165,10 @@
       <section class="form-group">
         <h3 class="form-group__title">ผู้รับพัสดุ</h3>
         <div class="field-row">
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientName" autocomplete="name" placeholder=" " required><label for="recipientName">ชื่อผู้รับ</label></span></div></div>
-          <div class="field grow float-field"><div class="float-field__box phone-field" data-phone-field><span class="float-field__slot"><input class="input phone-field__input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder=" " pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required><label for="recipientPhone">เบอร์โทรศัพท์</label></span></div></div>
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientFirstName" autocomplete="given-name" placeholder=" " required><label for="recipientFirstName">ชื่อ</label></span></div></div>
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientLastName" autocomplete="family-name" placeholder=" " required><label for="recipientLastName">นามสกุล</label></span></div></div>
         </div>
+        <div class="field float-field"><div class="float-field__box phone-field" data-phone-field><span class="float-field__slot"><input class="input phone-field__input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder=" " pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required><label for="recipientPhone">เบอร์โทรศัพท์</label></span></div></div>
       </section>
 
       <section class="form-group">
@@ -4445,6 +4444,8 @@
   const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
   const FOLLOWUP_RECORD_KEY = 'krane-p01-followup-record-v1';
   const MALI_SAVED_ADDRESS = {
+    recipientFirstName:'มะลิ',
+    recipientLastName:'สุธิดา',
     recipientName:'มะลิ สุธิดา',
     recipientPhone:'081-234-5678',
     building:'เดอะ เบส พาร์ค เวสต์, ห้อง 22/418',
@@ -5169,6 +5170,17 @@
     const district=String(address.district || '').trim();
     return district && !primary.includes(district) ? `${primary} · ${district}` : primary;
   }
+  function splitRecipientName(fullName=''){
+    const parts=String(fullName || '').trim().split(/\s+/).filter(Boolean);
+    return {firstName:parts.shift() || '',lastName:parts.join(' ')};
+  }
+  function recipientNameParts(address=flowState.orderState.address){
+    const fallback=splitRecipientName(address.recipientName || flowState.patientName || '');
+    return {
+      firstName:String(address.recipientFirstName || fallback.firstName || '').trim(),
+      lastName:String(address.recipientLastName || fallback.lastName || '').trim()
+    };
+  }
   const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
@@ -5231,7 +5243,9 @@
        is no fixed string here for the language pass to miss. */
     const recipient=document.querySelector('[data-payment-recipient]');
     if(recipient){
-      const parts=[address.recipientName,address.recipientPhone].map(part => (part || '').trim()).filter(Boolean);
+      const name=recipientNameParts(address);
+      const fullName=[name.firstName,name.lastName].filter(Boolean).join(' ');
+      const parts=[fullName,address.recipientPhone].map(part => (part || '').trim()).filter(Boolean);
       recipient.textContent=parts.join(' · ');
       recipient.hidden=!(confirmed && parts.length);
     }
@@ -5261,12 +5275,14 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
+    const recipientParts=recipientNameParts(address);
     const values={
       // The recipient defaults to the account holder until the patient
       // explicitly edits it for this order, so a fresh address always opens
       // prefilled with the name and phone captured at signup, no matter which
       // screen sent the patient here.
-      recipientName:address.recipientName || flowState.patientName || '',
+      recipientFirstName:recipientParts.firstName,
+      recipientLastName:recipientParts.lastName,
       recipientPhone:address.recipientPhone || flowState.verifiedPhone || '',
       addrSearch:address.building,
       addrBuilding:address.building,
@@ -5300,7 +5316,8 @@
     const v = id => (document.getElementById(id)?.value || '').trim();
     syncComposedDistrict();
     return {
-      recipientName:v('recipientName'), recipientPhone:v('recipientPhone'),
+      recipientFirstName:v('recipientFirstName'), recipientLastName:v('recipientLastName'),
+      recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:v('recipientPhone'),
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
@@ -5349,7 +5366,7 @@
     /* Mark every field that is missing, not just the first — one pass through
        the form is enough to see all of it. */
     const required=[
-      ['recipientName','ชื่อผู้รับ'], ['recipientPhone','เบอร์โทรศัพท์'],
+      ['recipientFirstName','ชื่อ'], ['recipientLastName','นามสกุล'], ['recipientPhone','เบอร์โทรศัพท์'],
       ['addrBuilding','บ้านเลขที่ / อาคาร'], ['addrLine','ถนน / ซอย'],
       ['addrSubdistrict','แขวง / ตำบล'], ['addrDistrictName','เขต / อำเภอ'],
       ['addrProvince','จังหวัด'], ['addrPostcode','รหัสไปรษณีย์']
@@ -5390,6 +5407,7 @@
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district, note:a.note,
       dropoffMethod:a.dropoffMethod,
+      recipientFirstName:a.recipientFirstName, recipientLastName:a.recipientLastName,
       recipientName:a.recipientName, recipientPhone:a.recipientPhone,
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
@@ -7837,6 +7855,8 @@
         building:'ลุมพินี เพลส พระราม 4',floor:'ชั้น 12 ห้อง 1204',line:'1922 ถนนพระรามที่ 4',
         subdistrict:'คลองเตย',districtName:'คลองเตย',province:'กรุงเทพมหานคร',postcode:'10110',
         district:'คลองเตย กรุงเทพมหานคร 10110',km:'3.2',
+        recipientFirstName:splitRecipientName(flowState.patientName || 'มะลิ ส.').firstName,
+        recipientLastName:splitRecipientName(flowState.patientName || 'มะลิ ส.').lastName,
         recipientName:flowState.patientName || 'มะลิ ส.',recipientPhone:flowState.verifiedPhone || '0812345678'
       });
       flowState.orderState.addressConfirmed=true;
