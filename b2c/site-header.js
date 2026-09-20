@@ -23,7 +23,14 @@
     login: "Log in",
     chooseCare: "Choose your care",
     language: "Language",
-    partnerAccess: "Partner access"
+    partnerAccess: "Partner access",
+    navCare: "Conditions we treat",
+    menuObesity: "Obesity / weight loss",
+    menuHairLoss: "Hair thinning & loss",
+    menuErectile: "Erectile dysfunction",
+    menuGeneral: "General health",
+    uploadPrescription: "Upload prescription",
+    navDoctorTeam: "Our medical team"
   };
 
   const mobileMenu = document.querySelector("#mobile-menu");

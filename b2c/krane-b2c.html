@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-social-buttons-v1">
+<link rel="stylesheet" href="components.css?v=20260920-pdpa-flow-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1674,6 +1674,7 @@
         <button class="option" data-select data-patient-payment-choice-value="insurance"><span class="opt-body"><span class="opt-title">ใช้สิทธิ์ประกันสุขภาพ</span><span class="opt-sub">ตรวจสอบกรมธรรม์และวงเงินที่ใช้ได้ก่อนดำเนินการต่อ</span></span><span class="opt-check"></span></button>
         <button class="option" aria-selected="true" data-select data-patient-payment-choice-value="self-pay"><span class="opt-body"><span class="opt-title">ไม่ใช้สิทธิ์ประกัน</span><span class="opt-sub">ชำระค่ายาด้วยตนเองหลังแพทย์ออกแผนการรักษา</span></span><span class="opt-check"></span></button>
       </div>
+    </div>
     <div class="screen__footer"><button class="btn btn--primary" data-patient-info-continue>ยืนยันข้อมูลและไปต่อ</button></div>
   </section>
 
@@ -4332,6 +4333,7 @@
     otpVerified:false,
     passwordSet:false,
     passwordResetPending:false,
+    signupDonePending:false,
     patientInfoComplete:false,
     identityVerified:false,
     returningIdentityValid:false,
@@ -4495,7 +4497,7 @@
   function persistFlowState(){ if(IS_DEMO_EMBED) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
     Object.assign(flowState,{
-      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,patientInfoComplete:false,
+      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
       phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
@@ -4653,9 +4655,8 @@
     syncConsentContinue();
   }
   /* PDPA and telemedicine consent read as one continuous page. Reaching the end
-     marks both records read and ticks both required confirmations, at the
-     client's direction (10 Sep). The patient can still untick either one before
-     continuing, and the marketing consent is never touched. */
+     marks both records read and ticks all three choices. Marketing remains
+     optional: after the initial auto-tick, the patient can untick it freely. */
   function unlockConsentBundleAfterDelay(box,force=false){
     if(consentRead.pdpa && consentRead.telemedicine && consentChecked.pdpa && consentChecked.telemedicine) return;
     // Keep a brief, visible pause at the end before confirming both records.
@@ -4670,6 +4671,7 @@
       markConsentRead('telemedicine');
       consentChecked.pdpa = true;
       consentChecked.telemedicine = true;
+      consentChecked.marketing = true;
       flowState.consentChecked = Object.assign({},consentChecked);
       persistFlowState();
       renderConsentReadState('pdpa');
@@ -9801,6 +9803,7 @@
          belongs to signup, not to every login. */
       flowState.returningIdentityValid=true;
       flowState.consentsComplete=true;
+      flowState.signupDonePending=false;
     }
     if(flowState.returningIdentityValid) flowState.patientInfoComplete=true;
     // The delivery recipient defaults to the account holder, so the name has to
@@ -9910,7 +9913,14 @@
   });
 
   function completeAuthentication(destination){
-    applyAuthenticatedAccount({returning:socialCompletesAuth || Boolean(flowState.returningLogin)});
+    const returning=socialCompletesAuth || Boolean(flowState.returningLogin);
+    applyAuthenticatedAccount({returning});
+    if(!returning){
+      flowState.signupDonePending=true;
+      persistFlowState();
+      show('consent-terms');
+      return;
+    }
     if(flowState.draftReady){
       show(nextAfterAuthentication(destination));
       return;
@@ -10189,7 +10199,9 @@
           flowState.signupPasswordChosen=false;
           ['signup-password','signup-confirm'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
           applyAuthenticatedAccount({returning:false});
-          openSignupDoneModal(flowState.consentsComplete ? nextAfterAuthentication() : 'consent-terms');
+          flowState.signupDonePending=true;
+          persistFlowState();
+          show('consent-terms');
           return;
         }
         syncPasswordScreen();
@@ -10226,7 +10238,9 @@
           show(nextAfterAuthentication());
           return;
         }
-        openSignupDoneModal(nextAfterAuthentication());
+        flowState.signupDonePending=true;
+        persistFlowState();
+        show('consent-terms');
       });
       return;
     }
@@ -10487,9 +10501,12 @@
                   ? directClinicalStartTarget()
                   : (identityRequired() ? 'identity' : 'patient-info')));
         flowState.lastRequiredScreen=consentNext;
+        const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
+        if(showSignupDone) flowState.signupDonePending=false;
         persistFlowState();
         showActionToast('บันทึกความยินยอมแล้ว','success');
-        show(consentNext);
+        if(showSignupDone) openSignupDoneModal(consentNext);
+        else show(consentNext);
       });
       return;
     }
