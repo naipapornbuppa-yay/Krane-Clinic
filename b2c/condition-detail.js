@@ -205,7 +205,7 @@
     "hair-loss": {
       category: "hair-skin",
       tone: "hair",
-      image: "assets/product-hero/hair-care-closeup-v1.png",
+      image: "assets/product-hero/hair-asian-man-left-hand-final-v1.png",
       kicker: "ฟื้นฟูเส้นผม",
       hook: "รู้สาเหตุก่อน แล้วผมจะกลับมาถูกทาง",
       lead: "รูปแบบผมร่วง หนังศีรษะ ประวัติครอบครัว และความเครียด ช่วยให้แพทย์เลือกวิธีดูแลได้ตรงจุด",
