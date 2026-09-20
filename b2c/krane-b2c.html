@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-payment-addons-v1";
+    const release = "20260920-payment-summary-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -2548,7 +2548,6 @@
         <div class="checkout-bill">
           <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ยอดรวมย่อย</span><strong data-payment-subtotal>฿ 438</strong></div>
-          <div class="checkout-bill__row" data-payment-addon-row hidden><span>ผลิตภัณฑ์เสริม</span><strong data-payment-addon>฿ 0</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
           <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
@@ -5396,14 +5395,14 @@
     const deliveryLabels={priority:'ค่าจัดส่งด่วนพิเศษ','same-day':'ค่าจัดส่งมาตรฐาน',postal:'ค่าจัดส่งแบบประหยัด',scheduled:'ค่าจัดส่งตามเวลา'};
     if(deliveryLabel) deliveryLabel.textContent = flowState.orderState.fulfillmentMode==='pickup' ? 'รับยาที่ร้าน' : (deliveryLabels[method] || 'ค่าจัดส่ง');
     const subtotalEl = payment.querySelector('[data-payment-subtotal]');
-    const addonRow = payment.querySelector('[data-payment-addon-row]');
-    const addonEl = payment.querySelector('[data-payment-addon]');
     const insuranceRow = payment.querySelector('[data-payment-insurance]');
     const insuranceSummary = payment.querySelector('[data-payment-insurance-summary]');
     const creditEl = payment.querySelector('[data-payment-credit]');
     const insuranceLabel = payment.querySelector('[data-payment-insurance-label]');
     const methodLabel = payment.querySelector('[data-payment-method]');
-    if(subtotalEl) subtotalEl.textContent = baht(subtotal);
+    // Figma has one subtotal row for all products; optional add-ons are folded
+    // into that figure instead of creating a third breakdown line.
+    if(subtotalEl) subtotalEl.textContent = baht(subtotal + addon);
     // the fee shows twice: in the bill rows and on the delivery option card
     payment.querySelectorAll('[data-payment-delivery]').forEach(el => { el.textContent = baht(delivery); });
     // Same-day delivery is distance-based, so before an address exists it can only
@@ -5417,8 +5416,6 @@
       el.textContent = addrKnown ? baht(deliveryFeeFor('priority')) : 'ค่าประมาณ ฿140 ถึง ฿240';
       el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
     });
-    if(addonRow) addonRow.hidden=addon<=0;
-    if(addonEl) addonEl.textContent=baht(addon);
     if(insuranceRow) insuranceRow.hidden = credit <= 0;
     if(insuranceSummary) insuranceSummary.hidden = credit <= 0;
     if(creditEl) creditEl.textContent = '- ' + baht(credit);
