@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-payment-reference-v2">
+<link rel="stylesheet" href="components.css?v=20260920-payment-reference-v3">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2427,6 +2427,7 @@
             </span>
             <span class="checkout-order__price checkout-order__price--paid"><s>฿ 350</s><strong data-payment-consultation>฿ 0</strong></span>
           </div>
+          <div class="checkout-order__medicines">
           <div class="checkout-order__item" data-order-item="cough">
             <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
             <span class="checkout-order__body">
@@ -2466,6 +2467,7 @@
             <span class="checkout-order__price" data-order-price>฿ 134</span>
             <button class="checkout-order__line-edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
+          </div>
           </div>
           <div class="checkout-order__item" data-order-addon="wellness" hidden>
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
@@ -2512,6 +2514,7 @@
           <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
           <span class="hint">ไม่บังคับ</span>
         </div>
+        <div class="checkout-order checkout-order--addons" data-selected-addons hidden></div>
         <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
           <button class="checkout-addon-card" type="button" aria-pressed="false" data-addon-item data-addon-option="wellness" data-addon-price="290">
             <span class="checkout-addon-card__visual"><img src="assets/addons-v2/biotin-zinc.png" alt="" loading="lazy" decoding="async"></span>
@@ -4974,6 +4977,10 @@
   function enforceCheckoutSequence(){
     const body=document.querySelector('#payment > .screen__body');
     if(!body) return;
+    const selectedAddons=body.querySelector('[data-selected-addons]');
+    if(selectedAddons){
+      body.querySelectorAll('#payment-order-list [data-order-addon]').forEach(row => selectedAddons.appendChild(row));
+    }
     ['order','addons','total','fulfillment','address','delivery','payment','offers','context','eco','rewards','assurance'].forEach(key => {
       body.querySelectorAll(`:scope > [data-checkout-sequence="${key}"]`).forEach(section => body.appendChild(section));
     });
@@ -5031,6 +5038,10 @@
       const price=row.querySelector('[data-order-addon-price]');
       if(price) price.textContent=baht(ADDON_PRICES[key] || 0);
     });
+    const selectedAddons=document.querySelector('#payment [data-selected-addons]');
+    if(selectedAddons){
+      selectedAddons.hidden=![...selectedAddons.querySelectorAll('[data-order-addon]')].some(row => !row.hidden);
+    }
     document.querySelectorAll('[data-delivery-value]').forEach(option => {
       const selected=option.dataset.deliveryValue===flowState.orderState.deliveryMethod;
       option.setAttribute('aria-selected',String(selected));
@@ -5389,7 +5400,7 @@
     // be quoted as a range. Postal stays free because it is flat-rate nationwide.
     const addrKnown = Boolean(flowState.orderState.addressConfirmed);
     payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => {
-      el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'ค่าประมาณ ฿80 ถึง ฿180';
+      el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'คำนวณหลังใส่ที่อยู่';
       el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
     });
     payment.querySelectorAll('[data-payment-priority-fee]').forEach(el => {
@@ -7726,6 +7737,12 @@
     if(['payment','payment-gw','payment-success','payfail','tracking','prescription'].includes(target)){
       flowState.consultationPaid=true;
     }
+    if(target==='payment'){
+      flowState.orderState.address={};
+      flowState.orderState.addressConfirmed=false;
+      flowState.orderState.deliveryQuoteStatus='pending';
+      flowState.orderState.deliveryQuoteAmount=null;
+    }
     persistFlowState();
     isAuthenticated=true;
     hasActiveCase=true;
@@ -8301,7 +8318,7 @@
       'delivery-method-required':'เลือกวิธีจัดส่งก่อน',
       'payment-method-required':'เลือกวิธีชำระเงินก่อน'
     };
-    if(!actionable) label.textContent=blockedLabels[actionState] || 'ชำระเงิน';
+    if(!actionable) label.textContent='ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent='ชำระเงิน';
