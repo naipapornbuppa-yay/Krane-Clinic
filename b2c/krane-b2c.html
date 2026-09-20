@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-payment-item-no-remove-v1";
+    const release = "20260920-unified-item-quantity-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-payment-item-no-remove-v1">
+<link rel="stylesheet" href="components.css?v=20260920-unified-item-quantity-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2468,6 +2468,36 @@
             <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
+          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="wellness" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Biotin + Zinc</span>
+              <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
+            </span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+          </div>
+          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pillcase" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
+              <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
+            </span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+          </div>
+          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pouch" hidden>
+            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
+              <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
+            </span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+          </div>
           </div>
         </div>
         <!-- A refill starts at the quantity the doctor approved, so "+" is greyed on
@@ -2483,38 +2513,6 @@
         <div class="checkout-head">
           <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
           <span class="hint">ไม่บังคับ</span>
-        </div>
-        <div class="checkout-order checkout-order--addons" data-selected-addons hidden>
-          <div class="checkout-order__item" data-order-addon="wellness" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Biotin + Zinc</span>
-              <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness">แก้ไข</button>
-            <span class="checkout-order__quantity">1 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 290</span>
-          </div>
-          <div class="checkout-order__item" data-order-addon="pillcase" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
-              <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase">แก้ไข</button>
-            <span class="checkout-order__quantity">1 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 190</span>
-          </div>
-          <div class="checkout-order__item" data-order-addon="pouch" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
-              <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch">แก้ไข</button>
-            <span class="checkout-order__quantity">1 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 250</span>
-          </div>
         </div>
         <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
           <button class="checkout-addon-card" type="button" aria-pressed="false" data-addon-item data-addon-option="wellness" data-addon-price="290">
@@ -4507,6 +4505,7 @@
       deliveryQuoteStatus:'pending',
       deliveryQuoteAmount:null,
       addOns:{wellness:false,pillcase:false,pouch:false},
+      addonQuantities:{wellness:0,pillcase:0,pouch:0},
       promoCode:'',
       promoAmount:0,
       paymentMethod:'qr',
@@ -4551,7 +4550,7 @@
     flowState.coverage || {}
   );
   flowState.orderState=Object.assign(
-    {checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+    {checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,addOns:{wellness:false,pillcase:false,pouch:false},addonQuantities:{wellness:0,pillcase:0,pouch:0},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
     flowState.orderState || {}
   );
   flowState.orderState.address=Object.assign(
@@ -4566,12 +4565,19 @@
     {wellness:false,pillcase:false,pouch:false},
     flowState.orderState.addOns || {}
   );
-  /* The Figma checkout starts every recommendation as an addable product.
-     Clear the legacy prototype state once so an item selected in an older tab
-     cannot reappear inside the prescription basket after this layout update. */
-  const ADDON_UI_VERSION='figma-addons-v1';
+  flowState.orderState.addonQuantities=Object.assign(
+    {wellness:0,pillcase:0,pouch:0},
+    flowState.orderState.addonQuantities || {}
+  );
+  /* Optional retail products now share the medicine-list interaction while
+     keeping independent quantities. Preserve existing selections as one unit. */
+  const ADDON_UI_VERSION='unified-item-quantity-v1';
   if(flowState.orderState.addonUiVersion!==ADDON_UI_VERSION){
-    flowState.orderState.addOns={wellness:false,pillcase:false,pouch:false};
+    Object.keys(flowState.orderState.addOns).forEach(key => {
+      if(flowState.orderState.addOns[key] && !flowState.orderState.addonQuantities[key]){
+        flowState.orderState.addonQuantities[key]=1;
+      }
+    });
     flowState.orderState.addonUiVersion=ADDON_UI_VERSION;
     try { sessionStorage.setItem(FLOW_STATE_KEY,JSON.stringify(flowState)); } catch(error) {}
   }
@@ -4649,7 +4655,7 @@
       entryChannel:'direct',
       consultationPaymentTiming:'after',consultationFeeAcknowledged:false,consultationPaid:false,directGeneralHealthComplete:false,followUpDirectToWaitroom:false,followUpContext:null,paymentResolution:'',documentsUnlocked:false,
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
-      orderState:{checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
+      orderState:{checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},addonQuantities:{wellness:0,pillcase:0,pouch:0},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
       partnerHealthComplete:false,partnerReviewComplete:false,
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
@@ -5072,10 +5078,6 @@
   function enforceCheckoutSequence(){
     const body=document.querySelector('#payment > .screen__body');
     if(!body) return;
-    const selectedAddons=body.querySelector('[data-selected-addons]');
-    if(selectedAddons){
-      body.querySelectorAll('#payment-order-list [data-order-addon]').forEach(row => selectedAddons.appendChild(row));
-    }
     ['order','addons','total','fulfillment','address','delivery','payment','offers','context','eco','rewards','assurance'].forEach(key => {
       body.querySelectorAll(`:scope > [data-checkout-sequence="${key}"]`).forEach(section => body.appendChild(section));
     });
@@ -5118,7 +5120,8 @@
       });
     });
     document.querySelectorAll('[data-addon-option]').forEach(option => {
-      const selected=Boolean(flowState.orderState.addOns[option.dataset.addonOption]);
+      const key=option.dataset.addonOption;
+      const selected=Number(flowState.orderState.addonQuantities[key] || 0)>0;
       option.setAttribute('aria-pressed',String(selected));
       const action=option.querySelector('[data-addon-action]');
       if(action){
@@ -5128,15 +5131,15 @@
     });
     document.querySelectorAll('#payment [data-order-addon]').forEach(row => {
       const key=row.dataset.orderAddon;
-      const selected=Boolean(flowState.orderState.addOns[key]);
-      row.hidden=!selected;
+      const included=Boolean(flowState.orderState.addOns[key]);
+      const quantity=Math.max(0,Math.min(10,Number(flowState.orderState.addonQuantities[key] || 0)));
+      row.hidden=!included;
+      row.classList.toggle('is-declined',included && quantity<=0);
       const price=row.querySelector('[data-order-addon-price]');
-      if(price) price.textContent=baht(ADDON_PRICES[key] || 0);
+      const quantityLabel=row.querySelector('[data-order-addon-quantity]');
+      if(price) price.textContent=baht((ADDON_PRICES[key] || 0)*quantity);
+      if(quantityLabel) quantityLabel.textContent=`${quantity} ชิ้น`;
     });
-    const selectedAddons=document.querySelector('#payment [data-selected-addons]');
-    if(selectedAddons){
-      selectedAddons.hidden=![...selectedAddons.querySelectorAll('[data-order-addon]')].some(row => !row.hidden);
-    }
     document.querySelectorAll('[data-delivery-value]').forEach(option => {
       const selected=option.dataset.deliveryValue===flowState.orderState.deliveryMethod;
       option.setAttribute('aria-selected',String(selected));
@@ -8014,7 +8017,10 @@
   }
   function hasMedicines(){ return medicineSubtotal()>0; }
   function selectedAddOnTotal(){
-    return Object.entries(ADDON_PRICES).reduce((sum,[key,price]) => sum + (flowState.orderState.addOns[key] ? price : 0),0);
+    return Object.entries(ADDON_PRICES).reduce((sum,[key,price]) => {
+      const quantity=Math.max(0,Math.min(10,Number(flowState.orderState.addonQuantities[key] || 0)));
+      return sum + price*quantity;
+    },0);
   }
   function hasFulfillableItems(){ return hasMedicines() || selectedAddOnTotal()>0; }
   function invalidateFulfillmentQuote(){
@@ -10900,16 +10906,14 @@
     }
     const addOnEdit=e.target.closest('[data-addon-edit]');
     if(addOnEdit){
-      const option=document.querySelector(`#payment [data-addon-option="${addOnEdit.dataset.addonEdit}"]`);
-      option?.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'center',inline:'center'});
-      option?.focus({preventScroll:true});
+      openPaymentItemSheet(addOnEdit.closest('[data-order-addon]'),addOnEdit);
       return;
     }
     const addOnRemove=e.target.closest('[data-addon-remove]');
     if(addOnRemove){
       const key=addOnRemove.dataset.addonRemove;
       if(flowState.orderState.addOns[key]){
-        flowState.orderState.addOns[key]=false;
+        flowState.orderState.addonQuantities[key]=0;
         invalidateFulfillmentQuote();
         persistFlowState();
         refreshMedicationCheckout();
@@ -10919,7 +10923,9 @@
     const addOnChoice=e.target.closest('[data-addon-option]');
     if(addOnChoice){
       const key=addOnChoice.dataset.addonOption;
-      flowState.orderState.addOns[key]=!flowState.orderState.addOns[key];
+      const quantity=Math.max(0,Number(flowState.orderState.addonQuantities[key] || 0));
+      flowState.orderState.addOns[key]=true;
+      flowState.orderState.addonQuantities[key]=quantity>0 ? 0 : 1;
       invalidateFulfillmentQuote();
       persistFlowState();
       refreshMedicationCheckout();
@@ -11416,21 +11422,30 @@
     if(quantity) quantity.textContent=String(paymentItemDraft.quantity);
     if(price) price.textContent=baht(paymentItemDraft.unit*paymentItemDraft.quantity);
     if(minus) minus.disabled=paymentItemDraft.quantity<=0;
-    if(plus) plus.disabled=paymentItemDraft.quantity>=paymentItemDraft.max;
-    if(limit) limit.textContent=`รับได้ไม่เกิน ${paymentItemDraft.max} แผง ตามที่แพทย์สั่ง`;
+    if(plus) plus.disabled=!paymentItemDraft.allowIncrease || paymentItemDraft.quantity>=paymentItemDraft.max;
+    if(limit){
+      limit.textContent=paymentItemDraft.type==='addon'
+        ? `ลดได้ถึง 0 และเพิ่มได้สูงสุด ${paymentItemDraft.max} ชิ้น`
+        : 'ลดจำนวนได้เท่านั้น ไม่สามารถเพิ่มเกินรายการที่แพทย์สั่ง';
+    }
   }
   function openPaymentItemSheet(row,trigger){
     if(!paymentItemSheet || !row) return;
-    const key=row.dataset.orderItem;
+    const isAddon=Boolean(row.dataset.orderAddon);
+    const key=isAddon ? row.dataset.orderAddon : row.dataset.orderItem;
     const control=row.querySelector('[data-qty]');
-    if(!key || !control) return;
-    const quantity=Math.max(0,Number(flowState.orderState.quantities[key] || 0));
+    if(!key || (!isAddon && !control)) return;
+    const quantity=Math.max(0,Number(isAddon
+      ? flowState.orderState.addonQuantities[key]
+      : flowState.orderState.quantities[key]) || 0);
     paymentItemDraft={
       key,
+      type:isAddon ? 'addon' : 'medicine',
       quantity,
       originalQuantity:quantity,
-      max:Number(control.dataset.max || quantity),
-      unit:Number(control.dataset.unit || 0)
+      max:isAddon ? 10 : Number(control.dataset.max || quantity),
+      unit:isAddon ? Number(ADDON_PRICES[key] || 0) : Number(control.dataset.unit || 0),
+      allowIncrease:isAddon
     };
     paymentItemReturnFocus=trigger || null;
     const sourceImage=row.querySelector('.checkout-order__thumb img');
@@ -11459,14 +11474,22 @@
   function commitPaymentItemQuantity(quantity){
     if(!paymentItemDraft) return;
     const key=paymentItemDraft.key;
-    flowState.orderState.quantities[key]=Math.max(0,Math.min(paymentItemDraft.max,quantity));
+    const isAddon=paymentItemDraft.type==='addon';
+    const nextQuantity=Math.max(0,Math.min(paymentItemDraft.max,quantity));
+    if(isAddon){
+      flowState.orderState.addOns[key]=true;
+      flowState.orderState.addonQuantities[key]=nextQuantity;
+    }else{
+      flowState.orderState.quantities[key]=nextQuantity;
+    }
     invalidateFulfillmentQuote();
     persistFlowState();
     syncOrderCheckout();
     syncDeclinedMedicines();
     refreshMedicationCheckout();
     closePaymentItemSheet();
-    showActionToast(quantity<=0 ? 'นำยาออกจากรายการแล้ว' : 'อัปเดตจำนวนยาแล้ว','success');
+    const zeroMessage=isAddon ? 'ปรับสินค้าเป็น 0 ชิ้นแล้ว' : 'นำยาออกจากรายการแล้ว';
+    showActionToast(nextQuantity<=0 ? zeroMessage : 'อัปเดตจำนวนแล้ว','success');
   }
   if(paymentItemSheet){
     paymentItemSheet.addEventListener('click',event => {
@@ -11476,7 +11499,7 @@
         syncPaymentItemDraft();
         return;
       }
-      if(event.target.closest('[data-payment-item-plus]') && paymentItemDraft){
+      if(event.target.closest('[data-payment-item-plus]') && paymentItemDraft?.allowIncrease){
         paymentItemDraft.quantity=Math.min(paymentItemDraft.max,paymentItemDraft.quantity+1);
         syncPaymentItemDraft();
         return;
@@ -12184,12 +12207,13 @@
         rows.push({name,description,quantity:quantity+' แผง',price:unit*quantity,photo});
       });
       Object.entries(ADDON_PRICES).forEach(([key,price]) => {
-        if(!flowState.orderState.addOns[key]) return;
+        const quantity=Math.max(0,Math.min(10,Number(flowState.orderState.addonQuantities[key] || 0)));
+        if(!quantity) return;
         const paymentRow=document.querySelector(`#payment [data-order-addon="${key}"]`);
         const name=paymentRow?.querySelector('.checkout-order__name')?.textContent || key;
         const description=paymentRow?.querySelector('.checkout-order__note')?.textContent || '';
         const photo=paymentRow?.querySelector('.checkout-order__thumb img')?.getAttribute('src') || '';
-        rows.push({name,description,quantity:'1 ชิ้น',price,photo});
+        rows.push({name,description,quantity:quantity+' ชิ้น',price:price*quantity,photo});
       });
       if(hasFulfillableItems()){
         const courierIcon=screen.querySelector('[data-delivery-courier]')?.closest('.delivery-fact')?.querySelector('.delivery-fact__icon');
