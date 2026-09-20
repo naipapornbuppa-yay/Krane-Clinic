@@ -4,7 +4,7 @@
 <title>Krane CMS · Doctor Back Office</title>
 <!-- brand tokens are the single source of truth; back-office styles are token-driven semantic classes -->
 <link rel="stylesheet" href="design-tokens.css?v=20260918-doctor-colour-v1">
-<link rel="stylesheet" href="cms.css?v=20260920-doctor-textarea-v1">
+<link rel="stylesheet" href="cms.css?v=20260920-doctor-schedule-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
 <script src="../krane-golden-fixture.js"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
@@ -679,10 +679,10 @@
           <div><h1 class="page-head__t">Examination schedule</h1><div class="page-head__s">Plan your examination days ahead. Bookings from patients appear here automatically. Switch to the day view to read a patient's details before the consultation.</div></div>
         </div>
         <div class="calendar-stats">
-          <div><b>8</b><span>patients today</span></div>
-          <div><b>34</b><span>patients this month</span></div>
-          <div><b>2</b><span>waiting now</span></div>
-          <div><b>09:00 to 18:00</b><span>today’s availability</span></div>
+          <div><b data-calendar-stat="today">0</b><span>patients today</span></div>
+          <div><b data-calendar-stat="month">0</b><span>patients this month</span></div>
+          <div><b data-calendar-stat="waiting">0</b><span>waiting now</span></div>
+          <div><b data-calendar-stat="hours">-</b><span>today’s availability</span></div>
         </div>
         <div class="panel calendar-panel">
           <div class="cal-toolbar">
@@ -829,26 +829,17 @@
           <div class="panel panel--flush">
             <div class="panel__head"><h2 class="panel__title">Exceptions</h2><div class="hint">Days off or days with different hours</div></div>
             <div class="panel__body"><div class="stack">
-              <div class="avail-exception">
+              <div class="avail-exception" data-avail-key="2026-07-27">
                 <div><b>27 July 2026</b><span class="hint">On leave all day, not taking cases</span></div>
                 <button class="btn btn--ghost btn--sm" data-avail-remove>Delete</button>
               </div>
-              <div class="avail-exception">
+              <div class="avail-exception" data-avail-key="2026-08-02">
                 <div><b>2 August 2026</b><span class="hint">Extra hours 18:00 to 20:00</span></div>
                 <button class="btn btn--ghost btn--sm" data-avail-remove>Delete</button>
               </div>
               <button class="btn btn--secondary btn--sm" data-avail-add-exception>Add an exception</button>
             </div></div>
           </div>
-        </div>
-
-        <div class="panel panel--flush">
-          <div class="panel__head"><h2 class="panel__title">Waiting for the client to confirm</h2></div>
-          <div class="panel__body"><ul class="avail-open">
-            <li>Does an admin need to approve new hours before they apply?</li>
-            <li>How many weeks ahead can patients book?</li>
-            <li>If hours are reduced where cases are already booked, what should happen?</li>
-          </ul></div>
         </div>
 
         <div class="page-actions page-actions--sticky">
@@ -1359,18 +1350,11 @@
   const dayCalendar = document.querySelector('[data-day-calendar]');
   const rangeLabel = document.querySelector('[data-calendar-range]');
   const calendarViewSelect = document.querySelector('[data-calendar-view-select]');
-  const calendarToday = new Date(2026,5,24,12,0,0);
+  const calendarToday = new Date();
+  calendarToday.setHours(12,0,0,0);
   let calendarCursor = new Date(calendarToday);
   let currentCalendarMode = 'month';
-  const calendarEvents = {
-    3:[['09:30','Ton S.','upcoming']],
-    8:[['14:00','Mina L.','upcoming']],
-    12:[['10:30','Anan K.','done']],
-    18:[['15:00','Korn P.','upcoming']],
-    24:[['09:00','Ton S.','done'],['11:00','Mali S.','waiting'],['11:15','Anan K.','waiting'],['12:00','Korn P.','upcoming'],['14:00','Mina L.','upcoming']],
-    26:[['13:30','Win T.','done']],
-    30:[['16:00','Pim R.','upcoming']]
-  };
+  const calendarEvents = {};
   function calendarEventMarkup(event, extraClass){
     const statusClass = event[2] === 'waiting' ? ' cal-event--waiting' : event[2] === 'done' ? ' cal-event--done' : '';
     // The name sits in its own node so the language layer can translate it.
@@ -1382,12 +1366,23 @@
   function dateKey(date){
     return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
   }
+  function seedCalendarEvents(day, events){
+    calendarEvents[dateKey(new Date(calendarToday.getFullYear(), calendarToday.getMonth(), day, 12, 0, 0))] = events;
+  }
+  seedCalendarEvents(3,[['09:30','Ton S.','upcoming']]);
+  seedCalendarEvents(8,[['14:00','Mina L.','upcoming']]);
+  seedCalendarEvents(12,[['10:30','Anan K.','done']]);
+  seedCalendarEvents(18,[['15:00','Korn P.','upcoming']]);
+  seedCalendarEvents(calendarToday.getDate(),[['09:00','Ton S.','done'],['11:00','Mali S.','waiting'],['11:15','Anan K.','waiting'],['12:00','Korn P.','upcoming'],['14:00','Mina L.','upcoming']]);
+  seedCalendarEvents(26,[['13:30','Win T.','done']]);
+  seedCalendarEvents(30,[['16:00','Pim R.','upcoming']]);
   function eventsForDate(date){
-    return date.getFullYear() === 2026 && date.getMonth() === 5 ? (calendarEvents[date.getDate()] || []) : [];
+    return calendarEvents[dateKey(date)] || [];
   }
   function formatCalendarRange(){
     if(!rangeLabel) return;
-    const th = document.body.classList.contains('lang-th');
+    let th = document.body.classList.contains('lang-th') || langTH();
+    try { if(!/[?&]lang=en(?:&|$)/.test(location.search) && localStorage.getItem('krane_lang') !== 'en') th = true; } catch (error) {}
     const locale = th ? 'th-TH-u-ca-buddhist' : 'en-GB';
     const options = currentCalendarMode === 'month' ? {month:'long',year:'numeric'} : {weekday:'long',day:'numeric',month:'long',year:'numeric'};
     rangeLabel.textContent = new Intl.DateTimeFormat(locale,options).format(calendarCursor);
@@ -1396,9 +1391,19 @@
   // ---- Doctor shift planning: add button plus a modal -----------------------
   // Working days come from the weekly pattern; entries made here are per-date
   // overrides so a single day can change without touching the pattern.
-  const weeklyDefault = { 0:null, 1:'09:00-17:00', 2:'09:00-17:00', 3:'09:00-17:00', 4:'09:00-17:00', 5:'09:00-15:00', 6:null };
-  const shiftOverrides = { '2026-07-27':null, '2026-08-02':'18:00-20:00' };
+  const scheduleStorageKey = 'krane-doctor-schedule-v1';
+  let weeklyDefault = { 0:null, 1:'09:00-17:00', 2:'09:00-17:00', 3:'09:00-17:00', 4:'09:00-17:00', 5:'09:00-15:00', 6:null };
+  let shiftOverrides = {};
+  try {
+    const savedSchedule = JSON.parse(localStorage.getItem(scheduleStorageKey) || 'null');
+    if(savedSchedule && savedSchedule.weekly) weeklyDefault = savedSchedule.weekly;
+    if(savedSchedule && savedSchedule.overrides) shiftOverrides = savedSchedule.overrides;
+  } catch (error) {}
   let shiftKind = 'work';
+
+  function saveScheduleState(){
+    try { localStorage.setItem(scheduleStorageKey, JSON.stringify({weekly:weeklyDefault, overrides:shiftOverrides})); } catch (error) {}
+  }
 
   function shiftForDate(date){
     const key = dateKey(date);
@@ -1410,8 +1415,8 @@
     const hours = shiftForDate(date);
     const custom = Object.prototype.hasOwnProperty.call(shiftOverrides, dateKey(date)) ? ' is-custom' : '';
     return hours
-      ? '<span class="shift-chip' + custom + '">' + hours + '</span>'
-      : '<span class="shift-chip shift-chip--off' + custom + '">' + (langTH() ? 'หยุด' : 'Off') + '</span>';
+      ? '<button type="button" class="shift-chip' + custom + '" data-shift-edit="' + dateKey(date) + '" aria-label="' + (langTH() ? 'แก้ไขเวลาทำงาน ' : 'Edit working hours ') + hours + '">' + hours + '</button>'
+      : '<button type="button" class="shift-chip shift-chip--off' + custom + '" data-shift-edit="' + dateKey(date) + '" aria-label="' + (langTH() ? 'แก้ไขวันหยุด' : 'Edit day off') + '">' + (langTH() ? 'หยุด' : 'Off') + '</button>';
   }
   // The dialog markup sits after this script, so it is looked up on demand. Caching
   // the node at parse time returned null and silently disabled the whole modal.
@@ -1420,12 +1425,24 @@
     const shiftModal = shiftModalEl();
     if(!shiftModal) return;
     const dateInput = shiftModal.querySelector('#shift-date');
-    if(key){
-      dateInput.value = key;
-      // The rounded picker relabels its trigger on change, and setting .value in
-      // script does not fire one.
-      dateInput.dispatchEvent(new Event('change', {bubbles:true}));
+    const selectedKey = key || dateKey(calendarCursor);
+    const selectedDate = new Date(selectedKey+'T12:00:00');
+    const selectedHours = shiftForDate(selectedDate);
+    dateInput.value = selectedKey;
+    dateInput.dispatchEvent(new Event('change', {bubbles:true}));
+    shiftKind = selectedHours ? 'work' : 'off';
+    shiftModal.querySelectorAll('[data-shift-kind]').forEach(button => button.classList.toggle('is-active', button.dataset.shiftKind === shiftKind));
+    shiftModal.querySelector('[data-shift-hours]').hidden = shiftKind === 'off';
+    if(selectedHours){
+      const parts = selectedHours.split('-');
+      shiftModal.querySelector('#shift-from').value = parts[0];
+      shiftModal.querySelector('#shift-to').value = parts[1];
+      shiftModal.querySelector('#shift-from').dispatchEvent(new Event('change', {bubbles:true}));
+      shiftModal.querySelector('#shift-to').dispatchEvent(new Event('change', {bubbles:true}));
     }
+    const repeat = shiftModal.querySelector('#shift-repeat');
+    repeat.value = 'none';
+    repeat.dispatchEvent(new Event('cms-sync'));
     shiftModal.hidden = false;
     document.body.classList.add('modal-open');
     const dateTrigger = shiftModal.querySelector('.cms-picker__trigger');
@@ -1441,6 +1458,8 @@
     const shiftModal = shiftModalEl();
     if(!shiftModal) return;
     if(e.target.closest('[data-shift-open]')){ openShiftModal(null); return; }
+    const editShift = e.target.closest('[data-shift-edit]');
+    if(editShift){ openShiftModal(editShift.dataset.shiftEdit); return; }
     if(e.target.closest('[data-shift-cancel]')){ closeShiftModal(); return; }
     const kind = e.target.closest('[data-shift-kind]');
     if(kind){
@@ -1453,9 +1472,26 @@
       const key = shiftModal.querySelector('#shift-date').value;
       const from = shiftModal.querySelector('#shift-from').value;
       const to = shiftModal.querySelector('#shift-to').value;
-      shiftOverrides[key] = shiftKind === 'off' ? null : (from + '-' + to);
+      const repeat = shiftModal.querySelector('#shift-repeat').value;
+      if(!key){ toast(langTH() ? 'กรุณาเลือกวันที่' : 'Choose a date'); return; }
+      if(shiftKind === 'work' && (!from || !to || from >= to)){
+        toast(langTH() ? 'เวลาเลิกงานต้องอยู่หลังเวลาเริ่มงาน' : 'End time must be after start time');
+        return;
+      }
+      const value = shiftKind === 'off' ? null : (from + '-' + to);
+      const selectedDate = new Date(key+'T12:00:00');
+      if(repeat === 'weekly'){
+        weeklyDefault[selectedDate.getDay()] = value;
+        delete shiftOverrides[key];
+      } else if(repeat === 'weekday'){
+        [1,2,3,4,5].forEach(day => { weeklyDefault[day] = value; });
+        delete shiftOverrides[key];
+      } else {
+        shiftOverrides[key] = value;
+      }
+      saveScheduleState();
       closeShiftModal();
-      renderMonthCalendar();
+      renderCalendar();
       toast(shiftKind === 'off' ? (langTH() ? 'บันทึกวันหยุดแล้ว' : 'Day off saved') : (langTH() ? 'บันทึกตารางงานแล้ว' : 'Working day saved'));
     }
   });
@@ -1487,28 +1523,38 @@
   }
   function renderDayCalendar(){
     if(!dayCalendar) return;
-    const prototypeSlots = [
-      ['09:00',['09:00','Ton S.','done'],'Completed · summary available'],
-      ['10:00',null,''],
-      ['11:00',['11:00','Mali S.','waiting'],'Patient waiting · intake complete'],
-      ['12:00',['12:00','Korn P.','upcoming'],'Upcoming · review intake'],
-      ['13:00',null,''],
-      ['14:00',['14:00','Mina L.','upcoming'],'Upcoming · review intake'],
-      ['15:00',null,''],
-      ['16:00',null,''],
-      ['17:00',['17:00','Anan K.','upcoming'],'Upcoming · review intake']
-    ];
-    const emptySlots = prototypeSlots.map(slot => [slot[0],null,'']);
-    const slots = sameCalendarDay(calendarCursor,calendarToday) ? prototypeSlots : emptySlots;
-    dayCalendar.innerHTML = slots.map(slot => {
-      if(!slot[1]) return '<div class="day-time">'+slot[0]+'</div><div class="day-lane"></div>';
-      const status = slot[1][2];
-      const cls = status === 'waiting' ? ' day-event--waiting' : status === 'done' ? ' day-event--done' : '';
-      return '<div class="day-time">'+slot[0]+'</div><div class="day-lane"><button type="button" class="day-event'+cls+'" data-page="preconsult" data-patient="'+slot[1][1]+'" data-patient-state="'+status+'"><span><b>'+slot[1][1]+'</b><small>'+slot[2]+'</small></span><b>'+slot[1][0]+'</b></button></div>';
+    const events = eventsForDate(calendarCursor);
+    const hours = Array.from({length:11}, (_,index) => String(index+8).padStart(2,'0'));
+    dayCalendar.innerHTML = hours.map(hour => {
+      const hourEvents = events.filter(event => event[0].slice(0,2) === hour);
+      const eventMarkup = hourEvents.map(event => {
+        const status = event[2];
+        const cls = status === 'waiting' ? ' day-event--waiting' : status === 'done' ? ' day-event--done' : '';
+        const detail = status === 'waiting'
+          ? (langTH() ? 'ผู้ป่วยกำลังรอ · แบบสอบถามครบแล้ว' : 'Patient waiting · intake complete')
+          : status === 'done'
+            ? (langTH() ? 'เสร็จสิ้น · เปิดดูสรุปได้' : 'Completed · summary available')
+            : (langTH() ? 'นัดหมายถัดไป · ตรวจแบบสอบถาม' : 'Upcoming · review intake');
+        return '<button type="button" class="day-event'+cls+'" data-page="preconsult" data-patient="'+event[1]+'" data-patient-state="'+status+'"><span><b>'+event[1]+'</b><small>'+detail+'</small></span><b>'+event[0]+'</b></button>';
+      }).join('');
+      return '<div class="day-time">'+hour+':00</div><div class="day-lane">'+eventMarkup+'</div>';
     }).join('');
   }
+  function renderCalendarStats(){
+    const todayEvents = eventsForDate(calendarToday);
+    const monthPrefix = dateKey(new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1)).slice(0,7);
+    const monthCount = Object.keys(calendarEvents).filter(key => key.slice(0,7) === monthPrefix)
+      .reduce((total,key) => total + calendarEvents[key].length, 0);
+    const values = {
+      today:String(todayEvents.length),
+      month:String(monthCount),
+      waiting:String(todayEvents.filter(event => event[2] === 'waiting').length),
+      hours:shiftForDate(calendarToday) ? shiftForDate(calendarToday).replace('-', langTH() ? ' ถึง ' : ' to ') : (langTH() ? 'หยุด' : 'Off')
+    };
+    document.querySelectorAll('[data-calendar-stat]').forEach(node => { node.textContent = values[node.dataset.calendarStat]; });
+  }
   function renderCalendar(){
-    renderMonthCalendar(); renderDayCalendar(); formatCalendarRange(); reapplyLangIfTH();
+    renderMonthCalendar(); renderDayCalendar(); formatCalendarRange(); renderCalendarStats(); reapplyLangIfTH();
   }
   function setCalendarMode(mode){
     currentCalendarMode = mode;
@@ -1539,6 +1585,13 @@
       if(typeof window.kraneRoomRelabel === 'function') window.kraneRoomRelabel();
     },0);
   });
+
+  window.kraneSchedule = {
+    getWeekly: function(){ return Object.assign({}, weeklyDefault); },
+    setWeekly: function(nextWeekly){ weeklyDefault = Object.assign({}, nextWeekly); saveScheduleState(); renderCalendar(); },
+    removeOverride: function(key){ delete shiftOverrides[key]; saveScheduleState(); renderCalendar(); },
+    openEditor: openShiftModal
+  };
 
   // ---- signature upload preview ----
   const signatureUpload = document.querySelector('[data-signature-upload]');
@@ -1790,6 +1843,24 @@
   var status = page.querySelector('[data-avail-status]');
   function th(){ return !!document.querySelector('.lang__opt[data-lng="th"].is-active'); }
   function dirty(){ if(status) status.textContent = th() ? 'มีการแก้ไขที่ยังไม่ได้บันทึก' : 'You have unsaved changes'; }
+  var dayIndexes = [1,2,3,4,5,6,0];
+  if(window.kraneSchedule){
+    var weekly = window.kraneSchedule.getWeekly();
+    page.querySelectorAll('[data-avail-row]').forEach(function(row,index){
+      var value = weekly[dayIndexes[index]];
+      var toggle = row.querySelector('[data-avail-toggle]');
+      var times = row.querySelectorAll('input[type="time"]');
+      toggle.checked = !!value;
+      row.classList.toggle('is-off', !value);
+      if(value){
+        var parts = value.split('-');
+        if(times[0]) times[0].value = parts[0];
+        if(times[1]) times[1].value = parts[1];
+      }
+      var note = row.querySelector('[data-avail-note]');
+      if(note) note.textContent = value ? '' : (th() ? 'ไม่รับเคส' : 'Not taking cases');
+    });
+  }
   page.querySelectorAll('[data-avail-toggle]').forEach(function(input){
     input.addEventListener('change', function(){
       var row = input.closest('[data-avail-row]');
@@ -1801,11 +1872,35 @@
   });
   page.addEventListener('input', function(e){ if(e.target.matches('input,select')) dirty(); });
   page.querySelectorAll('[data-avail-remove]').forEach(function(button){
-    button.addEventListener('click', function(){ button.closest('.avail-exception').remove(); dirty(); });
+    button.addEventListener('click', function(){
+      var exception = button.closest('.avail-exception');
+      if(window.kraneSchedule && exception.dataset.availKey) window.kraneSchedule.removeOverride(exception.dataset.availKey);
+      exception.remove();
+      dirty();
+    });
+  });
+  var addException = page.querySelector('[data-avail-add-exception]');
+  if(addException) addException.addEventListener('click', function(){
+    if(window.kraneSchedule) window.kraneSchedule.openEditor();
   });
   var save = page.querySelector('[data-avail-save]');
   if(save) save.addEventListener('click', function(){
+    var nextWeekly = {};
+    var valid = true;
+    page.querySelectorAll('[data-avail-row]').forEach(function(row,index){
+      var toggle = row.querySelector('[data-avail-toggle]');
+      var times = row.querySelectorAll('input[type="time"]');
+      if(!toggle.checked){ nextWeekly[dayIndexes[index]] = null; return; }
+      if(!times[0].value || !times[1].value || times[0].value >= times[1].value) valid = false;
+      nextWeekly[dayIndexes[index]] = times[0].value + '-' + times[1].value;
+    });
+    if(!valid){
+      if(status) status.textContent = th() ? 'เวลาเลิกงานต้องอยู่หลังเวลาเริ่มงาน' : 'End time must be after start time';
+      return;
+    }
+    if(window.kraneSchedule) window.kraneSchedule.setWeekly(nextWeekly);
     if(status) status.textContent = (th() ? 'บันทึกแล้ว ' : 'Saved at ') + new Date().toLocaleTimeString(th() ? 'th-TH' : 'en-GB',{hour:'2-digit',minute:'2-digit'});
+    toast(th() ? 'บันทึกเวลาทำงานแล้ว' : 'Working hours saved');
   });
 })();
 
