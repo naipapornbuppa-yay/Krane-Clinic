@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-payment-cta-v1";
+    const release = "20260920-payment-addon-row-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -38,7 +38,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-float-v1">
-<link rel="stylesheet" href="components.css?v=20260920-payment-reference-v3">
+<link rel="stylesheet" href="components.css?v=20260920-payment-addon-row-v1">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2491,9 +2491,9 @@
               <span class="checkout-order__name">Biotin + Zinc</span>
               <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
             </span>
-            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness">แก้ไข</button>
+            <span class="checkout-order__quantity">1 ชิ้น</span>
             <span class="checkout-order__price" data-order-addon-price>฿ 290</span>
-            <button class="checkout-order__remove" type="button" data-addon-remove="wellness" aria-label="นำ Biotin + Zinc ออกจากคำสั่งซื้อ" title="นำออก"><i data-lucide="trash-2" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
           </div>
           <div class="checkout-order__item" data-order-addon="pillcase" hidden>
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
@@ -2501,9 +2501,9 @@
               <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
               <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
             </span>
-            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase">แก้ไข</button>
+            <span class="checkout-order__quantity">1 ชิ้น</span>
             <span class="checkout-order__price" data-order-addon-price>฿ 190</span>
-            <button class="checkout-order__remove" type="button" data-addon-remove="pillcase" aria-label="นำ กล่องจัดยาแบบพกพา ออกจากคำสั่งซื้อ" title="นำออก"><i data-lucide="trash-2" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
           </div>
           <div class="checkout-order__item" data-order-addon="pouch" hidden>
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
@@ -2511,9 +2511,9 @@
               <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
               <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
             </span>
-            <span class="checkout-order__quantity">จำนวน 1 ชิ้น</span>
+            <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch">แก้ไข</button>
+            <span class="checkout-order__quantity">1 ชิ้น</span>
             <span class="checkout-order__price" data-order-addon-price>฿ 250</span>
-            <button class="checkout-order__remove" type="button" data-addon-remove="pouch" aria-label="นำ กระเป๋าจัดเก็บผลิตภัณฑ์ ออกจากคำสั่งซื้อ" title="นำออก"><i data-lucide="trash-2" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
           </div>
         </div>
         <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
@@ -10800,6 +10800,13 @@
     const riderLocate=e.target.closest('[data-rider-locate]');
     if(riderLocate){
       showActionToast('ตำแหน่งไรเดอร์แบบเรียลไทม์เปิดดูได้ในแอปของผู้ให้บริการขนส่ง','info');
+      return;
+    }
+    const addOnEdit=e.target.closest('[data-addon-edit]');
+    if(addOnEdit){
+      const option=document.querySelector(`#payment [data-addon-option="${addOnEdit.dataset.addonEdit}"]`);
+      option?.scrollIntoView({behavior:reduceMotion ? 'auto' : 'smooth',block:'center',inline:'center'});
+      option?.focus({preventScroll:true});
       return;
     }
     const addOnRemove=e.target.closest('[data-addon-remove]');
