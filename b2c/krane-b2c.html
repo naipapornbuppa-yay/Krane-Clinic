@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-payment-summary-v1";
+    const release = "20260920-payment-cta-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -8308,23 +8308,11 @@
     if(!button) return;
     const actionState=checkoutActionState();
     const actionable=actionState==='ready' || actionState==='quote-required';
-    /* A blocked CTA stays tappable so it can answer the tap (client, 23 Aug).
-       `disabled` swallows the click, so the one thing a stuck patient tries —
-       pressing the greyed-out button — used to do nothing at all. It is
-       aria-disabled and styled dead instead, and the handler walks them to the
-       field that is missing. */
     button.setAttribute('aria-disabled',String(!actionable));
-    button.disabled=false;
+    button.disabled=!actionable;
     button.classList.toggle('btn--blocked',!actionable);
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    /* A blocked CTA names its blocker (client, 18 Aug). "ชำระเงิน", greyed out
-       with no explanation, left the reader hunting for what was missing. */
-    const blockedLabels={
-      'address-required':'ตรวจสอบที่อยู่',
-      'delivery-method-required':'เลือกวิธีจัดส่งก่อน',
-      'payment-method-required':'เลือกวิธีชำระเงินก่อน'
-    };
     if(!actionable) label.textContent='ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
