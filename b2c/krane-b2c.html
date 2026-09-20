@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260920-float-v1";
+    const release = "20260920-payment-addons-v1";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -2469,6 +2469,22 @@
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
           </div>
+        </div>
+        <!-- A refill starts at the quantity the doctor approved, so "+" is greyed on
+             every line; the note says why while the steppers are out (client, 17 Sep). -->
+        <p class="hint checkout-order__cap" data-order-cap hidden>ลดจำนวนได้ แต่เพิ่มได้ไม่เกินที่แพทย์สั่ง</p>
+        <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
+        <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
+      </div>
+      <!-- Add-ons sit directly under the basket they add to, so the bill below
+           stays the last thing on the page and never has to be re-read after a
+           change (client, 10 Sep). -->
+      <div class="stack-2" data-checkout-sequence="addons" data-payment-required-section data-payment-addons>
+        <div class="checkout-head">
+          <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
+          <span class="hint">ไม่บังคับ</span>
+        </div>
+        <div class="checkout-order checkout-order--addons" data-selected-addons hidden>
           <div class="checkout-order__item" data-order-addon="wellness" hidden>
             <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
             <span class="checkout-order__body">
@@ -2500,21 +2516,6 @@
             <button class="checkout-order__remove" type="button" data-addon-remove="pouch" aria-label="นำ กระเป๋าจัดเก็บผลิตภัณฑ์ ออกจากคำสั่งซื้อ" title="นำออก"><i data-lucide="trash-2" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
           </div>
         </div>
-        <!-- A refill starts at the quantity the doctor approved, so "+" is greyed on
-             every line; the note says why while the steppers are out (client, 17 Sep). -->
-        <p class="hint checkout-order__cap" data-order-cap hidden>ลดจำนวนได้ แต่เพิ่มได้ไม่เกินที่แพทย์สั่ง</p>
-        <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>คุณหมอนรินทร์ ทานากะ</strong></span>
-        <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
-      </div>
-      <!-- Add-ons sit directly under the basket they add to, so the bill below
-           stays the last thing on the page and never has to be re-read after a
-           change (client, 10 Sep). -->
-      <div class="stack-2" data-checkout-sequence="addons" data-payment-required-section data-payment-addons>
-        <div class="checkout-head">
-          <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
-          <span class="hint">ไม่บังคับ</span>
-        </div>
-        <div class="checkout-order checkout-order--addons" data-selected-addons hidden></div>
         <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
           <button class="checkout-addon-card" type="button" aria-pressed="false" data-addon-item data-addon-option="wellness" data-addon-price="290">
             <span class="checkout-addon-card__visual"><img src="assets/addons-v2/biotin-zinc.png" alt="" loading="lazy" decoding="async"></span>
@@ -4480,6 +4481,15 @@
     {wellness:false,pillcase:false,pouch:false},
     flowState.orderState.addOns || {}
   );
+  /* The Figma checkout starts every recommendation as an addable product.
+     Clear the legacy prototype state once so an item selected in an older tab
+     cannot reappear inside the prescription basket after this layout update. */
+  const ADDON_UI_VERSION='figma-addons-v1';
+  if(flowState.orderState.addonUiVersion!==ADDON_UI_VERSION){
+    flowState.orderState.addOns={wellness:false,pillcase:false,pouch:false};
+    flowState.orderState.addonUiVersion=ADDON_UI_VERSION;
+    try { sessionStorage.setItem(FLOW_STATE_KEY,JSON.stringify(flowState)); } catch(error) {}
+  }
   const flowConfig=new URLSearchParams(window.location.search);
   if(flowConfig.get('entry')==='partner') flowState.entryChannel='partner';
   if(flowConfig.get('entry')==='direct') flowState.entryChannel='direct';
