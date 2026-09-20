@@ -1922,6 +1922,7 @@
      weight and ED intake, sliders, signup consent, referral, the weight safety
      sheet and sample leaflets, plus the matching line in Thai ---- */
   var EN_FROM_TH_20SEP = {
+    "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือให้ความยินยอมการใช้ข้อมูลและการรักษาทางไกล":"Your phone number is verified and your Krane account is created. Next, give consent for data use and telemedicine care.",
     "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว เริ่มใช้งานบัญชีของคุณได้เลย":"Your phone number is verified and your Krane account is created. Your account is ready to use.",
     "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือตอบแบบสอบถามอาการ":"Your phone number is verified and your Krane account is created. Next, answer the health questions."
   };
