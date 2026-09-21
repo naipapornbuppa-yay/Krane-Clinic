@@ -1540,6 +1540,15 @@
     <div class="screen__top auth-screen__top"><button class="back" data-back>‹</button><span class="ttl">Create Account</span></div>
     <div class="screen__body auth-screen__body">
       <div class="auth-screen__panel">
+        <!-- Client, 21 Sep: someone arriving here has just finished the
+             questionnaire and needs to see that it was saved — "in green or
+             something so they know they completed the assessment". It used to
+             say this on Log in, which is the wrong page for the path the
+             assessment actually takes. -->
+        <div class="alert alert--success auth-screen__context" data-signup-intake-notice role="status" hidden>
+          <span class="a-ic" aria-hidden="true"><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span>
+          <div><div class="a-title">ทำแบบประเมินเรียบร้อยแล้ว</div><div class="hint">โปรดสร้างบัญชีเพื่อบันทึกคำตอบและเริ่มปรึกษาแพทย์ตอนนี้</div></div>
+        </div>
         <div class="auth-screen__intro">
           <h2 class="h1">Create Account</h2>
         </div>
@@ -1556,7 +1565,10 @@
             <div class="password-field"><span class="float-field__slot"><input class="input" id="signup-confirm" type="password" autocomplete="new-password" placeholder=" "><label for="signup-confirm">ยืนยันรหัสผ่าน</label></span><button class="password-field__toggle" type="button" data-password-toggle="signup-confirm" aria-label="แสดงรหัสผ่าน"><i data-lucide="eye"></i></button></div>
             <p class="hint password-mismatch" data-signup-password-match hidden>รหัสผ่านทั้งสองช่องยังไม่ตรงกัน</p>
           </div>
-          <ul class="password-rules" data-signup-password-rules>
+          <!-- Client, 21 Sep: "there is so many info in one page" — the checklist
+               stays out of the way until someone is actually typing a password
+               that does not pass yet, and folds away again once it does. -->
+          <ul class="password-rules" data-signup-password-rules hidden>
             <li data-signup-password-rule="length"><i data-lucide="circle" class="password-rule__todo" aria-hidden="true"></i><i data-lucide="circle-check" class="password-rule__done" aria-hidden="true"></i><span>อย่างน้อย 8 ตัวอักษร</span></li>
             <li data-signup-password-rule="letter"><i data-lucide="circle" class="password-rule__todo" aria-hidden="true"></i><i data-lucide="circle-check" class="password-rule__done" aria-hidden="true"></i><span>มีตัวอักษรภาษาอังกฤษ</span></li>
             <li data-signup-password-rule="number"><i data-lucide="circle" class="password-rule__todo" aria-hidden="true"></i><i data-lucide="circle-check" class="password-rule__done" aria-hidden="true"></i><span>มีตัวเลข</span></li>
@@ -4747,9 +4759,15 @@
     const pw=document.getElementById('signup-password');
     const confirm=document.getElementById('signup-confirm');
     if(!pw || !confirm) return;
-    passwordRuleState(pw.value).forEach(([name,ok]) => {
+    const rules=passwordRuleState(pw.value);
+    rules.forEach(([name,ok]) => {
       document.querySelector('[data-signup-password-rule="'+name+'"]')?.classList.toggle('is-met',ok);
     });
+    // The checklist is guidance for a password that is not there yet, not a
+    // permanent part of the form: it appears only while one is being typed and
+    // still falls short, and goes away again the moment it passes.
+    const ruleList=document.querySelector('[data-signup-password-rules]');
+    if(ruleList) ruleList.hidden=!(pw.value.length>0 && rules.some(([,ok]) => !ok));
     const mismatch=document.querySelector('[data-signup-password-match]');
     if(mismatch) mismatch.hidden=!(confirm.value.length>0 && confirm.value!==pw.value);
     syncSignupSubmit();
@@ -9265,6 +9283,13 @@
       // Keep the message contextual so a cold login never implies treatment has
       // already started.
       loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
+    }
+    // Same test on the sign-up page, which is where the finished assessment
+    // actually lands: a saved draft plus a clinical destination means this
+    // account is being made to keep answers that already exist.
+    const signupIntakeNotice=document.querySelector('[data-signup-intake-notice]');
+    if(signupIntakeNotice && id==='signup'){
+      signupIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
     }
     /* Direct entry always restores the progress UI, even if this tab previously
        opened a partner link. Partner entry keeps it hidden on shared screens too. */
