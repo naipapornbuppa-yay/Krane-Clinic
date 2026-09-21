@@ -1248,6 +1248,7 @@
     "เติมยาได้ไม่เกินจำนวนที่แพทย์อนุมัติ":"You can refill up to the amount your doctor approved.",
     "มีใบสั่งยาจากที่อื่น":"I have a prescription from another clinic",
     "นัดติดตามผล":"Follow-up",
+    "เวลานัด":"Appointment",
     "ติดตามผลของฉัน":"My follow-ups",
     "ความคืบหน้าของคุณ":"Your progress",
     "ลดแล้ว":"Down",

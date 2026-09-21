@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260922-tracking-note-remove-v10";
+    const release = "20260922-followup-time-copy-v11";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,13 +39,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-brand-buttons-v1">
-<link rel="stylesheet" href="components.css?v=20260922-tracking-note-remove-v10">
+<link rel="stylesheet" href="components.css?v=20260922-followup-time-copy-v11">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260920-float-v1" defer></script>
-<script src="i18n.js?v=20260921-nav-progress-wording-v1" defer></script>
+<script src="i18n.js?v=20260922-followup-time-copy-v11" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2957,8 +2957,8 @@
       <button class="followup-toast" type="button" data-followup-toast data-profile-followup hidden disabled aria-disabled="true">
         <span class="followup-toast__icon"><i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i></span>
         <span class="followup-toast__text">
-          <strong>นัดติดตามผล <span data-home-followup-when>14 ก.ย. 2026</span></strong>
-          <small data-home-followup-countdown>เริ่ม 10:00 น.</small>
+          <strong>เวลานัด <span data-home-followup-when>14 ก.ย. 2026</span></strong>
+          <small data-home-followup-countdown>เวลา 11:00 น.</small>
         </span>
         <span class="followup-toast__state" data-home-followup-state>23:58</span>
       </button>
@@ -6858,15 +6858,21 @@
     let when;
     const seededMinutes=Number(node.dataset.followupDemoMinutes);
     if(Number.isFinite(seededMinutes)){
-      /* Client, 15 Sep: the seeded appointment sits twelve minutes out, so a
-         testing session starts locked, and the tester watches it cross the
-         ten-minute line and open the room on its own — the transition was the
-         part nobody could see. At 1438 minutes the join button could never be
-         reached in a session at all. The ten-minute rule itself is untouched;
-         ?demoFollowup=ready and =now still jump straight to either state. */
-      const demoMinutes=followUpDemoState==='ready' ? 8 : followUpDemoState==='now' ? 0 : seededMinutes;
-      when=new Date(Date.now()+(demoMinutes*60000));
-      when.setMilliseconds(0);
+      /* The profile's normal demo data must still read like a real clinic
+         appointment. Keep it at the next 11:00 business-day slot instead of
+         deriving a late-night time from when the page happens to be opened.
+         The explicit demo states remain relative so QA can exercise the room
+         opening transition without waiting. */
+      if(followUpDemoState==='ready' || followUpDemoState==='now'){
+        const demoMinutes=followUpDemoState==='ready' ? 8 : 0;
+        when=new Date(Date.now()+(demoMinutes*60000));
+        when.setMilliseconds(0);
+      }else{
+        when=new Date();
+        when.setHours(11,0,0,0);
+        if(when.getTime()<=Date.now()) when.setDate(when.getDate()+1);
+        while(when.getDay()===0 || when.getDay()===6) when.setDate(when.getDate()+1);
+      }
     }else{
       when=new Date();
       when.setHours(10,0,0,0);
@@ -7010,10 +7016,13 @@
     const thai=document.documentElement.lang!=='en';
     if(countdown) countdown.textContent=ready
       ? (thai ? 'เข้าห้องได้แล้ว' : 'Room is open')
-      : (thai ? `เริ่ม ${formatFollowUpTime(next.when)}` : `Starts ${formatFollowUpTime(next.when)}`);
+      : (thai ? `เวลา ${formatFollowUpTime(next.when)}` : `At ${formatFollowUpTime(next.when)}`);
     // The pill is the clock while the patient is waiting, and the way in once
     // the room opens.
-    if(state) state.textContent=ready ? (thai ? 'เข้าห้อง' : 'Join') : formatFollowUpPill(remaining);
+    const untilRoomOpens=Math.max(0,remaining-FOLLOWUP_JOIN_MS);
+    if(state) state.textContent=ready
+      ? (thai ? 'เข้าห้อง' : 'Join')
+      : `${thai ? 'เข้าห้องใน' : 'Join in'} ${formatFollowUpPill(untilRoomOpens)}`;
     toast.disabled=!ready;
     toast.setAttribute('aria-disabled',String(!ready));
     toast.classList.toggle('is-ready',ready);
