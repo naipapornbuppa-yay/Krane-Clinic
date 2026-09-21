@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260921-desktop-shell-v6";
+    const release = "20260922-consultpay-notices-v8";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-brand-buttons-v1">
-<link rel="stylesheet" href="components.css?v=20260921-desktop-shell-v6">
+<link rel="stylesheet" href="components.css?v=20260922-consultpay-notices-v8">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1850,7 +1850,7 @@
              in a toast, and the footer hint carries it on the page. -->
         <div class="between"><span class="muted">ใช้เวลาปรึกษา</span><strong>ประมาณ 15 นาที</strong></div>
         <div class="between"><span class="muted">ส่งยารอบสุดท้าย</span><strong>21:00 น.</strong></div>
-        <p class="hint" style="margin:0">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
+        <p class="hint consultpay-cutoff-note">หากปรึกษาหลัง 21:00 น. อาจจะได้รับยาในวันถัดไป</p>
       </div>
       <!-- Client (5 Jul): the medical certificate is requested HERE, paid with the doctor fee -->
       <label class="card card--pad-sm row" data-consult-payment-control style="cursor:pointer;align-items:flex-start"><span class="check" style="margin-top:2px"><input type="checkbox" data-cert-check><span class="box"></span></span><div class="grow"><strong>ขอใบรับรองแพทย์ · ฟรี</strong><div class="hint">Issued by your doctor after the consultation. A signed PDF appears in your documents.</div></div></label>
@@ -1860,7 +1860,7 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-<div class="screen__footer stack-2"><p class="hint" style="text-align:center">นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</p><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+<div class="screen__footer stack-2"><p class="consultpay-fee-note">นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</p><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -5805,11 +5805,11 @@
       intake1:`
         <div><h2 class="h1">Where are you noticing hair loss?</h2></div>
         <div class="stack-3 hair-area-options">
-          <button class="option hair-area-option" aria-selected="true" data-multi data-hair-symptom><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/hair-area-hairline-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Temples or receding hairline</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/hair-area-crown-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Crown or top of the scalp</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/hair-area-all-over-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Diffuse shedding across the scalp</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/hair-area-patchy-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Round or patchy areas</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/hair-area-scalp-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Scalp itching, redness or flaking</span></span><span class="opt-check"></span></button>
+          <button class="option hair-area-option" aria-selected="true" data-multi data-hair-symptom><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-hairline-v2.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Temples or receding hairline</span></span><span class="opt-check"></span></button>
+          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-crown-v2.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Crown or top of the scalp</span></span><span class="opt-check"></span></button>
+          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-all-over-v2.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Diffuse shedding across the scalp</span></span><span class="opt-check"></span></button>
+          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-patchy-v2.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Round or patchy areas</span></span><span class="opt-check"></span></button>
+          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-scalp-v2.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Scalp itching, redness or flaking</span></span><span class="opt-check"></span></button>
         </div>
         ${intakeDurationControl({label:'How long has this been happening?'})}`,
       intake2:`
