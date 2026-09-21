@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260921-consent-arrow-v3";
+    const release = "20260921-phone-format-v4";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -5308,7 +5308,7 @@
     };
     Object.entries(values).forEach(([id,value]) => {
       const input=screen.querySelector(`#${id}`);
-      if(input) input.value=id==='recipientPhone' ? formatThaiPhone(value) : (value || '');
+      if(input) input.value=id==='recipientPhone' ? formatPhoneForDisplay(value) : (value || '');
     });
     const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${address.dropoffMethod || 'hand'}"]`);
     if(dropoff) dropoff.checked=true;
@@ -5328,7 +5328,7 @@
     syncComposedDistrict();
     return {
       recipientFirstName:v('recipientFirstName'), recipientLastName:v('recipientLastName'),
-      recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:v('recipientPhone'),
+      recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:normalizePhone(v('recipientPhone')),
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
@@ -7604,6 +7604,13 @@
       if(atEnd) phone.setSelectionRange(phone.value.length,phone.value.length);
       return;
     }
+    const standalonePhone=event.target.matches('input[type="tel"]') ? event.target : null;
+    if(standalonePhone){
+      const atEnd=standalonePhone.selectionStart===standalonePhone.value.length;
+      standalonePhone.value=formatPhoneForDisplay(standalonePhone.value);
+      if(atEnd) standalonePhone.setSelectionRange(standalonePhone.value.length,standalonePhone.value.length);
+      return;
+    }
     const search=event.target.closest('[data-phone-country-search]');
     if(!search) return;
     const q=search.value.trim().toLowerCase();
@@ -7627,6 +7634,20 @@
     if(digits.length<=6) return digits.slice(0,3)+'-'+digits.slice(3);
     return digits.slice(0,3)+'-'+digits.slice(3,6)+'-'+digits.slice(6);
   }
+  function formatPhoneForDisplay(value){
+    const raw=String(value || '').trim();
+    const digits=normalizePhone(raw);
+    const usesThaiCountryCode=raw.startsWith('+66') || (/^66[689]\d{8}$/.test(digits));
+    if(!usesThaiCountryCode) return formatThaiPhone(digits);
+    const national=digits.slice(2,11);
+    if(!national) return '+66';
+    if(national.length<=2) return '+66 '+national;
+    if(national.length<=5) return '+66 '+national.slice(0,2)+' '+national.slice(2);
+    return '+66 '+national.slice(0,2)+' '+national.slice(2,5)+' '+national.slice(5);
+  }
+  document.querySelectorAll('input[type="tel"]:not(.phone-field__input)').forEach(input => {
+    input.value=formatPhoneForDisplay(input.value);
+  });
   function isValidThaiMobile(value){
     const digits = normalizePhone(value);
     return /^0[689]\d{8}$/.test(digits) || /^66[689]\d{8}$/.test(digits);
@@ -7947,7 +7968,7 @@
           persistFlowState();
           return;
         }
-        flowState.partnerPendingPhone=input.value.trim();
+        flowState.partnerPendingPhone=normalizePhone(input.value);
         flowState.partnerPhoneVerified=false;
         flowState.partnerPhoneOtpPending=true;
         persistFlowState();
@@ -7961,7 +7982,7 @@
         btn.textContent='เปลี่ยนเบอร์';
         return;
       }
-      flowState.pendingPhone=input.value.trim();
+      flowState.pendingPhone=normalizePhone(input.value);
       flowState.phoneOtpPending=true;
       flowState.phoneOtpReturn='patient-info';
       flowState.phoneOtpDestination='';
@@ -10079,7 +10100,7 @@
     if(!flowState.patientName && fullName) flowState.patientName=fullName;
     const phone=document.getElementById('social-phone')?.value.trim()
       || document.getElementById('login-phone')?.value.trim() || '';
-    if(!flowState.verifiedPhone && phone) flowState.verifiedPhone=phone;
+    if(!flowState.verifiedPhone && phone) flowState.verifiedPhone=normalizePhone(phone);
     persistFlowState();
     writeSessionJson(AUTH_PROFILE_KEY,{
       authenticated:true,
@@ -10308,7 +10329,7 @@
       const emailLabel = document.querySelector('[data-auth-email]'); if(emailLabel) emailLabel.textContent = email;
       const emailInput = document.querySelector('[data-auth-email-input]'); if(emailInput) emailInput.value = email;
       const socialPhone=document.getElementById('social-phone');
-      if(socialPhone && flowState.verifiedPhone) socialPhone.value=flowState.verifiedPhone;
+      if(socialPhone && flowState.verifiedPhone) socialPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
       show('social-confirm'); return;
     }
     const authContinue = e.target.closest('[data-auth-continue]');
@@ -10327,7 +10348,7 @@
       }
       const phoneChanged=normalizePhone(phone)!==normalizePhone(flowState.verifiedPhone);
       if(phoneChanged || !flowState.otpVerified){
-        flowState.pendingPhone=phone;
+        flowState.pendingPhone=normalizePhone(phone);
         flowState.phoneOtpPending=true;
         flowState.phoneOtpReturn='social-confirm';
         flowState.phoneOtpDestination=authNext;
@@ -10349,10 +10370,10 @@
         flowState.signupPasswordChosen=true;
         flowState.accountCreated=true;
         flowState.returningIdentityValid=false;
-        flowState.verifiedPhone=phone;
+        flowState.verifiedPhone=normalizePhone(phone);
         persistFlowState();
         const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=phone;
+        if(patientPhone) patientPhone.value=formatPhoneForDisplay(phone);
         show('otp');
       });
       return;
@@ -10373,11 +10394,11 @@
         flowState.passwordSet=true;
         flowState.returningIdentityValid=true;
         flowState.returningLogin=true;
-        flowState.verifiedPhone=phone;
+        flowState.verifiedPhone=normalizePhone(phone);
         persistFlowState();
         applyAuthenticatedAccount({returning:true});
         const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=phone;
+        if(patientPhone) patientPhone.value=formatPhoneForDisplay(phone);
         showActionToast('เข้าสู่ระบบแล้ว','success');
         show(nextAfterAuthentication());
       });
@@ -10391,7 +10412,7 @@
       flowState.returningIdentityValid=true;
       flowState.returningLogin=true;
       flowState.passwordResetPending=true;
-      flowState.verifiedPhone=phone;
+      flowState.verifiedPhone=normalizePhone(phone);
       persistFlowState();
       showActionToast('ส่งรหัส OTP ไปที่เบอร์ของคุณแล้ว','success');
       show('otp');
@@ -10416,7 +10437,7 @@
           const note=document.querySelector('#partner-patient-info [data-phone-note]');
           const edit=document.querySelector('#partner-patient-info [data-phone-edit]');
           if(phone){
-            phone.value=flowState.partnerPhone;
+            phone.value=formatPhoneForDisplay(flowState.partnerPhone);
             phone.readOnly=true;
             phone.setAttribute('aria-readonly','true');
           }
@@ -10438,8 +10459,8 @@
           persistFlowState();
           const patientPhone=document.getElementById('patient-phone');
           const socialPhone=document.getElementById('social-phone');
-          if(patientPhone) patientPhone.value=flowState.verifiedPhone;
-          if(socialPhone) socialPhone.value=flowState.verifiedPhone;
+          if(patientPhone) patientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
+          if(socialPhone) socialPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
           if(completesAuth){
             completeAuthentication(destination);
             return;
@@ -10460,7 +10481,7 @@
       submitOnce('otp',authComplete,() => {
         flowState.otpVerified=true;
         const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=flowState.verifiedPhone;
+        if(patientPhone) patientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
         persistFlowState();
         // A phone sign-up chose its password on the sign-up page (client, 19 Sep),
         // so the code completes the account. A reset still goes on to replace
@@ -10526,7 +10547,7 @@
       submitOnce('partner-patient-info',partnerInfoContinue,() => {
         flowState.entryChannel='partner';
         flowState.partnerName=name;
-        flowState.partnerPhone=phone;
+        flowState.partnerPhone=normalizePhone(phone);
         flowState.partnerInfoComplete=true;
         flowState.partnerPaymentChosen=true;
         flowState.partnerPaymentMethod=paymentMethod;
@@ -11234,7 +11255,7 @@
           const note=document.querySelector('#patient-info [data-phone-note]');
           const edit=document.querySelector('#patient-info [data-phone-edit]');
           if(phone){
-            phone.value=flowState.verifiedPhone;
+            phone.value=formatPhoneForDisplay(flowState.verifiedPhone);
             phone.readOnly=true;
             phone.setAttribute('aria-readonly','true');
           }
@@ -12667,7 +12688,7 @@
   syncPartnerScreening();
   syncPartnerReview();
   const restoredPatientPhone=document.getElementById('patient-phone');
-  if(restoredPatientPhone && flowState.verifiedPhone) restoredPatientPhone.value=flowState.verifiedPhone;
+  if(restoredPatientPhone && flowState.verifiedPhone) restoredPatientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
   const restoredFirstName=document.getElementById('patient-first-name');
   const restoredLastName=document.getElementById('patient-last-name');
   if(restoredFirstName && restoredLastName){
@@ -12812,13 +12833,6 @@
   }
   const deliveryAddressScreen=document.getElementById('address');
   if(deliveryAddressScreen){
-    const recipientPhone=deliveryAddressScreen.querySelector('#recipientPhone');
-    if(recipientPhone){
-      recipientPhone.value=formatThaiPhone(recipientPhone.value);
-      recipientPhone.addEventListener('input',() => {
-        recipientPhone.value=formatThaiPhone(recipientPhone.value);
-      });
-    }
     // Update the persisted draft only from a field the patient is actively
     // editing. Background browser autofill never gets to replace the chosen pin.
     deliveryAddressScreen.addEventListener('input',event => {
