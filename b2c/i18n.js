@@ -84,6 +84,7 @@
     "Forgot your password?":"ลืมรหัสผ่าน?",
     "Log In":"เข้าสู่ระบบ",
     "First time here?":"เพิ่งใช้ Krane ครั้งแรก?",
+    "Already have an account?":"มีบัญชีอยู่แล้ว?",
     "Create Account":"สร้างบัญชี",
     "Continue with Apple":"ดำเนินการต่อด้วย Apple",
     "Continue with LINE":"ดำเนินการต่อด้วย LINE",
