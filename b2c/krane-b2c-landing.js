@@ -1,4 +1,33 @@
 (() => {
+  /* The landing lives inside the app's persistent iframe. Browsers restore the
+     iframe's previous scroll position when the app returns home, which made a
+     fresh landing visit start at "100% online" instead of the hero. Reset only
+     on an actual landing entry; ordinary in-page anchor links still work. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const resetLandingScroll = () => {
+    window.requestAnimationFrame(() => {
+      const root = document.documentElement;
+      const body = document.body;
+      const previousRootBehavior = root.style.scrollBehavior;
+      const previousBodyBehavior = body.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      body.style.scrollBehavior = 'auto';
+      root.scrollTop = 0;
+      body.scrollTop = 0;
+      window.scrollTo({ top:0, left:0, behavior:'instant' });
+      window.requestAnimationFrame(() => {
+        root.style.scrollBehavior = previousRootBehavior;
+        body.style.scrollBehavior = previousBodyBehavior;
+      });
+    });
+  };
+  window.addEventListener('pageshow', () => {
+    if (!location.hash || location.hash === '#top') resetLandingScroll();
+  });
+  window.addEventListener('message', (event) => {
+    if (event.data?.krane === 'landingTop') resetLandingScroll();
+  });
+
   const translations = {
     en: {
       announcementPromo: "Special! Join today and consult for free",
