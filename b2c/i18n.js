@@ -1467,7 +1467,6 @@
     "ภาพด้านบนเป็นตัวอย่างมุมถ่าย · ถ่ายในที่แสงสว่าง ผมแห้ง ไม่สวมหมวก และถอดที่คาดผมออก ถ้าถ่ายซ้ำเพื่อติดตามผล ให้ใช้มุมและระยะเดิมทุกครั้ง":"The pictures above are example angles · shoot in good light with dry hair, no hat and no headband. If you re-shoot to track progress, use the same angle and distance every time.",
     "ถ่ายรูปหรืออัปโหลด":"Take a photo or upload",
     "JPG หรือ PNG · ไม่เกิน 10 MB ต่อรูป":"JPG or PNG · up to 10 MB each",
-    "ยังไม่มีรูปที่เพิ่ม แตะด้านบนเพื่อถ่ายหรือเลือกรูป":"No photos yet. Tap above to take or choose one.",
     "พร้อมให้คำปรึกษา":"Available now",
     "แพทย์มีใบอนุญาต":"Licensed doctors",
     "เป็นส่วนตัวตั้งแต่เริ่ม":"Private from the start",

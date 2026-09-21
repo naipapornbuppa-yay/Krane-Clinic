@@ -16,7 +16,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260921-photo-guide-white-v5"></script>
+<script src="review-tools.js?v=20260921-photo-empty-copy-v6"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta name="theme-color" content="#F7F7F7">
@@ -1394,9 +1394,7 @@
         <span class="up-sub">JPG หรือ PNG · ไม่เกิน 10 MB ต่อรูป</span>
       </label>
       <input id="rx-photo-input" class="sr-only" type="file" accept="image/*" multiple data-photo-input>
-      <div class="up-thumbs" data-photo-thumbs>
-        <p class="up-empty hint" data-photo-empty>ยังไม่มีรูปที่เพิ่ม แตะด้านบนเพื่อถ่ายหรือเลือกรูป</p>
-      </div>
+      <div class="up-thumbs" data-photo-thumbs></div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-direct-intake-complete>Continue</button><button class="btn btn--ghost btn--sm" data-direct-intake-complete>Skip for now</button></div>
   </section>
 
@@ -5020,11 +5018,7 @@
     const input  = document.querySelector('[data-photo-input]');
     const thumbs = document.querySelector('[data-photo-thumbs]');
     if(!input || !thumbs) return;
-    const empty = thumbs.querySelector('[data-photo-empty]');
     const MAX = 10 * 1024 * 1024;
-    function syncEmpty(){
-      if(empty) empty.style.display = thumbs.querySelector('.up-thumb') ? 'none' : '';
-    }
     function addThumb(file){
       if(!file.type.startsWith('image/')) return;
       if(file.size > MAX){ showActionToast('รูปใหญ่เกิน 10 MB','error'); return; }
@@ -5037,13 +5031,12 @@
       rm.className = 'x';
       rm.setAttribute('aria-label','ลบรูปนี้');
       rm.textContent = '×';
-      rm.addEventListener('click', () => { fig.remove(); syncEmpty(); updateSummary(); });
+      rm.addEventListener('click', () => { fig.remove(); updateSummary(); });
       fig.append(img, rm);
       const reader = new FileReader();
       reader.addEventListener('load', () => {
         img.src = String(reader.result || '');
         thumbs.appendChild(fig);
-        syncEmpty();
         updateSummary();
       });
       reader.readAsDataURL(file);
@@ -5052,7 +5045,6 @@
       Array.from(input.files || []).forEach(addThumb);
       input.value = '';   // allow re-selecting the same file
     });
-    syncEmpty();
   })();
 
   // Identity documents stay on-device in this prototype.  Each card is a real
