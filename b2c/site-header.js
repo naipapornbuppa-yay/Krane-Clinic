@@ -17,20 +17,26 @@
     menuSkin: "Skin & acne",
     menuSkinAge: "Skin & healthy ageing",
     menuSleep: "Sleep & stress",
-    navHow: "How it works",
+    navHow: "how it works",
     navDoctors: "Our doctors",
-    healthArticles: "Health articles",
+    healthArticles: "health library",
     login: "Log in",
     chooseCare: "Choose your care",
     language: "Language",
     partnerAccess: "Partner access",
     navCare: "Conditions we treat",
+    navServices: "our services",
+    menuRebody: "re:body program",
+    menuRehair: "re:hair program",
+    menuReconfidence: "re:confidence program",
+    menuGeneralConsultation: "general consultation",
+    refillMedicine: "refill medicine",
     menuObesity: "Obesity / weight loss",
     menuHairLoss: "Hair thinning & loss",
     menuErectile: "Erectile dysfunction",
     menuGeneral: "General health",
-    uploadPrescription: "Upload prescription",
-    navDoctorTeam: "Our medical team"
+    uploadPrescription: "upload prescription",
+    navDoctorTeam: "our medical team"
   };
 
   const mobileMenu = document.querySelector("#mobile-menu");
