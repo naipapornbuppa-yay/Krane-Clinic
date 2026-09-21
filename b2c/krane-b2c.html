@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260921-payment-tracking-polish-v1";
+    const release = "20260921-public-full-bleed-v2";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -16,6 +16,7 @@
     }
   })();
 </script>
+<script src="review-tools.js?v=20260921-public-full-bleed-v2"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta name="theme-color" content="#F7F7F7">
@@ -49,13 +50,14 @@
 
 <style>
   /* prototype chrome only (not part of the product) */
-  html,body{width:100%;height:100%;overflow:hidden}
+  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
   /* The body background propagates to the canvas, so it is what paints the
      safe-area strips above and below the screen. White here left a white notch
      over a grey app; the page tone makes the whole frame one colour. */
-  body{max-width:100%;background:var(--surface-page)}
+  body{width:100vw;max-width:none;height:100%;overflow:hidden;background:var(--surface-page)}
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;height:100dvh;overflow:hidden}
-  .rail{width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
+  .rail{display:none;width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
   .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
   .rail-head .logo{display:flex;align-items:center;margin:0}
   .rail-logo{display:block;width:96px;height:auto;max-height:25px;object-fit:contain;object-position:left center}
@@ -101,16 +103,18 @@
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
   .rail a.is-exception.current{background:var(--color-danger-ink);color:#fff;font-weight:var(--fw-semibold)}
   .rail a.is-exception.current .rail-state{color:inherit}
-  .stage{width:calc(100% - 286px);min-width:0;max-width:calc(100vw - 286px);height:100vh;height:100dvh;flex:1;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden;padding:0;background:var(--color-surface);transition:width .22s ease,max-width .22s ease}
-  body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
-  body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
-  body.rail-is-collapsed .rail-head .logo,
-  body.rail-is-collapsed .rail-head__label,
-  body.rail-is-collapsed .rail-legend,
-  body.rail-is-collapsed .rail>.rail-group{display:none}
-  body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
-  body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
-  body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
+  .stage{width:100%;min-width:0;max-width:100vw;height:100vh;height:100dvh;flex:1;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden;padding:0;background:var(--color-surface);transition:width .22s ease,max-width .22s ease}
+  html.review-tools-enabled .rail{display:block}
+  html.review-tools-enabled .stage{width:calc(100% - 286px);max-width:calc(100vw - 286px)}
+  html.review-tools-enabled body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
+  html.review-tools-enabled body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
+  html.review-tools-enabled body.rail-is-collapsed .rail-head .logo,
+  html.review-tools-enabled body.rail-is-collapsed .rail-head__label,
+  html.review-tools-enabled body.rail-is-collapsed .rail-legend,
+  html.review-tools-enabled body.rail-is-collapsed .rail>.rail-group{display:none}
+  html.review-tools-enabled body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
+  html.review-tools-enabled body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
+  html.review-tools-enabled body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
   .screen{display:none;min-width:0}
   .screen.active{display:flex}
   /* The web landing is an embedded full-bleed surface, not a phone card. Keep
@@ -126,9 +130,9 @@
   }
   .note-bar{display:none}
   @media(max-width:780px){
-    .rail{display:none}.note-bar{left:0}
+    .rail,html.review-tools-enabled .rail{display:none}.note-bar{left:0}
     .proto{width:100%;min-height:100dvh;height:100dvh;overflow:hidden}
-    .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
+    .stage,html.review-tools-enabled .stage,html.review-tools-enabled body.rail-is-collapsed .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
     .stage .screen{width:100%;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none}
     html,body,.proto,.stage,.stage>.screen--web,.stage>.screen--web>iframe{
       width:100%!important;max-width:100%!important;min-width:0!important;
@@ -1072,7 +1076,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-accent, #395AA4)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260920-float-v1" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260921-public-full-bleed-v2" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
