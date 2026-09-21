@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260921-auth-layout-alignment-v1";
+    const release = "20260921-desktop-shell-v6";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-brand-buttons-v1">
-<link rel="stylesheet" href="components.css?v=20260921-auth-layout-alignment-v1">
+<link rel="stylesheet" href="components.css?v=20260921-desktop-shell-v6">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -6167,22 +6167,25 @@
     updateIntakeProgress(state.screen.id);
     return true;
   }
-  /* The intake opens on the Krane Clinic lockup in the brand blue, built the way
-     the home header builds it: the "krane" art with "clinic" set in type at 80%
-     of its height, on one baseline (client, 17 Sep). It is added when a page
-     opens, because the questionnaire bodies are re-rendered from templates and
-     anything written into them would be lost; the walker above skips it. */
-  const INTAKE_LOCKUP_SCREENS=['conditions','intake1','intake2','intake3','intake4','intake5','intake-concern','intake-general','intake-edu'];
-  /* Client, 17 Sep: the lockup moved up into the app bar, where it stands in
-     for the "ซักประวัติ" title, instead of sitting above the question. */
-  function ensureIntakeLockup(id){
+  /* The lockup is common app chrome on every page that has a Back action.
+     Route-specific titles stay available as accessible names and page-level
+     headings remain in the body. */
+  function ensureAppBarLockup(id){
     document.querySelectorAll(`#${id} .screen__body > .intake-lockup`).forEach(node => node.remove());
-    const title=document.querySelector(`#${id} .screen__top .ttl`);
-    if(!title || title.querySelector('.intake-lockup')) return;
+    const top=document.querySelector(`#${id} .screen__top:has(> .back)`);
+    if(!top || top.querySelector(':scope > .checkout-brandbar__logo')) return;
+    let title=top.querySelector(':scope > .ttl');
+    if(!title){
+      title=document.createElement('span');
+      title.className='ttl';
+      top.querySelector(':scope > .back')?.insertAdjacentElement('afterend',title);
+    }
+    if(title.querySelector('.intake-lockup')) return;
+    const accessibleTitle=title.textContent.trim();
     const lockup=document.createElement('span');
     lockup.className='intake-lockup';
-    lockup.setAttribute('role','img');
-    lockup.setAttribute('aria-label','Krane Clinic');
+    lockup.setAttribute('aria-hidden','true');
+    if(accessibleTitle) title.setAttribute('aria-label',accessibleTitle);
     title.classList.add('ttl--lockup');
     title.append(lockup);
   }
@@ -9284,7 +9287,7 @@
     }
     if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
-    if(INTAKE_LOCKUP_SCREENS.includes(id)) ensureIntakeLockup(id);
+    ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
     if(id==='address-map') window.setTimeout(setupAddressMap,0);
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
