@@ -1464,7 +1464,6 @@
     "กลางศีรษะ":"Mid-scalp",
     "ขม่อมด้านหลัง":"Crown, from behind",
     "ด้านข้างและขมับ":"Side and temples",
-    "ภาพด้านบนเป็นตัวอย่างมุมถ่าย · ถ่ายในที่แสงสว่าง ผมแห้ง ไม่สวมหมวก และถอดที่คาดผมออก ถ้าถ่ายซ้ำเพื่อติดตามผล ให้ใช้มุมและระยะเดิมทุกครั้ง":"The pictures above are example angles · shoot in good light with dry hair, no hat and no headband. If you re-shoot to track progress, use the same angle and distance every time.",
     "ถ่ายรูปหรืออัปโหลด":"Take a photo or upload",
     "JPG หรือ PNG · ไม่เกิน 10 MB ต่อรูป":"JPG or PNG · up to 10 MB each",
     "พร้อมให้คำปรึกษา":"Available now",
