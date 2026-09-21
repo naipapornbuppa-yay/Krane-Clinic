@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260922-consultpay-notices-v8";
+    const release = "20260922-address-polish-v9";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-brand-buttons-v1">
-<link rel="stylesheet" href="components.css?v=20260922-consultpay-notices-v8">
+<link rel="stylesheet" href="components.css?v=20260922-address-polish-v9">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2143,6 +2143,7 @@
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
+      <h2 class="address-page-title">ที่อยู่จัดส่ง</h2>
       <div class="address-search" data-address-search-wrap>
         <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
         <div class="address-search__field">
@@ -2154,8 +2155,8 @@
 
       <!-- Fields are grouped by what they are about: where the parcel goes,
            who receives it, and how the rider should find the door. -->
-      <section class="form-group">
-        <h3 class="form-group__title">ที่อยู่จัดส่ง</h3>
+      <section class="form-group" aria-label="รายละเอียดที่อยู่จัดส่ง">
+        <div class="form-group__surface">
         <div class="field-row">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrBuilding" autocomplete="off" placeholder=" " required><label for="addrBuilding">บ้านเลขที่ / อาคาร</label></span></div></div>
           <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="off" placeholder=" "><label for="addrFloor">ชั้น</label></span></div></div>
@@ -2169,19 +2170,23 @@
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrProvince" autocomplete="off" placeholder=" " required><label for="addrProvince">จังหวัด</label></span></div></div>
           <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder=" " required><label for="addrPostcode">รหัสไปรษณีย์</label></span></div></div>
         </div>
+        </div>
       </section>
 
       <section class="form-group">
         <h3 class="form-group__title">ผู้รับพัสดุ</h3>
+        <div class="form-group__surface">
         <div class="field-row">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientFirstName" autocomplete="given-name" placeholder=" " required><label for="recipientFirstName">ชื่อ</label></span></div></div>
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientLastName" autocomplete="family-name" placeholder=" " required><label for="recipientLastName">นามสกุล</label></span></div></div>
         </div>
         <div class="field float-field"><div class="float-field__box phone-field" data-phone-field><span class="float-field__slot"><input class="input phone-field__input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder=" " pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required><label for="recipientPhone">เบอร์โทรศัพท์</label></span></div></div>
+        </div>
       </section>
 
       <section class="form-group">
         <h3 class="form-group__title">รายละเอียดสำหรับไรเดอร์ <span class="form-group__optional">(ไม่บังคับ)</span></h3>
+        <div class="form-group__surface">
         <fieldset class="delivery-instructions">
           <legend>วิธีรับสินค้า</legend>
           <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="lobby"><span><strong>วางไว้ที่ล็อบบี้</strong><small>เหมาะสำหรับคอนโดและอาคารสำนักงาน</small></span></label>
@@ -2190,6 +2195,7 @@
           <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="hand" checked><span><strong>ส่งให้ฉันโดยตรง</strong><small>ไรเดอร์จะโทรหาเมื่อถึงจุดหมาย</small></span></label>
         </fieldset>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงไรเดอร์</label></span></div></div>
+        </div>
       </section>
 
       <!-- addrDistrict is kept as the composed string the payment summary and the
@@ -6396,15 +6402,15 @@
     return [p.subdistrict, p.districtName, p.province, p.postcode].filter(Boolean).join(' ');
   }
   const SIM_PLACES = [
-    { title:'เดอะ เบส พาร์ค เวสต์ ห้อง 22/418', building:'เดอะ เบส พาร์ค เวสต์ ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77',
+    { title:'เดอะ เบส พาร์ค เวสต์ ห้อง 22/418', aliases:'the base park west', building:'เดอะ เบส พาร์ค เวสต์ ห้อง 22/418', floor:'22', line:'ซอยสุขุมวิท 77',
       subdistrict:'แขวงพระโขนงเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
-    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท',
+    { title:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', aliases:'ideo ideomobi ideo mobi sukhumvit', building:'ไอดีโอ สุขุมวิท 93, ห้อง 8/12', floor:'8', line:'ถนนสุขุมวิท',
       subdistrict:'แขวงบางจาก', districtName:'เขตพระโขนง', province:'กรุงเทพมหานคร', postcode:'10260' },
-    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก',
+    { title:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', aliases:'noble revolve ratchada', building:'โนเบิล รีวอลฟ์ รัชดา, ห้อง 15/7', floor:'15', line:'ถนนรัชดาภิเษก',
       subdistrict:'แขวงห้วยขวาง', districtName:'เขตห้วยขวาง', province:'กรุงเทพมหานคร', postcode:'10310' },
-    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12',
+    { title:'ริทึ่ม เอกมัย, ห้อง 6/22', aliases:'rhythm ekkamai', building:'ริทึ่ม เอกมัย, ห้อง 6/22', floor:'6', line:'ซอยเอกมัย 12',
       subdistrict:'แขวงคลองตันเหนือ', districtName:'เขตวัฒนา', province:'กรุงเทพมหานคร', postcode:'10110' },
-    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4',
+    { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', aliases:'lumpini place rama 4', building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4',
       subdistrict:'แขวงคลองเตย', districtName:'เขตคลองเตย', province:'กรุงเทพมหานคร', postcode:'10110' }
   ];
   SIM_PLACES.forEach(p => { p.district = composeDistrict(p); p.detail = p.line + ' · ' + p.district; });
@@ -6661,7 +6667,7 @@
     const q=query.trim().toLowerCase();
     if(q.length<1) return [];
     return SIM_PLACES.filter(place =>
-      [place.title,place.line,place.district].join(' ').toLowerCase().includes(q)
+      [place.title,place.aliases,place.line,place.district].join(' ').toLowerCase().includes(q)
     ).slice(0,5);
   }
   let addressSuggestions=[];
@@ -6702,7 +6708,7 @@
   function scheduleAddressSearch(query){
     window.clearTimeout(addressSearchTimer);
     const text=query.trim();
-    if(text.length<2){ closeAddressSuggestions(); return; }
+    if(text.length<1){ closeAddressSuggestions(); return; }
     renderAddressSuggestions(addressSuggestionsFor(text));
     addressSearchTimer=window.setTimeout(async () => {
       const token=++addressSearchToken;
@@ -6711,16 +6717,30 @@
       const input=document.querySelector('[data-address-search]');
       if(!input || input.value.trim()!==text) return;
       renderAddressSuggestions(remote && remote.length ? remote : addressSuggestionsFor(text),{allowEmptyMessage:true});
-    },350);
+    },180);
   }
   function setupAddressSearch(){
     const input=document.querySelector('[data-address-search]');
     const list=document.querySelector('[data-address-suggestions]');
     if(!input || !list || input.dataset.searchBound==='true') return;
     input.dataset.searchBound='true';
-    input.addEventListener('input',() => scheduleAddressSearch(input.value));
+    input.addEventListener('input',event => { if(!event.isComposing) scheduleAddressSearch(input.value); });
+    input.addEventListener('compositionend',() => scheduleAddressSearch(input.value));
     input.addEventListener('focus',() => { if(input.value) scheduleAddressSearch(input.value); });
-    input.addEventListener('keydown',event => { if(event.key==='Escape') closeAddressSuggestions(); });
+    input.addEventListener('keydown',event => {
+      if(event.key==='Escape') closeAddressSuggestions();
+      if(event.key==='ArrowDown' && !list.hidden){
+        event.preventDefault();
+        list.querySelector('[data-address-suggestion]')?.focus();
+      }
+    });
+    list.addEventListener('keydown',event => {
+      const options=[...list.querySelectorAll('[data-address-suggestion]')];
+      const index=options.indexOf(document.activeElement);
+      if(event.key==='ArrowDown' && index>-1){ event.preventDefault(); options[(index+1)%options.length]?.focus(); }
+      if(event.key==='ArrowUp' && index>-1){ event.preventDefault(); (index===0 ? input : options[index-1])?.focus(); }
+      if(event.key==='Escape'){ event.preventDefault(); closeAddressSuggestions(); input.focus(); }
+    });
     list.addEventListener('click',event => {
       const option=event.target.closest('[data-address-suggestion]');
       if(!option) return;

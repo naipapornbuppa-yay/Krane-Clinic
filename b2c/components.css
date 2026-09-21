@@ -342,7 +342,8 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    Restores the pre-160119a shape (map on top, fields plainly beneath, no
    accordion). The map is half the first viewport, clamped so it never eats a
    short landscape screen or floats absurdly tall on a tablet. ------------- */
-.address-body{padding-bottom:var(--sp-6)}
+#address>.address-body{gap:18px;padding:18px 18px 32px;background:#f7f7f8;scrollbar-gutter:auto}
+.address-page-title{margin:0;color:var(--color-ink-strong,#121824);font-family:var(--font-display);font-size:16px;line-height:1.3;font-weight:var(--fw-bold)}
 /* The search bar and its dropdown are positioned from this wrapper rather than
    from .address-map itself, so the suggestion list is free to drop past the
    map's bottom edge and overlay the form below instead of being clipped at
@@ -2112,18 +2113,20 @@ body.modal-open{overflow:hidden}
 /* ---- Address search -----------------------------------------------------
    The form opens on a search box, not a slab of map: naming the place is the
    fast path, and the map is one tap away for when you cannot. */
-.address-search{position:relative;display:flex;flex-direction:column;gap:var(--sp-2)}
+.address-search{position:relative;display:flex;flex-direction:column;gap:8px}
 .address-search__field{position:relative}
 .address-search__field .input{padding-left:42px}
+.address-search__field input[type="search"]{-webkit-appearance:none;appearance:none}
+.address-search__field input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}
 .address-search__icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:grid;place-items:center;color:var(--color-ink-3);pointer-events:none}
 .address-search__icon .ui-icon{width:17px;height:17px}
 .address-search__map{width:100%}
 .address-suggestions{
-  position:absolute;z-index:5;top:calc(var(--control-h) + 6px);left:0;right:0;
+  position:relative;z-index:5;inset:auto;
   margin:0;padding:var(--sp-1);list-style:none;
-  border-radius:var(--radius-md);background:var(--color-surface);
+  border:1px solid var(--color-line);border-radius:18px;background:var(--color-surface);
   box-shadow:0 2px 6px rgba(18,24,36,.06),0 14px 34px rgba(18,24,36,.14);
-  max-height:288px;overflow:auto;
+  max-height:236px;overflow:auto;overscroll-behavior:contain;
 }
 .address-suggestions[hidden]{display:none}
 .address-suggestion{
@@ -2149,12 +2152,14 @@ body.modal-open{overflow:hidden}
   display:grid;width:32px;height:32px;place-items:center;padding:0;
   border:0;border-radius:50%;background:transparent;color:var(--color-ink-3);cursor:pointer;
 }
+.field__clear svg{width:16px;height:16px}
+.field__clear:hover{background:var(--surface-sunken);color:var(--color-ink)}
 /* Group address and recipient fields by subject so the form stays scannable. */
-.form-group{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);
-  border-radius:var(--radius-lg);background:var(--color-surface);box-shadow:var(--shadow-xs,0 1px 2px rgba(18,24,36,.06))}
+.form-group{display:flex;flex-direction:column;gap:10px;padding:0;background:transparent;box-shadow:none}
+.form-group__surface{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);border-radius:22px;background:var(--color-surface);box-shadow:0 7px 20px rgba(27,46,66,.06)}
 /* the group is a flex column with its own gap, so the label adds no margin */
-.form-group__title{margin:0}
-.form-group__optional{font-weight:var(--fw-regular);color:var(--color-ink-3)}
+.form-group__title{margin:0;color:var(--color-ink-strong,#121824);font-family:var(--font-display);font-size:16px;line-height:1.3;font-weight:var(--fw-bold);letter-spacing:0;text-transform:none}
+.form-group__optional{font-family:var(--font-base);font-size:13px;font-weight:var(--fw-regular);color:var(--color-ink-3)}
 /* A field that failed validation says so where it failed, not only in a toast. */
 .field.is-invalid>.input,.field.is-invalid>.textarea,.field.is-invalid>.select{
   border-color:var(--color-danger);box-shadow:0 0 0 1px var(--color-danger) inset}
