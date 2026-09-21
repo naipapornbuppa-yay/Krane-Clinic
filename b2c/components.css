@@ -3164,8 +3164,10 @@ body.lang-th *{letter-spacing:normal}
 .home-cta[hidden]{display:none}
 /* One quiet line, not a second primary action. Sized like a notice: it tells
    the patient the appointment is close and gets out of the way. */
-.followup-toast{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);
-  min-height:68px;padding:11px 12px;border:0;border-radius:18px;
+/* Client, 21 Sep: smaller. It is a reminder strip above the treatment cards,
+   so it stays a head shorter than they are. */
+.followup-toast{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;
+  min-height:54px;padding:8px 10px;border:0;border-radius:14px;
   /* Waiting for the visit reads as a notice, in the same yellow as the payment
      deadline, and turns into the blue action only when the room opens
      (client, 17 Sep). */
@@ -3178,14 +3180,18 @@ body.lang-th *{letter-spacing:normal}
 /* No outline round the waiting notice, and its icon tile takes the notice's
    own deeper yellow instead of a grey chip, as the alerts' icons do
    (client, 17 Sep). */
-.followup-toast__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;
+.followup-toast__icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;
   background:var(--surface-notice-strong);color:var(--surface-notice-ink)}
-.followup-toast .ui-icon{width:21px;height:21px;flex:none}
-.followup-toast__text{min-width:0;display:grid;gap:2px}
-.followup-toast__text strong{min-width:0;font-size:14px;font-weight:var(--fw-semibold);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.followup-toast__text small{min-width:0;color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-medium);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
-.followup-toast__state{flex:none;padding:6px 10px;border-radius:var(--radius-pill);background:rgba(255,255,255,.62);
-  color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);white-space:nowrap}
+.followup-toast .ui-icon{width:18px;height:18px;flex:none}
+.followup-toast__text{min-width:0;display:grid;gap:1px}
+.followup-toast__text strong{min-width:0;font-size:13px;font-weight:var(--fw-semibold);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.followup-toast__text small{min-width:0;color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-medium);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+/* The pill runs the countdown, so it is set in tabular figures and given a
+   floor width — otherwise it twitches a pixel wider every time the seconds
+   roll from 9 to 10 (client, 21 Sep). */
+.followup-toast__state{flex:none;min-width:52px;padding:5px 9px;border-radius:var(--radius-pill);background:rgba(255,255,255,.62);
+  color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);white-space:nowrap;text-align:center;
+  font-variant-numeric:tabular-nums}
 .followup-toast:disabled,.followup-toast[aria-disabled="true"]{opacity:1;cursor:not-allowed}
 .followup-toast.is-ready{background:var(--color-accent);color:var(--color-on-accent);box-shadow:var(--shadow-sm)}
 .followup-toast.is-ready .followup-toast__icon{background:rgba(255,255,255,.16);color:inherit}
@@ -3197,9 +3203,13 @@ body.lang-th *{letter-spacing:normal}
 @media(prefers-reduced-motion:reduce){.followup-toast.is-ready .followup-toast__state{animation:none}}
 .followup-toast:active{transform:scale(.99);opacity:.75}
 .followup-toast:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+/* The pill stays on the right on a phone too (client, 21 Sep). It used to drop
+   under the text here, which put the countdown — and, once the room opened,
+   the way in — in the middle of the strip instead of at its end. The copy is
+   short enough now that all three columns fit. */
 @media(max-width:420px){
-  .followup-toast{grid-template-columns:auto minmax(0,1fr);padding:10px}
-  .followup-toast__state{grid-column:2;justify-self:start;padding:4px 8px}
+  .followup-toast{padding:8px 9px;gap:9px}
+  .followup-toast__state{padding:5px 8px;min-width:48px}
 }
 
 /* Follow-up hub: a single scannable list. Appointment rows no longer compete

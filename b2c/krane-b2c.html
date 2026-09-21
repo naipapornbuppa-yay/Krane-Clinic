@@ -2955,9 +2955,9 @@
         <span class="followup-toast__icon"><i data-lucide="calendar-clock" class="ui-icon" aria-hidden="true"></i></span>
         <span class="followup-toast__text">
           <strong>นัดติดตามผล <span data-home-followup-when>14 ก.ย. 2026</span></strong>
-          <small data-home-followup-countdown>อีก 23:58:00 · เข้าได้ก่อนนัด 10 นาที</small>
+          <small data-home-followup-countdown>เริ่ม 10:00 น.</small>
         </span>
-        <span class="followup-toast__state" data-home-followup-state>รอเวลา</span>
+        <span class="followup-toast__state" data-home-followup-state>23:58</span>
       </button>
 
       <!-- A patient can have multiple active treatments. The profile mirrors the
@@ -6914,6 +6914,15 @@
     const seconds=String(total%60).padStart(2,'0');
     return `${hours}:${minutes}:${seconds}`;
   }
+  /* The home banner runs its countdown inside a pill, where a leading "00:" is
+     two wasted characters. Hours only appear once there are hours to show. */
+  function formatFollowUpPill(milliseconds){
+    const total=Math.max(0,Math.ceil(milliseconds/1000));
+    const pad=value => String(value).padStart(2,'0');
+    const hours=Math.floor(total/3600);
+    const minutes=Math.floor((total%3600)/60);
+    return hours ? `${hours}:${pad(minutes)}:${pad(total%60)}` : `${pad(minutes)}:${pad(total%60)}`;
+  }
   function followUpNodeForCase(caseId){
     return [...document.querySelectorAll('[data-followup-date][data-followup-case]')]
       .find(node => node.dataset.followupCase===caseId) || null;
@@ -6977,16 +6986,20 @@
        before the i18n pass and banked the English half, which the banner then
        kept because that became its remembered source. */
     const when=toast.querySelector('[data-home-followup-when]');
-    // The date and the start time, so the patient knows when to be ready (client, 17 Sep).
-    if(when) when.textContent=`${formatFollowUpDate(next.when)} · ${formatFollowUpTime(next.when)}`;
+    /* Client, 21 Sep: shorter. The date carries the line; the start time sits
+       under it, and the countdown has moved into the pill, so neither the time
+       nor the count is said twice. */
+    if(when) when.textContent=formatFollowUpDate(next.when);
     const countdown=toast.querySelector('[data-home-followup-countdown]');
     const state=toast.querySelector('[data-home-followup-state]');
     const ready=remaining<=FOLLOWUP_JOIN_MS && remaining>=-FOLLOWUP_GRACE_MS;
     const thai=document.documentElement.lang!=='en';
     if(countdown) countdown.textContent=ready
-      ? (thai ? `เข้าห้องได้แล้ว · นัดเริ่ม ${formatFollowUpTime(next.when)}` : `Room open · Starts at ${formatFollowUpTime(next.when)}`)
-      : `${thai ? 'อีก' : 'In'} ${formatFollowUpCountdown(remaining)} · ${thai ? 'เข้าได้ก่อนนัด 10 นาที' : 'opens 10 min before'}`;
-    if(state) state.textContent=ready ? (thai ? 'เข้าห้อง' : 'Join') : (thai ? 'รอเวลา' : 'Locked');
+      ? (thai ? 'เข้าห้องได้แล้ว' : 'Room is open')
+      : (thai ? `เริ่ม ${formatFollowUpTime(next.when)}` : `Starts ${formatFollowUpTime(next.when)}`);
+    // The pill is the clock while the patient is waiting, and the way in once
+    // the room opens.
+    if(state) state.textContent=ready ? (thai ? 'เข้าห้อง' : 'Join') : formatFollowUpPill(remaining);
     toast.disabled=!ready;
     toast.setAttribute('aria-disabled',String(!ready));
     toast.classList.toggle('is-ready',ready);
