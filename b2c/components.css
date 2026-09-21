@@ -161,7 +161,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-screen__separator{display:flex;align-items:center;gap:var(--sp-3);color:var(--color-ink-3);font-size:var(--fs-sm);white-space:nowrap}
 .auth-screen__separator::before,.auth-screen__separator::after{content:"";height:1px;flex:1;background:var(--color-line-strong)}
 .auth-screen__social .social-btn{
-  min-height:54px;border:1px solid var(--color-ink-3);border-radius:var(--radius-pill);
+  height:var(--control-h);min-height:var(--control-h);border:1px solid var(--color-ink-3);border-radius:var(--button-radius);
   background:var(--color-surface);color:var(--color-ink);box-shadow:none
 }
 .auth-screen__social .social-btn:hover{border-color:var(--color-ink);background:var(--surface-sunken)}
@@ -4312,6 +4312,21 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 /* Client, 20 Sep: sign up and log in have no country button at all. The number
    is Thai, so the flag and the dial code only crowded the field. */
 .float-field>.phone-field .float-field__slot{padding-left:0}
+
+/* Auth controls use the same geometry as the app's primary action: 48px high
+   with the shared 14px control radius. The floating-label implementation used
+   to enlarge only these fields to 58px, while social buttons used a pill
+   radius; that made one form look like three unrelated component families. */
+.auth-screen .auth-login-field>.phone-field,
+.auth-screen .auth-login-field>.password-field{
+  height:var(--control-h);min-height:var(--control-h);padding:0 var(--sp-4);
+  border-radius:var(--control-radius)
+}
+.auth-screen .auth-login-field .input{
+  height:100%;min-height:0;padding-top:16px;padding-bottom:2px
+}
+.auth-screen .float-field__slot:focus-within>label,
+.auth-screen .float-field__slot>.input:not(:placeholder-shown)+label{top:7px}
 
 /* ---------- Payment reference layout (client, 20 Sep) ----------
    The checkout follows the supplied delivery-app composition exactly: basket,
