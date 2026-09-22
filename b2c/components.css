@@ -3095,7 +3095,7 @@ body.lang-th *{letter-spacing:normal}
    read from the same tokens as every other screen instead of a warm hardcode. */
 #intake1,#intake2,#intake3,#intake4,#intake5,#intake-concern,#intake-general{
   --intake-cream:var(--surface-page);
-  --intake-content-width:704px;
+  --intake-content-width:var(--care-flow-content-max,704px);
   background:var(--intake-cream);
 }
 #intake1 .screen__top,#intake2 .screen__top,#intake3 .screen__top,#intake4 .screen__top,#intake5 .screen__top,#intake-concern .screen__top,#intake-general .screen__top,
@@ -4258,10 +4258,11 @@ html.is-demo-embed #video .call-hint{display:none}
 .frequency-slider__stops span:last-child{text-align:right}
 .frequency-slider__stops .is-active{color:var(--color-accent);font-weight:var(--fw-semibold)}
 
-/* Choose a condition (client, 17 Sep): the app bar and the progress bar share
-   the 600px column the condition cards sit in, and the Krane | clinic lockup
-   stands in for the title, as on the intake pages. */
-#conditions .screen__top,#conditions .care-journey{padding-inline:max(16px,calc((100% - var(--app-content-max,600px)) / 2))}
+/* Care selection and every following intake page use one desktop measure. The
+   picker previously inherited the generic 600px app column while intake used
+   704px, so the whole form visibly widened after the first tap. */
+#conditions{--app-content-max:var(--care-flow-content-max,704px)}
+#conditions .screen__top,#conditions .care-journey{padding-inline:max(16px,calc((100% - var(--care-flow-content-max,704px)) / 2))}
 
 /* Activity cards, client 19 Sep: "too many colours". The type chip is gone from
    view (kept for screen readers) and the card says what it is with a faint
