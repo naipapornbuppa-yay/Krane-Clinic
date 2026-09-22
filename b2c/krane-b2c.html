@@ -1860,7 +1860,10 @@
         <button class="option" aria-selected="true" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span><span class="opt-title">QR / PromptPay</span><span class="opt-check"></span></button>
         <button class="option" data-select><span class="opt-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></svg></span><span class="opt-title">Credit / debit card</span><span class="opt-check"></span></button>
       </div>
-<div class="screen__footer stack-2"><p class="consultpay-fee-note">นี่คือค่าปรึกษาแพทย์เท่านั้น ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</p><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+<div class="screen__footer stack-2"><!-- Client, 22 Sep: said the same way every other notice in the app is said —
+       icon, title, detail, read from the left — instead of a centred tinted
+       paragraph of its own. -->
+    <div class="alert consultpay-fee-note" role="note"><span class="a-ic" aria-hidden="true">i</span><div><div class="a-title">นี่คือค่าปรึกษาแพทย์เท่านั้น</div><div class="hint">ค่ายาและค่าจัดส่งจะชำระแยกหลังพบแพทย์และได้รับใบสั่งยา</div></div></div><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -2194,7 +2197,10 @@
           <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="security"><span><strong>ฝากไว้ที่ รปภ.</strong><small>ระบุชื่ออาคารหรือจุดรับในช่องด้านล่าง</small></span></label>
           <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="hand" checked><span><strong>ส่งให้ฉันโดยตรง</strong><small>ไรเดอร์จะโทรหาเมื่อถึงจุดหมาย</small></span></label>
         </fieldset>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงไรเดอร์</label></span></div></div>
+        <!-- Client, 22 Sep: the note opens as one line with its title above it,
+             and grows only if the patient drags the corner. Most notes are a few
+             words, so the tall empty box was reserving room nobody asked for. -->
+        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="1" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงไรเดอร์</label></span></div></div>
         </div>
       </section>
 
@@ -2481,36 +2487,6 @@
             <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
             <span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span>
           </div>
-          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="wellness" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">Biotin + Zinc</span>
-              <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
-            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
-          </div>
-          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pillcase" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
-              <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
-            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
-          </div>
-          <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pouch" hidden>
-            <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
-            <span class="checkout-order__body">
-              <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
-              <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
-            </span>
-            <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
-            <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
-            <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
-          </div>
           </div>
         </div>
         <!-- A refill starts at the quantity the doctor approved, so "+" is greyed on
@@ -2543,6 +2519,43 @@
             <span class="checkout-addon-card__copy"><strong>กระเป๋าจัดเก็บผลิตภัณฑ์</strong><span>ขนาดพกพา · กันละอองน้ำ</span></span>
             <span class="checkout-addon-card__foot"><span>฿ 250</span><span class="checkout-addon-card__controls"><small data-addon-count hidden>0 ชิ้น</small><em data-addon-action>เพิ่ม</em></span></span>
           </button>
+        </div>
+        <!-- Client, 22 Sep: an add-on the patient picked belongs with the add-ons,
+             not threaded into the doctor's prescription list above. The rows the
+             picker fills in now sit directly under it. -->
+        <div class="checkout-order checkout-order--addons" data-addon-picked-list hidden>
+          <div class="checkout-order__medicines">
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="wellness" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">Biotin + Zinc</span>
+                <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pillcase" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
+                <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pouch" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
+                <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+          </div>
         </div>
       </div>
       <label class="checkout-eco-option" data-checkout-sequence="eco" data-fulfillment-section>
@@ -5183,6 +5196,12 @@
       if(price) price.textContent=baht((ADDON_PRICES[key] || 0)*quantity);
       if(quantityLabel) quantityLabel.textContent=`${quantity} ชิ้น`;
     });
+    /* The picked-add-on list lives under the picker now, so it has to disappear
+       with its last row rather than leave an empty card behind. */
+    const pickedAddons=document.querySelector('#payment [data-addon-picked-list]');
+    if(pickedAddons){
+      pickedAddons.hidden=![...pickedAddons.querySelectorAll('[data-order-addon]')].some(row => !row.hidden);
+    }
     document.querySelectorAll('[data-delivery-value]').forEach(option => {
       const selected=option.dataset.deliveryValue===flowState.orderState.deliveryMethod;
       option.setAttribute('aria-selected',String(selected));

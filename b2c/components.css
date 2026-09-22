@@ -1080,8 +1080,17 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Consultation checkout separates a general fee notice from the operational
    delivery cut-off: yellow for useful context, restrained brand red for the
    exception patients should notice before continuing. */
-.consultpay-fee-note{margin:0;padding:12px 14px;border-radius:var(--radius-md);background:var(--surface-notice);color:var(--surface-notice-ink);font-size:var(--fs-sm);line-height:1.5;text-align:center}
-.consultpay-cutoff-note{margin:0;color:var(--color-danger-ink);font-style:italic;font-weight:var(--fw-medium);line-height:1.5}
+/* Client, 22 Sep: the fee note takes the shared alert format — icon, title,
+   detail, read from the left — rather than a centred tinted paragraph. It
+   stays compact, because it sits directly under the pay button. */
+.consultpay-fee-note{align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-md);text-align:left}
+.consultpay-fee-note .a-ic{width:24px;height:24px;font-size:var(--fs-xs)}
+.consultpay-fee-note .a-title{font-size:14px;line-height:1.3}
+.consultpay-fee-note .hint{margin-top:1px;color:inherit;opacity:.82;font-size:12.5px;line-height:1.35}
+/* Client, 22 Sep: the cut-off warning was jammed against the delivery row
+   above it. It is a note about that row, not another row, so it sits a clear
+   step below. */
+.consultpay-cutoff-note{margin:8px 0 0;color:var(--color-danger-ink);font-style:italic;font-weight:var(--fw-medium);line-height:1.5}
 .consultpay-cutoff-note::before{content:"*";margin-right:4px;color:var(--color-danger-strong);font-style:normal;font-weight:var(--fw-bold)}
 @media(max-width:390px){
   .payment-deadline{gap:8px;margin:6px 12px 10px;padding:6px 12px;min-height:38px}
@@ -4739,6 +4748,22 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 #address .float-field__slot:focus-within>label{color:var(--color-accent)}
 
+/* The rider note is the one multi-line field here. Its title sits up top from
+   the start rather than floating in the middle of an empty box, it opens one
+   line tall, and the corner grip is the only thing that makes it taller
+   (client, 22 Sep). */
+.float-field--note>.float-field__box{min-height:58px;height:auto}
+.float-field--note .textarea{min-height:56px;height:56px;padding-top:20px;padding-bottom:4px;resize:vertical}
+#address .float-field--note .float-field__slot>label,
+.float-field--note .float-field__slot>label{
+  top:9px;
+  transform:none;
+  font-size:var(--fs-xs);
+  font-weight:var(--fw-medium);
+  color:var(--color-ink-2);
+}
+#address .float-field--note .float-field__slot:focus-within>label{color:var(--color-accent)}
+
 /* The global footer rule stretches actions. The map shortcut is intentionally
    a centred, content-width pill above the full-width primary action. */
 #address .address-footer>.address-map-pill{
@@ -4786,7 +4811,13 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-status-pill .ui-icon{width:14px;height:14px}
 
 .payment-processing-view{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px 22px!important;text-align:center}
-.payment-processing-view__pulse{position:relative;width:112px;height:112px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--color-accent) 8%,#fff)}
+/* Client, 22 Sep: "มันมีวงแปลกๆ". The halo is a circle, not a content block,
+   and the shared rule that gives every child of a screen body the full width
+   was stretching it into an ellipse across the page — rings and all. It is
+   named here so that rule cannot reach it. */
+.payment-processing-view__pulse,
+.screen__body:not(.callstage):not(.chat-body)>.payment-processing-view__pulse{width:112px}
+.payment-processing-view__pulse{position:relative;height:112px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--color-accent) 8%,#fff)}
 .payment-processing-view__pulse::before,.payment-processing-view__pulse::after{content:"";position:absolute;inset:0;border:2px solid color-mix(in srgb,var(--color-accent) 26%,transparent);border-radius:inherit;animation:postpay-pulse 1.7s ease-out infinite}
 .payment-processing-view__pulse::after{animation-delay:.55s}
 .payment-processing-view__pulse>span{position:relative;z-index:1;width:66px;height:66px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:#fff;box-shadow:0 12px 30px color-mix(in srgb,var(--color-accent) 28%,transparent)}
@@ -4825,7 +4856,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-mini-progress>span{position:relative;z-index:1;display:flex;align-items:center;flex-direction:column;gap:6px;color:#9198a6}
 .postpay-mini-progress>span>.ui-icon{width:30px;height:30px;box-sizing:border-box;flex:none;padding:5px;border:2px solid #dde2e9;border-radius:50%;background:#fff;stroke-width:2}
 .postpay-mini-progress>span.is-done>.ui-icon,.postpay-mini-progress>span.is-active>.ui-icon{border-color:var(--color-accent);background:var(--color-accent);color:#fff}
-.postpay-mini-progress>span.is-active>.ui-icon{box-shadow:0 0 0 5px color-mix(in srgb,var(--color-accent) 12%,transparent)}
+/* The active step was ringed by a second, paler circle that read as a smudge
+   round the icon rather than as emphasis (client, 22 Sep). The filled blue
+   against the two outlined steps is the emphasis. */
 .postpay-mini-progress small{font-size:11px;font-weight:var(--fw-medium)}
 .postpay-note{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#eef3fb;color:#4e5a6e}
 .postpay-note>.ui-icon{width:20px;height:20px;justify-self:center;color:var(--color-accent)}
