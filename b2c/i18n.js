@@ -1305,7 +1305,9 @@
     "ผู้รับพัสดุ":"Recipient",
     "ชื่อผู้รับ":"Recipient name",
     "เบอร์โทรศัพท์":"Phone number",
-    "บ้านเลขที่ / อาคาร":"House number / building",
+    /* "House number / building" overran its field by 30px at 320px — the Thai
+       is short and the English was not. Same meaning, same width budget. */
+    "บ้านเลขที่ / อาคาร":"House no. / building",
     "ชั้น":"Floor",
     "ถนน / ซอย":"Street / lane",
     "แขวง / ตำบล":"Sub-district",
