@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260922-general-intake-copy-spacing-v18";
+    const release = "20260922-intake-title-anchor-v19";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260920-brand-buttons-v1">
-<link rel="stylesheet" href="components.css?v=20260922-general-intake-copy-spacing-v18">
+<link rel="stylesheet" href="components.css?v=20260922-intake-title-anchor-v19">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -6152,6 +6152,10 @@
       ? activeQuestion.querySelector('.intake-question__title')
       : null;
     const titleBlock=[...state.body.children].find(child => child.querySelector('.h1'));
+    /* When a later question supplies its own heading, it becomes the first
+       visible item in the body. Mark that state so stack spacing from hidden
+       siblings cannot push the heading down between steps. */
+    state.body.toggleAttribute('data-intake-promoted-title',Boolean(promoted));
     /* Re-rendering the screen rebuilds the title block with a fresh counter
        while the one moved into a promoted question heading survives, so the
        page ended up showing "4 / 4  4 / 4". Keep exactly one. */
