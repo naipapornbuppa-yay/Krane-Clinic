@@ -9526,15 +9526,10 @@
       const when=document.querySelector('#appointment-booked [data-appointment-when]');
       if(when) when.textContent=flowState.appointmentWhen || '';
     }
-    if(id==='consultpay' && flowState.consultationPaymentTiming!=='before' && !flowState.consultationPaid){
-      /* Timing, not a second charge (client, 28 Aug). Said once on arrival so it
-         cannot be mistaken for another line on the bill. */
-      setTimeout(() => {
-        if(document.getElementById('consultpay')?.classList.contains('active')){
-          showActionToast('ค่าปรึกษาชำระพร้อมค่ายาหลังปรึกษา','info');
-        }
-      }, reduceMotion ? 0 : 420);
-    }
+    /* Client, 22 Sep: this used to raise a toast on arrival saying the fee is
+       settled with the medicine. The notice above the pay button says the same
+       thing and stays on the page, so the toast was the second of two. Removed;
+       the footer notice carries it. */
     clearTimeout(deliveryQuoteTimer);
     clearInterval(deliveryQuoteCountdownTimer);
     if(id==='delivery-quote'){

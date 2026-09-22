@@ -102,7 +102,7 @@ img{max-width:100%}
    they could not tap or type into. These now match the select trigger next to
    them, which is the one control nobody mistook for read-only (client, 10 Sep). */
 .input,.select,.textarea{
-  width:100%;min-width:0;max-width:100%;height:var(--control-h);padding:0 var(--sp-4);
+  width:100%;min-width:0;max-width:100%;height:var(--field-h);padding:0 var(--sp-4);
   border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
@@ -186,7 +186,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-login-field{padding:0;border:0;background:none}
 .auth-login-field>label{display:block;margin:0 0 8px;font-size:var(--fs-sm);line-height:1.4;font-weight:var(--fw-medium);color:var(--color-ink)}
 .auth-login-field>.phone-field,.auth-login-field>.password-field{
-  padding:6px 14px;border:1.5px solid var(--color-line-strong);border-radius:16px;
+  padding:6px 14px;border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
@@ -4348,7 +4348,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    placeholder would be. Once the field is focused or holds a value the label
    rises to a small title in the top corner and the value sits underneath, so
    the field never loses its name. An error turns the box and label red. */
-.float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:58px;padding:0 16px}
+.float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:var(--field-h);padding:0 16px}
 .float-field__slot{position:relative;display:block;flex:1;min-width:0}
 .float-field .input{width:100%;height:56px;padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
 .float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
@@ -4386,7 +4386,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 :is(.auth-screen,.form-flow) .auth-login-field>.phone-field,
 :is(.auth-screen,.form-flow) .auth-login-field>.password-field,
 :is(.auth-screen,.form-flow) .float-field>.float-field__box{
-  height:var(--control-h);min-height:var(--control-h);padding:0 var(--sp-4);
+  height:var(--field-h);min-height:var(--field-h);padding:0 var(--sp-4);
   border-radius:var(--control-radius)
 }
 :is(.auth-screen,.form-flow) .auth-login-field .input,
@@ -4395,7 +4395,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 /* The date field draws its own control inside the box, so it needs the same
    height or it overflows the shell the rule above just shrank. */
-:is(.auth-screen,.form-flow) .float-field .date-control{height:var(--control-h)}
+:is(.auth-screen,.form-flow) .float-field .date-control{height:100%}
 :is(.auth-screen,.form-flow) .float-field .date-control__display{padding-top:16px}
 :is(.auth-screen,.form-flow) .float-field__slot:focus-within>label,
 :is(.auth-screen,.form-flow) .float-field--static .float-field__slot>label,
@@ -4742,11 +4742,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    small title as soon as the field is focused or holds a value.
    "--static" is for a control that always shows something of its own, a
    select, a date, or a format hint, where the name stays small. */
+/* The shell owns the height; the control inside fills it. Letting the control
+   set 56px and then adding the shell's 1.5px borders is what made these 58
+   while the account flow's were 56 (client, 22 Sep: one size for all). */
 .float-field>.float-field__box{
-  display:flex;align-items:stretch;min-height:58px;padding:0 16px;
-  border:1.5px solid var(--color-line-strong);border-radius:16px;background:var(--color-surface);
+  display:flex;align-items:stretch;height:var(--field-h);min-height:var(--field-h);padding:0 16px;
+  border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
+.float-field>.float-field__box:has(.textarea){height:auto}
 .float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
 .float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
 /* Desktop custom selects draw their own control border and focus ring. Remove
@@ -4755,10 +4759,10 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field>.float-field__box:has(.custom-select){padding:0;border-color:transparent;background:transparent}
 .float-field>.float-field__box:has(.custom-select):hover,
 .float-field>.float-field__box:has(.custom-select):focus-within{border-color:transparent;box-shadow:none}
-.float-field .custom-select__trigger{height:58px;padding:20px 16px 4px}
+.float-field .custom-select__trigger{height:var(--field-h);min-height:var(--field-h);padding:20px 16px 4px}
 .float-field .input,.float-field .select,.float-field .textarea,
 #intake-general .float-field .input,#intake-general .float-field .select{
-  height:56px;padding:20px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
+  height:100%;min-height:0;padding:20px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
 }
 .float-field .input:hover,.float-field .select:hover,.float-field .textarea:hover,
 .float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}
@@ -4787,8 +4791,8 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    the start rather than floating in the middle of an empty box, it opens one
    line tall, and the corner grip is the only thing that makes it taller
    (client, 22 Sep). */
-.float-field--note>.float-field__box{min-height:58px;height:auto}
-.float-field--note .textarea{min-height:56px;height:56px;padding-top:20px;padding-bottom:4px;resize:vertical}
+.float-field--note>.float-field__box{min-height:var(--field-h);height:auto}
+.float-field--note .textarea{min-height:var(--field-h);height:var(--field-h);padding-top:20px;padding-bottom:4px;resize:vertical}
 #address .float-field--note .float-field__slot>label,
 .float-field--note .float-field__slot>label{
   top:9px;
@@ -4810,7 +4814,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 /* The date control draws its own box; inside a field the field's box is the
    only one, and the value reads from the left like every other field. */
-.float-field .date-control{height:56px;align-self:center}
+.float-field .date-control{height:100%;align-self:stretch}
 .float-field .date-control__display{padding:20px 0 0;border:0;background:transparent;grid-template-columns:minmax(0,1fr) 20px;gap:8px}
 .float-field .date-control__value{text-align:left}
 .float-field .date-control__display>span:first-child{display:none}
