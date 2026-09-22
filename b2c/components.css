@@ -1727,6 +1727,13 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 /* ---------- Rating (stars) ---------- */
 .rating-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) 0}
 .rating-row+.rating-row{border-top:1px solid var(--color-line)}
+/* On a narrow phone the label and a five-star group do not fit on one line, and
+   the fifth star fell outside the card where it could not be tapped. The CSAT
+   dialog already stacks them; the feedback page does too below 380px. */
+@media(max-width:380px){
+  .rating-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .rating-row .rating{margin-left:-10px}
+}
 .rating{display:inline-flex;gap:0}
 /* 30px squares with gaps between them meant a tap could land on nothing;
    the whole star row is now made of full-height 44px targets (client, 19 Aug). */
