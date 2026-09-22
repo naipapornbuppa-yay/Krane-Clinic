@@ -1452,7 +1452,9 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text" data-general-health-title>ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">7 / 7</span></div>
     <div class="screen__body partner-health-compact shared-health-intake">
       <div class="stack-2"><h2 class="h1">ข้อมูลสุขภาพทั่วไป</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
-      <div class="card card--pad-sm partner-health-card">
+      <!-- Client, 22 Sep: no white container here. Every other questionnaire page
+           puts its fields straight on the page; this was the only one in a card. -->
+      <div class="partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow float-field float-field--static"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex"><option value="">เลือกเพศกำเนิด</option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
           <div class="field grow float-field float-field--static"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" required><label for="intake-dob">วันเกิด</label></span></div></div>
@@ -1546,7 +1548,10 @@
              context, not a new one-off success colour. -->
         <div class="alert auth-screen__context" data-signup-intake-notice role="status" hidden>
           <span class="a-ic" aria-hidden="true"><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span>
-          <div><div class="a-title">ทำแบบประเมินเรียบร้อยแล้ว</div><div class="hint">สร้างบัญชีเพื่อบันทึกคำตอบ</div></div>
+          <!-- Client, 22 Sep: one line. The page title and the button under it
+               both already say สร้างบัญชี, so the second line was repeating the
+               instruction the patient is looking straight at. -->
+          <div class="a-title">ทำแบบประเมินเรียบร้อยแล้ว</div>
         </div>
         <div class="auth-screen__intro">
           <h2 class="h1">Create Account</h2>
@@ -1840,7 +1845,9 @@
           </span>
         </div>
         <div class="between"><span class="muted">เลขใบประกอบวิชาชีพ</span><strong>ว.42317</strong></div>
-        <div class="divider" style="margin:0"></div>
+        <!-- Client, 22 Sep: the rule was sitting on the row above it — zero space
+             over, twelve under. Equal on both sides now. -->
+        <div class="divider" style="margin:12px 0 0"></div>
         <div class="between"><span class="muted">Doctor consultation</span><strong data-consult-base-amount>฿ 350</strong></div>
         <div class="between" data-consult-coverage-row hidden><span class="muted">สิทธิ์ประกัน</span><strong data-consult-coverage-amount>- ฿ 0</strong></div>
         <div class="between" data-consult-payment-control><span class="muted">Discount</span><strong>- ฿ 0</strong></div>
@@ -6208,13 +6215,19 @@
      headings remain in the body. */
   function ensureAppBarLockup(id){
     document.querySelectorAll(`#${id} .screen__body > .intake-lockup`).forEach(node => node.remove());
-    const top=document.querySelector(`#${id} .screen__top:has(> .back)`);
+    /* Client, 22 Sep: the lockup belongs on these pages too. A transition stage
+       closes with an × instead of going back, so it has no .back and this used
+       to skip it — leaving "จับคู่แพทย์" as the only routed page still showing
+       its route name where every other page shows the brand. */
+    const top=document.querySelector(`#${id} .screen__top:has(> .back), #${id} .screen__top.transition-stage__top`);
     if(!top || top.querySelector(':scope > .checkout-brandbar__logo')) return;
     let title=top.querySelector(':scope > .ttl');
     if(!title){
       title=document.createElement('span');
       title.className='ttl';
-      top.querySelector(':scope > .back')?.insertAdjacentElement('afterend',title);
+      const anchor=top.querySelector(':scope > .back');
+      if(anchor) anchor.insertAdjacentElement('afterend',title);
+      else top.prepend(title);
     }
     if(title.querySelector('.intake-lockup')) return;
     const accessibleTitle=title.textContent.trim();
