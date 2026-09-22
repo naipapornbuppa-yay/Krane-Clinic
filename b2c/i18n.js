@@ -1181,7 +1181,7 @@
     /* The assessment-saved banner on the sign-up page (client, 21 Sep). Their
        exact wording, so it is written in Thai and read back from here. */
     "ทำแบบประเมินเรียบร้อยแล้ว":"Assessment complete",
-    "โปรดสร้างบัญชีเพื่อบันทึกคำตอบและเริ่มปรึกษาแพทย์ตอนนี้":"Create your account to save your answers and start your consultation now.",
+    "สร้างบัญชีเพื่อบันทึกคำตอบ":"Create an account to save your answers",
     /* Strings the app grew after the language rule last ran clean (14 Sep):
        the password and country-code controls, the upload-prescription action,
        and the quantity steppers, whose aria-labels became Thai. */
