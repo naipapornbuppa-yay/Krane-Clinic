@@ -325,8 +325,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .intake-duration-field{gap:8px;margin-top:var(--sp-4)}
 /* The duration control spans the question column like the field above it (client, 17 Sep). */
 .intake-duration-control{max-width:none}
-/* Sits inline at the end of the heading itself instead of on its own line below it. */
-.h1:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 /* One page, one question — so the question itself is the heading. The screen
    title used to stay huge over every page while the actual question sat in a
    small grey label, which read as backwards importance (client, 18 Aug). */
@@ -334,13 +332,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    later in this file and would otherwise keep the heading at 13px. */
 [data-intake-question] .intake-question__title{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:var(--fw-bold);line-height:1.3;
   letter-spacing:0;text-transform:none;color:var(--color-ink);margin:0 0 var(--sp-4);display:block}
-[data-intake-question] .intake-question__title:has(.intake-question-count){display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 /* Follow-up prompts on the same page share one look, so a page built from a
    section label plus a field label does not read as two different things. */
 [data-intake-question] .intake-question__sub{display:block;margin:0 0 var(--sp-2);
   font-family:var(--font-body,inherit);font-size:var(--fs-base);font-weight:var(--fw-semibold);
   line-height:1.4;letter-spacing:0;text-transform:none;color:var(--color-ink)}
-.intake-question-count{flex:none;margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:1.4;white-space:nowrap}
 [data-intake-question][hidden]{display:none!important}
 /* Every paged intake question starts from the same vertical anchor. Stack
    spacing still matches hidden siblings in CSS, so remove that inherited top
@@ -4446,7 +4442,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    the field never loses its name. An error turns the box and label red. */
 .float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:var(--field-h);padding:0 16px}
 .float-field__slot{position:relative;display:block;flex:1;min-width:0}
-.float-field .input{width:100%;height:56px;padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
+.float-field .input{width:100%;height:var(--field-h);padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
 .float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
 .float-field>.password-field .input{padding-right:0}
 .float-field__slot>label{position:absolute;left:0;top:50%;margin:0;transform:translateY(-50%);
@@ -4483,15 +4479,13 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    is Thai, so the flag and the dial code only crowded the field. */
 .float-field>.phone-field .float-field__slot{padding-left:0}
 
-/* Auth controls use the same geometry as the app's primary action: 48px high
-   with the shared 14px control radius. The floating-label implementation used
-   to enlarge only these fields to 58px, while social buttons used a pill
-   radius; that made one form look like three unrelated component families. */
+/* Account-flow inputs, primary CTAs and outlined social CTAs all consume the
+   shared control height and radius tokens. Do not resize one role locally: a
+   form should read as one component family on every account screen. */
 /* #social-confirm builds its fields from .float-field__box rather than
    .auth-login-field, and sits on .form-flow rather than .auth-screen, so this
-   rule never reached it: the same account flow showed 58px boxes on one screen
-   and 48px on the next (client, 22 Sep). Both wrappers and both shells are
-   named here so one geometry covers the whole flow. */
+   rule never reached it. Both wrappers and both shells are named here so one
+   geometry covers the whole flow. */
 :is(.auth-screen,.form-flow) .auth-login-field>.phone-field,
 :is(.auth-screen,.form-flow) .auth-login-field>.password-field,
 :is(.auth-screen,.form-flow) .float-field>.float-field__box{
