@@ -1689,7 +1689,9 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">ยืนยันชื่อและเบอร์โทรศัพท์</h2></div>
-      <div class="card card--pad-sm stack-3">
+      <!-- Client, 22 Sep: no white box behind the fields, as on the address and
+           general-health pages. -->
+      <div class="stack-3">
         <div class="section-label">ข้อมูลส่วนตัว</div>
         <div class="auth-name-grid"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-first-name" autocomplete="given-name" value="มะลิ" placeholder=" "><label for="patient-first-name">ชื่อ</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-last-name" autocomplete="family-name" value="สุธิดา" placeholder=" "><label for="patient-last-name">นามสกุล</label></span></div></div></div>
         <!-- Changing the number is a normal thing to do, so it stays on this screen.
@@ -2199,7 +2201,10 @@
       </section>
 
       <section class="form-group">
-        <h3 class="form-group__title">ผู้รับพัสดุ</h3>
+        <div class="form-group__head">
+          <h3 class="form-group__title">ผู้รับพัสดุ</h3>
+          <button class="address-clear-all" type="button" data-clear-recipient hidden>ล้างทั้งหมด</button>
+        </div>
         <div class="form-group__surface">
         <div class="field-row">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientFirstName" autocomplete="given-name" placeholder=" " required><label for="recipientFirstName">ชื่อ</label></span></div></div>
@@ -5269,6 +5274,8 @@
      Thai address is the worst part of this form. One clear button per field,
      added here so the nine fields cannot drift apart in the markup. */
   function syncFieldClearButtons(){
+    const recipientClear=document.querySelector('[data-clear-recipient]');
+    if(recipientClear) recipientClear.hidden=!recipientFields().some(input => input.value);
     document.querySelectorAll('#address .field__clear').forEach(button => {
       const input=button.parentElement?.querySelector('input.input');
       button.hidden=!(input && input.value);
@@ -5277,6 +5284,13 @@
   function setupClearableFields(){
     const scope=document.getElementById('address');
     if(!scope) return;
+    /* Each per-field × keeps itself in step from its own input event. The
+       recipient's clear watches three fields at once, so one delegated
+       listener keeps it in step with all of them. */
+    if(!scope.dataset.sectionClearReady){
+      scope.dataset.sectionClearReady='1';
+      scope.addEventListener('input',() => syncFieldClearButtons());
+    }
     // The search box is a field too — it needs the same × (client, 19 Aug).
     scope.querySelectorAll('.float-field__slot > input.input, .field > input.input, .address-search__field > input.input').forEach(input => {
       const field=input.closest('.float-field__box') || input.parentElement;
@@ -5328,6 +5342,26 @@
   }
 
   document.querySelector('[data-address-clear-all]')?.addEventListener('click',clearDeliveryAddressForm);
+
+  /* Client, 22 Sep: "ตรงผู้รับด้วยนะ". The button at the top of the page empties
+     the whole screen; this one empties only the recipient, so correcting who it
+     goes to does not throw away the address you just checked. */
+  function recipientFields(){
+    return ['recipientFirstName','recipientLastName','recipientPhone']
+      .map(id => document.getElementById(id)).filter(Boolean);
+  }
+  function clearRecipientFields(){
+    const fields=recipientFields();
+    fields.forEach(input => {
+      input.value='';
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      clearFieldError(input);
+    });
+    syncFieldClearButtons();
+    fields[0]?.focus({preventScroll:true});
+    showActionToast('ล้างข้อมูลผู้รับพัสดุแล้ว','success');
+  }
+  document.querySelector('[data-clear-recipient]')?.addEventListener('click',clearRecipientFields);
 
   function syncDeliveryAddress({hydrateForm=false}={}){
     const address=flowState.orderState.address;
@@ -6273,6 +6307,10 @@
        the order title, so this custom app bar deliberately stays logo-free. */
     if(top?.classList.contains('postpay-tracking-topbar')) return;
     if(!top || top.querySelector(':scope > .checkout-brandbar__logo')) return;
+    /* Client, 22 Sep: a bar that already names the thing you are looking at
+       keeps that name. Tracking titles itself with the order number, and the
+       lockup — centred and absolutely placed — was printed on top of it. */
+    if(top.querySelector(':scope > [class$="__title"]')) return;
     let title=top.querySelector(':scope > .ttl');
     if(!title){
       title=document.createElement('span');
@@ -12301,7 +12339,7 @@
       : Math.max(0,Math.min(CONSULTATION_FEE_BAHT,total+promo-goods));
     return {method,subtotal,addon,delivery,credit,promo,total,consultationCharged};
   }
-  const POSTPAY_THUMBNAIL_LIMIT=4;
+  const POSTPAY_THUMBNAIL_LIMIT=5;   // client, 22 Sep: show five, then "+n"
   function setPostpayText(selector,value){
     document.querySelectorAll(selector).forEach(node => { node.textContent=value; });
   }
