@@ -1804,7 +1804,10 @@
     <div class="screen__top transition-stage__top"><span class="ttl">Doctor match</span><button class="transition-stage__close" data-back aria-label="Close">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Finding your doctor">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-doctor-matching"></use></svg></span>
+        <!-- Client, 23 Sep: the paper crane the rest of the app waits with, not a
+             second illustration of a person waiting. It is the same symbol the
+             preloader uses, so both waits look like the same product. -->
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-loading-info"></use></svg></span>
         <span class="state-view__badge"><i data-lucide="stethoscope" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
@@ -3681,7 +3684,7 @@
       </div>
     </div>
     <div class="screen__footer stack-2">
-      <button class="consent-scroll-cue" type="button" data-consent-scroll-cue data-consent-auto-scroll><span>อ่านต่อจนจบ</span><i data-lucide="arrow-down" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
+      <button class="consent-scroll-cue" type="button" data-consent-scroll-cue data-consent-auto-scroll aria-label="อ่านต่อจนจบ"><span class="sr-only">อ่านต่อจนจบ</span><i data-lucide="arrow-down" class="ui-icon" aria-hidden="true"></i></button>
       <button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button>
     </div>
   </section>
@@ -5322,26 +5325,6 @@
     };
   }
   const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
-  /* Arriving on the address screen from the checkout button, the patient is
-     there to type — so the first field still empty is scrolled to and focused
-     rather than leaving them to find it (client, 23 Sep). A frame is given to
-     the screen change so the scroll measures the laid-out page, and the hidden
-     composed-district input is skipped because nobody types into it. */
-  function focusFirstEmptyAddressField(){
-    requestAnimationFrame(() => {
-      const screen=document.getElementById('address');
-      if(!screen || !screen.classList.contains('active')) return;
-      const target=[...screen.querySelectorAll('input[required],select[required]')]
-        .find(field => field.type!=='hidden' && !field.disabled && field.offsetParent && !String(field.value || '').trim());
-      if(!target) return;
-      const body=screen.querySelector('.screen__body');
-      if(body){
-        const top=body.scrollTop + (target.getBoundingClientRect().top - body.getBoundingClientRect().top) - 120;
-        body.scrollTo({top:Math.max(0,top), behavior:reduceMotion ? 'auto' : 'smooth'});
-      }
-      target.focus({preventScroll:true});
-    });
-  }
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
     screen.dataset.addressDraft=JSON.stringify({
@@ -8756,14 +8739,15 @@
     const button=document.querySelector('#payment [data-payment-go]');
     if(!button) return;
     const actionState=checkoutActionState();
-    /* Client, 23 Sep: with no address yet, a grey "ชำระเงิน" was a dead end —
-       the one thing left to do was not on the button and the button could not
-       be pressed. It now carries that step instead, and the tap opens the
-       address screen on the first field still to fill. The other blockers keep
-       the grey button and the pointer toast. */
-    const actionable=actionState==='ready' || actionState==='quote-required' || actionState==='address-required';
+    /* Client, 23 Sep: with no address yet the button names the step that is
+       missing — "กรอกที่อยู่" — but it stays greyed, because paying is still not
+       what it does. It is pressable all the same, and the press scrolls the
+       address row into view and points at it, rather than being a dead control
+       that says what to do and then refuses to help you do it. */
+    const actionable=actionState==='ready' || actionState==='quote-required';
+    const addressMissing=actionState==='address-required';
     button.setAttribute('aria-disabled',String(!actionable));
-    button.disabled=!actionable;
+    button.disabled=!actionable && !addressMissing;
     button.classList.toggle('btn--blocked',!actionable);
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
@@ -12138,11 +12122,6 @@
       return;
     }
     const checkoutState=checkoutActionState();
-    if(checkoutState==='address-required'){
-      show('address');
-      focusFirstEmptyAddressField();
-      return;
-    }
     if(checkoutState==='payment-method-required'){
       openPaymentMethodModal();
       return;

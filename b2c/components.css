@@ -106,7 +106,15 @@ img{max-width:100%}
   border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
-.input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
+/* Client, 23 Sep: an input's border is #C9C9C9 in every resting state, on
+   every screen. It used to darken on :hover — and a touch browser keeps
+   :hover on whatever was last tapped, so one field on a form sat in a dark
+   slate border while the phone and password fields beside it, which never
+   had the rule, stayed light. The affordance is worth keeping where there
+   is a real pointer to give it, and nowhere else. */
+@media(hover:hover) and (pointer:fine){
+  .input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
+}
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
@@ -2941,13 +2949,16 @@ body.lang-th *{letter-spacing:normal}
 .is-unread .consent-agree{cursor:not-allowed;opacity:.55}
 .consent-note{color:var(--color-ink-3)}
 .is-unread .consent-note{color:var(--color-warning);font-weight:var(--fw-medium)}
-.consent-scroll-cue{position:static;display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;min-height:44px;padding:0 16px;border:1px solid color-mix(in srgb,var(--color-accent) 28%,var(--color-line));
-  border-radius:var(--control-radius);background:color-mix(in srgb,var(--color-accent) 7%,var(--color-surface));
-  box-shadow:none;color:var(--color-accent-strong);font:inherit;font-weight:var(--fw-semibold);cursor:pointer}
+/* Client, 23 Sep: back to the plain arrow it used to be. A full-width tinted
+   bar reads as a second call to action sitting above the real one, when all it
+   has to say is that the text keeps going. */
+.consent-scroll-cue{position:static;display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;min-height:0;margin:0 auto;padding:0;border:0;
+  border-radius:50%;background:transparent;
+  box-shadow:none;color:var(--color-accent-strong);font:inherit;cursor:pointer}
 .consent-scroll-cue[hidden]{display:none}
-.consent-scroll-cue .ui-icon{width:16px;height:16px}
-.consent-scroll-cue:hover{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 11%,var(--color-surface))}
+.consent-scroll-cue .ui-icon{width:22px;height:22px}
+.consent-scroll-cue:hover{background:color-mix(in srgb,var(--color-accent) 11%,var(--color-surface))}
 .consent-scroll-cue:active{background:color-mix(in srgb,var(--color-accent) 15%,var(--color-surface))}
 .consent-scroll-cue:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
 
@@ -3595,7 +3606,9 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
-#address .address-search__field:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  #address .address-search__field:hover{border-color:var(--color-ink-3)}
+}
 #address .address-search__field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
 #address .address-search__icon{position:static;flex:none;transform:none;width:20px;height:20px}
 #address .address-search__icon .ui-icon{width:18px;height:18px}
@@ -3933,7 +3946,9 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
   border:1px solid var(--color-line-strong);border-right:0;
   border-radius:var(--control-radius) 0 0 var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
-.phone-field__country:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  .phone-field__country:hover{border-color:var(--color-ink-3)}
+}
 .phone-field__country:focus-visible{outline:3px solid var(--color-focus);outline-offset:-1px}
 .phone-field__flag{font-size:16px;line-height:1}
 .phone-field__dial{font-variant-numeric:tabular-nums}
@@ -4481,10 +4496,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   color:var(--color-ink-3);font-size:var(--fs-base);font-weight:var(--fw-regular);line-height:1.2;
   white-space:nowrap;pointer-events:none;
   transition:top var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),font-size var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+/* Client, 23 Sep: the raised title and the value it sits over were touching.
+   The title's line box reached 24.6px down a 48px field while the value
+   started at 21px, so the two overlapped and read as one block. The title
+   now sits on its own cap height at the top and the value is pushed clear of
+   it, leaving real space between the two inside the same field height. */
 .float-field__slot:focus-within>label,
 .float-field.is-filled .float-field__slot>label,
 .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label,
-.float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:7px;line-height:1;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .float-field__slot:focus-within>label{color:var(--color-accent)}
 .float-field .input::placeholder,.float-field .textarea::placeholder{color:transparent}
 /* The general-health page still has older high-specificity field rules near
@@ -4884,7 +4904,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
 .float-field>.float-field__box:has(.textarea){height:auto}
-.float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  .float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
+}
 .float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
 /* Desktop custom selects draw their own control border and focus ring. Remove
    the generated wrapper's parent border only while enhancement is present;
@@ -4895,7 +4917,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .custom-select__trigger{height:var(--field-h);min-height:var(--field-h);padding:20px 16px 4px}
 .float-field .input,.float-field .select,.float-field .textarea,
 #intake-general .float-field .input,#intake-general .float-field .select{
-  height:100%;min-height:0;padding:20px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
+  height:100%;min-height:0;padding:24px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
 }
 .float-field .input:hover,.float-field .select:hover,.float-field .textarea:hover,
 .float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}

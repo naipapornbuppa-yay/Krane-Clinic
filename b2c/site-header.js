@@ -39,6 +39,10 @@
     navDoctorTeam: "our medical team"
   };
 
+  /* The navigation markup is one component, defined in site-nav.js and shared
+     with the landing page; this file is only its behaviour. */
+  window.KraneSiteNav?.render();
+
   const mobileMenu = document.querySelector("#mobile-menu");
   const menuOpen = document.querySelector("[data-menu-open]");
   const menuClose = document.querySelector("[data-menu-close]");
@@ -150,6 +154,14 @@
     document.querySelectorAll("[data-nav-i18n]").forEach((element) => {
       if (!element.dataset.navTh) element.dataset.navTh = element.innerHTML;
       element.innerHTML = lang === "en" ? NAV_TRANSLATIONS[element.dataset.navI18n] || element.dataset.navTh : element.dataset.navTh;
+    });
+    /* An aria-label is read out loud, so English mode has to reach it too —
+       the login control names itself that way for the widths where its text
+       label is hidden, and it was still saying "เข้าสู่ระบบ" in English. */
+    document.querySelectorAll("[data-nav-i18n-aria]").forEach((element) => {
+      if (!element.dataset.navAriaTh) element.dataset.navAriaTh = element.getAttribute("aria-label") || "";
+      const key = element.dataset.navI18nAria;
+      element.setAttribute("aria-label", lang === "en" ? NAV_TRANSLATIONS[key] || element.dataset.navAriaTh : element.dataset.navAriaTh);
     });
     languageSelects.forEach((select) => { select.value = lang; });
     menuOpen?.setAttribute("aria-label", lang === "th" ? "เปิดเมนู" : "Open menu");
