@@ -2431,13 +2431,13 @@
         <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
         <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span><span class="checkout-row__recipient" data-payment-recipient hidden></span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true" hidden></span><span class="checkout-row__recipient" data-payment-recipient hidden></span></span>
           <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
         <button class="checkout-row checkout-row--compact" data-go="address" data-delivery-address-detail-section>
           <span class="checkout-row__icon"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">รายละเอียดการรับสินค้า</span><span class="checkout-row__value" data-payment-address-detail>เพิ่มชั้น ห้อง และจุดวางสินค้า</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รายละเอียดการรับสินค้า</span><span class="checkout-row__value" data-payment-address-detail hidden></span></span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
@@ -2642,7 +2642,7 @@
              each already say what they are. -->
         <button class="checkout-row" data-open-promo data-payment-required-section>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4.6A1.6 1.6 0 0 1 4.4 3h7.4a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.4Z"/><circle cx="7.6" cy="7.6" r="1.2"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">โค้ดส่วนลด</span><span class="checkout-row__value" data-payment-promo>ใส่โค้ดส่วนลด</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">โค้ดส่วนลด</span><span class="checkout-row__value" data-payment-promo hidden></span></span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
         <div class="checkout-row" data-payment-insurance-summary hidden>
@@ -5421,10 +5421,13 @@
     const address=flowState.orderState.address;
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
+    /* Client, 23 Sep: no description lines on the checkout rows. "ยังไม่ได้
+       เลือกที่อยู่จัดส่ง" under "ที่อยู่จัดส่ง" said nothing the label and the
+       "เพิ่มที่อยู่" tag beside it did not already say, so the second line is
+       shown only once it carries the address itself. */
     document.querySelectorAll('[data-payment-address]').forEach(el => {
-      el.textContent=confirmed
-        ? deliveryAddressSummary(address)
-        : (pickup ? 'ยังไม่ได้เพิ่มตำแหน่งของคุณ' : 'ยังไม่ได้เลือกที่อยู่จัดส่ง');
+      el.textContent=confirmed ? deliveryAddressSummary(address) : '';
+      el.hidden=!confirmed;
     });
     /* Client, 1 Sep: New wants the name on this screen, the way a delivery app
        shows it — who it is going to sits with where it is going, so the patient
@@ -5457,7 +5460,8 @@
       const floor=address.floor ? (/^ชั้น\s/.test(address.floor) ? address.floor : `ชั้น ${address.floor}`) : '';
       detail.textContent=confirmed
         ? [floor,dropoffLabels[address.dropoffMethod || 'hand']].filter(Boolean).join(' · ')
-        : 'เพิ่มชั้น ห้อง และจุดวางสินค้า';
+        : '';
+      detail.hidden=!confirmed;
     }
     const previewTitle=document.querySelector('[data-address-preview-title]');
     const previewDetail=document.querySelector('[data-address-preview-detail]');
@@ -5758,7 +5762,12 @@
     const promoRow = payment.querySelector('[data-payment-promo-row]');
     const promoLabel = payment.querySelector('[data-payment-promo]');
     if(promoRow) promoRow.hidden = !appliedPromo;
-    if(promoLabel) promoLabel.textContent = appliedPromo ? `${appliedPromo.code} · ลด ${baht(appliedPromo.amount)}` : 'ใส่โค้ดส่วนลด';
+    if(promoLabel){
+      /* Client, 23 Sep: "ใส่โค้ดส่วนลด" under "โค้ดส่วนลด" was the label again
+         as an instruction, so the line appears only once a code is applied. */
+      promoLabel.textContent = appliedPromo ? `${appliedPromo.code} · ลด ${baht(appliedPromo.amount)}` : '';
+      promoLabel.hidden = !appliedPromo;
+    }
     paymentDue = due;
     paymentCredit = Math.max(0,Number(credit) || 0);
     const finalDue=currentMedicationDue();
@@ -8794,7 +8803,9 @@
     const addressConfirmed=Boolean(flowState.orderState.addressConfirmed && checkoutAddress.building && checkoutAddress.line && checkoutAddress.district);
     if(addressLabel) addressLabel.textContent=pickup ? 'ตำแหน่งของคุณ' : 'การจัดส่ง';
     if(addressTitle) addressTitle.textContent=pickup ? 'ตำแหน่งสำหรับค้นหาสาขาใกล้คุณ' : 'ที่อยู่จัดส่ง';
-    if(addressValue && !addressConfirmed) addressValue.textContent=pickup ? 'ยังไม่ได้เพิ่มตำแหน่งของคุณ' : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
+    // Nothing chosen yet leaves the row on its label alone (client, 23 Sep) —
+    // the action tag beside it is what says the address is still to be added.
+    if(addressValue && !addressConfirmed){ addressValue.textContent=''; addressValue.hidden=true; }
     if(addressAction) addressAction.textContent=addressConfirmed
       ? (pickup ? 'เปลี่ยนตำแหน่ง' : 'เปลี่ยนที่อยู่')
       : (pickup ? 'เพิ่มตำแหน่ง' : 'เพิ่มที่อยู่');
@@ -12028,12 +12039,13 @@
     const amt = document.querySelector('[data-payment-promo-amount]');
     if(appliedPromo){
       // "WELCOME100 \u00b7 \u0e25\u0e14 \u0e3f 100": the verb leads in Thai, and it needs the space.
-      if(label) label.textContent = appliedPromo.code + ' \u00b7 \u0e25\u0e14 ' + baht(appliedPromo.amount);
+      if(label){ label.textContent = appliedPromo.code + ' \u00b7 \u0e25\u0e14 ' + baht(appliedPromo.amount); label.hidden = false; }
       if(row) row.hidden = false;
       if(code) code.textContent = '\u0e42\u0e04\u0e49\u0e14 ' + appliedPromo.code;
       if(amt) amt.textContent = '- ' + baht(appliedPromo.amount);
     }else{
-      if(label) label.textContent = '\u0e43\u0e2a\u0e48\u0e42\u0e04\u0e49\u0e14\u0e2a\u0e48\u0e27\u0e19\u0e25\u0e14';
+      // No code applied: the row keeps its label alone, with nothing under it.
+      if(label){ label.textContent = ''; label.hidden = true; }
       if(row) row.hidden = true;
     }
     const due = Math.max(0, paymentDue - (appliedPromo ? appliedPromo.amount : 0));
