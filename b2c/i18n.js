@@ -1282,6 +1282,7 @@
     "ผลวินิจฉัยและยาพร้อมแล้ว":"Your plan is ready",
     "หลังชำระเงิน อ่านผลวินิจฉัย รอรับยา และใบรับรองแพทย์ได้เลย":"After payment: your diagnosis, medicine tracking and certificate.",
     "ที่อยู่จัดส่ง":"Delivery address",
+    "ล้างทั้งหมด":"Clear all",
     "ชำระเงิน":"Payment",
     "ขั้นตอนที่ 1 จาก 3, แบบประเมิน":"Step 1 of 3, assessment",
     "ขั้นตอนที่ 2 จาก 3, ปรึกษาแพทย์":"Step 2 of 3, consultation",
