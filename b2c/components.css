@@ -3542,10 +3542,30 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 .timeline .step__action:hover{background:var(--color-bg-2)}
 .timeline .step__action[hidden]{display:none}
 
-/* The search box carries the same clear button as the fields below it. */
-.address-search__field{position:relative}
-.address-search__field .field__clear{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
-.address-search__field > input.input{padding-right:44px}
+/* The search box uses the same control shell as every address field below it.
+   Previously the input drew its own 1px outline while the floating fields used
+   a 1.5px shell with 16px inset, so the first control looked subtly larger and
+   its icon/text sat on a different grid. Keep the icon and clear action in the
+   shell, and let the input be the borderless flexible content. */
+#address .address-search__field{
+  position:relative;display:flex;align-items:center;gap:12px;
+  width:100%;height:var(--field-h);min-height:var(--field-h);padding:0 6px 0 16px;
+  border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);
+  background:var(--color-surface);
+  transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
+}
+#address .address-search__field:hover{border-color:var(--color-ink-3)}
+#address .address-search__field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+#address .address-search__icon{position:static;flex:none;transform:none;width:20px;height:20px}
+#address .address-search__icon .ui-icon{width:18px;height:18px}
+#address .address-search__field>input.input{
+  flex:1;height:100%;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
+}
+#address .address-search__field>input.input:hover,
+#address .address-search__field>input.input:focus{border:0;box-shadow:none}
+#address .address-search__field .field__clear{
+  position:static;flex:none;transform:none;width:32px;height:32px;margin-left:auto;
+}
 
 /* ---------- Refill: pick which prescriptions to re-order (27 Aug) ---------- */
 /* Multi-choice, so every row carries a tick and the screen keeps one CTA. */
