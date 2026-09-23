@@ -2637,7 +2637,9 @@
       </div>
       <!-- 3. Offers, between the basket and the payment method. -->
       <div class="stack-2" data-checkout-sequence="offers">
-        <span class="section-label">ส่วนลดและสิทธิ์</span>
+        <!-- Client, 23 Sep: no section heading here. "ส่วนลดและสิทธิ์" only
+             repeated the two rows under it — "โค้ดส่วนลด" and the cover row
+             each already say what they are. -->
         <button class="checkout-row" data-open-promo data-payment-required-section>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4.6A1.6 1.6 0 0 1 4.4 3h7.4a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.4Z"/><circle cx="7.6" cy="7.6" r="1.2"/></svg></span>
           <span class="checkout-row__body"><span class="checkout-row__label">โค้ดส่วนลด</span><span class="checkout-row__value" data-payment-promo>ใส่โค้ดส่วนลด</span></span>
@@ -4051,42 +4053,37 @@
      yes/no safety sheet as the health history, not on a page of their own. -->
 <div class="modal-layer" id="obesity-risk-modal" hidden aria-hidden="true">
   <button class="modal-layer__scrim" type="button" data-obesity-risk-close aria-label="ปิดหน้าต่าง"></button>
-  <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="obesity-risk-title" aria-describedby="obesity-risk-description">
+  <!-- Client, 23 Sep: no description, no English in brackets, and the two liver
+       and pancreas questions asked as one. Any "yes" raises the same warning and
+       sends the patient to a doctor, so the pair did not need separate answers. -->
+  <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="obesity-risk-title">
     <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="obesity-risk-title">ยืนยันข้อมูลความปลอดภัย</h2>
-    <p id="obesity-risk-description">ห้าข้อนี้จำเป็นต่อความปลอดภัยในการสั่งยาลดน้ำหนัก แพทย์จะเห็นก่อนเริ่มปรึกษา</p>
     <div class="partner-clinical-grid">
       <fieldset class="partner-history-field" data-obesity-risk="mtc">
-              <legend>มีประวัติสมาชิกในครอบครัวเป็นมะเร็งไทรอยด์ชนิดเมดัลลารี (Medullary Thyroid Carcinoma)</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="ประวัติครอบครัวมะเร็งไทรอยด์ชนิดเมดัลลารี">
+              <legend>ครอบครัวมีประวัติมะเร็งไทรอยด์ชนิดเมดัลลารี ใช่หรือไม่</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ครอบครัวมีประวัติมะเร็งไทรอยด์ชนิดเมดัลลารี ใช่หรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
       <fieldset class="partner-history-field" data-obesity-risk="esrd">
-              <legend>ปัจจุบันเป็นโรคไตวายระยะที่ 5 (ESRD)</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="โรคไตวายระยะที่ 5">
+              <legend>เป็นโรคไตวายระยะสุดท้าย ใช่หรือไม่</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="เป็นโรคไตวายระยะสุดท้าย ใช่หรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
-      <fieldset class="partner-history-field" data-obesity-risk="cirrhosis">
-              <legend>ปัจจุบันเป็นโรคตับแข็งเรื้อรังระยะสุดท้าย (Child-Pugh C)</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="โรคตับแข็งระยะสุดท้าย">
-                <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
-                <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
-              </div>
-            </fieldset>
-      <fieldset class="partner-history-field" data-obesity-risk="pancreatitis">
-              <legend>เคยมีอาการตับอ่อนอักเสบไม่ทราบสาเหตุ</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="ประวัติตับอ่อนอักเสบไม่ทราบสาเหตุ">
+      <fieldset class="partner-history-field" data-obesity-risk="liver-pancreas">
+              <legend>เป็นโรคตับแข็งระยะสุดท้าย หรือเคยตับอ่อนอักเสบไม่ทราบสาเหตุ ใช่หรือไม่</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="เป็นโรคตับแข็งระยะสุดท้าย หรือเคยตับอ่อนอักเสบไม่ทราบสาเหตุ ใช่หรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
       <fieldset class="partner-history-field" data-obesity-risk="pregnancy">
-              <legend>กำลังตั้งครรภ์หรือให้นมบุตร</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="กำลังตั้งครรภ์หรือให้นมบุตร">
+              <legend>กำลังตั้งครรภ์หรือให้นมบุตร ใช่หรือไม่</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="กำลังตั้งครรภ์หรือให้นมบุตร ใช่หรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
@@ -5284,6 +5281,26 @@
     };
   }
   const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
+  /* Arriving on the address screen from the checkout button, the patient is
+     there to type — so the first field still empty is scrolled to and focused
+     rather than leaving them to find it (client, 23 Sep). A frame is given to
+     the screen change so the scroll measures the laid-out page, and the hidden
+     composed-district input is skipped because nobody types into it. */
+  function focusFirstEmptyAddressField(){
+    requestAnimationFrame(() => {
+      const screen=document.getElementById('address');
+      if(!screen || !screen.classList.contains('active')) return;
+      const target=[...screen.querySelectorAll('input[required],select[required]')]
+        .find(field => field.type!=='hidden' && !field.disabled && field.offsetParent && !String(field.value || '').trim());
+      if(!target) return;
+      const body=screen.querySelector('.screen__body');
+      if(body){
+        const top=body.scrollTop + (target.getBoundingClientRect().top - body.getBoundingClientRect().top) - 120;
+        body.scrollTo({top:Math.max(0,top), behavior:reduceMotion ? 'auto' : 'smooth'});
+      }
+      target.focus({preventScroll:true});
+    });
+  }
   function writeDeliveryAddressDraft(screen,address){
     if(!screen) return;
     screen.dataset.addressDraft=JSON.stringify({
@@ -8690,13 +8707,19 @@
     const button=document.querySelector('#payment [data-payment-go]');
     if(!button) return;
     const actionState=checkoutActionState();
-    const actionable=actionState==='ready' || actionState==='quote-required';
+    /* Client, 23 Sep: with no address yet, a grey "ชำระเงิน" was a dead end —
+       the one thing left to do was not on the button and the button could not
+       be pressed. It now carries that step instead, and the tap opens the
+       address screen on the first field still to fill. The other blockers keep
+       the grey button and the pointer toast. */
+    const actionable=actionState==='ready' || actionState==='quote-required' || actionState==='address-required';
     button.setAttribute('aria-disabled',String(!actionable));
     button.disabled=!actionable;
     button.classList.toggle('btn--blocked',!actionable);
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    if(!actionable) label.textContent='ชำระเงิน';
+    if(actionState==='address-required') label.textContent='กรอกที่อยู่';
+    else if(!actionable) label.textContent='ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
     else label.textContent='ชำระเงิน';
@@ -12064,6 +12087,7 @@
     const checkoutState=checkoutActionState();
     if(checkoutState==='address-required'){
       show('address');
+      focusFirstEmptyAddressField();
       return;
     }
     if(checkoutState==='payment-method-required'){
