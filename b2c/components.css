@@ -5054,7 +5054,11 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-success__actions{display:grid;grid-template-columns:1fr;gap:8px;padding:14px 18px max(16px,env(safe-area-inset-bottom));background:rgba(255,255,255,.96);box-shadow:0 -10px 28px rgba(18,24,36,.07)}
 .postpay-success__actions .btn{width:100%;height:48px}
 
-.postpay-tracking-topbar{min-height:68px;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid #eceef2}
+.postpay-tracking-topbar{min-height:68px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid #eceef2}
+/* With the help and share icons gone the title had only the back button beside
+   it and drifted right of centre. An empty cell the width of that button puts
+   it back in the middle of the bar (client, 23 Sep). */
+.postpay-tracking-topbar::after{content:"";display:block}
 .postpay-tracking-topbar>.back{position:static;transform:none;align-self:center}
 .postpay-tracking-topbar__title{display:flex;align-items:center;justify-content:center;min-width:0;text-align:center}
 .postpay-tracking-topbar__title strong{font-size:14px;line-height:1.35}
@@ -5079,6 +5083,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-progress__step strong{width:100%;min-height:24px;padding:0 2px;color:#9299a6;font-size:10px;font-weight:var(--fw-medium);line-height:1.3;white-space:normal}
 .postpay-progress__step.done strong,.postpay-progress__step.active strong{color:var(--color-ink)}
 .postpay-progress__step .hint,.postpay-progress__step .step__link{display:none}
+/* Client, 23 Sep: a time under the two ends of the journey — paid at, and
+   arriving by. Small and grey against the step name above it, so it reads as a
+   stamp rather than a second label. */
+.postpay-progress__time{display:block;width:100%;padding:0 1px;color:#9299a6;font-size:10px;font-weight:var(--fw-medium);line-height:1.3;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* The step name reserves two lines so the names line up across the bar. A step
+   that carries a time drops the reservation, or the stamp would hang below a
+   band of empty space instead of sitting under its own name. */
+.postpay-progress__step:has(.postpay-progress__time) strong{min-height:0}
+.postpay-progress__step.done .postpay-progress__time,.postpay-progress__step.active .postpay-progress__time{color:var(--color-ink-2)}
 .postpay-confirm-receipt{width:calc(100% - 28px);margin:0 14px 14px}
 .postpay-order-snapshot{overflow:hidden}
 .postpay-order-snapshot__thumbs{display:flex!important;flex-direction:row!important;align-items:center;padding-right:4px}

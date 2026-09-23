@@ -2847,10 +2847,9 @@
     <div class="screen__top postpay-tracking-topbar">
       <button class="back" data-go="profile" aria-label="กลับหน้าหลัก">‹</button>
       <span class="postpay-tracking-topbar__title"><strong>คำสั่งซื้อ #KR-10293</strong></span>
-      <span class="postpay-tracking-topbar__actions">
-        <button type="button" data-postpay-help aria-label="ขอความช่วยเหลือ"><i data-lucide="circle-help" class="ui-icon" aria-hidden="true"></i></button>
-        <button type="button" data-postpay-share aria-label="แชร์สถานะคำสั่งซื้อ"><i data-lucide="share-2" class="ui-icon" aria-hidden="true"></i></button>
-      </span>
+      <!-- Client, 23 Sep: no help or share icons up here. Help is already a
+           labelled button further down the screen, and sharing a tracking link
+           was never something this prototype needed to offer. -->
     </div>
     <div class="screen__body postpay-tracking-body">
       <section class="postpay-tracking-hero">
@@ -2863,11 +2862,11 @@
           <span class="delivery-eta__state" data-delivery-eta-state>ร้านยากำลังจัดยา</span>
         </div>
         <div class="postpay-progress" aria-label="ความคืบหน้าคำสั่งซื้อ">
-          <div class="postpay-progress__step done" data-track-step="paid"><span><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span><strong>ชำระแล้ว</strong><div class="hint">ยืนยันยอดแล้ว</div><button class="step__link" type="button" data-doc-open="receipt">ใบเสร็จ</button></div>
+          <div class="postpay-progress__step done" data-track-step="paid"><span><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span><strong>ชำระแล้ว</strong><time class="postpay-progress__time" data-track-time="paid"></time><div class="hint">ยืนยันยอดแล้ว</div><button class="step__link" type="button" data-doc-open="receipt">ใบเสร็จ</button></div>
           <div class="postpay-progress__step active" data-track-step="prepared"><span><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดยา</strong><div class="hint">ร้านยาฟาสซิโน อารีย์</div></div>
           <div class="postpay-progress__step" data-track-step="dispatch"><span><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span><strong>รอไรเดอร์</strong><div class="hint">กำลังเรียกคนขับ</div></div>
           <div class="postpay-progress__step" data-track-step="out"><span><i data-lucide="bike" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดส่ง</strong><div class="hint delivery-rider" data-track-rider hidden><span>ไรเดอร์ ณัฐพงษ์ ด.</span><a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></div></div>
-          <div class="postpay-progress__step" data-track-step="delivered"><span><i data-lucide="home" class="ui-icon" aria-hidden="true"></i></span><strong>ส่งถึงแล้ว</strong><div class="hint">รอดำเนินการ</div></div>
+          <div class="postpay-progress__step" data-track-step="delivered"><span><i data-lucide="home" class="ui-icon" aria-hidden="true"></i></span><strong>ส่งถึงแล้ว</strong><time class="postpay-progress__time" data-track-time="delivered"></time><div class="hint">รอดำเนินการ</div></div>
         </div>
         <button class="btn btn--primary postpay-confirm-receipt" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button>
       </section>
@@ -11942,15 +11941,6 @@
       showActionToast('ส่งหัวข้อให้ทีมดูแลแล้ว เราจะติดต่อกลับโดยเร็วที่สุด','success');
       return;
     }
-    const share=event.target.closest('[data-postpay-share]');
-    if(share){
-      const shareData={title:'คำสั่งซื้อ Krane #KR-10293',text:'ติดตามคำสั่งซื้อ Krane #KR-10293',url:location.href};
-      if(navigator.share) navigator.share(shareData).catch(() => {});
-      else if(navigator.clipboard?.writeText) navigator.clipboard.writeText(location.href)
-        .then(() => showActionToast('คัดลอกลิงก์ติดตามแล้ว','success'))
-        .catch(() => showActionToast('ไม่สามารถคัดลอกลิงก์ได้','warning'));
-      else showActionToast('อุปกรณ์นี้ไม่รองรับการแชร์ลิงก์','warning');
-    }
   });
   postpayHelpSheet?.addEventListener('keydown',event => { if(event.key==='Escape') closePostpayHelp(); });
   let paymentMethod = flowState.orderState.paymentMethod || 'qr';
@@ -12138,6 +12128,7 @@
     if(due<=0){
       flowState.orderState.paidAmount=0;
       flowState.orderState.paidMethod='covered';
+      flowState.orderState.paidAt=Date.now();
       flowState.orderState.paidDeliveryMethod=flowState.orderState.fulfillmentMode==='pickup' ? 'pickup' : flowState.orderState.deliveryMethod;
       flowState.consultationPaid=true;
       flowState.paymentResolution='covered';
@@ -12169,6 +12160,7 @@
       }
       flowState.orderState.paidAmount=currentMedicationDue();
       flowState.orderState.paidMethod=paymentMethod;
+      flowState.orderState.paidAt=Date.now();
       flowState.orderState.paidDeliveryMethod=flowState.orderState.fulfillmentMode==='pickup' ? 'pickup' : flowState.orderState.deliveryMethod;
       flowState.orderState.paymentExpiresAt=null;
       flowState.consultationPaid=true;
@@ -12562,6 +12554,34 @@
          this runs on every visit and would otherwise restore the English source. */
       const prepared=screen.querySelector('[data-track-step="prepared"] strong');
       if(prepared) prepared.textContent=activeIndex>1 ? 'จัดยาเรียบร้อย' : 'กำลังจัดยา';
+      /* Client, 23 Sep: the two ends of the journey carry a time — when the
+         money was taken, and when the parcel arrives. The paid stamp is the
+         moment of payment; a deep-linked demo has never been through checkout,
+         so the first visit fixes one shortly before now and keeps it rather
+         than moving the time on every render. The last step shows the arrival
+         window's end until the order is delivered, then the delivered stamp. */
+      const paidTime=screen.querySelector('[data-track-time="paid"]');
+      if(paidTime){
+        if(!flowState.orderState.paidAt){
+          flowState.orderState.paidAt=Date.now()-25*60000;
+          persistFlowState();
+        }
+        paidTime.textContent=clockStamp(new Date(flowState.orderState.paidAt));
+      }
+      const deliveredTime=screen.querySelector('[data-track-time="delivered"]');
+      if(deliveredTime){
+        /* Until it arrives this is the end of the arrival window, with a tilde
+           marking it as the estimate it is — a word there would have to be
+           translated and would wrap the 10px column onto two lines. Arrival stamps the order once and then reads back, so
+           the time the patient saw on the day is the time they see later. */
+        if(delivered && !flowState.orderState.deliveredAt){
+          flowState.orderState.deliveredAt=Date.now();
+          persistFlowState();
+        }
+        deliveredTime.textContent=delivered
+          ? clockStamp(new Date(flowState.orderState.deliveredAt))
+          : '~'+deliveryArrivalWindow().split(' - ').pop();
+      }
       const hint=screen.querySelector('[data-track-step="delivered"] .hint');
       /* A step that says it is finished should say when, in the same format
          as the paid step above it (client, 13 Sep). */
@@ -12765,6 +12785,9 @@
   }
   /* A window, not a single minute: a courier ETA that reads as exact is a
      promise the dispatch cannot keep. */
+  function clockStamp(date){
+    return String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0');
+  }
   function deliveryArrivalWindow(){
     const minutes=flowState.orderState.deliveryMethod==='postal' ? 24*60 : 95;
     const from=new Date(Date.now()+(minutes-40)*60000);
