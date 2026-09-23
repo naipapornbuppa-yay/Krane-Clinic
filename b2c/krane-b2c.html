@@ -12,19 +12,27 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-top-bars-blue-v44";
+    const release = "20260923-canonical-links-v45";
     const url = new URL(window.location.href);
+    let canonicalized = false;
+    /* Retire the old private-review parameter without breaking saved links.
+       All review links now converge on one explicit screen-tab URL. */
+    if (url.searchParams.get("only-me") === "1") {
+      url.searchParams.set("with_screen_tab", "1");
+      url.searchParams.delete("only-me");
+      canonicalized = true;
+    }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
     const landing = initialRoute === 'landing';
     document.documentElement.dataset.landingCanvas = String(landing);
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', landing ? '#5871B5' : '#F7F7F7');
-    if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
+    if (/^https?:$/.test(url.protocol) && (url.searchParams.get("v") !== release || canonicalized)) {
       url.searchParams.set("v", release);
       window.location.replace(url.href);
     }
   })();
 </script>
-<script src="review-tools.js?v=20260921-signup-yellow-v8"></script>
+<script src="review-tools.js?v=20260923-canonical-links-v45"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -46,7 +54,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-top-bars-blue-v44">
+<link rel="stylesheet" href="components.css?v=20260923-canonical-links-v45">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1108,7 +1116,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-top-bars-blue-v44" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-canonical-links-v45" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
