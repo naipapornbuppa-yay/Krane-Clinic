@@ -2503,9 +2503,9 @@
       </div>
       <div class="stack-2" data-checkout-sequence="delivery" data-fulfillment-section data-fulfillment-panel="pickup" hidden>
         <span class="section-label">จุดรับยา</span>
-        <button class="checkout-row checkout-pickup-row" type="button" data-go="address" aria-label="เลือกที่อยู่เพื่อหาสาขาที่ใกล้ที่สุด">
+        <button class="checkout-row checkout-pickup-row" type="button" data-open-branch aria-label="เลือกสาขาที่จะไปรับยา">
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.2-5H5.2L4 10Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2S21.6 11.2 21.6 10"/></svg></span>
-          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap">ร้านยาฟาสซิโน สาขาใกล้คุณ</span><span class="hint">ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap" data-pickup-branch>ร้านยาฟาสซิโน สาขาใกล้คุณ</span><span class="hint" data-pickup-branch-hint>ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก</span></span>
           <span class="checkout-row__tag">ฟรี</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
@@ -4232,6 +4232,38 @@
       <button class="option payment-method-option" type="button" aria-selected="false" data-method-option="bank">
         <span class="opt-icon"><i data-lucide="landmark" class="ui-icon" aria-hidden="true"></i></span>
         <span class="opt-body"><span class="opt-title">โมบายล์แบงกิ้ง</span><span class="opt-sub">เปิดแอปธนาคารเพื่อยืนยันการชำระ</span></span><span class="opt-check"></span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- Client, 23 Sep: choosing where to collect is not a delivery address, so
+     the pickup row used to send the patient to the address screen to answer a
+     question that screen does not ask. It opens the branch list instead, built
+     on the same sheet the payment method uses: picking IS the answer, one tap,
+     no second confirm. -->
+<div class="modal-layer" id="pickup-branch-modal" hidden aria-hidden="true">
+  <button class="modal-layer__scrim" type="button" data-branch-close aria-label="ปิดรายการสาขา"></button>
+  <section class="modal-dialog payment-method-dialog" role="dialog" aria-modal="true" aria-labelledby="pickup-branch-title" aria-describedby="pickup-branch-description">
+    <div class="modal-dialog__icon"><i data-lucide="store" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
+    <h2 id="pickup-branch-title">เลือกสาขาที่จะไปรับยา</h2>
+    <p id="pickup-branch-description">สาขาที่ใกล้คุณที่สุดก่อน ยืนยันสต็อกและเวลารับอีกครั้งหลังชำระเงิน</p>
+    <div class="payment-method-list" role="listbox" aria-label="สาขาร้านยา">
+      <button class="option payment-method-option" type="button" aria-selected="true" data-branch-option="aree" data-branch-name="ร้านยาฟาสซิโน อารีย์" data-branch-hint="เปิด 08:00-22:00 น. · 1.2 กม.">
+        <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน อารีย์</span><span class="opt-sub">เปิด 08:00-22:00 น. · 1.2 กม.</span></span><span class="opt-check"></span>
+      </button>
+      <button class="option payment-method-option" type="button" aria-selected="false" data-branch-option="phrom-phong" data-branch-name="ร้านยาฟาสซิโน พร้อมพงษ์" data-branch-hint="เปิด 09:00-21:00 น. · 2.4 กม.">
+        <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน พร้อมพงษ์</span><span class="opt-sub">เปิด 09:00-21:00 น. · 2.4 กม.</span></span><span class="opt-check"></span>
+      </button>
+      <button class="option payment-method-option" type="button" aria-selected="false" data-branch-option="asok" data-branch-name="ร้านยาฟาสซิโน อโศก" data-branch-hint="เปิด 08:30-22:00 น. · 3.1 กม.">
+        <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน อโศก</span><span class="opt-sub">เปิด 08:30-22:00 น. · 3.1 กม.</span></span><span class="opt-check"></span>
+      </button>
+      <button class="option payment-method-option" type="button" aria-selected="false" data-branch-option="ratchayothin" data-branch-name="ร้านยาฟาสซิโน รัชโยธิน" data-branch-hint="เปิด 09:00-20:00 น. · 5.6 กม.">
+        <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
+        <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน รัชโยธิน</span><span class="opt-sub">เปิด 09:00-20:00 น. · 5.6 กม.</span></span><span class="opt-check"></span>
       </button>
     </div>
   </section>
@@ -11969,6 +12001,55 @@
       option.setAttribute('aria-selected', String(option.dataset.methodOption === pendingPaymentMethod));
     });
   }
+  /* The branch list, on the same sheet the payment method uses. Picking IS the
+     answer (house rule 1): the tap writes the branch onto the pickup row and
+     closes the sheet, with no second confirm. The choice rides on the order so
+     the tracking screen and the receipt can name the branch the patient chose
+     rather than a fixed one. */
+  const pickupBranchModal = document.getElementById('pickup-branch-modal');
+  function syncPickupBranch(){
+    const chosen = flowState.orderState.pickupBranch;
+    const row = document.querySelector('[data-pickup-branch]');
+    const hint = document.querySelector('[data-pickup-branch-hint]');
+    if(row) row.textContent = chosen?.name || 'ร้านยาฟาสซิโน สาขาใกล้คุณ';
+    if(hint) hint.textContent = chosen?.hint || 'ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก';
+    pickupBranchModal?.querySelectorAll('[data-branch-option]').forEach(option => {
+      const selected = chosen ? option.dataset.branchOption === chosen.id : option.dataset.branchOption === 'aree';
+      option.setAttribute('aria-selected', String(selected));
+    });
+  }
+  function openPickupBranchModal(){
+    if(!pickupBranchModal) return;
+    syncPickupBranch();
+    pickupBranchModal.hidden = false;
+    pickupBranchModal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    pickupBranchModal.querySelector('[data-branch-option][aria-selected="true"]')?.focus();
+  }
+  function closePickupBranchModal(){
+    if(!pickupBranchModal) return;
+    pickupBranchModal.hidden = true;
+    pickupBranchModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    document.querySelector('[data-open-branch]')?.focus();
+  }
+  document.addEventListener('click', event => {
+    if(event.target.closest('[data-open-branch]')){ openPickupBranchModal(); return; }
+    if(event.target.closest('[data-branch-close]')){ closePickupBranchModal(); return; }
+    const option = event.target.closest('[data-branch-option]');
+    if(!option || !pickupBranchModal || pickupBranchModal.hidden) return;
+    flowState.orderState.pickupBranch = {
+      id: option.dataset.branchOption,
+      name: option.dataset.branchName,
+      hint: option.dataset.branchHint
+    };
+    persistFlowState();
+    syncPickupBranch();
+    closePickupBranchModal();
+    showActionToast('เลือก' + option.dataset.branchName + 'แล้ว','success');
+  });
+  pickupBranchModal?.addEventListener('keydown', event => { if(event.key==='Escape') closePickupBranchModal(); });
+
   function openPaymentMethodModal(){
     if(!paymentMethodModal) return;
     pendingPaymentMethod = paymentMethod;
