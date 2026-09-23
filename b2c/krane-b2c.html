@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-app-shell-width-v52";
+    const release = "20260923-consent-page-v53";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -54,7 +54,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-app-shell-width-v52">
-<link rel="stylesheet" href="components.css?v=20260923-app-shell-width-v52">
+<link rel="stylesheet" href="components.css?v=20260923-consent-page-v53">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -3657,8 +3657,10 @@
         <span class="consent-page__sentinel" data-consent-end aria-hidden="true"></span>
       </div>
     </div>
-    <button class="consent-scroll-cue" type="button" data-consent-scroll-cue data-consent-auto-scroll aria-label="เลื่อนไปด้านล่าง"><i data-lucide="arrow-down" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button></div>
+    <div class="screen__footer stack-2">
+      <button class="consent-scroll-cue" type="button" data-consent-scroll-cue data-consent-auto-scroll><span>อ่านต่อจนจบ</span><i data-lucide="arrow-down" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>
+      <button class="btn btn--primary" data-consent-continue disabled>ยอมรับและไปต่อ</button>
+    </div>
   </section>
 
   <!-- Consent · PDPA + Telemedicine -->
@@ -4961,21 +4963,31 @@
   const consentPageScroll=document.querySelector('[data-consent-page-scroll]');
   if(consentPageScroll){
     if(consentAutoScroll) consentAutoScroll.addEventListener('click',() => {
-      consentPageScroll.scrollTo({top:consentPageScroll.scrollHeight,behavior:'smooth'});
-      // Safari and some in-app webviews can finish a smooth scroll without firing
-      // a final scroll event at the exact bottom. Snap to the end after the visible
-      // motion, then run the same delayed auto-check used by manual scrolling.
-      window.setTimeout(() => {
-        consentPageScroll.scrollTop=consentPageScroll.scrollHeight;
-        // A tap on this explicit control is the patient's read-to-end action.
-        // Complete it directly instead of depending on a browser's final scroll
-        // event (which Safari and some embedded webviews can omit).
-        if(consentAutoCheckTimer){
-          window.clearTimeout(consentAutoCheckTimer);
-          consentAutoCheckTimer=0;
-        }
-        unlockConsentBundleAfterDelay(consentPageScroll,true);
-      },420);
+      // This explicit action must never leave the patient looking at disabled
+      // choices after the page has visibly reached the end. Snap first, then
+      // complete the same read state synchronously across Safari/webviews.
+      consentPageScroll.scrollTop=consentPageScroll.scrollHeight;
+      if(consentAutoCheckTimer){
+        window.clearTimeout(consentAutoCheckTimer);
+        consentAutoCheckTimer=0;
+      }
+      if(!consentIdentityVerified()){
+        syncConsentContinue();
+        return;
+      }
+      markConsentRead('pdpa');
+      markConsentRead('telemedicine');
+      consentChecked.pdpa = true;
+      consentChecked.telemedicine = true;
+      consentChecked.marketing = true;
+      flowState.consentChecked = Object.assign({},consentChecked);
+      persistFlowState();
+      renderConsentReadState('pdpa');
+      renderConsentReadState('telemedicine');
+      renderConsentReadState('marketing');
+      syncConsentContinue();
+      const cue=document.querySelector('[data-consent-scroll-cue]');
+      if(cue) cue.hidden=true;
     });
     consentPageScroll.addEventListener('scroll',() => checkConsentScrollEnd(consentPageScroll),{passive:true});
     // Re-check when the page gains a real height, i.e. when this screen is shown.
@@ -8103,10 +8115,9 @@
       return;
     }
     if(target==='consent-terms'){
+      Object.assign(flowState,{accountCreated:true,otpVerified:true,passwordSet:true});
       if(flowState.entryChannel==='partner'){
         flowState.partnerPhoneVerified=true;
-      } else {
-        flowState.otpVerified=true;
       }
       persistFlowState();
       isAuthenticated=true;
