@@ -4813,9 +4813,8 @@
   const consentAutoScroll = document.querySelector('[data-consent-auto-scroll]');
   let consentAutoCheckTimer = 0;
   function consentIdentityVerified(){
-    return flowState.entryChannel === 'partner'
-      ? Boolean(flowState.partnerPhoneVerified)
-      : Boolean(flowState.otpVerified);
+    if(!flowState.accountCreated || !flowState.otpVerified || !flowState.passwordSet) return false;
+    return flowState.entryChannel !== 'partner' || Boolean(flowState.partnerPhoneVerified);
   }
 
   /* Client, 20 Sep: consent is no longer collected on the sign-up page. The
@@ -9447,13 +9446,10 @@
        restored browser tab must never expose the end state with all choices
        ticked while the CTA is still disabled because OTP has not happened. */
     if(target==='consent-terms'){
-      if(flowState.entryChannel==='partner'){
-        if(!flowState.partnerPhoneVerified) return 'partner-patient-info';
-      } else {
-        if(!flowState.accountCreated) return 'signup';
-        if(!flowState.otpVerified) return 'otp';
-        if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
-      }
+      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.otpVerified) return 'otp';
+      if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
+      if(flowState.entryChannel==='partner' && !flowState.partnerPhoneVerified) return 'partner-patient-info';
     }
     if(flowState.entryChannel==='partner' && INTAKE_DRAFT_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
@@ -9560,6 +9556,7 @@
     id=normalizeScreenTarget(id);
     const requested=id;
     id=normalizeScreenTarget(requiredRouteFor(id));
+    if(requested==='consent-terms' && ['signup','login','otp','set-password'].includes(id)) postAuthNext='consent-terms';
     if(id!==requested){
       history=seededHistory(id);
       push=false;
