@@ -393,19 +393,24 @@
        authenticated screen. The account affordance keeps the patient's state
        instead of presenting a misleading second log-in action. */
     #profile > .profile-shell-nav {
-      --profile-nav-ink: #111827;
+      --profile-nav-ink: #171c28;
       --profile-nav-blue: #4668b1;
       --profile-nav-line: #dfe3e8;
+      /* Client, 23 Sep: the same capsule the landing header is, not a second
+         interpretation of it — the landing's height, corner, padding, gap,
+         hairline and shadow, so the bar keeps its shape when a patient crosses
+         from the marketing site into the app. */
       width: calc(100% - 48px);
-      min-height: 78px;
-      margin: 20px 24px 0;
-      padding: 0 16px 0 28px;
-      gap: clamp(18px, 2vw, 36px);
-      border: 1px solid rgba(17, 24, 39, .045);
-      border-radius: 999px;
+      height: 64px;
+      min-height: 64px;
+      margin: 28px 24px 0;
+      padding: 12px 12px 12px 22px;
+      gap: 16px;
+      border: 1px solid #fff;
+      border-radius: 40px;
       background: #fff;
       color: var(--profile-nav-ink);
-      box-shadow: 0 16px 35px rgba(17, 24, 39, .10), 0 3px 10px rgba(17, 24, 39, .04);
+      box-shadow: 0 12px 34px rgba(18, 30, 51, .09);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
       z-index: 30;
@@ -414,7 +419,10 @@
     #profile .profile-shell-nav__brand {
       display: inline-flex;
       align-items: center;
-      flex: 0 0 auto;
+      /* The landing gives the brand and the actions an equal share of the bar
+         and lets the links size to their own text, so the menu sits on the
+         centre line whatever the wordmark and the buttons weigh. */
+      flex: 1 0 0;
       min-width: 116px;
       color: inherit;
       text-decoration: none;
@@ -444,9 +452,9 @@
       align-items: stretch;
       justify-content: center;
       align-self: stretch;
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       min-width: 0;
-      gap: clamp(16px, 2.15vw, 38px);
+      gap: 18px;
     }
     #profile .profile-shell-nav__links a {
       position: relative;
@@ -455,8 +463,9 @@
       min-width: 0;
       padding: 3px 0 0;
       color: var(--profile-nav-ink);
-      font-size: clamp(12px, 1.05vw, 15px);
-      font-weight: 600;
+      /* 13px here and 14px on the widest tier, the way the landing steps them. */
+      font-size: 13px;
+      font-weight: 500;
       line-height: 1.2;
       text-align: center;
       text-decoration: none;
@@ -494,15 +503,15 @@
       gap: 4px;
       padding: 3px 0 0;
       color: var(--profile-nav-ink);
-      font-size: clamp(12px, 1.05vw, 15px);
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
       line-height: 1.2;
       white-space: nowrap;
       list-style: none;
       cursor: pointer;
     }
     #profile .profile-shell-nav__menu > summary::-webkit-details-marker { display: none; }
-    #profile .profile-shell-nav__menu > summary svg { width: 16px; height: 16px; transition: transform .18s ease; }
+    #profile .profile-shell-nav__menu > summary svg { width: 13px; height: 13px; transition: transform .18s ease; }
     #profile .profile-shell-nav__menu[open] > summary,
     #profile .profile-shell-nav__menu > summary:hover { color: var(--profile-nav-blue); }
     #profile .profile-shell-nav__menu[open] > summary svg { transform: rotate(180deg); }
@@ -552,14 +561,14 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      flex: 0 0 auto;
-      gap: 10px;
+      flex: 1 0 0;
+      gap: 14px;
     }
     #profile .profile-shell-nav__language {
       position: relative;
       display: inline-flex;
       align-items: center;
-      min-height: 44px;
+      min-height: 40px;
       padding-right: 0;
       color: var(--profile-nav-ink);
     }
@@ -581,13 +590,13 @@
       outline: 0;
     }
     #profile .profile-shell-nav__language > .custom-select {
-      width: 58px !important;
-      max-width: 58px;
-      --custom-select-height: 44px !important;
+      width: 70px !important;
+      max-width: 70px;
+      --custom-select-height: 40px !important;
     }
     #profile .profile-shell-nav__language .custom-select__trigger {
-      width: 58px;
-      min-height: 44px;
+      width: 70px;
+      min-height: 40px;
       gap: 8px;
       padding: 0 8px;
       border: 0;
@@ -614,23 +623,25 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 118px;
-      min-height: 52px;
-      gap: 9px;
-      padding: 0 19px;
+      /* The landing's dark pill, to the pixel: its logged-out header shows
+         "เข้าสู่ระบบ" in exactly this shape, so the logged-in "โปรไฟล์" is the
+         same button carrying a different word. */
+      min-height: 40px;
+      gap: 8px;
+      padding: 0 18px;
       border: 0;
       border-radius: 999px;
-      background: #101827;
+      background: #1e2532;
       color: #fff;
       font: inherit;
-      font-size: 14px;
-      font-weight: 650;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
     }
     #profile .profile-shell-nav__account-avatar {
       display: grid;
-      width: 25px;
-      height: 25px;
+      width: 22px;
+      height: 22px;
       place-items: center;
       border: 1px solid rgba(255,255,255,.38);
       border-radius: 50%;
@@ -720,56 +731,59 @@
       overflow-wrap: anywhere;
     }
 
-    @container screen (max-width: 1120px) {
+    /* The landing widens its capsule and opens the link spacing above 1320px,
+       and below 1101 it puts the links away for the hamburger. The app changes
+       at the same two widths, so a patient crossing between the marketing site
+       and the app never sees one header in a shape the other has left behind. */
+    @container screen (min-width: 1321px) {
       #profile > .profile-shell-nav {
-        width: calc(100% - 32px);
-        min-height: 68px;
-        margin: 16px 16px 0;
-        padding: 0 12px 0 22px;
-        gap: 14px;
+        width: calc(100% - 80px);
+        margin: 40px 40px 0;
+        padding: 12px;
       }
-      #profile .profile-shell-nav__links { gap: 17px; }
-      #profile .profile-shell-nav__links a { font-size: 12px; }
-      #profile .profile-shell-nav__account { min-width: 102px; min-height: 46px; padding-inline: 14px; }
+      #profile .profile-shell-nav__links { gap: 32px; }
+      #profile .profile-shell-nav__links a { font-size: 14px; }
     }
 
     /* The home header uses the landing's Krane | clinic lockup, in black, at
        the height the krane art had at each container size (client, 17 Sep). */
     #profile .profile-shell-nav__brand img.brand-lockup {
       width: auto;
-      height: 30px;
+      height: 25px;
       max-height: none;
       filter: brightness(0);
     }
-    @container screen (max-width: 930px) {
-      #profile .profile-shell-nav__brand img.brand-lockup { height: 27px; }
+    @container screen (max-width: 1100px) {
+      #profile .profile-shell-nav__brand img.brand-lockup { height: 26px; }
     }
     @container screen (max-width: 480px) {
-      #profile .profile-shell-nav__brand img.brand-lockup { height: 25px; }
+      #profile .profile-shell-nav__brand img.brand-lockup { height: 23px; }
     }
-    @container screen (max-width: 930px) {
+    @container screen (max-width: 1100px) {
       #profile > .profile-shell-nav {
-        width: calc(100% - 24px);
-        min-height: 64px;
-        margin: 12px 12px 0;
-        padding: 0 10px 0 20px;
-        gap: 10px;
+        width: calc(100% - 32px);
+        height: 60px;
+        min-height: 60px;
+        margin: 20px 16px 0;
+        padding: 0 14px 0 20px;
+        gap: 16px;
+        border-radius: 34px;
       }
       #profile .profile-shell-nav__brand { min-width: 0; margin-right: auto; }
       #profile .profile-shell-nav__brand img { width: 101px; max-height: 28px; }
       #profile .profile-shell-nav__brand .brand__clinic { font-size: 22px; }
       #profile .profile-shell-nav__links { display: none; }
       #profile .profile-shell-nav__actions { gap: 6px; }
-      #profile .profile-shell-nav__language { min-height: 42px; padding-right: 0; }
-      #profile .profile-shell-nav__language select { min-width: 32px; height: 42px; font-size: 14px; }
+      #profile .profile-shell-nav__language { min-height: 40px; padding-right: 0; }
+      #profile .profile-shell-nav__language select { min-width: 32px; height: 40px; font-size: 14px; }
       #profile .profile-shell-nav__language > .custom-select,
-      #profile .profile-shell-nav__language .custom-select__trigger { width: 54px !important; max-width: 54px; }
+      #profile .profile-shell-nav__language .custom-select__trigger { width: 70px !important; max-width: 70px; }
       #profile .profile-shell-nav__language .custom-select__trigger { padding-inline: 7px; }
       #profile .profile-shell-nav__account {
-        min-width: 42px;
-        width: 42px;
-        min-height: 42px;
-        height: 42px;
+        min-width: 44px;
+        width: 44px;
+        min-height: 44px;
+        height: 44px;
         padding: 0;
         border: 1px solid var(--profile-nav-line);
         background: #f1f4f8;
@@ -789,8 +803,8 @@
       }
       #profile .profile-shell-nav__mobile > summary {
         display: grid;
-        width: 42px;
-        height: 42px;
+        width: 38px;
+        height: 38px;
         place-items: center;
         border: 0;
         border-radius: 50%;
@@ -842,23 +856,26 @@
 
     @container screen (max-width: 480px) {
       #profile > .profile-shell-nav {
-        width: calc(100% - 20px);
-        min-height: 62px;
-        margin: 10px 10px 0;
-        padding: 0 8px 0 18px;
-        border-radius: 31px;
-        box-shadow: 0 10px 26px rgba(17, 24, 39, .10), 0 2px 8px rgba(17, 24, 39, .04);
+        width: calc(100% - 32px);
+        height: 54px;
+        min-height: 54px;
+        margin: 8px 16px 0;
+        padding: 0 7px 0 14px;
+        gap: 4px;
+        border-radius: 27px;
       }
       #profile .profile-shell-nav__brand img { width: 94px; max-height: 25px; }
       #profile .profile-shell-nav__brand .brand__clinic { font-size: 20px; }
-      #profile .profile-shell-nav__actions { gap: 3px; }
-      #profile .profile-shell-nav__language { padding-right: 0; }
+      #profile .profile-shell-nav__actions { gap: 2px; }
+      #profile .profile-shell-nav__language { min-height: 36px; padding-right: 0; }
       #profile .profile-shell-nav__language select { min-width: 29px; font-size: 13px; }
+      #profile .profile-shell-nav__language > .custom-select { --custom-select-height: 36px !important; }
+      #profile .profile-shell-nav__language .custom-select__trigger { min-height: 36px; }
       #profile .profile-shell-nav__language > .custom-select,
-      #profile .profile-shell-nav__language .custom-select__trigger { width: 50px !important; max-width: 50px; }
+      #profile .profile-shell-nav__language .custom-select__trigger { width: 63px !important; max-width: 63px; }
       #profile .profile-shell-nav__language .custom-select__trigger { padding-inline: 6px; font-size: 13px; }
-      #profile .profile-shell-nav__account,
-      #profile .profile-shell-nav__mobile > summary { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
+      #profile .profile-shell-nav__account { width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
+      #profile .profile-shell-nav__mobile > summary { width: 38px; height: 38px; }
       #profile .profile-shell-nav__drawer { right: -2px; }
       #intake-general .followup-prefill { padding: 16px; border-radius: 20px; }
       #intake-general .followup-prefill__head { display: grid; }

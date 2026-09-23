@@ -51,10 +51,16 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 /* The landing runs inside the app shell iframe. Chrome on iOS may sample this
-   inner document—not the parent—for its top browser/status surfaces. Mirror
-   the shell's split canvas here: announcement blue at the top, light at the
-   bottom so the lower browser toolbar is unchanged. */
-html{background:#5871B5}
+   inner document—not the parent—for its top browser/status surfaces, so the
+   blue has to reach the very top of this document. The top is covered three
+   times over: the theme-color meta, the fixed inset band on body::before, and
+   the top stop of the body's own fixed gradient below.
+
+   Client, 23 Sep: the root canvas must NOT be that blue. Safari tints the
+   bottom toolbar with the document's canvas colour rather than the pixels
+   above it, so a blue root painted the toolbar blue even though the page ends
+   in light grey. The canvas is the page colour; only the top is blue. */
+html{background:var(--landing-canvas)}
 body.landing-figma-draft{
   /* Desktop has no browser-notch inset. Keep the campaign surface exactly as
      tall as the 32px announcement instead of painting an extra blue block
@@ -5196,7 +5202,10 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .site-header{height:80px;min-height:80px;padding-inline:20px}
   .landing-figma-draft main{gap:12px;padding-top:12px}
   .landing-figma-draft .page-section{margin-inline:var(--mobile-gutter)}
-  .landing-figma-draft .hero-draft__intro{padding:22px 4px 28px}
+  /* Client, 23 Sep: the proof strip sat a long way under the nav capsule on a
+     phone, pushing the headline and the care cards down with it. The hero's own
+     top padding is where that space came from. */
+  .landing-figma-draft .hero-draft__intro{padding:8px 4px 28px}
   .landing-figma-draft .hero h1{font-size:42px;line-height:1.08;letter-spacing:-.035em}
   .landing-figma-draft .hero__lead{font-size:17px;line-height:1.6}
   /* Client, 1 Sep: three chips are wider than the screen, so the third was cut
@@ -9181,8 +9190,11 @@ html[lang="en"] .landing-figma-draft #ed-title{
     margin-top:8px !important;
     font-size:17px !important;
   }
+  /* Client, 23 Sep: and the strip's own bottom margin came off too, so the
+     headline and everything below it move up with it. The 24px the hero grid
+     already puts between its rows is the whole gap now. */
   .landing-figma-draft .hero-draft__marquee{
-    margin-bottom:14px !important;
+    margin-bottom:0 !important;
   }
 }
 
