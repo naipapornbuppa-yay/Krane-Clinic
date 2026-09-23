@@ -56,7 +56,10 @@ body{
    bottom so the lower browser toolbar is unchanged. */
 html{background:#5871B5}
 body.landing-figma-draft{
-  --landing-notch-stop:max(env(safe-area-inset-top, 0px), 64px);
+  /* Desktop has no browser-notch inset. Keep the campaign surface exactly as
+     tall as the 32px announcement instead of painting an extra blue block
+     underneath it. Mobile overrides this stop to include its safe area. */
+  --landing-notch-stop:32px;
   background-color:#5871B5;
   background-image:linear-gradient(to bottom,
     #5871B5 0,
@@ -6655,6 +6658,9 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 }
 
 @media(max-width:760px){
+  body.landing-figma-draft{
+    --landing-notch-stop:calc(34px + env(safe-area-inset-top,0px));
+  }
   .landing-figma-draft .announcement{
     height:auto;
     min-height:calc(34px + env(safe-area-inset-top,0px));
