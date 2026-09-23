@@ -1,15 +1,23 @@
 <!doctype html>
-<html lang="th">
+<html lang="th" data-landing-canvas="true">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Keep this before the release redirect. Mobile Safari chooses the top
+     status/notch colour while parsing the head; if navigation happens first it
+     can retain its white fallback for the whole landing session. -->
+<meta name="theme-color" content="#5871B5">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-patient-info-flat-v40";
+    const release = "20260923-top-notch-blue-v41";
     const url = new URL(window.location.href);
+    const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
+    const landing = initialRoute === 'landing';
+    document.documentElement.dataset.landingCanvas = String(landing);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', landing ? '#5871B5' : '#F7F7F7');
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
       window.location.replace(url.href);
@@ -19,7 +27,6 @@
 <script src="review-tools.js?v=20260921-signup-yellow-v8"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
-<meta name="theme-color" content="#5871B5">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Krane Clinic">
 <meta property="og:title" content="Krane Clinic · Online Care">
@@ -39,7 +46,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-all-floating-inputs-v39">
+<link rel="stylesheet" href="components.css?v=20260923-top-notch-blue-v41">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1088,7 +1095,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-all-floating-inputs-v39" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-top-notch-blue-v41" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
