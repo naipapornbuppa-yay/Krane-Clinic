@@ -4418,23 +4418,24 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   white-space:nowrap;pointer-events:none;
   transition:top var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),font-size var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
 .float-field__slot:focus-within>label,
-.float-field__slot>.input:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.float-field.is-filled .float-field__slot>label,
+.float-field__slot>.input[placeholder]:not(:placeholder-shown)+label,
+.float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .float-field__slot:focus-within>label{color:var(--color-accent)}
-.float-field:not(.float-field--static) .input::placeholder,
-.float-field:not(.float-field--static) .textarea::placeholder{color:transparent}
-.float-field--static .input::placeholder,.float-field--static .textarea::placeholder{color:var(--color-ink-3)}
+.float-field .input::placeholder,.float-field .textarea::placeholder{color:transparent}
 /* The general-health page still has older high-specificity field rules near
    the top of this file. Reassert the shared floating states here so its empty
    metrics behave exactly like the same controls in the assessment flow. */
-#intake-general .float-field:not(.float-field--static) .float-field__slot>label{
+#intake-general .float-field .float-field__slot>label{
   top:50%;transform:translateY(-50%);font-size:var(--fs-base);font-weight:var(--fw-regular);
   line-height:1.2;color:var(--color-ink-3)
 }
-#intake-general .float-field:not(.float-field--static) .float-field__slot:focus-within>label,
-#intake-general .float-field:not(.float-field--static) .float-field__slot>.input:not(:placeholder-shown)+label{
+#intake-general .float-field .float-field__slot:focus-within>label,
+#intake-general .float-field.is-filled .float-field__slot>label,
+#intake-general .float-field .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label{
   top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)
 }
-#intake-general .float-field:not(.float-field--static) .float-field__slot:focus-within>label{color:var(--color-accent)}
+#intake-general .float-field .float-field__slot:focus-within>label{color:var(--color-accent)}
 /* Error: red box, red title, message below (the mismatch line on set password). */
 .float-field.is-invalid>.phone-field,.float-field.is-invalid>.password-field,
 .float-field:has(.password-mismatch:not([hidden]))>.password-field{border-color:var(--color-danger);box-shadow:none}
@@ -4469,8 +4470,8 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    height or it overflows the shell the rule above just shrank. */
 :is(.auth-screen,.form-flow) .float-field .date-control{height:100%}
 :is(.auth-screen,.form-flow) .float-field__slot:focus-within>label,
-:is(.auth-screen,.form-flow) .float-field--static .float-field__slot>label,
-:is(.auth-screen,.form-flow) .float-field__slot>.input:not(:placeholder-shown)+label{top:7px}
+:is(.auth-screen,.form-flow) .float-field.is-filled .float-field__slot>label,
+:is(.auth-screen,.form-flow) .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label{top:7px}
 
 /* ---------- Payment reference layout (client, 20 Sep) ----------
    The checkout follows the supplied delivery-app composition exactly: basket,
@@ -4808,11 +4809,10 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 
 /* ---------- Floating labels, every field (client, 20 Sep) ---------- */
-/* The sign-up page's control is now the app's only text field: one outlined
-   box, the field name inside it where a placeholder would be, rising to a
-   small title as soon as the field is focused or holds a value.
-   "--static" is for a control that always shows something of its own, a
-   select, a date, or a format hint, where the name stays small. */
+/* Every form field uses one outlined box, with its name where a placeholder
+   would be. The name rises to a
+   small title as soon as the field is focused or holds a value. The same
+   contract now applies to text, textarea, select and date controls. */
 /* The shell owns the height; the control inside fills it. Letting the control
    set 56px and then adding the shell's 1.5px borders is what made these 58
    while the account flow's were 56 (client, 22 Sep: one size for all). */
@@ -4839,10 +4839,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}
 .float-field .textarea{height:auto;min-height:104px;padding-top:26px;padding-bottom:12px}
 .float-field .select{cursor:pointer}
-/* A select and a date show their own content from the start, so their name
-   never drops into the middle of the box. */
-.float-field--static .float-field__slot>label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
-.float-field--static .float-field__slot:focus-within>label{color:var(--color-accent)}
+/* Selects and dates now follow the same placeholder-title contract as text
+   fields. Their browser-rendered empty value stays hidden behind the centred
+   title, then appears when the title rises on focus or after a value exists. */
+.float-field:not(.is-filled):not(:focus-within) .select,
+.float-field:not(.is-filled):not(:focus-within) .custom-select__value,
+.float-field:not(.is-filled):not(:focus-within) .date-control__value{color:transparent;opacity:0}
+.float-field .select,.float-field .custom-select__value,.float-field .date-control__value{
+  transition:color var(--dur-micro) var(--ease-out),opacity var(--dur-micro) var(--ease-out)
+}
 
 /* Address fields use the same floating-label behavior as login: the label
    fills an empty field, then becomes the compact title on focus or input. */
