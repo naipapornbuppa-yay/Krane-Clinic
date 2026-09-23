@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-medicine-progress-icon-v28";
+    const release = "20260923-tracking-default-thumbs-v29";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-medicine-progress-icon-v28">
+<link rel="stylesheet" href="components.css?v=20260923-tracking-default-thumbs-v29">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -10054,6 +10054,10 @@
       }
     });
   }
+  // Consume a fresh launch once. The query stays in the URL while the patient
+  // moves through later hashes, so reading it on every hashchange would reset
+  // a real order each time they revisited tracking.
+  let freshDeepLinkConsumed=false;
   // deep link: open a screen directly via URL hash (e.g. prototype.html#concern)
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
@@ -10061,18 +10065,27 @@
     const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     const id = legacyRoutes[rawId] || rawId;
     const hashParams = new URLSearchParams(hashQuery);
+    const freshRequested=!freshDeepLinkConsumed && (hashParams.get('fresh')==='1' || flowConfig.get('fresh')==='1');
+    if(freshRequested) freshDeepLinkConsumed=true;
     if(id && document.getElementById(id)){
       /* A public "start care" link is a new-user testing journey. Reset the
          prior participant's session-scoped onboarding flags before routing so
          an OTP completed earlier in the same tab cannot silently skip account
          creation and expose doctor matching. Internal app navigation omits
          fresh=1, so a genuinely signed-in patient's active journey is kept. */
-      if(id==='intake1' && hashParams.get('fresh')==='1'){
+      if(id==='intake1' && freshRequested){
         resetRequiredFlow();
         isAuthenticated=false;
         journeyActive=false;
         postAuthNext='intake1';
         history=['landing'];
+      }
+      /* A fresh tracking link represents the order immediately after payment,
+         not the final state left behind by a previous QA run in this tab. */
+      if(id==='tracking' && freshRequested){
+        flowState.orderDelivered=false;
+        window.KraneGoldenDemo?.advanceFulfilment('Preparing');
+        persistFlowState();
       }
       // Hash deep links can arrive from a standalone condition-detail page in
       // the same browser that previously used a Partner flow. Resolve the entry
@@ -11963,6 +11976,8 @@
       flowState.consultationPaid=true;
       flowState.paymentResolution='covered';
       flowState.documentsUnlocked=true;
+      flowState.orderDelivered=false;
+      window.KraneGoldenDemo?.advanceFulfilment('Preparing');
       persistFlowState();
       syncPaymentOutcome();
       show(hasFulfillableItems() ? 'payment-success' : 'prescription');
@@ -11993,6 +12008,8 @@
       flowState.consultationPaid=true;
       flowState.paymentResolution='final-paid';
       flowState.documentsUnlocked=true;
+      flowState.orderDelivered=false;
+      window.KraneGoldenDemo?.advanceFulfilment('Preparing');
       persistFlowState();
       syncPaymentOutcome();
       show('payment-processing');
@@ -12255,7 +12272,7 @@
     const courier=charge.method==='pickup' ? 'รับที่ร้านขายยา' : (charge.method==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove');
     const instruction=String(flowState.orderState.address?.note || '').trim() || 'โทรก่อนถึงและวางไว้ที่ล็อบบี้';
     const medicineCount=Object.values(flowState.orderState.quantities || {}).filter(value => Number(value)>0).length;
-    const addonCount=Object.values(flowState.orderState.addOns || {}).filter(Boolean).length;
+    const addonCount=Object.values(flowState.orderState.addonQuantities || {}).filter(value => Number(value)>0).length;
     const itemCount=medicineCount+addonCount;
     document.querySelectorAll('[data-postpay-method]').forEach(el => { el.textContent=method; });
     document.querySelectorAll('[data-postpay-total]').forEach(el => { el.textContent=baht(charge.total); });
@@ -12268,15 +12285,40 @@
     document.querySelectorAll('[data-postpay-courier]').forEach(el => { el.textContent=courier; });
     document.querySelectorAll('[data-postpay-instruction]').forEach(el => { el.textContent=instruction; });
     document.querySelectorAll('[data-postpay-item-count]').forEach(el => { el.textContent=`${itemCount} รายการ`; });
+    /* The count and preview come from the same basket. The old markup always
+       showed two medicine photos even when the order said three items. Clone
+       the checkout photos for every selected line item, including add-ons. */
+    const thumbnailSources=[];
+    Object.entries(flowState.orderState.quantities || {}).forEach(([key,value]) => {
+      if(Number(value)<=0) return;
+      const image=document.querySelector(`#payment [data-order-item="${key}"] img`);
+      if(image) thumbnailSources.push(image.getAttribute('src'));
+    });
+    Object.entries(flowState.orderState.addonQuantities || {}).forEach(([key,value]) => {
+      if(Number(value)<=0) return;
+      const image=document.querySelector(`#payment [data-order-addon="${key}"] img`);
+      if(image) thumbnailSources.push(image.getAttribute('src'));
+    });
+    document.querySelectorAll('.postpay-order-snapshot__thumbs').forEach(container => {
+      container.replaceChildren(...thumbnailSources.map(source => {
+        const image=document.createElement('img');
+        image.src=source;
+        image.alt='';
+        image.loading='lazy';
+        image.decoding='async';
+        return image;
+      }));
+      container.hidden=thumbnailSources.length===0;
+    });
   }
   const ORDER_STEP_ORDER=['paid','prepared','dispatch','out','delivered'];
   function orderFulfilmentStatus(){
     if(flowState.orderDelivered) return 'Delivered';
-    // A showcase or QA link opens the order mid-delivery and holds it there,
-    // rather than inheriting whatever an earlier demo left in storage.
-    if(window.kraneDemoStage && !window.kraneDemoStatus) return 'Dispatched';
+    // A normal showcase opens where a newly paid order really is: the pharmacy
+    // is preparing it. A later stage requires an explicit demoStatus or CMS state.
+    if(window.kraneDemoStage && !window.kraneDemoStatus) return 'Preparing';
     const status=window.KraneGoldenDemo?.readState().fulfilmentStatus;
-    return ORDER_STAGES[status] ? status : 'Dispatched';
+    return ORDER_STAGES[status] ? status : 'Preparing';
   }
   /* Client, 15 Sep: the order sat on "Preparing" and never moved, so the rest
      of its life could not be reached — not the rider, not the confirm button on
