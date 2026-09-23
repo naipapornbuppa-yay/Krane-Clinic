@@ -4822,21 +4822,29 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 #address .float-field__slot:focus-within>label{color:var(--color-accent)}
 
-/* The rider note is the one multi-line field here. Its title sits up top from
-   the start rather than floating in the middle of an empty box, it opens one
-   line tall, and the corner grip is the only thing that makes it taller
-   (client, 22 Sep). */
+/* The rider note is the one multi-line field here. Keep its persistent label
+   at the bottom-right requested by the client, but inset it from the native
+   resize grip and reserve the lower line so entered notes never overlap it. */
 .float-field--note>.float-field__box{min-height:var(--field-h);height:auto}
-.float-field--note .textarea{min-height:var(--field-h);height:var(--field-h);padding-top:20px;padding-bottom:4px;resize:vertical}
+.float-field--note .textarea{min-height:var(--field-h);height:var(--field-h);padding-top:8px;padding-bottom:28px;resize:vertical}
 #address .float-field--note .float-field__slot>label,
 .float-field--note .float-field__slot>label{
-  top:9px;
+  left:auto;
+  right:20px;
+  top:auto;
+  bottom:8px;
   transform:none;
   font-size:var(--fs-xs);
   font-weight:var(--fw-medium);
   color:var(--color-ink-2);
+  text-align:right;
 }
-#address .float-field--note .float-field__slot:focus-within>label{color:var(--color-accent)}
+#address .float-field--note .float-field__slot:focus-within>label,
+#address .float-field--note .float-field__slot>.textarea:not(:placeholder-shown)+label{
+  top:auto;
+  bottom:8px;
+  color:var(--color-accent);
+}
 
 /* The global footer rule stretches actions. The map shortcut is intentionally
    a centred, content-width pill above the full-width primary action. */
