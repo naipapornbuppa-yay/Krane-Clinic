@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-tracking-header-no-logo-v31";
+    const release = "20260923-postpay-render-refactor-v32";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-tracking-header-no-logo-v31">
+<link rel="stylesheet" href="components.css?v=20260923-postpay-render-refactor-v32">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -12267,6 +12267,56 @@
       : Math.max(0,Math.min(CONSULTATION_FEE_BAHT,total+promo-goods));
     return {method,subtotal,addon,delivery,credit,promo,total,consultationCharged};
   }
+  const POSTPAY_THUMBNAIL_LIMIT=4;
+  function setPostpayText(selector,value){
+    document.querySelectorAll(selector).forEach(node => { node.textContent=value; });
+  }
+  function setPostpayHidden(selector,hidden){
+    document.querySelectorAll(selector).forEach(node => { node.hidden=hidden; });
+  }
+  function selectedOrderSnapshotItems(){
+    const items=[];
+    const collect=(quantities,itemAttribute) => {
+      Object.entries(quantities || {}).forEach(([key,value]) => {
+        const quantity=Number(value);
+        if(quantity<=0) return;
+        const image=document.querySelector(`#payment [${itemAttribute}="${key}"] img`);
+        items.push({key,quantity,imageSource:image?.getAttribute('src') || ''});
+      });
+    };
+    collect(flowState.orderState.quantities,'data-order-item');
+    collect(flowState.orderState.addonQuantities,'data-order-addon');
+    return items;
+  }
+  function createPostpayThumbnail(source){
+    const image=document.createElement('img');
+    image.src=source;
+    image.alt='';
+    image.loading='lazy';
+    image.decoding='async';
+    return image;
+  }
+  function createPostpayThumbnailOverflow(remaining){
+    const more=document.createElement('button');
+    more.type='button';
+    more.className='postpay-order-snapshot__more';
+    more.dataset.go='order-summary';
+    more.textContent=`+${remaining}`;
+    more.setAttribute('aria-label',document.documentElement.lang==='th'
+      ? `ดูรายการที่เหลืออีก ${remaining} รายการและใบเสร็จ`
+      : `View ${remaining} more items and the receipt`);
+    return more;
+  }
+  function renderPostpaySnapshotThumbnails(items){
+    const sources=items.map(item => item.imageSource).filter(Boolean);
+    const previewSources=sources.slice(0,POSTPAY_THUMBNAIL_LIMIT);
+    const remaining=sources.length-previewSources.length;
+    document.querySelectorAll('.postpay-order-snapshot__thumbs').forEach(container => {
+      const previewImages=previewSources.map(createPostpayThumbnail);
+      container.replaceChildren(...previewImages,...(remaining ? [createPostpayThumbnailOverflow(remaining)] : []));
+      container.hidden=sources.length===0;
+    });
+  }
   function syncPostPaymentPanels(){
     const charge=orderChargeSummary();
     const methodKey=flowState.orderState.paidMethod || flowState.orderState.paymentMethod || 'qr';
@@ -12275,57 +12325,22 @@
     const address=flowState.orderState.addressConfirmed ? deliveryAddressSummary() : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
     const courier=charge.method==='pickup' ? 'รับที่ร้านขายยา' : (charge.method==='postal' ? 'ไปรษณีย์ไทย' : 'Lalamove');
     const instruction=String(flowState.orderState.address?.note || '').trim() || 'โทรก่อนถึงและวางไว้ที่ล็อบบี้';
-    const medicineCount=Object.values(flowState.orderState.quantities || {}).filter(value => Number(value)>0).length;
-    const addonCount=Object.values(flowState.orderState.addonQuantities || {}).filter(value => Number(value)>0).length;
-    const itemCount=medicineCount+addonCount;
-    document.querySelectorAll('[data-postpay-method]').forEach(el => { el.textContent=method; });
-    document.querySelectorAll('[data-postpay-total]').forEach(el => { el.textContent=baht(charge.total); });
-    document.querySelectorAll('[data-postpay-subtotal]').forEach(el => { el.textContent=baht(charge.subtotal+charge.addon+charge.consultationCharged); });
-    document.querySelectorAll('[data-postpay-delivery]').forEach(el => { el.textContent=charge.delivery ? baht(charge.delivery) : 'ฟรี'; });
-    document.querySelectorAll('[data-postpay-discount]').forEach(el => { el.textContent='− '+baht(discount); });
-    document.querySelectorAll('[data-postpay-discount-row]').forEach(el => { el.hidden=discount<=0; });
-    document.querySelectorAll('[data-postpay-arrival]').forEach(el => { el.textContent=deliveryArrivalWindow(); });
-    document.querySelectorAll('[data-postpay-address]').forEach(el => { el.textContent=address; });
-    document.querySelectorAll('[data-postpay-courier]').forEach(el => { el.textContent=courier; });
-    document.querySelectorAll('[data-postpay-instruction]').forEach(el => { el.textContent=instruction; });
-    document.querySelectorAll('[data-postpay-item-count]').forEach(el => { el.textContent=`${itemCount} รายการ`; });
+    const snapshotItems=selectedOrderSnapshotItems();
+    setPostpayText('[data-postpay-method]',method);
+    setPostpayText('[data-postpay-total]',baht(charge.total));
+    setPostpayText('[data-postpay-subtotal]',baht(charge.subtotal+charge.addon+charge.consultationCharged));
+    setPostpayText('[data-postpay-delivery]',charge.delivery ? baht(charge.delivery) : 'ฟรี');
+    setPostpayText('[data-postpay-discount]','− '+baht(discount));
+    setPostpayHidden('[data-postpay-discount-row]',discount<=0);
+    setPostpayText('[data-postpay-arrival]',deliveryArrivalWindow());
+    setPostpayText('[data-postpay-address]',address);
+    setPostpayText('[data-postpay-courier]',courier);
+    setPostpayText('[data-postpay-instruction]',instruction);
+    setPostpayText('[data-postpay-item-count]',`${snapshotItems.length} รายการ`);
     /* The count and preview come from the same basket. The old markup always
        showed two medicine photos even when the order said three items. Clone
        the checkout photos for every selected line item, including add-ons. */
-    const thumbnailSources=[];
-    Object.entries(flowState.orderState.quantities || {}).forEach(([key,value]) => {
-      if(Number(value)<=0) return;
-      const image=document.querySelector(`#payment [data-order-item="${key}"] img`);
-      if(image) thumbnailSources.push(image.getAttribute('src'));
-    });
-    Object.entries(flowState.orderState.addonQuantities || {}).forEach(([key,value]) => {
-      if(Number(value)<=0) return;
-      const image=document.querySelector(`#payment [data-order-addon="${key}"] img`);
-      if(image) thumbnailSources.push(image.getAttribute('src'));
-    });
-    document.querySelectorAll('.postpay-order-snapshot__thumbs').forEach(container => {
-      const previewImages=thumbnailSources.slice(0,4).map(source => {
-        const image=document.createElement('img');
-        image.src=source;
-        image.alt='';
-        image.loading='lazy';
-        image.decoding='async';
-        return image;
-      });
-      const remaining=thumbnailSources.length-previewImages.length;
-      const more=remaining>0 ? document.createElement('button') : null;
-      if(more){
-        more.type='button';
-        more.className='postpay-order-snapshot__more';
-        more.dataset.go='order-summary';
-        more.textContent=`+${remaining}`;
-        more.setAttribute('aria-label',document.documentElement.lang==='th'
-          ? `ดูรายการที่เหลืออีก ${remaining} รายการและใบเสร็จ`
-          : `View ${remaining} more items and the receipt`);
-      }
-      container.replaceChildren(...previewImages,...(more ? [more] : []));
-      container.hidden=thumbnailSources.length===0;
-    });
+    renderPostpaySnapshotThumbnails(snapshotItems);
   }
   const ORDER_STEP_ORDER=['paid','prepared','dispatch','out','delivered'];
   function orderFulfilmentStatus(){
