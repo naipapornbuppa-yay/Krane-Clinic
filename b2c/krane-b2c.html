@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-tracking-default-thumbs-v29";
+    const release = "20260923-tracking-thumb-overflow-v30";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-tracking-default-thumbs-v29">
+<link rel="stylesheet" href="components.css?v=20260923-tracking-thumb-overflow-v30">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2826,7 +2826,7 @@
       </section>
 
       <section class="postpay-card postpay-order-snapshot">
-        <div class="postpay-card__head"><span><small>คำสั่งซื้อของคุณ</small><strong data-postpay-item-count>2 รายการ</strong></span><span class="postpay-order-snapshot__thumbs" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" alt=""><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" alt=""></span></div>
+        <div class="postpay-card__head"><span><small>คำสั่งซื้อของคุณ</small><strong data-postpay-item-count>2 รายการ</strong></span><span class="postpay-order-snapshot__thumbs"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" alt=""><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" alt=""></span></div>
         <div class="postpay-order-snapshot__row"><span><i data-lucide="wallet-cards" class="ui-icon" aria-hidden="true"></i>วิธีชำระเงิน</span><strong data-postpay-method>QR Code</strong></div>
         <div class="postpay-order-snapshot__row" data-postpay-discount-row hidden><span><i data-lucide="badge-percent" class="ui-icon" aria-hidden="true"></i>ส่วนลด</span><strong data-postpay-discount>− ฿ 0</strong></div>
         <div class="postpay-order-snapshot__total"><span>ยอดรวม</span><strong data-postpay-total>฿ 558</strong></div>
@@ -12300,14 +12300,26 @@
       if(image) thumbnailSources.push(image.getAttribute('src'));
     });
     document.querySelectorAll('.postpay-order-snapshot__thumbs').forEach(container => {
-      container.replaceChildren(...thumbnailSources.map(source => {
+      const previewImages=thumbnailSources.slice(0,4).map(source => {
         const image=document.createElement('img');
         image.src=source;
         image.alt='';
         image.loading='lazy';
         image.decoding='async';
         return image;
-      }));
+      });
+      const remaining=thumbnailSources.length-previewImages.length;
+      const more=remaining>0 ? document.createElement('button') : null;
+      if(more){
+        more.type='button';
+        more.className='postpay-order-snapshot__more';
+        more.dataset.go='order-summary';
+        more.textContent=`+${remaining}`;
+        more.setAttribute('aria-label',document.documentElement.lang==='th'
+          ? `ดูรายการที่เหลืออีก ${remaining} รายการและใบเสร็จ`
+          : `View ${remaining} more items and the receipt`);
+      }
+      container.replaceChildren(...previewImages,...(more ? [more] : []));
       container.hidden=thumbnailSources.length===0;
     });
   }
