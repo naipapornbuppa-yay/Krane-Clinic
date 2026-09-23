@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-date-field-alignment-v23";
+    const release = "20260923-addon-opt-in-v24";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-date-field-alignment-v23">
+<link rel="stylesheet" href="components.css?v=20260923-addon-opt-in-v24">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -4610,14 +4610,15 @@
     {wellness:0,pillcase:0,pouch:0},
     flowState.orderState.addonQuantities || {}
   );
-  /* Optional retail products now share the medicine-list interaction while
-     keeping independent quantities. Preserve existing selections as one unit. */
-  const ADDON_UI_VERSION='unified-item-quantity-v1';
+  /* Optional retail products are opt-in for each order. An older prototype
+     migrated a previous session's selected card into the next checkout, which
+     made an add-on look preselected. Clear that stale state once; selections
+     made with this version still survive an ordinary refresh of the same order. */
+  const ADDON_UI_VERSION='optional-addons-opt-in-v2';
   if(flowState.orderState.addonUiVersion!==ADDON_UI_VERSION){
     Object.keys(flowState.orderState.addOns).forEach(key => {
-      if(flowState.orderState.addOns[key] && !flowState.orderState.addonQuantities[key]){
-        flowState.orderState.addonQuantities[key]=1;
-      }
+      flowState.orderState.addOns[key]=false;
+      flowState.orderState.addonQuantities[key]=0;
     });
     flowState.orderState.addonUiVersion=ADDON_UI_VERSION;
     try { sessionStorage.setItem(FLOW_STATE_KEY,JSON.stringify(flowState)); } catch(error) {}
@@ -8180,6 +8181,12 @@
   }
   const MEDICINE_PRICES={cough:85,loratadine:94,paracetamol:20,naproxen:134};
   const ADDON_PRICES={wellness:290,pillcase:190,pouch:250};
+  function resetOptionalAddOns(){
+    Object.keys(ADDON_PRICES).forEach(key => {
+      flowState.orderState.addOns[key]=false;
+      flowState.orderState.addonQuantities[key]=0;
+    });
+  }
   function medicineSubtotal(){
     return Object.entries(MEDICINE_PRICES).reduce((sum,[key,unit]) => sum + unit * Math.max(0,Number(flowState.orderState.quantities[key] || 0)),0);
   }
@@ -8420,6 +8427,7 @@
       refillPrescriptionKeys:picks,
       refillMedicineKeys
     });
+    resetOptionalAddOns();
     /* The doctor already wrote this prescription, so a refill must not ask for a
        second consultation fee on the way to the same checkout. */
     Object.assign(flowState,{entryChannel:'direct',draftReady:true,consultationPaid:true,
@@ -10979,6 +10987,7 @@
       const m=document.querySelector('[data-acceptplan-modal]');
       if(m) m.hidden=true;
       flowState.orderState.checkoutOrigin='consultation';
+      resetOptionalAddOns();
       persistFlowState();
       show('rx-writing');
       return;
