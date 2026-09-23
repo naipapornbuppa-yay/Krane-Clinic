@@ -249,6 +249,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-history-field{width:100%;max-width:100%;min-width:0;min-inline-size:0;margin:0;padding:0;border:0;box-sizing:border-box;
   display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2)}
 .partner-history-field>legend{display:block;width:100%;padding:0;font-size:13px;font-weight:var(--fw-medium);line-height:1.35;margin:0;color:var(--color-ink)}
+/* Client, 23 Sep: the safety questions carry the weight on this dialog, so they
+   are set a size up from a field label. */
+#obesity-risk-modal .partner-history-field>legend{font-size:15px;font-weight:var(--fw-semibold);line-height:1.4}
 .partner-history-field>.partner-binary{width:100%;align-self:stretch}
 .partner-binary{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:52px;padding:4px;border:1px solid transparent;border-radius:var(--control-radius);background:var(--color-field)}
 .partner-binary__option{min-width:0;height:100%;padding:0 10px;border:0;border-radius:calc(var(--control-radius) - 6px);background:transparent;color:var(--color-ink-2);font-size:14px;font-weight:var(--fw-medium);cursor:pointer;transition:background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
@@ -3080,6 +3083,19 @@ body.lang-th *{letter-spacing:normal}
   /* A step larger than it was on every width (client, 17 Sep). */
   .care-journey__name{font-size:13px}
 }
+/* Client, 23 Sep: on a phone the three names sat in a box two lines deep even
+   though each of them is one line, so a band of dead space opened between the
+   names and their tracks. The reserved height only exists to keep the three
+   tracks level when one name wraps; a row shared across the steps does that
+   from the tallest name rather than from a guess, so nothing is held back when
+   none of them wraps. Kept behind @supports so a browser without subgrid still
+   gets the reservation, and placed after the width rules so it survives their
+   grid-template-rows. */
+@supports(grid-template-rows:subgrid){
+  .care-journey__steps{grid-template-rows:auto 3px}
+  .care-journey__step{grid-row:span 2;grid-template-rows:subgrid}
+  .care-journey__name{min-height:0}
+}
 
 /* Address search, sitting over the map like a real map app's. */
 .map-search{position:absolute;z-index:4;top:var(--sp-3);left:var(--sp-3);right:var(--sp-3);
@@ -4329,6 +4345,12 @@ html.is-demo-embed #video .call-hint{display:none}
   #intake1 .stack-3,#intake2 .stack-3,#intake3 .stack-3,#intake4 .stack-3,#intake5 .stack-3{gap:14px}
   #intake1 .option .opt-title,#intake2 .option .opt-title,#intake3 .option .opt-title,#intake4 .option .opt-title,#intake5 .option .opt-title{font-size:16px}
 }
+/* Client, 23 Sep: "เลือกได้มากกว่า 1 ข้อ" is part of the question, not a note
+   floating between it and the answers — it sat nearer the first option than the
+   heading it belongs to. It moves up under the heading and is set large enough
+   to read as an instruction rather than fine print. */
+:is(#intake1,#intake2,#intake3,#intake4,#intake5) [data-intake-question] .intake-question__title:has(+ .hint){margin-bottom:0}
+:is(#intake1,#intake2,#intake3,#intake4,#intake5) [data-intake-question] .intake-question__title+.hint{margin:-6px 0 4px;font-size:16px;line-height:1.45}
 
 /* ---------- Refill sheet: prescriptions as their home cards ----------
    The sheet copies the home treatment cards, so they need the same finish
