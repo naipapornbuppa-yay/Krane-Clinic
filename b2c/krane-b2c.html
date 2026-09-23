@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-condition-hair-image-v34";
+    const release = "20260923-top-notch-only-v35";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-condition-hair-image-v34">
+<link rel="stylesheet" href="components.css?v=20260923-top-notch-only-v35">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -50,12 +50,24 @@
 
 <style>
   /* prototype chrome only (not part of the product) */
-  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#5871B5}
+  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
   html::-webkit-scrollbar{display:none}
-  /* The body background propagates to the canvas, so it is what paints the
-     safe-area strips above and below the screen. White here left a white notch
-     over a grey app; the page tone makes the whole frame one colour. */
+  /* Keep the document canvas on the app surface so translucent browser chrome
+     at the bottom stays light. The landing notch is painted separately below. */
   body{width:100vw;max-width:none;height:100%;overflow:hidden;background:var(--surface-page)}
+  /* Paint only the top safe area on the landing route. The page canvas stays
+     on the app surface so a translucent mobile browser toolbar remains light. */
+  html[data-landing-canvas="true"] body::before{
+    content:"";
+    position:fixed;
+    z-index:2147483647;
+    top:0;
+    right:0;
+    left:0;
+    height:max(env(safe-area-inset-top, 0px), 1px);
+    background:#5871B5;
+    pointer-events:none;
+  }
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;height:100dvh;overflow:hidden}
   .rail{display:none;width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
   .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
@@ -1076,7 +1088,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-condition-hair-image-v34" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-top-notch-only-v35" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -7434,11 +7446,11 @@
     const meta=document.querySelector('meta[name="theme-color"]');
     const color=id==='landing' ? THEME_COLOR_LANDING : THEME_COLOR_APP;
     if(meta) meta.setAttribute('content',color);
-    /* iOS browsers do not all honour theme-color consistently. Keep the root
-       canvas in sync as well, because that is what paints the notch/safe area
-       around the embedded landing page in those browsers. */
-    document.documentElement.style.backgroundColor=color;
-    document.body.style.backgroundColor=color;
+    /* Do not tint the full canvas: iOS uses it behind its translucent bottom
+       toolbar. A route flag paints only the top safe area via CSS. */
+    document.documentElement.dataset.landingCanvas=String(id==='landing');
+    document.documentElement.style.backgroundColor=THEME_COLOR_APP;
+    document.body.style.backgroundColor=THEME_COLOR_APP;
   }
   function resetLandingViewport(){
     const frame=document.querySelector('#landing iframe');
