@@ -50,6 +50,21 @@ body{
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
 }
+/* The landing runs inside the app shell iframe. Chrome on iOS may sample this
+   inner document—not the parent—for its top browser/status surfaces. Mirror
+   the shell's split canvas here: announcement blue at the top, light at the
+   bottom so the lower browser toolbar is unchanged. */
+html{background:#5871B5}
+body.landing-figma-draft{
+  --landing-notch-stop:max(env(safe-area-inset-top, 0px), 64px);
+  background-color:#5871B5;
+  background-image:linear-gradient(to bottom,
+    #5871B5 0,
+    #5871B5 var(--landing-notch-stop),
+    var(--landing-canvas) var(--landing-notch-stop),
+    var(--landing-canvas) 100%);
+  background-attachment:fixed;
+}
 body.menu-open,body.review-open{overflow:hidden}
 button,select{font:inherit}
 button,a{touch-action:manipulation}
