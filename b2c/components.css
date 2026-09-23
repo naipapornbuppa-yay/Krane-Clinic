@@ -268,7 +268,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-history-detail .input{width:100%;min-width:0;max-width:100%;text-overflow:ellipsis}
 .partner-history-detail .input:disabled{cursor:not-allowed;background:var(--color-bg-2);color:var(--color-ink-3);opacity:.7}
 #intake-general .field,#intake-concern .field{gap:6px}
-#intake-general .field label,#intake-concern .field label{font-size:13px;font-weight:var(--fw-medium);line-height:1.35;color:var(--color-ink)}
+/* Keep the compact caption style for legacy standalone labels only. Floating
+   fields must inherit the shared empty/focus/filled label states; this older,
+   more-specific rule otherwise pinned their labels small even when empty. */
+#intake-general .field:not(.float-field) label,
+#intake-concern .field:not(.float-field) label{font-size:13px;font-weight:var(--fw-medium);line-height:1.35;color:var(--color-ink)}
 /* Outlined like the rest of the form: the filled boxes on this screen were the
    ones patients read as disabled. The segmented control keeps its fill, since a
    track has to sit behind the selected half (client, 10 Sep). */
@@ -4419,6 +4423,18 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field:not(.float-field--static) .input::placeholder,
 .float-field:not(.float-field--static) .textarea::placeholder{color:transparent}
 .float-field--static .input::placeholder,.float-field--static .textarea::placeholder{color:var(--color-ink-3)}
+/* The general-health page still has older high-specificity field rules near
+   the top of this file. Reassert the shared floating states here so its empty
+   metrics behave exactly like the same controls in the assessment flow. */
+#intake-general .float-field:not(.float-field--static) .float-field__slot>label{
+  top:50%;transform:translateY(-50%);font-size:var(--fs-base);font-weight:var(--fw-regular);
+  line-height:1.2;color:var(--color-ink-3)
+}
+#intake-general .float-field:not(.float-field--static) .float-field__slot:focus-within>label,
+#intake-general .float-field:not(.float-field--static) .float-field__slot>.input:not(:placeholder-shown)+label{
+  top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)
+}
+#intake-general .float-field:not(.float-field--static) .float-field__slot:focus-within>label{color:var(--color-accent)}
 /* Error: red box, red title, message below (the mismatch line on set password). */
 .float-field.is-invalid>.phone-field,.float-field.is-invalid>.password-field,
 .float-field:has(.password-mismatch:not([hidden]))>.password-field{border-color:var(--color-danger);box-shadow:none}
