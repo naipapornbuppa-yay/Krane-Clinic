@@ -88,6 +88,23 @@ button{color:inherit}
 .button--dark:hover{background:#182541}
 .button--outline{border-color:currentColor;background:transparent;color:var(--landing-ink)}
 
+/* Client, 23 Sep: the strip above the banner was white. iOS does not honour
+   theme-color on every device, so the top inset is painted here as well — the
+   same blue as the banner it sits above. Top inset only: the page canvas stays
+   light so a translucent bottom toolbar is not tinted with it. The app shell
+   does the same thing for the embedded route. */
+body::before{
+  content:"";
+  position:fixed;
+  z-index:2147483647;
+  top:0;
+  right:0;
+  left:0;
+  height:env(safe-area-inset-top, 0px);
+  background:var(--campaign-banner-surface);
+  pointer-events:none;
+}
+
 /* Announcement and navigation */
 .announcement{
   position:relative;

@@ -2215,7 +2215,9 @@ body.modal-open{overflow:hidden}
 .form-group__surface{display:flex;flex-direction:column;gap:var(--sp-3);padding:0;border-radius:0;background:transparent;box-shadow:none}
 #address .form-group+.form-group{
   position:relative;
-  margin-top:0;
+  /* Client, 23 Sep: the band was flush against the fields above it and 18px
+     clear of the title below. Same air on both sides. */
+  margin-top:18px;
   padding-top:26px;
   border-top:0;
 }
@@ -3963,7 +3965,16 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .doc-soap__block[hidden]{display:none}
 .doc-soap__title{margin:0;color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-bold);line-height:1.35}
 .doc-soap__title em{font-style:normal;font-weight:var(--fw-medium);color:var(--color-ink-3)}
-.doc-soap__block--plan{padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-accent-soft)}
+/* Client, 23 Sep: the bullets did not line up with the plain sections above —
+   the tint's padding pushed them in by 12px — and the blue was a shade heavy.
+   The box now bleeds outward by its own padding so the text keeps the column,
+   and the tint is lighter. */
+.doc-soap__block--plan{
+  margin-inline:calc(var(--sp-3) * -1);
+  padding:var(--sp-3);
+  border-radius:var(--radius-md);
+  background:color-mix(in srgb,var(--color-accent) 6%,var(--color-surface));
+}
 .doc-soap__block--plan .doc-soap__title em{color:var(--color-ink-2)}
 
 /* ---------- The app is a phone app ----------
@@ -4353,10 +4364,19 @@ html.is-demo-embed #video .call-hint{display:none}
 .frequency-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-9px;border:2px solid var(--color-accent);border-radius:50%;background:var(--color-surface);box-shadow:var(--shadow-sm)}
 .frequency-slider::-moz-range-thumb{width:20px;height:20px;border:2px solid var(--color-accent);border-radius:50%;background:var(--color-surface)}
 .frequency-slider:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--color-accent-soft)}
-.frequency-slider__stops{display:grid;grid-template-columns:repeat(4,1fr);color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.3}
-.frequency-slider__stops span{text-align:center}
-.frequency-slider__stops span:first-child{text-align:left}
-.frequency-slider__stops span:last-child{text-align:right}
+/* Client, 23 Sep: space the stops evenly. Four equal columns put the middle
+   two labels at 37.5% and 62.5% while their ticks sit at 33.3% and 66.7%, so
+   the gaps read uneven. Each label is centred on the thumb position it names
+   instead — the thumb is 24px, so its centre travels from 12px to 12px from
+   the far end. The outer two stay pinned to the edges, where centring them
+   would push them outside the track. */
+.frequency-slider__stops{position:relative;min-height:1.3em;color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.3}
+.frequency-slider__stops span{position:absolute;top:0;white-space:nowrap}
+.frequency-slider__stops span{transform:translateX(-50%)}
+.frequency-slider__stops span:nth-child(1){left:12px}
+.frequency-slider__stops span:nth-child(2){left:calc(12px + (100% - 24px) / 3)}
+.frequency-slider__stops span:nth-child(3){left:calc(12px + (100% - 24px) * 2 / 3)}
+.frequency-slider__stops span:nth-child(4){left:calc(100% - 12px)}
 .frequency-slider__stops .is-active{color:var(--color-accent);font-weight:var(--fw-semibold)}
 
 /* Care selection and every following intake page use one desktop measure. The
