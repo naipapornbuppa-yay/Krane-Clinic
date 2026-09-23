@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-top-notch-blue-v41";
+    const release = "20260923-top-notch-canvas-v42";
     const url = new URL(window.location.href);
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
     const landing = initialRoute === 'landing';
@@ -46,7 +46,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-top-notch-blue-v41">
+<link rel="stylesheet" href="components.css?v=20260923-top-notch-canvas-v42">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -57,7 +57,7 @@
 
 <style>
   /* prototype chrome only (not part of the product) */
-  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
+  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#5871B5}
   html::-webkit-scrollbar{display:none}
   /* Keep the document canvas on the app surface so translucent browser chrome
      at the bottom stays light. The landing notch is painted separately below. */
@@ -1095,7 +1095,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-top-notch-blue-v41" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-top-notch-canvas-v42" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -7493,10 +7493,11 @@
     const meta=document.querySelector('meta[name="theme-color"]');
     const color=id==='landing' ? THEME_COLOR_LANDING : THEME_COLOR_APP;
     if(meta) meta.setAttribute('content',color);
-    /* Do not tint the full canvas: iOS uses it behind its translucent bottom
-       toolbar. A route flag paints only the top safe area via CSS. */
+    /* Chrome/iOS ignores theme-color for its top status area and samples the
+       root canvas instead. Keep only the root blue on landing; the body remains
+       on the app surface underneath the bottom browser toolbar. */
     document.documentElement.dataset.landingCanvas=String(id==='landing');
-    document.documentElement.style.backgroundColor=THEME_COLOR_APP;
+    document.documentElement.style.backgroundColor=color;
     document.body.style.backgroundColor=THEME_COLOR_APP;
   }
   function resetLandingViewport(){
