@@ -697,7 +697,7 @@
             <span><i class="cal-legend__swatch cal-legend__swatch--upcoming"></i>Upcoming</span>
             <span><i class="cal-legend__swatch cal-legend__swatch--waiting"></i>Waiting</span>
             <span><i class="cal-legend__swatch cal-legend__swatch--done"></i>Completed</span>
-            <span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--work"></i>Working day</span><span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--off"></i>Day off</span><small>Tap a case to open it. Tap a date to set it as a working day or a day off.</small>
+            <span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--work"></i>Working day</span><span data-shift-legend hidden><i class="cal-legend__swatch cal-legend__swatch--off"></i>Day off</span><small>Tap a case to open it. Use Add working day to change availability.</small>
           </div>
         </div>
       </section>
@@ -1412,11 +1412,16 @@
       : weeklyDefault[date.getDay()];
   }
   function shiftMarkup(date){
+    const key = dateKey(date);
+    // The month view is primarily a patient schedule. Repeating the weekly
+    // pattern in every cell made appointments hard to scan, so routine hours
+    // stay in the summary card and the Working hours page. Only date-specific
+    // exceptions are called out in the grid.
+    if(!Object.prototype.hasOwnProperty.call(shiftOverrides, key)) return '';
     const hours = shiftForDate(date);
-    const custom = Object.prototype.hasOwnProperty.call(shiftOverrides, dateKey(date)) ? ' is-custom' : '';
     return hours
-      ? '<button type="button" class="shift-chip' + custom + '" data-shift-edit="' + dateKey(date) + '" aria-label="' + (langTH() ? 'แก้ไขเวลาทำงาน ' : 'Edit working hours ') + hours + '">' + hours + '</button>'
-      : '<button type="button" class="shift-chip shift-chip--off' + custom + '" data-shift-edit="' + dateKey(date) + '" aria-label="' + (langTH() ? 'แก้ไขวันหยุด' : 'Edit day off') + '">' + (langTH() ? 'หยุด' : 'Off') + '</button>';
+      ? '<button type="button" class="shift-chip is-custom" data-shift-edit="' + key + '" aria-label="' + (langTH() ? 'แก้ไขเวลาทำงาน ' : 'Edit working hours ') + hours + '">' + hours.replace('-', '–') + '</button>'
+      : '<button type="button" class="shift-chip shift-chip--off is-custom" data-shift-edit="' + key + '" aria-label="' + (langTH() ? 'แก้ไขวันหยุด' : 'Edit day off') + '">' + (langTH() ? 'หยุด' : 'Off') + '</button>';
   }
   // The dialog markup sits after this script, so it is looked up on demand. Caching
   // the node at parse time returned null and silently disabled the whole modal.

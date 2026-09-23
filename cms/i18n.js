@@ -945,7 +945,7 @@
     "Add working day":"เพิ่มตารางงาน",
     "Working day":"วันทำงาน",
     "Day off":"วันหยุด",
-    "Tap a case to open it. Tap a date to set it as a working day or a day off.":"โหมดเคสผู้ป่วย แตะเคสเพื่อเปิดข้อมูล โหมดตารางงาน แตะวันที่เพื่อกำหนดว่าทำงานหรือหยุด",
+    "Tap a case to open it. Use Add working day to change availability.":"แตะเคสเพื่อเปิดข้อมูล ใช้ปุ่ม “เพิ่มตารางงาน” เพื่อปรับเวลาทำงาน",
     "Krane matches patients to you only within these hours and while your status is Available.":"ระบบจะจับคู่ผู้ป่วยให้คุณเฉพาะในช่วงเวลาที่เปิดไว้และเมื่อคุณเปิดสถานะพร้อมรับเคส",
     "View calendar":"ดูปฏิทิน",
     "Weekly working hours":"เวลาทำงานประจำสัปดาห์",
