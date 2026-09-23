@@ -839,7 +839,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .hair-area-options{gap:var(--sp-3)}
 .hair-area-option{min-height:116px;padding:var(--sp-3);gap:var(--sp-4);overflow:hidden}
 .hair-area-option__visual{width:88px;height:88px;flex:none;overflow:hidden;border-radius:var(--radius-md);background:transparent}
-.hair-area-option__visual img{display:block;width:100%;height:100%;object-fit:cover}
+.hair-area-option__visual img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  /* Keep each symptom-specific pose, but render the whole set in the same
+     neutral high-contrast ink treatment as the photo guide below. */
+  filter:grayscale(1) contrast(1.28) brightness(1.06);
+}
 .hair-area-option .opt-body{flex:1}
 .hair-area-option .opt-title{font-size:var(--fs-base)}
 @media(max-width:360px){
@@ -897,7 +905,15 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    card inside the card (client, 19 Aug). The empty-state slot keeps a fill so
    there is something to see when an asset is missing. */
 .photo-guide__figure{width:100%;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:transparent;color:var(--color-ink-3)}
-.photo-guide__img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-guide__img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  /* The source artwork carries a warm cream matte. Neutralise it at the
+     shared component layer so the guide reads as black ink on the page. */
+  filter:grayscale(1) contrast(1.28) brightness(1.06);
+}
 .photo-guide__figure.is-empty{position:relative;background:var(--color-bg-2)}
 .photo-guide__figure.is-empty .photo-guide__img{display:none}
 .photo-guide__figure.is-empty::after{content:"";position:absolute;inset:0;background:no-repeat center/22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236E7076' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E")}
