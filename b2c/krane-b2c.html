@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-canonical-links-v45";
+    const release = "20260923-pickup-location-v46";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -32,7 +32,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260923-canonical-links-v45"></script>
+<script src="review-tools.js?v=20260923-pickup-location-v46"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -54,7 +54,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-canonical-links-v45">
+<link rel="stylesheet" href="components.css?v=20260923-pickup-location-v46">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1116,7 +1116,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-canonical-links-v45" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260923-pickup-location-v46" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -2427,15 +2427,15 @@
       </div>
       <!-- The address is the first decision on the page and the one that blocks
            payment, so it sits at the top rather than three sections down. -->
-      <div class="stack-2" data-checkout-sequence="address" data-delivery-address-section>
+      <div class="stack-2" data-checkout-sequence="address" data-fulfillment-address-section>
         <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
-        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row data-delivery-address-section>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
           <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
           <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true">ยังไม่ได้เพิ่มที่อยู่จัดส่ง</span><span class="checkout-row__recipient" data-payment-recipient hidden></span></span>
           <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
-        <button class="checkout-row checkout-row--compact" data-go="address" data-delivery-address-section>
+        <button class="checkout-row checkout-row--compact" data-go="address" data-delivery-address-detail-section>
           <span class="checkout-row__icon"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
           <span class="checkout-row__body"><span class="checkout-row__label">รายละเอียดการรับสินค้า</span><span class="checkout-row__value" data-payment-address-detail>เพิ่มชั้น ห้อง และจุดวางสินค้า</span></span>
           <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -5396,8 +5396,11 @@
   function syncDeliveryAddress({hydrateForm=false}={}){
     const address=flowState.orderState.address;
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
+    const pickup=flowState.orderState.fulfillmentMode==='pickup';
     document.querySelectorAll('[data-payment-address]').forEach(el => {
-      el.textContent=confirmed ? deliveryAddressSummary(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
+      el.textContent=confirmed
+        ? deliveryAddressSummary(address)
+        : (pickup ? 'ยังไม่ได้เพิ่มตำแหน่งของคุณ' : 'ยังไม่ได้เลือกที่อยู่จัดส่ง');
     });
     /* Client, 1 Sep: New wants the name on this screen, the way a delivery app
        shows it — who it is going to sits with where it is going, so the patient
@@ -5412,10 +5415,15 @@
       recipient.hidden=!(confirmed && parts.length);
     }
     const row=document.querySelector('[data-payment-address-row]');
-    if(row) row.classList.toggle('checkout-row--empty',!confirmed);
+    if(row){
+      row.classList.toggle('checkout-row--empty',!confirmed);
+      row.setAttribute('aria-label',pickup ? 'เพิ่มตำแหน่งเพื่อค้นหาสาขาใกล้คุณ' : 'เพิ่มที่อยู่จัดส่ง');
+    }
     const action=document.querySelector('[data-payment-address-action]');
     if(action){
-      action.textContent=confirmed ? 'เปลี่ยนที่อยู่' : 'เพิ่มที่อยู่';
+      action.textContent=confirmed
+        ? (pickup ? 'เปลี่ยนตำแหน่ง' : 'เปลี่ยนที่อยู่')
+        : (pickup ? 'เพิ่มตำแหน่ง' : 'เพิ่มที่อยู่');
       // Missing address blocks payment, so the tag carries the error tone.
       action.classList.toggle('checkout-row__tag--error',!confirmed);
     }
@@ -8416,7 +8424,7 @@
     if(order.deliveryQuoteStatus==='accepted' || !hasFulfillableItems()) return;
     const pickup=order.fulfillmentMode==='pickup';
     const address=order.address || {};
-    if(!pickup && !(order.addressConfirmed && address.building && address.line && address.district)) return;
+    if(!(order.addressConfirmed && address.building && address.line && address.district)) return;
     if(!pickup && !order.deliveryMethod) return;
     order.deliveryQuoteStatus='accepted';
     order.deliveryQuoteAmount=pickup ? 0 : deliveryFeeFor(order.deliveryMethod);
@@ -8427,7 +8435,7 @@
     const address=flowState.orderState.address || {};
     if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
-    if(!pickup && !(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
+    if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
     /* Stock, acceptance and preparation all happen after the money is taken
        (client, 20 Aug), the way a delivery app does it. */
@@ -8755,15 +8763,28 @@
     document.querySelectorAll('#payment [data-fulfillment-panel]').forEach(panel => {
       panel.hidden=!fulfillable || panel.dataset.fulfillmentPanel!==(pickup ? 'pickup' : 'delivery');
     });
-    document.querySelectorAll('#payment [data-delivery-address-section]').forEach(section => {
+    document.querySelectorAll('#payment [data-fulfillment-address-section]').forEach(section => {
+      section.hidden=!fulfillable;
+    });
+    document.querySelectorAll('#payment [data-delivery-address-detail-section]').forEach(section => {
       section.hidden=!fulfillable || pickup;
     });
     /* Same row, two jobs: it routes the courier on delivery and finds the
        nearest branch on pickup, so it says which one it is doing. */
     const addressLabel=document.querySelector('#payment [data-fulfillment-address-label]');
     const addressTitle=document.querySelector('#payment [data-fulfillment-address-title]');
-    if(addressLabel) addressLabel.textContent=pickup ? 'ที่อยู่ของคุณ' : 'การจัดส่ง';
-    if(addressTitle) addressTitle.textContent=pickup ? 'ที่อยู่สำหรับหาสาขาใกล้คุณ' : 'ที่อยู่จัดส่ง';
+    const addressValue=document.querySelector('#payment [data-payment-address]');
+    const addressAction=document.querySelector('#payment [data-payment-address-action]');
+    const addressRow=document.querySelector('#payment [data-payment-address-row]');
+    const checkoutAddress=flowState.orderState.address || {};
+    const addressConfirmed=Boolean(flowState.orderState.addressConfirmed && checkoutAddress.building && checkoutAddress.line && checkoutAddress.district);
+    if(addressLabel) addressLabel.textContent=pickup ? 'ตำแหน่งของคุณ' : 'การจัดส่ง';
+    if(addressTitle) addressTitle.textContent=pickup ? 'ตำแหน่งสำหรับค้นหาสาขาใกล้คุณ' : 'ที่อยู่จัดส่ง';
+    if(addressValue && !addressConfirmed) addressValue.textContent=pickup ? 'ยังไม่ได้เพิ่มตำแหน่งของคุณ' : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
+    if(addressAction) addressAction.textContent=addressConfirmed
+      ? (pickup ? 'เปลี่ยนตำแหน่ง' : 'เปลี่ยนที่อยู่')
+      : (pickup ? 'เพิ่มตำแหน่ง' : 'เพิ่มที่อยู่');
+    if(addressRow) addressRow.setAttribute('aria-label',pickup ? 'เพิ่มตำแหน่งเพื่อค้นหาสาขาใกล้คุณ' : 'เพิ่มที่อยู่จัดส่ง');
     const noFulfillmentNotice=document.querySelector('#payment [data-no-fulfillment-notice]');
     if(noFulfillmentNotice) noFulfillmentNotice.hidden=fulfillable;
     const medicineRow=document.querySelector('#payment [data-payment-medicine-row]');
