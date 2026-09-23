@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260923-tracking-thumb-overflow-v30";
+    const release = "20260923-tracking-header-no-logo-v31";
     const url = new URL(window.location.href);
     if (/^https?:$/.test(url.protocol) && url.searchParams.get("v") !== release) {
       url.searchParams.set("v", release);
@@ -39,7 +39,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260923-mobile-notch-color-v22">
-<link rel="stylesheet" href="components.css?v=20260923-tracking-thumb-overflow-v30">
+<link rel="stylesheet" href="components.css?v=20260923-tracking-header-no-logo-v31">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -6256,6 +6256,10 @@
        to skip it — leaving "จับคู่แพทย์" as the only routed page still showing
        its route name where every other page shows the brand. */
     const top=document.querySelector(`#${id} .screen__top:has(> .back), #${id} .screen__top.transition-stage__top`);
+    /* Tracking has its own centred order number and right-side actions. Adding
+       the common brand lockup here creates a second centre item and overlays
+       the order title, so this custom app bar deliberately stays logo-free. */
+    if(top?.classList.contains('postpay-tracking-topbar')) return;
     if(!top || top.querySelector(':scope > .checkout-brandbar__logo')) return;
     let title=top.querySelector(':scope > .ttl');
     if(!title){
