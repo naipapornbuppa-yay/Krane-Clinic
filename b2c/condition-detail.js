@@ -93,6 +93,7 @@
       category: "weight",
       tone: "weight",
       image: "assets/product-hero/weight-care-measuring-waist-v1.png",
+      imageAlt: "assets/product-hero/weight-care-measuring-waist-man-v1.png",
       kicker: "ดูแลน้ำหนักกับแพทย์",
       hook: "ลดน้ำหนักด้วยแผนที่แพทย์ออกให้คุณ",
       lead: "เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ",
@@ -401,10 +402,18 @@
   };
 
   document.title = `${data.kicker} | Krane Clinic`;
-  document.querySelector(".condition-hero")?.setAttribute("data-tone", data.tone);
+  const hero = document.querySelector(".condition-hero");
+  hero?.setAttribute("data-tone", data.tone);
   document.querySelector("main")?.setAttribute("data-tone", data.tone);
   const image = document.querySelector("[data-hero-image]");
   if (image) image.src = data.image;
+  const imageAlt = document.querySelector("[data-hero-image-alt]");
+  const hasAlternateHero = Boolean(imageAlt && data.imageAlt);
+  if (imageAlt) {
+    imageAlt.hidden = !hasAlternateHero;
+    if (hasAlternateHero) imageAlt.src = data.imageAlt;
+  }
+  hero?.classList.toggle("has-alternate-image", hasAlternateHero);
   setText("[data-kicker]", data.kicker);
   setText("[data-title]", data.hook);
   setText("[data-lead]", data.lead);
@@ -573,6 +582,11 @@
     .filter(({ section }) => section);
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (hasAlternateHero && hero && !prefersReducedMotion.matches) {
+    window.setInterval(() => {
+      if (!document.hidden) hero.classList.toggle("is-showing-alternate");
+    }, 5200);
+  }
   let indicatorReadyFrame = 0;
   const moveSectionIndicator = (tab) => {
     if (!sectionViewport || !sectionIndicator || !tab) return;
