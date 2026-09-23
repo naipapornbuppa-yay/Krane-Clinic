@@ -4410,7 +4410,6 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 /* The date field draws its own control inside the box, so it needs the same
    height or it overflows the shell the rule above just shrank. */
 :is(.auth-screen,.form-flow) .float-field .date-control{height:100%}
-:is(.auth-screen,.form-flow) .float-field .date-control__display{padding-top:16px}
 :is(.auth-screen,.form-flow) .float-field__slot:focus-within>label,
 :is(.auth-screen,.form-flow) .float-field--static .float-field__slot>label,
 :is(.auth-screen,.form-flow) .float-field__slot>.input:not(:placeholder-shown)+label{top:7px}
@@ -4829,9 +4828,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 /* The date control draws its own box; inside a field the field's box is the
    only one, and the value reads from the left like every other field. */
 .float-field .date-control{height:100%;align-self:stretch}
-.float-field .date-control__display{padding:20px 0 0;border:0;background:transparent;grid-template-columns:minmax(0,1fr) 20px;gap:8px}
-.float-field .date-control__value{text-align:left}
-.float-field .date-control__display>span:first-child{display:none}
+/* A floating label owns the top of the field. Keep the date value on the same
+   lower text baseline as neighbouring inputs, but leave the calendar icon on
+   the actual field centre. Symmetric side columns keep the value centred in
+   the whole control instead of centring it only in the space left of the icon. */
+.float-field .date-control__display{padding:0;border:0;background:transparent;grid-template-columns:20px minmax(0,1fr) 20px;gap:8px}
+.float-field .date-control__value{text-align:center;transform:translateY(8px)}
+.float-field .date-control__display>span:first-child{display:block}
+.float-field .date-control__icon{align-self:center}
 .float-field .date-control:focus-within .date-control__display{border-color:transparent;box-shadow:none}
 /* An invalid field turns the whole box red, the way the password box does. */
 .float-field.is-invalid>.float-field__box{border-color:var(--color-danger);box-shadow:none}
