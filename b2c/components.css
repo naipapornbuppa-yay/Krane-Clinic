@@ -3078,10 +3078,26 @@ body.lang-th *{letter-spacing:normal}
 /* Client progress reference (30 Aug): three plain labels over three quiet
    underline tracks. Only the current stage is dark; past and future stages
    stay grey so the user's present position is unambiguous. */
-.care-journey{display:block;padding:11px 16px 13px;background:transparent;border-bottom:0}
+.care-journey{
+  display:block;
+  box-sizing:border-box;
+  padding:11px 16px 13px;
+  background:transparent;
+  border-bottom:0
+}
 .screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
-.care-journey__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.care-journey__step{position:relative;display:grid;grid-template-rows:auto 3px;gap:8px;min-width:0;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.care-journey__steps{
+  display:grid;
+  inline-size:min(100%,var(--care-flow-content-max,704px));
+  max-inline-size:var(--care-flow-content-max,704px);
+  min-inline-size:0;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin:0 auto;
+  padding:0;
+  list-style:none
+}
+.care-journey__step{position:relative;display:grid;inline-size:100%;min-inline-size:0;grid-template-rows:auto 3px;gap:8px;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .care-journey__step::before,.care-journey__dot{display:none}
 .care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
 /* The live stage fills across its own track as the patient moves through it,
@@ -3128,19 +3144,11 @@ body.lang-th *{letter-spacing:normal}
   /* A step larger than it was on every width (client, 17 Sep). */
   .care-journey__name{font-size:13px}
 }
-/* Client, 23 Sep: on a phone the three names sat in a box two lines deep even
-   though each of them is one line, so a band of dead space opened between the
-   names and their tracks. The reserved height only exists to keep the three
-   tracks level when one name wraps; a row shared across the steps does that
-   from the tallest name rather than from a guess, so nothing is held back when
-   none of them wraps. Kept behind @supports so a browser without subgrid still
-   gets the reservation, and placed after the width rules so it survives their
-   grid-template-rows. */
-@supports(grid-template-rows:subgrid){
-  .care-journey__steps{grid-template-rows:auto 3px}
-  .care-journey__step{grid-row:span 2;grid-template-rows:subgrid}
-  .care-journey__name{min-height:0}
-}
+/* Keep the three cells independent. Safari's row-subgrid implementation can
+   shrink this generated list to its min-content width inside a wide flex
+   screen, which piles all three Thai labels into the centre. A small explicit
+   label row gives the same aligned tracks on phone and desktop without relying
+   on subgrid. */
 
 /* Address search, sitting over the map like a real map app's. */
 .map-search{position:absolute;z-index:4;top:var(--sp-3);left:var(--sp-3);right:var(--sp-3);
@@ -3272,7 +3280,7 @@ body.lang-th *{letter-spacing:normal}
    the whole window (client, 17 Sep); on a phone it takes the footer's 18px
    inset in the rule below. */
 #intake1 .care-journey,#intake2 .care-journey,#intake3 .care-journey,#intake4 .care-journey,#intake5 .care-journey,#intake-concern .care-journey,#intake-general .care-journey{
-  padding-inline:max(16px,calc((100% - var(--intake-content-width)) / 2));
+  padding-inline:16px;
 }
 #intake1 .screen__body .h1,#intake2 .screen__body .h1,#intake3 .screen__body .h1,#intake4 .screen__body .h1,#intake5 .screen__body .h1,#intake-concern .screen__body .h1,#intake-general .screen__body .h1,
 #intake1 [data-intake-question] .intake-question__title,#intake2 [data-intake-question] .intake-question__title,#intake3 [data-intake-question] .intake-question__title{
