@@ -1837,6 +1837,7 @@
     "เช่น 70":"e.g. 70",
     "ข้อมูลผู้รับบริการ":"Patient details",
     "ยืนยันชื่อและเบอร์โทรศัพท์":"Confirm your name and phone number",
+    "ยืนยันข้อมูลส่วนตัว":"Confirm your personal details",
     "ข้อมูลส่วนตัว":"Personal details",
     "เบอร์โทรศัพท์ที่ยืนยันแล้ว":"Verified phone number",
     "ยืนยันด้วยรหัส OTP แล้ว":"Verified by OTP",
