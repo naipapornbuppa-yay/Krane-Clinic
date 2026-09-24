@@ -106,7 +106,15 @@ img{max-width:100%}
   border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
-.input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
+/* Client, 23 Sep: an input's border is #C9C9C9 in every resting state, on
+   every screen. It used to darken on :hover — and a touch browser keeps
+   :hover on whatever was last tapped, so one field on a form sat in a dark
+   slate border while the phone and password fields beside it, which never
+   had the rule, stayed light. The affordance is worth keeping where there
+   is a real pointer to give it, and nowhere else. */
+@media(hover:hover) and (pointer:fine){
+  .input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
+}
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
@@ -2941,14 +2949,21 @@ body.lang-th *{letter-spacing:normal}
 .is-unread .consent-agree{cursor:not-allowed;opacity:.55}
 .consent-note{color:var(--color-ink-3)}
 .is-unread .consent-note{color:var(--color-warning);font-weight:var(--fw-medium)}
-.consent-scroll-cue{position:static;display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;min-height:44px;padding:0 16px;border:1px solid color-mix(in srgb,var(--color-accent) 28%,var(--color-line));
-  border-radius:var(--control-radius);background:color-mix(in srgb,var(--color-accent) 7%,var(--color-surface));
-  box-shadow:none;color:var(--color-accent-strong);font:inherit;font-weight:var(--fw-semibold);cursor:pointer}
+/* Client, 24 Sep: the same square the back button is, pointing down instead of
+   back, sitting above the CTA. A full-width tinted bar read as a second call to
+   action next to the real one, and a bare arrow with no chrome did not read as
+   a control at all — the app already has one shape for "an icon you press", so
+   this is that shape. Geometry, border and ink are taken from .screen__top .back
+   rather than restated, so the two cannot drift apart. */
+.consent-scroll-cue{position:static;display:inline-grid;place-items:center;
+  width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);min-height:0;
+  margin:0 auto;padding:0;border:1px solid var(--color-line-strong);
+  border-radius:var(--control-radius);background:var(--color-surface);
+  box-shadow:none;color:var(--color-ink);font:inherit;cursor:pointer}
 .consent-scroll-cue[hidden]{display:none}
-.consent-scroll-cue .ui-icon{width:16px;height:16px}
-.consent-scroll-cue:hover{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 11%,var(--color-surface))}
-.consent-scroll-cue:active{background:color-mix(in srgb,var(--color-accent) 15%,var(--color-surface))}
+.consent-scroll-cue .ui-icon{width:20px;height:20px}
+.consent-scroll-cue:hover{border-color:var(--color-ink-3)}
+.consent-scroll-cue:active{background:var(--surface-sunken)}
 .consent-scroll-cue:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
 
 /* The desktop QA shell still presents a phone-width product screen, so the legal
@@ -2973,6 +2988,10 @@ body.lang-th *{letter-spacing:normal}
 #consent-terms .consent-page__sentinel{display:block;width:100%;height:1px}
 #consent-terms .screen__footer{display:grid;justify-items:center;gap:10px;padding:12px max(20px,calc((100% - 760px)/2)) max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--color-line);background:var(--color-surface)}
 #consent-terms .screen__footer>*{width:min(100%,760px)!important;max-width:760px}
+/* The footer stretches what it holds to the reading width, which is right for
+   the CTA and wrong for a square icon button — it made the scroll cue a
+   350px-wide box with an arrow lost in the middle of it. */
+#consent-terms .screen__footer>.consent-scroll-cue{width:var(--control-h-icon)!important;max-width:var(--control-h-icon)}
 
 /* True phone viewport: the product shell fills the visible app area while only
    the content region scrolls. The primary action and bottom navigation therefore
@@ -3595,7 +3614,9 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
-#address .address-search__field:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  #address .address-search__field:hover{border-color:var(--color-ink-3)}
+}
 #address .address-search__field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
 #address .address-search__icon{position:static;flex:none;transform:none;width:20px;height:20px}
 #address .address-search__icon .ui-icon{width:18px;height:18px}
@@ -3933,7 +3954,9 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
   border:1px solid var(--color-line-strong);border-right:0;
   border-radius:var(--control-radius) 0 0 var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
-.phone-field__country:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  .phone-field__country:hover{border-color:var(--color-ink-3)}
+}
 .phone-field__country:focus-visible{outline:3px solid var(--color-focus);outline-offset:-1px}
 .phone-field__flag{font-size:16px;line-height:1}
 .phone-field__dial{font-variant-numeric:tabular-nums}
@@ -4481,10 +4504,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   color:var(--color-ink-3);font-size:var(--fs-base);font-weight:var(--fw-regular);line-height:1.2;
   white-space:nowrap;pointer-events:none;
   transition:top var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),font-size var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+/* Client, 23 Sep: the raised title and the value it sits over were touching.
+   The title's line box reached 24.6px down a 48px field while the value
+   started at 21px, so the two overlapped and read as one block. The title
+   now sits on its own cap height at the top and the value is pushed clear of
+   it, leaving real space between the two inside the same field height. */
 .float-field__slot:focus-within>label,
 .float-field.is-filled .float-field__slot>label,
 .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label,
-.float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
+.float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:7px;line-height:1;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .float-field__slot:focus-within>label{color:var(--color-accent)}
 .float-field .input::placeholder,.float-field .textarea::placeholder{color:transparent}
 /* The general-health page still has older high-specificity field rules near
@@ -4884,7 +4912,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
 .float-field>.float-field__box:has(.textarea){height:auto}
-.float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
+@media(hover:hover) and (pointer:fine){
+  .float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
+}
 .float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
 /* Desktop custom selects draw their own control border and focus ring. Remove
    the generated wrapper's parent border only while enhancement is present;
@@ -4895,7 +4925,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .custom-select__trigger{height:var(--field-h);min-height:var(--field-h);padding:20px 16px 4px}
 .float-field .input,.float-field .select,.float-field .textarea,
 #intake-general .float-field .input,#intake-general .float-field .select{
-  height:100%;min-height:0;padding:20px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
+  height:100%;min-height:0;padding:24px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
 }
 .float-field .input:hover,.float-field .select:hover,.float-field .textarea:hover,
 .float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}
@@ -4925,29 +4955,16 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 #address .float-field__slot:focus-within>label{color:var(--color-accent)}
 
-/* The rider note is the one multi-line field here. Keep its persistent label
-   at the bottom-right requested by the client, but inset it from the native
-   resize grip and reserve the lower line so entered notes never overlap it. */
+/* The rider note is the one multi-line field here. Client, 24 Sep: its title
+   belongs on the left where every other field puts it — pinned to the
+   bottom-right it read as a watermark rather than as the field's name, and it
+   was the only label on the screen the eye had to go looking for. It now
+   follows the same contract as the rest: the name sits in the box while it is
+   empty and rises to the top-left once there is a note in it. The padding is
+   the stacked-field padding, so a typed note clears the raised title, and the
+   bottom is left free for the native resize grip. */
 .float-field--note>.float-field__box{min-height:var(--field-h);height:auto}
-.float-field--note .textarea{min-height:var(--field-h);height:var(--field-h);padding-top:8px;padding-bottom:28px;resize:vertical}
-#address .float-field--note .float-field__slot>label,
-.float-field--note .float-field__slot>label{
-  left:auto;
-  right:20px;
-  top:auto;
-  bottom:8px;
-  transform:none;
-  font-size:var(--fs-xs);
-  font-weight:var(--fw-medium);
-  color:var(--color-ink-2);
-  text-align:right;
-}
-#address .float-field--note .float-field__slot:focus-within>label,
-#address .float-field--note .float-field__slot>.textarea:not(:placeholder-shown)+label{
-  top:auto;
-  bottom:8px;
-  color:var(--color-accent);
-}
+.float-field--note .textarea{min-height:var(--field-h);height:var(--field-h);padding-top:24px;padding-bottom:6px;resize:vertical}
 
 /* The global footer rule stretches actions. The map shortcut is intentionally
    a centred, content-width pill above the full-width primary action. */
