@@ -2957,22 +2957,18 @@ body.lang-th *{letter-spacing:normal}
 .is-unread .consent-agree{cursor:not-allowed;opacity:.55}
 .consent-note{color:var(--color-ink-3)}
 .is-unread .consent-note{color:var(--color-warning);font-weight:var(--fw-medium)}
-/* Client, 24 Sep: the same square the back button is, pointing down instead of
-   back, sitting above the CTA. A full-width tinted bar read as a second call to
-   action next to the real one, and a bare arrow with no chrome did not read as
-   a control at all — the app already has one shape for "an icon you press", so
-   this is that shape. Geometry, border and ink are taken from .screen__top .back
-   rather than restated, so the two cannot drift apart. */
-.consent-scroll-cue{position:static;display:inline-grid;place-items:center;
-  width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);min-height:0;
-  margin:0 auto;padding:0;border:1px solid var(--color-line-strong);
-  border-radius:var(--control-radius);background:var(--color-surface);
-  box-shadow:none;color:var(--color-ink);font:inherit;cursor:pointer}
+/* Restore the original floating treatment: this control sits over the page,
+   just above the CTA, instead of occupying its own row in the footer. */
+.consent-scroll-cue{position:absolute;z-index:5;left:50%;bottom:88px;display:grid;place-items:center;
+  width:36px;min-width:36px;height:36px;min-height:0;transform:translateX(-50%);
+  margin:0;padding:0;border:1px solid var(--color-line-strong);
+  border-radius:var(--control-radius);background:var(--surface-page);
+  box-shadow:var(--shadow-sm);color:var(--color-ink);font:inherit;cursor:pointer}
 .consent-scroll-cue[hidden]{display:none}
-.consent-scroll-cue .ui-icon{width:20px;height:20px}
-.consent-scroll-cue:hover{border-color:var(--color-ink-3)}
-.consent-scroll-cue:active{background:var(--surface-sunken)}
-.consent-scroll-cue:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+.consent-scroll-cue .ui-icon{width:16px;height:16px}
+.consent-scroll-cue:hover{background:var(--color-surface);transform:translate(-50%,-1px);box-shadow:var(--shadow-md)}
+.consent-scroll-cue:active{transform:translate(-50%,0)}
+.consent-scroll-cue:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
 
 /* The desktop QA shell still presents a phone-width product screen, so the legal
    page behaviour belongs to the component rather than only to a viewport query. */
@@ -2996,11 +2992,9 @@ body.lang-th *{letter-spacing:normal}
 #consent-terms .consent-page__sentinel{display:block;width:100%;height:1px}
 #consent-terms .screen__footer{display:grid;justify-items:center;gap:10px;padding:12px max(20px,calc((100% - 760px)/2)) max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--color-line);background:var(--color-surface)}
 #consent-terms .screen__footer>*{width:min(100%,760px)!important;max-width:760px}
-/* The footer stretches what it holds to the reading width, which is right for
-   the CTA and wrong for a square icon button — it made the scroll cue a
-   350px-wide box with an arrow lost in the middle of it. */
-#consent-terms .screen__footer>.consent-scroll-cue{width:var(--control-h-icon)!important;max-width:var(--control-h-icon)}
-
+/* The shared footer rule stretches actions to the reading column. The floating
+   scroll control is deliberately exempt so it remains a compact icon button. */
+#consent-terms .screen__footer>.consent-scroll-cue{width:36px!important;max-width:36px}
 /* True phone viewport: the product shell fills the visible app area while only
    the content region scrolls. The primary action and bottom navigation therefore
    keep one stable baseline across short and long screens. */
