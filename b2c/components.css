@@ -4117,6 +4117,70 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
     max-width:var(--account-flow-content-max);
   }
 }
+
+/* Tracking is an operational dashboard on desktop, rather than a form flow.
+   Give the status timeline enough horizontal room and use the remaining width
+   for a genuine two-column summary. The phone/tablet composition above stays
+   unchanged. This must follow the shared desktop shell contract. */
+@media(min-width:1024px){
+  #tracking{--tracking-shell-max:1120px}
+  #tracking>.postpay-tracking-topbar{
+    min-height:72px;
+    padding-inline:24px;
+  }
+  #tracking>.postpay-tracking-body{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-content:start;
+    align-items:start;
+    gap:20px;
+    padding:24px!important;
+  }
+  #tracking>.postpay-tracking-body>*{
+    width:auto;
+    max-width:none;
+    margin-inline:0;
+  }
+  #tracking .postpay-tracking-hero{
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:minmax(280px,.72fr) minmax(560px,1.55fr);
+  }
+  #tracking .postpay-note{
+    grid-column:1 / -1;
+    padding:15px 20px;
+    border-radius:0;
+  }
+  #tracking .postpay-note strong{font-size:14px}
+  #tracking .postpay-note small{font-size:12px}
+  #tracking .delivery-eta{
+    grid-column:1;
+    grid-row:2;
+    min-height:142px;
+    justify-content:center;
+    padding:22px 24px;
+    border-right:1px solid #eceef2;
+  }
+  #tracking .delivery-eta__time{font-size:31px}
+  #tracking .postpay-progress{
+    grid-column:2;
+    grid-row:2;
+    min-height:142px;
+    align-content:center;
+    padding:22px 16px 18px;
+    border-top:0;
+  }
+  #tracking .postpay-progress::before{top:39px}
+  #tracking .postpay-confirm-receipt{
+    grid-column:1 / -1;
+    width:auto;
+  }
+  #tracking .postpay-order-snapshot,
+  #tracking .postpay-route-card{height:100%}
+  #tracking [data-tracking-reference],
+  #tracking .postpay-tracking-actions{grid-column:1 / -1}
+}
+
 /* Leading the record, the doctor block sits above the note rather than closing
    it, so its rule sits under it instead of over it (client, 11 Sep). */
 .treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
@@ -5337,5 +5401,15 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
     margin-right:0;
     padding-left:0;
     padding-right:0;
+  }
+}
+
+/* Final desktop override for the tracking dashboard. It intentionally follows
+   the shared 752px form-shell rule above. */
+@media(min-width:1024px){
+  #tracking.screen>.postpay-tracking-topbar,
+  #tracking.screen>.postpay-tracking-body{
+    width:min(100%,var(--tracking-shell-max,1120px));
+    max-width:var(--tracking-shell-max,1120px);
   }
 }
