@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260924-payment-success-blue-v73";
+    const release = "20260924-profile-nav-fit-v74";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -474,7 +474,7 @@
       align-self: stretch;
       flex: 0 0 auto;
       min-width: 0;
-      gap: 18px;
+      gap: 16px;
     }
     #profile .profile-shell-nav__links a {
       position: relative;
@@ -581,8 +581,11 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      flex: 1 0 0;
-      gap: 14px;
+      /* This side has a real minimum width (language + account pill). Keeping
+         it intrinsic prevents the equal-flex columns from pushing the account
+         action outside the shared 752px desktop shell. */
+      flex: 0 0 auto;
+      gap: 12px;
     }
     #profile .profile-shell-nav__language {
       position: relative;
@@ -761,7 +764,10 @@
         margin: 40px 40px 0;
         padding: 12px;
       }
-      #profile .profile-shell-nav__links { gap: 32px; }
+      /* The header itself is capped by the shared app shell, even on a wide
+         viewport. Keep the token-sized link gap at this tier so the complete
+         navigation stays inside the capsule without changing typography. */
+      #profile .profile-shell-nav__links { gap: 16px; }
       #profile .profile-shell-nav__links a { font-size: 14px; }
     }
 
