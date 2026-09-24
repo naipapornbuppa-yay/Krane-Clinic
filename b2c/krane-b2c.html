@@ -4157,7 +4157,9 @@
 <div class="modal-layer" id="signup-done-modal" hidden aria-hidden="true">
   <div class="modal-layer__scrim" aria-hidden="true"></div>
   <section class="modal-dialog signup-done-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="signup-done-title" aria-describedby="signup-done-description">
-    <img class="signup-done-dialog__art" src="assets/state-editorial-v5-ink/nurse-ready.png" width="560" height="360" alt="" decoding="async">
+    <svg class="signup-done-dialog__art" viewBox="0 0 560 360" width="560" height="360" aria-hidden="true" focusable="false">
+      <use href="#krane-state-nurse-ready"></use>
+    </svg>
     <h2 id="signup-done-title">สมัครสมาชิกสำเร็จ</h2>
     <p id="signup-done-description" data-signup-done-description>ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือกรอกข้อมูลผู้รับบริการ</p>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-signup-done-continue>ดำเนินการต่อ</button></div>
@@ -8214,24 +8216,33 @@
   (function initPhoneEdit(){
     document.addEventListener('click', function(e){
       const btn = e.target.closest('[data-phone-edit]');
-      if(!btn) return;
-      const screen = btn.closest('.screen');
+      const lockedInput = e.target.closest('[data-phone-input][readonly]');
+      if(!btn && !lockedInput) return;
+      const trigger = btn || lockedInput;
+      const screen = trigger.closest('.screen');
       const input = screen && screen.querySelector('[data-phone-input]');
       const note = screen && screen.querySelector('[data-phone-note]');
+      const editButton = btn || (screen && screen.querySelector('[data-phone-edit]'));
       if(!input) return;
       if(input.readOnly){
         input.readOnly = false;
         input.removeAttribute('aria-readonly');
-        input.value = '';
+        // Tapping the field itself should behave like an ordinary editable
+        // phone field. Keep the verified value visible and select it so the
+        // next keystroke replaces it; changing the value still requires OTP.
         input.focus();
+        try{ input.setSelectionRange(0,input.value.length); }catch(_error){}
         if(screen && screen.id==='partner-patient-info'){
           flowState.partnerPhoneVerified=false;
           persistFlowState();
         }
         if(note) note.textContent = 'กรอกเบอร์ใหม่ แล้วยืนยันด้วยรหัส OTP';
-        btn.textContent = 'ยืนยันด้วย OTP';
+        if(editButton) editButton.textContent = 'ยืนยันด้วย OTP';
         return;
       }
+      // An already-editable input is normal text-entry interaction. Only the
+      // adjacent action button should submit the new number for OTP.
+      if(!btn) return;
       if(!isValidThaiMobile(input.value)){
         showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
         input.focus();
@@ -11101,12 +11112,31 @@
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
     if(patientInfoContinue){
       const name=patientNameValue();
+      const phoneInput=document.getElementById('patient-phone');
       // Off the general path the choice is not rendered, so self-pay stands in
       // rather than blocking on a question the patient was never asked.
       const paymentChoice=isGeneralPath()
         ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
         : 'self-pay';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
+      if(phoneInput && !phoneInput.readOnly){
+        if(!isValidThaiMobile(phoneInput.value)){
+          showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
+          phoneInput.focus();
+          return;
+        }
+        if(normalizePhone(phoneInput.value)!==normalizePhone(flowState.verifiedPhone)){
+          showActionToast('กดยืนยันด้วย OTP เพื่อยืนยันเบอร์ใหม่ก่อนดำเนินการต่อ','warning');
+          phoneInput.focus();
+          return;
+        }
+        phoneInput.readOnly=true;
+        phoneInput.setAttribute('aria-readonly','true');
+        const phoneNote=document.querySelector('#patient-info [data-phone-note]');
+        const phoneEdit=document.querySelector('#patient-info [data-phone-edit]');
+        if(phoneNote) phoneNote.textContent='ยืนยันด้วยรหัส OTP แล้ว';
+        if(phoneEdit) phoneEdit.textContent='เปลี่ยนเบอร์';
+      }
       if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
       submitOnce('patient-info',patientInfoContinue,() => {
         flowState.patientInfoComplete=true;
@@ -13765,9 +13795,24 @@
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260920-float-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <path class="ks-hatch-blue" fill="none" stroke="#1973ff" stroke-width="5" stroke-linecap="round" d="M0 16 12 4M10 21 24 7M22 24 36 10" transform="translate(299 248) rotate(-8) scale(.7)"/>
-      <path class="ks-hatch-yellow" fill="none" stroke="#f2c94c" stroke-width="5" stroke-linecap="round" d="M0 16 12 4M10 21 24 7M22 24 36 10" transform="translate(342 230) rotate(10) scale(.62)"/>
+      <defs>
+        <pattern id="krane-blue-pencil-hatch" width="7" height="7" patternUnits="userSpaceOnUse">
+          <path d="M-2 7 7-2M2 10 10 2" fill="none" stroke="#395AA4" stroke-width="1.5" stroke-linecap="round" opacity=".96"/>
+        </pattern>
+        <clipPath id="krane-nurse-shirt-clip">
+          <!-- Separate visible fabric panels keep the hatch off the skin,
+               clipboard and pocket while still reading as one blue shirt. -->
+          <path d="M219 157 202 168 184 205 204 216 220 188 231 176Z"/>
+          <path d="M233 146 257 174 247 187 218 164Z"/>
+          <path d="M278 146 296 163 330 195 316 215 307 198 286 181 257 174Z"/>
+          <path d="M288 216 309 207 314 300 288 306 278 262 286 256Z"/>
+          <path d="M226 270 278 263 288 306 211 302Z"/>
+        </clipPath>
+      </defs>
+      <image href="assets/state-editorial-v5-ink/nurse-ready.png?v=20260924-blue-shirt-hatch-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <g clip-path="url(#krane-nurse-shirt-clip)">
+        <rect x="180" y="140" width="155" height="172" fill="url(#krane-blue-pencil-hatch)"/>
+      </g>
     </symbol>
 
     <symbol id="krane-state-no-slots" viewBox="0 0 560 360">
@@ -13784,22 +13829,18 @@
         <filter id="krane-waiting-trousers-ink" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
           <!-- Turn only the broad near-black trouser fill into a white mask.
                Erosion removes the thin hand-drawn outlines from the mask so
-               they remain visible around the new halftone fill. -->
+               they remain visible around the new pencil-hatch fill. -->
           <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0"/>
-          <feMorphology operator="erode" radius="2.2"/>
+          <feMorphology operator="erode" radius=".85"/>
         </filter>
         <mask id="krane-waiting-trousers-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="560" height="360" mask-type="luminance">
           <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-waiting-trousers-ink)"/>
         </mask>
-        <pattern id="krane-trousers-halftone" width="5.5" height="5.5" patternUnits="userSpaceOnUse">
-          <circle cx="1.35" cy="1.35" r="1.25" fill="#395AA4"/>
-          <circle cx="4.1" cy="4.1" r="1.1" fill="#395AA4" opacity=".96"/>
-        </pattern>
       </defs>
       <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
       <g clip-path="url(#krane-waiting-trousers-clip)" mask="url(#krane-waiting-trousers-mask)">
         <rect x="184" y="194" width="190" height="116" fill="#fff"/>
-        <rect x="184" y="194" width="190" height="116" fill="url(#krane-trousers-halftone)"/>
+        <rect x="184" y="194" width="190" height="116" fill="url(#krane-blue-pencil-hatch)"/>
       </g>
     </symbol>
 
@@ -13810,7 +13851,7 @@
         </clipPath>
         <filter id="krane-enter-trousers-ink" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
           <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0"/>
-          <feMorphology operator="erode" radius="2.2"/>
+          <feMorphology operator="erode" radius=".85"/>
         </filter>
         <mask id="krane-enter-trousers-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="560" height="360" mask-type="luminance">
           <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-enter-trousers-ink)"/>
@@ -13819,9 +13860,8 @@
       <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
       <g clip-path="url(#krane-enter-trousers-clip)" mask="url(#krane-enter-trousers-mask)">
         <rect x="190" y="170" width="104" height="152" fill="#fff"/>
-        <rect x="190" y="170" width="104" height="152" fill="url(#krane-trousers-halftone)"/>
+        <rect x="190" y="170" width="104" height="152" fill="url(#krane-blue-pencil-hatch)"/>
       </g>
-      <path class="ks-hatch-yellow" fill="none" stroke="#f2c94c" stroke-width="5" stroke-linecap="round" d="M0 16 12 4M10 21 24 7M22 24 36 10" transform="translate(340 235) rotate(9) scale(.68)"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">

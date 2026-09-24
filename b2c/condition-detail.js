@@ -92,7 +92,7 @@
     weight: {
       category: "weight",
       tone: "weight",
-      image: "assets/product-hero/weight-care-couple-campaign-yellow-v4.png",
+      image: "assets/product-hero/weight-care-couple-real-man-yellow-v5.png",
       kicker: "ดูแลน้ำหนักกับแพทย์",
       hook: "ลดน้ำหนักด้วยแผนที่แพทย์ออกให้คุณ",
       lead: "เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ",
