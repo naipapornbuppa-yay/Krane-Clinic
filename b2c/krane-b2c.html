@@ -8216,24 +8216,33 @@
   (function initPhoneEdit(){
     document.addEventListener('click', function(e){
       const btn = e.target.closest('[data-phone-edit]');
-      if(!btn) return;
-      const screen = btn.closest('.screen');
+      const lockedInput = e.target.closest('[data-phone-input][readonly]');
+      if(!btn && !lockedInput) return;
+      const trigger = btn || lockedInput;
+      const screen = trigger.closest('.screen');
       const input = screen && screen.querySelector('[data-phone-input]');
       const note = screen && screen.querySelector('[data-phone-note]');
+      const editButton = btn || (screen && screen.querySelector('[data-phone-edit]'));
       if(!input) return;
       if(input.readOnly){
         input.readOnly = false;
         input.removeAttribute('aria-readonly');
-        input.value = '';
+        // Tapping the field itself should behave like an ordinary editable
+        // phone field. Keep the verified value visible and select it so the
+        // next keystroke replaces it; changing the value still requires OTP.
         input.focus();
+        try{ input.setSelectionRange(0,input.value.length); }catch(_error){}
         if(screen && screen.id==='partner-patient-info'){
           flowState.partnerPhoneVerified=false;
           persistFlowState();
         }
         if(note) note.textContent = 'กรอกเบอร์ใหม่ แล้วยืนยันด้วยรหัส OTP';
-        btn.textContent = 'ยืนยันด้วย OTP';
+        if(editButton) editButton.textContent = 'ยืนยันด้วย OTP';
         return;
       }
+      // An already-editable input is normal text-entry interaction. Only the
+      // adjacent action button should submit the new number for OTP.
+      if(!btn) return;
       if(!isValidThaiMobile(input.value)){
         showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
         input.focus();
@@ -11093,12 +11102,31 @@
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
     if(patientInfoContinue){
       const name=patientNameValue();
+      const phoneInput=document.getElementById('patient-phone');
       // Off the general path the choice is not rendered, so self-pay stands in
       // rather than blocking on a question the patient was never asked.
       const paymentChoice=isGeneralPath()
         ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
         : 'self-pay';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
+      if(phoneInput && !phoneInput.readOnly){
+        if(!isValidThaiMobile(phoneInput.value)){
+          showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
+          phoneInput.focus();
+          return;
+        }
+        if(normalizePhone(phoneInput.value)!==normalizePhone(flowState.verifiedPhone)){
+          showActionToast('กดยืนยันด้วย OTP เพื่อยืนยันเบอร์ใหม่ก่อนดำเนินการต่อ','warning');
+          phoneInput.focus();
+          return;
+        }
+        phoneInput.readOnly=true;
+        phoneInput.setAttribute('aria-readonly','true');
+        const phoneNote=document.querySelector('#patient-info [data-phone-note]');
+        const phoneEdit=document.querySelector('#patient-info [data-phone-edit]');
+        if(phoneNote) phoneNote.textContent='ยืนยันด้วยรหัส OTP แล้ว';
+        if(phoneEdit) phoneEdit.textContent='เปลี่ยนเบอร์';
+      }
       if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
       submitOnce('patient-info',patientInfoContinue,() => {
         flowState.patientInfoComplete=true;
