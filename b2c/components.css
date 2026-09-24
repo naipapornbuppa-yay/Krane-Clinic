@@ -290,10 +290,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Outlined like the rest of the form: the filled boxes on this screen were the
    ones patients read as disabled. The segmented control keeps its fill, since a
    track has to sit behind the selected half (client, 10 Sep). */
-#intake-general .input,#intake-general .select,#intake-general .partner-binary{height:52px;min-height:52px;padding:0 var(--sp-3);border-radius:var(--control-radius);font-size:16px}
-#intake-general .input,#intake-general .select{border:1px solid var(--color-line-strong);background:var(--color-surface)}
-#intake-general .partner-binary{padding:4px;border-color:transparent;background:var(--color-field)}
-#intake-general .input:focus,#intake-general .select:focus{background:var(--color-surface)}
+#intake-general .partner-binary{height:52px;min-height:52px;padding:4px;border-color:transparent;border-radius:var(--control-radius);background:var(--color-field);font-size:16px}
 .partner-nurse-avatar{display:grid;place-items:center;background:var(--color-bg-2);color:var(--color-ink)}
 .partner-nurse-avatar [data-demo-icon]{width:24px;height:24px}
 .partner-nurse-call{position:relative;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden;border-radius:var(--radius-lg);background:linear-gradient(150deg,var(--color-ink),#273247);color:#fff;text-align:center;padding:var(--sp-5)}
@@ -4502,9 +4499,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .input{width:100%;height:var(--field-h);padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
 .float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
 .float-field>.password-field .input{padding-right:0}
-.float-field__slot>label{position:absolute;left:0;top:50%;margin:0;transform:translateY(-50%);
+.float-field__slot>label{position:absolute;z-index:2;left:0;top:50%;max-width:calc(100% - 40px);margin:0;overflow:hidden;transform:translateY(-50%);
   color:var(--color-ink-3);font-size:var(--fs-base);font-weight:var(--fw-regular);line-height:1.2;
-  white-space:nowrap;pointer-events:none;
+  white-space:nowrap;text-overflow:ellipsis;pointer-events:none;
   transition:top var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out),font-size var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
 /* Client, 23 Sep: the raised title and the value it sits over were touching.
    The title's line box reached 24.6px down a 48px field while the value
@@ -4517,19 +4514,6 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field__slot>.textarea[placeholder]:not(:placeholder-shown)+label{top:7px;line-height:1;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)}
 .float-field__slot:focus-within>label{color:var(--color-accent)}
 .float-field .input::placeholder,.float-field .textarea::placeholder{color:transparent}
-/* The general-health page still has older high-specificity field rules near
-   the top of this file. Reassert the shared floating states here so its empty
-   metrics behave exactly like the same controls in the assessment flow. */
-#intake-general .float-field .float-field__slot>label{
-  top:50%;transform:translateY(-50%);font-size:var(--fs-base);font-weight:var(--fw-regular);
-  line-height:1.2;color:var(--color-ink-3)
-}
-#intake-general .float-field .float-field__slot:focus-within>label,
-#intake-general .float-field.is-filled .float-field__slot>label,
-#intake-general .float-field .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label{
-  top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-2)
-}
-#intake-general .float-field .float-field__slot:focus-within>label{color:var(--color-accent)}
 /* Error: red box, red title, message below (the mismatch line on set password). */
 .float-field.is-invalid>.phone-field,.float-field.is-invalid>.password-field,
 .float-field:has(.password-mismatch:not([hidden]))>.password-field{border-color:var(--color-danger);box-shadow:none}
@@ -4918,13 +4902,24 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   .float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
 }
 .float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
-/* Desktop custom selects draw their own control border and focus ring. Remove
-   the generated wrapper's parent border only while enhancement is present;
-   coarse-pointer devices keep the native select and the normal field shell. */
-.float-field>.float-field__box:has(.custom-select){padding:0;border-color:transparent;background:transparent}
-.float-field>.float-field__box:has(.custom-select):hover,
-.float-field>.float-field__box:has(.custom-select):focus-within{border-color:transparent;box-shadow:none}
-.float-field .custom-select__trigger{height:var(--field-h);min-height:var(--field-h);padding:20px 16px 4px}
+/* Variant: select. The field shell, not the enhancement, owns the border and
+   focus ring. This keeps native mobile selects and desktop custom selects on
+   exactly the same geometry. */
+.float-field>.float-field__box:has(.custom-select){padding:0 16px}
+.float-field .custom-select{width:100%!important;height:100%}
+.float-field .custom-select__trigger{
+  height:100%;min-height:0;padding:24px 28px 4px 0;border:0;border-radius:0;
+  background:transparent;box-shadow:none
+}
+.float-field .custom-select__trigger:hover,
+.float-field .custom-select__trigger:focus-visible,
+.float-field .custom-select.is-open .custom-select__trigger{
+  border-color:transparent;background:transparent;box-shadow:none
+}
+.float-field .custom-select__chevron{
+  position:absolute;right:2px;top:50%;margin:0;transform:translateY(-50%) rotate(45deg)
+}
+.float-field .custom-select.is-open .custom-select__chevron{transform:translateY(-50%) rotate(225deg)}
 .float-field .input,.float-field .select,.float-field .textarea,
 #intake-general .float-field .input,#intake-general .float-field .select{
   height:100%;min-height:0;padding:24px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none
@@ -4933,12 +4928,22 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .input:focus,.float-field .select:focus,.float-field .textarea:focus{border-color:transparent;box-shadow:none}
 .float-field .textarea{height:auto;min-height:104px;padding-top:26px;padding-bottom:12px}
 .float-field .select{cursor:pointer}
-/* Selects and dates now follow the same placeholder-title contract as text
-   fields. Their browser-rendered empty value stays hidden behind the centred
-   title, then appears when the title rises on focus or after a value exists. */
-.float-field:not(.is-filled):not(:focus-within) .select,
-.float-field:not(.is-filled):not(:focus-within) .custom-select__value,
-.float-field:not(.is-filled):not(:focus-within) .date-control__value{color:transparent;opacity:0}
+/* Variants: select and date. Unlike free text, these have both a field name
+   and a useful empty value ("choose…" / DD-MM-YYYY), so their title is always
+   raised and the placeholder remains visible. */
+.float-field--select .float-field__slot>label,
+.float-field--date .float-field__slot>label,
+.float-field:has(select.select) .float-field__slot>label,
+.float-field:has(input[type="date"]) .float-field__slot>label{
+  top:9px;transform:none;font-size:var(--fs-xs);font-weight:var(--fw-medium);line-height:1;color:var(--color-ink-2)
+}
+.float-field--select:focus-within .float-field__slot>label,
+.float-field--date:focus-within .float-field__slot>label,
+.float-field:has(select.select):focus-within .float-field__slot>label,
+.float-field:has(input[type="date"]):focus-within .float-field__slot>label{color:var(--color-accent)}
+.float-field:not(.is-filled) .select,
+.float-field:not(.is-filled) .custom-select__value,
+.float-field:not(.is-filled) .date-control__value{color:var(--color-ink-3);opacity:1}
 .float-field .select,.float-field .custom-select__value,.float-field .date-control__value{
   transition:color var(--dur-micro) var(--ease-out),opacity var(--dur-micro) var(--ease-out)
 }
