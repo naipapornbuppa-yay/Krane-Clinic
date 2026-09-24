@@ -1526,10 +1526,26 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   .screen__top.checkout-brandbar>.back{left:16px}
   .checkout-brandbar__logo{width:118px}
 }
-/* Chat header: title left of a live pill, both on the same optical centre.
-   The pill replaces the in-thread "call still running" bar. */
-.screen__top--chat{gap:var(--sp-3)}
-.screen__top--chat>.ttl{position:static!important;flex:1;text-align:left!important;pointer-events:auto!important}
+/* Consultation chat header: reserve equal left and right tracks so the clinic
+   lockup stays on the true screen centre regardless of the live pill's width. */
+.screen__top--chat{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  gap:var(--sp-3);
+}
+.screen__top--chat>.back{grid-column:1;justify-self:start}
+.screen__top--chat>.ttl,
+.screen__top--chat>.ttl.ttl--lockup{
+  grid-column:2;
+  position:static!important;
+  width:max-content;
+  max-width:100%;
+  justify-self:center;
+  text-align:center!important;
+  pointer-events:auto!important;
+}
+.screen__top--chat>.live-pill{grid-column:3;justify-self:end}
 .live-pill{
   display:inline-flex;align-items:center;gap:7px;min-height:28px;flex:none;
   padding:0 12px;border:0;border-radius:var(--radius-pill);
