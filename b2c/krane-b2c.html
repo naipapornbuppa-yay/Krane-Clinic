@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260924-hair-illustrations-v57";
+    const release = "20260924-inline-delivery-quote-v58";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -32,7 +32,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260924-hair-illustrations-v57"></script>
+<script src="review-tools.js?v=20260924-inline-delivery-quote-v58"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -53,8 +53,8 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260924-hair-illustrations-v57">
-<link rel="stylesheet" href="components.css?v=20260924-hair-illustrations-v57">
+<link rel="stylesheet" href="design-tokens.css?v=20260924-inline-delivery-quote-v58">
+<link rel="stylesheet" href="components.css?v=20260924-inline-delivery-quote-v58">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1139,7 +1139,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260924-hair-illustrations-v57" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20260924-inline-delivery-quote-v58" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== ONBOARDING (KRANE-F01 sub-flow), entry screens =====================
@@ -5778,13 +5778,20 @@
     // Same-day delivery is distance-based, so before an address exists it can only
     // be quoted as a range. Postal stays free because it is flat-rate nationwide.
     const addrKnown = Boolean(flowState.orderState.addressConfirmed);
+    const quoteCalculating = flowState.orderState.deliveryQuoteStatus==='calculating';
     payment.querySelectorAll('[data-payment-same-day-fee]').forEach(el => {
-      el.textContent = addrKnown ? baht(deliveryFeeFor('same-day')) : 'คำนวณหลังใส่ที่อยู่';
+      const calculating=quoteCalculating && method==='same-day';
+      el.textContent = calculating ? 'กำลังคำนวณ' : (addrKnown ? baht(deliveryFeeFor('same-day')) : 'คำนวณหลังใส่ที่อยู่');
       el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
+      el.dataset.feeCalculating=String(calculating);
+      el.setAttribute('aria-busy',String(calculating));
     });
     payment.querySelectorAll('[data-payment-priority-fee]').forEach(el => {
-      el.textContent = addrKnown ? baht(deliveryFeeFor('priority')) : 'ค่าประมาณ ฿140 ถึง ฿240';
+      const calculating=quoteCalculating && method==='priority';
+      el.textContent = calculating ? 'กำลังคำนวณ' : (addrKnown ? baht(deliveryFeeFor('priority')) : 'ค่าประมาณ ฿140 ถึง ฿240');
       el.dataset.feeEstimated = addrKnown ? 'false' : 'true';
+      el.dataset.feeCalculating=String(calculating);
+      el.setAttribute('aria-busy',String(calculating));
     });
     if(insuranceRow) insuranceRow.hidden = credit <= 0;
     if(insuranceSummary) insuranceSummary.hidden = credit <= 0;
@@ -8484,7 +8491,7 @@
      acceptance follow payment, as agreed on 20 Aug. */
   function lockShownDeliveryQuote(){
     const order=flowState.orderState;
-    if(order.deliveryQuoteStatus==='accepted' || !hasFulfillableItems()) return;
+    if(order.deliveryQuoteStatus==='accepted' || order.deliveryQuoteStatus==='calculating' || !hasFulfillableItems()) return;
     const pickup=order.fulfillmentMode==='pickup';
     const address=order.address || {};
     if(!(order.addressConfirmed && address.building && address.line && address.district)) return;
@@ -8492,6 +8499,39 @@
     order.deliveryQuoteStatus='accepted';
     order.deliveryQuoteAmount=pickup ? 0 : deliveryFeeFor(order.deliveryMethod);
     persistFlowState();
+  }
+  function startInlineDeliveryQuote(){
+    clearTimeout(deliveryQuoteTimer);
+    clearInterval(deliveryQuoteCountdownTimer);
+    const order=flowState.orderState;
+    const pickup=order.fulfillmentMode==='pickup';
+    const address=order.address || {};
+    if(!hasFulfillableItems()) return;
+    if(!(order.addressConfirmed && address.building && address.line && address.district)) return;
+    if(!pickup && !order.deliveryMethod) return;
+    if(pickup || order.deliveryMethod==='postal'){
+      order.deliveryQuoteStatus='accepted';
+      order.deliveryQuoteAmount=0;
+      ensurePaymentDeadline();
+      persistFlowState();
+      refreshMedicationCheckout();
+      return;
+    }
+    order.deliveryQuoteStatus='calculating';
+    order.deliveryQuoteAmount=null;
+    persistFlowState();
+    refreshMedicationCheckout();
+    deliveryQuoteTimer=setTimeout(() => {
+      const current=flowState.orderState;
+      const amount=current.deliveryMethod==='same-day'
+        ? calculatedSameDayDeliveryFee()
+        : deliveryFeeFor(current.deliveryMethod);
+      current.deliveryQuoteStatus='accepted';
+      current.deliveryQuoteAmount=amount;
+      ensurePaymentDeadline();
+      persistFlowState();
+      refreshMedicationCheckout();
+    },reduceMotion ? 600 : 3500);
   }
   function checkoutActionState(){
     lockShownDeliveryQuote();
@@ -8502,6 +8542,7 @@
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
     /* Stock, acceptance and preparation all happen after the money is taken
        (client, 20 Aug), the way a delivery app does it. */
+    if(flowState.orderState.deliveryQuoteStatus==='calculating') return 'quote-calculating';
     if(flowState.orderState.deliveryQuoteStatus!=='accepted') return 'quote-required';
     if(currentMedicationDue()>0 && !flowState.orderState.paymentMethod) return 'payment-method-required';
     return 'ready';
@@ -8782,6 +8823,7 @@
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
     if(actionState==='address-required') label.textContent='กรอกที่อยู่';
+    else if(actionState==='quote-calculating') label.textContent='กำลังคำนวณค่าจัดส่ง';
     else if(!actionable) label.textContent='ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
     else if(currentMedicationDue()<=0) label.textContent='ยืนยันคำสั่งซื้อ';
@@ -9782,9 +9824,9 @@
        settled with the medicine. The notice above the pay button says the same
        thing and stays on the page, so the toast was the second of two. Removed;
        the footer notice carries it. */
-    clearTimeout(deliveryQuoteTimer);
-    clearInterval(deliveryQuoteCountdownTimer);
     if(id==='delivery-quote'){
+      clearTimeout(deliveryQuoteTimer);
+      clearInterval(deliveryQuoteCountdownTimer);
       /* SCR-013B confirms the delivery method and shows only an estimate. The
          next SCR-014 owns pharmacy acceptance, stock and final pricing. Keeping
          those responsibilities separate prevents checkout opening too early. */
@@ -11284,10 +11326,11 @@
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      /* Saving an address hands straight back to checkout via the quote, and the
-         pharmacy now runs after payment (client, 20 Aug). */
-      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
-      show('delivery-quote',false);
+      /* Delivery pricing is a short system calculation, so it stays in the
+         selected delivery card instead of interrupting checkout with a page. */
+      focusCheckoutDelivery=true;
+      replaceCurrent('payment');
+      startInlineDeliveryQuote();
       return;
     }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
@@ -11296,7 +11339,8 @@
       if(flowState.orderState.fulfillmentMode!==nextMode) invalidateFulfillmentQuote();
       flowState.orderState.fulfillmentMode=nextMode==='pickup' ? 'pickup' : 'delivery';
       persistFlowState();
-      refreshMedicationCheckout();
+      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
+      else refreshMedicationCheckout();
       return;
     }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
@@ -11307,7 +11351,8 @@
       flowState.orderState.deliveryMethod=nextDeliveryMethod;
       deliveryMethod=flowState.orderState.deliveryMethod;
       persistFlowState();
-      refreshMedicationCheckout();
+      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
+      else refreshMedicationCheckout();
       return;
     }
     /* The basket row carries its own remove, so an add-on can be dropped where
@@ -12206,8 +12251,7 @@
       return;
     }
     if(checkoutState==='quote-required'){
-      if(history[history.length-1]!=='delivery-quote') history.push('delivery-quote');
-      show('delivery-quote',false);
+      startInlineDeliveryQuote();
       return;
     }
     if(checkoutState!=='ready'){

@@ -1158,6 +1158,10 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* Selection is a border and a tick, not a different fill. */
 .checkout-delivery-option[aria-checked="true"]{background:var(--surface-card-raised);border-color:var(--color-accent)}
 #payment .checkout-delivery-option .checkout-order__price{grid-column:2;grid-row:1;justify-self:end;max-width:128px;margin-left:0;font-size:var(--fs-xs);line-height:1.25;text-align:right;white-space:normal}
+#payment .checkout-delivery-option .checkout-order__price[data-fee-calculating="true"]{display:inline-flex;align-items:center;justify-content:flex-end;gap:8px;color:var(--color-ink-2);white-space:nowrap}
+#payment .checkout-delivery-option .checkout-order__price[data-fee-calculating="true"]::after{content:"";width:16px;height:16px;flex:none;box-sizing:border-box;border:2px solid rgba(62,96,174,.22);border-top-color:var(--color-accent);border-radius:50%;animation:checkout-fee-spin .75s linear infinite}
+@keyframes checkout-fee-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#payment .checkout-delivery-option .checkout-order__price[data-fee-calculating="true"]::after{animation-duration:1.5s}}
 .checkout-addon-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--sp-4);overscroll-behavior-inline:contain;padding:2px var(--sp-4) var(--sp-2);margin-inline:calc(var(--sp-4) * -1);scrollbar-width:none}
 .checkout-addon-rail::-webkit-scrollbar{display:none}
 .checkout-addon-card{flex:0 0 clamp(142px,40vw,164px);min-height:118px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px;border:1px solid transparent;border-radius:var(--radius-md);background:var(--surface-card-raised);box-shadow:var(--shadow-card-raised);color:var(--color-ink);text-align:left;scroll-snap-align:start;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
