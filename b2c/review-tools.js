@@ -57,8 +57,8 @@
       screens: [
         ["nurse", "SID-023", "พยาบาลคัดกรอง", "Nurse pre-screen"],
         ["matching", "SID-024", "กำลังจับคู่แพทย์", "Doctor matching"],
-        ["choosedoc", "SID-025", "เลือกแพทย์", "Choose doctor"],
-        ["appointment", "SID-026", "เลือกเวลานัดหมาย", "Choose appointment time"],
+        ["choosedoc", "SID-025", "เลือกแพทย์", "Choose doctor", "retired"],
+        ["appointment", "SID-026", "จองคิวแพทย์ · เลือกวันและเวลา", "Book a doctor · Choose date & time", "featured"],
         ["appointment-booked", "SID-026A", "ยืนยันนัดหมาย", "Appointment confirmed"],
         ["consultpay", "SID-027", "สรุปค่าปรึกษา", "Consultation order summary"],
         ["consultpay-gw", "SID-028", "ชำระค่าปรึกษา", "Consultation payment gateway"],
@@ -184,6 +184,8 @@
         link.dataset.go = id;
         link.textContent = thai ? th : en;
         if (id === "landing") link.classList.add("current");
+        if (state === "retired") return;
+        if (state === "featured") link.classList.add("is-key-route");
         if (state === "exception") link.classList.add("is-exception");
         body.appendChild(link);
       });
@@ -224,6 +226,17 @@
     }
 
     rail.appendChild(fragment);
+    /* Screen Tab is an accordion: keeping only one journey group expanded
+       makes long inventories easier to scan and prevents stale open groups
+       from hiding the current route below the fold. */
+    rail.querySelectorAll(":scope > .rail-group").forEach(details => {
+      details.addEventListener("toggle", () => {
+        if (!details.open) return;
+        rail.querySelectorAll(":scope > .rail-group[open]").forEach(other => {
+          if (other !== details) other.open = false;
+        });
+      });
+    });
     rail.dataset.screenCount = String(implemented.size);
     return missing;
   }
