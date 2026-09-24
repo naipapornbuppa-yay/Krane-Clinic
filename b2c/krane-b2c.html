@@ -375,6 +375,20 @@
     .krane-state-defs .ks-dot-3,.krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
     .krane-paper-crane-picture,.krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
     .krane-paper-crane-picture img{display:block;width:100%;height:100%;object-fit:contain}
+    /* Keep the original five hand-drawn frames and their recoloured motion
+       marks in the same SVG group. Two independent animated images drifted a
+       frame apart and could momentarily colour a wing edge instead. */
+    .ks-crane-frame{opacity:0}
+    .ks-crane-frame--1{animation:ks-crane-frame-1 1.8s steps(1,end) infinite}
+    .ks-crane-frame--2{animation:ks-crane-frame-2 1.8s steps(1,end) infinite}
+    .ks-crane-frame--3{animation:ks-crane-frame-3 1.8s steps(1,end) infinite}
+    .ks-crane-frame--4{animation:ks-crane-frame-4 1.8s steps(1,end) infinite}
+    .ks-crane-frame--5{animation:ks-crane-frame-5 1.8s steps(1,end) infinite}
+    @keyframes ks-crane-frame-1{0%,19.999%,100%{opacity:1}20%,99.999%{opacity:0}}
+    @keyframes ks-crane-frame-2{0%,19.999%,40%,100%{opacity:0}20%,39.999%{opacity:1}}
+    @keyframes ks-crane-frame-3{0%,39.999%,60%,100%{opacity:0}40%,59.999%{opacity:1}}
+    @keyframes ks-crane-frame-4{0%,59.999%,80%,100%{opacity:0}60%,79.999%{opacity:1}}
+    @keyframes ks-crane-frame-5{0%,79.999%,100%{opacity:0}80%,99.999%{opacity:1}}
     .krane-state-hatch-stack{position:relative}
     .krane-state-hatch-layer{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
     .state-view__visual--loading .krane-state-art,
@@ -13833,6 +13847,18 @@
           <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0"/>
           <feMorphology operator="erode" radius=".85"/>
         </filter>
+        <filter id="krane-waiting-trousers-outline" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+          <!-- Rebuild the original trouser silhouette and crease as black ink
+               after the hatch layer, so pattern can never sit on top of line. -->
+          <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.333 -.333 -.333 0 1" result="trouser-darkness"/>
+          <feComponentTransfer in="trouser-darkness" result="trouser-dark-only"><feFuncA type="discrete" tableValues="0 0 0 0 0 1 1 1"/></feComponentTransfer>
+          <feComposite in="trouser-dark-only" in2="SourceAlpha" operator="in" result="trouser-mask"/>
+          <feMorphology in="trouser-mask" operator="dilate" radius="1.8" result="trouser-outer"/>
+          <feMorphology in="trouser-mask" operator="erode" radius="1.05" result="trouser-inner"/>
+          <feComposite in="trouser-outer" in2="trouser-inner" operator="out" result="trouser-edge"/>
+          <feFlood flood-color="#101722" result="trouser-outline-ink"/>
+          <feComposite in="trouser-outline-ink" in2="trouser-edge" operator="in"/>
+        </filter>
         <mask id="krane-waiting-trousers-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="560" height="360" mask-type="luminance">
           <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-waiting-trousers-ink)"/>
         </mask>
@@ -13842,6 +13868,7 @@
         <rect x="184" y="194" width="190" height="116" fill="#fff"/>
         <rect x="184" y="194" width="190" height="116" fill="url(#krane-blue-pencil-hatch)"/>
       </g>
+      <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260924-trousers-outline-top-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-waiting-trousers-clip)" filter="url(#krane-waiting-trousers-outline)"/>
     </symbol>
 
     <symbol id="krane-state-enter-room" viewBox="0 0 560 360">
@@ -13853,6 +13880,16 @@
           <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0"/>
           <feMorphology operator="erode" radius=".85"/>
         </filter>
+        <filter id="krane-enter-trousers-outline" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.333 -.333 -.333 0 1" result="trouser-darkness"/>
+          <feComponentTransfer in="trouser-darkness" result="trouser-dark-only"><feFuncA type="discrete" tableValues="0 0 0 0 0 1 1 1"/></feComponentTransfer>
+          <feComposite in="trouser-dark-only" in2="SourceAlpha" operator="in" result="trouser-mask"/>
+          <feMorphology in="trouser-mask" operator="dilate" radius="1.8" result="trouser-outer"/>
+          <feMorphology in="trouser-mask" operator="erode" radius="1.05" result="trouser-inner"/>
+          <feComposite in="trouser-outer" in2="trouser-inner" operator="out" result="trouser-edge"/>
+          <feFlood flood-color="#101722" result="trouser-outline-ink"/>
+          <feComposite in="trouser-outline-ink" in2="trouser-edge" operator="in"/>
+        </filter>
         <mask id="krane-enter-trousers-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="560" height="360" mask-type="luminance">
           <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260924-trousers-halftone-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-enter-trousers-ink)"/>
         </mask>
@@ -13862,6 +13899,7 @@
         <rect x="190" y="170" width="104" height="152" fill="#fff"/>
         <rect x="190" y="170" width="104" height="152" fill="url(#krane-blue-pencil-hatch)"/>
       </g>
+      <image href="assets/state-editorial-v5-ink/enter-consultation-room-v1.png?v=20260924-trousers-outline-top-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-enter-trousers-clip)" filter="url(#krane-enter-trousers-outline)"/>
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
@@ -13937,16 +13975,51 @@
       <path class="ks-hatch-yellow" fill="none" stroke="#f2c94c" stroke-width="5" stroke-linecap="round" d="M0 16 12 4M10 21 24 7M22 24 36 10" transform="translate(398 244) rotate(9) scale(.64)"/>
     </symbol>
     <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/loading-info-flipbook-bw-transparent-v2.webp?v=20260924-crane-blue-v1" class="ks-paper-crane-animated" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+      <defs>
+        <!-- The animation already contains hand-drawn motion marks around the
+             crane. Recolour only those original raster pixels; do not add new
+             decorative marks to the paper itself. The broad stroked paths are
+             clip regions, so transparent pixels remain transparent and the
+             original motion drawing/animation is preserved exactly. -->
+        <clipPath id="krane-crane-motion-marks" clipPathUnits="userSpaceOnUse">
+          <rect x="110" y="100" width="65" height="70"/>
+          <rect x="190" y="30" width="220" height="120"/>
+          <path d="M128 231c-25 12-20 42 1 47 16 4 30-8 26-20-3-9-16-10-20-2-5 10 10 22 24 21 11 0 20-5 31-13" fill="none" stroke="#000" stroke-width="13"/>
+          <rect x="390" y="165" width="95" height="95"/>
+          <rect x="230" y="255" width="130" height="70"/>
+        </clipPath>
+        <filter id="krane-crane-motion-blue" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0 0 0 0 0.2745  0 0 0 0 0.4078  0 0 0 0 0.6941  0 0 0 1 0"/>
+          <!-- Motion marks are deliberately translucent pencil lines while the
+               paper and structural outline are opaque. Lift only that
+               translucent ink so a nearby wing can never become a blue fill. -->
+          <feComponentTransfer><feFuncA type="table" tableValues="0 8 1 1 1 1 1 .82 .18 0 0"/></feComponentTransfer>
+        </filter>
+      </defs>
+      <g class="ks-paper-crane-animated">
+        <g class="ks-crane-frame ks-crane-frame--1">
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
+        </g>
+        <g class="ks-crane-frame ks-crane-frame--2">
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-02.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-02.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
+        </g>
+        <g class="ks-crane-frame ks-crane-frame--3">
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-03.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-03.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
+        </g>
+        <g class="ks-crane-frame ks-crane-frame--4">
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-04.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-04.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
+        </g>
+        <g class="ks-crane-frame ks-crane-frame--5">
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-05.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
+          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-05.png?v=20260924-crane-motion-blue-v6" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
+        </g>
+      </g>
       <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260924-crane-blue-v1" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet"/>
-      <!-- Cover the crane's original black texture marks and redraw those
-           same details in brand blue. No extra badge-like marks or yellow. -->
-      <g fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M283 187l5 10m-10-5 5 7m-58 36 7 7m1-10 6 8m-21 18 2 10m7-8 6 4m116-27-8 12m13-18-11 17m27-46-2 13m1-12 13-4M382 103l5 4"/>
-      </g>
-      <g class="ks-crane-blue-detail" fill="none" stroke="#1973ff" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M283 187l5 10m-10-5 5 7m-58 36 7 7m1-10 6 8m-21 18 2 10m7-8 6 4m116-27-8 12m13-18-11 17m27-46-2 13m1-12 13-4M382 103l5 4"/>
-      </g>
+      <image href="assets/state-editorial-v5-ink/loading-info-bw-transparent-v2.png?v=20260924-crane-motion-blue-v2" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet" clip-path="url(#krane-crane-motion-marks)" filter="url(#krane-crane-motion-blue)"/>
     </symbol>
   </defs>
 </svg>
