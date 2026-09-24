@@ -8,6 +8,18 @@ the walkthrough and can also be opened directly from `krane-b2c-landing.html`.
 
 Keep every file and the `assets/` and `i18n/` folders together.
 
+## Backend string contract
+
+Use the stable message IDs in
+[`handoff/string-ids.v1.json`](handoff/string-ids.v1.json) for API-driven
+statuses, validation, and error messages. The integration rules and payload
+example for P'Tinn are in
+[`handoff/STRING-ID-HANDOFF.md`](handoff/STRING-ID-HANDOFF.md).
+
+Run `npm run check:strings` before handing off changes to confirm IDs are unique
+and Thai/English parameters still match. This catalog is intentionally not
+loaded by the current prototype, so it cannot change the visible UI.
+
 ## Canonical live links
 
 Share only these stable links. The app adds its current release identifier
