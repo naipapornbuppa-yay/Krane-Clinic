@@ -4544,9 +4544,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    is Thai, so the flag and the dial code only crowded the field. */
 .float-field>.phone-field .float-field__slot{padding-left:0}
 
-/* Account-flow inputs, primary CTAs and outlined social CTAs all consume the
-   shared control height and radius tokens. Do not resize one role locally: a
-   form should read as one component family on every account screen. */
+/* Account-flow inputs use the shared field height; actions keep the separate
+   control height. This gives a floating title and value two distinct lines
+   without making every CTA unnecessarily tall. */
 /* #social-confirm builds its fields from .float-field__box rather than
    .auth-login-field, and sits on .form-flow rather than .auth-screen, so this
    rule never reached it. Both wrappers and both shells are named here so one
@@ -4559,14 +4559,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 :is(.auth-screen,.form-flow) .auth-login-field .input,
 :is(.auth-screen,.form-flow) .float-field>.float-field__box .input{
-  height:100%;min-height:0;padding-top:16px;padding-bottom:2px
+  height:100%;min-height:0;padding-top:24px;padding-bottom:4px
 }
 /* The date field draws its own control inside the box, so it needs the same
    height or it overflows the shell the rule above just shrank. */
 :is(.auth-screen,.form-flow) .float-field .date-control{height:100%}
 :is(.auth-screen,.form-flow) .float-field__slot:focus-within>label,
 :is(.auth-screen,.form-flow) .float-field.is-filled .float-field__slot>label,
-:is(.auth-screen,.form-flow) .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label{top:7px}
+:is(.auth-screen,.form-flow) .float-field__slot>.input[placeholder]:not(:placeholder-shown)+label{top:9px}
 
 /* ---------- Payment reference layout (client, 20 Sep) ----------
    The checkout follows the supplied delivery-app composition exactly: basket,
@@ -4908,9 +4908,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    would be. The name rises to a
    small title as soon as the field is focused or holds a value. The same
    contract now applies to text, textarea, select and date controls. */
-/* The shell owns the height; the control inside fills it. Letting the control
-   set 56px and then adding the shell's 1.5px borders is what made these 58
-   while the account flow's were 56 (client, 22 Sep: one size for all). */
+/* The shell owns the height; the control inside fills it. The shared 64px
+   field token is intentionally taller than an action because it must hold a
+   raised title and a value on separate lines (client, 24 Sep). */
 .float-field>.float-field__box{
   display:flex;align-items:stretch;height:var(--field-h);min-height:var(--field-h);padding:0 16px;
   border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);
