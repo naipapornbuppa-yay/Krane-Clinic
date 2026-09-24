@@ -7,7 +7,10 @@
    ============================================================ */
 
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+/* The application owns the viewport and each screen scrolls inside its body.
+   Lock the document itself so a browser-restored root scroll position cannot
+   pull the app chrome above the viewport when routes change on desktop. */
+html,body{width:100%;height:100%;margin:0;padding:0;overflow:hidden}
 
 /* Any component that sets display beats the UA's [hidden]{display:none}, so marking
    an element hidden in script silently did nothing and the element stayed on screen.
@@ -5278,7 +5281,31 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    above tune colours and internal composition and must not be allowed to put a
    page back on a different width. Mobile remains unchanged. */
 @media(min-width:761px){
-  .screen:not(#landing){--app-content-max:var(--care-flow-content-max,704px)}
+  .screen:not(#landing){
+    --app-content-max:var(--care-flow-content-max,704px);
+    isolation:isolate;
+    overflow-anchor:none;
+  }
+  /* Reserve the chrome as fixed flex rows and keep it above the independently
+     scrolling body. This prevents a long question or restored scroll anchor
+     from painting over the header/progress rows on short desktop viewports. */
+  .screen:not(#landing)>:is(.screen__top,.care-journey,.screen__subprogress){
+    position:relative;
+    z-index:2;
+    flex:0 0 auto;
+  }
+  .screen:not(#landing)>.screen__body{
+    position:relative;
+    z-index:1;
+    min-height:0;
+    overflow-anchor:none;
+    overscroll-behavior:contain;
+  }
+  .screen:not(#landing)>.screen__footer{
+    position:relative;
+    z-index:3;
+    flex:0 0 auto;
+  }
   .screen:not(#landing)>:is(.screen__top,.care-journey,.screen__subprogress,.screen__body,.screen__footer){
     width:min(100%,var(--app-shell-max,752px));
     max-width:var(--app-shell-max,752px);
