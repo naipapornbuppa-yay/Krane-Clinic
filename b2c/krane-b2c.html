@@ -10307,11 +10307,32 @@
          creation and expose doctor matching. Internal app navigation omits
          fresh=1, so a genuinely signed-in patient's active journey is kept. */
       if(id==='intake1' && freshRequested){
+        /* Client, 25 Sep: a patient who is already signed in and starts another
+           intake must not be asked to register again. Every "start care" link
+           on the landing and the condition pages carries fresh=1, and this
+           reset was clearing the sign-in with the journey — so a patient who
+           had just logged in reached the end of the questionnaire and was sent
+           to "create an account". The case the reset is for is a half-finished
+           sign-up left in the tab by someone else, not a completed one: the
+           account survives, the journey does not. */
+        const keepAccount=signedIn();
+        const account=keepAccount ? {
+          patientName:flowState.patientName,
+          verifiedPhone:flowState.verifiedPhone,
+          authProvider:flowState.authProvider,
+          profileDisplayName:flowState.profileDisplayName,
+          profilePictureUrl:flowState.profilePictureUrl,
+          lineProfilePictureUrl:flowState.lineProfilePictureUrl
+        } : null;
         resetRequiredFlow();
-        isAuthenticated=false;
+        isAuthenticated=keepAccount;
         journeyActive=false;
         postAuthNext='intake1';
         history=['landing'];
+        if(keepAccount){
+          Object.assign(flowState,account);
+          applyAuthenticatedAccount({returning:true});
+        }
       }
       /* A fresh tracking link represents the order immediately after payment,
          not the final state left behind by a previous QA run in this tab. */
