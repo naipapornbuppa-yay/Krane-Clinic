@@ -2100,10 +2100,45 @@
         <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
       </div>
 
+      <!-- Client, 25 Sep: a patient who orders to more than one place — home and
+           the office — was retyping the whole form every time, because the only
+           address the app kept was the last one used. Anything saved is listed
+           here to pick from in one tap, and "เพิ่มที่อยู่ใหม่" clears the form for
+           another one. The list hides itself until there is something in it, so
+           a first-time patient still just sees the form. -->
+      <section class="form-group address-book" data-address-book hidden>
+        <div class="address-page-head">
+          <h3 class="form-group__title">ที่อยู่ที่บันทึกไว้</h3>
+          <button class="address-clear-all" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
+        </div>
+        <div class="address-book__list" role="radiogroup" aria-label="ที่อยู่ที่บันทึกไว้" data-address-book-list></div>
+      </section>
+
+      <!-- Client, 25 Sep: the pin is what the rider actually drives to, and the
+           form never showed it — the patient filled in a street and had no way
+           to tell whether the dot had landed on their building or the one
+           behind it. A still of the map sits above the fields with the pin on
+           it and the address it resolved to underneath, and "แก้ไข" opens the
+           full picker. It is a picture, not a second map: nothing here pans. -->
+      <section class="form-group address-pin" aria-label="ตำแหน่งที่ปักไว้">
+        <h3 class="form-group__title">ที่อยู่จัดส่ง</h3>
+        <p class="hint address-pin__hint">ไรเดอร์จะไปตามตำแหน่งของหมุดที่คุณปักไว้</p>
+        <div class="address-pin__card">
+          <div class="address-pin__map" data-address-pin-map>
+            <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
+            <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
+            <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+            <button class="address-pin__edit" type="button" data-go="address-map">แก้ไข</button>
+          </div>
+          <p class="address-pin__text" data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</p>
+        </div>
+      </section>
+
       <!-- Fields are grouped by what they are about: where the parcel goes,
            who receives it, and how the rider should find the door. -->
       <section class="form-group" aria-label="รายละเอียดที่อยู่จัดส่ง">
         <div class="form-group__surface">
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLabel" autocomplete="off" placeholder=" "><label for="addrLabel">ชื่อที่อยู่ (เช่น บ้าน ที่ทำงาน)</label></span></div></div>
         <div class="field-row">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrBuilding" autocomplete="off" placeholder=" " required><label for="addrBuilding">บ้านเลขที่ / อาคาร</label></span></div></div>
           <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="off" placeholder=" "><label for="addrFloor">ชั้น</label></span></div></div>
@@ -5309,12 +5344,13 @@
         : '';
       detail.hidden=!confirmed;
     }
-    const previewTitle=document.querySelector('[data-address-preview-title]');
-    const previewDetail=document.querySelector('[data-address-preview-detail]');
-    if(previewTitle) previewTitle.textContent=confirmed ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง';
-    if(previewDetail) previewDetail.textContent=confirmed
-      ? [address.line,address.district].filter(Boolean).join(' · ')
-      : 'ค้นหาอาคาร คอนโด หรือถนน แล้วกรอกรายละเอียดให้ครบ';
+    const previewTitles=document.querySelectorAll('[data-address-preview-title]');
+    const previewDetails=document.querySelectorAll('[data-address-preview-detail]');
+    previewTitles.forEach(el => { el.textContent=confirmed ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง'; });
+    previewDetails.forEach(el => { el.textContent=confirmed
+      ? [address.building,address.line,address.district].filter(Boolean).join(' · ')
+      : 'ค้นหาอาคาร คอนโด หรือถนน แล้วกรอกรายละเอียดให้ครบ'; });
+    renderAddressPinPreview();
     syncCheckoutReadiness();
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
@@ -5329,6 +5365,7 @@
       recipientLastName:recipientParts.lastName,
       recipientPhone:address.recipientPhone || flowState.verifiedPhone || '',
       addrSearch:address.building,
+      addrLabel:address.label,
       addrBuilding:address.building,
       addrFloor:address.floor,
       addrLine:address.line,
@@ -5362,6 +5399,7 @@
     return {
       recipientFirstName:v('recipientFirstName'), recipientLastName:v('recipientLastName'),
       recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:normalizePhone(v('recipientPhone')),
+      label:v('addrLabel'),
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
@@ -5447,6 +5485,7 @@
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     });
     flowState.orderState.address={
+      label:a.label,
       building:a.building, floor:a.floor, line:a.line,
       subdistrict:a.subdistrict, districtName:a.districtName,
       province:a.province, postcode:a.postcode, district:a.district, note:a.note,
@@ -5456,12 +5495,98 @@
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
     flowState.orderState.addressConfirmed=true;
+    rememberDeliveryAddress(flowState.orderState.address);
     invalidateFulfillmentQuote();
     persistFlowState();
     syncDeliveryAddress();
     syncFieldClearButtons();
     return true;
   }
+
+  /* ---------- The address book ----------
+     A patient who orders to more than one place was retyping the form every
+     time, because the only address kept was the last one used. Saving keeps
+     each one, keyed on the address itself rather than on an id the form would
+     have to carry, so confirming the same place twice updates that entry
+     instead of listing it again. */
+  function addressBookKey(address){
+    return [address.building,address.line,address.subdistrict,address.districtName,address.postcode]
+      .map(part => String(part || '').trim().toLowerCase()).join('|');
+  }
+  function addressBookName(address){
+    return String(address.label || '').trim() || String(address.building || '').trim() || 'ที่อยู่จัดส่ง';
+  }
+  function addressBookLine(address){
+    return [address.building,address.floor,address.line,address.district].filter(Boolean).join(' · ');
+  }
+  function savedAddresses(){
+    if(!Array.isArray(flowState.savedAddresses)) flowState.savedAddresses=[];
+    return flowState.savedAddresses;
+  }
+  function rememberDeliveryAddress(address){
+    if(!address || !address.building) return;
+    const book=savedAddresses();
+    const key=addressBookKey(address);
+    const at=book.findIndex(entry => addressBookKey(entry)===key);
+    const entry={...address};
+    if(at>=0) book[at]=entry; else book.push(entry);
+    /* Two is enough to make the list worth having; beyond a handful it is a
+       list to manage rather than a shortcut, so the oldest drops off. */
+    while(book.length>6) book.shift();
+  }
+  function renderAddressBook(){
+    const section=document.querySelector('[data-address-book]');
+    const list=document.querySelector('[data-address-book-list]');
+    if(!section || !list) return;
+    const book=savedAddresses();
+    /* One saved address is the one already in the form — there is nothing to
+       choose between, so the list stays out of the way until there are two. */
+    section.hidden=book.length<2;
+    if(section.hidden){ list.innerHTML=''; return; }
+    const currentKey=addressBookKey(flowState.orderState.address || {});
+    list.innerHTML=book.map((entry,index) => {
+      const selected=addressBookKey(entry)===currentKey;
+      return `<button class="option address-book__item" type="button" role="radio" aria-checked="${selected}" aria-selected="${selected}" data-address-book-pick="${index}">
+        <span class="opt-body"><span class="opt-title">${addressBookName(entry)}</span><span class="opt-sub">${addressBookLine(entry)}</span></span>
+        <span class="opt-check"></span>
+      </button>`;
+    }).join('');
+  }
+  function useSavedAddress(index){
+    const entry=savedAddresses()[index];
+    if(!entry) return;
+    flowState.orderState.address={...entry};
+    flowState.orderState.addressConfirmed=true;
+    invalidateFulfillmentQuote();
+    persistFlowState();
+    syncDeliveryAddress({hydrateForm:true});
+    renderAddressBook();
+    showActionToast('ใช้' + addressBookName(entry) + 'แล้ว','success');
+  }
+  function startNewAddress(){
+    ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote']
+      .forEach(id => {
+        const field=document.getElementById(id);
+        if(!field) return;
+        field.value='';
+        field.dispatchEvent(new Event('input',{bubbles:true}));
+        clearFieldError(field);
+      });
+    flowState.orderState.addressConfirmed=false;
+    persistFlowState();
+    renderAddressBook();
+    syncFieldClearButtons();
+    const first=document.getElementById('addrLabel');
+    if(first){
+      first.focus({preventScroll:true});
+      try{ first.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
+    }
+  }
+  document.addEventListener('click',event => {
+    if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
+    const pick=event.target.closest('[data-address-book-pick]');
+    if(pick) useSavedAddress(Number(pick.dataset.addressBookPick));
+  });
 
   function tomorrowLabel(){
     const tomorrow=new Date();
@@ -6620,6 +6745,37 @@
       img.addEventListener('error',() => { osmDisable(); },{once:true});
     });
   }
+  /* A still of the pinned spot for the address form. The picker owns panning
+     and reverse geocoding; this only draws where the pin currently is, so it
+     is plain <img> tiles with no state of its own. The CSS street grid sits
+     behind them, so a blocked or slow tile server leaves something that still
+     reads as a map rather than an empty rectangle. */
+  function renderAddressPinPreview(){
+    const host=document.querySelector('[data-address-pin-map]');
+    const plane=host?.querySelector('[data-address-pin-tiles]');
+    if(!host || !plane) return;
+    if(osmView.failed){ plane.innerHTML=''; return; }
+    const width=host.clientWidth || 320, height=host.clientHeight || 132;
+    const z=osmView.zoom, scale=Math.pow(2,z);
+    const originX=osmLonToX(osmView.lon,z)*OSM_TILE_SIZE - width/2;
+    const originY=osmLatToY(osmView.lat,z)*OSM_TILE_SIZE - height/2;
+    const firstX=Math.floor(originX/OSM_TILE_SIZE), lastX=Math.floor((originX+width)/OSM_TILE_SIZE);
+    const firstY=Math.floor(originY/OSM_TILE_SIZE), lastY=Math.floor((originY+height)/OSM_TILE_SIZE);
+    const tiles=[];
+    for(let y=firstY;y<=lastY;y++){
+      if(y<0 || y>=scale) continue;
+      for(let x=firstX;x<=lastX;x++){
+        const wrapped=((x%scale)+scale)%scale;
+        tiles.push(`<img class="osm-map__tile" alt="" aria-hidden="true" loading="lazy" src="${OSM_TILES}/${z}/${wrapped}/${y}.png"
+          style="left:${Math.round(x*OSM_TILE_SIZE-originX)}px;top:${Math.round(y*OSM_TILE_SIZE-originY)}px">`);
+      }
+    }
+    plane.innerHTML=tiles.join('');
+    plane.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error',() => { plane.innerHTML=''; },{once:true});
+    });
+  }
+
   function osmDisable(){
     if(osmView.failed) return;
     osmView.failed=true;
@@ -9636,10 +9792,9 @@
     }
     if(id==='consultpay') applyCoverageFlag();
     if(id==='plan') syncDeclinedMedicines();
-    if(id==='address'){
-      const hero=document.querySelector('#address [data-sim-map]');
-      if(hero){ simBindPan(hero); simApplyTransform(); }
-    }
+    /* The pannable map moved to #address-map; what is on the form now is a
+       still of the pin, so there is nothing here to bind panning to. */
+    if(id==='address'){ renderAddressPinPreview(); renderAddressBook(); }
     fillDoctorName();
     if(id==='profile' || id==='followups') syncHomeFollowUpCta();
     if(id==='appointment'){ syncAppointmentDays(); resetAppointment(); }
