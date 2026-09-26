@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260924-screen-directory-v78";
+    const release = "20260924-drive-intake-v79";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -1284,7 +1284,7 @@
   <section class="screen" id="intake5">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text">ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:71%"></span></div></div></div>
     <div class="screen__body stack-5">
-      <div class="stack-2"><h2 class="h1">Add a photo of the area you're concerned about</h2></div>
+      <div class="stack-2" data-question-id="hair.photos" data-string-id="intake.hair.photos.title"><h2 class="h1">กรุณาเพิ่มรูปบริเวณรอบศีรษะทั้ง 4 มุม เพื่อให้คุณหมอวินิจฉัยได้ถูกต้อง</h2></div>
       <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · Shared only with your assigned doctor.</span></p>
 
       <div class="stack-2">
@@ -1324,6 +1324,7 @@
       </label>
       <input id="rx-photo-input" class="sr-only" type="file" accept="image/*" multiple data-photo-input>
       <div class="up-thumbs" data-photo-thumbs></div>
+    </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-direct-intake-complete>Continue</button><button class="btn btn--ghost btn--sm" data-direct-intake-complete>Skip for now</button></div>
   </section>
 
@@ -3978,37 +3979,36 @@
      yes/no safety sheet as the health history, not on a page of their own. -->
 <div class="modal-layer" id="obesity-risk-modal" hidden aria-hidden="true">
   <button class="modal-layer__scrim" type="button" data-obesity-risk-close aria-label="ปิดหน้าต่าง"></button>
-  <!-- Client, 23 Sep: no description, no English in brackets, and the two liver
-       and pancreas questions asked as one. Any "yes" raises the same warning and
-       sends the patient to a doctor, so the pair did not need separate answers. -->
+  <!-- Questions mirror Doctor Review > Review obesity / weight loss. Any "yes"
+       raises the same warning and sends the patient to in-person care. -->
   <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="obesity-risk-title">
     <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="obesity-risk-title">ยืนยันข้อมูลความปลอดภัย</h2>
     <div class="partner-clinical-grid">
-      <fieldset class="partner-history-field" data-obesity-risk="mtc">
-              <legend>ครอบครัวมีประวัติมะเร็งไทรอยด์ชนิดเมดัลลารี ใช่หรือไม่</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="ครอบครัวมีประวัติมะเร็งไทรอยด์ชนิดเมดัลลารี ใช่หรือไม่">
+      <fieldset class="partner-history-field" data-obesity-risk="mtc" data-question-id="weight.risk.mtc" data-string-id="intake.weight.risk.mtc.title">
+              <legend>คุณหรือสมาชิกในครอบครัวเคยเป็นมะเร็งไทรอยด์ชนิดเมดัลลารี (Medullary Thyroid Carcinoma)?</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="คุณหรือสมาชิกในครอบครัวเคยเป็นมะเร็งไทรอยด์ชนิดเมดัลลารีหรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
-      <fieldset class="partner-history-field" data-obesity-risk="esrd">
-              <legend>เป็นโรคไตวายระยะสุดท้าย ใช่หรือไม่</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="เป็นโรคไตวายระยะสุดท้าย ใช่หรือไม่">
+      <fieldset class="partner-history-field" data-obesity-risk="esrd" data-question-id="weight.risk.esrd" data-string-id="intake.weight.risk.esrd.title">
+              <legend>คุณเคยเป็นโรคไตวายระยะสุดท้าย (ESRD)?</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="คุณเคยเป็นโรคไตวายระยะสุดท้ายหรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
-      <fieldset class="partner-history-field" data-obesity-risk="liver-pancreas">
-              <legend>เป็นโรคตับแข็งระยะสุดท้าย หรือเคยตับอ่อนอักเสบไม่ทราบสาเหตุ ใช่หรือไม่</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="เป็นโรคตับแข็งระยะสุดท้าย หรือเคยตับอ่อนอักเสบไม่ทราบสาเหตุ ใช่หรือไม่">
+      <fieldset class="partner-history-field" data-obesity-risk="pancreas" data-question-id="weight.risk.pancreatitis" data-string-id="intake.weight.risk.pancreatitis.title">
+              <legend>คุณเคยมีภาวะตับอ่อนอักเสบโดยไม่ทราบสาเหตุไหม?</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="คุณเคยมีภาวะตับอ่อนอักเสบโดยไม่ทราบสาเหตุหรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
             </fieldset>
-      <fieldset class="partner-history-field" data-obesity-risk="pregnancy">
-              <legend>กำลังตั้งครรภ์หรือให้นมบุตร ใช่หรือไม่</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="กำลังตั้งครรภ์หรือให้นมบุตร ใช่หรือไม่">
+      <fieldset class="partner-history-field" data-obesity-risk="pregnancy" data-question-id="weight.risk.pregnancy" data-string-id="intake.weight.risk.pregnancy.title">
+              <legend>คุณกำลังตั้งครรภ์หรือให้นมบุตรอยู่หรือไม่?</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="คุณกำลังตั้งครรภ์หรือให้นมบุตรอยู่หรือไม่">
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-obesity-risk-choice="no">ไม่</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-obesity-risk-choice="yes">ใช่</button>
               </div>
@@ -5970,32 +5970,73 @@
       </div>
     </div>`;
   }
+  /* Doctor Review questionnaires share one rendering contract. Stable IDs are
+     deliberately carried in the markup so the backend can persist answers
+     without depending on Thai copy or DOM position. */
+  function intakeChoiceQuestion({id,title,options,multiple=false,helper=''}){
+    const selectAttribute=multiple ? 'data-multi' : 'data-select';
+    return `<div class="common-group" data-question-id="${id}" data-string-id="intake.${id}.title">
+      <div class="section-label">${title}</div>
+      ${helper ? `<p class="hint">${helper}</p>` : ''}
+      <div class="stack-3">
+        ${options.map((option,index) => `<button class="option" type="button" ${selectAttribute} data-answer-id="${id}.${index+1}"><span class="opt-body"><span class="opt-title">${option}</span></span><span class="opt-check"></span></button>`).join('')}
+      </div>
+    </div>`;
+  }
   const intakeTemplates = {
     hair:{
       intake1:`
-        <div><h2 class="h1">Where are you noticing hair loss?</h2></div>
-        <div class="stack-3 hair-area-options">
-          <button class="option hair-area-option" aria-selected="true" data-multi data-hair-symptom><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/illustrated-v1/hair-angle-front-mascot-v2-cutout-v1.png" width="800" height="800" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Temples or receding hairline</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/illustrated-v1/hair-angle-crown-mascot-v3-cutout-v1.png" width="800" height="800" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Crown or top of the scalp</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/illustrated-v1/hair-angle-back-mascot-v2-cutout-v1.png" width="800" height="800" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Diffuse shedding across the scalp</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/illustrated-v1/hair-angle-side-mascot-v3-cutout-v1.png" width="800" height="800" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Round or patchy areas</span></span><span class="opt-check"></span></button>
-          <button class="option hair-area-option" data-multi><span class="hair-area-option__visual" aria-hidden="true"><img src="assets/intake/line-v2/hair-area-scalp-v3.png" width="256" height="256" decoding="async" alt=""></span><span class="opt-body"><span class="opt-title">Scalp itching, redness or flaking</span></span><span class="opt-check"></span></button>
-        </div>
-        ${intakeDurationControl({label:'How long has this been happening?'})}`,
+        <div><h2 class="h1">แบบประเมินผมร่วงและหนังศีรษะ</h2></div>
+        ${intakeChoiceQuestion({
+          id:'hair.current_goal',
+          title:'สุขภาพเส้นผมตอนนี้เป็นอย่างไร และคุณอยากได้ผลลัพธ์แบบไหน?',
+          helper:'คุณหมอจะได้เข้าใจลักษณะอาการของคุณ และแนะนำแนวทางรักษาที่เหมาะสมให้ได้',
+          options:['มีผมบาง ผมร่วง มาสักพักแล้ว กำลังหาแนวทางรักษาอยู่','เพิ่งเริ่มสังเกตว่าหัวเริ่มเถิกขึ้น อยากเริ่มรักษาทันที','ผมยังปกติดีอยู่ แต่อยากเริ่มทานยาป้องกันไว้ก่อน']
+        })}
+        ${intakeChoiceQuestion({
+          id:'hair.previous_treatment',
+          title:'คุณเคยลองรักษาอาการผมบาง ผมร่วงวิธีไหนมาแล้วบ้าง?',
+          helper:'เลือกทุกข้อที่ตรง',
+          multiple:true,
+          options:['ยา อาหารเสริม หรือผลิตภัณฑ์ทั่วไป','ยาตามใบสั่งแพทย์','ปลูกผม','ยังไม่เคย']
+        })}`,
       intake2:`
-        <div class="stack-2"><h2 class="h1">How has your hair changed?</h2></div>
-        <div class="common-group"><div class="section-label">How much is it affecting you?</div><div class="stack-3">
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Mild</span><span class="opt-sub">Noticeable but not affecting daily life</span></span><span class="opt-check"></span></button>
-          <button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">Moderate</span><span class="opt-sub">Affecting confidence, comfort or routine</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Severe or rapidly worsening</span><span class="opt-sub">Significant impact on daily life or changing quickly</span></span><span class="opt-check"></span></button>
-        </div></div>
-        <div class="common-group"><div class="section-label">What best describes the change?</div><div class="stack-3">
-          <button class="option" aria-selected="true" data-multi><span class="opt-body"><span class="opt-title">Gradual thinning</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">More shedding than usual</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Hairline or crown is receding</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Patchy hair loss</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Scalp discomfort or visible change</span></span><span class="opt-check"></span></button>
-        </div></div>`
+        <div><h2 class="h1">แบบประเมินผมร่วงและหนังศีรษะ</h2></div>
+        ${intakeChoiceQuestion({
+          id:'hair.onset',
+          title:'คุณเริ่มสังเกตเห็นว่าผมเริ่มร่วงและบางลงครั้งแรกเมื่อไหร่?',
+          helper:'เลือกข้อที่ตรงที่สุด',
+          options:['นานกว่า 1 ปีแล้ว','ภายในปีนี้','ภายในช่วงไม่กี่เดือนนี้','ไม่แน่ใจ']
+        })}
+        ${intakeChoiceQuestion({
+          id:'hair.family_history',
+          title:'มีคนในครอบครัวหรือญาติสายตรงที่มีอาการผมบาง ผมร่วง ไหม?',
+          options:['มี','ไม่มี','ไม่แน่ใจ']
+        })}`,
+      intake3:`
+        <div><h2 class="h1">แบบประเมินผมร่วงและหนังศีรษะ</h2></div>
+        ${intakeChoiceQuestion({
+          id:'hair.severity',
+          title:'คุณผมร่วงไปมากเท่าไหร่แล้ว?',
+          options:['ค่อนข้างมาก - ทุกคนสังเกตเห็นได้','ปานกลาง - มีแค่คนใกล้ตัวที่เห็น','น้อยมาก - สังเกตเห็นเองคนเดียว']
+        })}
+        ${intakeChoiceQuestion({
+          id:'hair.scalp_symptoms',
+          title:'มีอาการคัน แสบ ปวด สะเก็ด ตุ่ม หรือรอยแดงที่หนังศีรษะร่วมด้วยหรือไม่?',
+          options:['มี','ไม่มี']
+        })}`,
+      intake4:`
+        <div><h2 class="h1">แบบประเมินผมร่วงและหนังศีรษะ</h2></div>
+        ${intakeChoiceQuestion({
+          id:'hair.female_cycle_weight',
+          title:'มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่? (เฉพาะผู้หญิง)',
+          options:['มี','ไม่มี']
+        })}
+        ${intakeChoiceQuestion({
+          id:'hair.female_pregnancy',
+          title:'คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่? (เฉพาะผู้หญิง)',
+          options:['มี','ไม่มี']
+        })}`
     },
 
     /* Obesity / weight loss, 13 Sep: these are the client's own questions, from
@@ -6008,25 +6049,26 @@
     weight:{
       intake1:`
         <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
-        <div class="common-group">
-          <div class="section-label">คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง</div>
+        <div class="common-group" data-question-id="weight.preferred_treatment" data-string-id="intake.weight.preferred_treatment.title">
+          <div class="section-label">คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง?</div>
           <div class="stack-3">
             <button class="option" data-select><span class="opt-body"><span class="opt-title">ปากกาลดน้ำหนัก GLP-1</span></span><span class="opt-check"></span></button>
             <button class="option" data-select><span class="opt-body"><span class="opt-title">ยาเม็ด GLP-1</span></span><span class="opt-check"></span></button>
-            <button class="option" data-select><span class="opt-body"><span class="opt-title">อยากให้แพทย์แนะนำ</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">อยากให้แพทย์แนะนำการรักษาที่เหมาะให้</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">อยากปรึกษาแพทย์เพื่อเรียนรู้เพิ่มเติม</span></span><span class="opt-check"></span></button>
           </div>
         </div>
-        <div class="common-group">
-          <div class="section-label">เคยลองลดน้ำหนักผ่านยาประเภท GLP-1 แล้วหรือยัง</div>
+        <div class="common-group" data-question-id="weight.previous_glp1" data-string-id="intake.weight.previous_glp1.title">
+          <div class="section-label">คุณเคยลองลดน้ำหนักผ่านยาประเภท GLP-1 แล้วหรือยัง?</div>
           <div class="stack-3">
             <button class="option" data-select><span class="opt-body"><span class="opt-title">ยังไม่เคย นี่เป็นครั้งแรก</span></span><span class="opt-check"></span></button>
-            <button class="option" data-select><span class="opt-body"><span class="opt-title">เคยลองแล้ว</span></span><span class="opt-check"></span></button>
+            <button class="option" data-select><span class="opt-body"><span class="opt-title">เคยแล้ว</span></span><span class="opt-check"></span></button>
           </div>
         </div>`,
       intake2:`
         <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
-        <div class="common-group">
-          <div class="section-label">ทำไมวันนี้ถึงอยากเริ่มลดน้ำหนัก</div>
+        <div class="common-group" data-question-id="weight.motivation" data-string-id="intake.weight.motivation.title">
+          <div class="section-label">ทำไมคุณถึงอยากเริ่มลดน้ำหนัก?</div>
           <p class="hint">เลือกได้มากกว่า 1 ข้อ</p>
           <div class="stack-3">
             <button class="option" data-multi><span class="opt-body"><span class="opt-title">สุขภาพโดยรวมที่ดีขึ้น</span></span><span class="opt-check"></span></button>
@@ -6040,8 +6082,8 @@
         </div>`,
       intake3:`
         <div><h2 class="h1">ประเมินการลดน้ำหนัก</h2></div>
-        <div class="common-group">
-          <div class="section-label">ส่วนสูงและน้ำหนักปัจจุบัน</div>
+        <div class="common-group" data-question-id="weight.starting_point" data-string-id="intake.weight.starting_point.title">
+          <div class="section-label">เข้าใจแล้ว! มาเริ่มกันเลย จุดเริ่มต้นของคุณอยู่ที่ตรงไหน?</div>
           <div class="partner-health-grid">
             <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="obesity-height" inputmode="numeric" data-obesity-metric="height" placeholder=" "><label for="obesity-height">ส่วนสูง (ซม.)</label></span></div></div>
             <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="obesity-weight" inputmode="numeric" data-obesity-metric="weight" placeholder=" "><label for="obesity-weight">น้ำหนัก (กก.)</label></span></div></div>
@@ -6056,10 +6098,11 @@
           <aside class="intake-explainer" data-intake-guidance><strong class="intake-explainer__title">ทำไมเราถึงถาม</strong><p class="intake-explainer__copy">BMI คือข้อบ่งใช้ที่แพทย์ต้องประเมินก่อนพิจารณายาลดน้ำหนัก ตัวเลขนี้จึงมาก่อนการปรึกษา</p></aside>
           <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"></path><path d="m9 12 2 2 4-4"></path></svg><span>เป็นส่วนตัว · เปิดให้เฉพาะแพทย์ที่ดูแลคุณ</span></p>
         </div>
-        <div class="common-group">
-          <div class="section-label">เป้าหมายน้ำหนักที่ต้องการ</div>
-          <p class="hint">แพทย์จะช่วยแนะนำขั้นตอน เพื่อให้คุณลดน้ำหนักได้อย่างมีคุณภาพและดูแลสุขภาพไปพร้อมกัน</p>
+        <div class="common-group" data-question-id="weight.goal" data-string-id="intake.weight.goal.title">
+          <div class="section-label">เป้าหมายการลดน้ำหนักของคุณ?</div>
+          <p class="hint">บอกเราถึงเป้าหมายน้ำหนักของคุณ คุณหมอจะแนะนำขั้นตอนเพื่อให้คุณลดน้ำหนักได้อย่างมีคุณภาพและดูแลสุขภาพไปพร้อมกัน</p>
           <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="obesity-target" inputmode="numeric" data-obesity-metric="target" placeholder=" "><label for="obesity-target">น้ำหนักเป้าหมาย (กก.)</label></span></div></div>
+          ${intakeDurationControl({label:'คุณอยากบรรลุเป้าหมายภายในเวลาเท่าไหร่?',thai:true})}
         </div>`
     },
     hormone:{
@@ -6161,33 +6204,40 @@
     },
     sexual:{
       intake1:`
-        <div><h2 class="h1">อาการที่ต้องการปรึกษา</h2></div>
-        <div class="common-group"><div class="section-label">คุณมีอาการใดบ้าง?</div>
-          <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวไม่เต็มที่</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">แข็งตัวได้แต่ไม่นานพอ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">หลั่งเร็วกว่าที่ต้องการ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความต้องการทางเพศลดลง</span></span><span class="opt-check"></span></button></div>
-        </div>
-      `,
+        <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
+        ${intakeChoiceQuestion({
+          id:'ed.confidence_goal',
+          title:'เรื่องไหนที่คุณอยากมั่นใจขึ้นมากที่สุด?',
+          options:['เริ่มแข็งตัวง่ายขึ้น','ความแข็งเพียงพอสำหรับสอดใส่','แข็งตัวได้นานขึ้น','ทั้งหมด','ยังไม่แน่ใจ อยากปรึกษาแพทย์ก่อน']
+        })}
+        ${intakeChoiceQuestion({
+          id:'ed.previous_treatment',
+          title:'เคยลองวิธีไหนเพื่อช่วยเรื่องการแข็งตัวมาก่อนไหม?',
+          options:['ยังไม่เคย','เคยลองกินยาแล้ว แต่ยังไม่ได้ผล','เคยใช้ยาแต่มีอาการข้างเคียง','เคยลองกินยาแล้ว แต่ต้องการหาตัวเลือกการรักษาอื่น ๆ']
+        })}`,
       intake2:`
-        <div class="stack-2"><h2 class="h1">ลักษณะของอาการ</h2></div>
-        <div class="common-group"><div class="section-label">เกิดขึ้นบ่อยแค่ไหน?</div>
-          <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">เป็นบางครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นเกือบทุกครั้ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เป็นทุกครั้ง</span></span><span class="opt-check"></span></button></div>
-          ${intakeDurationControl({label:'เป็นมานานเท่าไร?',thai:true})}
-        </div>
-        <div class="common-group"><div class="section-label">มีข้อมูลใดตรงกับคุณบ้าง?</div>
-          <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยังแข็งตัวได้ตอนตื่นนอน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มแบบค่อยเป็นค่อยไป</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">อาการเริ่มขึ้นทันทีทันใด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">มีความเครียดหรือกังวลร่วมด้วย</span></span><span class="opt-check"></span></button></div>
-        </div>
-        <div class="common-group"><div class="section-label">มีโรคประจำตัวใดบ้าง?</div>
-          <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่มี</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ความดันโลหิตสูง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">เบาหวาน</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไขมันในเลือดสูง</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">โรคหัวใจ</span></span><span class="opt-check"></span></button></div>
-        </div>
-      `,
+        <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
+        ${intakeChoiceQuestion({
+          id:'ed.motivation',
+          title:'เหตุผลที่อยากเริ่มรักษาตอนนี้?',
+          helper:'เลือกได้มากกว่า 1 ข้อ',
+          multiple:true,
+          options:['อยากมั่นใจขึ้นกว่าเดิม','ต้องการทางเลือกในการรักษาที่ดีขึ้น','อาการเริ่มเกิดบ่อยขึ้นและรบกวนมากขึ้น','กังวลว่าอาการนี้อาจเกี่ยวข้องกับเรื่องสุขภาพด้านอื่น','อื่น ๆ']
+        })}`,
       intake3:`
-        <div class="stack-2"><h2 class="h1">ยาและการรักษาที่ใช้อยู่</h2><p class="hint">จำเป็นเพื่อความปลอดภัยในการสั่งยา</p></div>
-        <div class="common-group"><div class="section-label">ตอนนี้ใช้ยาอะไรอยู่บ้าง?</div>
-          <div class="stack-3"><button class="option" data-multi><span class="opt-body"><span class="opt-title">ไม่ได้ใช้ยาประจำ</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยากลุ่มไนเตรต หรือยาอมใต้ลิ้นแก้เจ็บหน้าอก</span><span class="opt-sub">สำคัญมาก ห้ามใช้ร่วมกับยารักษาอาการนี้บางชนิด</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาลดความดันโลหิต</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาต้านเศร้าหรือยาคลายกังวล</span></span><span class="opt-check"></span></button><button class="option" data-multi><span class="opt-body"><span class="opt-title">ยาอื่นๆ</span></span><span class="opt-check"></span></button></div>
-        </div>
-        <div class="common-group"><div class="section-label">เคยรักษาอาการนี้มาก่อนหรือไม่?</div>
-          <div class="stack-3"><button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">ไม่เคย</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เคยใช้ยาที่แพทย์สั่ง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">เคยซื้อยาใช้เอง</span></span><span class="opt-check"></span></button><button class="option" data-select><span class="opt-body"><span class="opt-title">หยุดใช้เพราะผลข้างเคียง</span></span><span class="opt-check"></span></button></div>
-        </div>
-      `
+        <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
+        ${intakeChoiceQuestion({
+          id:'ed.heart_history',
+          title:'เข้าใจแล้ว! มาเริ่มกันเลย คุณเคยมีประวัติเป็นโรคหัวใจไหม? หรือมีอาการผิดปกติขณะออกแรงหรือไม่?',
+          options:['มี','ไม่มี','ไม่แน่ใจ']
+        })}`,
+      intake4:`
+        <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
+        ${intakeChoiceQuestion({
+          id:'ed.nitrate_use',
+          title:'ปัจจุบันใช้ยาอม ยาพ่น หรือยารักษาอาการเจ็บหน้าอกกลุ่ม Nitrate อยู่หรือไม่?',
+          options:['มี','ไม่มี','ไม่แน่ใจ']
+        })}`
     },
     sleep:{
       intake1:`
@@ -6232,7 +6282,7 @@
      is intentionally compact: its concern, description and duration belong on
      one screen, and the shared health profile is one complete form just like
      the insurance journey. */
-  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3'];
+  const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3','intake4'];
   /* Client, 17 Sep: "Why we ask" on every question read as nagging. It stays
      only where the patient must be told something (the emergency check) or the
      question is very personal (body measurements, and how a sexual-health

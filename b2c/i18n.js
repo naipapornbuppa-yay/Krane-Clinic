@@ -1978,6 +1978,69 @@
     "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว เริ่มใช้งานบัญชีของคุณได้เลย":"Your phone number is verified and your Krane account is created. Your account is ready to use.",
     "ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือตอบแบบสอบถามอาการ":"Your phone number is verified and your Krane account is created. Next, answer the health questions."
   };
+  /* Doctor Review source questionnaires mocked into the patient intake on
+     24 Sep. Keep the Thai-source prototype bilingual while the stable IDs in
+     handoff/string-ids.v1.json become the backend integration contract. */
+  var EN_FROM_TH_24SEP = {
+    "แบบประเมินผมร่วงและหนังศีรษะ":"Hair and scalp assessment",
+    "สุขภาพเส้นผมตอนนี้เป็นอย่างไร และคุณอยากได้ผลลัพธ์แบบไหน?":"How is your hair health now, and what result would you like?",
+    "คุณหมอจะได้เข้าใจลักษณะอาการของคุณ และแนะนำแนวทางรักษาที่เหมาะสมให้ได้":"This helps your doctor understand your symptoms and recommend suitable care.",
+    "มีผมบาง ผมร่วง มาสักพักแล้ว กำลังหาแนวทางรักษาอยู่":"I have had thinning or hair loss for a while and am looking for treatment.",
+    "เพิ่งเริ่มสังเกตว่าหัวเริ่มเถิกขึ้น อยากเริ่มรักษาทันที":"I recently noticed my hairline receding and want to start treatment now.",
+    "ผมยังปกติดีอยู่ แต่อยากเริ่มทานยาป้องกันไว้ก่อน":"My hair is still normal, but I want to start preventive medicine.",
+    "คุณเคยลองรักษาอาการผมบาง ผมร่วงวิธีไหนมาแล้วบ้าง?":"Which treatments have you tried for thinning or hair loss?",
+    "เลือกทุกข้อที่ตรง":"Select all that apply",
+    "ยา อาหารเสริม หรือผลิตภัณฑ์ทั่วไป":"Over-the-counter medicine, supplements, or products",
+    "ยาตามใบสั่งแพทย์":"Prescription medicine",
+    "ปลูกผม":"Hair transplant",
+    "คุณเริ่มสังเกตเห็นว่าผมเริ่มร่วงและบางลงครั้งแรกเมื่อไหร่?":"When did you first notice hair loss or thinning?",
+    "เลือกข้อที่ตรงที่สุด":"Select the best answer",
+    "นานกว่า 1 ปีแล้ว":"More than a year ago",
+    "ภายในปีนี้":"Within the past year",
+    "ภายในช่วงไม่กี่เดือนนี้":"Within the past few months",
+    "มีคนในครอบครัวหรือญาติสายตรงที่มีอาการผมบาง ผมร่วง ไหม?":"Does an immediate family member have thinning or hair loss?",
+    "คุณผมร่วงไปมากเท่าไหร่แล้ว?":"How much hair loss have you experienced?",
+    "ค่อนข้างมาก - ทุกคนสังเกตเห็นได้":"Significant — other people can notice it",
+    "ปานกลาง - มีแค่คนใกล้ตัวที่เห็น":"Moderate — only people close to me notice it",
+    "น้อยมาก - สังเกตเห็นเองคนเดียว":"Very little — only I notice it",
+    "มีอาการคัน แสบ ปวด สะเก็ด ตุ่ม หรือรอยแดงที่หนังศีรษะร่วมด้วยหรือไม่?":"Do you also have itching, burning, pain, scaling, bumps, or redness on your scalp?",
+    "มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่? (เฉพาะผู้หญิง)":"Do you have irregular periods or unusual weight changes? (Women only)",
+    "คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่? (เฉพาะผู้หญิง)":"Are you pregnant or planning a pregnancy? (Women only)",
+    "กรุณาเพิ่มรูปบริเวณรอบศีรษะทั้ง 4 มุม เพื่อให้คุณหมอวินิจฉัยได้ถูกต้อง":"Add four views around your head so your doctor can assess it accurately.",
+    "คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง?":"Do you already have a treatment approach in mind?",
+    "อยากให้แพทย์แนะนำการรักษาที่เหมาะให้":"I would like the doctor to recommend suitable treatment",
+    "อยากปรึกษาแพทย์เพื่อเรียนรู้เพิ่มเติม":"I would like to speak to a doctor and learn more",
+    "คุณเคยลองลดน้ำหนักผ่านยาประเภท GLP-1 แล้วหรือยัง?":"Have you tried a GLP-1 medicine for weight loss before?",
+    "ยังไม่เคย นี่เป็นครั้งแรก":"No, this is my first time",
+    "เคยแล้ว":"Yes",
+    "ทำไมคุณถึงอยากเริ่มลดน้ำหนัก?":"Why would you like to start losing weight?",
+    "เข้าใจแล้ว! มาเริ่มกันเลย จุดเริ่มต้นของคุณอยู่ที่ตรงไหน?":"Got it. What is your current starting point?",
+    "เป้าหมายการลดน้ำหนักของคุณ?":"What is your weight-loss goal?",
+    "บอกเราถึงเป้าหมายน้ำหนักของคุณ คุณหมอจะแนะนำขั้นตอนเพื่อให้คุณลดน้ำหนักได้อย่างมีคุณภาพและดูแลสุขภาพไปพร้อมกัน":"Tell us your target. Your doctor will recommend healthy, sustainable next steps.",
+    "คุณอยากบรรลุเป้าหมายภายในเวลาเท่าไหร่?":"When would you like to reach your goal?",
+    "คุณหรือสมาชิกในครอบครัวเคยเป็นมะเร็งไทรอยด์ชนิดเมดัลลารี (Medullary Thyroid Carcinoma)?":"Have you or a family member had medullary thyroid carcinoma?",
+    "คุณเคยเป็นโรคไตวายระยะสุดท้าย (ESRD)?":"Have you had end-stage renal disease (ESRD)?",
+    "คุณเคยมีภาวะตับอ่อนอักเสบโดยไม่ทราบสาเหตุไหม?":"Have you had pancreatitis of unknown cause?",
+    "คุณกำลังตั้งครรภ์หรือให้นมบุตรอยู่หรือไม่?":"Are you pregnant or breastfeeding?",
+    "แบบประเมินสุขภาพเพศชาย":"Men's sexual health assessment",
+    "เรื่องไหนที่คุณอยากมั่นใจขึ้นมากที่สุด?":"What would you most like to feel more confident about?",
+    "เริ่มแข็งตัวง่ายขึ้น":"Getting an erection more easily",
+    "ความแข็งเพียงพอสำหรับสอดใส่":"Being firm enough for penetration",
+    "แข็งตัวได้นานขึ้น":"Maintaining an erection longer",
+    "ทั้งหมด":"All of these",
+    "ยังไม่แน่ใจ อยากปรึกษาแพทย์ก่อน":"I'm not sure and would like to ask a doctor first",
+    "เคยลองวิธีไหนเพื่อช่วยเรื่องการแข็งตัวมาก่อนไหม?":"What have you tried before to help with erections?",
+    "เคยลองกินยาแล้ว แต่ยังไม่ได้ผล":"I tried medicine, but it did not work",
+    "เคยใช้ยาแต่มีอาการข้างเคียง":"I used medicine but had side effects",
+    "เคยลองกินยาแล้ว แต่ต้องการหาตัวเลือกการรักษาอื่น ๆ":"I tried medicine and want to explore other treatment options",
+    "เหตุผลที่อยากเริ่มรักษาตอนนี้?":"Why would you like to start treatment now?",
+    "อยากมั่นใจขึ้นกว่าเดิม":"I want to feel more confident",
+    "ต้องการทางเลือกในการรักษาที่ดีขึ้น":"I want a better treatment option",
+    "อาการเริ่มเกิดบ่อยขึ้นและรบกวนมากขึ้น":"The symptoms are becoming more frequent and disruptive",
+    "กังวลว่าอาการนี้อาจเกี่ยวข้องกับเรื่องสุขภาพด้านอื่น":"I am concerned this could relate to another health issue",
+    "เข้าใจแล้ว! มาเริ่มกันเลย คุณเคยมีประวัติเป็นโรคหัวใจไหม? หรือมีอาการผิดปกติขณะออกแรงหรือไม่?":"Have you had heart disease or unusual symptoms during physical exertion?",
+    "ปัจจุบันใช้ยาอม ยาพ่น หรือยารักษาอาการเจ็บหน้าอกกลุ่ม Nitrate อยู่หรือไม่?":"Do you currently use nitrate tablets, sprays, or other nitrate medicine for chest pain?"
+  };
   var EN_FROM_TH_19SEP = {
     "ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ แล้วยืนยันเบอร์ด้วยรหัส OTP":"Set a password for signing in, then verify your number with a one-time code.",
     "ตั้งรหัสผ่านให้ครบเงื่อนไขและตรงกันทั้งสองช่อง":"Set a password that meets every rule and matches in both fields",
@@ -2115,6 +2178,7 @@
   };
   for (var _k19 in EN_FROM_TH_19SEP) EN_FROM_TH[_k19] = EN_FROM_TH_19SEP[_k19];
   for (var _k20 in EN_FROM_TH_20SEP) EN_FROM_TH[_k20] = EN_FROM_TH_20SEP[_k20];
+  for (var _k24 in EN_FROM_TH_24SEP) EN_FROM_TH[_k24] = EN_FROM_TH_24SEP[_k24];
   var TH_19SEP = {
     "Choosing from licensed doctors suited to general consultation.":"เลือกจากแพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องปรึกษาสุขภาพทั่วไป",
     "Choosing from licensed doctors suited to weight care assessment.":"เลือกจากแพทย์ที่มีใบอนุญาตและเหมาะกับเรื่องประเมินการดูแลน้ำหนัก",
