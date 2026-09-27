@@ -2751,8 +2751,9 @@ body.modal-open{overflow:hidden}
 
 /* ---------- Choice cards (category / condition picker, tap to go, no radio) ---------- */
 .choice-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-2);grid-auto-rows:auto}
-/* category selection is a compact mobile list: one decision per row, no card wall */
-.choice-grid .choice-card{min-height:82px;flex-direction:row;align-items:center;gap:var(--sp-3);border-radius:var(--radius-lg);padding:var(--sp-3) var(--sp-4);box-shadow:none}
+/* Programme cards keep the app's established row geometry while exposing the
+   content hierarchy required by the service catalogue. */
+.choice-grid .choice-card{min-height:118px;flex-direction:row;align-items:center;gap:var(--sp-3);border-radius:var(--radius-lg);padding:var(--sp-4);box-shadow:none}
 .choice-list .choice-card{
   min-height:68px;
   padding:var(--sp-4);
@@ -2778,11 +2779,12 @@ body.modal-open{overflow:hidden}
 .choice-card .cc-icon{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;
   background:color-mix(in srgb,var(--color-accent) 11%,var(--color-surface));color:var(--color-accent);border:0}
 .choice-card .cc-icon .ui-icon{width:23px;height:23px}
-.choice-card .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.choice-card .cc-body{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;flex:1}
 .choice-card .cc-title{min-width:0;font-weight:var(--fw-semibold);line-height:var(--lh-tight);overflow-wrap:anywhere}
 .choice-card .cc-title-row{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.choice-card .cc-category{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:3px 9px;border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1.35;overflow-wrap:anywhere}
 .choice-card .cc-sub{min-width:0;font-size:var(--fs-sm);color:var(--color-ink-2);line-height:1.4;overflow-wrap:anywhere}
-.choice-card .cc-chev{display:grid;place-items:center;width:20px;height:20px;flex:none;margin-left:auto;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
+.choice-card .cc-chev{display:grid;place-items:center;align-self:center;width:20px;height:20px;flex:none;margin-left:auto;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out)}
 .choice-card .cc-chev .ui-icon{width:19px;height:19px}
 .choice-card:hover .cc-chev{transform:translateX(3px);color:var(--color-accent)}
 .choice-card:active{transform:scale(.985)}
@@ -2798,7 +2800,7 @@ body.modal-open{overflow:hidden}
    permanently selected state, so it carries no accent tint (that is reserved for
    aria-selected/hover, same as every other card). */
 .choice-card--wide{grid-column:1 / -1;flex-direction:row;align-items:center;gap:var(--sp-3)}
-.choice-card--wide .cc-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.choice-card--wide .cc-body{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
 /* condition list: single column of full-width cards */
 .choice-list{display:flex;flex-direction:column;gap:var(--sp-3)}
 .choice-list .choice-card{flex-direction:row;align-items:center;gap:var(--sp-4)}
