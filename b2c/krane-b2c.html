@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-plan-ready-document-v94";
+    const release = "20260927-pdpa-personal-first-v95";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -9607,7 +9607,7 @@
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
-      if(!flowState.patientInfoComplete && !flowState.returningIdentityValid) return 'patient-info';
+      if(!flowState.patientInfoComplete) return 'patient-info';
       // The fee no longer gates this page — it now comes before payment.
     }
     /* Sign-up used to be reachable only after an intake, so "create an account"
@@ -11265,17 +11265,20 @@
         const consentSource=flowState.entryChannel==='partner' ? 'partner' : 'direct';
         saveConsentRecords(consentSource,records);
         if(consentSource==='partner') flowState.partnerConsentComplete=true;
-        else flowState.consentsComplete=true;
-        // Consent now sits before patient info / identity: send new patients on to
-        // finish those steps, and only returning (already-verified) patients straight
-        // to matching, since patient-info/identity were skipped for them earlier.
+        else {
+          flowState.consentsComplete=true;
+          // Consent starts a fresh pre-doctor confirmation cycle. Keep the
+          // saved values, but require the patient to review and submit them.
+          if(flowState.draftReady) flowState.patientInfoComplete=false;
+        }
+        // Personal details must be reviewed immediately after consent, including
+        // for returning patients. Only after that confirmation may the route open
+        // general health or continue toward doctor matching.
         const consentNext = consentSource==='partner'
           ? 'partner-idcard'
           : (!flowState.draftReady
               ? nextAfterAuthentication()
-              : (flowState.returningIdentityValid
-                  ? directClinicalStartTarget()
-                  : (identityRequired() ? 'identity' : 'patient-info')));
+              : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
         const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
         if(showSignupDone) flowState.signupDonePending=false;
