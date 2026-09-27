@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-select-delivery-address-v121";
+    const release = "20260927-line-health-address-v122";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-desktop-bottomnav-v119">
+<link rel="stylesheet" href="components.css?v=20260927-line-health-address-v122">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2311,7 +2311,7 @@
 
       <section class="delivery-details-card">
         <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="contact" class="ui-icon" aria-hidden="true"></i></span><h2>ข้อมูลผู้รับ</h2></div>
-        <div class="delivery-details-card__row"><span><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><small data-address-detail-phone></small></span><button type="button" data-go="address">แก้ไข</button></div>
+        <div class="delivery-details-card__row"><span><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><small data-address-detail-phone></small></span><button type="button" data-go="address" data-address-recipient-edit>แก้ไข</button></div>
       </section>
 
       <section class="delivery-details-card">
@@ -2323,10 +2323,10 @@
     <div class="screen__footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ต่อไป <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
   </section>
 
-  <!-- Restores the pre-160119a layout: map always visible at the top, fields
-       always visible beneath it, no accordion and no card chrome in between.
-       Recipient details stay grouped below the delivery address, with first
-       and last name split for fulfilment labels and phone kept full-width. -->
+  <!-- Address editing follows the same mental model as LINE Health: this
+       screen names the place and leaves a rider note; searching and moving the
+       pin live on the dedicated map screen. Structured postal values stay in
+       the DOM for persistence and fulfilment, but are not duplicated here. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
@@ -2352,13 +2352,9 @@
       <div class="address-editor-view stack-4" data-address-editor-view hidden>
       <div class="address-page-head">
         <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
-        <button class="address-clear-all" type="button" data-address-clear-all>ล้างทั้งหมด</button>
       </div>
-      <!-- Location and postal fields are one subject, so they are one section:
-           map first, search immediately below it, then the editable fields.
-           This removes the duplicate "ที่อยู่จัดส่ง" heading and keeps the
-           address search visually attached to the pin it updates. -->
-      <section class="form-group address-location" aria-label="ตำแหน่งและรายละเอียดที่อยู่จัดส่ง">
+      <section class="form-group address-location" aria-labelledby="address-location-title">
+        <h3 class="form-group__title" id="address-location-title">ที่อยู่จัดส่ง</h3>
         <p class="hint address-pin__hint">ไรเดอร์จะไปตามตำแหน่งของหมุดที่คุณปักไว้</p>
         <div class="address-pin__card">
           <div class="address-pin__map" data-address-pin-map>
@@ -2367,35 +2363,28 @@
             <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
             <button class="address-pin__edit" type="button" data-go="address-map">แก้ไข</button>
           </div>
-        </div>
-        <div class="address-search" data-address-search-wrap>
-          <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
-          <div class="address-search__field">
-            <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
-            <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน" data-address-search>
-          </div>
-          <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
-        </div>
-        <p class="address-location__preview" data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</p>
-        <div class="form-group__surface">
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLabel" autocomplete="off" placeholder=" "><label for="addrLabel">ชื่อที่อยู่ (เช่น บ้าน ที่ทำงาน)</label></span></div></div>
-        <div class="field-row">
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrBuilding" autocomplete="off" placeholder=" " required><label for="addrBuilding">บ้านเลขที่ / อาคาร</label></span></div></div>
-          <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="off" placeholder=" "><label for="addrFloor">ชั้น</label></span></div></div>
-        </div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLine" autocomplete="off" placeholder=" " required><label for="addrLine">ถนน / ซอย</label></span></div></div>
-        <div class="field-row">
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrSubdistrict" autocomplete="off" placeholder=" " required><label for="addrSubdistrict">แขวง / ตำบล</label></span></div></div>
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrDistrictName" autocomplete="off" placeholder=" " required><label for="addrDistrictName">เขต / อำเภอ</label></span></div></div>
-        </div>
-        <div class="field-row">
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrProvince" autocomplete="off" placeholder=" " required><label for="addrProvince">จังหวัด</label></span></div></div>
-          <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder=" " required><label for="addrPostcode">รหัสไปรษณีย์</label></span></div></div>
-        </div>
+          <p class="address-pin__summary" data-address-preview-detail>เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง</p>
         </div>
       </section>
 
-      <section class="form-group">
+      <section class="address-essential-fields" aria-label="รายละเอียดที่อยู่">
+        <label class="address-simple-field" for="addrLabel"><span>ชื่อที่อยู่</span><input class="input" id="addrLabel" autocomplete="off" placeholder="บ้านของฉัน"></label>
+        <label class="address-simple-field" for="addrNote"><span>โน้ตถึงไรเดอร์ <small>(ถ้ามี)</small></span><textarea class="textarea" id="addrNote" rows="3" autocomplete="off" placeholder="เช่น ประตูรั้วสีแดง ฝากไว้กับ รปภ."></textarea></label>
+      </section>
+
+      <div class="address-data-fields" hidden aria-hidden="true">
+        <input id="addrSearch" type="hidden">
+        <input id="addrBuilding" type="hidden">
+        <input id="addrFloor" type="hidden">
+        <input id="addrLine" type="hidden">
+        <input id="addrSubdistrict" type="hidden">
+        <input id="addrDistrictName" type="hidden">
+        <input id="addrProvince" type="hidden">
+        <input id="addrPostcode" type="hidden">
+        <input id="addrDistrict" type="hidden">
+      </div>
+
+      <section class="form-group address-recipient-editor" data-address-recipient-editor hidden>
         <div class="address-page-head">
           <h3 class="form-group__title">ผู้รับพัสดุ</h3>
           <button class="address-clear-all" type="button" data-clear-recipient hidden>ล้างทั้งหมด</button>
@@ -2409,35 +2398,13 @@
         </div>
       </section>
 
-      <section class="form-group">
-        <h3 class="form-group__title">รายละเอียดสำหรับไรเดอร์ <span class="form-group__optional">(ไม่บังคับ)</span></h3>
-        <div class="form-group__surface">
-        <fieldset class="delivery-instructions">
-          <legend>วิธีรับสินค้า</legend>
-          <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="lobby"><span><strong>วางไว้ที่ล็อบบี้</strong><small>เหมาะสำหรับคอนโดและอาคารสำนักงาน</small></span></label>
-          <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="doorstep"><span><strong>วางไว้หน้าประตู</strong><small>ไรเดอร์จะแจ้งเมื่อจัดส่งเรียบร้อย</small></span></label>
-          <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="security"><span><strong>ฝากไว้ที่ รปภ.</strong><small>ระบุชื่ออาคารหรือจุดรับในช่องด้านล่าง</small></span></label>
-          <label class="delivery-instruction-option"><input type="radio" name="dropoffMethod" value="hand" checked><span><strong>ส่งให้ฉันโดยตรง</strong><small>ไรเดอร์จะโทรหาเมื่อถึงจุดหมาย</small></span></label>
-        </fieldset>
-        <!-- Client, 22 Sep: the note opens as one line with its title above it,
-             and grows only if the patient drags the corner. Most notes are a few
-             words, so the tall empty box was reserving room nobody asked for. -->
-        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="1" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงไรเดอร์</label></span></div></div>
-        </div>
-      </section>
-
-      <!-- addrDistrict is kept as the composed string the payment summary and the
-           km lookup already read. Never edited directly, always derived. -->
-      <input type="hidden" id="addrDistrict">
+      <input type="radio" name="dropoffMethod" value="hand" checked hidden>
       </div>
     </div>
     <div class="screen__footer address-select-footer" data-address-select-footer>
       <button class="btn btn--primary" type="button" data-address-confirm>ยืนยันที่อยู่จัดส่ง</button>
     </div>
     <div class="screen__footer address-footer" data-address-editor-footer hidden>
-      <button class="address-map-pill" type="button" data-go="address-map">
-        <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
-      </button>
       <button class="btn btn--primary" data-address-save>บันทึกที่อยู่</button>
     </div>
   </section>
@@ -5605,10 +5572,12 @@
     }
     const previewTitles=document.querySelectorAll('[data-address-preview-title]');
     const previewDetails=document.querySelectorAll('[data-address-preview-detail]');
-    previewTitles.forEach(el => { el.textContent=confirmed ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง'; });
-    previewDetails.forEach(el => { el.textContent=confirmed
-      ? [address.building,address.line,address.district].filter(Boolean).join(' · ')
-      : 'ค้นหาอาคาร คอนโด หรือถนน แล้วกรอกรายละเอียดให้ครบ'; });
+    const hasDraft=Boolean(address.building && address.line && address.district);
+    previewTitles.forEach(el => { el.textContent=hasDraft ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง'; });
+    const previewParts=[...new Set([address.building,address.line,address.district].filter(Boolean))];
+    previewDetails.forEach(el => { el.textContent=hasDraft
+      ? previewParts.join(' · ')
+      : 'เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง'; });
     renderAddressPinPreview();
     syncAddressDetail();
     syncCheckoutReadiness();
@@ -5697,25 +5666,22 @@
     const district=value('addressMapDistrict');
     const subdistrict=value('addressMapSubdistrict');
     const postcode=value('addressMapPostcode');
-    if(!query || !province){
-      showActionToast('กรอกที่อยู่และเลือกจังหวัดก่อนค้นหา','warning');
-      (!query ? document.getElementById('addressMapQuery') : document.getElementById('addressMapProvince'))?.focus();
+    if(!query || !province || !district || !subdistrict || !postcode){
+      showActionToast('กรอกข้อมูลตำแหน่งให้ครบก่อนค้นหา','warning');
+      const missing=!query ? 'addressMapQuery' : !province ? 'addressMapProvince' : !district ? 'addressMapDistrict' : !subdistrict ? 'addressMapSubdistrict' : 'addressMapPostcode';
+      document.getElementById(missing)?.focus();
       return;
     }
-    const building=document.getElementById('addrBuilding');
-    const line=document.getElementById('addrLine');
-    const fields={addrProvince:province,addrDistrictName:district,addrSubdistrict:subdistrict,addrPostcode:postcode};
-    if(building && !building.value.trim()) building.value=query;
-    if(line && !line.value.trim()) line.value=query;
-    Object.entries(fields).forEach(([id,next]) => {
-      const field=document.getElementById(id);
-      if(field && next) field.value=next;
-    });
-    simState.picked=true;
-    syncComposedDistrict();
+    const place={title:query,building:query,floor:flowState.orderState.address?.floor || '',line:query,
+      subdistrict,districtName:district,province,postcode};
+    place.district=composeDistrict(place);
+    place.detail=[place.building,place.line,place.district].filter(Boolean).join(' · ');
+    applyAddress(place);
     syncFloatingFieldStates(document.getElementById('address'));
     syncFieldClearButtons();
+    addressRecipientEditing=false;
     show('address');
+    setAddressPageMode('editor');
     showActionToast('เลือกตำแหน่งแล้ว กรุณาตรวจรายละเอียดก่อนบันทึก','success');
   }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
@@ -5736,6 +5702,7 @@
       dropoffMethod:document.querySelector('#address input[name="dropoffMethod"]:checked')?.value || 'hand'
     };
   }
+  let addressRecipientEditing=false;
 
   /* An invalid field says so where it went wrong — red outline and a line of
      help under the field — instead of only firing a toast the reader has to
@@ -5774,13 +5741,19 @@
     const screen=document.getElementById('address');
     if(!screen) return false;
     const a=readAddressInputs();
-    /* Mark every field that is missing, not just the first — one pass through
-       the form is enough to see all of it. */
+    /* Postal values come from the dedicated pin/search screen. If there is no
+       resolved location yet, take the patient there instead of surfacing
+       invisible validation errors on this deliberately short form. */
+    const locationComplete=a.building && a.line && a.subdistrict && a.districtName && a.province && /^\d{5}$/.test(a.postcode);
+    if(!locationComplete){
+      showActionToast('เลือกตำแหน่งและค้นหาที่อยู่ให้ครบก่อนบันทึก','warning');
+      show('address-map');
+      return false;
+    }
+    /* Recipient data normally comes from the verified account. It only opens
+       here when the patient explicitly taps “แก้ไข” on the summary screen. */
     const required=[
-      ['recipientFirstName','ชื่อ'], ['recipientLastName','นามสกุล'], ['recipientPhone','เบอร์โทรศัพท์'],
-      ['addrBuilding','บ้านเลขที่ / อาคาร'], ['addrLine','ถนน / ซอย'],
-      ['addrSubdistrict','แขวง / ตำบล'], ['addrDistrictName','เขต / อำเภอ'],
-      ['addrProvince','จังหวัด'], ['addrPostcode','รหัสไปรษณีย์']
+      ['recipientFirstName','ชื่อ'], ['recipientLastName','นามสกุล'], ['recipientPhone','เบอร์โทรศัพท์']
     ];
     let firstMissing=null;
     for(const [id,label] of required){
@@ -5795,12 +5768,10 @@
       setFieldError(phone,'เบอร์โทรศัพท์ต้องมี 10 หลัก');
       if(!firstMissing) firstMissing=phone;
     }
-    const postcode=document.getElementById('addrPostcode');
-    if(postcode && postcode.value.trim() && !/^\d{5}$/.test(postcode.value.trim())){
-      setFieldError(postcode,'รหัสไปรษณีย์ต้องเป็นตัวเลข 5 หลัก');
-      if(!firstMissing) firstMissing=postcode;
-    }
     if(firstMissing){
+      addressRecipientEditing=true;
+      const recipientEditor=document.querySelector('[data-address-recipient-editor]');
+      if(recipientEditor) recipientEditor.hidden=false;
       showActionToast('ยังกรอกข้อมูลไม่ครบ ดูช่องที่ไฮไลต์ไว้','warning');
       firstMissing.focus();
       try{ firstMissing.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
@@ -5829,6 +5800,7 @@
     persistFlowState();
     syncDeliveryAddress();
     syncFieldClearButtons();
+    addressRecipientEditing=false;
     return true;
   }
 
@@ -5849,7 +5821,7 @@
     return [address.building,address.floor,address.line,address.district].filter(Boolean).join(' · ');
   }
   function addressBookFullLine(address){
-    return [
+    const parts=[
       address.building,
       address.floor ? `ชั้น ${address.floor}` : '',
       address.line,
@@ -5857,7 +5829,8 @@
       address.districtName,
       address.province,
       address.postcode
-    ].map(part => String(part || '').trim()).filter(Boolean).join(' ');
+    ].map(part => String(part || '').trim()).filter(Boolean);
+    return [...new Set(parts)].join(' ');
   }
   function addressBookRecipientLine(address){
     const name=recipientNameParts(address);
@@ -10278,11 +10251,13 @@
     // is never blocked by the "you already have a case" guard.
     if(['address-detail','address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
     if(id==='address'){
+      const recipientEditor=document.querySelector('[data-address-recipient-editor]');
+      if(recipientEditor) recipientEditor.hidden=!addressRecipientEditing;
       // Some desktop browsers restore remembered address values just after the
       // screen becomes visible. Re-apply the persisted order address after that
       // restore pass so the form and preview can never disagree.
       syncDeliveryAddress({hydrateForm:true});
-      setAddressPageMode('select');
+      setAddressPageMode(addressRecipientEditing ? 'editor' : 'select');
       window.requestAnimationFrame(() => syncDeliveryAddress({hydrateForm:true}));
       window.setTimeout(() => {
         if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
@@ -11847,6 +11822,7 @@
     if(e.target.closest('[data-address-map-confirm]')){
       // The pin has already filled the form; this just takes you back to it.
       if(!simState.picked) simUpdateReadout();
+      addressRecipientEditing=false;
       show('address');
       setAddressPageMode('editor');
       return;
@@ -12090,6 +12066,7 @@
       openCsatModal('tracking');
       return;
     }
+    if(e.target.closest('[data-address-recipient-edit]')) addressRecipientEditing=true;
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
