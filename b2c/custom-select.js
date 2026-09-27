@@ -65,6 +65,36 @@
     closeSelect(record,true);
   }
 
+  /* Cascading selects (province → district → subdistrict → postcode) replace
+     their native option list as the parent value changes. Keep the enhanced
+     control attached and rebuild only its option buttons, so labels and focus
+     listeners are not duplicated on every upstream edit. */
+  function refreshOptions(record){
+    record.menu.replaceChildren();
+    record.options=Array.from(record.select.options).map(function(nativeOption,index){
+      var option=document.createElement('button');
+      option.type='button';
+      option.className='custom-select__option';
+      option.setAttribute('role','option');
+      option.textContent=nativeOption.textContent;
+      option.disabled=nativeOption.disabled;
+      option.hidden=nativeOption.disabled && !nativeOption.value;
+      option.addEventListener('click',function(){chooseOption(record,index)});
+      option.addEventListener('keydown',function(event){
+        var enabled=record.options.filter(function(item){return !item.disabled});
+        var current=enabled.indexOf(option);
+        if(event.key==='ArrowDown'){event.preventDefault();focusOption(record,current+1)}
+        if(event.key==='ArrowUp'){event.preventDefault();focusOption(record,current-1)}
+        if(event.key==='Home'){event.preventDefault();focusOption(record,0)}
+        if(event.key==='End'){event.preventDefault();focusOption(record,enabled.length-1)}
+        if(event.key==='Escape'){event.preventDefault();closeSelect(record,true)}
+      });
+      record.menu.appendChild(option);
+      return option;
+    });
+    syncSelect(record);
+  }
+
   /* The only proof an enhancement is alive is a record in `enhanced` whose DOM is
      still connected. Markup alone proves nothing: an innerHTML round-trip copies
      the wrapper and the data flag but not the listeners, which is how a select
@@ -175,37 +205,15 @@
       trigger.setAttribute('aria-label',select.getAttribute('aria-label')||'Select option');
     }
 
-    var optionButtons=Array.from(select.options).map(function(nativeOption,index){
-      var option=document.createElement('button');
-      option.type='button';
-      option.className='custom-select__option';
-      option.setAttribute('role','option');
-      option.textContent=nativeOption.textContent;
-      option.disabled=nativeOption.disabled;
-      option.hidden=nativeOption.disabled && !nativeOption.value;
-      option.addEventListener('click',function(){chooseOption(record,index)});
-      option.addEventListener('keydown',function(event){
-        var enabled=record.options.filter(function(item){return !item.disabled});
-        var current=enabled.indexOf(option);
-        if(event.key==='ArrowDown'){event.preventDefault();focusOption(record,current+1)}
-        if(event.key==='ArrowUp'){event.preventDefault();focusOption(record,current-1)}
-        if(event.key==='Home'){event.preventDefault();focusOption(record,0)}
-        if(event.key==='End'){event.preventDefault();focusOption(record,enabled.length-1)}
-        if(event.key==='Escape'){event.preventDefault();closeSelect(record,true)}
-      });
-      menu.appendChild(option);
-      return option;
-    });
-
     select.parentNode.insertBefore(root,select);
     root.append(select,trigger,scrim,menu);
     select.classList.add('custom-select__native');
     select.tabIndex=-1;
     select.setAttribute('aria-hidden','true');
 
-    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,scrim:scrim,options:optionButtons};
+    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,scrim:scrim,options:[]};
     enhanced.push(record);
-    syncSelect(record);
+    refreshOptions(record);
 
     trigger.addEventListener('click',function(){record.root.classList.contains('is-open')?closeSelect(record,false):openSelect(record,false)});
     trigger.addEventListener('keydown',function(event){
@@ -244,6 +252,12 @@
     /* A screen change can tear out an open sheet, so re-derive the flag from
        what is still on the page instead of leaving the chrome flattened. */
     syncSheetFlag();
+  };
+  window.kraneRefreshSelectOptions=function(select){
+    if(!select)return;
+    var record=liveRecordFor(select);
+    if(record)refreshOptions(record);
+    else enhance(select);
   };
   document.addEventListener('click',function(event){enhanced.forEach(function(record){if(!record.root.contains(event.target))closeSelect(record,false)})});
   document.addEventListener('krane:screenchange',function(event){

@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-consult-ready-blob-v130";
+    const release = "20260928-address-cascade-v131";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,12 +56,12 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-consult-ready-blob-v130">
+<link rel="stylesheet" href="components.css?v=20260928-address-cascade-v131">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260920-float-v1" defer></script>
+<script src="custom-select.js?v=20260928-address-cascade-v131" defer></script>
 <script src="i18n.js?v=20260927-reflow-detail-v1" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
@@ -2472,10 +2472,10 @@
         <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ค้นหาตำแหน่งจากที่อยู่</h1><button type="button" data-back aria-label="ปิด">×</button></div>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="2" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict"><option value=""></option><option value="คลองเตย">คลองเตย</option><option value="วัฒนา">วัฒนา</option><option value="บางรัก">บางรัก</option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict"><option value=""></option><option value="คลองเตย">คลองเตย</option><option value="คลองตัน">คลองตัน</option><option value="พระโขนง">พระโขนง</option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode"><option value=""></option><option value="10110">10110</option><option value="10500">10500</option><option value="10260">10260</option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
-        <button class="btn btn--ink" type="button" data-address-map-search-submit>ค้นหาตำแหน่ง</button>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
+        <button class="btn btn--ink" type="button" data-address-map-search-submit disabled>ค้นหาตำแหน่ง</button>
       </section>
       </div>
       <p class="address-readout" role="status" aria-live="polite">
@@ -5665,24 +5665,89 @@
     if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่' : 'เพิ่มที่อยู่ใหม่';
   }
 
+  /* Address search is a true hierarchy, not four unrelated dropdowns. Each
+     choice filters the next level; changing an upstream value clears every
+     dependent answer so an impossible address can never be submitted. */
+  const ADDRESS_MAP_GEOGRAPHY={
+    'กรุงเทพมหานคร':{
+      'คลองเตย':{'คลองเตย':['10110'],'คลองตัน':['10110'],'พระโขนง':['10110']},
+      'วัฒนา':{'คลองเตยเหนือ':['10110'],'คลองตันเหนือ':['10110'],'พระโขนงเหนือ':['10110']},
+      'บางรัก':{'บางรัก':['10500'],'สีลม':['10500'],'สุริยวงศ์':['10500'],'สี่พระยา':['10500']}
+    },
+    'นนทบุรี':{
+      'เมืองนนทบุรี':{'บางกระสอ':['11000'],'ตลาดขวัญ':['11000'],'สวนใหญ่':['11000']},
+      'ปากเกร็ด':{'ปากเกร็ด':['11120'],'บางพูด':['11120'],'บ้านใหม่':['11120']}
+    },
+    'สมุทรปราการ':{
+      'เมืองสมุทรปราการ':{'ปากน้ำ':['10270'],'บางเมือง':['10270'],'สำโรงเหนือ':['10270']},
+      'บางพลี':{'บางพลีใหญ่':['10540'],'บางแก้ว':['10540'],'ราชาเทวะ':['10540']}
+    }
+  };
+  const ADDRESS_MAP_CASCADE_IDS=['addressMapProvince','addressMapDistrict','addressMapSubdistrict','addressMapPostcode'];
+  function replaceAddressMapOptions(control,options,value,enabled){
+    if(!control)return;
+    const safeOptions=[...new Set(options.filter(Boolean))];
+    if(value && !safeOptions.includes(value))safeOptions.push(value);
+    control.replaceChildren(new Option('',''),...safeOptions.map(option => new Option(option,option)));
+    control.value=value && safeOptions.includes(value) ? value : '';
+    control.disabled=!enabled;
+    window.kraneRefreshSelectOptions?.(control);
+    syncFloatingFieldState(control.closest('.float-field'));
+  }
+  function syncAddressMapSearchSubmit(){
+    const complete=['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS]
+      .every(id => String(document.getElementById(id)?.value || '').trim());
+    const submit=document.querySelector('[data-address-map-search-submit]');
+    if(submit){submit.disabled=!complete;submit.setAttribute('aria-disabled',String(!complete))}
+  }
+  function syncAddressMapCascade(changedId='',savedValues={}){
+    const province=document.getElementById('addressMapProvince');
+    const district=document.getElementById('addressMapDistrict');
+    const subdistrict=document.getElementById('addressMapSubdistrict');
+    const postcode=document.getElementById('addressMapPostcode');
+    if(!province||!district||!subdistrict||!postcode)return;
+    let provinceValue=savedValues.addressMapProvince ?? province.value;
+    let districtValue=savedValues.addressMapDistrict ?? district.value;
+    let subdistrictValue=savedValues.addressMapSubdistrict ?? subdistrict.value;
+    let postcodeValue=savedValues.addressMapPostcode ?? postcode.value;
+    if(changedId==='addressMapProvince'){districtValue='';subdistrictValue='';postcodeValue=''}
+    if(changedId==='addressMapDistrict'){subdistrictValue='';postcodeValue=''}
+    if(changedId==='addressMapSubdistrict')postcodeValue='';
+    const districts=Object.keys(ADDRESS_MAP_GEOGRAPHY[provinceValue] || {});
+    if(!districts.includes(districtValue) && !savedValues.addressMapDistrict)districtValue='';
+    replaceAddressMapOptions(district,districts,districtValue,Boolean(provinceValue));
+    const subdistricts=Object.keys(ADDRESS_MAP_GEOGRAPHY[provinceValue]?.[districtValue] || {});
+    if(!subdistricts.includes(subdistrictValue) && !savedValues.addressMapSubdistrict)subdistrictValue='';
+    replaceAddressMapOptions(subdistrict,subdistricts,subdistrictValue,Boolean(districtValue));
+    const postcodes=ADDRESS_MAP_GEOGRAPHY[provinceValue]?.[districtValue]?.[subdistrictValue] || [];
+    if(!postcodes.includes(postcodeValue) && !savedValues.addressMapPostcode)postcodeValue='';
+    replaceAddressMapOptions(postcode,postcodes,postcodeValue,Boolean(subdistrictValue));
+    syncAddressMapSearchSubmit();
+  }
   function hydrateAddressMapSearch(){
     const address=flowState.orderState.address || {};
-    const values={
-      addressMapQuery:[address.building,address.line].filter(Boolean).join(' '),
+    const query=document.getElementById('addressMapQuery');
+    if(query)query.value=[address.building,address.line].filter(Boolean).join(' ');
+    const province=document.getElementById('addressMapProvince');
+    if(province){
+      if(address.province && ![...province.options].some(option => option.value===address.province)){
+        province.add(new Option(address.province,address.province));
+        window.kraneRefreshSelectOptions?.(province);
+      }
+      province.value=address.province || '';
+    }
+    syncAddressMapCascade('',{
       addressMapProvince:address.province || '',
       addressMapDistrict:address.districtName || '',
       addressMapSubdistrict:address.subdistrict || '',
       addressMapPostcode:address.postcode || ''
-    };
-    Object.entries(values).forEach(([id,value]) => {
-      const control=document.getElementById(id);
-      if(!control) return;
-      if(control.tagName==='SELECT' && value && ![...control.options].some(option => option.value===value)){
-        control.add(new Option(value,value));
-      }
-      control.value=value;
     });
+    syncFloatingFieldState(query?.closest('.float-field'));
   }
+  document.addEventListener('change',event => {
+    if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id))syncAddressMapCascade(event.target.id);
+  });
+  document.getElementById('addressMapQuery')?.addEventListener('input',syncAddressMapSearchSubmit);
   function applyAddressMapSearch(){
     const value=id => (document.getElementById(id)?.value || '').trim();
     const query=value('addressMapQuery');
