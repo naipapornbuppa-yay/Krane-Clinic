@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-illustration-sets-v84";
+    const release = "20260927-pickup-location-gate-v85";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-addon-card-type-plus-v83">
+<link rel="stylesheet" href="components.css?v=20260927-pickup-location-gate-v85">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -4181,7 +4181,7 @@
     <div class="modal-dialog__icon"><i data-lucide="store" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="pickup-branch-title">เลือกสาขาที่จะไปรับยา</h2>
     <p id="pickup-branch-description">สาขาที่ใกล้คุณที่สุดก่อน ยืนยันสต็อกและเวลารับอีกครั้งหลังชำระเงิน</p>
-    <div class="payment-method-list" role="listbox" aria-label="สาขาร้านยา">
+    <div class="payment-method-list" role="listbox" aria-label="สาขาร้านยา" data-pickup-branch-list>
       <button class="option payment-method-option" type="button" aria-selected="true" data-branch-option="aree" data-branch-name="ร้านยาฟาสซิโน อารีย์" data-branch-hint="เปิด 08:00-22:00 น. · 1.2 กม.">
         <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
         <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน อารีย์</span><span class="opt-sub">เปิด 08:00-22:00 น. · 1.2 กม.</span></span><span class="opt-check"></span>
@@ -4198,6 +4198,9 @@
         <span class="opt-icon"><i data-lucide="store" class="ui-icon" aria-hidden="true"></i></span>
         <span class="opt-body"><span class="opt-title">ร้านยาฟาสซิโน รัชโยธิน</span><span class="opt-sub">เปิด 09:00-20:00 น. · 5.6 กม.</span></span><span class="opt-check"></span>
       </button>
+    </div>
+    <div class="modal-dialog__actions" data-pickup-location-empty hidden>
+      <button class="btn btn--primary" type="button" data-pickup-location-add>เลือกตำแหน่งของคุณ</button>
     </div>
   </section>
 </div>
@@ -8588,6 +8591,7 @@
     if(!hasFulfillableItems()) return currentMedicationDue()>0 && !flowState.orderState.paymentMethod ? 'payment-method-required' : 'ready';
     const pickup=flowState.orderState.fulfillmentMode==='pickup';
     if(!(flowState.orderState.addressConfirmed && address.building && address.line && address.district)) return 'address-required';
+    if(pickup && !pickupBranchForCurrentLocation()) return 'pickup-branch-required';
     if(!pickup && !flowState.orderState.deliveryMethod) return 'delivery-method-required';
     /* Stock, acceptance and preparation all happen after the money is taken
        (client, 20 Aug), the way a delivery app does it. */
@@ -8832,6 +8836,7 @@
      find it. One map, so a new precondition only needs a line here. */
   const CHECKOUT_BLOCKERS={
     'address-required':['[data-payment-address-row]','กรุณาเลือกที่อยู่จัดส่งก่อน'],
+    'pickup-branch-required':['[data-open-branch]','กรุณาเลือกร้านยาที่จะไปรับยาก่อน'],
     'delivery-method-required':['[data-fulfillment-panel="delivery"]','กรุณาเลือกวิธีจัดส่งก่อน'],
     'payment-method-required':['[data-open-methods]','กรุณาเลือกวิธีชำระเงินก่อน']
   };
@@ -8841,7 +8846,10 @@
     if(!entry) return;
     const [selector,message]=entry;
     const target=document.querySelector('#payment '+selector);
-    showActionToast(message,'warning');
+    const guidedMessage=state==='address-required' && flowState.orderState.fulfillmentMode==='pickup'
+      ? 'กรุณาเลือกตำแหน่งของคุณก่อนค้นหาร้านยา'
+      : message;
+    showActionToast(guidedMessage,'warning');
     if(!target) return;
     const body=document.querySelector('#payment .screen__body');
     if(body){
@@ -8859,19 +8867,18 @@
     const button=document.querySelector('#payment [data-payment-go]');
     if(!button) return;
     const actionState=checkoutActionState();
-    /* Client, 23 Sep: with no address yet the button names the step that is
-       missing — "กรอกที่อยู่" — but it stays greyed, because paying is still not
-       what it does. It is pressable all the same, and the press scrolls the
-       address row into view and points at it, rather than being a dead control
-       that says what to do and then refuses to help you do it. */
+    /* While location or pickup branch is missing, the grey button names that
+       next step. It stays pressable so it can point to the required row rather
+       than becoming a dead control that only reports the problem. */
     const actionable=actionState==='ready' || actionState==='quote-required';
-    const addressMissing=actionState==='address-required';
-    button.setAttribute('aria-disabled',String(!actionable));
-    button.disabled=!actionable && !addressMissing;
+    const guidedMissing=actionState==='address-required' || actionState==='pickup-branch-required';
+    button.setAttribute('aria-disabled',String(!actionable && !guidedMissing));
+    button.disabled=!actionable && !guidedMissing;
     button.classList.toggle('btn--blocked',!actionable);
     const label=button.querySelector('[data-payment-cta-label]');
     if(!label) return;
-    if(actionState==='address-required') label.textContent='กรอกที่อยู่';
+    if(actionState==='address-required') label.textContent=flowState.orderState.fulfillmentMode==='pickup' ? 'เพิ่มตำแหน่ง' : 'กรอกที่อยู่';
+    else if(actionState==='pickup-branch-required') label.textContent='เลือกร้านยา';
     else if(actionState==='quote-calculating') label.textContent='กำลังคำนวณค่าจัดส่ง';
     else if(!actionable) label.textContent='ชำระเงิน';
     else if(!hasFulfillableItems() && currentMedicationDue()<=0) label.textContent='ยืนยันและดูเอกสาร';
@@ -8962,6 +8969,7 @@
         ? (flowState.orderState.stockLocked ? 'ร้านยายืนยันสาขารับยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะยืนยันสาขารับยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน')
         : (flowState.orderState.stockLocked ? 'ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน' : 'ระบบจะให้ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิก่อนเปิดการชำระเงิน'))
       : 'ไม่มีรายการจัดส่ง คุณสามารถจบขั้นตอนและเปิดดูเอกสารได้ทันที';
+    syncPickupBranch();
     syncCheckoutReadiness();
   }
   function setMedicationCheckoutContext(){ refreshMedicationCheckout(); }
@@ -12156,24 +12164,60 @@
      the tracking screen and the receipt can name the branch the patient chose
      rather than a fixed one. */
   const pickupBranchModal = document.getElementById('pickup-branch-modal');
+  function pickupLocationKey(address=flowState.orderState.address || {}){
+    return [address.building,address.line,address.district,address.postcode,address.km]
+      .map(part => String(part || '').trim().toLowerCase()).join('|');
+  }
+  function pickupLocationConfirmed(){
+    const address=flowState.orderState.address || {};
+    return Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
+  }
+  function pickupBranchForCurrentLocation(){
+    const branch=flowState.orderState.pickupBranch;
+    if(!pickupLocationConfirmed() || !branch) return null;
+    return branch.locationKey===pickupLocationKey() ? branch : null;
+  }
   function syncPickupBranch(){
-    const chosen = flowState.orderState.pickupBranch;
+    const locationReady=pickupLocationConfirmed();
+    const chosen=pickupBranchForCurrentLocation();
     const row = document.querySelector('[data-pickup-branch]');
     const hint = document.querySelector('[data-pickup-branch-hint]');
-    if(row) row.textContent = chosen?.name || 'ร้านยาฟาสซิโน สาขาใกล้คุณ';
-    if(hint) hint.textContent = chosen?.hint || 'ระบบจะยืนยันสาขาและเวลารับหลังตรวจสอบสต็อก';
+    const trigger=document.querySelector('[data-open-branch]');
+    if(row) row.textContent = !locationReady
+      ? 'เลือกตำแหน่งเพื่อค้นหาร้านยา'
+      : (chosen?.name || 'เลือกร้านยาใกล้คุณ');
+    if(hint) hint.textContent = !locationReady
+      ? 'เพิ่มตำแหน่งของคุณก่อน ระบบจึงจะแสดงสาขาใกล้เคียง'
+      : (chosen?.hint || 'เลือกร้านจากสาขาใกล้ตำแหน่งของคุณ');
+    if(trigger) trigger.setAttribute('aria-label',!locationReady
+      ? 'เลือกตำแหน่งของคุณก่อนค้นหาร้านยา'
+      : (chosen ? `เปลี่ยนสาขารับยา ปัจจุบัน ${chosen.name}` : 'เลือกร้านยาใกล้ตำแหน่งของคุณ'));
     pickupBranchModal?.querySelectorAll('[data-branch-option]').forEach(option => {
-      const selected = chosen ? option.dataset.branchOption === chosen.id : option.dataset.branchOption === 'aree';
+      const selected = Boolean(chosen && option.dataset.branchOption === chosen.id);
       option.setAttribute('aria-selected', String(selected));
     });
   }
   function openPickupBranchModal(){
     if(!pickupBranchModal) return;
     syncPickupBranch();
+    const locationReady=pickupLocationConfirmed();
+    const title=pickupBranchModal.querySelector('#pickup-branch-title');
+    const description=pickupBranchModal.querySelector('#pickup-branch-description');
+    const list=pickupBranchModal.querySelector('[data-pickup-branch-list]');
+    const emptyAction=pickupBranchModal.querySelector('[data-pickup-location-empty]');
+    if(title) title.textContent=locationReady ? 'เลือกสาขาที่จะไปรับยา' : 'เลือกตำแหน่งของคุณก่อน';
+    if(description) description.textContent=locationReady
+      ? 'สาขาที่ใกล้คุณที่สุดก่อน ยืนยันสต็อกและเวลารับอีกครั้งหลังชำระเงิน'
+      : 'เราจะใช้ตำแหน่งของคุณเพื่อค้นหาร้านยาที่ใกล้ที่สุดและแสดงระยะทางที่ถูกต้อง';
+    if(list) list.hidden=!locationReady;
+    if(emptyAction) emptyAction.hidden=locationReady;
     pickupBranchModal.hidden = false;
     pickupBranchModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
-    pickupBranchModal.querySelector('[data-branch-option][aria-selected="true"]')?.focus();
+    const focusTarget=locationReady
+      ? (pickupBranchModal.querySelector('[data-branch-option][aria-selected="true"]') || pickupBranchModal.querySelector('[data-branch-option]'))
+      : pickupBranchModal.querySelector('[data-pickup-location-add]');
+    focusTarget?.focus();
   }
   function closePickupBranchModal(){
     if(!pickupBranchModal) return;
@@ -12185,15 +12229,21 @@
   document.addEventListener('click', event => {
     if(event.target.closest('[data-open-branch]')){ openPickupBranchModal(); return; }
     if(event.target.closest('[data-branch-close]')){ closePickupBranchModal(); return; }
+    if(event.target.closest('[data-pickup-location-add]')){
+      closePickupBranchModal();
+      show('address');
+      return;
+    }
     const option = event.target.closest('[data-branch-option]');
-    if(!option || !pickupBranchModal || pickupBranchModal.hidden) return;
+    if(!option || !pickupBranchModal || pickupBranchModal.hidden || !pickupLocationConfirmed()) return;
     flowState.orderState.pickupBranch = {
       id: option.dataset.branchOption,
       name: option.dataset.branchName,
-      hint: option.dataset.branchHint
+      hint: option.dataset.branchHint,
+      locationKey: pickupLocationKey()
     };
     persistFlowState();
-    syncPickupBranch();
+    refreshMedicationCheckout();
     closePickupBranchModal();
     showActionToast('เลือก' + option.dataset.branchName + 'แล้ว','success');
   });
