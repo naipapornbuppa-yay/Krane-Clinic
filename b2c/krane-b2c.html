@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-first-use-v132";
+    const release = "20260928-address-research-v133";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,12 +56,12 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-address-first-use-v132">
+<link rel="stylesheet" href="components.css?v=20260928-address-research-v133">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260928-address-first-use-v132" defer></script>
+<script src="custom-select.js?v=20260928-address-research-v133" defer></script>
 <script src="i18n.js?v=20260927-reflow-detail-v1" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
@@ -2346,10 +2346,10 @@
     <div class="screen__footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ต่อไป <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
   </section>
 
-  <!-- Address editing follows the same mental model as LINE Health: this
-       screen names the place and leaves a rider note; searching and moving the
-       pin live on the dedicated map screen. Structured postal values stay in
-       the DOM for persistence and fulfilment, but are not duplicated here. -->
+  <!-- Research-informed address flow: choose the delivery location first,
+       then confirm the recipient and optional rider note. Structured postal
+       values stay in the DOM for persistence and fulfilment, but are not
+       duplicated in the visible confirmation screen. -->
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
@@ -2374,24 +2374,34 @@
 
       <div class="address-editor-view stack-4" data-address-editor-view hidden>
       <div class="address-page-head">
-        <h2 class="address-page-title" data-address-editor-title>ที่อยู่จัดส่ง</h2>
+        <h2 class="address-page-title" data-address-editor-title>ตรวจสอบที่อยู่จัดส่ง</h2>
       </div>
       <section class="form-group address-location" aria-labelledby="address-location-title">
-        <h3 class="form-group__title" id="address-location-title">ที่อยู่จัดส่ง</h3>
-        <p class="hint address-pin__hint">ไรเดอร์จะไปตามตำแหน่งของหมุดที่คุณปักไว้</p>
+        <h3 class="form-group__title" id="address-location-title">ตำแหน่งจัดส่ง</h3>
+        <p class="hint address-pin__hint">ตรวจสอบหมุดและที่อยู่ให้ตรงกับจุดรับยา</p>
         <div class="address-pin__card">
           <div class="address-pin__map" data-address-pin-map>
             <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
             <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
             <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-            <button class="address-pin__edit" type="button" data-go="address-map">แก้ไข</button>
+            <button class="address-pin__edit" type="button" data-go="address-map">เปลี่ยนตำแหน่ง</button>
           </div>
           <p class="address-pin__summary" data-address-preview-detail>เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง</p>
         </div>
       </section>
 
+      <section class="address-recipient-summary" aria-labelledby="address-recipient-summary-title">
+        <span class="address-recipient-summary__icon" aria-hidden="true"><i data-lucide="contact" class="ui-icon"></i></span>
+        <span class="address-recipient-summary__copy">
+          <small id="address-recipient-summary-title">ผู้รับยา</small>
+          <strong data-address-editor-recipient>ข้อมูลผู้รับจากบัญชีของคุณ</strong>
+          <span data-address-editor-phone></span>
+        </span>
+        <button type="button" data-address-editor-recipient-edit>แก้ไข</button>
+      </section>
+
       <section class="address-essential-fields" aria-label="รายละเอียดที่อยู่">
-        <label class="address-simple-field" for="addrNote"><span>โน้ตถึงไรเดอร์ <small>(ถ้ามี)</small></span><textarea class="textarea" id="addrNote" rows="3" autocomplete="off" placeholder="เช่น ประตูรั้วสีแดง ฝากไว้กับ รปภ."></textarea></label>
+        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
       </section>
 
       <label class="address-remember-choice" for="addrRemember">
@@ -2434,12 +2444,9 @@
       <button class="btn btn--primary" type="button" data-address-confirm>ยืนยันที่อยู่จัดส่ง</button>
     </div>
     <div class="screen__footer address-footer" data-address-editor-footer hidden>
-      <button class="btn btn--primary" data-address-save>ใช้ที่อยู่นี้</button>
+      <button class="btn btn--primary" data-address-save disabled>ใช้ที่อยู่นี้</button>
     </div>
   </section>
-  <!-- The map picker modal is gone: the map on #address IS the picker now. -->
-
-
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
@@ -2475,7 +2482,7 @@
            empty fields show their label as the placeholder and float it only
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ค้นหาตำแหน่งจากที่อยู่</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ค้นหาที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="2" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
@@ -2489,7 +2496,7 @@
         <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
       </p>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ปักตำแหน่งนี้</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ใช้ตำแหน่งนี้</button></div>
   </section>
 
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
@@ -5610,6 +5617,7 @@
       : 'เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง'; });
     renderAddressPinPreview();
     syncAddressDetail();
+    syncAddressEditorReadiness();
     syncCheckoutReadiness();
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
@@ -5647,6 +5655,7 @@
        field keeps offering a clear (client, 19 Aug). */
     syncFieldClearButtons();
     writeDeliveryAddressDraft(screen,address);
+    syncAddressEditorReadiness();
   }
   function syncAddressDetail(){
     const address=flowState.orderState.address || {};
@@ -5670,7 +5679,7 @@
       confirm.setAttribute('aria-disabled',String(!confirmed));
     }
     const editorTitle=document.querySelector('[data-address-editor-title]');
-    if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่' : 'ที่อยู่จัดส่ง';
+    if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่จัดส่ง' : 'ตรวจสอบที่อยู่จัดส่ง';
   }
 
   /* Address search is a true hierarchy, not four unrelated dropdowns. Each
@@ -5799,6 +5808,24 @@
       dropoffMethod:document.querySelector('#address input[name="dropoffMethod"]:checked')?.value || 'hand'
     };
   }
+  function syncAddressEditorReadiness(){
+    const screen=document.getElementById('address');
+    if(!screen)return;
+    const a=readAddressInputs();
+    const locationComplete=Boolean(a.building && a.line && a.subdistrict && a.districtName && a.province && /^\d{5}$/.test(a.postcode));
+    const recipientComplete=Boolean(a.recipientFirstName && a.recipientLastName && normalizePhone(a.recipientPhone).length===10);
+    const button=screen.querySelector('[data-address-save]');
+    if(button){
+      button.disabled=!(locationComplete && recipientComplete);
+      button.setAttribute('aria-disabled',String(button.disabled));
+    }
+    const recipient=screen.querySelector('[data-address-editor-recipient]');
+    const phone=screen.querySelector('[data-address-editor-phone]');
+    if(recipient) recipient.textContent=[a.recipientFirstName,a.recipientLastName].filter(Boolean).join(' ') || 'เพิ่มข้อมูลผู้รับยา';
+    if(phone) phone.textContent=formatPhoneForDisplay(a.recipientPhone || '') || 'ยังไม่มีเบอร์โทรศัพท์';
+  }
+  ['recipientFirstName','recipientLastName','recipientPhone','addrBuilding','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode']
+    .forEach(id => document.getElementById(id)?.addEventListener('input',syncAddressEditorReadiness));
   let addressRecipientEditing=false;
 
   /* An invalid field says so where it went wrong — red outline and a line of
@@ -6064,13 +6091,10 @@
     syncAddressDetail();
     syncFieldClearButtons();
     const title=document.querySelector('[data-address-editor-title]');
-    if(title) title.textContent='ที่อยู่จัดส่ง';
-    setAddressPageMode('editor');
-    const first=document.getElementById('addrLabel');
-    if(first && focus){
-      first.focus({preventScroll:true});
-      try{ first.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
-    }
+    if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
+    /* New patients start with the actual delivery decision: where should the
+       medicine go? Naming/saving the address comes later and stays optional. */
+    show('address-map');
   }
   document.addEventListener('click',event => {
     if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
@@ -6083,7 +6107,19 @@
         showActionToast('กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง','warning');
         return;
       }
-      replaceCurrent('address-detail');
+      focusCheckoutDelivery=true;
+      replaceCurrent('payment');
+      startInlineDeliveryQuote();
+      return;
+    }
+    if(event.target.closest('[data-address-editor-recipient-edit]')){
+      addressRecipientEditing=true;
+      const editor=document.querySelector('[data-address-recipient-editor]');
+      if(editor) editor.hidden=false;
+      const first=document.getElementById('recipientFirstName');
+      first?.focus({preventScroll:true});
+      try{ editor?.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
+      return;
     }
   });
   document.getElementById('addrRemember')?.addEventListener('change',syncAddressRememberChoice);
@@ -10315,18 +10351,23 @@
       // restore pass so the form and preview can never disagree.
       syncDeliveryAddress({hydrateForm:true});
       const hasSavedAddresses=savedAddresses().length>0;
+      const draft=flowState.orderState.address || {};
+      const hasReviewDraft=Boolean(draft.building && draft.line && draft.subdistrict && draft.districtName && draft.province && /^\d{5}$/.test(draft.postcode || ''));
       if(addressRecipientEditing){
         setAddressPageMode('editor');
       } else if(hasSavedAddresses){
         setAddressPageMode('select');
-      } else {
-        /* A first-time patient has nothing to select. Open the delivery form
-           immediately instead of making them acknowledge an empty address
-           book and press “add” before they can start. */
+      } else if(hasReviewDraft){
         addressEditingSavedIndex=-1;
         const title=document.querySelector('[data-address-editor-title]');
-        if(title) title.textContent='ที่อยู่จัดส่ง';
+        if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
         setAddressPageMode('editor');
+      } else {
+        /* Across Thai telemedicine checkout flows the first useful decision is
+           the delivery location. Do not make a new patient pass through an
+           empty address book or a half-empty confirmation form first. */
+        replaceCurrent('address-map');
+        return;
       }
       window.requestAnimationFrame(() => syncDeliveryAddress({hydrateForm:true}));
       window.setTimeout(() => {
@@ -11907,7 +11948,9 @@
       const remembered=document.getElementById('addrRemember')?.checked===true;
       addressEditingSavedIndex=-1;
       renderAddressBook();
-      replaceCurrent('address-detail');
+      focusCheckoutDelivery=true;
+      replaceCurrent('payment');
+      startInlineDeliveryQuote();
       showActionToast(remembered ? 'บันทึกและใช้ที่อยู่นี้แล้ว' : 'ใช้ที่อยู่นี้สำหรับการจัดส่ง','success');
       return;
     }
