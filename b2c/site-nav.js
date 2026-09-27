@@ -30,7 +30,7 @@ const SITE_NAV_BRAND = {
 const SITE_NAV_SERVICES = [
   ["condition-detail.html?condition=weight", "โปรแกรม re:body"],
   ["condition-detail.html?condition=hair-loss", "โปรแกรม re:hair"],
-  ["condition-detail.html?condition=ed", "โปรแกรม re:confidence"],
+  ["condition-detail.html?condition=re-flow", "โปรแกรม re:flow"],
   ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
   ["krane-b2c.html#profile", "เติมยา", "profile"],
   ["krane-b2c.html?v=20260920-float-v1#upload-rx", "อัพโหลดใบสั่งยา", "upload-rx"]

@@ -1228,7 +1228,7 @@
     "บริการของเรา":"our services",
     "โปรแกรม re:body":"re:body program",
     "โปรแกรม re:hair":"re:hair program",
-    "โปรแกรม re:confidence":"re:confidence program",
+    "โปรแกรม re:flow":"re:flow program",
     "ปรึกษาทั่วไป":"general consultation",
     "วิธีใช้งาน":"how it works",
     "วิธีการทำงาน":"How it works",

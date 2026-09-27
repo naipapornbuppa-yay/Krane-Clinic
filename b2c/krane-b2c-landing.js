@@ -275,7 +275,7 @@
     ["อาการที่เราดูแล", "Conditions we treat"], ["โรคอ้วน / การลดน้ำหนัก", "Obesity / Weight loss"],
     ["ผมบาง ผมร่วง", "Thinning hair / Hair loss"], ["ภาวะหย่อนสมรรถภาพทางเพศ", "Erectile dysfunction"], ["เจ็บป่วยทั่วไป", "General health"],
     ["บริการของเรา", "our services"], ["โปรแกรม re:body", "re:body program"], ["โปรแกรม re:hair", "re:hair program"],
-    ["โปรแกรม re:confidence", "re:confidence program"], ["ปรึกษาทั่วไป", "general consultation"], ["เติมยา", "refill medicine"],
+    ["โปรแกรม re:flow", "re:flow program"], ["ปรึกษาทั่วไป", "general consultation"], ["เติมยา", "refill medicine"],
     ["อัพโหลดใบสั่งยา", "upload prescription"], ["วิธีการทำงาน", "how it works"], ["วิธีใช้งาน", "how it works"], ["แพทย์ของเรา", "Our doctors"], ["ทีมแพทย์ของเรา", "our medical team"], ["บทความสุขภาพ", "health library"],
     ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
     ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],

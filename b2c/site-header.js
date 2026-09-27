@@ -28,7 +28,7 @@
     navServices: "our services",
     menuRebody: "re:body program",
     menuRehair: "re:hair program",
-    menuReconfidence: "re:confidence program",
+    menuReflow: "re:flow program",
     menuGeneralConsultation: "general consultation",
     refillMedicine: "refill medicine",
     menuObesity: "Obesity / weight loss",

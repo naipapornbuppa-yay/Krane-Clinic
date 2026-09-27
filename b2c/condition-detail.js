@@ -126,13 +126,13 @@
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
-    ed: {
+    "re-flow": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png",
-      kicker: "ดูแลภาวะ ED อย่างเป็นส่วนตัว",
-      hook: "คุยเรื่องนี้กับแพทย์ได้ โดยไม่ต้องเดินเข้าคลินิก",
-      lead: "ประเมินออนไลน์อย่างเป็นส่วนตัว หาสาเหตุที่แท้จริง แล้วเลือกทางที่ปลอดภัยกับหัวใจของคุณ",
+      image: "assets/figma-draft-20260830/hero-ed-lifestyle-french-manicure-v4.png",
+      kicker: "โปรแกรม re:flow",
+      hook: "กลับมามั่นใจ ในจังหวะของคุณ",
+      lead: "เริ่มจากการประเมินสุขภาพกับแพทย์อย่างเป็นส่วนตัว เพื่อหาสาเหตุและวางแผนการดูแลที่ปลอดภัยสำหรับคุณ",
       knowledgeTitle: "ED มักเป็นสัญญาณของร่างกาย ไม่ใช่ความล้มเหลว",
       knowledge:
         "การแข็งตัวต้องอาศัยหลอดเลือด เส้นประสาท ฮอร์โมน และสภาพจิตใจทำงานร่วมกัน เมื่อส่วนใดส่วนหนึ่งเปลี่ยนไป อาการจึงปรากฏ และบ่อยครั้งมาก่อนโรคหัวใจหลายปี",
@@ -352,6 +352,10 @@
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุและความต่อเนื่องของแผน"
     }
   };
+
+  // Keep bookmarked and shared legacy ED links working while re:flow is now
+  // the canonical programme name and URL.
+  CONDITIONS.ed = CONDITIONS["re-flow"];
 
   const SUPPORTING_CONTENT = {
     weight: {
