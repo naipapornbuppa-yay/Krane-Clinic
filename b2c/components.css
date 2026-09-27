@@ -3174,8 +3174,10 @@ body.lang-th *{letter-spacing:normal}
 .screen__top:has(+ .care-journey){background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 .care-journey__steps{
   display:grid;
-  inline-size:min(100%,var(--care-flow-content-max,704px));
+  inline-size:100%;
+  width:100%;
   max-inline-size:var(--care-flow-content-max,704px);
+  max-width:var(--care-flow-content-max,704px);
   min-inline-size:0;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
@@ -3197,7 +3199,7 @@ body.lang-th *{letter-spacing:normal}
   transition:width 520ms var(--ease-out)}
 .care-journey__step.is-current .care-journey__fill{display:block}
 @media(prefers-reduced-motion:reduce){.care-journey__fill{transition:none}}
-.care-journey__name{display:grid;place-items:center;width:100%;min-height:2.4em;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:normal;text-overflow:clip}
+.care-journey__name{display:grid;place-items:center;width:100%;min-height:2.4em;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;word-break:keep-all;text-overflow:clip}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
 /* A finished stage keeps a full accent track. Turning the live stage's track
@@ -5508,6 +5510,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
     margin-inline:auto;
   }
   .screen:not(#landing)>:is(.screen__top,.screen__body,.screen__footer){
+    padding-left:24px;
+    padding-right:24px;
+  }
+  /* The conditions screen is already constrained to the 752px app shell.
+     Its older viewport-centering formula therefore double-counted the outer
+     space and collapsed the header/progress content to its intrinsic width. */
+  #conditions>.screen__top,
+  #conditions>.care-journey{
     padding-left:24px;
     padding-right:24px;
   }
