@@ -331,11 +331,34 @@
       background:var(--state-editorial-canvas)
     }
     .state-view__visual:has(.krane-state-art){
+      position:relative;
+      isolation:isolate;
       width:min(70vw,365px)!important;
       height:auto!important;
       min-height:0!important;
       aspect-ratio:14/9;
       overflow:visible!important;
+    }
+    /* Doctor matching keeps the monochrome illustration, but gives it a soft,
+       optimistic field so the artwork does not float on an empty white page. */
+    #matching .state-view__visual:has(.krane-state-art)::before{
+      content:"";
+      position:absolute;
+      z-index:0;
+      inset:10% 3% 5%;
+      border-radius:46% 54% 42% 58% / 55% 42% 58% 45%;
+      background:
+        radial-gradient(circle at 28% 38%,rgba(193,222,255,.92) 0 22%,transparent 58%),
+        radial-gradient(circle at 70% 48%,rgba(220,236,255,.96) 0 24%,transparent 62%),
+        radial-gradient(circle at 48% 74%,rgba(178,214,250,.54) 0 18%,transparent 58%);
+      filter:blur(12px);
+      transform:rotate(-2deg) scale(1.08);
+      opacity:.9;
+      pointer-events:none;
+    }
+    #matching .state-view__visual:has(.krane-state-art) .state-view__tile{
+      position:relative;
+      z-index:1;
     }
     /* The paper crane is deliberately quieter than the other state art. */
     #matching .state-view__visual--crane-compact{
@@ -6375,14 +6398,15 @@
   /* Doctor Review questionnaires share one rendering contract. Stable IDs are
      deliberately carried in the markup so the backend can persist answers
      without depending on Thai copy or DOM position. */
-  function intakeChoiceQuestion({id,title,options,multiple=false,helper=''}){
+  function intakeChoiceQuestion({id,title,options,multiple=false,helper='',skippable=false}){
     const selectAttribute=multiple ? 'data-multi' : 'data-select';
-    return `<div class="common-group" data-question-id="${id}" data-string-id="intake.${id}.title">
+    return `<div class="common-group" data-question-id="${id}" data-string-id="intake.${id}.title"${skippable ? ' data-question-skippable="true"' : ''}>
       <div class="section-label">${title}</div>
       ${helper ? `<p class="hint">${helper}</p>` : ''}
       <div class="stack-3">
         ${options.map((option,index) => `<button class="option" type="button" ${selectAttribute} data-answer-id="${id}.${index+1}"><span class="opt-body"><span class="opt-title">${option}</span></span><span class="opt-check"></span></button>`).join('')}
       </div>
+      ${skippable ? '<button class="intake-question-skip" type="button" data-intake-question-skip><span>ไม่เกี่ยวข้องกับฉัน</span><strong>ข้ามคำถามนี้</strong><span aria-hidden="true">→</span></button>' : ''}
     </div>`;
   }
   const intakeTemplates = {
@@ -6432,12 +6456,14 @@
         ${intakeChoiceQuestion({
           id:'hair.female_cycle_weight',
           title:'มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่? (เฉพาะผู้หญิง)',
-          options:['มี','ไม่มี']
+          options:['มี','ไม่มี'],
+          skippable:true
         })}
         ${intakeChoiceQuestion({
           id:'hair.female_pregnancy',
           title:'คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่? (เฉพาะผู้หญิง)',
-          options:['มี','ไม่มี']
+          options:['มี','ไม่มี'],
+          skippable:true
         })}`
     },
 
@@ -10095,7 +10121,9 @@
       push=false;
       window.requestAnimationFrame(() => showActionToast('กรุณาทำขั้นตอนที่จำเป็นให้ครบก่อน','warning'));
     }
-    if(['intake1','intake2','intake3'].includes(id)) renderIntakeQuestions();
+    /* A QA/shared link may enter the safety screen directly. It still needs the
+       selected service's authored questions, not the generic base markup. */
+    if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
@@ -12067,6 +12095,29 @@
       return;
     }
     if(e.target.closest('[data-address-recipient-edit]')) addressRecipientEditing=true;
+    const intakeSkip=e.target.closest('[data-intake-question-skip]');
+    if(intakeSkip){
+      const question=intakeSkip.closest('[data-intake-question]');
+      const screen=intakeSkip.closest('.screen');
+      if(!question || !screen) return;
+      question.querySelectorAll('.option[aria-selected="true"]')
+        .forEach(option => option.setAttribute('aria-selected','false'));
+      question.dataset.answerSkipped='true';
+      saveIntakeDraft();
+      const page=intakeQuestionPageState(screen);
+      if(page.index<page.total-1){
+        activateIntakeQuestionPage(screen,page.index+1);
+        return;
+      }
+      const next=screen.querySelector('.screen__footer [data-go]')?.dataset.go;
+      if(next==='intake5' && !categoryNeedsPhotos()){
+        if(flowState.entryChannel==='partner') show('intake-concern');
+        else finishDirectF02();
+        return;
+      }
+      if(next) show(next);
+      return;
+    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -12183,6 +12234,8 @@
     const opt = e.target.closest('.option[data-select]');
     if(opt){
       const group = opt.parentElement;
+      const optQuestion=opt.closest('[data-intake-question]');
+      if(optQuestion) delete optQuestion.dataset.answerSkipped;
       [...group.querySelectorAll('.option[data-select]')].forEach(o => o.setAttribute('aria-selected', o===opt));
       saveIntakeDraft();
       const optScreen = opt.closest('.screen');
