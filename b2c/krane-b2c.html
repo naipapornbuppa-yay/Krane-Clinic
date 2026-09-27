@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-hair-hand-crop-v103";
+    const release = "20260927-address-flow-v104";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-video-logo-header-v100">
+<link rel="stylesheet" href="components.css?v=20260927-address-flow-v104">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2103,6 +2103,34 @@
 
 
   <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
+  <section class="screen" id="address-detail" data-screen-code="SCR-013A">
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
+    <div class="screen__body delivery-details-body">
+      <h1 class="delivery-details-title">รายละเอียดจัดส่ง</h1>
+      <section class="delivery-details-card delivery-details-card--map">
+        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><h2>ที่อยู่จัดส่ง</h2></div>
+        <button class="delivery-details-map" type="button" data-go="address-map" aria-label="เลือกตำแหน่งจากแผนที่">
+          <span class="sim-map__plane delivery-details-map__plane" aria-hidden="true"></span>
+          <span class="delivery-details-map__pin"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="delivery-details-map__cta" data-address-detail-map-action>เลือกจากแผนที่ <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
+        </button>
+        <div class="delivery-details-card__summary" data-address-detail-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</div>
+      </section>
+
+      <section class="delivery-details-card">
+        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="contact" class="ui-icon" aria-hidden="true"></i></span><h2>ข้อมูลผู้รับ</h2></div>
+        <div class="delivery-details-card__row"><span><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><small data-address-detail-phone></small></span><button type="button" data-go="address">แก้ไข</button></div>
+      </section>
+
+      <section class="delivery-details-card">
+        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="bike" class="ui-icon" aria-hidden="true"></i></span><h2>รูปแบบการจัดส่ง</h2></div>
+        <p class="delivery-details-card__notice">ค่าจัดส่งอาจเปลี่ยนแปลงตามพื้นที่และร้านยาที่พร้อมให้บริการ</p>
+        <div class="delivery-details-card__row"><span><strong data-address-detail-method>จัดส่งภายในวัน</strong><small data-address-detail-eta>ได้รับยาภายในวันนี้</small></span><strong data-address-detail-fee>คำนวณหลังยืนยันที่อยู่</strong></div>
+      </section>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ต่อไป <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
+  </section>
+
   <!-- Restores the pre-160119a layout: map always visible at the top, fields
        always visible beneath it, no accordion and no card chrome in between.
        Recipient details stay grouped below the delivery address, with first
@@ -2111,7 +2139,7 @@
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
       <div class="address-page-head">
-        <h2 class="address-page-title">ที่อยู่จัดส่ง</h2>
+        <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
         <button class="address-clear-all" type="button" data-address-clear-all>ล้างทั้งหมด</button>
       </div>
       <!-- Location and postal fields are one subject, so they are one section:
@@ -2208,7 +2236,7 @@
       <button class="address-map-pill" type="button" data-go="address-map">
         <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
       </button>
-      <button class="btn btn--primary" data-address-save>ยืนยันที่อยู่</button>
+      <button class="btn btn--primary" data-address-save>บันทึกที่อยู่</button>
     </div>
   </section>
   <!-- The map picker modal is gone: the map on #address IS the picker now. -->
@@ -2228,6 +2256,7 @@
            filled from the pin (client, 18 Aug). No map SDK — tiles are plain
            images, which keeps the page dependency-free. The CSS street grid
            below stays as the offline fallback. -->
+      <div class="address-map-stage">
       <div class="address-map address-map--full" data-address-map>
         <div class="osm-map" data-osm-map hidden>
           <div class="osm-map__plane" data-osm-plane></div>
@@ -2243,12 +2272,22 @@
         </div>
         <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
       </div>
+      <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
+        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ค้นหาตำแหน่งจากที่อยู่</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <label class="address-map-search-panel__field"><span>ที่อยู่</span><textarea id="addressMapQuery" rows="2" placeholder="บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน"></textarea></label>
+        <label class="address-map-search-panel__field"><span>จังหวัด</span><select id="addressMapProvince"><option value="">เลือกจังหวัด</option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select></label>
+        <label class="address-map-search-panel__field"><span>เขต/อำเภอ</span><select id="addressMapDistrict"><option value="">เลือกเขต/อำเภอ</option><option value="คลองเตย">คลองเตย</option><option value="วัฒนา">วัฒนา</option><option value="บางรัก">บางรัก</option></select></label>
+        <label class="address-map-search-panel__field"><span>แขวง/ตำบล</span><select id="addressMapSubdistrict"><option value="">เลือกแขวง/ตำบล</option><option value="คลองเตย">คลองเตย</option><option value="คลองตัน">คลองตัน</option><option value="พระโขนง">พระโขนง</option></select></label>
+        <label class="address-map-search-panel__field"><span>รหัสไปรษณีย์</span><select id="addressMapPostcode"><option value="">เลือกรหัสไปรษณีย์</option><option value="10110">10110</option><option value="10500">10500</option><option value="10260">10260</option></select></label>
+        <button class="btn btn--ink" type="button" data-address-map-search-submit>ค้นหาตำแหน่ง</button>
+      </section>
+      </div>
       <p class="address-readout" role="status" aria-live="polite">
         <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
         <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
       </p>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ใช้ตำแหน่งนี้</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ปักตำแหน่งนี้</button></div>
   </section>
 
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
@@ -2812,14 +2851,6 @@
         <button class="btn btn--primary postpay-confirm-receipt" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button>
       </section>
 
-      <section class="postpay-card postpay-order-snapshot">
-        <div class="postpay-card__head"><span><small>คำสั่งซื้อของคุณ</small><strong data-postpay-item-count>2 รายการ</strong></span><span class="postpay-order-snapshot__thumbs"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" alt=""><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" alt=""></span></div>
-        <div class="postpay-order-snapshot__row"><span><i data-lucide="wallet-cards" class="ui-icon" aria-hidden="true"></i>วิธีชำระเงิน</span><strong data-postpay-method>QR Code</strong></div>
-        <div class="postpay-order-snapshot__row" data-postpay-discount-row hidden><span><i data-lucide="badge-percent" class="ui-icon" aria-hidden="true"></i>ส่วนลด</span><strong data-postpay-discount>− ฿ 0</strong></div>
-        <div class="postpay-order-snapshot__total"><span>ยอดรวม</span><strong data-postpay-total>฿ 558</strong></div>
-        <button class="postpay-card__link" type="button" data-go="order-summary"><span>ดูสรุปรายการและใบเสร็จ</span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
-      </section>
-
       <section class="postpay-card postpay-route-card">
         <div class="postpay-card__head"><span><small>การจัดส่ง</small><strong data-delivery-courier>Lalamove</strong></span></div>
         <div class="postpay-route">
@@ -2830,6 +2861,14 @@
           <span class="postpay-route__copy postpay-route__copy--destination"><small>ส่งถึง</small><strong data-delivery-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</strong><em><span data-delivery-recipient>มะลิ สุธิดา</span> · <a href="tel:+66812345678" data-delivery-recipient-phone>081-234-5678</a></em></span>
         </div>
         <div class="postpay-delivery-instruction"><i data-lucide="message-square-text" class="ui-icon" aria-hidden="true"></i><span><small>คำแนะนำการจัดส่ง</small><strong data-postpay-instruction>โทรก่อนถึงและวางไว้ที่ล็อบบี้</strong></span></div>
+      </section>
+
+      <section class="postpay-card postpay-order-snapshot">
+        <div class="postpay-card__head"><span><small>คำสั่งซื้อของคุณ</small><strong data-postpay-item-count>2 รายการ</strong></span><span class="postpay-order-snapshot__thumbs"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" alt=""><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" alt=""></span></div>
+        <div class="postpay-order-snapshot__row"><span><i data-lucide="wallet-cards" class="ui-icon" aria-hidden="true"></i>วิธีชำระเงิน</span><strong data-postpay-method>QR Code</strong></div>
+        <div class="postpay-order-snapshot__row" data-postpay-discount-row hidden><span><i data-lucide="badge-percent" class="ui-icon" aria-hidden="true"></i>ส่วนลด</span><strong data-postpay-discount>− ฿ 0</strong></div>
+        <div class="postpay-order-snapshot__total"><span>ยอดรวม</span><strong data-postpay-total>฿ 558</strong></div>
+        <button class="postpay-card__link" type="button" data-go="order-summary"><span>ดูสรุปรายการและใบเสร็จ</span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
       </section>
 
       <div class="card card--pad-sm stack-2" data-tracking-reference hidden>
@@ -5343,11 +5382,14 @@
     const title=document.querySelector('[data-fulfillment-address-title]');
     if(title) title.hidden=confirmed;
     if(row){
+      row.dataset.go=confirmed ? 'address-detail' : 'address';
       row.classList.toggle('checkout-row--empty',!confirmed);
       row.setAttribute('aria-label',confirmed
         ? `${pickup ? 'เปลี่ยนตำแหน่ง' : 'เปลี่ยนที่อยู่จัดส่ง'}: ${deliveryAddressSummary(address)}`
         : (pickup ? 'เพิ่มตำแหน่งเพื่อค้นหาสาขาใกล้คุณ' : 'เพิ่มที่อยู่จัดส่ง'));
     }
+    const compactRow=document.querySelector('[data-delivery-address-detail-section]');
+    if(compactRow) compactRow.dataset.go=confirmed ? 'address-detail' : 'address';
     const action=document.querySelector('[data-payment-address-action]');
     if(action){
       action.textContent=confirmed
@@ -5372,6 +5414,7 @@
       ? [address.building,address.line,address.district].filter(Boolean).join(' · ')
       : 'ค้นหาอาคาร คอนโด หรือถนน แล้วกรอกรายละเอียดให้ครบ'; });
     renderAddressPinPreview();
+    syncAddressDetail();
     syncCheckoutReadiness();
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
@@ -5409,6 +5452,75 @@
        field keeps offering a clear (client, 19 Aug). */
     syncFieldClearButtons();
     writeDeliveryAddressDraft(screen,address);
+  }
+  function syncAddressDetail(){
+    const address=flowState.orderState.address || {};
+    const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
+    const summary=document.querySelector('[data-address-detail-address]');
+    const recipient=document.querySelector('[data-address-detail-recipient]');
+    const phone=document.querySelector('[data-address-detail-phone]');
+    const mapAction=document.querySelector('[data-address-detail-map-action]');
+    const confirm=document.querySelector('[data-address-detail-confirm]');
+    if(summary) summary.textContent=confirmed ? deliveryAddressSummary(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
+    if(recipient){
+      const parts=recipientNameParts(address);
+      recipient.textContent=[parts.firstName,parts.lastName].filter(Boolean).join(' ') || 'ยังไม่มีข้อมูลผู้รับ';
+    }
+    if(phone) phone.textContent=confirmed ? formatPhoneForDisplay(address.recipientPhone || '') : '';
+    if(mapAction) mapAction.firstChild.textContent=confirmed ? 'แก้ไขตำแหน่ง ' : 'เลือกจากแผนที่ ';
+    if(confirm){
+      confirm.disabled=!confirmed;
+      confirm.setAttribute('aria-disabled',String(!confirmed));
+    }
+    const editorTitle=document.querySelector('[data-address-editor-title]');
+    if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่' : 'เพิ่มที่อยู่ใหม่';
+  }
+
+  function hydrateAddressMapSearch(){
+    const address=flowState.orderState.address || {};
+    const values={
+      addressMapQuery:[address.building,address.line].filter(Boolean).join(' '),
+      addressMapProvince:address.province || '',
+      addressMapDistrict:address.districtName || '',
+      addressMapSubdistrict:address.subdistrict || '',
+      addressMapPostcode:address.postcode || ''
+    };
+    Object.entries(values).forEach(([id,value]) => {
+      const control=document.getElementById(id);
+      if(!control) return;
+      if(control.tagName==='SELECT' && value && ![...control.options].some(option => option.value===value)){
+        control.add(new Option(value,value));
+      }
+      control.value=value;
+    });
+  }
+  function applyAddressMapSearch(){
+    const value=id => (document.getElementById(id)?.value || '').trim();
+    const query=value('addressMapQuery');
+    const province=value('addressMapProvince');
+    const district=value('addressMapDistrict');
+    const subdistrict=value('addressMapSubdistrict');
+    const postcode=value('addressMapPostcode');
+    if(!query || !province){
+      showActionToast('กรอกที่อยู่และเลือกจังหวัดก่อนค้นหา','warning');
+      (!query ? document.getElementById('addressMapQuery') : document.getElementById('addressMapProvince'))?.focus();
+      return;
+    }
+    const building=document.getElementById('addrBuilding');
+    const line=document.getElementById('addrLine');
+    const fields={addrProvince:province,addrDistrictName:district,addrSubdistrict:subdistrict,addrPostcode:postcode};
+    if(building && !building.value.trim()) building.value=query;
+    if(line && !line.value.trim()) line.value=query;
+    Object.entries(fields).forEach(([id,next]) => {
+      const field=document.getElementById(id);
+      if(field && next) field.value=next;
+    });
+    simState.picked=true;
+    syncComposedDistrict();
+    syncFloatingFieldStates(document.getElementById('address'));
+    syncFieldClearButtons();
+    show('address');
+    showActionToast('เลือกตำแหน่งแล้ว กรุณาตรวจรายละเอียดก่อนบันทึก','success');
   }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
      which was only ever written by the fake "pick an address" demo button. That
@@ -5560,9 +5672,10 @@
     const list=document.querySelector('[data-address-book-list]');
     if(!section || !list) return;
     const book=savedAddresses();
-    /* One saved address is the one already in the form — there is nothing to
-       choose between, so the list stays out of the way until there are two. */
-    section.hidden=book.length<2;
+    /* Show the first saved address immediately. Besides making the saved state
+       explicit, this is also the only safe place to offer “เพิ่มที่อยู่ใหม่”
+       without making the editor controls compete with the form title. */
+    section.hidden=book.length<1;
     if(section.hidden){ list.innerHTML=''; return; }
     const currentKey=addressBookKey(flowState.orderState.address || {});
     list.innerHTML=book.map((entry,index) => {
@@ -5596,6 +5709,7 @@
     flowState.orderState.addressConfirmed=false;
     persistFlowState();
     renderAddressBook();
+    syncAddressDetail();
     syncFieldClearButtons();
     const first=document.getElementById('addrLabel');
     if(first){
@@ -8209,7 +8323,7 @@
     if(directGate){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=false;
-    } else if(flowState.entryChannel==='direct' && ['matching','choosedoc','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'].includes(target)){
+    } else if(flowState.entryChannel==='direct' && ['matching','choosedoc','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'].includes(target)){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=true;
     }
@@ -8350,7 +8464,7 @@
     matching:'patient-info', choosedoc:'matching', appointment:'matching', 'appointment-booked':'appointment',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
-    address:'payment', 'address-map':'address', 'delivery-quote':'address', 'pharmacy-search':'address',
+    'address-detail':'payment', address:'address-detail', 'address-map':'address-detail', 'delivery-quote':'address-detail', 'pharmacy-search':'address-detail',
     pharmacypending:'pharmacy-search', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-processing', insurance:'payment',
     payfail:'payment-gw',
@@ -9560,7 +9674,7 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'nurse','matching','choosedoc','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search',
+    'consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue',
     'tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'
   ]);
@@ -9722,7 +9836,8 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
-    if(id==='address-map') window.setTimeout(setupAddressMap,0);
+    if(id==='address-map') window.setTimeout(() => { setupAddressMap(); hydrateAddressMapSearch(); },0);
+    if(id==='address-detail') syncAddressDetail();
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
@@ -9871,7 +9986,7 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
+    if(['address-detail','address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       // Some desktop browsers restore remembered address values just after the
       // screen becomes visible. Re-apply the persisted order address after that
@@ -11434,6 +11549,10 @@
       simApplyTransform(); return;
     }
     if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
+    if(e.target.closest('[data-address-map-search-submit]')){
+      applyAddressMapSearch();
+      return;
+    }
     if(e.target.closest('[data-address-map-confirm]')){
       // The pin has already filled the form; this just takes you back to it.
       if(!simState.picked) simUpdateReadout();
@@ -11443,6 +11562,10 @@
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
+      replaceCurrent('address-detail');
+      return;
+    }
+    if(e.target.closest('[data-address-detail-confirm]')){
       /* Delivery pricing is a short system calculation, so it stays in the
          selected delivery card instead of interrupting checkout with a page. */
       focusCheckoutDelivery=true;
@@ -13920,7 +14043,7 @@
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
       <ellipse cx="280" cy="181" rx="154" ry="104" fill="#dce7f8" opacity=".52" filter="url(#krane-consult-halo-blur)"/>
-      <image href="assets/state-editorial-v5-ink/doctor-matching-neutral-pose-v2.png?v=20260927-matching-slippers-v96" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-neutral-pose-v2.png?v=20260927-address-flow-v104" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
