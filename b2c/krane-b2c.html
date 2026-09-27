@@ -4301,7 +4301,7 @@
       <use href="#krane-state-nurse-ready"></use>
     </svg>
     <h2 id="signup-done-title">สมัครสมาชิกสำเร็จ</h2>
-    <p id="signup-done-description" data-signup-done-description>ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือกรอกข้อมูลผู้รับบริการ</p>
+    <p id="signup-done-description" data-signup-done-description>สร้างบัญชี Krane เรียบร้อยแล้ว<span class="signup-done-dialog__next">ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ</span></p>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-signup-done-continue>ดำเนินการต่อ</button></div>
   </section>
 </div>
@@ -13541,19 +13541,28 @@
      began inside an intake goes back to the questions, one started from the
      log-in page goes to the account (client, 20 Sep). */
   const SIGNUP_DONE_DESCRIPTION = {
-    'patient-info':'ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือกรอกข้อมูลผู้รับบริการ',
-    'profile':'ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว เริ่มใช้งานบัญชีของคุณได้เลย',
-    'consent-terms':'ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือให้ความยินยอมการใช้ข้อมูลและการรักษาทางไกล'
+    'patient-info':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ'],
+    'profile':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป เริ่มใช้งานบัญชี'],
+    'consent-terms':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป ยืนยันความยินยอมและการรักษาทางไกล']
   };
   function signupDoneDescription(target){
     return SIGNUP_DONE_DESCRIPTION[target]
-      || 'ยืนยันเบอร์โทรศัพท์และสร้างบัญชี Krane ของคุณเรียบร้อยแล้ว ขั้นตอนต่อไปคือตอบแบบสอบถามอาการ';
+      || ['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป ตอบแบบประเมินสุขภาพ'];
   }
   function openSignupDoneModal(target){
     signupDoneTarget = target;
     if(!signupDoneModal){ show(target); return; }
     const description = signupDoneModal.querySelector('[data-signup-done-description]');
-    if(description) description.textContent = signupDoneDescription(target);
+    if(description){
+      const [confirmation,nextStep] = signupDoneDescription(target);
+      description.replaceChildren(
+        document.createTextNode(confirmation),
+        Object.assign(document.createElement('span'),{
+          className:'signup-done-dialog__next',
+          textContent:nextStep
+        })
+      );
+    }
     signupDoneModal.hidden = false;
     signupDoneModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
