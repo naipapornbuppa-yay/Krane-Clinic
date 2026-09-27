@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-desktop-bottomnav-v119";
+    const release = "20260927-screen-tab-order-v120";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260924-screen-directory-v78"></script>
+<script src="review-tools.js?v=20260927-screen-tab-order-v79"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -122,8 +122,11 @@
   .rail a.is-key-route{background:var(--color-blue-soft);color:var(--color-blue);font-weight:var(--fw-semibold)}
   .rail a.is-key-route:hover{background:var(--color-info-soft);color:var(--color-blue-hover)}
   .rail a.current{background:#171717;color:#fff;font-weight:var(--fw-semibold)}
-  .rail-page>summary{display:grid;grid-template-columns:minmax(0,1fr) 14px;align-items:center;gap:var(--sp-2);padding:7px 10px 7px 24px;border-radius:var(--radius-xs);color:var(--color-ink-2);font-size:12.5px;line-height:1.35;cursor:pointer}
+  .rail-page{margin:3px 0}
+  .rail-page>summary{display:grid;grid-template-columns:minmax(0,1fr) 14px;align-items:center;gap:var(--sp-2);padding:7px 10px 7px 30px;border-radius:var(--radius-xs);color:var(--color-ink-2);font-size:11px;font-weight:var(--fw-semibold);line-height:1.35;letter-spacing:.02em;cursor:pointer}
   .rail-page>summary:hover{background:var(--color-bg-2);color:var(--color-ink)}
+  .rail-page[open]>summary{color:var(--color-ink)}
+  .rail-page--special>summary{color:var(--color-ink-3)}
   .rail-sub{margin:1px 0 4px 30px;border-left:1px solid var(--color-line)}
   .rail-sub a{padding-left:16px;font-size:12px;color:var(--color-ink-3)}
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
@@ -147,6 +150,9 @@
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
   .rail a.is-exception.current{background:var(--color-danger-ink);color:#fff;font-weight:var(--fw-semibold)}
   .rail a.is-exception.current .rail-state{color:inherit}
+  .rail a.is-eligibility{color:var(--color-blue);font-weight:var(--fw-medium)}
+  .rail a.is-eligibility:hover{background:var(--color-blue-soft);color:var(--color-blue-hover)}
+  .rail a.is-alternative{color:var(--color-ink-3)}
   .stage{width:100%;min-width:0;max-width:100vw;height:100vh;height:100dvh;flex:1;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden;padding:0;background:var(--color-surface);transition:width .22s ease,max-width .22s ease}
   html.review-tools-enabled .rail{display:block}
   html.review-tools-enabled .stage{width:calc(100% - 286px);max-width:calc(100vw - 286px)}
@@ -8419,10 +8425,20 @@
     const link = railLinks.find(a => a.dataset.go === id);
     if(!link) return;
     const activeGroup = link.closest('.rail-group');
-    if(activeGroup) activeGroup.open = true;
+    if(activeGroup){
+      prototypeRail?.querySelectorAll(':scope > .rail-group[open]').forEach(group => {
+        if(group !== activeGroup) group.open = false;
+      });
+      activeGroup.open = true;
+    }
     let parent = link.parentElement;
     while(parent && parent !== activeGroup){
-      if(parent.matches && parent.matches('details.rail-page')) parent.open = true;
+      if(parent.matches && parent.matches('details.rail-page')){
+        parent.parentElement?.querySelectorAll(':scope > .rail-page[open]').forEach(page => {
+          if(page !== parent) page.open = false;
+        });
+        parent.open = true;
+      }
       parent = parent.parentElement;
     }
     if(link.scrollIntoView) link.scrollIntoView({ block:'nearest' });

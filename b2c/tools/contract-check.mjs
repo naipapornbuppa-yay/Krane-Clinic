@@ -74,6 +74,34 @@ for (const id of contract.screens) {
   if (!presentScreens.includes(id)) fail('screen missing', `#${id}`);
 }
 
+/* ---- reviewer Screen Tab --------------------------------------------------
+   The left rail is the reviewer's map of the implementation. Every real
+   screen belongs there exactly once; journey groups and their Default / edge
+   buckets are accordions, so opening one never leaves another expanded. */
+const railAudit = await app.evaluate(() => {
+  const screens = [...document.querySelectorAll('section.screen[id]')].map(screen => screen.id);
+  const links = [...document.querySelectorAll('#prototype-rail a[data-go]')].map(link => link.dataset.go);
+  const groups = [...document.querySelectorAll('#prototype-rail > .rail-group')];
+  return {
+    missing:screens.filter(id => !links.includes(id)),
+    stale:links.filter(id => !screens.includes(id)),
+    duplicates:links.filter((id, index) => links.indexOf(id) !== index),
+    openGroups:groups.filter(group => group.open).length,
+    invalidBuckets:groups.filter(group => {
+      const pages=[...group.querySelectorAll(':scope > .rail-group__body > .rail-page')];
+      return !pages.length || !pages[0].classList.contains('rail-page--default') || pages.filter(page => page.open).length !== 1;
+    }).length
+  };
+});
+did();
+if (railAudit.missing.length || railAudit.stale.length || railAudit.duplicates.length) {
+  fail('Screen Tab coverage', JSON.stringify(railAudit));
+}
+did();
+if (railAudit.openGroups !== 1 || railAudit.invalidBuckets) {
+  fail('Screen Tab accordion', JSON.stringify(railAudit));
+}
+
 /* ---- components ----------------------------------------------------------- */
 for (const item of contract.components) {
   did();

@@ -57,7 +57,7 @@
       screens: [
         ["nurse", "SID-023", "พยาบาลคัดกรอง", "Nurse pre-screen"],
         ["matching", "SID-024", "กำลังจับคู่แพทย์", "Doctor matching"],
-        ["choosedoc", "SID-025", "เลือกแพทย์", "Choose doctor", "retired"],
+        ["choosedoc", "SID-025", "เลือกแพทย์", "Choose doctor", "alternative"],
         ["appointment", "SID-026", "จองคิวแพทย์ · เลือกวันและเวลา", "Book a doctor · Choose date & time", "featured"],
         ["appointment-booked", "SID-026A", "ยืนยันนัดหมาย", "Appointment confirmed"],
         ["consultpay", "SID-027", "สรุปค่าปรึกษา", "Consultation order summary"],
@@ -82,19 +82,20 @@
     {
       step: "06", th: "ยา การจัดส่ง และชำระเงิน", en: "Medicine, delivery & payment",
       screens: [
+        ["payment", "SID-040", "สรุปรายการและชำระเงิน", "Medication checkout"],
+        ["payment-items", "SID-040A", "แก้ไขรายการยา", "Edit medication items"],
+        ["address-detail", "SID-036B", "สรุปรายละเอียดจัดส่ง", "Delivery details"],
         ["address", "SID-036", "รายละเอียดที่อยู่", "Delivery address"],
         ["address-map", "SID-036A", "เลือกที่อยู่จากแผนที่", "Choose address on map"],
         ["delivery-quote", "SID-037", "คำนวณค่าจัดส่ง", "Delivery quote"],
         ["pharmacy-search", "SID-038", "ตรวจสอบสต็อกและราคา", "Pharmacy stock & price"],
-        ["insurance", "SID-039", "ตรวจสอบสิทธิ์ประกัน", "Insurance eligibility"],
-        ["insurance-result", "SID-039A", "ผลการตรวจสอบสิทธิ์", "Insurance result"],
-        ["payment-items", "SID-040A", "แก้ไขรายการยา", "Edit medication items"],
-        ["payment", "SID-040", "สรุปรายการและชำระเงิน", "Medication checkout"],
+        ["insurance", "SID-039", "ตรวจสอบสิทธิ์ประกัน", "Insurance eligibility", "eligibility"],
+        ["insurance-result", "SID-039A", "ผลการตรวจสอบสิทธิ์", "Insurance result", "eligibility"],
         ["payment-gw", "SID-041", "ช่องทางชำระเงิน", "Payment gateway"],
         ["payment-processing", "SID-041A", "กำลังตรวจสอบการชำระเงิน", "Payment processing"],
         ["payment-success", "SID-042", "ชำระเงินสำเร็จ", "Payment confirmed"],
-        ["payfail", "SID-043", "ชำระเงินไม่สำเร็จ", "Medication payment failed", "exception"],
         ["pharmacypending", "SID-045", "ร้านยายืนยันรายการ", "Pharmacy confirmed"],
+        ["payfail", "SID-043", "ชำระเงินไม่สำเร็จ", "Medication payment failed", "exception"],
         ["pharmacyissue", "SID-046", "เปลี่ยนวิธีจัดส่ง", "Delivery fallback", "exception"]
       ],
       variants: [
@@ -136,7 +137,7 @@
       screens: [
         ["partner-idcard", "SID-070", "ถ่ายบัตรประชาชน", "Capture ID card"],
         ["partner-patient-info", "SID-062", "ยืนยันข้อมูลผู้รับบริการ", "Confirm patient details"],
-        ["partner-insurance", "SID-063", "สิทธิ์และการชำระเงิน", "Coverage & payment"],
+        ["partner-insurance", "SID-063", "สิทธิ์และการชำระเงิน", "Coverage & payment", "eligibility"],
         ["partner-nurse", "SID-064", "พยาบาลคัดกรอง", "Nurse screening", "exception"],
         ["partner-nurse-session", "SID-065", "วิดีโอคัดกรองโดยพยาบาล", "Nurse video screening", "exception"],
         ["partner-phr", "SID-068", "ข้อมูลสุขภาพจากพาร์ตเนอร์", "Partner health record"],
@@ -175,19 +176,29 @@
       const body = global.document.createElement("div");
       body.className = "rail-group__body";
 
-      group.screens.forEach(([id, sid, th, en, state]) => {
+      const defaultLinks = [];
+      const specialLinks = [];
+      const makeScreenLink = ([id, sid, th, en, state]) => {
         /* Shared screens can be referenced by more than one clinical entry
            path, but the directory lists their implementation only once. */
-        if (registered.has(id)) return;
+        if (registered.has(id)) return null;
         registered.add(id);
         const link = global.document.createElement("a");
         link.dataset.go = id;
         link.textContent = thai ? th : en;
         if (id === "landing") link.classList.add("current");
-        if (state === "retired") return;
         if (state === "featured") link.classList.add("is-key-route");
         if (state === "exception") link.classList.add("is-exception");
-        body.appendChild(link);
+        if (state === "eligibility") link.classList.add("is-eligibility");
+        if (state === "alternative") link.classList.add("is-alternative");
+        return link;
+      };
+
+      group.screens.forEach(entry => {
+        const link = makeScreenLink(entry);
+        if (!link) return;
+        const state = entry[4];
+        (state === "exception" || state === "eligibility" || state === "alternative" ? specialLinks : defaultLinks).push(link);
       });
 
       (group.variants || []).forEach(variant => {
@@ -196,8 +207,25 @@
         if (variant.ref) link.dataset.screenRef = variant.ref;
         if (variant.action) link.setAttribute(variant.action, "");
         if (variant.exception) link.classList.add("is-exception");
-        body.appendChild(link);
+        else link.classList.add("is-alternative");
+        specialLinks.push(link);
       });
+
+      const appendPageGroup = (label, links, open, stateClass) => {
+        if (!links.length) return;
+        const page = global.document.createElement("details");
+        page.className = `rail-page ${stateClass || ""}`.trim();
+        page.open = open;
+        const pageSummary = global.document.createElement("summary");
+        pageSummary.textContent = label;
+        const pageBody = global.document.createElement("div");
+        pageBody.className = "rail-sub";
+        links.forEach(link => pageBody.appendChild(link));
+        page.append(pageSummary, pageBody);
+        body.appendChild(page);
+      };
+      appendPageGroup("Default", defaultLinks, true, "rail-page--default");
+      appendPageGroup(thai ? "Eligibility / กรณีพิเศษ" : "Eligibility / edge cases", specialLinks, false, "rail-page--special");
 
       details.append(summary, body);
       fragment.appendChild(details);
@@ -234,6 +262,16 @@
         if (!details.open) return;
         rail.querySelectorAll(":scope > .rail-group[open]").forEach(other => {
           if (other !== details) other.open = false;
+        });
+      });
+    });
+    rail.querySelectorAll(":scope > .rail-group .rail-group__body").forEach(groupBody => {
+      groupBody.querySelectorAll(":scope > .rail-page").forEach(page => {
+        page.addEventListener("toggle", () => {
+          if (!page.open) return;
+          groupBody.querySelectorAll(":scope > .rail-page[open]").forEach(other => {
+            if (other !== page) other.open = false;
+          });
         });
       });
     });
