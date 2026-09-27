@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-pickup-location-gate-v85";
+    const release = "20260927-address-location-section-v86";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-pickup-location-gate-v85">
+<link rel="stylesheet" href="components.css?v=20260927-address-location-section-v86">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2127,37 +2127,11 @@
         <h2 class="address-page-title">ที่อยู่จัดส่ง</h2>
         <button class="address-clear-all" type="button" data-address-clear-all>ล้างทั้งหมด</button>
       </div>
-      <div class="address-search" data-address-search-wrap>
-        <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
-        <div class="address-search__field">
-          <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
-          <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน" data-address-search>
-        </div>
-        <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
-      </div>
-
-      <!-- Client, 25 Sep: a patient who orders to more than one place — home and
-           the office — was retyping the whole form every time, because the only
-           address the app kept was the last one used. Anything saved is listed
-           here to pick from in one tap, and "เพิ่มที่อยู่ใหม่" clears the form for
-           another one. The list hides itself until there is something in it, so
-           a first-time patient still just sees the form. -->
-      <section class="form-group address-book" data-address-book hidden>
-        <div class="address-page-head">
-          <h3 class="form-group__title">ที่อยู่ที่บันทึกไว้</h3>
-          <button class="address-clear-all" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
-        </div>
-        <div class="address-book__list" role="radiogroup" aria-label="ที่อยู่ที่บันทึกไว้" data-address-book-list></div>
-      </section>
-
-      <!-- Client, 25 Sep: the pin is what the rider actually drives to, and the
-           form never showed it — the patient filled in a street and had no way
-           to tell whether the dot had landed on their building or the one
-           behind it. A still of the map sits above the fields with the pin on
-           it and the address it resolved to underneath, and "แก้ไข" opens the
-           full picker. It is a picture, not a second map: nothing here pans. -->
-      <section class="form-group address-pin" aria-label="ตำแหน่งที่ปักไว้">
-        <h3 class="form-group__title">ที่อยู่จัดส่ง</h3>
+      <!-- Location and postal fields are one subject, so they are one section:
+           map first, search immediately below it, then the editable fields.
+           This removes the duplicate "ที่อยู่จัดส่ง" heading and keeps the
+           address search visually attached to the pin it updates. -->
+      <section class="form-group address-location" aria-label="ตำแหน่งและรายละเอียดที่อยู่จัดส่ง">
         <p class="hint address-pin__hint">ไรเดอร์จะไปตามตำแหน่งของหมุดที่คุณปักไว้</p>
         <div class="address-pin__card">
           <div class="address-pin__map" data-address-pin-map>
@@ -2166,13 +2140,16 @@
             <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
             <button class="address-pin__edit" type="button" data-go="address-map">แก้ไข</button>
           </div>
-          <p class="address-pin__text" data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</p>
         </div>
-      </section>
-
-      <!-- Fields are grouped by what they are about: where the parcel goes,
-           who receives it, and how the rider should find the door. -->
-      <section class="form-group" aria-label="รายละเอียดที่อยู่จัดส่ง">
+        <div class="address-search" data-address-search-wrap>
+          <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
+          <div class="address-search__field">
+            <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
+            <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน" data-address-search>
+          </div>
+          <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
+        </div>
+        <p class="address-location__preview" data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</p>
         <div class="form-group__surface">
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLabel" autocomplete="off" placeholder=" "><label for="addrLabel">ชื่อที่อยู่ (เช่น บ้าน ที่ทำงาน)</label></span></div></div>
         <div class="field-row">
@@ -2189,6 +2166,20 @@
           <div class="field field--narrow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrPostcode" inputmode="numeric" autocomplete="postal-code" placeholder=" " required><label for="addrPostcode">รหัสไปรษณีย์</label></span></div></div>
         </div>
         </div>
+      </section>
+
+      <!-- Client, 25 Sep: a patient who orders to more than one place — home and
+           the office — was retyping the whole form every time, because the only
+           address the app kept was the last one used. Anything saved is listed
+           here to pick from in one tap, and "เพิ่มที่อยู่ใหม่" clears the form for
+           another one. The list hides itself until there is something in it, so
+           a first-time patient still just sees the form. -->
+      <section class="form-group address-book" data-address-book hidden>
+        <div class="address-page-head">
+          <h3 class="form-group__title">ที่อยู่ที่บันทึกไว้</h3>
+          <button class="address-clear-all" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
+        </div>
+        <div class="address-book__list" role="radiogroup" aria-label="ที่อยู่ที่บันทึกไว้" data-address-book-list></div>
       </section>
 
       <section class="form-group">
