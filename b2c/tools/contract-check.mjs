@@ -145,6 +145,16 @@ for (const flow of contract.flows) {
       }, flow.click);
       await page.waitForTimeout(700);
     }
+    for (const step of flow.steps || []) {
+      if (step.click) {
+        await page.evaluate(sel => {
+          const scope = document.querySelector('.screen.active') || document;
+          (scope.querySelector(sel) || document.querySelector(sel))?.click();
+        }, step.click);
+      }
+      await page.waitForTimeout(step.waitAfter || 700);
+      for (const assertion of step.assert || []) await check(page, flow, assertion);
+    }
     for (const assertion of flow.assert) await check(page, flow, assertion);
   } catch (error) {
     fail('flow', `${flow.name}: ${error.message}`);

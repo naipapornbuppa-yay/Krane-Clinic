@@ -388,6 +388,55 @@
       ]
     },
     {
+      "name": "PDPA always leads through personal details before health",
+      "enter": "#consent-terms",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "passwordSet": true,
+        "returningIdentityValid": true,
+        "consentsComplete": false,
+        "patientInfoComplete": true,
+        "verifiedPhone": "0812345678",
+        "patientName": "มะลิ สุธิดา",
+        "paymentPreference": "self-pay"
+      },
+      "assertBeforeClick": [
+        {
+          "activeScreen": "consent-terms"
+        }
+      ],
+      "steps": [
+        {
+          "click": "[data-consent-auto-scroll]",
+          "waitAfter": 500
+        },
+        {
+          "click": "[data-consent-continue]",
+          "assert": [
+            {
+              "activeScreen": "patient-info"
+            }
+          ]
+        },
+        {
+          "click": "[data-patient-info-continue]",
+          "assert": [
+            {
+              "activeScreen": "intake-general"
+            }
+          ]
+        }
+      ],
+      "assert": [
+        {
+          "activeScreen": "intake-general"
+        }
+      ]
+    },
+    {
       "name": "Tracking offers the receipt confirmation on the Delivered step",
       "enter": "#tracking",
       "seed": {
