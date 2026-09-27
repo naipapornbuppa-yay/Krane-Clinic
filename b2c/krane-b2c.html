@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-screen-tab-order-v120";
+    const release = "20260927-select-delivery-address-v121";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -994,6 +994,192 @@
     .followup-prefill__edit:focus-visible {
       outline: 2px solid currentColor;
       outline-offset: 4px;
+    }
+  </style>
+  <style id="select-delivery-address-v121">
+    /* Select Delivery Address is intentionally self-contained. These rules do
+       not change the shared field, card, footer, or navigation components. */
+    #address [hidden] { display: none !important; }
+    #address .address-select-view,
+    #address .address-editor-view {
+      width: 100%;
+      max-width: var(--content-max, 720px);
+      margin-inline: auto;
+    }
+    #address .address-select-view__intro {
+      display: grid;
+      gap: var(--sp-1, 4px);
+    }
+    #address .address-select-view__intro .address-page-title,
+    #address .address-select-view__intro .hint { margin: 0; }
+    #address .address-book {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    #address .address-book__list {
+      display: grid;
+      gap: var(--sp-3, 12px);
+    }
+    #address .address-select-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--dur-base) var(--ease-out),
+                  box-shadow var(--dur-base) var(--ease-out),
+                  background var(--dur-base) var(--ease-out);
+    }
+    #address .address-select-card.is-selected {
+      border-color: var(--color-blue);
+      background: var(--color-blue-soft);
+      box-shadow: 0 0 0 1px var(--color-blue);
+    }
+    #address .address-select-card__choice {
+      appearance: none;
+      width: 100%;
+      min-height: 148px;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      align-items: start;
+      gap: var(--sp-3, 12px);
+      padding: var(--sp-5, 24px) 84px var(--sp-5, 24px) var(--sp-5, 24px);
+      border: 0;
+      background: transparent;
+      color: var(--color-ink);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    #address .address-select-card__choice:focus-visible,
+    #address .address-select-card__edit:focus-visible,
+    #address .address-add-button:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: -3px;
+    }
+    #address .address-select-card__radio {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      margin-top: 2px;
+      border: 1.5px solid var(--color-line-strong);
+      border-radius: 50%;
+      background: var(--color-surface);
+    }
+    #address .address-select-card.is-selected .address-select-card__radio {
+      border-color: var(--color-blue);
+    }
+    #address .address-select-card.is-selected .address-select-card__radio::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-blue);
+    }
+    #address .address-select-card__content {
+      min-width: 0;
+      display: grid;
+      gap: var(--sp-2, 8px);
+    }
+    #address .address-select-card__label {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      line-height: 1.3;
+    }
+    #address .address-select-card__address {
+      color: var(--color-ink);
+      font-size: var(--fs-sm);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    #address .address-select-card__recipient {
+      color: var(--color-ink-2);
+      font-size: var(--fs-sm);
+      line-height: 1.4;
+    }
+    #address .address-select-card__edit {
+      appearance: none;
+      position: absolute;
+      z-index: 1;
+      top: var(--sp-5, 24px);
+      right: var(--sp-5, 24px);
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--color-blue);
+      font: inherit;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-semibold);
+      cursor: pointer;
+    }
+    #address .address-book__empty {
+      min-height: 188px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: var(--sp-2, 8px);
+      padding: var(--sp-5, 24px);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-ink-2);
+      text-align: center;
+    }
+    #address .address-book__empty strong { color: var(--color-ink); }
+    #address .address-book__empty-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-blue-soft);
+      color: var(--color-blue);
+    }
+    #address .address-add-button {
+      appearance: none;
+      width: 100%;
+      min-height: var(--control-height-lg, 64px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2, 8px);
+      padding: 0 var(--sp-4, 16px);
+      border: 1px solid var(--color-blue);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-blue);
+      font: inherit;
+      font-weight: var(--fw-semibold);
+      cursor: pointer;
+    }
+    #address .address-add-button__icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+    }
+    #address .address-select-footer,
+    #address .address-footer {
+      max-width: var(--content-max, 720px);
+      margin-inline: auto;
+    }
+    @media (max-width: 560px) {
+      #address .address-select-card__choice {
+        min-height: 132px;
+        padding: var(--sp-4, 16px) 70px var(--sp-4, 16px) var(--sp-4, 16px);
+      }
+      #address .address-select-card__edit {
+        top: var(--sp-4, 16px);
+        right: var(--sp-4, 16px);
+      }
     }
   </style>
 </head>
@@ -2144,6 +2330,26 @@
   <section class="screen" id="address" data-screen-code="SCR-013">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
+      <div class="address-select-view stack-4" data-address-select-view>
+        <div class="address-select-view__intro">
+          <h1 class="address-page-title">เลือกที่อยู่จัดส่ง</h1>
+          <p class="hint">เลือกที่อยู่สำหรับจัดส่งยาของคุณ</p>
+        </div>
+        <section class="form-group address-book" data-address-book>
+          <div class="address-book__list" role="radiogroup" aria-label="ที่อยู่ที่บันทึกไว้" data-address-book-list></div>
+          <div class="address-book__empty" data-address-book-empty hidden>
+            <span class="address-book__empty-icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+            <strong>ยังไม่มีที่อยู่ที่บันทึกไว้</strong>
+            <span>เพิ่มที่อยู่เพื่อใช้สำหรับจัดส่งยา</span>
+          </div>
+        </section>
+        <button class="address-add-button" type="button" data-address-new>
+          <span class="address-add-button__icon" aria-hidden="true"><i data-lucide="plus" class="ui-icon ui-icon--sm"></i></span>
+          <span>เพิ่มที่อยู่ใหม่</span>
+        </button>
+      </div>
+
+      <div class="address-editor-view stack-4" data-address-editor-view hidden>
       <div class="address-page-head">
         <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
         <button class="address-clear-all" type="button" data-address-clear-all>ล้างทั้งหมด</button>
@@ -2189,20 +2395,6 @@
         </div>
       </section>
 
-      <!-- Client, 25 Sep: a patient who orders to more than one place — home and
-           the office — was retyping the whole form every time, because the only
-           address the app kept was the last one used. Anything saved is listed
-           here to pick from in one tap, and "เพิ่มที่อยู่ใหม่" clears the form for
-           another one. The list hides itself until there is something in it, so
-           a first-time patient still just sees the form. -->
-      <section class="form-group address-book" data-address-book hidden>
-        <div class="address-page-head">
-          <h3 class="form-group__title">ที่อยู่ที่บันทึกไว้</h3>
-          <button class="address-clear-all" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
-        </div>
-        <div class="address-book__list" role="radiogroup" aria-label="ที่อยู่ที่บันทึกไว้" data-address-book-list></div>
-      </section>
-
       <section class="form-group">
         <div class="address-page-head">
           <h3 class="form-group__title">ผู้รับพัสดุ</h3>
@@ -2237,8 +2429,12 @@
       <!-- addrDistrict is kept as the composed string the payment summary and the
            km lookup already read. Never edited directly, always derived. -->
       <input type="hidden" id="addrDistrict">
+      </div>
     </div>
-    <div class="screen__footer address-footer">
+    <div class="screen__footer address-select-footer" data-address-select-footer>
+      <button class="btn btn--primary" type="button" data-address-confirm>ยืนยันที่อยู่จัดส่ง</button>
+    </div>
+    <div class="screen__footer address-footer" data-address-editor-footer hidden>
       <button class="address-map-pill" type="button" data-go="address-map">
         <i data-lucide="map" class="ui-icon ui-icon--sm" aria-hidden="true"></i> เลือกจากแผนที่
       </button>
@@ -5652,6 +5848,28 @@
   function addressBookLine(address){
     return [address.building,address.floor,address.line,address.district].filter(Boolean).join(' · ');
   }
+  function addressBookFullLine(address){
+    return [
+      address.building,
+      address.floor ? `ชั้น ${address.floor}` : '',
+      address.line,
+      address.subdistrict,
+      address.districtName,
+      address.province,
+      address.postcode
+    ].map(part => String(part || '').trim()).filter(Boolean).join(' ');
+  }
+  function addressBookRecipientLine(address){
+    const name=recipientNameParts(address);
+    const fullName=[name.firstName,name.lastName].filter(Boolean).join(' ');
+    const phone=formatPhoneForDisplay(address.recipientPhone || '');
+    return [fullName,phone].filter(Boolean).join(' · ');
+  }
+  function escapeAddressText(value){
+    return String(value ?? '').replace(/[&<>"']/g,char => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[char]);
+  }
   function savedAddresses(){
     if(!Array.isArray(flowState.savedAddresses)) flowState.savedAddresses=[];
     return flowState.savedAddresses;
@@ -5667,26 +5885,66 @@
        list to manage rather than a shortcut, so the oldest drops off. */
     while(book.length>6) book.shift();
   }
+  let addressPageMode='select';
+  function setAddressPageMode(mode,{focus=false}={}){
+    const editing=mode==='editor';
+    addressPageMode=editing ? 'editor' : 'select';
+    const selectView=document.querySelector('[data-address-select-view]');
+    const editorView=document.querySelector('[data-address-editor-view]');
+    const selectFooter=document.querySelector('[data-address-select-footer]');
+    const editorFooter=document.querySelector('[data-address-editor-footer]');
+    if(selectView) selectView.hidden=editing;
+    if(editorView) editorView.hidden=!editing;
+    if(selectFooter) selectFooter.hidden=editing;
+    if(editorFooter) editorFooter.hidden=!editing;
+    if(!editing) renderAddressBook();
+    syncFieldClearButtons();
+    if(focus){
+      const target=editing ? document.getElementById('addrLabel') : document.querySelector('[data-address-book-pick]');
+      target?.focus({preventScroll:true});
+    }
+  }
   function renderAddressBook(){
     const section=document.querySelector('[data-address-book]');
     const list=document.querySelector('[data-address-book-list]');
-    if(!section || !list) return;
+    const empty=document.querySelector('[data-address-book-empty]');
+    if(!section || !list || !empty) return;
+    if(flowState.orderState.addressConfirmed && flowState.orderState.address?.building){
+      rememberDeliveryAddress(flowState.orderState.address);
+    }
     const book=savedAddresses();
-    /* Show the first saved address immediately. Besides making the saved state
-       explicit, this is also the only safe place to offer “เพิ่มที่อยู่ใหม่”
-       without making the editor controls compete with the form title. */
-    section.hidden=book.length<1;
-    if(section.hidden){ list.innerHTML=''; return; }
-    const currentKey=addressBookKey(flowState.orderState.address || {});
+    section.hidden=false;
+    empty.hidden=book.length>0;
+    list.hidden=book.length<1;
+    if(!book.length){ list.innerHTML=''; return; }
+    let currentKey=flowState.orderState.addressConfirmed
+      ? addressBookKey(flowState.orderState.address || {})
+      : '';
+    if(!currentKey || !book.some(entry => addressBookKey(entry)===currentKey)){
+      const recent=book[book.length-1];
+      flowState.orderState.address={...recent};
+      flowState.orderState.addressConfirmed=true;
+      currentKey=addressBookKey(recent);
+      invalidateFulfillmentQuote();
+      persistFlowState();
+      syncDeliveryAddress({hydrateForm:true});
+    }
     list.innerHTML=book.map((entry,index) => {
       const selected=addressBookKey(entry)===currentKey;
-      return `<button class="option address-book__item" type="button" role="radio" aria-checked="${selected}" aria-selected="${selected}" data-address-book-pick="${index}">
-        <span class="opt-body"><span class="opt-title">${addressBookName(entry)}</span><span class="opt-sub">${addressBookLine(entry)}</span></span>
-        <span class="opt-check"></span>
-      </button>`;
+      return `<article class="address-select-card${selected ? ' is-selected' : ''}">
+        <button class="address-select-card__choice" type="button" role="radio" aria-checked="${selected}" data-address-book-pick="${index}">
+          <span class="address-select-card__radio" aria-hidden="true"></span>
+          <span class="address-select-card__content">
+            <strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>
+            <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
+            <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
+          </span>
+        </button>
+        <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
+      </article>`;
     }).join('');
   }
-  function useSavedAddress(index){
+  function useSavedAddress(index,{quiet=false}={}){
     const entry=savedAddresses()[index];
     if(!entry) return;
     flowState.orderState.address={...entry};
@@ -5695,7 +5953,15 @@
     persistFlowState();
     syncDeliveryAddress({hydrateForm:true});
     renderAddressBook();
-    showActionToast('ใช้' + addressBookName(entry) + 'แล้ว','success');
+    if(!quiet) showActionToast('เลือก' + addressBookName(entry) + 'แล้ว','success');
+  }
+  function editSavedAddress(index){
+    const entry=savedAddresses()[index];
+    if(!entry) return;
+    useSavedAddress(index,{quiet:true});
+    const title=document.querySelector('[data-address-editor-title]');
+    if(title) title.textContent='แก้ไขที่อยู่จัดส่ง';
+    setAddressPageMode('editor',{focus:true});
   }
   function startNewAddress(){
     ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote']
@@ -5708,9 +5974,11 @@
       });
     flowState.orderState.addressConfirmed=false;
     persistFlowState();
-    renderAddressBook();
     syncAddressDetail();
     syncFieldClearButtons();
+    const title=document.querySelector('[data-address-editor-title]');
+    if(title) title.textContent='เพิ่มที่อยู่ใหม่';
+    setAddressPageMode('editor');
     const first=document.getElementById('addrLabel');
     if(first){
       first.focus({preventScroll:true});
@@ -5719,8 +5987,17 @@
   }
   document.addEventListener('click',event => {
     if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
+    const edit=event.target.closest('[data-address-edit]');
+    if(edit){ editSavedAddress(Number(edit.dataset.addressEdit)); return; }
     const pick=event.target.closest('[data-address-book-pick]');
-    if(pick) useSavedAddress(Number(pick.dataset.addressBookPick));
+    if(pick){ useSavedAddress(Number(pick.dataset.addressBookPick)); return; }
+    if(event.target.closest('[data-address-confirm]')){
+      if(!flowState.orderState.addressConfirmed){
+        showActionToast('กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง','warning');
+        return;
+      }
+      replaceCurrent('address-detail');
+    }
   });
 
   function tomorrowLabel(){
@@ -10005,6 +10282,7 @@
       // screen becomes visible. Re-apply the persisted order address after that
       // restore pass so the form and preview can never disagree.
       syncDeliveryAddress({hydrateForm:true});
+      setAddressPageMode('select');
       window.requestAnimationFrame(() => syncDeliveryAddress({hydrateForm:true}));
       window.setTimeout(() => {
         if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
@@ -11570,12 +11848,15 @@
       // The pin has already filled the form; this just takes you back to it.
       if(!simState.picked) simUpdateReadout();
       show('address');
+      setAddressPageMode('editor');
       return;
     }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      replaceCurrent('address-detail');
+      renderAddressBook();
+      setAddressPageMode('select');
+      showActionToast('บันทึกที่อยู่แล้ว','success');
       return;
     }
     if(e.target.closest('[data-address-detail-confirm]')){
@@ -11877,6 +12158,10 @@
     const back = e.target.closest('[data-back]');
     if(back){
       const backScreen=back.closest('.screen');
+      if(backScreen?.id==='address' && addressPageMode==='editor'){
+        setAddressPageMode('select',{focus:true});
+        return;
+      }
       if(backScreen && retreatIntakeQuestionPage(backScreen)) return;
       if(backScreen?.id==='otp' && flowState.partnerPhoneOtpPending){
         flowState.partnerPhoneOtpPending=false;
