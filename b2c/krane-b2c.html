@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-programme-cards-v105";
+    const release = "20260927-general-compact-intake-v106";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-programme-cards-v105">
+<link rel="stylesheet" href="components.css?v=20260927-general-compact-intake-v106">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -5988,7 +5988,7 @@
       description:'Not sure where to start? Talk to a doctor without choosing a disease path.',
       icon:'chat',
       status:'General',
-      next:'intake-concern',
+      next:'intake1',
       general:true,
       conditions:[]
     }
@@ -6290,30 +6290,9 @@
     },
     general:{
       intake1:`
-        <div><h2 class="h1">What can we help with today?</h2></div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="general-description" placeholder="Main symptom, where you feel it, and anything else the doctor should know"></textarea><label for="general-description">Describe your symptoms or concern</label></span></div></div>
-        ${intakeDurationControl({label:'When did it start?'})}
-        <div class="common-group"><div class="section-label">How much is it affecting you?</div><div class="stack-3">
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Mild</span><span class="opt-sub">I can continue normal daily activities</span></span><span class="opt-check"></span></button>
-          <button class="option" aria-selected="true" data-select><span class="opt-body"><span class="opt-title">Moderate</span><span class="opt-sub">It is affecting sleep, work or normal activities</span></span><span class="opt-check"></span></button>
-          <button class="option" data-select><span class="opt-body"><span class="opt-title">Severe or rapidly worsening</span></span><span class="opt-check"></span></button>
-        </div></div>
-        <div class="common-group"><div class="section-label">What is the pattern?</div><div class="stack-3">
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">It is constant</span></span><span class="opt-check"></span></button>
-          <button class="option" aria-selected="true" data-multi><span class="opt-body"><span class="opt-title">It comes and goes</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">It is getting worse</span></span><span class="opt-check"></span></button>
-          <button class="option" data-multi><span class="opt-body"><span class="opt-title">Several symptoms started together</span></span><span class="opt-check"></span></button>
-        </div></div>
-        <div class="common-group"><div class="section-label">Do you have any of these urgent warning signs?</div>
-          <p class="hint">If symptoms are severe or life-threatening, seek emergency care now.</p>
-          <div class="stack-3">
-            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Chest pain, fainting or shortness of breath</span></span><span class="opt-check"></span></button>
-            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Severe pain, swelling, fever or infection signs</span></span><span class="opt-check"></span></button>
-            <button class="option" data-multi data-flag><span class="opt-body"><span class="opt-title">Sudden major symptom change</span></span><span class="opt-check"></span></button>
-            <button class="option" data-multi><span class="opt-body"><span class="opt-title">Currently under specialist care for this issue</span></span><span class="opt-check"></span></button>
-            <button class="option" aria-selected="true" data-multi data-none><span class="opt-body"><span class="opt-title">None of these apply</span></span><span class="opt-check"></span></button>
-          </div>
-        </div>`
+        <div><h2 class="h1">วันนี้อยากปรึกษาเรื่องอะไร?</h2></div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="general-description" placeholder="เล่าอาการหรือสิ่งที่กังวล" required></textarea><label for="general-description">เล่าอาการหรือสิ่งที่กังวล</label></span></div></div>
+        ${intakeDurationControl({label:'เริ่มมีอาการเมื่อไร?',thai:true})}`
     }
   ,
     skin:{
@@ -6576,11 +6555,9 @@
     if(!screen || !INTAKE_ONE_QUESTION_SCREENS.includes(screen.id)) return;
     const body=screen.querySelector('.screen__body');
     if(!body) return;
-    /* General used to render every question on one page. It walks one question
-       at a time like every other concern now (client, 18 Aug) — the page had
-       grown long enough that the single-page version stopped being the short
-       version. The description and its "how long" still share the first page;
-       the duration fold below handles that. */
+    /* The compact general intake keeps the description and its "how long"
+       qualifier together as one question. The duration fold below also keeps
+       that relationship consistent for category-specific intake screens. */
     // The Krane Clinic lockup is chrome, not a question.
     const children=[...body.children].filter(child => !child.classList.contains('intake-lockup'));
     const titleBlock=children.find(child => child.querySelector('.h1')) || children[0];
@@ -6696,8 +6673,8 @@
         target:missingSelect
       };
     }
-    const requiredField=scope.querySelector('input[required],select[required]');
-    if(requiredField && !requiredField.value){
+    const requiredField=scope.querySelector('input[required],select[required],textarea[required]');
+    if(requiredField && !String(requiredField.value || '').trim()){
       const label=scope.querySelector(`label[for="${requiredField.id}"]`)?.textContent.trim();
       return {
         ready:false,
@@ -9145,10 +9122,10 @@
      they survive the innerHTML round-trip renderIntakeQuestions performs (the
      same round-trip that previously broke the custom selects). */
   const INTAKE_CONCERN_SPECIFIC = ['intake3'];
-  /* General consultation has no disease-specific questionnaire: everything it
-     needs — concern, onset, severity, pattern and the red-flag screening — is
-     merged onto the single #intake1 page, so every other question screen is
-     skipped rather than walked as a step (client, 18 Aug). */
+  /* General consultation has no disease-specific questionnaire: its concern
+     and onset live on the single compact #intake1 page, matching the insurance
+     intake pattern. Every later clinical question screen is skipped and the
+     patient rejoins the normal authentication and consultation flow. */
   const GENERAL_COMPACT_SKIPPED_SCREENS = ['intake2','intake3','intake4','intake5'];
   const INTAKE_CATEGORY_KEY = { 'hair-skin':'hair', skin:'skin', weight:'weight', 'sexual-health':'sexual', 'sleep-stress':'sleep', hormone:'hormone' };
   function intakeConcernKey(){
@@ -9648,7 +9625,12 @@
     updateSelectedCare();
   }
   document.body.addEventListener('input',event => {
-    if(event.target.closest(INTAKE_DRAFT_SCREENS.map(id => `#${id}`).join(','))) saveIntakeDraft();
+    const intakeScreen = event.target.closest(INTAKE_DRAFT_SCREENS.map(id => `#${id}`).join(','));
+    if(!intakeScreen) return;
+    saveIntakeDraft();
+    /* Text inputs and textareas emit `input` while the patient is typing. Keep
+       the shared CTA state live instead of waiting for a blur/change event. */
+    syncIntakeDropdownContinue(intakeScreen);
   });
   document.body.addEventListener('change',event => {
     const intakeScreen = event.target.closest(INTAKE_DRAFT_SCREENS.map(id => `#${id}`).join(','));
@@ -14056,7 +14038,7 @@
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
       <ellipse cx="280" cy="181" rx="154" ry="104" fill="#dce7f8" opacity=".52" filter="url(#krane-consult-halo-blur)"/>
-      <image href="assets/state-editorial-v5-ink/doctor-matching-neutral-pose-v2.png?v=20260927-programme-cards-v105" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
+      <image href="assets/state-editorial-v5-ink/doctor-matching-neutral-pose-v2.png?v=20260927-general-compact-intake-v106" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
     </symbol>
 
     <symbol id="krane-state-nurse-ready" viewBox="0 0 560 360">
