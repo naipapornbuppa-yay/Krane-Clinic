@@ -1921,7 +1921,7 @@
     "คุณไม่ได้เข้าห้องปรึกษาในเวลาที่กำหนด":"You did not enter the consultation room in time",
     "จับคู่แพทย์ใหม่อีกครั้ง":"Match me with a doctor again",
     "กลับหน้าหลัก":"Back to home",
-    "คิวของคุณกับคุณหมอนรินทร์ถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin has been released. You can match again right away — your questionnaire answers are all still here.",
+    "คิวเดิมถูกปล่อยแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลของคุณยังอยู่ครบ":"Your previous slot has been released. Match with a new doctor now — your information is still saved.",
     "คิวของคุณกับคุณหมอนรินทร์ ทานากะถูกปล่อยไปแล้ว จับคู่แพทย์ใหม่ได้ทันที ข้อมูลแบบสอบถามของคุณยังอยู่ครบ":"Your slot with Dr. Narin Tanaka has been released. You can match again right away — your questionnaire answers are all still here.",
     "ยืนยันกับร้านยาก่อน":"Confirm with the pharmacy first",
     "ไว้ทีหลัง":"Maybe later",
