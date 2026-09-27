@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-state-art-line-v126";
+    const release = "20260928-bottom-toolbar-neutral-v127";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -67,7 +67,7 @@
 
 <style>
   /* prototype chrome only (not part of the product) */
-  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#5871B5}
+  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
   html::-webkit-scrollbar{display:none}
   /* Keep the document canvas on the app surface so translucent browser chrome
      at the bottom stays light. The landing notch is painted separately below. */
@@ -7996,11 +7996,12 @@
     const meta=document.querySelector('meta[name="theme-color"]');
     const color=id==='landing' ? THEME_COLOR_LANDING : THEME_COLOR_APP;
     if(meta) meta.setAttribute('content',color);
-    /* Chrome/iOS samples the rendered page canvas for browser chrome. The body
-       gradient keeps the sampled top blue and its bottom light. */
+    /* Keep the root canvas light because iOS uses it behind the translucent
+       bottom toolbar. The landing-only body gradient and safe-area overlay
+       keep the notch blue without tinting the browser controls below. */
     document.documentElement.dataset.landingCanvas=String(id==='landing');
-    document.documentElement.style.backgroundColor=color;
-    document.body.style.backgroundColor=color;
+    document.documentElement.style.backgroundColor=THEME_COLOR_APP;
+    document.body.style.backgroundColor=THEME_COLOR_APP;
   }
   function resetLandingViewport(){
     const frame=document.querySelector('#landing iframe');
