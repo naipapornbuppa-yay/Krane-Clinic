@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-plan-ready-ink-v113";
+    const release = "20260927-first-consult-free-v114";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -2479,7 +2479,7 @@
               <span class="checkout-order__name">Doctor Fee</span>
               <span class="checkout-order__note">คุณหมอนรินทร์ ทานากะ</span>
             </span>
-            <span class="checkout-order__price checkout-order__price--paid" data-payment-consultation-price><s data-payment-consultation-original>฿ 350</s><strong data-payment-consultation>฿ 350</strong></span>
+            <span class="checkout-order__price checkout-order__price--paid" data-payment-consultation-price data-discounted="true"><s data-payment-consultation-original>฿ 350</s><strong data-payment-consultation>฿ 0</strong></span>
           </div>
           <div class="checkout-order__medicines">
           <div class="checkout-order__item" data-order-item="cough">
@@ -2607,7 +2607,7 @@
         </div>
         <div class="checkout-bill">
           <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-consultation-discount-row hidden><span>ส่วนลดค่าปรึกษาแพทย์</span><strong data-payment-consultation-discount>- ฿ 0</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-consultation-discount-row><span>ส่วนลดค่าปรึกษาครั้งแรก</span><strong data-payment-consultation-discount>- ฿ 350</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ยอดรวมย่อย</span><strong data-payment-subtotal>฿ 438</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
@@ -8519,6 +8519,13 @@
     const credit=Number(flowState.coverage?.consultationCredit || 0);
     return Math.max(0,CONSULTATION_FEE_BAHT-credit);
   }
+  function firstConsultationDiscount(){
+    if(flowState.orderState.checkoutOrigin==='refill') return 0;
+    // The current prototype represents a patient's first Krane consultation.
+    // Keep the full discount visible even when the consultation step itself has
+    // already been completed; that flag means "past the fee step", not a repeat visit.
+    return CONSULTATION_FEE_BAHT;
+  }
   function partnerMedicineCoverageCredit(){
     if(!['partner','insured'].includes(flowState.entryChannel)) return 0;
     const credit=Number(flowState.coverage?.medicineCredit ?? flowState.partnerMedicineCredit);
@@ -8986,11 +8993,13 @@
     const delivery=fulfillable && !pickup ? deliveryFeeFor(deliveryMethod) : 0;
     // Medicine benefits never silently pay for delivery or optional retail add-ons.
     const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
-    const consultationDue=consultationBalanceDue();
+    const consultationBalance=consultationBalanceDue();
     const refillCheckout=flowState.orderState.checkoutOrigin==='refill';
-    const consultationDiscount=!refillCheckout && !flowState.consultationPaid
-      ? Math.max(0,Math.min(CONSULTATION_FEE_BAHT,CONSULTATION_FEE_BAHT-consultationDue))
-      : 0;
+    // New patients are the default state in this prototype. The first visit is
+    // free: show the original fee crossed out, expose the discount in the bill,
+    // and subtract it from the amount due rather than styling the row only.
+    const consultationDiscount=firstConsultationDiscount();
+    const consultationDue=Math.max(0,consultationBalance-consultationDiscount);
     setPaymentContext({
       due:Math.max(0,consultationDue + subtotal + addon + delivery - credit),
       subtotal,
@@ -9011,12 +9020,12 @@
     if(consultationOrderRow) consultationOrderRow.hidden=refillCheckout;
     if(consultationRow) consultationRow.hidden=refillCheckout;
     if(!refillCheckout && consultationAmounts.length){
-      const consultationText=flowState.consultationPaid ? 'ชำระแล้ว' : baht(consultationDue);
+      const consultationText=consultationDiscount>0 ? baht(consultationDue) : (flowState.consultationPaid ? 'ชำระแล้ว' : baht(consultationDue));
       consultationAmounts.forEach(node => { node.textContent=consultationText; });
       document.querySelectorAll('#payment [data-payment-consultation-price]').forEach(price => {
         const original=price.querySelector('[data-payment-consultation-original]');
-        if(original) original.hidden=flowState.consultationPaid || consultationDiscount<=0;
-        price.dataset.discounted=String(!flowState.consultationPaid && consultationDiscount>0);
+        if(original) original.hidden=consultationDiscount<=0;
+        price.dataset.discounted=String(consultationDiscount>0);
       });
     }
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
