@@ -54,6 +54,7 @@ These images are included for client-review prototyping. Confirm manufacturer pe
 - Weight service card redacted high-resolution v2: `weight-care-pens-redacted-hires-v2.png` is an ImageGen precise-object edit of the approved Figma export. Only the final character of each visible product wordmark was removed (`Zepbound` → `Zepboun`, `OZEMPIC` → `OZEMPI`, `Wegovy` → `Wegov`); the three-pen composition, label details, lighting, and crop were otherwise preserved. The generated chroma background was removed locally to restore a transparent alpha canvas, then the asset was delivered at 1974 × 3188 px for high-density displays.
 
 - Weight campaign couple taupe natural v8: `weight-care-couple-taupe-natural-v8.png` is a built-in ImageGen edit of the prior weight hero, guided by the client's muted campaign reference. It keeps a face-free, waist-focused composition with the woman measuring her waist and the man using a distinct crossed-arms pose. Wardrobe is restrained dusty blue, charcoal, and navy against a soft taupe-beige studio background, with natural skin texture, realistic fabric folds, no logos, and no embedded text.
+- Weight campaign couple cool greige v9: `weight-care-couple-cool-greige-v9.png` is a built-in ImageGen color refinement of v8. The people, poses, wardrobe, crop, and measuring tape remain fixed while the background moves from warm tan to a cooler muted gray-beige greige with the yellow and orange cast removed.
 
 ## Weight-care desktop hover sequence v3
 
