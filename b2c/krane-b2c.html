@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-clean-consult-art-v90";
+    const release = "20260927-signup-toast-floating-history-v91";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-address-label-state-v89">
+<link rel="stylesheet" href="components.css?v=20260927-signup-toast-floating-history-v91">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1433,17 +1433,11 @@
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-height" inputmode="numeric" placeholder=" "><label for="intake-height">ส่วนสูง</label></span></div></div>
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-weight" inputmode="numeric" placeholder=" "><label for="intake-weight">น้ำหนัก</label></span></div></div>
         </div>
-        <!-- Client-approved health-history wording (27 Sep). Frequency is a
-             dropdown so the answer is explicit and easy to review. -->
-        <div class="partner-health-grid frequency-grid">
-          <div class="field frequency-field">
-            <label for="intake-smoking">ประวัติการสูบบุหรี่</label>
-            <select class="select" id="intake-smoking"><option value="0" selected>ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">ทุกวัน</option></select>
-          </div>
-          <div class="field frequency-field">
-            <label for="intake-alcohol">ประวัติการดื่มแอลกอฮอล์</label>
-            <select class="select" id="intake-alcohol"><option value="0" selected>ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">บ่อยมาก</option></select>
-          </div>
+        <!-- Health-history selects share the same single-line floating prompt as
+             birth sex: the field title is the empty state and rises after a choice. -->
+        <div class="partner-health-grid">
+          <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-smoking"><option value=""></option><option value="0">ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">ทุกวัน</option></select><label for="intake-smoking">ประวัติการสูบบุหรี่</label></span></div></div>
+          <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-alcohol"><option value=""></option><option value="0">ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">บ่อยมาก</option></select><label for="intake-alcohol">ประวัติการดื่มแอลกอฮอล์</label></span></div></div>
         </div>
         <p class="intake-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       </div>
@@ -1512,16 +1506,6 @@
     <div class="screen__top checkout-brandbar auth-screen__top"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo auth-screen__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body auth-screen__body">
       <div class="auth-screen__panel">
-        <!-- Someone arriving here has just finished the questionnaire. Use the
-             shared Krane yellow notice surface so this reads as reassuring
-             context, not a new one-off success colour. -->
-        <div class="alert auth-screen__context" data-signup-intake-notice role="status" hidden>
-          <span class="a-ic" aria-hidden="true"><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span>
-          <!-- Client, 22 Sep: one line. The page title and the button under it
-               both already say สร้างบัญชี, so the second line was repeating the
-               instruction the patient is looking straight at. -->
-          <div class="a-title">ทำแบบประเมินเรียบร้อยแล้ว</div>
-        </div>
         <div class="auth-screen__intro">
           <h2 class="h1">Create Account</h2>
         </div>
@@ -9766,13 +9750,12 @@
       // already started.
       loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
     }
-    // Same test on the sign-up page, which is where the finished assessment
-    // actually lands: a saved draft plus a clinical destination means this
-    // account is being made to keep answers that already exist.
-    const signupIntakeNotice=document.querySelector('[data-signup-intake-notice]');
-    if(signupIntakeNotice && id==='signup'){
-      signupIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
-    }
+    // A completed assessment is transient context, not page content. Show it
+    // once as a toast after the sign-up screen becomes active, above its CTA.
+    const shouldShowSignupIntakeToast=id==='signup'
+      && prevId!=='signup'
+      && flowState.draftReady
+      && postAuthNext!=='profile';
     /* Direct entry always restores the progress UI, even if this tab previously
        opened a partner link. Partner entry keeps it hidden on shared screens too. */
     const refillCheckout=flowState.orderState && flowState.orderState.checkoutOrigin==='refill';
@@ -9797,6 +9780,9 @@
     syncPatientDateFields();
     if(id === 'otp') prepareFreshOtpChallenge();
     placeActionToast();
+    if(shouldShowSignupIntakeToast){
+      window.requestAnimationFrame(() => showActionToast('ทำแบบประเมินเรียบร้อยแล้ว','success'));
+    }
     railLinks.forEach(a => a.classList.toggle('current', a.dataset.go === id));
     try { window.history.replaceState(null,'','#'+id); } catch(error) {}
     syncRailPath(id);
