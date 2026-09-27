@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-progress-header-lock-v111";
+    const release = "20260927-program-card-two-lines-v112";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-progress-header-lock-v111">
+<link rel="stylesheet" href="components.css?v=20260927-program-card-two-lines-v112">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -6021,8 +6021,9 @@
   function renderConsultationCatalog(){
     const categoryList = document.querySelector('[data-category-list]');
     if(categoryList){
-      // One programme card per service. Programme name, clinical category and
-      // description come from the catalogue so the handoff has one content source.
+      // One programme card per service. Keep the visible hierarchy to two plain
+      // text lines: programme name, then clinical category. Longer catalogue
+      // descriptions remain data for handoff/other screens, not a third card row.
       const cards = liveCategories().map(cat => {
         const soon = cat.status === 'Soon';
         return `
@@ -6031,7 +6032,6 @@
           <span class="cc-body">
             <span class="cc-title-row"><span class="cc-title">${cat.programTitle || cat.title}</span>${soon ? '<span class="cc-soon">Soon</span>' : ''}</span>
             <span class="cc-category">${cat.title}</span>
-            <span class="cc-sub">${cat.description}</span>
           </span>
           <span class="cc-chev" aria-hidden="true"></span>
         </button>
@@ -6043,7 +6043,6 @@
           <span class="cc-body">
             <span class="cc-title-row"><span class="cc-title">${general.programTitle || general.title}</span></span>
             <span class="cc-category">${general.title}</span>
-            <span class="cc-sub">${general.description}</span>
           </span>
           <span class="cc-chev" aria-hidden="true"></span>
         </button>
