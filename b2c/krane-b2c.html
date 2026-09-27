@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-pickup-location-gate-v85";
+    const release = "20260927-general-iqs-v86";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -62,7 +62,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260920-float-v1" defer></script>
-<script src="i18n.js?v=20260927-approved-health-copy-v26" defer></script>
+<script src="i18n.js?v=20260927-general-iqs-v27" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -1423,11 +1423,11 @@
       <div class="partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex"><option value=""></option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
-          <div class="field grow float-field float-field--date-placeholder-only"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" aria-label="วันเกิด" required></span></div></div>
+          <div class="field grow float-field float-field--date"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
         </div>
         <div class="partner-health-grid">
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-height" inputmode="numeric" placeholder=" "><label for="intake-height">ส่วนสูง (ซม.)</label></span></div></div>
-          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-weight" inputmode="numeric" placeholder=" "><label for="intake-weight">น้ำหนัก (กก.)</label></span></div></div>
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-height" inputmode="numeric" placeholder=" "><label for="intake-height">ส่วนสูง</label></span></div></div>
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-weight" inputmode="numeric" placeholder=" "><label for="intake-weight">น้ำหนัก</label></span></div></div>
         </div>
         <!-- Client-approved health-history wording (27 Sep). Frequency is a
              dropdown so the answer is explicit and easy to review. -->
@@ -1645,12 +1645,13 @@
       <!-- Client, 22 Sep: no white box behind the fields, as on the address and
            general-health pages. -->
       <div class="stack-3">
-        <div class="auth-name-grid"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-first-name" autocomplete="given-name" value="มะลิ" placeholder=" "><label for="patient-first-name">ชื่อ</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-last-name" autocomplete="family-name" value="สุธิดา" placeholder=" "><label for="patient-last-name">นามสกุล</label></span></div></div></div>
+        <div class="section-label">ชื่อจริงและนามสกุล</div>
+        <div class="auth-name-grid" role="group" aria-label="ชื่อจริงและนามสกุล"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-first-name" autocomplete="given-name" value="มะลิ" placeholder=" "><label for="patient-first-name">ชื่อจริง</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-last-name" autocomplete="family-name" value="สุธิดา" placeholder=" "><label for="patient-last-name">นามสกุล</label></span></div></div></div>
         <!-- Changing the number is a normal thing to do, so it stays on this screen.
              Social login (LINE / Google) proves the account, not possession of a new
              number, so any edit re-runs OTP before we trust it for appointment,
              prescription and delivery messages. -->
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-phone" type="tel" autocomplete="tel" value="" readonly aria-readonly="true" data-phone-input placeholder=" "><label for="patient-phone">เบอร์โทรศัพท์ที่ยืนยันแล้ว</label></span></div><div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div></div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-phone" type="tel" autocomplete="tel" value="" readonly aria-readonly="true" data-phone-input placeholder=" "><label for="patient-phone">เบอร์โทรศัพท์</label></span></div><div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div></div>
       </div>
       <p class="intake-privacy-note patient-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       <div class="stack-3" data-patient-payment-choice>
@@ -3880,8 +3881,8 @@
       <!-- Keep the personal-detail fields directly on the page. The individual
            inputs retain their borders, but no white card wraps the group. -->
       <div class="stack-3">
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-full-name" autocomplete="name" value="มะลิ สุธิดา" placeholder=" "><label for="partner-full-name">ชื่อและนามสกุล</label></span></div></div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-phone" type="tel" autocomplete="tel" value="081-234-5678" readonly aria-readonly="true" data-phone-input placeholder=" "><label for="partner-phone">เบอร์โทรศัพท์ที่ยืนยันแล้ว</label></span></div></div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-full-name" autocomplete="name" value="มะลิ สุธิดา" placeholder=" "><label for="partner-full-name">ชื่อจริงและนามสกุล</label></span></div></div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-phone" type="tel" autocomplete="tel" value="081-234-5678" readonly aria-readonly="true" data-phone-input placeholder=" "><label for="partner-phone">เบอร์โทรศัพท์</label></span></div></div>
         <div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div>
       </div>
       <p class="intake-privacy-note patient-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
