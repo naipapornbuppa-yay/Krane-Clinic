@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260927-matching-slippers-v96";
+    const release = "20260927-checkout-alignment-discount-v97";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260927-matching-slippers-v96">
+<link rel="stylesheet" href="components.css?v=20260927-checkout-alignment-discount-v97">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2440,7 +2440,7 @@
               <span class="checkout-order__name">Doctor Fee</span>
               <span class="checkout-order__note">คุณหมอนรินทร์ ทานากะ</span>
             </span>
-            <span class="checkout-order__price checkout-order__price--paid"><s>฿ 350</s><strong data-payment-consultation>฿ 0</strong></span>
+            <span class="checkout-order__price checkout-order__price--paid" data-payment-consultation-price><s data-payment-consultation-original>฿ 350</s><strong data-payment-consultation>฿ 350</strong></span>
           </div>
           <div class="checkout-order__medicines">
           <div class="checkout-order__item" data-order-item="cough">
@@ -2568,6 +2568,7 @@
         </div>
         <div class="checkout-bill">
           <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-consultation-discount-row hidden><span>ส่วนลดค่าปรึกษาแพทย์</span><strong data-payment-consultation-discount>- ฿ 0</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ยอดรวมย่อย</span><strong data-payment-subtotal>฿ 438</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
@@ -5080,6 +5081,7 @@
     : null;
   let paymentDue = 558;
   let paymentCredit = 0;
+  let paymentConsultationDiscount = 0;
   function currentMedicationDue(){
     return Math.max(0,paymentDue - (appliedPromo ? appliedPromo.amount : 0));
   }
@@ -5088,7 +5090,7 @@
     if(!payment) return;
     const footerBaht=amount => '฿'+Number(amount).toLocaleString('en-US');
     const promo=Math.min(paymentDue,appliedPromo ? Math.max(0,Number(appliedPromo.amount) || 0) : 0);
-    const savings=Math.max(0,paymentCredit)+promo;
+    const savings=Math.max(0,paymentCredit)+Math.max(0,paymentConsultationDiscount)+promo;
     const due=currentMedicationDue();
     const total=payment.querySelector('.screen__footer [data-payment-total]');
     const saveWrap=payment.querySelector('[data-payment-save]');
@@ -5694,7 +5696,7 @@
         : (thai ? 'ดูเอกสาร' : 'View documents');
     }
   }
-  function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, method='same-day'}={}){
+  function setPaymentContext({due=558, subtotal=438, addon=0, delivery=120, credit=0, consultationDiscount=0, method='same-day'}={}){
     // The checkout and the bank gateway are separate screens, so both are updated.
     const screens = ['payment','payment-gw'].map(id => document.getElementById(id)).filter(Boolean);
     if(!screens.length) return;
@@ -5743,6 +5745,11 @@
       ? `${flowState.coverage.provider || 'กรมธรรม์'} · ${baht(credit)}`
       : '';
     if(methodLabel) methodLabel.textContent=PAYMENT_METHOD_LABELS[flowState.orderState.paymentMethod] || PAYMENT_METHOD_LABELS.qr;
+    paymentConsultationDiscount=Math.max(0,Number(consultationDiscount) || 0);
+    const consultationDiscountRow=payment.querySelector('[data-payment-consultation-discount-row]');
+    const consultationDiscountAmount=payment.querySelector('[data-payment-consultation-discount]');
+    if(consultationDiscountRow) consultationDiscountRow.hidden=paymentConsultationDiscount<=0;
+    if(consultationDiscountAmount) consultationDiscountAmount.textContent='- '+baht(paymentConsultationDiscount);
 
     // Quote time, so the fee reads as a live calculation rather than a fixed charge.
     const calcTime = payment.querySelector('[data-fee-calc-time]');
@@ -8877,16 +8884,19 @@
     // Medicine benefits never silently pay for delivery or optional retail add-ons.
     const credit=Math.min(subtotal,partnerMedicineCoverageCredit());
     const consultationDue=consultationBalanceDue();
+    const refillCheckout=flowState.orderState.checkoutOrigin==='refill';
+    const consultationDiscount=!refillCheckout && !flowState.consultationPaid
+      ? Math.max(0,Math.min(CONSULTATION_FEE_BAHT,CONSULTATION_FEE_BAHT-consultationDue))
+      : 0;
     setPaymentContext({
       due:Math.max(0,consultationDue + subtotal + addon + delivery - credit),
       subtotal,
       addon,
       delivery,
       credit,
+      consultationDiscount,
       method:deliveryMethod
     });
-    const consultationCovered=Math.max(0,CONSULTATION_FEE_BAHT-consultationDue);
-    const refillCheckout=flowState.orderState.checkoutOrigin==='refill';
     const paymentJourney=document.querySelector('#payment > .care-journey');
     const consultationOrderRow=document.querySelector('#payment [data-order-consultation]');
     const consultationRow=document.querySelector('#payment [data-payment-consultation-row]');
@@ -8898,12 +8908,13 @@
     if(consultationOrderRow) consultationOrderRow.hidden=refillCheckout;
     if(consultationRow) consultationRow.hidden=refillCheckout;
     if(!refillCheckout && consultationAmounts.length){
-      let consultationText;
-      if(flowState.consultationPaid) consultationText=baht(0);
-      else if(consultationDue<=0 && consultationCovered>0) consultationText=`${baht(CONSULTATION_FEE_BAHT)} · อยู่ในสิทธิ์`;
-      else if(consultationCovered>0) consultationText=`${baht(consultationDue)} · สิทธิ์ ${baht(consultationCovered)}`;
-      else consultationText=baht(consultationDue);
+      const consultationText=flowState.consultationPaid ? 'ชำระแล้ว' : baht(consultationDue);
       consultationAmounts.forEach(node => { node.textContent=consultationText; });
+      document.querySelectorAll('#payment [data-payment-consultation-price]').forEach(price => {
+        const original=price.querySelector('[data-payment-consultation-original]');
+        if(original) original.hidden=flowState.consultationPaid || consultationDiscount<=0;
+        price.dataset.discounted=String(!flowState.consultationPaid && consultationDiscount>0);
+      });
     }
     document.querySelectorAll('#payment [data-fulfillment-section]').forEach(section => { section.hidden=!fulfillable; });
     document.querySelectorAll('#payment [data-fulfillment-mode-option]').forEach(option => {
@@ -13970,7 +13981,7 @@
     </symbol>
 
     <symbol id="krane-state-treatment-plan" viewBox="0 0 560 360">
-      <image href="assets/state-editorial-v5-ink/treatment-plan-clipboard-correct-v3.png?v=20260927-clipboard-orientation-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
+      <image href="assets/state-editorial-v5-ink/treatment-plan-bullets-right-v5.png?v=20260927-treatment-plan-bullets-right-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
     </symbol>
 
     <symbol id="krane-state-plan-ready" viewBox="0 0 560 360">
