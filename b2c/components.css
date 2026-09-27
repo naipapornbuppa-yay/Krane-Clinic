@@ -3211,25 +3211,12 @@ body.lang-th *{letter-spacing:normal}
 .care-journey__step{position:relative;display:grid;inline-size:100%;min-inline-size:0;grid-template-rows:auto 3px;gap:8px;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .care-journey__step::before,.care-journey__dot{display:none}
 .care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
-/* The live stage fills across its own track as the patient moves through it,
-   rather than switching on whole (client, 1 Sep: "slowly load within it bar
-   same as before"). updateIntakeProgress() drives the width — per question on
-   the paginated screens, so it creeps rather than jumping a screen at a time —
-   and paints the previous width first so the change animates from where it was.
-   The 30 Aug redesign hid this element and left the JS running into nothing. */
-.care-journey__fill{display:none;position:absolute;z-index:1;bottom:0;left:0;
-  width:0;height:3px;border-radius:var(--radius-pill);background:var(--color-accent);
-  transition:width 520ms var(--ease-out)}
-.care-journey__step.is-current .care-journey__fill{display:block}
-@media(prefers-reduced-motion:reduce){.care-journey__fill{transition:none}}
 .care-journey__name{display:grid;place-items:center;width:100%;min-height:2.4em;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;word-break:keep-all;text-overflow:clip}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
-/* A finished stage keeps a full accent track. Turning the live stage's track
-   grey so the fill had somewhere to travel left "done" and "not started"
-   looking the same, so a patient who had finished the whole questionnaire saw
-   an almost empty bar (client, 1 Sep). */
-.care-journey__step.is-done::after{background:var(--color-accent)}
+/* This is a stage indicator, not a loading meter: finished and current stages
+   are complete segments; only future stages remain neutral. */
+.care-journey__step.is-done::after,.care-journey__step.is-current::after{background:var(--color-accent)}
 /* Client, 1 Sep: bigger, and the live stage in brand blue rather than ink —
    the accent is what the rest of the app uses to say "you are here". Past and
    future stages stay grey, so there is still only one stage being pointed at. */
@@ -3238,9 +3225,6 @@ body.lang-th *{letter-spacing:normal}
 /* The step the patient is on reads bold, not the 600 the --fw-bold token caps
    at: beside 500 neighbours it looked the same weight (client, 17 Sep). */
 .care-journey__steps .care-journey__step.is-current .care-journey__name{color:var(--color-accent);font-weight:700}
-/* The live stage keeps a grey track — the accent on it is the fill, and a
-   track already fully blue would leave nothing for the fill to travel across. */
-.care-journey__step.is-current::after{background:var(--color-line)}
 .care-journey__current{display:none}
 @media(max-width:780px){
   .care-journey{display:block;padding:10px 12px 12px}

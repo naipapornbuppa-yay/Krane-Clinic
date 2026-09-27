@@ -5176,11 +5176,9 @@
      does — answer the questionnaire, see the doctor, pay. */
   const careJourneyLabels = ['แบบประเมิน','ปรึกษาแพทย์','ยาและชำระเงิน'];
   const careJourneyShort  = ['แบบประเมิน','ปรึกษาแพทย์','ยาและชำระเงิน'];
-  /* Declared in ROUTE ORDER, not in any convenient grouping: the progress fill
-     is the screen's index in its stage, so a key listed out of sequence makes
-     the bar run backwards. Screens that are detours off the main route (login,
-     social-confirm, insurance-result, the pharmacy fallbacks) sit where the
-     patient reaches them so a forward step is never a smaller index. */
+  /* Screens map to three patient-facing stages. The header is a step indicator,
+     not a loading meter: completed and current stages render as full segments,
+     while future stages stay neutral. */
   const careJourneyStageOrder = {
     1: ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern',
         'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
@@ -5207,7 +5205,6 @@
       return '<li class="care-journey__step'+state+'" aria-current="'+(step===current?'step':'false')+'">'+
         '<span class="care-journey__dot">'+mark+'</span>'+
         '<span class="care-journey__name">'+short+'</span>'+
-        '<i class="care-journey__fill" data-journey-fill></i>'+
         '<span class="sr-only">ขั้นตอนที่ '+step+' จาก '+total+', '+careJourneyLabels[index]+'</span>'+
       '</li>';
     }).join('');
@@ -6790,7 +6787,6 @@
     }
     state.body.scrollTop=0;
     syncIntakeDropdownContinue(state.screen);
-    updateIntakeProgress(state.screen.id);
     return true;
   }
   /* The lockup is common app chrome on every page that has a Back action.
@@ -7991,13 +7987,6 @@
     renderedIntakeContext = key;
   }
 
-  /* Fill for the current stage's segment. This used to key off the intake list
-     only, so any screen outside it fell to a 0% branch — which meant stage 2
-     and stage 3 segments never filled at all, however far through them you
-     were. Progress is now measured within whichever stage the screen belongs
-     to, using the route order declared in careJourneyStageOrder. */
-  const careJourneyStageScreens = careJourneyStageOrder;
-
   /* The landing is an embedded frame, so the status-bar strip is painted by
      THIS document, not by the banner inside it. Keep the browser chrome on the
      banner blue while that screen is up and on the app tone everywhere else. */
@@ -8024,61 +8013,6 @@
       frame.addEventListener('load',sendReset);
     }
     window.requestAnimationFrame(sendReset);
-  }
-
-  function updateIntakeProgress(id){
-    const stage = careJourneyScreens[id];
-    if(!stage) return;
-    const screen = document.getElementById(id);
-    const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
-    if(!fill) return;
-
-    const stageScreens = careJourneyStageScreens[stage] || [];
-    /* Intake screens are skippable per category, so measure stage 1 against the
-       route the patient is actually taking rather than every declared screen. */
-    const intakeOrder = intakeStepOrder();
-    const intakeIndex = intakeOrder.indexOf(id);
-    const useIntakeRoute = intakeIndex >= 0;
-    const track = useIntakeRoute
-      ? intakeOrder.concat(stageScreens.filter(s => !intakeOrder.includes(s) && !s.startsWith('intake') && s !== 'concern' && s !== 'conditions'))
-      : stageScreens;
-    const index = track.indexOf(id);
-    if(index < 0) return;
-
-    /* Question screens advance within themselves, so the bar moves per question
-       rather than jumping a whole screen at a time. */
-    const questionPage = intakeQuestionPageState(screen);
-    const done = questionPage.total ? (questionPage.index + 1) / questionPage.total : 1;
-    const prevDone = questionPage.total ? questionPage.index / questionPage.total : 0;
-    const pct  = Math.round(((index + done) / track.length) * 100);
-    const prev = Math.round(((index + prevDone) / track.length) * 100);
-
-    /* Paint the previous width first so the change animates instead of jumping. */
-    fill.style.transition = '';
-    if(!fill.style.width) fill.style.width = prev + '%';
-    window.requestAnimationFrame(() => { fill.style.width = pct + '%'; });
-  }
-
-  /* A waiting screen holds the patient for ten seconds. The bar reaching that
-     screen's position and then sitting still for the whole wait reads as stuck,
-     which is what "still not show loading" meant: it was moving only between
-     screens, never during one. Over a wait it creeps across the slice the
-     screen owns, so the wait itself is visible progress. */
-  function creepJourneyFill(id,durationMs){
-    const stage = careJourneyScreens[id];
-    if(!stage) return;
-    const screen = document.getElementById(id);
-    const fill = screen && screen.querySelector('.care-journey__step.is-current [data-journey-fill]');
-    if(!fill) return;
-    const track = careJourneyStageScreens[stage] || [];
-    const index = track.indexOf(id);
-    if(index < 0) return;
-    const target = Math.round(((index + 1) / track.length) * 100);
-    window.requestAnimationFrame(() => {
-      if(!screen.classList.contains('active')) return;
-      fill.style.transition = `width ${durationMs}ms linear`;
-      fill.style.width = target + '%';
-    });
   }
 
   /* Step two of the picker. It stays empty until a category is tapped: it used
@@ -10276,7 +10210,6 @@
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     syncThemeColor(id);
     if(id==='address') syncFieldClearButtons();
-    updateIntakeProgress(id);
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
@@ -10468,7 +10401,6 @@
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> availability page to pick a slot, where the same gate runs on continue.
-      creepJourneyFill('matching',10000);
       matchTimer = setTimeout(() => {
         if(!mScr.classList.contains('active')) return;
         /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
@@ -10610,7 +10542,6 @@
         rxElapsedSeconds+=1;
         paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
       },1000);
-      creepJourneyFill('rx-writing',reduceMotion ? 500 : 3400);
       rxTimer=setTimeout(() => {
         if(!rxScr?.classList.contains('active')) return;
         clearInterval(rxCountdownTimer);
