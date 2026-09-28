@@ -50,6 +50,7 @@ try{
  await p3.locator('[data-address-new]').click();assert.equal(await p3.locator('#address.active').isVisible(),true);
  assert.equal(await p3.locator('#address [data-go="address-map"]').innerText(),'แก้ไขที่อยู่');
  await p3.locator('#address [data-go="address-map"]').click();assert.equal(await p3.locator('#address-map.active').isVisible(),true);
+ assert.equal(await p3.locator('[data-address-map-search-submit]').evaluate(el=>el.classList.contains('btn--primary')),true);
  await p3.screenshot({path:'/private/tmp/krane-address-map-v168.png'});
  await empty.close();
  assert.deepEqual(errors,[]);
