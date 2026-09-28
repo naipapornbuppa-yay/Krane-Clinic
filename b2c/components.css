@@ -5769,3 +5769,45 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   align-self:start;flex-direction:column;align-items:flex-end;gap:2px;
 }
 #payment .checkout-order__price--paid s{font-size:var(--fs-sm)}
+
+/* Center the visible strokes, independently of Thai/Latin font baselines.
+   Keep the source labels and native buttons intact, including dynamic updates. */
+.checkout-addon-card__foot em,
+.partner-duration-stepper button,
+.payment-item-dialog__stepper button,
+.qty-btn{
+  position:relative;
+  padding:0;
+  font-size:0;
+}
+.checkout-addon-card__foot em::before,
+.partner-duration-stepper button::before,
+.payment-item-dialog__stepper button::before,
+.qty-btn::before{
+  content:"";
+  position:absolute;
+  top:50%;left:50%;
+  width:12px;height:12px;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(currentColor,currentColor) center / 12px 1.5px no-repeat;
+  pointer-events:none;
+}
+.checkout-addon-card__foot em::before,
+.partner-duration-stepper button[data-partner-duration-step="1"]::before,
+.partner-duration-stepper button[data-intake-duration-step="1"]::before,
+.payment-item-dialog__stepper button[data-payment-item-plus]::before,
+.qty-btn[data-qty-plus]::before{
+  background:linear-gradient(currentColor,currentColor) center / 12px 1.5px no-repeat,
+    linear-gradient(currentColor,currentColor) center / 1.5px 12px no-repeat;
+}
+.plan-item__stepper .qty-btn{font-size:0}
+.transition-stage__close,.map-modal__close{font-size:0;padding:0}
+.map-modal__close{position:relative}
+.transition-stage__close::before,.map-modal__close::before{
+  content:"";
+  position:absolute;top:50%;left:50%;width:18px;height:18px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:linear-gradient(currentColor,currentColor) center / 18px 1.5px no-repeat,
+    linear-gradient(currentColor,currentColor) center / 1.5px 18px no-repeat;
+  pointer-events:none;
+}
