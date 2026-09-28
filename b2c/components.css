@@ -5949,3 +5949,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   .bottomnav a .ic{transition:none;animation:none!important}
   .bottomnav a:active .ic{transform:none}
 }
+
+/* Reveal the brand fill inside the outlined glyph as its tab activates. */
+.bottomnav a .ic>svg{grid-area:1 / 1}
+.bottomnav a .nav-icon-filled{display:block;opacity:0;clip-path:inset(100% 0 0 0);pointer-events:none}
+.bottomnav a[aria-current="page"] .ic>svg:not(.nav-icon-filled){display:block;opacity:0;animation:nav-outline-out 360ms ease-out both}
+.bottomnav a[aria-current="page"] .nav-icon-filled{opacity:1;clip-path:inset(0);animation:nav-fill-in 360ms cubic-bezier(.22,1,.36,1) both}
+@keyframes nav-fill-in{from{opacity:.15;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0)}}
+@keyframes nav-outline-out{0%,35%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){
+  .bottomnav a[aria-current="page"] .ic>svg{animation:none!important}
+}
