@@ -40,7 +40,10 @@ try{
  const p3=await empty.newPage();await p3.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address-map');await p3.waitForTimeout(400);
  await p3.locator('#address-map [data-address-book-open]').click();
  assert.equal(await p3.locator('[data-address-book-empty]').isVisible(),true);
+ assert.equal(await p3.locator('.address-book-empty__art img').evaluate(el=>el.complete&&el.naturalWidth>0),true);
+ assert.equal(await p3.locator('#address-book-title').evaluate(el=>getComputedStyle(el).fontSize),'16px');
  assert.equal(await p3.locator('#address-book-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+ await p3.screenshot({path:'/private/tmp/krane-address-book-empty-v167.png'});
  await p3.locator('[data-address-new]').click();assert.equal(await p3.locator('#addressMapQuery').isVisible(),true);
  await empty.close();
  assert.deepEqual(errors,[]);
