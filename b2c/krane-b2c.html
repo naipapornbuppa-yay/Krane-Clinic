@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-waitroom-delayed-action-v192";
+    const release = "20260928-queue-outcomes-v193";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-waitroom-delayed-action-v192">
+<link rel="stylesheet" href="components.css?v=20260928-queue-outcomes-v193">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260928-address-research-v133" defer></script>
-<script src="i18n.js?v=20260928-waitroom-delayed-action-v192" defer></script>
+<script src="i18n.js?v=20260928-queue-outcomes-v193" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -10799,8 +10799,10 @@
           art = w.querySelector('[data-wait-art]');
     /* Two states on one screen. Waiting carries the queue position and an
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
-    if(!pendingQueue) pendingQueue={startedAt:Date.now(),suspended:false};
+    if(!pendingQueue) pendingQueue={startedAt:Date.now(),suspended:false,outcome:flowConfig.get('wait')==='long' ? 'unavailable' : 'ready'};
     w.querySelector('[data-queue-clock]').hidden=false;
+    w.querySelector('[data-wait-note]').hidden=false;
+    w.dataset.queueState='waiting';
     savePendingQueue();
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
@@ -10815,11 +10817,24 @@
     if(art) art.setAttribute('href','#krane-state-waiting-room');
     clearInterval(waitCountdownTimer);
     let elapsedSeconds = Math.floor((Date.now()-pendingQueue.startedAt)/1000);
+    const unavailable=!pendingQueue.readyAt && (pendingQueue.outcome==='unavailable' || flowConfig.get('wait')==='long');
     const paintDelay=()=>{
-      const delayed=elapsedSeconds>=120 || flowConfig.get('wait')==='long';
+      const failed=unavailable && elapsedSeconds>120;
       paintElapsedTimer(w.querySelector('[data-queue-elapsed]'),elapsedSeconds);
-      w.querySelector('[data-queue-book]').hidden=!delayed;
-      if(delayed){title.textContent='ขออภัยที่ให้รอนาน';copy.textContent='คุณยังอยู่ในคิวปรึกษาแพทย์ เราจะแจ้งเมื่อถึงคิวของคุณ'}
+      const booking=w.querySelector('[data-queue-book]');
+      booking.hidden=!failed;
+      booking.classList.toggle('btn--primary',failed);
+      booking.classList.toggle('btn--ghost',!failed);
+      if(failed){
+        w.dataset.queueState='unavailable';
+        title.textContent='ขณะนี้ยังไม่มีแพทย์พร้อมให้บริการ';
+        copy.textContent='เลือกวันและเวลาที่สะดวกเพื่อนัดหมายแพทย์';
+        w.querySelector('[data-queue-clock]').hidden=true;
+        w.querySelector('[data-wait-note]').hidden=true;
+        visual?.classList.remove('state-view__visual--loading');
+        visual?.setAttribute('aria-label','ไม่พบแพทย์ที่พร้อมให้บริการ');
+        art?.setAttribute('href','#krane-state-no-slots');
+      }
     };
     paintDelay();
     paintElapsedTimer(timer,elapsedSeconds);
@@ -10829,20 +10844,21 @@
       paintDelay();
       paintElapsedTimer(timer,elapsedSeconds);
     }, 1000);
-    // Prototype admission: leave time for the delayed state, preserving the
-    // original queue clock across close/resume. Embedded demos stay quick.
+    // Mock outcomes: ready at two minutes; wait=long becomes unavailable
+    // after two minutes. Preserve the chosen outcome and clock on resume.
     const admissionDelay=pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
       ? (reduceMotion ? 400 : 4200)
-      : Math.max(0,pendingQueue.startedAt+150000-Date.now());
-    if(flowConfig.get('wait')==='long' && !pendingQueue.readyAt) return;
+      : Math.max(0,pendingQueue.startedAt+120000-Date.now());
+    if(unavailable) return;
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
       if(!pendingQueue.readyAt){
-        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+150000;
+        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+120000;
         savePendingQueue();
       }
       w.querySelector('[data-queue-book]').hidden=true;
+      w.dataset.queueState='ready';
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย แพทย์${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
       if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }

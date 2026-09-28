@@ -8,12 +8,13 @@ const base=process.env.KRANE_BASE||'http://127.0.0.1:5178';
 const url=base+'/b2c/krane-b2c.html';
 const key='krane-pending-consultation-v1';
 try{
- await page.goto(url);await page.waitForSelector('#landing.active');
+ await page.goto(url);await page.waitForSelector('#landing.active');await page.clock.install();
  await page.evaluate(()=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({entryChannel:'direct',returningIdentityValid:true,directGeneralHealthComplete:true,patientInfoComplete:true,patientName:'Queue test'})));
  await page.goto(url+'?wait=long#waitroom');
  await page.waitForSelector('#waitroom.active');
  assert(await page.locator('[data-queue-elapsed]').isVisible());
  assert.equal(await page.locator('[data-queue-delay]').count(),0);
+ await page.clock.fastForward(121000);
  assert(await page.locator('#waitroom [data-queue-book]').isVisible());
  await page.screenshot({path:'/tmp/krane-queue-v181.png'});
  const started=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)).startedAt,key);
@@ -35,6 +36,7 @@ try{
  assert.equal(await page.locator('[data-queue-cancel]').count(),0);
  assert.equal(await page.locator('#queue-cancel-dialog').count(),0);
  const draft=await page.evaluate(()=>sessionStorage.getItem('krane-p01-intake-draft-v2'));
+ await page.clock.fastForward(121000);
  await page.locator('#waitroom [data-queue-book]').click();
  await page.waitForSelector('#appointment.active');
  assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),null);
