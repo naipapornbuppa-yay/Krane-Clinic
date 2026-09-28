@@ -44,3 +44,5 @@ Verified the new regression failed before the fix and passes after it. Coverage 
 The address-entry screen now contains the manual form and a current-address button. The map and location readout appear only in a separate native modal dialog after that button is activated. Geolocation is requested by that action, not by merely opening the address form.
 
 Map results remain provisional until confirmation. Closing or cancelling leaves the manually entered address intact; late location/reverse-geocoding responses are ignored after cancellation or a newer request. When location or map services are unavailable, the interface offers manual entry instead of claiming that a fixed sample location is the user's current location.
+
+The current-location entry point now sits on the delivery-address thumbnail. It opens the map dialog directly and confirmation updates the delivery card. The separate edit-address action opens the manual fields; cancellation preserves the existing delivery address.
