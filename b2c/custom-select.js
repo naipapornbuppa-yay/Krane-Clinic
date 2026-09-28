@@ -52,13 +52,13 @@
   function syncSelect(record){
     var nativeOption=record.select.options[record.select.selectedIndex];
     record.value.textContent=nativeOption?nativeOption.textContent:'';
-    record.options.forEach(function(option,index){option.setAttribute('aria-selected',String(index===record.select.selectedIndex))});
+    record.options.forEach(function(option){option.setAttribute('aria-selected',String(Number(option.dataset.nativeIndex)===record.select.selectedIndex))});
     record.trigger.disabled=record.select.disabled;
     record.root.classList.toggle('is-placeholder',!record.select.value);
   }
 
   function chooseOption(record,index){
-    if(record.options[index].disabled)return;
+    if(!record.select.options[index] || record.select.options[index].disabled)return;
     record.select.selectedIndex=index;
     syncSelect(record);
     record.select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -72,13 +72,15 @@
   function refreshOptions(record){
     record.menu.replaceChildren();
     record.options=Array.from(record.select.options).map(function(nativeOption,index){
+      // Retain the native placeholder for required-field validation, never as a choice.
+      if(!nativeOption.value.trim() || !nativeOption.textContent.trim() || nativeOption.hidden)return null;
       var option=document.createElement('button');
       option.type='button';
       option.className='custom-select__option';
       option.setAttribute('role','option');
       option.textContent=nativeOption.textContent;
       option.disabled=nativeOption.disabled;
-      option.hidden=nativeOption.disabled && !nativeOption.value;
+      option.dataset.nativeIndex=String(index);
       option.addEventListener('click',function(){chooseOption(record,index)});
       option.addEventListener('keydown',function(event){
         var enabled=record.options.filter(function(item){return !item.disabled});
@@ -91,7 +93,7 @@
       });
       record.menu.appendChild(option);
       return option;
-    });
+    }).filter(Boolean);
     syncSelect(record);
   }
 
@@ -131,24 +133,7 @@
     return root;
   }
 
-  /* On a touch device the platform's own picker is used and this enhancement is
-     skipped entirely.
-
-     The custom sheet is a fixed overlay, and on iOS it kept losing its last
-     option: first behind the blurred footer, then still cut short after that was
-     fixed. A list a patient cannot reach is worse than a list that does not match
-     the mock, and the failure is invisible to anyone testing on a laptop, because
-     the sheet is correct in every desktop browser. iOS renders a select as native
-     full-screen UI that nothing on the page can clip or paint over, so the option
-     is always there. The native control already carries .input styling, so it
-     reads the same as every other field.
-
-     Pointer, not width: a narrow desktop window keeps the sheet, a tablet does
-     not. */
-  var USE_NATIVE_PICKER = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-
   function enhance(select){
-    if(USE_NATIVE_PICKER)return;
     if(!(select instanceof HTMLSelectElement))return;
     /* Enhanced and provably alive: no-op, so enhance() is safely idempotent. */
     if(liveRecordFor(select))return;
