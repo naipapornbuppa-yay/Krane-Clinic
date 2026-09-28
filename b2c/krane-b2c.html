@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-ux-v148";
+    const release = "20260928-address-save-draft-v149";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -5515,6 +5515,9 @@
       const input=screen.querySelector(`#${id}`);
       if(input) input.value=id==='recipientPhone' ? formatPhoneForDisplay(value) : (value || '');
     });
+    const remember=screen.querySelector('#addrRemember');
+    if(remember) remember.checked=formAddress.remember===true;
+    syncAddressRememberChoice();
     const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${formAddress.dropoffMethod || 'hand'}"]`);
     if(dropoff) dropoff.checked=true;
     screen.dataset.selectedKm=formAddress.km || '3.2';
@@ -5711,6 +5714,7 @@
       recipientFirstName:v('recipientFirstName'), recipientLastName:v('recipientLastName'),
       recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:normalizePhone(v('recipientPhone')),
       label:v('addrLabel'),
+      remember:document.getElementById('addrRemember')?.checked===true,
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
@@ -6039,7 +6043,10 @@
       return;
     }
   });
-  document.getElementById('addrRemember')?.addEventListener('change',syncAddressRememberChoice);
+  document.getElementById('addrRemember')?.addEventListener('change',() => {
+    syncAddressRememberChoice();
+    persistAddressEditorDraft();
+  });
 
   function tomorrowLabel(){
     const tomorrow=new Date();

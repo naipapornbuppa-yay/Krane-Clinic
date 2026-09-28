@@ -30,3 +30,11 @@ The prototype's administrative-area data covers selected districts in three prov
 - No browser runtime errors in the address flow check.
 - Global UI contract remains 148/164 with the same 16 previously recorded failures. These include legacy address assertions; no assertions were removed to force a green result.
 - The address-specific audit was updated for the intentional change from a disabled-looking confirmation action to an enabled action with inline validation and a stable label.
+
+## Follow-up review after LINE access was unavailable
+
+Continued with public research and inspection of the working flow. [GrabExpress's published delivery form](https://www.grab.com/ph/express-delivery-service/) separately verifies the recipient's name/contact and delivery location. [GOV.UK's error guidance](https://design-system.service.gov.uk/components/error-summary/) emphasizes directing users to fields needing correction. These are supporting interaction principles, not visual templates.
+
+The next concrete issue was draft persistence: the save-for-next-time checkbox was not stored with the address draft, so reload could silently drop the user's request to save the address. The follow-up change preserves the explicit checked or unchecked preference, alongside the draft address label, without committing a draft before confirmation.
+
+Verified the new regression failed before the fix and passes after it. Coverage includes checked and unchecked reload behavior, retained label text, no saved-entry mutation on back, and no duplicate saved entry on repeated confirmation. Existing targeted address checks still pass with no runtime errors.
