@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-detail-ui-v135";
+    const release = "20260928-address-detail-ui-v136";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-address-detail-ui-v135">
+<link rel="stylesheet" href="components.css?v=20260928-address-detail-ui-v136">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -339,24 +339,25 @@
       aspect-ratio:14/9;
       overflow:visible!important;
     }
-    /* Doctor matching keeps the monochrome illustration, but gives it a soft,
-       optimistic field so the artwork does not float on an empty white page. */
-    #matching .state-view__visual:has(.krane-state-art)::before{
+    /* One quiet, crisp backdrop for every state illustration. The blob is a
+       separate UI layer rather than pixels baked into the art, so the line
+       work stays transparent and the padding is identical across states. */
+    .state-view__visual:has(.krane-state-art)::before,
+    .payment-processing-view__illustration:has(.krane-state-art)::before{
       content:"";
       position:absolute;
       z-index:0;
-      inset:10% 3% 5%;
-      border-radius:46% 54% 42% 58% / 55% 42% 58% 45%;
-      background:
-        radial-gradient(circle at 28% 38%,rgba(193,222,255,.92) 0 22%,transparent 58%),
-        radial-gradient(circle at 70% 48%,rgba(220,236,255,.96) 0 24%,transparent 62%),
-        radial-gradient(circle at 48% 74%,rgba(178,214,250,.54) 0 18%,transparent 58%);
-      filter:blur(12px);
-      transform:rotate(-2deg) scale(1.08);
-      opacity:.9;
+      inset:9% 7% 8%;
+      border-radius:52% 48% 55% 45% / 47% 55% 45% 53%;
+      background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface));
+      filter:none;
+      box-shadow:none;
+      opacity:1;
+      display:block;
       pointer-events:none;
     }
-    #matching .state-view__visual:has(.krane-state-art) .state-view__tile{
+    .state-view__visual:has(.krane-state-art) .state-view__tile,
+    .payment-processing-view__illustration:has(.krane-state-art) .krane-state-art{
       position:relative;
       z-index:1;
     }
@@ -365,30 +366,11 @@
       width:min(49vw,255px)!important;
       isolation:isolate;
     }
-    /* Two preserved illustration directions are selected by URL:
-       illustrationSet=mono keeps the original monochrome cutout;
-       illustrationSet=wash adds only a translucent watercolour field behind it. */
-    .state-view__watercolor{display:none}
-    html[data-illustration-set="wash"] .state-view__visual--loading{isolation:isolate}
-    html[data-illustration-set="wash"] .state-view__watercolor{
-      display:block;
-      position:absolute;
-      z-index:0;
-      pointer-events:none;
-      inset:18% 12%;
-      background:url("assets/watercolor-wash-blue-v1.png") center/contain no-repeat;
-      opacity:.46;
-      transform:rotate(-2deg) scale(1.04);
-    }
-    html[data-illustration-set="wash"] .state-view__visual--loading .state-view__tile{
-      position:relative;
-      z-index:1;
-    }
-    /* Both review sets preserve the approved monochrome master artwork.
-       The wash option changes only the atmosphere behind it. */
-    html[data-illustration-set] .krane-state-art{
-      filter:grayscale(1)!important;
-    }
+    /* Retired review URLs may still request the old watercolour direction;
+       keep the parameter harmless so every route now renders the same crisp blob. */
+    .state-view__watercolor{display:none!important}
+    /* Every legacy review set resolves to the approved outline-only master. */
+    html[data-illustration-set] .krane-state-art{filter:url(#krane-state-outline-only)!important}
     /* All approved state illustrations are clean line art. Keep legacy
        colour hatch layers disabled on both monochrome and wash sets, and on
        old deep links that predate the illustrationSet parameter. */
@@ -412,7 +394,14 @@
     }
     .state-view__tile:has(.krane-state-art)::before{content:none!important}
     .state-view__visual:has(.krane-state-art)>.state-view__badge{display:none!important}
-    .krane-state-art{display:block;width:100%;height:100%;overflow:visible;color:#101722}
+    .krane-state-art{
+      display:block;
+      width:100%;
+      height:100%;
+      overflow:visible;
+      color:#101722;
+      filter:url(#krane-state-outline-only)!important;
+    }
     /* 2026-08-16: these PNGs used to be flattened with an opaque cream canvas
        baked in, approximated away with mix-blend-mode:multiply. That never
        fully cancelled the cream (only true white multiplies to nothing), so a
@@ -2120,7 +2109,7 @@
   <section class="screen" id="waitroom" data-screen-code="SCR-009">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
     <div class="screen__body state-view center">
-      <div class="state-view__visual state-view__visual--loading state-view__visual--soft-disc" role="status" aria-label="Waiting for the doctor" data-wait-visual>
+      <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor" data-wait-visual>
         <span class="state-view__watercolor" aria-hidden="true"></span>
         <span class="state-view__tile state-view__tile--cutout loading-illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room" data-wait-art></use></svg></span>
         <span class="state-view__badge"><i data-lucide="video" class="ui-icon" aria-hidden="true"></i></span>
@@ -14166,12 +14155,26 @@
         0 0 0 0 0
         -0.2126 -0.7152 -0.0722 0 1"/>
       <feComposite in="inkFromLuminance" in2="SourceAlpha" operator="in" result="inkOnly"/>
-      <feMorphology in="inkOnly" operator="erode" radius="0.25" result="thinInk"/>
+      <feComponentTransfer in="inkOnly" result="cleanInk">
+        <feFuncA type="linear" slope="4" intercept="-.6"/>
+      </feComponentTransfer>
+      <feMorphology in="cleanInk" operator="erode" radius="0.25" result="thinInk"/>
       <feFlood flood-color="#101722" result="inkColor"/>
       <feComposite in="inkColor" in2="thinInk" operator="in"/>
     </filter>
-    <filter id="krane-consult-halo-blur" x="-45%" y="-60%" width="190%" height="220%" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="24"/>
+    <!-- Convert the raster master into true outline-only art. Subtracting an
+         eroded copy removes the interior of broad black areas (hair, clothes,
+         furniture) while preserving the original contour and fine strokes. -->
+    <filter id="krane-state-outline-only" x="-6%" y="-8%" width="112%" height="116%" color-interpolation-filters="sRGB">
+      <feColorMatrix in="SourceGraphic" result="inkAlpha" type="matrix" values="
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 1 0"/>
+      <feMorphology in="inkAlpha" operator="erode" radius="1.45" result="inkInterior"/>
+      <feComposite in="inkAlpha" in2="inkInterior" operator="out" result="outlineOnly"/>
+      <feFlood flood-color="#101722" result="outlineColor"/>
+      <feComposite in="outlineColor" in2="outlineOnly" operator="in"/>
     </filter>
     <!-- Adult editorial actors: asymmetric 3/4 faces, ink-textured hair,
          collared clothing and long expressive hands mirror the locked mood board. -->
@@ -14494,7 +14497,6 @@
     </symbol>
 
     <symbol id="krane-state-doctor-matching" viewBox="0 0 560 360">
-      <ellipse cx="280" cy="181" rx="154" ry="104" fill="#dce7f8" opacity=".52" filter="url(#krane-consult-halo-blur)"/>
       <image href="assets/state-editorial-v5-ink/doctor-matching-straight-doctor-v3.png?v=20260927-integrated-room-art-v108" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
     </symbol>
 
@@ -14537,7 +14539,6 @@
           <image href="assets/state-editorial-v5-ink/waiting-room-roles-v1.png?v=20260924-trousers-halftone-clean-v7" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-waiting-trousers-ink)"/>
         </mask>
       </defs>
-      <ellipse cx="280" cy="181" rx="154" ry="104" fill="#dce7f8" opacity=".52" filter="url(#krane-consult-halo-blur)"/>
       <image href="assets/state-editorial-v5-ink/waiting-room-same-patient-armchair-v3.png?v=20260927-integrated-room-art-v108" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
     </symbol>
 
