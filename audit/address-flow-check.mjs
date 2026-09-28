@@ -41,7 +41,8 @@ try {
   await page.waitForTimeout(300);
   assert.equal(await screen(),'address');
   assert.equal(await page.locator('[data-address-recipient-editor]').isVisible(),true);
-  assert.equal(await page.locator('[data-address-save]').getAttribute('aria-disabled'),'true');
+  assert.equal(await page.locator('[data-address-save]').isEnabled(),true);
+  assert.match(await page.locator('[data-address-readiness]').innerText(),/กรอกชื่อ/);
   await page.locator('[data-address-save]').click({force:true});
   assert.equal(await page.locator('#recipientFirstName').getAttribute('aria-invalid'),'true');
   await page.locator('#recipientFirstName').fill('ทดสอบ');
@@ -58,7 +59,15 @@ try {
   assert.equal(await page.locator('#addrNote').inputValue(),'โทรก่อนถึง ไม่ฝากที่ล็อบบี้');
   assert.equal(await page.locator('#recipientPhone').inputValue(),'081-234-5678');
   assert.equal((await state()).orderState.addressConfirmed,false);
-  await page.screenshot({path:'/private/tmp/krane-address-editor-mobile.png'});
+  await page.waitForTimeout(3500);
+  await page.screenshot({path:'/private/tmp/krane-address-editor-mobile.png',fullPage:true});
+  await page.locator('#addrNote').scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/private/tmp/krane-address-editor-mobile-details.png'});
+  await page.locator('#address .screen__body').evaluate(el=>el.scrollTop=0);
+  await page.setViewportSize({width:1440,height:1200});
+  await page.waitForTimeout(500);
+  await page.screenshot({path:'/private/tmp/krane-address-editor-desktop.png',fullPage:true});
+  await page.setViewportSize({width:390,height:844});
   await page.locator('[data-address-save]').click();await page.waitForTimeout(400);
   assert.equal(await screen(),'payment');
   assert.equal((await state()).orderState.addressConfirmed,true);
@@ -69,6 +78,11 @@ try {
   assert.match(await page.locator('[data-address-detail-address]').innerText(),/1203/);
   await page.screenshot({path:'/private/tmp/krane-address-review-mobile.png'});
   await page.locator('[data-address-recipient-edit]').click();await page.waitForTimeout(200);
+  await page.locator('#recipientFirstName').fill('ยกเลิก');
+  await page.locator('#address [data-back]').click();await page.waitForTimeout(400);
+  assert.equal((await state()).orderState.address.recipientFirstName,'ทดสอบ');
+  await visit('address');
+  assert.equal(await page.locator('#recipientFirstName').inputValue(),'ยกเลิก');
   await page.locator('#recipientFirstName').fill('ใหม่');
   await page.locator('#addrNote').fill('หมายเหตุใหม่');
   await page.locator('#address [data-go="address-map"]').click();await page.waitForTimeout(200);
@@ -81,8 +95,11 @@ try {
   await page.reload();await page.waitForTimeout(700);
   assert.equal(await page.locator('#addrNote').inputValue(),'หมายเหตุใหม่');
   assert.equal(await page.locator('#recipientFirstName').inputValue(),'ใหม่');
+  await page.locator('#addrRemember').check({force:true});
+  await page.locator('#addrLabel').fill('บ้าน');
   await page.locator('[data-address-save]').click();await page.waitForTimeout(300);
   assert.equal((await state()).orderState.address.building,'456 ถนนสุขุมวิท');
+  assert.equal((await state()).savedAddresses.at(-1).label,'บ้าน');
   assert.equal((await state()).orderState.address.recipientFirstName,'ใหม่');
   // Review reflects the actual selected method and accepted quote, including zero.
   await page.evaluate(()=>{const key='krane-p01-flow-state-v1';const s=JSON.parse(sessionStorage.getItem(key));s.orderState.deliveryMethod='postal';s.orderState.deliveryQuoteStatus='accepted';s.orderState.deliveryQuoteAmount=0;sessionStorage.setItem(key,JSON.stringify(s));});
@@ -93,6 +110,12 @@ try {
   await page.screenshot({path:'/private/tmp/krane-address-review-desktop.png'});
   await page.goto(`${base}/b2c/krane-b2c.html?lang=en#address`,{waitUntil:'domcontentloaded'});await page.waitForTimeout(800);
   assert.match(await page.locator('[data-address-save]').innerText(),/Confirm delivery address/);
+  assert.match(await page.locator('#address-location-title').innerText(),/Deliver to/);
+  assert.match(await page.locator('[data-address-recipient-editor] h3').innerText(),/Medication recipient/);
+  assert.match(await page.locator('#address-instructions-title').innerText(),/Delivery details.*optional/);
+  await page.locator('#recipientFirstName').fill('');
+  await page.waitForTimeout(300);
+  assert.match(await page.locator('[data-address-readiness]').innerText(),/Enter the recipient/);
   await page.setViewportSize({width:320,height:720});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   console.log('Address colors', await page.evaluate(()=>{
@@ -100,5 +123,5 @@ try {
     return nodes.map(selector=>{const s=getComputedStyle(document.querySelector(selector));return {selector,color:s.color,background:s.backgroundColor}});
   }));
   assert.deepEqual(errors,[]);
-  console.log('PASS: empty state, actionable validation, dependent dropdown reset, search reload, recipient/phone validation, draft round trip and refresh, confirmation, committed-address isolation, note/floor review, actual delivery fee, English CTA, 320px layout, no runtime errors.');
+  console.log('PASS: empty state, actionable validation, dependent dropdown reset, search reload, recipient/phone validation, draft round trip and refresh, confirmation, back navigation draft recovery, saved-address label, committed-address isolation, note/floor review, actual delivery fee, English CTA, 320px layout, no runtime errors.');
 } finally {await browser.close();}

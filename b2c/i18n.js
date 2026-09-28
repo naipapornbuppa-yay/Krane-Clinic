@@ -2195,6 +2195,16 @@
   for (var _k20 in EN_FROM_TH_20SEP) EN_FROM_TH[_k20] = EN_FROM_TH_20SEP[_k20];
   for (var _k24 in EN_FROM_TH_24SEP) EN_FROM_TH[_k24] = EN_FROM_TH_24SEP[_k24];
   Object.assign(EN_FROM_TH, {
+    "จัดส่งไปที่": "Deliver to",
+    "ตรวจสอบที่อยู่ให้ตรงกับจุดรับยา": "Check the address where you will receive your medication",
+    "ระบุชื่อและเบอร์โทรที่ติดต่อได้สำหรับการจัดส่ง": "Enter the recipient’s name and a reachable phone number",
+    "รายละเอียดเพิ่มเติม": "Delivery details",
+    "กรอกชื่อ นามสกุล และเบอร์โทรของผู้รับยา": "Enter the recipient’s first name, last name and phone number",
+    "เลือกที่อยู่จัดส่งให้ครบก่อนยืนยัน": "Complete the delivery address before confirming",
+    "แก้ไขที่อยู่": "Edit address",
+    "ข้อมูลผู้รับยา": "Medication recipient",
+    "(ถ้ามี)": "(optional)",
+
     "ประมาณ 60 นาที":"About 60 minutes",
     "ภายในวันนี้ก่อน 18:00 น.":"Today, before 6pm",
     "1 ถึง 3 วัน":"1 to 3 days",
