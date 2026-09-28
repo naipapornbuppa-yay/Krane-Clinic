@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-save-draft-v149";
+    const release = "20260928-auto-postcode-v150";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -5625,6 +5625,7 @@
     replaceAddressMapOptions(subdistrict,subdistricts,subdistrictValue,Boolean(districtValue));
     const postcodes=ADDRESS_MAP_GEOGRAPHY[provinceValue]?.[districtValue]?.[subdistrictValue] || [];
     if(!postcodes.includes(postcodeValue) && !savedValues.addressMapPostcode)postcodeValue='';
+    if(postcodes.length===1)postcodeValue=postcodes[0];
     replaceAddressMapOptions(postcode,postcodes,postcodeValue,Boolean(subdistrictValue));
     syncAddressMapSearchSubmit();
   }
