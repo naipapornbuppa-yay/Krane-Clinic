@@ -42,7 +42,7 @@ try {
   assert.equal(await screen(),'address');
   assert.equal(await page.locator('[data-address-recipient-editor]').isVisible(),true);
   assert.equal(await page.locator('[data-address-save]').isEnabled(),true);
-  assert.match(await page.locator('[data-address-readiness]').innerText(),/กรอกชื่อ/);
+  assert.equal(await page.locator('[data-address-readiness]').count(),0);
   await page.locator('[data-address-save]').click({force:true});
   assert.equal(await page.locator('#recipientFirstName').getAttribute('aria-invalid'),'true');
   await page.locator('#recipientFirstName').fill('ทดสอบ');
@@ -137,11 +137,11 @@ try {
   assert.match(await page.locator('#address-instructions-title').innerText(),/Delivery details.*optional/);
   await page.locator('#recipientFirstName').fill('');
   await page.waitForTimeout(300);
-  assert.match(await page.locator('[data-address-readiness]').innerText(),/Enter the recipient/);
+  assert.equal(await page.locator('[data-address-readiness]').count(),0);
   await page.setViewportSize({width:320,height:720});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   console.log('Address colors', await page.evaluate(()=>{
-    const nodes=['#address .address-page-title','#address .address-pin__hint','#address [data-address-save]'];
+    const nodes=['#address .address-page-title','#address [data-address-save]'];
     return nodes.map(selector=>{const s=getComputedStyle(document.querySelector(selector));return {selector,color:s.color,background:s.backgroundColor}});
   }));
   assert.deepEqual(errors,[]);
