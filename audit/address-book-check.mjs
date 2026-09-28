@@ -1,0 +1,48 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({headless:true});
+const ctx=await browser.newContext({viewport:{width:390,height:844}});
+const saved={label:'บ้าน',building:'บ้าน 123',line:'ถนนสุขุมวิท',subdistrict:'คลองตันเหนือ',districtName:'วัฒนา',province:'กรุงเทพมหานคร',postcode:'10110',district:'คลองตันเหนือ วัฒนา กรุงเทพมหานคร 10110',recipientFirstName:'ทดสอบ',recipientLastName:'สมุด',recipientName:'ทดสอบ สมุด',recipientPhone:'0812345678'};
+await ctx.addInitScript(saved=>{if(!sessionStorage.getItem('book-test')){sessionStorage.setItem('book-test','1');sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({patientInfoComplete:true,directGeneralHealthComplete:true,savedAddresses:[saved],addressDraft:{...saved,building:'ฉบับร่าง'}}));}},saved);
+const p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
+await p.route(/nominatim|tile.openstreetmap/,r=>r.abort());
+const state=()=>p.evaluate(()=>JSON.parse(sessionStorage.getItem('krane-p01-flow-state-v1')));
+try{
+ await p.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address');await p.waitForTimeout(500);
+ const before=await state();await p.locator('#address [data-address-book-open]').click();
+ assert.equal(await p.locator('#address-book-dialog').isVisible(),true);
+ assert.match(await p.locator('[data-address-book-list]').innerText(),/บ้าน 123/);
+ await p.screenshot({path:'/private/tmp/krane-address-book-v156.png'});
+ await p.keyboard.press('Escape');assert.deepEqual((await state()).orderState,before.orderState);
+ assert.equal((await state()).addressDraft.building,'ฉบับร่าง');
+ await p.locator('#address [data-address-book-open]').click();await p.locator('[data-address-book-pick="0"]').click();
+ assert.equal(await p.locator('#recipientFirstName').inputValue(),'ทดสอบ');
+ assert.equal(await p.locator('#addrRemember').isChecked(),true);
+ assert.deepEqual((await state()).orderState,before.orderState);
+ await p.locator('[data-address-save]').click();await p.waitForTimeout(300);
+ const stored=await p.evaluate(()=>JSON.parse(localStorage.getItem('krane-address-book-v1:guest')));
+ assert.equal(stored.entries.length,1);assert.equal(stored.entries[0].label,'บ้าน');
+ // A new browser tab/session can retrieve the explicitly saved local book.
+ const p2=await ctx.newPage();await p2.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address-map');await p2.waitForTimeout(500);
+ await p2.evaluate(()=>{const k='krane-p01-flow-state-v1';const s=JSON.parse(sessionStorage.getItem(k));delete s.savedAddresses;sessionStorage.setItem(k,JSON.stringify(s));});await p2.reload();await p2.waitForTimeout(400);
+ await p2.locator('#address-map [data-address-book-open]').click();assert.match(await p2.locator('[data-address-book-list]').innerText(),/บ้าน 123/);
+ await p2.locator('[data-address-new]').click();assert.equal(await p2.locator('#addressMapQuery').inputValue(),'');
+ assert.equal(await p2.locator('#address-book-dialog').isVisible(),false);
+ await p2.locator('#address-map [data-address-book-open]').click();assert.equal(await p2.locator('[data-address-book-pick]').count(),1);
+ await p2.locator('[data-address-edit="0"]').click();
+ await p2.locator('#addrLabel').fill('บ้านใหม่');
+ await p2.locator('[data-address-save]').click();await p2.waitForTimeout(250);
+ const edited=await p2.evaluate(()=>JSON.parse(localStorage.getItem('krane-address-book-v1:guest')));
+ assert.equal(edited.entries.length,1);assert.equal(edited.entries[0].label,'บ้านใหม่');
+ await p2.close();
+ const empty=await browser.newContext({viewport:{width:320,height:720}});
+ await empty.addInitScript(()=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({patientInfoComplete:true,directGeneralHealthComplete:true})));
+ const p3=await empty.newPage();await p3.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address-map');await p3.waitForTimeout(400);
+ await p3.locator('#address-map [data-address-book-open]').click();
+ assert.equal(await p3.locator('[data-address-book-empty]').isVisible(),true);
+ assert.equal(await p3.locator('#address-book-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+ await p3.locator('[data-address-new]').click();assert.equal(await p3.locator('#addressMapQuery').isVisible(),true);
+ await empty.close();
+ assert.deepEqual(errors,[]);
+ console.log('PASS: visible entry points, saved list, cancel preserves draft/order, selection hydrates recipient without committing, confirm persists without duplicates, new session loads saved book, add-new clears location without deleting saved entries.');
+}finally{await browser.close();}

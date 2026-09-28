@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-ui-consistency-v155";
+    const release = "20260928-address-book-v156";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -55,14 +55,14 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260928-ui-consistency-v155">
-<link rel="stylesheet" href="components.css?v=20260928-ui-consistency-v155">
-<link rel="stylesheet" href="custom-select.css?v=20260928-ui-consistency-v155">
+<link rel="stylesheet" href="design-tokens.css?v=20260928-address-book-v156">
+<link rel="stylesheet" href="components.css?v=20260928-address-book-v156">
+<link rel="stylesheet" href="custom-select.css?v=20260928-address-book-v156">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260928-address-research-v133" defer></script>
-<script src="i18n.js?v=20260928-ui-consistency-v155" defer></script>
+<script src="i18n.js?v=20260928-address-book-v156" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2241,6 +2241,7 @@
       <div class="address-page-head">
         <h2 class="address-page-title" data-address-editor-title>ตรวจสอบที่อยู่จัดส่ง</h2>
       </div>
+      <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
       <section class="form-group address-location" aria-labelledby="address-location-title">
         <div class="address-section-head"><h3 class="form-group__title" id="address-location-title">จัดส่งไปที่</h3><button class="address-pin__edit" type="button" data-go="address-map">แก้ไขที่อยู่</button></div>
         <p class="hint address-pin__hint">ตรวจสอบที่อยู่ให้ตรงกับจุดรับยา</p>
@@ -2317,6 +2318,7 @@
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
         <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
@@ -2327,6 +2329,15 @@
       </div>
     </div>
   </section>
+  <dialog class="address-picker address-book-dialog" id="address-book-dialog" aria-labelledby="address-book-title">
+    <div class="address-picker__head"><h2 id="address-book-title">สมุดที่อยู่</h2><button type="button" data-address-book-close aria-label="ปิด">×</button></div>
+    <p class="hint">เลือกที่อยู่ที่บันทึกไว้ แล้วตรวจสอบข้อมูลก่อนยืนยันจัดส่ง</p>
+    <div data-address-book>
+      <p class="address-book-empty" data-address-book-empty>ยังไม่มีที่อยู่ที่บันทึกไว้</p>
+      <div class="address-book__list" data-address-book-list></div>
+    </div>
+    <button class="btn btn--primary" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
+  </dialog>
   <dialog class="address-picker" id="address-picker" aria-labelledby="address-picker-title" aria-describedby="address-picker-help">
     <div class="address-picker__head"><h2 id="address-picker-title">เลือกตำแหน่งจัดส่ง</h2><button type="button" data-address-picker-close aria-label="ปิด">×</button></div>
     <p class="hint" id="address-picker-help">เลื่อนแผนที่ให้หมุดตรงกับจุดรับยา แล้วตรวจสอบรายละเอียดที่อยู่</p>
@@ -5846,9 +5857,8 @@
     const remember=document.getElementById('addrRemember')?.checked===true;
     if(remember){
       rememberDeliveryAddress(flowState.orderState.address,{index:addressEditingSavedIndex});
-    } else if(addressEditingSavedIndex>=0){
-      savedAddresses().splice(addressEditingSavedIndex,1);
     }
+    persistAddressBook();
     invalidateFulfillmentQuote();
     persistFlowState();
     syncDeliveryAddress();
@@ -5896,8 +5906,27 @@
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     })[char]);
   }
+  function addressBookStorageKey(){
+    return 'krane-address-book-v1:' + String(flowState.verifiedPhone || flowState.patientId || 'guest');
+  }
+  function persistAddressBook(){
+    if(!IS_DEMO_EMBED)writeLocalJson(addressBookStorageKey(),{entries:savedAddresses()});
+  }
+  let addressBookOpener=null;
+  function openAddressBook(opener){
+    addressBookOpener=opener;
+    renderAddressBook();
+    document.getElementById('address-book-dialog').showModal();
+  }
+  function closeAddressBook(){document.getElementById('address-book-dialog').close();}
+  document.getElementById('address-book-dialog').addEventListener('close',()=>{
+    if(addressBookOpener?.getClientRects().length)addressBookOpener.focus({preventScroll:true});
+  });
   function savedAddresses(){
-    if(!Array.isArray(flowState.savedAddresses)) flowState.savedAddresses=[];
+    if(!Array.isArray(flowState.savedAddresses)){
+      const stored=readLocalJson(addressBookStorageKey());
+      flowState.savedAddresses=Array.isArray(stored.entries) ? stored.entries : [];
+    }
     return flowState.savedAddresses;
   }
   function rememberDeliveryAddress(address,{index=-1}={}){
@@ -5907,9 +5936,7 @@
     const at=index>=0 && index<book.length ? index : book.findIndex(entry => addressBookKey(entry)===key);
     const entry={...address};
     if(at>=0) book[at]=entry; else book.push(entry);
-    /* Two is enough to make the list worth having; beyond a handful it is a
-       list to manage rather than a shortcut, so the oldest drops off. */
-    while(book.length>6) book.shift();
+
   }
   let addressPageMode='editor';
   let addressEditingSavedIndex=-1;
@@ -5945,27 +5972,16 @@
     empty.hidden=book.length>0;
     list.hidden=book.length<1;
     if(!book.length){ list.innerHTML=''; return; }
-    let currentKey=flowState.orderState.addressConfirmed
-      ? addressBookKey(flowState.orderState.address || {})
-      : '';
-    if(!currentKey || !book.some(entry => addressBookKey(entry)===currentKey)){
-      const recent=book[book.length-1];
-      flowState.orderState.address={...recent};
-      flowState.orderState.addressConfirmed=true;
-      currentKey=addressBookKey(recent);
-      invalidateFulfillmentQuote();
-      persistFlowState();
-      syncDeliveryAddress({hydrateForm:true});
-    }
+    const currentKey=addressBookKey(deliveryAddressDraft());
     list.innerHTML=book.map((entry,index) => {
       const selected=addressBookKey(entry)===currentKey;
       return `<article class="address-select-card${selected ? ' is-selected' : ''}">
-        <button class="address-select-card__choice" type="button" role="radio" aria-checked="${selected}" data-address-book-pick="${index}">
-          <span class="address-select-card__radio" aria-hidden="true"></span>
+        <button class="address-select-card__choice" type="button" aria-label="${escapeAddressText(addressBookName(entry))}" data-address-book-pick="${index}">
           <span class="address-select-card__content">
             <strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>
             <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
             <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
+            <span class="address-select-card__use">ใช้ที่อยู่นี้</span>
           </span>
         </button>
         <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
@@ -5975,27 +5991,24 @@
   function useSavedAddress(index,{quiet=false}={}){
     const entry=savedAddresses()[index];
     if(!entry) return;
-    flowState.orderState.address={...entry};
-    flowState.orderState.addressConfirmed=true;
-    invalidateFulfillmentQuote();
+    closeAddressBook();
+    delete flowState.addressSearchDraft;
+    flowState.addressDraft={...entry,remember:true};
     persistFlowState();
-    syncDeliveryAddress({hydrateForm:true});
-    renderAddressBook();
-    if(!quiet) showActionToast('เลือก' + addressBookName(entry) + 'แล้ว','success');
-  }
-  function editSavedAddress(index){
-    const entry=savedAddresses()[index];
-    if(!entry) return;
-    useSavedAddress(index,{quiet:true});
+    show('address');
     addressEditingSavedIndex=index;
-    const remember=document.getElementById('addrRemember');
-    if(remember) remember.checked=true;
-    syncAddressRememberChoice();
-    const title=document.querySelector('[data-address-editor-title]');
-    if(title) title.textContent='แก้ไขที่อยู่จัดส่ง';
-    setAddressPageMode('editor',{focus:true});
+    syncDeliveryAddress({hydrateForm:true});
+    syncFloatingFieldStates(document.getElementById('address'));
+    document.querySelectorAll('#address .is-invalid input').forEach(clearFieldError);
+    document.querySelector('#address [data-go="address-map"]')?.focus({preventScroll:true});
+    if(!quiet)showActionToast('เลือกที่อยู่แล้ว กรุณาตรวจสอบก่อนยืนยัน','success');
   }
+  function editSavedAddress(index){useSavedAddress(index,{quiet:true});}
+
   function startNewAddress({focus=true}={}){
+    closeAddressBook();
+    delete flowState.addressSearchDraft;
+    flowState.addressDraft={building:'',line:'',subdistrict:'',districtName:'',province:'',postcode:'',district:'',label:'',floor:'',note:'',remember:false};
     ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote']
       .forEach(id => {
         const field=document.getElementById(id);
@@ -6004,7 +6017,6 @@
         field.dispatchEvent(new Event('input',{bubbles:true}));
         clearFieldError(field);
       });
-    flowState.orderState.addressConfirmed=false;
     addressEditingSavedIndex=-1;
     const remember=document.getElementById('addrRemember');
     if(remember) remember.checked=false;
@@ -6019,6 +6031,9 @@
     show('address-map');
   }
   document.addEventListener('click',event => {
+    const bookOpen=event.target.closest('[data-address-book-open]');
+    if(bookOpen){openAddressBook(bookOpen);return;}
+    if(event.target.closest('[data-address-book-close]')){closeAddressBook();return;}
     if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
     const edit=event.target.closest('[data-address-edit]');
     if(edit){ editSavedAddress(Number(edit.dataset.addressEdit)); return; }
@@ -10317,7 +10332,6 @@
       const draft=deliveryAddressDraft();
       const hasReviewDraft=Boolean(draft.building && draft.line && draft.subdistrict && draft.districtName && draft.province && /^\d{5}$/.test(draft.postcode || ''));
       if(addressRecipientEditing || hasReviewDraft){
-        addressEditingSavedIndex=-1;
         const title=document.querySelector('[data-address-editor-title]');
         if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
         setAddressPageMode('editor');

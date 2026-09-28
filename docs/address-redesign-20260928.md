@@ -46,3 +46,11 @@ The address-entry screen now contains the manual form and a current-address butt
 Map results remain provisional until confirmation. Closing or cancelling leaves the manually entered address intact; late location/reverse-geocoding responses are ignored after cancellation or a newer request. When location or map services are unavailable, the interface offers manual entry instead of claiming that a fixed sample location is the user's current location.
 
 The current-location entry point now sits on the delivery-address thumbnail. It opens the map dialog directly and confirmation updates the delivery card. The separate edit-address action opens the manual fields; cancellation preserves the existing delivery address.
+
+## Address book entry and reuse
+
+Both the delivery review and manual-address form expose “เลือกจากสมุดที่อยู่”. The dialog lists named destinations, recipient details, an explicit use action, edit, and add-new. Opening/cancelling the dialog does not select or commit an address. Selecting fills an editable delivery draft; the normal confirmation still validates and commits it.
+
+Explicitly remembered addresses persist in local browser storage under the verified phone/patient key (guest fallback), so a new session in that browser can reuse them. This is device/browser storage, not a server-backed account address book. Existing session entries remain usable. Editing updates the chosen entry without duplicates; unchecking remember no longer silently deletes a previously saved entry. The old silent six-entry eviction was removed.
+
+Validated with address-book-check.mjs (selection/cancel, draft isolation, recipient hydration, explicit save, new-session reuse, edit, add-new, empty book and 320px layout), plus the existing address-flow and address-picker checks.
