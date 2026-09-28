@@ -74,14 +74,15 @@ img{max-width:100%}
 .btn--ghost{background:transparent;color:var(--color-ink-2);width:auto;padding:0 var(--sp-3)}
 .btn--danger{background:transparent;color:var(--color-danger);border-color:color-mix(in srgb,var(--color-danger) 40%,transparent)}
 .btn--danger:hover{background:color-mix(in srgb,var(--color-danger) 8%,var(--color-field))}
+.btn--pill{border-radius:var(--radius-pill)}
 .btn--sm{height:var(--control-h-sm);padding:0 var(--sp-4);font-size:var(--fs-sm);width:auto}
 .social-btn{gap:12px}
 .brand-icon{width:22px;height:22px;display:block;flex:none}
 
 /* ---------- UI icon system (Krane rounded line set, local/offline) ---------- */
 .krane-icon-sprite{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-.ui-icon{display:block;width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.ui-icon--xs{width:14px;height:14px}.ui-icon--sm{width:17px;height:17px}.ui-icon--md{width:22px;height:22px}.ui-icon--lg{width:28px;height:28px}
+.ui-icon{display:block;width:var(--icon-size);height:var(--icon-size);flex:none;fill:none;stroke:currentColor;stroke-width:var(--icon-stroke-width);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.ui-icon--xs{width:var(--icon-size-xs);height:var(--icon-size-xs)}.ui-icon--sm{width:var(--icon-size-sm);height:var(--icon-size-sm)}.ui-icon--md{width:var(--icon-size-md);height:var(--icon-size-md)}.ui-icon--lg{width:var(--icon-size-lg);height:var(--icon-size-lg)}
 .screen__top .back{font-size:0;padding:0;width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon)}
 .screen__top .back .ui-icon{width:20px;height:20px}
 .chev{display:inline-grid;place-items:center;line-height:1}
@@ -106,7 +107,7 @@ img{max-width:100%}
    them, which is the one control nobody mistook for read-only (client, 10 Sep). */
 .input,.select,.textarea{
   width:100%;min-width:0;max-width:100%;height:var(--field-h);padding:0 var(--sp-4);
-  border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-family:var(--font-base);font-size:var(--fs-base);
 }
 /* Client, 23 Sep: an input's border is #C9C9C9 in every resting state, on
@@ -120,12 +121,12 @@ img{max-width:100%}
 }
 .textarea{height:auto;padding:var(--sp-3) var(--sp-4);min-height:96px}
 .input::placeholder{color:var(--color-ink-3)}
-.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inline-size:100%;min-inline-size:0}
 .date-control{position:relative;width:100%;min-width:0;height:var(--control-h)}
 .date-control__display{
   width:100%;height:100%;display:grid;grid-template-columns:24px minmax(0,1fr) 24px;
-  align-items:center;gap:8px;padding:0 var(--sp-4);border:1px solid var(--color-line-strong);
+  align-items:center;gap:8px;padding:0 var(--sp-4);border:var(--control-border-width) solid var(--color-line-strong);
   border-radius:var(--control-radius);background:var(--color-surface);color:var(--color-ink);
   font-family:var(--font-base);font-size:16px;line-height:1.4;box-sizing:border-box
 }
@@ -137,7 +138,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   margin:0;padding:0;border:0;opacity:0;cursor:pointer;font-size:16px;pointer-events:auto;touch-action:manipulation;
   -webkit-appearance:none;appearance:none
 }
-.date-control:focus-within .date-control__display{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.date-control:focus-within .date-control__display{border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 .date-control>input[type="date"]:disabled{cursor:not-allowed}
 .date-control:has(>input[type="date"]:disabled){opacity:.65}
 .intake-dropdown-field .select{font-size:16px}
@@ -198,11 +199,11 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .auth-login-field{padding:0;border:0;background:none}
 .auth-login-field>label{display:block;margin:0 0 8px;font-size:var(--fs-sm);line-height:1.4;font-weight:var(--fw-medium);color:var(--color-ink)}
 .auth-login-field>.phone-field,.auth-login-field>.password-field{
-  padding:6px 14px;border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);
+  padding:6px 14px;border:var(--control-border-width-strong) solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
-.auth-login-field>.phone-field:focus-within,.auth-login-field>.password-field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.auth-login-field>.phone-field:focus-within,.auth-login-field>.password-field:focus-within{border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 .auth-login-field .input,.auth-login-field .phone-field__country{
   height:34px;border:0;background:transparent;box-shadow:none
 }
@@ -326,7 +327,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .partner-duration-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;border:0;border-radius:0;background:transparent;overflow:visible;height:auto}
 .partner-duration-stepper,.partner-duration-units{display:flex;align-items:center}
 .partner-duration-stepper{height:56px;flex:none;min-width:0;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:var(--control-radius);background:var(--color-field)}
-.partner-duration-stepper button{width:30px;height:30px;display:inline-grid;place-items:center;flex:0 0 30px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font:inherit;font-size:17px;font-weight:var(--fw-semibold);line-height:1;cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease}
+.partner-duration-stepper button{width:30px;height:30px;display:inline-grid;place-items:center;flex:0 0 30px;border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-pill);background:transparent;color:var(--color-ink-2);font:inherit;font-size:17px;font-weight:var(--fw-semibold);line-height:1;cursor:pointer;transition:background .18s ease,transform .12s ease,border-color .18s ease}
 .partner-duration-stepper button:hover:not(:disabled){background:var(--color-bg-2)}
 .partner-duration-stepper button:active:not(:disabled){transform:scale(.92)}
 .partner-duration-stepper button:disabled{opacity:.35;cursor:not-allowed}
@@ -925,7 +926,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* disabled / coming-soon: intentionally inactive, not broken */
 .option--soon{cursor:default;opacity:.6;background:var(--color-bg);border-style:dashed;box-shadow:none}
 .option--soon:hover{border-color:var(--color-line-strong);transform:none;box-shadow:none}
-.option .opt-soon{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-3);background:var(--color-bg-2);border:1px solid var(--color-line-strong);padding:3px 9px;border-radius:var(--radius-pill);flex:none}
+.option .opt-soon{margin-left:auto;font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-3);background:var(--color-bg-2);border:var(--control-border-width) solid var(--color-line-strong);padding:3px 9px;border-radius:var(--radius-pill);flex:none}
 .common-group{display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
 .common-group:first-of-type{padding-top:0;border-top:0}
 /* One question per page: the group rule has nothing left to separate. */
@@ -953,7 +954,6 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .avatar.avatar--brand::before,.thumb.thumb--brand::before{display:none}
 .avatar.avatar--brand svg,.thumb.thumb--brand svg{position:relative;width:54%;height:54%}
 .badge--ok{background:var(--state-positive);color:var(--state-positive-ink)}
-
 
 /* ---------- Progress bar ---------- */
 .progress{height:4px;background:var(--color-bg-2);border-radius:var(--radius-pill);overflow:hidden}
@@ -993,14 +993,14 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    arriving at home, so the patient can always see when they meet the doctor and
    what is left. Short labels keep all five steps on one line in a phone frame. */
 .care-journey{padding:10px 12px;border-bottom:1px solid var(--color-line);background:linear-gradient(180deg,var(--color-surface),var(--color-bg-soft))}
-.care-journey__current{display:none}
+
 .care-journey__steps{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0;padding:0;list-style:none}
 .care-journey__step{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:8px 4px 7px;border:1px solid transparent;border-radius:14px;transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
 /* connector runs behind the dots, between neighbours only */
 .care-journey__step::before{content:"";position:absolute;z-index:0;top:21px;right:calc(50% + 14px);left:calc(-50% - 17px);height:2px;border-radius:2px;background:var(--color-line)}
 .care-journey__step:first-child::before{display:none}
 .care-journey__step.is-done::before,.care-journey__step.is-current::before{background:var(--color-accent)}
-.care-journey__dot{position:relative;z-index:1;width:28px;height:28px;flex:none;display:grid;place-items:center;border:1px solid var(--color-line-strong);border-radius:10px;background:var(--color-surface);color:var(--color-ink-3);font-size:11px;font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;box-shadow:0 2px 6px rgba(17,24,39,.05)}
+.care-journey__dot{position:relative;z-index:1;width:28px;height:28px;flex:none;display:grid;place-items:center;border:var(--control-border-width) solid var(--color-line-strong);border-radius:10px;background:var(--color-surface);color:var(--color-ink-3);font-size:11px;font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;box-shadow:0 2px 6px rgba(17,24,39,.05)}
 .care-journey__dot svg{width:13px;height:13px}
 /* Reusable numbered/check step marker, same visual language as .care-journey__dot,
    for step lists inside cards (pharmacy search, doctor matching) so the checkmark
@@ -1120,7 +1120,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 #payment .checkout-order__stepper .hint{white-space:nowrap}
 #payment .checkout-order__remove{grid-column:3;grid-row:2;justify-self:end;align-self:center;
   width:32px;height:32px;display:grid;place-items:center;padding:0;
-  border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);
+  border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-pill);
   background:var(--color-surface);color:var(--color-ink-3);cursor:pointer;
   transition:color var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
 #payment .checkout-order__remove:hover{border-color:var(--color-danger);color:var(--color-danger)}
@@ -1245,14 +1245,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    fulfilment decisions, payment, offers, rewards and a final sticky action. */
 .checkout-context{display:flex;align-items:center;gap:var(--sp-3);padding:0 2px var(--sp-2);color:var(--color-ink)}
 #payment [data-checkout-sequence="context"]{order:0}
-#payment [data-checkout-sequence="order"]{order:10}
-#payment [data-checkout-sequence="addons"]{order:20}
+
 #payment [data-checkout-sequence="eco"]{order:30}
-#payment [data-checkout-sequence="fulfillment"]{order:40}
-#payment [data-checkout-sequence="address"]{order:50}
-#payment [data-checkout-sequence="delivery"]{order:60}
-#payment [data-checkout-sequence="payment"]{order:70}
-#payment [data-checkout-sequence="offers"]{order:80}
+
 #payment [data-checkout-sequence="rewards"]{order:90}
 #payment [data-checkout-sequence="total"]{order:100}
 #payment [data-checkout-sequence="assurance"]{order:110}
@@ -1408,7 +1403,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 /* done = filled navy with a white check */
 .timeline .step.done::before{background:var(--color-accent);border-color:var(--color-accent);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7'/></svg>");background-size:10px;background-position:center;background-repeat:no-repeat}
 /* active = navy ring with a filled centre + soft halo */
-.timeline .step.active::before{border-color:var(--color-accent);background:radial-gradient(circle, var(--color-accent) 0 3px, var(--color-surface) 3.5px);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.timeline .step.active::before{border-color:var(--color-accent);background:radial-gradient(circle, var(--color-accent) 0 3px, var(--color-surface) 3.5px);box-shadow:var(--control-focus-ring)}
 
 /* ---------- Educational interstitial (hims-style: big editorial copy + highlighted terms) ---------- */
 .edu-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--sp-5);padding-block:var(--sp-6)}
@@ -1577,7 +1572,7 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   background:var(--surface-page);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
 }
-.screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:1px solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
+.screen__top .back{width:var(--control-h-icon);min-width:var(--control-h-icon);height:var(--control-h-icon);border-radius:var(--control-radius);border:var(--control-border-width) solid var(--color-line-strong);background:transparent;cursor:pointer;display:inline-grid;place-items:center;padding:0;color:var(--color-ink)}
 .screen__top .back .bk-lbl{display:none}
 .screen__top .ttl{min-width:0;font-weight:var(--fw-semibold);font-size:var(--fs-base);overflow-wrap:anywhere}
 .screen__top .ttl__text{display:block}
@@ -1941,7 +1936,7 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .setting-row strong{font-weight:var(--fw-bold)}
 .setting-row .chev{color:var(--color-ink-3);margin-left:auto}
 .setting-row--language{cursor:default}
-.setting-language__select{flex:none;width:148px;height:40px;margin-left:auto;padding:0 12px;border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium)}
+.setting-language__select{flex:none;width:148px;height:40px;margin-left:auto;padding:0 12px;border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-medium)}
 .setting-row--language>.custom-select{flex:none;width:148px!important;margin-left:auto}
 .setting-row--language .custom-select__trigger{height:40px;min-height:40px;padding-inline:14px;border-radius:var(--radius-pill);font-size:var(--fs-sm);font-weight:var(--fw-medium)}
 .setting-row--language .custom-select__menu{left:auto;width:180px}
@@ -2358,7 +2353,6 @@ body.modal-open{overflow:hidden}
 .address-map-search-panel .float-field:has(select:disabled) .custom-select__trigger{cursor:not-allowed;opacity:.58}
 .btn--ink{background:#111827;color:#fff;border-color:#111827}
 
-
 .field--clearable{position:relative}
 .field--clearable>input.input{padding-right:42px}
 .field__clear{
@@ -2388,8 +2382,8 @@ body.modal-open{overflow:hidden}
   top:0;
   left:calc(var(--address-gutter) * -1);
   right:calc(var(--address-gutter) * -1);
-  height:8px;
-  background:#e9e9e9;
+  height:var(--section-divider-size);
+  background:var(--section-divider-color);
 }
 @media(min-width:700px){
   #address .form-group+.form-group::before{left:0;right:0}
@@ -2511,7 +2505,7 @@ body.modal-open{overflow:hidden}
 .map .map-dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:var(--radius-pill);background:var(--color-accent);opacity:.18;z-index:1;pointer-events:none}
 .map--lg{height:210px}
 .map .map-cta{position:absolute;left:50%;transform:translateX(-50%);bottom:var(--sp-3);z-index:3;display:inline-flex;align-items:center;gap:6px;
-  background:var(--color-surface);border:1px solid var(--color-line-strong);border-radius:var(--radius-pill);
+  background:var(--color-surface);border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-pill);
   padding:9px 16px;font-family:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--color-ink);box-shadow:var(--shadow-md);cursor:pointer;white-space:nowrap}
 
 /* ---------- Map as a text-link toggle (collapsed by default; opens to drag/pin) ---------- */
@@ -2545,7 +2539,7 @@ body.modal-open{overflow:hidden}
 .ac-item .ac-sub{font-size:var(--fs-xs);color:var(--color-ink-3)}
 
 /* ---------- Hosted payment gateway chrome (third-party look, e.g. KBank) ---------- */
-.gateway{border:1px solid var(--color-line-strong);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm)}
+.gateway{border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm)}
 .gw-head{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4);background:var(--color-bank-kbank-ink);color:var(--color-on-dark)}
 .gw-logo{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--color-on-dark);color:var(--color-bank-kbank-ink);display:grid;place-items:center;overflow:hidden;font-weight:var(--fw-bold);font-size:var(--fs-sm);flex:none;letter-spacing:.02em}
 .gw-logo img{width:100%;height:100%;object-fit:cover}
@@ -2554,20 +2548,20 @@ body.modal-open{overflow:hidden}
 .gw-head .gw-lock{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-xs);opacity:.9}
 .gw-body{padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-4)}
 .gw-tabs{display:flex;gap:var(--sp-2);flex-wrap:wrap}
-.gw-tab{flex:1;min-width:90px;min-height:var(--control-h-sm);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;background:var(--color-surface);color:var(--color-ink-2)}
+.gw-tab{flex:1;min-width:90px;min-height:var(--control-h-sm);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8px;border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;background:var(--color-surface);color:var(--color-ink-2)}
 .gw-tab[aria-selected="true"],.gw-tab.is-active{border-color:var(--color-bank-kbank);background:color-mix(in srgb,var(--color-bank-kbank) 10%,var(--color-surface));color:var(--color-bank-kbank-ink)}
 .gw-foot{padding:var(--sp-3) var(--sp-4);background:var(--color-bg-2);font-size:var(--fs-xs);color:var(--color-ink-3);display:flex;align-items:center;gap:6px}
 .gw-pane{display:flex;flex-direction:column;gap:var(--sp-4)}
 /* QR / PromptPay pane */
 .gw-qr{align-items:center;text-align:center}
-.qr-card{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-4);border:1px solid var(--color-line-strong);border-radius:var(--radius-md);background:var(--color-surface);width:100%}
+.qr-card{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-4);border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-md);background:var(--color-surface);width:100%}
 .qr-promptpay{font-weight:var(--fw-bold);letter-spacing:.04em;color:var(--color-promptpay);font-size:var(--fs-sm);text-transform:uppercase}
 .qr-img{width:188px;height:188px;display:block}
 .qr-amt{font-weight:var(--fw-bold);font-size:var(--fs-lg);color:var(--color-ink)}
 .qr-hint{font-size:var(--fs-xs);color:var(--color-ink-3)}
 /* mobile-banking pane */
 .bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
-.bank-opt{min-height:var(--control-h);display:flex;align-items:center;gap:var(--sp-2);padding:0 12px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-surface);font-weight:var(--fw-medium);font-size:var(--fs-sm);cursor:pointer;color:var(--color-ink)}
+.bank-opt{min-height:var(--control-h);display:flex;align-items:center;gap:var(--sp-2);padding:0 12px;border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-surface);font-weight:var(--fw-medium);font-size:var(--fs-sm);cursor:pointer;color:var(--color-ink)}
 .bank-opt:hover{border-color:var(--color-accent)}
 .bank-opt.is-selected{border-color:var(--color-blue);background:var(--color-blue-soft);color:var(--color-blue)}
 /* Real bank marks, supplied by the client. Square frame with a hairline border since
@@ -2883,7 +2877,7 @@ body.modal-open{overflow:hidden}
 
 /* ---------- Typing indicator (doctor is typing, consult room) ---------- */
 .typing{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;
-  background:var(--color-surface);border:1px solid var(--color-line-strong);
+  background:var(--color-surface);border:var(--control-border-width) solid var(--color-line-strong);
   border-radius:var(--radius-lg);border-bottom-left-radius:var(--radius-xs);
   padding:var(--sp-3) var(--sp-4);box-shadow:var(--shadow-sm);min-height:20px}
 .typing .t-dot{width:6px;height:6px;border-radius:var(--radius-pill);background:var(--color-ink-3);animation:typing-bob 1.2s var(--ease-inout) infinite}
@@ -2960,7 +2954,7 @@ body.modal-open{overflow:hidden}
 
 /* ---------- Reduce-only quantity stepper (treatment plan, F16) ---------- */
 .qty{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2)}
-.qty-btn{width:28px;height:28px;border-radius:var(--radius-pill);border:1px solid var(--color-line-strong);
+.qty-btn{width:28px;height:28px;border-radius:var(--radius-pill);border:var(--control-border-width) solid var(--color-line-strong);
   background:var(--color-surface);color:var(--color-ink);font-size:15px;line-height:1;cursor:pointer;
   display:grid;place-items:center;transition:background var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
 .qty-btn:hover:not(:disabled){background:var(--color-bg-2)}
@@ -2978,7 +2972,7 @@ body.modal-open{overflow:hidden}
 
 /* ---------- Insurer logo tile (choose-policy; monogram until brand assets arrive) ---------- */
 .ins-logo{width:44px;height:44px;border-radius:var(--radius-sm);flex:none;display:grid;place-items:center;
-  background:var(--color-surface);border:1px solid var(--color-line-strong);
+  background:var(--color-surface);border:var(--control-border-width) solid var(--color-line-strong);
   font-size:11px;font-weight:var(--fw-bold);letter-spacing:.03em;color:var(--color-ink)}
 .option[aria-selected="true"] .ins-logo{border-color:var(--color-line-strong);background:var(--color-surface)}
 
@@ -3026,7 +3020,6 @@ body.modal-open{overflow:hidden}
 /* Thai letter-spacing fix: Thai never takes tracking. body.lang-th is set by i18n.js. */
 body.lang-th *{letter-spacing:normal}
 
-
 /* Tags read at a glance (matching the back office). */
 .badge--line{background:var(--state-neutral);color:var(--state-neutral-ink)}
 
@@ -3048,7 +3041,6 @@ body.lang-th *{letter-spacing:normal}
 
 /* The delivery option card carries a price beside the selection check. */
 .option .checkout-order__price{margin-left:auto}
-
 
 /* ---------- Review summary rows ---------- */
 /* Entered answers should read as patient data, not helper copy. */
@@ -3091,7 +3083,7 @@ body.lang-th *{letter-spacing:normal}
    just above the CTA, instead of occupying its own row in the footer. */
 .consent-scroll-cue{position:absolute;z-index:5;left:50%;bottom:88px;display:grid;place-items:center;
   width:36px;min-width:36px;height:36px;min-height:0;transform:translateX(-50%);
-  margin:0;padding:0;border:1px solid var(--color-line-strong);
+  margin:0;padding:0;border:var(--control-border-width) solid var(--color-line-strong);
   border-radius:var(--control-radius);background:var(--surface-page);
   box-shadow:var(--shadow-sm);color:var(--color-ink);font:inherit;cursor:pointer}
 .consent-scroll-cue[hidden]{display:none}
@@ -3356,7 +3348,7 @@ body.lang-th *{letter-spacing:normal}
   background:var(--intake-cream);
 }
 #intake1 .option,#intake2 .option,#intake3 .option,#intake4 .option,#intake5 .option,#intake-concern .option,#intake-general .option{
-  min-height:96px;padding:20px 22px;border:1px solid var(--color-line-strong);
+  min-height:96px;padding:20px 22px;border:var(--control-border-width) solid var(--color-line-strong);
   border-radius:16px;background:var(--color-surface);box-shadow:none;
 }
 #intake1 .option[aria-selected="true"],#intake2 .option[aria-selected="true"],#intake3 .option[aria-selected="true"],#intake4 .option[aria-selected="true"],#intake5 .option[aria-selected="true"],#intake-concern .option[aria-selected="true"],#intake-general .option[aria-selected="true"]{
@@ -3439,7 +3431,6 @@ body.lang-th *{letter-spacing:normal}
    boxes. Flatten them to a solid tinted panel instead of a bordered/shadowed card. */
 /* Was a grey card on a white screen; the base card is now the lighter surface
    on a darker page, so this override is no longer needed. */
-
 
 /* ---- Status pills --------------------------------------------------------
    One pill per state, each reading from the state palette so two different
@@ -3750,7 +3741,7 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 /* A step's own action: small, inline under the step it belongs to, never a
    page-level primary (client, 19 Aug). */
 .timeline .step__action{display:inline-flex;align-items:center;margin-top:6px;padding:6px 12px;
-  border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer}
 .timeline .step__action:hover{background:var(--color-bg-2)}
 .timeline .step__action[hidden]{display:none}
@@ -3763,14 +3754,14 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
 #address .address-search__field{
   position:relative;display:flex;align-items:center;gap:12px;
   width:100%;height:var(--field-h);min-height:var(--field-h);padding:0 6px 0 16px;
-  border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);
+  border:var(--control-border-width-strong) solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out);
 }
 @media(hover:hover) and (pointer:fine){
   #address .address-search__field:hover{border-color:var(--color-ink-3)}
 }
-#address .address-search__field:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+#address .address-search__field:focus-within{border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 #address .address-search__icon{position:static;flex:none;transform:none;width:20px;height:20px}
 #address .address-search__icon .ui-icon{width:18px;height:18px}
 #address .address-search__field>input.input{
@@ -3790,7 +3781,7 @@ html[lang="en"] [data-doctor-name]::before{content:"\00a0"}
   transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
 .refill-option+.refill-option{margin-top:var(--sp-1)}
 .refill-option__tick{flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;
-  border:1.5px solid var(--color-line-strong);border-radius:6px;background:var(--color-surface);
+  border:var(--control-border-width-strong) solid var(--color-line-strong);border-radius:6px;background:var(--color-surface);
   color:#fff;transition:background var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
 .refill-option__tick .ui-icon{opacity:0}
 .refill-option[aria-checked="true"]{border-color:var(--color-accent);background:var(--color-accent-soft)}
@@ -4003,7 +3994,6 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 @keyframes deliveryPrivacyToastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.delivery-privacy-toast{animation:none}}
 
-
 /* ---------- Activity: one feed with a filter over it ----------
    The filter is the app's segmented control, sized to however many segments it
    holds, with the icon beside its label. */
@@ -4070,7 +4060,6 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .doc-med__facts .ui-icon{margin-top:2px;color:var(--color-accent)}
 .doc-med__facts li:last-child .ui-icon{color:var(--color-warning,#B4791F)}
 
-
 /* Referral sheet: the code is the one thing to read, so it sits on its own. */
 .referral-code{display:flex;flex-direction:column;gap:4px;align-items:center;
   padding:var(--sp-4);border:1px dashed var(--color-accent);border-radius:var(--radius-md);
@@ -4104,7 +4093,7 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .phone-field{position:relative;display:flex;align-items:stretch;width:100%;min-width:0}
 .phone-field__country{display:inline-flex;align-items:center;gap:6px;flex:none;
   height:var(--control-h);padding:0 10px 0 var(--sp-3);
-  border:1px solid var(--color-line-strong);border-right:0;
+  border:var(--control-border-width) solid var(--color-line-strong);border-right:0;
   border-radius:var(--control-radius) 0 0 var(--control-radius);
   background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
 @media(hover:hover) and (pointer:fine){
@@ -4120,7 +4109,7 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .phone-field__menu{position:absolute;z-index:20;top:calc(100% + 6px);left:0;
   width:min(320px,100%);max-height:300px;display:flex;flex-direction:column;gap:6px;
   padding:8px;overflow:hidden;
-  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);
+  border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-md);
   background:var(--color-surface);box-shadow:var(--shadow-lg,0 18px 44px rgba(16,28,48,.18))}
 .phone-field__menu[hidden]{display:none}
 .phone-field__search.input{height:var(--control-h-sm);flex:none;font-size:var(--fs-sm)}
@@ -4338,7 +4327,7 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .my-documents__intro{display:flex;flex-direction:column;gap:var(--sp-4)}
 .my-documents__intro .h1{margin:3px 0 0}
 .my-documents__search{display:flex;align-items:center;gap:var(--sp-3);height:48px;
-  padding:0 var(--sp-4);border:1px solid var(--color-line-strong);border-radius:var(--control-radius);
+  padding:0 var(--sp-4);border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--control-radius);
   background:var(--color-surface);color:var(--color-ink-3)}
 .my-documents__search:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-focus)}
 .my-documents__search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--color-ink);font:inherit}
@@ -4718,7 +4707,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    placeholder would be. Once the field is focused or holds a value the label
    rises to a small title in the top corner and the value sits underneath, so
    the field never loses its name. An error turns the box and label red. */
-.float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:var(--field-h);padding:0 16px}
+.float-field>.phone-field,.float-field>.password-field{display:flex;align-items:stretch;min-height:var(--field-h);padding:0 var(--field-padding-inline)}
 .float-field__slot{position:relative;display:block;flex:1;min-width:0}
 .float-field .input{width:100%;height:var(--field-h);padding-top:20px;padding-bottom:4px;font-size:var(--fs-base)}
 .float-field>.password-field .float-field__slot{padding-right:calc(var(--control-h-sm) + var(--sp-2))}
@@ -4764,7 +4753,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 :is(.auth-screen,.form-flow) .auth-login-field .input,
 :is(.auth-screen,.form-flow) .float-field>.float-field__box .input{
-  height:100%;min-height:0;padding-top:24px;padding-bottom:4px
+  height:100%;min-height:0;padding-top:var(--field-floating-padding-top);padding-bottom:var(--field-floating-padding-bottom)
 }
 /* The date field draws its own control inside the box, so it needs the same
    height or it overflows the shell the rule above just shrank. */
@@ -5048,7 +5037,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   margin-right:calc(var(--payment-gutter) * -1);
   margin-top:16px;
   padding:16px var(--payment-gutter) 0;
-  border-top:8px solid #e9e9e9;
+  border-top:var(--section-divider-size) solid var(--section-divider-color);
 }
 #payment .checkout-fulfillment-tabs{
   gap:4px;
@@ -5168,19 +5157,19 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
    field token is intentionally taller than an action because it must hold a
    raised title and a value on separate lines (client, 24 Sep). */
 .float-field>.float-field__box{
-  display:flex;align-items:stretch;height:var(--field-h);min-height:var(--field-h);padding:0 16px;
-  border:1.5px solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);
+  display:flex;align-items:stretch;height:var(--field-h);min-height:var(--field-h);padding:0 var(--field-padding-inline);
+  border:var(--control-border-width-strong) solid var(--color-line-strong);border-radius:var(--control-radius);background:var(--color-surface);
   transition:border-color var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)
 }
 .float-field>.float-field__box:has(.textarea){height:auto}
 @media(hover:hover) and (pointer:fine){
   .float-field>.float-field__box:hover{border-color:var(--color-ink-3)}
 }
-.float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.float-field>.float-field__box:focus-within{border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 /* Variant: select. The field shell, not the enhancement, owns the border and
    focus ring. This keeps native mobile selects and desktop custom selects on
    exactly the same geometry. */
-.float-field>.float-field__box:has(.custom-select){padding:0 16px}
+.float-field>.float-field__box:has(.custom-select){padding:0 var(--field-padding-inline)}
 .float-field .custom-select{width:100%!important;height:100%}
 .float-field .custom-select__trigger{
   height:100%;min-height:0;padding:24px 28px 4px 0;border:0;border-radius:0;
@@ -5352,7 +5341,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .address-simple-field span small{color:var(--color-ink-3);font-size:inherit;font-weight:var(--fw-regular)}
 .address-simple-field :is(.input,.textarea){
   width:100%;
-  border:1.5px solid var(--color-line-strong);
+  border:var(--control-border-width-strong) solid var(--color-line-strong);
   border-radius:16px;
   background:var(--color-surface);
   color:var(--color-ink);
@@ -5362,7 +5351,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 .address-simple-field .input{height:64px;padding:0 18px}
 .address-simple-field .textarea{min-height:132px;padding:16px 18px;resize:vertical}
-.address-simple-field :is(.input,.textarea):focus{border-color:var(--color-accent);box-shadow:0 0 0 3px var(--color-accent-soft)}
+.address-simple-field :is(.input,.textarea):focus{border-color:var(--color-accent);box-shadow:var(--control-focus-ring)}
 .address-simple-field :is(.input,.textarea)::placeholder{color:var(--color-ink-3)}
 .address-remember-choice{
   display:grid;
@@ -5383,7 +5372,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   width:24px;
   height:24px;
   margin-top:1px;
-  border:1.5px solid var(--color-line-strong);
+  border:var(--control-border-width-strong) solid var(--color-line-strong);
   border-radius:7px;
   background:var(--color-surface);
   color:transparent;
@@ -5838,7 +5827,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #address .address-location+.address-recipient-editor,
 #address .address-essential-fields{position:relative;margin-top:-8px;padding-top:24px;border-top:0}
 #address .address-recipient-editor::before,
-#address .address-essential-fields::before{content:"";display:block;position:absolute;top:0;left:calc(var(--address-gutter) * -1);right:calc(var(--address-gutter) * -1);height:8px;background:#e9e9e9}
+#address .address-essential-fields::before{content:"";display:block;position:absolute;top:0;left:calc(var(--address-gutter) * -1);right:calc(var(--address-gutter) * -1);height:var(--section-divider-size);background:var(--section-divider-color)}
 @media(min-width:700px){
   #address .address-recipient-editor::before,#address .address-essential-fields::before{left:0;right:0}
 }
@@ -5860,7 +5849,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .address-picker__actions .btn{flex:1}
 
 /* Offer location selection directly on the delivery thumbnail. */
-#address .address-current-location{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;width:max-content;max-width:calc(100% - 24px);min-height:44px;padding:0 20px;border:0;border-radius:var(--radius-pill);font-size:14px}
+#address .address-current-location{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;width:max-content;max-width:calc(100% - 24px);min-height:44px;padding:0 20px;border:0;font-size:14px}
 #address .address-pin__map{height:160px}
 
 #address .address-pin__map:has(.address-current-location) .address-pin__marker{visibility:hidden}
