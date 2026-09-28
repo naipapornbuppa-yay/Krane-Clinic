@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-detail-type-v164";
+    const release = "20260928-delivery-row-cleanup-v165";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-address-detail-type-v164">
+<link rel="stylesheet" href="components.css?v=20260928-delivery-row-cleanup-v165">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2220,7 +2220,7 @@
         <h2 class="form-group__title" id="address-detail-delivery-title">รูปแบบการจัดส่ง</h2>
         <div class="checkout-row address-detail-delivery-row">
           <span class="checkout-row__icon" aria-hidden="true"><i data-lucide="bike" class="ui-icon"></i></span>
-          <span class="checkout-row__body"><span class="checkout-row__value" data-address-detail-method>จัดส่งภายในวัน</span><span class="checkout-row__recipient" data-address-detail-eta>ได้รับยาภายในวันนี้</span></span>
+          <span class="checkout-row__body"><span class="checkout-row__value" data-address-detail-method>จัดส่งภายในวัน</span></span>
           <span class="checkout-row__tag" data-address-detail-fee>คำนวณหลังยืนยันที่อยู่</span>
         </div>
         <p class="hint address-detail-delivery-note">ค่าจัดส่งอาจเปลี่ยนตามพื้นที่และร้านยาที่พร้อมให้บริการ</p>
@@ -5566,11 +5566,8 @@
     const method=flowState.orderState.deliveryMethod;
     const methodLabels={priority:'ด่วนพิเศษ','same-day':'จัดส่งภายในวัน',postal:'จัดส่งทางไปรษณีย์',scheduled:'เลือกช่วงเวลาจัดส่ง'};
     const methodText=document.querySelector('[data-address-detail-method]');
-    const eta=document.querySelector('[data-address-detail-eta]');
     const fee=document.querySelector('[data-address-detail-fee]');
     if(methodText) methodText.textContent=methodLabels[method] || methodLabels['same-day'];
-    const estimateLabels={priority:'ประมาณ 60 นาที','same-day':'ภายในวันนี้ก่อน 18:00 น.',postal:'1 ถึง 3 วัน',scheduled:'ตามช่วงเวลาที่เลือก'};
-    if(eta) eta.textContent=estimateLabels[method] || estimateLabels['same-day'];
     const quote=flowState.orderState.deliveryQuoteAmount;
     if(fee) fee.textContent=confirmed && flowState.orderState.deliveryQuoteStatus==='accepted' && quote!=null
       ? baht(quote) : 'คำนวณหลังยืนยันที่อยู่';
