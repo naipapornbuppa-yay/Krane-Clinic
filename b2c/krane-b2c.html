@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-remember-label-v162";
+    const release = "20260928-recipient-state-v163";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-remember-label-v162">
+<link rel="stylesheet" href="components.css?v=20260928-recipient-state-v163">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2208,7 +2208,7 @@
         <div class="address-recipient-summary">
           <span class="address-recipient-summary__icon" aria-hidden="true"><i data-lucide="contact" class="ui-icon"></i></span>
           <span class="address-recipient-summary__copy"><small>ข้อมูลผู้รับ</small><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><span data-address-detail-phone></span></span>
-          <button type="button" data-go="address" data-address-recipient-edit>แก้ไข</button>
+          <button type="button" data-go="address" data-address-recipient-edit>เพิ่มข้อมูล</button>
         </div>
       </section>
 
@@ -5534,6 +5534,7 @@
   }
   function syncAddressDetail(){
     const address=flowState.orderState.address || {};
+    const recipientDraft=deliveryAddressDraft();
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
     const summary=document.querySelector('[data-address-detail-address]');
     const recipient=document.querySelector('[data-address-detail-recipient]');
@@ -5542,11 +5543,16 @@
     const editorMapAction=document.querySelector('#address .address-pin__edit');
     const confirm=document.querySelector('[data-address-detail-confirm]');
     if(summary) summary.textContent=confirmed ? addressBookFullLine(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
-    if(recipient){
-      const parts=recipientNameParts(address);
-      recipient.textContent=[parts.firstName,parts.lastName].filter(Boolean).join(' ') || 'ยังไม่มีข้อมูลผู้รับ';
-    }
-    if(phone) phone.textContent=confirmed ? formatPhoneForDisplay(address.recipientPhone || '') : '';
+    const recipientParts=recipientNameParts(recipientDraft);
+    const recipientName=[recipientParts.firstName,recipientParts.lastName].filter(Boolean).join(' ');
+    const recipientPhone=normalizePhone(recipientDraft.recipientPhone || '');
+    const recipientComplete=Boolean(recipientParts.firstName && recipientParts.lastName && /^0\d{9}$/.test(recipientPhone));
+    if(recipient) recipient.textContent=recipientComplete ? recipientName : 'ยังไม่มีข้อมูลผู้รับ';
+    if(phone) phone.textContent=recipientComplete ? formatPhoneForDisplay(recipientPhone) : '';
+    const recipientSummary=document.querySelector('.address-recipient-summary');
+    if(recipientSummary) recipientSummary.classList.toggle('is-empty',!recipientComplete);
+    const recipientAction=document.querySelector('[data-address-recipient-edit]');
+    if(recipientAction) recipientAction.textContent=recipientComplete ? 'แก้ไข' : 'เพิ่มข้อมูล';
     const note=String(address.note || '').trim();
     const noteSection=document.querySelector('[data-address-detail-note-section]');
     if(noteSection) noteSection.hidden=!note;
@@ -5555,8 +5561,8 @@
     if(mapAction) mapAction.firstChild.textContent=confirmed ? 'แก้ไขตำแหน่ง ' : 'เลือกจากแผนที่ ';
     if(editorMapAction) editorMapAction.textContent=deliveryAddressDraft().building ? 'แก้ไขที่อยู่' : 'เลือกที่อยู่จัดส่ง';
     if(confirm){
-      confirm.disabled=!confirmed;
-      confirm.setAttribute('aria-disabled',String(!confirmed));
+      confirm.disabled=!(confirmed && recipientComplete);
+      confirm.setAttribute('aria-disabled',String(!(confirmed && recipientComplete)));
     }
     const method=flowState.orderState.deliveryMethod;
     const methodLabels={priority:'ด่วนพิเศษ','same-day':'จัดส่งภายในวัน',postal:'จัดส่งทางไปรษณีย์',scheduled:'เลือกช่วงเวลาจัดส่ง'};
