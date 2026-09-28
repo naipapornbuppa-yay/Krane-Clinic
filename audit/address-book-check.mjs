@@ -9,6 +9,7 @@ await p.route(/nominatim|tile.openstreetmap/,r=>r.abort());
 const state=()=>p.evaluate(()=>JSON.parse(sessionStorage.getItem('krane-p01-flow-state-v1')));
 try{
  await p.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address');await p.waitForTimeout(500);
+ assert.equal(await p.locator('#address').evaluate(el=>getComputedStyle(el).backgroundColor),await p.locator('#payment').evaluate(el=>getComputedStyle(el).backgroundColor));
  const before=await state();await p.locator('#address [data-address-book-open]').click();
  assert.equal(await p.locator('#address-book-dialog').isVisible(),true);
  assert.match(await p.locator('[data-address-book-list]').innerText(),/บ้าน 123/);
