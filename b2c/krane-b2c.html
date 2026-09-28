@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-illustration-spacing-v142";
+    const release = "20260928-balanced-art-backgrounds-v143";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -356,10 +356,10 @@
       inset:auto;
       top:50%;
       left:50%;
-      width:80%;
-      aspect-ratio:1.08;
+      width:var(--art-bg-width,80%);
+      aspect-ratio:var(--art-bg-ratio,1.08);
       transform:translate(-50%,-50%);
-      border-radius:52% 48% 55% 45% / 47% 55% 45% 53%;
+      border-radius:var(--art-bg-radius,52% 48% 55% 45% / 47% 55% 45% 53%);
       background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface));
       filter:none;
       box-shadow:none;
@@ -377,6 +377,48 @@
       position:relative;
       z-index:1;
     }
+    /* Center visible ink, accounting for transparent margins in each source. */
+    svg>use[href="#krane-state-consult-payment-failed"]{transform:translate(4.8px,1.2px)}
+    svg>use[href="#krane-state-payment-failed"]{transform:translate(-6.2px,-4.8px)}
+    svg>use[href="#krane-state-payment-success"]{transform:translate(-0.2px,5.8px)}
+    svg>use[href="#krane-state-doctor-matching"]{transform:translate(13.5px,-5.6px)}
+    svg>use[href="#krane-state-nurse-ready"]{transform:translate(-6.8px,-5.5px)}
+    svg>use[href="#krane-state-no-slots"]{transform:translate(-13.5px,2.2px)}
+    svg>use[href="#krane-state-waiting-room"]{transform:translate(4.2px,0.0px)}
+    svg>use[href="#krane-state-enter-room"]{transform:translate(4.3px,13.0px)}
+    svg>use[href="#krane-state-treatment-plan"]{transform:translate(-3.3px,2.5px)}
+    svg>use[href="#krane-state-plan-ready"]{transform:translate(-4.9px,5.3px)}
+    svg>use[href="#krane-state-delivery-quote"]{transform:translate(-6.5px,4.2px)}
+    svg>use[href="#krane-state-pharmacy-search"]{transform:translate(2.8px,-0.8px)}
+    svg>use[href="#krane-state-medicine-preparing"]{transform:translate(-3.2px,7.0px)}
+    svg>use[href="#krane-state-pharmacy-confirmed"]{transform:translate(-4.2px,-3.2px)}
+    svg>use[href="#krane-state-delivery-unavailable"]{transform:translate(0.0px,11.2px)}
+    svg>use[href="#krane-state-order-confirmed"]{transform:translate(15.0px,10.0px)}
+    svg>use[href="#krane-state-in-person"]{transform:translate(-0.8px,5.5px)}
+    svg>use[href="#krane-state-feedback"]{transform:translate(-7.5px,16.0px)}
+    svg>use[href="#krane-state-empty-activities"]{transform:translate(0.2px,-4.5px)}
+    svg>use[href="#krane-state-empty-history"]{transform:translate(-13.5px,-9.0px)}
+    svg>use[href="#krane-state-empty"]{transform:translate(0.2px,-4.5px)}
+    svg>use[href="#krane-state-loading-info-bw"]{transform:translate(7.8px,0.0px)}
+    /* Related organic silhouettes, chosen for the composition rather than repeated exactly. */
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-doctor-matching"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-delivery-quote"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-payment-success"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-empty-activities"]){--art-bg-width:80%;--art-bg-ratio:1.16;--art-bg-radius:48% 52% 44% 56% / 54% 45% 55% 46%}
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-waiting-room"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-medicine-preparing"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-consult-payment-failed"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-in-person"]){--art-bg-width:80%;--art-bg-ratio:1.09;--art-bg-radius:45% 55% 51% 49% / 49% 46% 54% 51%}
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-enter-room"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-nurse-ready"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-feedback"]){--art-bg-width:74%;--art-bg-ratio:1.02;--art-bg-radius:49% 51% 46% 54% / 44% 52% 48% 56%}
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-treatment-plan"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-pharmacy-search"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-payment-failed"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-empty-history"]){--art-bg-width:80%;--art-bg-ratio:1.12;--art-bg-radius:55% 45% 49% 51% / 48% 55% 45% 52%}
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-plan-ready"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-delivery-unavailable"]),
+    :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-no-slots"]){--art-bg-width:78%;--art-bg-ratio:1.05;--art-bg-radius:46% 54% 54% 46% / 53% 48% 52% 47%}
     /* The paper crane is deliberately quieter than the other state art. */
     #matching .state-view__visual--crane-compact{
       width:min(49vw,255px)!important;
