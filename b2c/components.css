@@ -5823,7 +5823,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #address .address-pin__summary{padding:14px 16px;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
 #address .address-recipient-editor{padding:0;border:0;border-radius:0;background:transparent;gap:12px}
 #address .address-recipient-editor .hint{margin:0;color:var(--color-ink-3);font-size:14px;line-height:1.5}
-#address .address-essential-fields{gap:16px;padding-top:24px;border-top:1px solid var(--color-line)}
+#address .address-essential-fields{gap:16px}
 #address .address-optional{color:var(--color-ink-3);font-weight:var(--fw-regular)}
 #address .address-remember-choice{padding:0;border:0;border-radius:0;background:transparent}
 #address .address-remember-choice__copy strong{font-size:14px}
@@ -5834,8 +5834,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #address .address-editor-view{display:grid;gap:24px}
 #address .address-editor-view>*{margin-top:0}
 #address .address-location,#address .address-recipient-editor{gap:8px}
-#address .address-location+.address-recipient-editor{margin-top:0;padding-top:16px;border-top:1px solid var(--color-line)}
-#address .address-recipient-editor::before{display:none}
+/* Match checkout's 8px solid section bands with 16px breathing room. */
+#address .address-location+.address-recipient-editor,
+#address .address-essential-fields{position:relative;margin-top:-8px;padding-top:24px;border-top:0}
+#address .address-recipient-editor::before,
+#address .address-essential-fields::before{content:"";display:block;position:absolute;top:0;left:calc(var(--address-gutter) * -1);right:calc(var(--address-gutter) * -1);height:8px;background:#e9e9e9}
+@media(min-width:700px){
+  #address .address-recipient-editor::before,#address .address-essential-fields::before{left:0;right:0}
+}
 #address .address-essential-fields>*{margin-top:0}
 
 /* Current-location picker is an explicit, cancellable task above the address form. */
