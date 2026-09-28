@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-tracking-polish-v174";
+    const release = "20260928-queue-recovery-v175";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-tracking-polish-v174">
+<link rel="stylesheet" href="components.css?v=20260928-queue-recovery-v175">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1979,7 +1979,7 @@
        F14 update (client 20 Jun): make it feel like waiting to be let into the consultation room.
        Doctor joins first; the patient is admitted the moment the doctor is ready. -->
   <section class="screen" id="waitroom" data-screen-code="SCR-009">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Waiting room</span></div>
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">รอปรึกษาแพทย์</span><button class="queue-close" type="button" data-queue-close aria-label="ปิดและเก็บคิวไว้">×</button></div>
     <div class="screen__body state-view center">
       <div class="state-view__visual state-view__visual--loading" role="status" aria-label="Waiting for the doctor" data-wait-visual>
         <span class="state-view__watercolor" aria-hidden="true"></span>
@@ -1994,6 +1994,12 @@
         <span data-wait-enter-label>รอเรียกเข้าห้อง…</span>
         <span class="waitroom-entry-cta__timer" data-wait-timer aria-live="polite"></span>
       </button>
+      <div class="queue-wait-actions stack-2">
+        <p class="muted" data-queue-delay hidden>ขณะนี้มีผู้ใช้บริการจำนวนมาก คุณอาจต้องรอนานกว่าปกติ</p>
+        <button class="btn btn--ghost" type="button" data-queue-cancel>ยกเลิกคิว</button>
+        <p class="hint">ยกเลิกคิวแล้ว ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง</p>
+      </div>
+    </div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
          The camera/mic note used to be a two-line paragraph under the copy; it is
          a one-line info chip on the button now (client, 18 Aug) — it is a
@@ -2002,6 +2008,19 @@
       <p class="info-chip" data-wait-note><i data-lucide="info" class="ui-icon" aria-hidden="true"></i><span>เปิดกล้องและไมค์ก่อนเข้าห้อง หรือสลับเป็นแชทได้</span></p>
     </div>
   </section>
+
+  <section class="screen" id="queue-resume">
+    <div class="screen__top"><span class="ttl">การปรึกษาที่ยังค้างอยู่</span><button class="queue-close" type="button" data-queue-close aria-label="ปิดและเก็บคิวไว้">×</button></div>
+    <div class="screen__body state-view center">
+      <div class="state-view__visual" aria-hidden="true"><span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room"></use></svg></span></div>
+      <div class="state-view__copy"><h2 class="h1">ต้องการดำเนินการต่อไหม?</h2><p class="muted">คุณมีคิวปรึกษาแพทย์ที่ยังค้างอยู่<br>ข้อมูลที่กรอกไว้ยังอยู่ กลับไปรอคิวเดิมได้เลย</p></div>
+      <div class="queue-wait-actions stack-2"><button class="btn btn--primary" type="button" data-queue-resume>กลับไปรอคิว</button><button class="btn btn--ghost" type="button" data-queue-cancel>ยกเลิกคิวและเริ่มใหม่</button><p class="hint">เริ่มใหม่จะล้างข้อมูลที่กรอกในครั้งนี้</p></div>
+    </div>
+  </section>
+  <dialog id="queue-cancel-dialog" class="modal-dialog" aria-labelledby="queue-cancel-title">
+    <h2 id="queue-cancel-title">ยกเลิกคิวนี้?</h2><p>ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง หากกลับมาใช้บริการอีกครั้ง คุณจะต้องกรอกข้อมูลใหม่</p>
+    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-queue-cancel-confirm>ยืนยันยกเลิกคิว</button><button class="btn btn--ghost" type="button" data-queue-cancel-back>รอต่อ</button></div>
+  </dialog>
 
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
@@ -4534,6 +4553,17 @@
   const DRAFT_KEY = 'krane-p01-intake-draft-v2';
   const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
   const FOLLOWUP_RECORD_KEY = 'krane-p01-followup-record-v1';
+  const QUEUE_KEY='krane-pending-consultation-v1';
+  const queuePreview=new URLSearchParams(location.search).has('demoStage');
+  let queueDismissOnce=false;
+  let pendingQueue=queuePreview ? null : readLocalJson(QUEUE_KEY);
+  if(!pendingQueue?.startedAt) pendingQueue=null;
+  if(pendingQueue?.session){
+    Object.entries(pendingQueue.session).forEach(([key,value]) => {
+      if([FLOW_STATE_KEY,DRAFT_KEY,CONSENT_RECORD_KEY].includes(key)) writeSessionJson(key,value);
+    });
+  }
+
   const MALI_SAVED_ADDRESS = {
     recipientFirstName:'มะลิ',
     recipientLastName:'สุธิดา',
@@ -10172,6 +10202,9 @@
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
     id=normalizeScreenTarget(id);
+    if(!queueDismissOnce && pendingQueue?.suspended && ['landing','intake1','conditions','matching','waitroom'].includes(id)) id='queue-resume';
+    if(['video','consult'].includes(id) && pendingQueue){ pendingQueue=null; if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){} }
+    queueDismissOnce=false;
     const requested=id;
     id=normalizeScreenTarget(requiredRouteFor(id));
     if(requested==='consent-terms' && ['signup','login','otp','set-password'].includes(id)) postAuthNext='consent-terms';
@@ -10741,6 +10774,34 @@
       ? `ผ่านไป ${safeElapsed} วินาที`
       : `${safeElapsed} seconds elapsed`);
   }
+  function savePendingQueue(){
+    if(queuePreview || !pendingQueue) return;
+    saveIntakeDraft(); persistFlowState();
+    pendingQueue.session={};
+    [FLOW_STATE_KEY,DRAFT_KEY,CONSENT_RECORD_KEY].forEach(key => pendingQueue.session[key]=readSessionJson(key));
+    writeLocalJson(QUEUE_KEY,pendingQueue);
+  }
+  document.addEventListener('click',event => {
+    if(event.target.closest('[data-queue-close]')){
+      if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}
+      clearTimeout(waitTimer); clearInterval(waitCountdownTimer); stopWaitroomEntryWindow();
+      queueDismissOnce=true;show('landing');
+    }
+    if(event.target.closest('[data-queue-resume]')){
+      if(pendingQueue){pendingQueue.suspended=false;savePendingQueue()}
+      show('waitroom');
+    }
+    if(event.target.closest('[data-queue-cancel]')) document.getElementById('queue-cancel-dialog').showModal();
+    if(event.target.closest('[data-queue-cancel-back]')) document.getElementById('queue-cancel-dialog').close();
+    if(event.target.closest('[data-queue-cancel-confirm]')){
+      pendingQueue=null;
+      try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
+      resetRequiredFlow();
+      [FLOW_STATE_KEY,DRAFT_KEY,CONSENT_RECORD_KEY].forEach(key => {try{sessionStorage.removeItem(key)}catch(_){}});
+      location.href='krane-b2c.html#intake1';
+    }
+  });
+  window.addEventListener('pagehide',()=>{if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}});
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
     const title = w.querySelector('[data-wait-title]'), copy = w.querySelector('[data-wait-copy]'),
@@ -10749,6 +10810,8 @@
           art = w.querySelector('[data-wait-art]');
     /* Two states on one screen. Waiting carries the queue position and an
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
+    if(!pendingQueue) pendingQueue={startedAt:Date.now(),suspended:false};
+    savePendingQueue();
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
     if(copy) copy.textContent = `คุณอยู่คิวที่ ${queuePos} ของคุณหมอ${DOCTOR_NAME}`;
@@ -10761,13 +10824,25 @@
     }
     if(art) art.setAttribute('href','#krane-state-waiting-room');
     clearInterval(waitCountdownTimer);
-    let elapsedSeconds = 0;
+    let elapsedSeconds = Math.floor((Date.now()-pendingQueue.startedAt)/1000);
+    const paintDelay=()=>{
+      const delayed=elapsedSeconds>=120 || flowConfig.get('wait')==='long';
+      w.querySelector('[data-queue-delay]').hidden=!delayed;
+      if(delayed){title.textContent='ขออภัยที่ให้รอนาน';copy.textContent='คุณยังอยู่ในคิวปรึกษาแพทย์ เราจะแจ้งเมื่อถึงคิวของคุณ'}
+    };
+    paintDelay();
     paintElapsedTimer(timer,elapsedSeconds);
     waitCountdownTimer = setInterval(() => {
       if(!w.classList.contains('active')){ clearInterval(waitCountdownTimer); return; }
-      elapsedSeconds += 1;
+      elapsedSeconds = Math.floor((Date.now()-pendingQueue.startedAt)/1000);
+      paintDelay();
       paintElapsedTimer(timer,elapsedSeconds);
     }, 1000);
+    // Prototype admission: leave time for the delayed state, preserving the
+    // original queue clock across close/resume. Embedded demos stay quick.
+    const admissionDelay=(queuePreview || flowConfig.get('wait')==='ready')
+      ? (reduceMotion ? 400 : 4200)
+      : Math.max(0,pendingQueue.startedAt+150000-Date.now());
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
@@ -10781,7 +10856,7 @@
       }
       if(art) art.setAttribute('href','#krane-state-enter-room');
       startWaitroomEntryWindow(w,timer);
-    }, reduceMotion ? 400 : 4200);
+    }, admissionDelay);
   }
   /* The doctor is held for five minutes once the room opens (client, 20 Aug).
      The number on its own does not say what it is counting, so the readout
@@ -13917,7 +13992,8 @@
       window.kraneDemoStatus=demoStatus;
     }
   })();
-  if(location.hash) applyHash();
+  if(pendingQueue && !queuePreview){pendingQueue.suspended=true;history=['landing'];show('queue-resume',false);}
+  else if(location.hash) applyHash();
   else if(window.kraneDemoStage){
     /* Embedded landing showcases opt in with ?demoStage= rather than a hash.
        Open that seeded screen immediately so the live UI sits inside the phone
