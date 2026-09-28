@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-password-toggle-hover-v180";
+    const release = "20260928-queue-lifecycle-v181";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-password-toggle-hover-v180">
+<link rel="stylesheet" href="components.css?v=20260928-queue-lifecycle-v181">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1995,9 +1995,11 @@
         <span class="waitroom-entry-cta__timer" data-wait-timer aria-live="polite"></span>
       </button>
       <div class="queue-wait-actions stack-2">
+        <p class="queue-clock" data-queue-clock>รอแล้ว <strong data-queue-elapsed>00:00</strong></p>
+        <p class="hint" data-queue-estimate></p>
         <p class="muted" data-queue-delay hidden>ขณะนี้มีผู้ใช้บริการจำนวนมาก คุณอาจต้องรอนานกว่าปกติ</p>
         <button class="btn btn--ghost" type="button" data-queue-cancel>ยกเลิกคิว</button>
-        <p class="hint">ยกเลิกคิวแล้ว ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง</p>
+        <p class="hint">ปิดหน้านี้แล้วกลับมารอคิวเดิมได้<br>หากยกเลิกคิว ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง</p>
       </div>
     </div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
@@ -10190,10 +10192,10 @@
     // Legacy "new consultation" links now start the general intake directly.
     id=normalizeScreenTarget(id);
     if(!queueDismissOnce && pendingQueue?.suspended && ['landing','intake1','conditions','matching','waitroom'].includes(id)) id='queue-resume';
-    if(['video','consult'].includes(id) && pendingQueue){ pendingQueue=null; if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){} }
     queueDismissOnce=false;
     const requested=id;
     id=normalizeScreenTarget(requiredRouteFor(id));
+    if(['video','consult'].includes(id) && pendingQueue){ pendingQueue=null; if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){} }
     if(requested==='consent-terms' && ['signup','login','otp','set-password'].includes(id)) postAuthNext='consent-terms';
     if(id!==requested){
       history=seededHistory(id);
@@ -10798,6 +10800,8 @@
     /* Two states on one screen. Waiting carries the queue position and an
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
     if(!pendingQueue) pendingQueue={startedAt:Date.now(),suspended:false};
+    w.querySelector('[data-queue-clock]').hidden=false;
+    w.querySelector('[data-queue-estimate]').hidden=false;
     savePendingQueue();
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
@@ -10814,6 +10818,10 @@
     let elapsedSeconds = Math.floor((Date.now()-pendingQueue.startedAt)/1000);
     const paintDelay=()=>{
       const delayed=elapsedSeconds>=120 || flowConfig.get('wait')==='long';
+      paintElapsedTimer(w.querySelector('[data-queue-elapsed]'),elapsedSeconds);
+      w.querySelector('[data-queue-estimate]').textContent=delayed
+        ? 'ยังระบุเวลาที่แน่นอนไม่ได้ กรุณารอการเรียกเข้าห้อง'
+        : 'เวลารอโดยประมาณ 2 นาที อาจเปลี่ยนแปลงตามคิวของแพทย์';
       w.querySelector('[data-queue-delay]').hidden=!delayed;
       if(delayed){title.textContent='ขออภัยที่ให้รอนาน';copy.textContent='คุณยังอยู่ในคิวปรึกษาแพทย์ เราจะแจ้งเมื่อถึงคิวของคุณ'}
     };
@@ -10827,12 +10835,19 @@
     }, 1000);
     // Prototype admission: leave time for the delayed state, preserving the
     // original queue clock across close/resume. Embedded demos stay quick.
-    const admissionDelay=(queuePreview || flowConfig.get('wait')==='ready')
+    const admissionDelay=pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
       ? (reduceMotion ? 400 : 4200)
       : Math.max(0,pendingQueue.startedAt+150000-Date.now());
+    if(flowConfig.get('wait')==='long' && !pendingQueue.readyAt) return;
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
+      if(!pendingQueue.readyAt){
+        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+150000;
+        savePendingQueue();
+      }
+      w.querySelector('[data-queue-estimate]').hidden=true;
+      w.querySelector('[data-queue-delay]').hidden=true;
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
       if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }
@@ -10857,7 +10872,8 @@
   }
   function startWaitroomEntryWindow(screen,timer){
     stopWaitroomEntryWindow();
-    let remaining = WAITROOM_ENTRY_WINDOW;
+    const deadline=(pendingQueue?.readyAt || Date.now())+WAITROOM_ENTRY_WINDOW*1000;
+    let remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
     const paint = () => {
       if(!timer) return;
       const mm=String(Math.floor(remaining/60)).padStart(2,'0');
@@ -10869,13 +10885,19 @@
       timer.classList.toggle('waitroom-entry-cta__timer--urgent', remaining <= 60);
     };
     paint();
+    if(remaining===0){
+      screen.querySelector('[data-wait-enter]').hidden=true;
+      openWaitroomExpiredModal();
+      return;
+    }
     waitEntryTimer = setInterval(() => {
       if(!screen.classList.contains('active')){ stopWaitroomEntryWindow(); return; }
-      remaining = Math.max(0, remaining - 1);
+      remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
       paint();
       if(remaining === 0){
         stopWaitroomEntryWindow();
         if(timer) timer.textContent = '';
+        screen.querySelector('[data-wait-enter]').hidden=true;
         openWaitroomExpiredModal();
       }
     }, 1000);
@@ -10906,6 +10928,8 @@
         closeWaitroomExpiredModal();
         /* Straight back into matching: the intake answers are untouched, so
            there is nothing to re-ask. */
+        pendingQueue=null;
+        if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
         show('matching');
         return;
       }
