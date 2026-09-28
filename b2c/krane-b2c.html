@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-control-alignment-v146";
+    const release = "20260928-address-form-layout-v147";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-control-alignment-v146">
+<link rel="stylesheet" href="components.css?v=20260928-address-form-layout-v147">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2312,9 +2312,8 @@
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
-  <!-- The map is the fallback route to an address, so it gets the whole screen
-       rather than a slab at the top of a form. Confirming returns to the form
-       with the pin applied. -->
+  <!-- Address entry comes first, followed by an unobstructed map preview.
+       Confirming returns to the delivery form with the selected pin applied. -->
   <section class="screen" id="address-map">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-map-body">
@@ -2345,7 +2344,7 @@
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
         <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="2" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
@@ -5654,6 +5653,7 @@
       addressMapPostcode:search?.addressMapPostcode ?? address.postcode ?? ''
     });
     syncFloatingFieldState(query?.closest('.float-field'));
+    requestAnimationFrame(resizeAddressMapQuery);
   }
   document.addEventListener('change',event => {
     if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id)){
@@ -5661,12 +5661,20 @@
       persistAddressSearchDraft();
     }
   });
+  function resizeAddressMapQuery(){
+    const query=document.getElementById("addressMapQuery");
+    if(!query || !query.clientWidth)return;
+    query.style.height="auto";
+    query.style.height=query.scrollHeight+"px";
+  }
+  window.addEventListener("resize",resizeAddressMapQuery);
   function persistAddressSearchDraft(){
     const value=id => document.getElementById(id)?.value || '';
     flowState.addressSearchDraft={query:value('addressMapQuery'),...Object.fromEntries(ADDRESS_MAP_CASCADE_IDS.map(id => [id,value(id)]))};
     persistFlowState();
   }
   document.getElementById('addressMapQuery')?.addEventListener('input',() => {
+    resizeAddressMapQuery();
     syncAddressMapSearchSubmit();
     persistAddressSearchDraft();
   });
