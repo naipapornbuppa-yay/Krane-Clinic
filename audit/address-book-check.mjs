@@ -54,6 +54,16 @@ try{
  assert.equal(await p3.locator('[data-address-map-search-submit]').evaluate(el=>el.classList.contains('btn--primary')),true);
  await p3.screenshot({path:'/private/tmp/krane-address-map-v168.png'});
  await empty.close();
+ const layout=await browser.newContext({viewport:{width:1260,height:1094}});
+ await layout.addInitScript(saved=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({patientInfoComplete:true,directGeneralHealthComplete:true,addressDraft:saved})),saved);
+ const p4=await layout.newPage();await p4.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address');await p4.waitForTimeout(400);
+ await p4.locator('#recipientPhone').fill('222-222-2222');
+ await p4.locator('#address-instructions-title').scrollIntoViewIfNeeded();
+ assert.equal(await p4.locator('#addrFloor').isVisible(),true);
+ assert.equal(await p4.locator('#addrNote').isVisible(),true);
+ assert.equal(await p4.locator('.address-remember-choice').isVisible(),true);
+ await p4.screenshot({path:'/private/tmp/krane-address-fields-v171.png'});
+ await layout.close();
  assert.deepEqual(errors,[]);
  console.log('PASS: visible entry points, saved list, cancel preserves draft/order, selection hydrates recipient without committing, confirm persists without duplicates, new session loads saved book, add-new clears location without deleting saved entries.');
 }finally{await browser.close();}
