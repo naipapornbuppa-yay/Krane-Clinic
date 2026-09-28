@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-program-icons-v176";
+    const release = "20260928-remove-payment-interstitial-v177";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-program-icons-v176">
+<link rel="stylesheet" href="components.css?v=20260928-remove-payment-interstitial-v177">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2796,22 +2796,6 @@
     <div class="screen__footer"><button class="btn btn--primary" data-payment-submit>ยืนยันการชำระ <span data-payment-total>฿ 558</span></button></div>
   </section>
 
-  <section class="screen postpay-screen" id="payment-processing" data-screen-code="SCR-016C">
-    <div class="screen__top postpay-brandbar"><img src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
-    <div class="screen__body payment-processing-view">
-      <div class="payment-processing-view__pulse payment-processing-view__illustration" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-loading-info"></use></svg></div>
-      <div class="payment-processing-view__copy" role="status" aria-live="polite">
-        <h2>กำลังยืนยันการชำระเงิน</h2>
-        <p>กรุณารอสักครู่และไม่ต้องปิดหน้านี้</p>
-      </div>
-      <div class="payment-processing-view__card">
-        <span><small>ยอดที่ชำระ</small><strong data-payment-outcome-amount>฿ 558</strong></span>
-        <span><small>วิธีชำระเงิน</small><strong data-payment-outcome-method>QR Code</strong></span>
-      </div>
-      <p class="payment-processing-view__secure"><i data-lucide="lock-keyhole" class="ui-icon" aria-hidden="true"></i><span>Krane เข้ารหัสข้อมูลการชำระเงินทุกขั้นตอน</span></p>
-    </div>
-  </section>
-
   <section class="screen postpay-screen" id="payment-success" data-screen-code="SCR-016D">
     <div class="screen__top postpay-brandbar"><img src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <!-- Client, 24 Sep: this screen says one thing — the money went through —
@@ -2913,7 +2897,6 @@
         <!-- Client, 24 Sep: the packing-and-notification promise belongs here,
              on the screen the patient watches while they wait, not on the
              payment receipt they leave straight away. -->
-        <div class="postpay-note"><i data-lucide="bell-ring" class="ui-icon" aria-hidden="true"></i><span><strong>เราจะแจ้งเตือนเมื่อเริ่มจัดส่ง</strong><small>แพ็กยาแบบมิดชิดและไม่ระบุชื่อยาบนกล่อง</small></span></div>
         <div class="delivery-eta">
           <div class="delivery-eta__head">
             <span class="delivery-eta__label">ถึงประมาณ</span>
@@ -10940,7 +10923,7 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
+    const legacyRoutes = {'payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
