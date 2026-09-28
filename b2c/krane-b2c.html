@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-original-ink-round-bg-v140";
+    const release = "20260928-all-state-backgrounds-v141";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -343,7 +343,8 @@
        separate UI layer rather than pixels baked into the art, so the line
        work stays transparent and the padding is identical across states. */
     .state-view__visual:has(.krane-state-art)::before,
-    .payment-processing-view__illustration:has(.krane-state-art)::before{
+    .payment-processing-view__illustration:has(.krane-state-art)::before,
+    .editorial-dialog-visual::before{
       content:"";
       position:absolute;
       z-index:0;
@@ -360,7 +361,12 @@
       opacity:1;
       display:block;
       pointer-events:none;
+      animation:none;
+      border:0;
     }
+    .editorial-dialog-visual{position:relative;isolation:isolate;flex:none;width:112px}
+    .editorial-dialog-visual--signup{width:min(240px,72%);margin:0 auto var(--sp-3)}
+    .editorial-dialog-visual>svg,.editorial-dialog-visual>img{position:relative;z-index:1;width:100%;height:auto;margin:0;display:block}
     .state-view__visual:has(.krane-state-art) .state-view__tile,
     .payment-processing-view__illustration:has(.krane-state-art) .krane-state-art{
       position:relative;
@@ -4123,9 +4129,11 @@
 <div class="modal-layer" id="signup-done-modal" hidden aria-hidden="true">
   <div class="modal-layer__scrim" aria-hidden="true"></div>
   <section class="modal-dialog signup-done-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="signup-done-title" aria-describedby="signup-done-description">
+    <div class="editorial-dialog-visual editorial-dialog-visual--signup">
     <svg class="signup-done-dialog__art" viewBox="0 0 560 360" width="560" height="360" aria-hidden="true" focusable="false">
       <use href="#krane-state-nurse-ready"></use>
     </svg>
+    </div>
     <h2 id="signup-done-title">สมัครสมาชิกสำเร็จ</h2>
     <p id="signup-done-description" data-signup-done-description>สร้างบัญชี Krane เรียบร้อยแล้ว<span class="signup-done-dialog__next">ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ</span></p>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-signup-done-continue>ดำเนินการต่อ</button></div>
@@ -4161,7 +4169,7 @@
         <h2 id="csat-title">ให้คะแนนการปรึกษาครั้งนี้</h2>
         <p id="csat-description">คำตอบเป็นความลับ</p>
       </div>
-      <img class="csat-dialog__art" src="assets/condition-detail/warning-guide-man-current-logo-v3.png" width="1536" height="1024" alt="" decoding="async">
+      <div class="editorial-dialog-visual"><img class="csat-dialog__art" src="assets/condition-detail/warning-guide-man-current-logo-v3.png" width="1536" height="1024" alt="" decoding="async"></div>
     </div>
     <div class="csat-dialog__rows">
       <!-- Three things, named plainly and without sub-lines: the care, the app
