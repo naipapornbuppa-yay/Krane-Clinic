@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-queue-booking-fallback-v182";
+    const release = "20260928-signup-sheet-dismiss-v183";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-queue-booking-fallback-v182">
+<link rel="stylesheet" href="components.css?v=20260928-signup-sheet-dismiss-v183">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -4179,7 +4179,7 @@
     </svg>
     </div>
     <h2 id="signup-done-title">สมัครสมาชิกสำเร็จ</h2>
-    <p id="signup-done-description" data-signup-done-description>สร้างบัญชี Krane เรียบร้อยแล้ว<span class="signup-done-dialog__next">ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ</span></p>
+    <p id="signup-done-description" data-signup-done-description>ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ</p>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-signup-done-continue>ดำเนินการต่อ</button></div>
   </section>
 </div>
@@ -13686,32 +13686,25 @@
   }
   const signupDoneModal = document.getElementById('signup-done-modal');
   let signupDoneTarget = '';
+  let signupDoneReturnFocus = null;
   /* The message has to name the step the button really leads to. A sign-up that
      began inside an intake goes back to the questions, one started from the
      log-in page goes to the account (client, 20 Sep). */
   const SIGNUP_DONE_DESCRIPTION = {
-    'patient-info':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ'],
-    'profile':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป เริ่มใช้งานบัญชี'],
-    'consent-terms':['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป ยืนยันความยินยอมและการรักษาทางไกล']
+    'patient-info':'ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ',
+    'profile':'ขั้นตอนต่อไป เริ่มใช้งานบัญชี',
+    'consent-terms':'ขั้นตอนต่อไป ยืนยันความยินยอมและการรักษาทางไกล'
   };
   function signupDoneDescription(target){
     return SIGNUP_DONE_DESCRIPTION[target]
-      || ['สร้างบัญชี Krane เรียบร้อยแล้ว','ขั้นตอนต่อไป ตอบแบบประเมินสุขภาพ'];
+      || 'ขั้นตอนต่อไป ตอบแบบประเมินสุขภาพ';
   }
   function openSignupDoneModal(target){
     signupDoneTarget = target;
     if(!signupDoneModal){ show(target); return; }
     const description = signupDoneModal.querySelector('[data-signup-done-description]');
-    if(description){
-      const [confirmation,nextStep] = signupDoneDescription(target);
-      description.replaceChildren(
-        document.createTextNode(confirmation),
-        Object.assign(document.createElement('span'),{
-          className:'signup-done-dialog__next',
-          textContent:nextStep
-        })
-      );
-    }
+    if(description) description.textContent=signupDoneDescription(target);
+    signupDoneReturnFocus=document.activeElement;
     signupDoneModal.hidden = false;
     signupDoneModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
@@ -13722,11 +13715,14 @@
     signupDoneModal.hidden = true;
     signupDoneModal.setAttribute('aria-hidden','true');
     document.body.classList.remove('modal-open');
+    signupDoneReturnFocus?.focus({preventScroll:true});
   }
   if(signupDoneModal){
     signupDoneModal.addEventListener('click', event => {
-      // Only the button dismisses it: the account is made either way, so there
-      // is nothing to cancel and a stray backdrop tap should not skip the step.
+      if(event.target===signupDoneModal || event.target.classList.contains('modal-layer__scrim')){
+        closeSignupDoneModal();
+        return;
+      }
       if(!event.target.closest('[data-signup-done-continue]')) return;
       closeSignupDoneModal();
       show(signupDoneTarget || 'patient-info');
