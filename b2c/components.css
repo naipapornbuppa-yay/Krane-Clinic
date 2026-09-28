@@ -5727,10 +5727,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 
 /* Home navigation alignment (client, 27 Sep): the floating bottom navigation
    follows the exact horizontal shell used by the Home top navigation. Keep
-   this scoped to #profile so the compact controls on the care-flow screens do
-   not change. The 32px inset matches the mobile header; the shared 752px cap
-   takes over at the desktop shell breakpoint. */
-#profile>.bottomnav{
+   the same geometry for every bottom-navigation destination. The 32px inset
+   matches the mobile header; the shared 752px cap applies on desktop. */
+.screen>.bottomnav{
   left:50%;
   right:auto;
   width:calc(100% - 32px);
@@ -5937,3 +5936,16 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .page-heading{display:flex;flex-direction:column;gap:var(--sp-2)}
 .page-heading__title{margin:0;line-height:1.3;color:var(--color-ink)}
 .page-heading__description{margin:0;color:var(--color-ink-2);font-size:var(--fs-base);line-height:var(--lh-base)}
+
+/* Stable tab geometry across all destinations; animate only the icon plate. */
+.bottomnav a .ic{transition:transform 160ms var(--ease-out),background 180ms var(--ease-out),color 180ms var(--ease-out)}
+.bottomnav a[aria-current="page"]{color:var(--color-accent)}
+.bottomnav a .nav-icon-filled{display:none;fill:currentColor;stroke:none}
+.bottomnav a[aria-current="page"] .ic>svg:not(.nav-icon-filled){display:none}
+.bottomnav a[aria-current="page"] .nav-icon-filled{display:block}
+.bottomnav a:active .ic{transform:scale(.88);background:var(--color-accent-soft)}
+.bottomnav a[aria-current="page"] .ic{animation:nav-pill-in 260ms var(--ease-out)}
+@media(prefers-reduced-motion:reduce){
+  .bottomnav a .ic{transition:none;animation:none!important}
+  .bottomnav a:active .ic{transform:none}
+}

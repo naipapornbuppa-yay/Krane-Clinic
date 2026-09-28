@@ -67,6 +67,16 @@
       var name = target === 'profile' ? 'house' : target.includes('activit') || target === 'tracking' ? 'package' :
         target === 'notifications' ? 'bell' : target === 'settings' ? 'user-round' : 'house';
       setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
+      var slot=link.querySelector('.ic');
+      if(slot && !slot.querySelector('.nav-icon-filled')){
+        var shapes={
+          house:'<path fill-rule="evenodd" d="M12 2 1 11h3v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V11h3L12 2Zm-2 13h4v7h-4v-7Z"/>',
+          package:'<path d="m12 2 9 5-9 5-9-5 9-5ZM2 9l9 5v9l-9-5V9Zm11 5 9-5v9l-9 5v-9Z"/>',
+          bell:'<path d="M12 2a2 2 0 0 1 2 2v.3A6 6 0 0 1 18 10v5l3 4H3l3-4v-5a6 6 0 0 1 4-5.7V4a2 2 0 0 1 2-2Zm-3 19h6a3 3 0 0 1-6 0Z"/>',
+          'user-round':'<circle cx="12" cy="7" r="5"/><path d="M3 22v-2a9 7 0 0 1 18 0v2H3Z"/>'
+        };
+        slot.insertAdjacentHTML('beforeend','<svg class="nav-icon-filled" viewBox="0 0 24 24" aria-hidden="true">'+shapes[name]+'</svg>');
+      }
     });
     document.querySelectorAll('.notif').forEach(function (row) {
       var name = row.dataset.go === 'tracking' ? 'truck' : row.dataset.go === 'consult' ? 'messages-square' :
