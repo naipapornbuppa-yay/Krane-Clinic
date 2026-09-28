@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-direct-address-editor-v137";
+    const release = "20260928-original-ink-round-bg-v140";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -347,7 +347,12 @@
       content:"";
       position:absolute;
       z-index:0;
-      inset:9% 7% 8%;
+      inset:auto;
+      top:50%;
+      left:50%;
+      width:80%;
+      aspect-ratio:1.08;
+      transform:translate(-50%,-50%);
       border-radius:52% 48% 55% 45% / 47% 55% 45% 53%;
       background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface));
       filter:none;
@@ -369,9 +374,9 @@
     /* Retired review URLs may still request the old watercolour direction;
        keep the parameter harmless so every route now renders the same crisp blob. */
     .state-view__watercolor{display:none!important}
-    /* Every legacy review set resolves to the approved outline-only master. */
-    html[data-illustration-set] .krane-state-art{filter:url(#krane-state-outline-only)!important}
-    /* All approved state illustrations are clean line art. Keep legacy
+    /* Preserve the original monochrome artwork, including solid ink fills. */
+    html[data-illustration-set] .krane-state-art{filter:grayscale(1)!important}
+    /* Keep the approved artwork and its original fills. Keep legacy
        colour hatch layers disabled on both monochrome and wash sets, and on
        old deep links that predate the illustrationSet parameter. */
     .krane-state-art .ks-hatch-blue,
@@ -400,7 +405,7 @@
       height:100%;
       overflow:visible;
       color:#101722;
-      filter:url(#krane-state-outline-only)!important;
+      filter:grayscale(1)!important;
     }
     /* 2026-08-16: these PNGs used to be flattened with an opaque cream canvas
        baked in, approximated away with mix-blend-mode:multiply. That never
@@ -13982,20 +13987,6 @@
       <feMorphology in="cleanInk" operator="erode" radius="0.25" result="thinInk"/>
       <feFlood flood-color="#101722" result="inkColor"/>
       <feComposite in="inkColor" in2="thinInk" operator="in"/>
-    </filter>
-    <!-- Convert the raster master into true outline-only art. Subtracting an
-         eroded copy removes the interior of broad black areas (hair, clothes,
-         furniture) while preserving the original contour and fine strokes. -->
-    <filter id="krane-state-outline-only" x="-6%" y="-8%" width="112%" height="116%" color-interpolation-filters="sRGB">
-      <feColorMatrix in="SourceGraphic" result="inkAlpha" type="matrix" values="
-        0 0 0 0 0
-        0 0 0 0 0
-        0 0 0 0 0
-        0 0 0 1 0"/>
-      <feMorphology in="inkAlpha" operator="erode" radius="1.45" result="inkInterior"/>
-      <feComposite in="inkAlpha" in2="inkInterior" operator="out" result="outlineOnly"/>
-      <feFlood flood-color="#101722" result="outlineColor"/>
-      <feComposite in="outlineColor" in2="outlineOnly" operator="in"/>
     </filter>
     <!-- Adult editorial actors: asymmetric 3/4 faces, ink-textured hair,
          collared clothing and long expressive hands mirror the locked mood board. -->
