@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-auto-postcode-v150";
+    const release = "20260928-address-picker-v151";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-address-ux-v148">
+<link rel="stylesheet" href="components.css?v=20260928-address-picker-v151">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260928-address-research-v133" defer></script>
-<script src="i18n.js?v=20260928-address-ux-v148" defer></script>
+<script src="i18n.js?v=20260928-address-picker-v151" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2304,19 +2304,34 @@
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
-  <!-- Address entry comes first, followed by an unobstructed map preview.
-       Confirming returns to the delivery form with the selected pin applied. -->
+  <!-- Manual address entry stays independent of the optional current-location picker. -->
   <section class="screen" id="address-map">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-map-body">
-      <!-- Real geography: OpenStreetMap raster tiles, panned directly, with
-           Nominatim reverse geocoding on every idle so the form is always
-           filled from the pin (client, 18 Aug). No map SDK — tiles are plain
-           images, which keeps the page dependency-free. The CSS street grid
-           below stays as the offline fallback. -->
+      <!-- Open the map only on request; cancel leaves these fields untouched. -->
       <div class="address-map-stage">
+      <!-- Product rule: references may inform UX flow and validation only.
+           Visual controls here must reuse Krane components. In particular,
+           empty fields show their label as the placeholder and float it only
+           after focus or a value, rather than adding a second title outside. -->
+      <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
+        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <button class="btn btn--secondary address-current-location" type="button" data-address-picker-open><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ที่อยู่ปัจจุบัน</button>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
+        <button class="btn btn--ink" type="button" data-address-map-search-submit>ตรวจสอบที่อยู่นี้</button>
+      </section>
+      </div>
+    </div>
+  </section>
+  <dialog class="address-picker" id="address-picker" aria-labelledby="address-picker-title" aria-describedby="address-picker-help">
+    <div class="address-picker__head"><h2 id="address-picker-title">เลือกตำแหน่งจัดส่ง</h2><button type="button" data-address-picker-close aria-label="ปิด">×</button></div>
+    <p class="hint" id="address-picker-help">เลื่อนแผนที่ให้หมุดตรงกับจุดรับยา แล้วตรวจสอบรายละเอียดที่อยู่</p>
       <div class="address-map address-map--full" data-address-map>
-        <div class="osm-map" data-osm-map hidden>
+        <div class="osm-map" data-osm-map hidden tabindex="0" role="region" aria-label="แผนที่ ใช้ปุ่มลูกศรเพื่อเลื่อนหมุด">
           <div class="osm-map__plane" data-osm-plane></div>
           <span class="osm-map__credit">© OpenStreetMap</span>
         </div>
@@ -2330,27 +2345,9 @@
         </div>
         <button class="sim-map__locate" type="button" data-sim-locate><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ตำแหน่งปัจจุบัน</button>
       </div>
-      <!-- Product rule: references may inform UX flow and validation only.
-           Visual controls here must reuse Krane components. In particular,
-           empty fields show their label as the placeholder and float it only
-           after focus or a value, rather than adding a second title outside. -->
-      <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
-        <button class="btn btn--ink" type="button" data-address-map-search-submit>ตรวจสอบที่อยู่นี้</button>
-      </section>
-      </div>
-      <p class="address-readout" role="status" aria-live="polite">
-        <strong data-address-preview-title>ยังไม่ได้เลือกตำแหน่ง</strong>
-        <span data-address-preview-detail>เลื่อนแผนที่เพื่อปักหมุด แล้วเรากรอกที่อยู่ให้อัตโนมัติ</span>
-      </p>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-address-map-confirm>ใช้ตำแหน่งนี้</button></div>
-  </section>
+    <p class="address-picker__status" data-address-picker-status role="status" aria-live="polite"></p>
+    <div class="address-picker__actions"><button class="btn btn--secondary" type="button" data-address-picker-close>ยกเลิก</button><button class="btn btn--primary" type="button" data-address-map-confirm>ใช้ตำแหน่งนี้</button></div>
+  </dialog>
 
   <section class="screen" id="delivery-quote" data-screen-code="SCR-013B">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
@@ -5636,11 +5633,14 @@
     if(query)query.value=search?.query ?? [...new Set([address.building,address.line].filter(Boolean))].join(' ');
     const province=document.getElementById('addressMapProvince');
     if(province){
-      if(address.province && ![...province.options].some(option => option.value===address.province)){
-        province.add(new Option(address.province,address.province));
+      const selectedProvince=search?.addressMapProvince ?? address.province;
+      if(selectedProvince && ![...province.options].some(option => option.value===selectedProvince)){
+        province.add(new Option(selectedProvince,selectedProvince));
         window.kraneRefreshSelectOptions?.(province);
       }
       province.value=search?.addressMapProvince ?? address.province ?? '';
+      window.kraneRefreshSelectOptions?.(province);
+      syncFloatingFieldState(province.closest('.float-field'));
     }
     syncAddressMapCascade('',{
       addressMapProvince:search?.addressMapProvince ?? address.province ?? '',
@@ -7125,21 +7125,70 @@
     map.addEventListener('pointercancel', end);
     map.addEventListener('pointerleave', end);
   }
+  const addressPicker=document.getElementById('address-picker');
+  let addressPickerPlace=null, addressPickerSnapshot=null, addressPickerSession=0, addressPickerConfirmed=false;
+  function addressPickerStatus(text){
+    const status=document.querySelector('[data-address-picker-status]');
+    if(status) status.textContent=text;
+    const confirm=addressPicker?.querySelector('[data-address-map-confirm]');
+    if(confirm){
+      confirm.disabled=!addressPickerPlace;
+      confirm.textContent='ใช้ตำแหน่งนี้';
+    }
+  }
+  function closeAddressPicker(){ addressPicker?.close(); }
+  function openAddressPicker(){
+    if(!addressPicker || addressPicker.open)return;
+    addressPickerSnapshot={...osmView};
+    addressPickerPlace=null;
+    addressPickerConfirmed=false;
+    addressPickerSession++;
+    addressPicker.showModal();
+    setupAddressMap();
+    requestAnimationFrame(renderOsmTiles);
+    simLocate();
+  }
+  addressPicker?.addEventListener('close',() => {
+    addressPickerSession++;
+    osmReverseToken++;
+    clearTimeout(osmReverseTimer);
+    if(addressPickerSnapshot)Object.assign(osmView,addressPickerSnapshot);
+    addressPickerSnapshot=null;
+    addressPickerPlace=null;
+    const focusTarget=addressPickerConfirmed ? document.getElementById('addressMapQuery') : document.querySelector('[data-address-picker-open]');
+    focusTarget?.focus({preventScroll:true});
+  });
+  function confirmAddressPicker(){
+    if(!addressPickerPlace)return;
+    if(addressPickerPlace){
+      const place=addressPickerPlace;
+      flowState.addressSearchDraft={query:[...new Set([place.building,place.line].filter(Boolean))].join(' '),
+        addressMapProvince:place.province || '',addressMapDistrict:place.districtName || '',
+        addressMapSubdistrict:place.subdistrict || '',addressMapPostcode:place.postcode || ''};
+      persistFlowState();
+      hydrateAddressMapSearch();
+      addressPickerSnapshot=null;
+      addressPickerConfirmed=true;
+    }
+    closeAddressPicker();
+  }
   function simLocate(){
-    if(!osmView.failed && navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          osmSetView(position.coords.latitude,position.coords.longitude,17,true);
-        },
-        () => showActionToast('เปิดสิทธิ์ตำแหน่งไม่ได้ ลองเลื่อนแผนที่เพื่อปักหมุดแทน','warning'),
-        {enableHighAccuracy:true,timeout:8000}
-      );
+    const session=++addressPickerSession;
+    addressPickerPlace=null;
+    osmReverseToken++;
+    clearTimeout(osmReverseTimer);
+    addressPickerStatus('กำลังค้นหาตำแหน่งปัจจุบัน…');
+    if(!navigator.geolocation){
+      addressPickerStatus('ใช้งานตำแหน่งปัจจุบันไม่ได้ เลื่อนแผนที่หรือกลับไปกรอกที่อยู่เอง');
       return;
     }
-    // Offline fallback: a fixed Bangkok point on the drawn grid.
-    simState.x=0; simState.y=0; simState.z=1.35;
-    simApplyTransform(); simUpdateReadout();
-    showActionToast('ใช้ตำแหน่งปัจจุบันแล้ว และกรอกที่อยู่ให้แล้ว','success');
+    navigator.geolocation.getCurrentPosition(position => {
+      if(!addressPicker?.open || session!==addressPickerSession)return;
+      osmSetView(position.coords.latitude,position.coords.longitude,17,true);
+    },() => {
+      if(!addressPicker?.open || session!==addressPickerSession)return;
+      addressPickerStatus('เปิดสิทธิ์ตำแหน่งไม่ได้ เลื่อนแผนที่หรือกลับไปกรอกที่อยู่เอง');
+    },{enableHighAccuracy:true,timeout:8000});
   }
   /* ======================================================================
      REAL ADDRESSES — OpenStreetMap
@@ -7289,28 +7338,26 @@
     osmView.failed=true;
     const host=document.querySelector('[data-osm-map]');
     if(host) host.hidden=true;
-    document.querySelectorAll('[data-sim-map]').forEach(map => { map.hidden=false; });
+    document.querySelectorAll('[data-sim-map]').forEach(map => { map.hidden=true; });
+    if(addressPicker?.open)addressPickerStatus('โหลดแผนที่ไม่ได้ กลับไปกรอกที่อยู่เอง');
   }
   /* announce is for the deliberate acts — "use my current location" — where
      silence reads as a broken button. Panning and zooming stay quiet. */
   function scheduleOsmReverse(announce){
     window.clearTimeout(osmReverseTimer);
+    const token=++osmReverseToken;
+    if(!addressPicker?.open)return;
+    addressPickerPlace=null;
+    addressPickerStatus('กำลังค้นหารายละเอียดที่อยู่…');
     osmReverseTimer=window.setTimeout(async () => {
-      const token=++osmReverseToken;
       const place=await osmReverse(osmView.lat,osmView.lon);
-      if(token!==osmReverseToken) return;
-      if(!place){
-        // Nominatim is best effort. Say so rather than leaving a blank form
-        // and a success message (client, 19 Aug).
-        if(announce) showActionToast('ปักหมุดแล้ว แต่ยังดึงรายละเอียดที่อยู่ไม่ได้ กรุณากรอกเอง','warning');
-        return;
-      }
-      // The pin always fills the form — that is the point of picking on a map.
-      applyAddress(place);
-      if(announce) showActionToast('กรอกที่อยู่จากตำแหน่งปัจจุบันให้แล้ว','success');
+      if(token!==osmReverseToken || !addressPicker.open)return;
+      addressPickerPlace=place;
+      addressPickerStatus(place ? [place.building,place.detail].filter(Boolean).join(' · ') : 'ยังดึงรายละเอียดที่อยู่ไม่ได้ กลับไปกรอกที่อยู่เอง');
     },420);
   }
   function osmSetView(lat,lon,zoom,announce){
+    addressPickerSession++;
     osmView.lat=lat; osmView.lon=lon;
     if(zoom) osmView.zoom=Math.min(19,Math.max(4,zoom));
     renderOsmTiles();
@@ -7321,6 +7368,13 @@
     host.dataset.osmBound='true';
     let active=false, sx=0, sy=0, dx=0, dy=0;
     const plane=host.querySelector('[data-osm-plane]');
+    host.addEventListener('keydown',event => {
+      const delta={ArrowLeft:[-60,0],ArrowRight:[60,0],ArrowUp:[0,-60],ArrowDown:[0,60]}[event.key];
+      if(!delta)return;
+      event.preventDefault();
+      const z=osmView.zoom;
+      osmSetView(osmYToLat(osmLatToY(osmView.lat,z)+delta[1]/OSM_TILE_SIZE,z),osmXToLon(osmLonToX(osmView.lon,z)+delta[0]/OSM_TILE_SIZE,z));
+    });
     host.addEventListener('pointerdown',event => {
       if(event.target.closest('[data-sim-zoom],[data-sim-locate]')) return;
       active=true; sx=event.clientX; sy=event.clientY; dx=0; dy=0;
@@ -7347,15 +7401,13 @@
   }
   function setupAddressMap(){
     const host=document.querySelector('[data-osm-map]');
-    if(!host || osmView.failed) return;
+    if(!host) return;
+    osmView.failed=false;
     host.hidden=false;
     document.querySelectorAll('[data-sim-map]').forEach(map => { map.hidden=true; });
     osmBindPan(host);
     renderOsmTiles();
-    if(!osmView.ready){
-      osmView.ready=true;
-      scheduleOsmReverse();
-    }
+    osmView.ready=true;
   }
   function osmZoomBy(step){
     if(osmView.failed) return false;
@@ -10106,7 +10158,7 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
-    if(id==='address-map') window.setTimeout(() => { setupAddressMap(); hydrateAddressMapSearch(); },0);
+    if(id==='address-map') window.setTimeout(hydrateAddressMapSearch,0);
     if(id==='address-detail'){
       syncAddressDetail();
       /* Paint the map after this screen becomes measurable. Hidden screens
@@ -11837,19 +11889,14 @@
       simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
       simApplyTransform(); return;
     }
+    if(e.target.closest('[data-address-picker-open]')){ openAddressPicker(); return; }
+    if(e.target.closest('[data-address-picker-close]')){ closeAddressPicker(); return; }
     if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
     if(e.target.closest('[data-address-map-search-submit]')){
       applyAddressMapSearch();
       return;
     }
-    if(e.target.closest('[data-address-map-confirm]')){
-      // The pin has already filled the form; this just takes you back to it.
-      if(!simState.picked) simUpdateReadout();
-      addressRecipientEditing=false;
-      show('address');
-      setAddressPageMode('editor');
-      return;
-    }
+    if(e.target.closest('[data-address-map-confirm]')){ confirmAddressPicker(); return; }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;

@@ -38,3 +38,9 @@ Continued with public research and inspection of the working flow. [GrabExpress'
 The next concrete issue was draft persistence: the save-for-next-time checkbox was not stored with the address draft, so reload could silently drop the user's request to save the address. The follow-up change preserves the explicit checked or unchecked preference, alongside the draft address label, without committing a draft before confirmation.
 
 Verified the new regression failed before the fix and passes after it. Coverage includes checked and unchecked reload behavior, retained label text, no saved-entry mutation on back, and no duplicate saved entry on repeated confirmation. Existing targeted address checks still pass with no runtime errors.
+
+## Explicit current-location picker
+
+The address-entry screen now contains the manual form and a current-address button. The map and location readout appear only in a separate native modal dialog after that button is activated. Geolocation is requested by that action, not by merely opening the address form.
+
+Map results remain provisional until confirmation. Closing or cancelling leaves the manually entered address intact; late location/reverse-geocoding responses are ignored after cancellation or a newer request. When location or map services are unavailable, the interface offers manual entry instead of claiming that a fixed sample location is the user's current location.

@@ -2195,6 +2195,18 @@
   for (var _k20 in EN_FROM_TH_20SEP) EN_FROM_TH[_k20] = EN_FROM_TH_20SEP[_k20];
   for (var _k24 in EN_FROM_TH_24SEP) EN_FROM_TH[_k24] = EN_FROM_TH_24SEP[_k24];
   Object.assign(EN_FROM_TH, {
+    "ใช้ที่อยู่ปัจจุบัน": "Use current address",
+    "เลือกตำแหน่งจัดส่ง": "Choose delivery location",
+    "เลื่อนแผนที่ให้หมุดตรงกับจุดรับยา แล้วตรวจสอบรายละเอียดที่อยู่": "Move the map to your delivery point, then check the address details",
+    "กำลังค้นหาตำแหน่งปัจจุบัน…": "Finding your current location…",
+    "ใช้งานตำแหน่งปัจจุบันไม่ได้ เลื่อนแผนที่หรือกลับไปกรอกที่อยู่เอง": "Current location is unavailable. Move the map or enter the address manually",
+    "เปิดสิทธิ์ตำแหน่งไม่ได้ เลื่อนแผนที่หรือกลับไปกรอกที่อยู่เอง": "Location access is unavailable. Move the map or enter the address manually",
+    "กำลังค้นหารายละเอียดที่อยู่…": "Finding address details…",
+    "ยังดึงรายละเอียดที่อยู่ไม่ได้ กลับไปกรอกที่อยู่เอง": "Address details are unavailable. Enter the address manually",
+    "โหลดแผนที่ไม่ได้ กลับไปกรอกที่อยู่เอง": "The map could not load. Enter the address manually",
+    "กลับไปกรอกที่อยู่": "Enter address manually",
+    "แผนที่ ใช้ปุ่มลูกศรเพื่อเลื่อนหมุด": "Map. Use arrow keys to move the pin",
+
     "จัดส่งไปที่": "Deliver to",
     "ตรวจสอบที่อยู่ให้ตรงกับจุดรับยา": "Check the address where you will receive your medication",
     "ระบุชื่อและเบอร์โทรที่ติดต่อได้สำหรับการจัดส่ง": "Enter the recipient’s name and a reachable phone number",
