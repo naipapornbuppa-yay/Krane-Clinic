@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-appointment-heading-v187";
+    const release = "20260928-appointment-confirm-v188";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-appointment-heading-v187">
+<link rel="stylesheet" href="components.css?v=20260928-appointment-confirm-v188">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1841,7 +1841,7 @@
       </div>
     </div>
     <div class="screen__footer">
-      <button class="btn btn--primary btn--blocked" data-appointment-confirm aria-disabled="true"><span data-appointment-cta-label>เลือกเวลาก่อน</span></button>
+      <button class="btn btn--primary btn--blocked" data-appointment-confirm aria-disabled="true"><span data-appointment-cta-label>ยืนยัน</span></button>
     </div>
   </section>
 
@@ -9196,9 +9196,7 @@
     if(choice) startRefill(choice.dataset.refillChoice);
   });
 
-  /* Booking is two single choices and then a commit, so it keeps its CTA rather
-     than advancing on the first tap (house rule 1). The CTA names the chosen
-     time, so the patient reads back what they are about to book. */
+  /* Booking requires a day and time before enabling the shared Confirm action. */
   let appointmentDay='วันนี้', appointmentSlot='';
   function syncAppointment(){
     const scr=document.getElementById('appointment');
@@ -9209,7 +9207,7 @@
     const ready=Boolean(appointmentSlot);
     cta.setAttribute('aria-disabled',String(!ready));
     cta.classList.toggle('btn--blocked',!ready);
-    label.textContent = ready ? `จองเวลา ${appointmentDay} ${appointmentSlot}` : 'เลือกเวลาก่อน';
+    label.textContent = document.documentElement.lang==='th' ? 'ยืนยัน' : 'Confirm';
   }
   /* Client, 1 Sep: the day row read "วันนี้ 31 ส.ค." two days after that date.
      The four chips were fixed dates in the markup, so "today" was only ever
