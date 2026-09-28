@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-payment-direct-success-v173";
+    const release = "20260928-tracking-polish-v174";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-address-clear-state-v172">
+<link rel="stylesheet" href="components.css?v=20260928-tracking-polish-v174">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2906,7 +2906,6 @@
         <div class="postpay-progress" aria-label="ความคืบหน้าคำสั่งซื้อ">
           <div class="postpay-progress__step done" data-track-step="paid"><span><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span><strong>ชำระแล้ว</strong><time class="postpay-progress__time" data-track-time="paid"></time><div class="hint">ยืนยันยอดแล้ว</div><button class="step__link" type="button" data-doc-open="receipt">ใบเสร็จ</button></div>
           <div class="postpay-progress__step active" data-track-step="prepared"><span><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดยา</strong><div class="hint">ร้านยาฟาสซิโน อารีย์</div></div>
-          <div class="postpay-progress__step" data-track-step="dispatch"><span><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span><strong>รอไรเดอร์</strong><div class="hint">กำลังเรียกคนขับ</div></div>
           <div class="postpay-progress__step" data-track-step="out"><span><i data-lucide="bike" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดส่ง</strong><div class="hint delivery-rider" data-track-rider hidden><span>ไรเดอร์ ณัฐพงษ์ ด.</span><a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></div></div>
           <div class="postpay-progress__step" data-track-step="delivered"><span><i data-lucide="home" class="ui-icon" aria-hidden="true"></i></span><strong>ส่งถึงแล้ว</strong><time class="postpay-progress__time" data-track-time="delivered"></time><div class="hint">รอดำเนินการ</div></div>
         </div>
@@ -13351,7 +13350,7 @@
       screen.querySelectorAll('[data-track-step]').forEach(step => {
         const index=ORDER_STEP_ORDER.indexOf(step.dataset.trackStep);
         step.classList.toggle('done',index<activeIndex);
-        step.classList.toggle('active',index===activeIndex);
+        step.classList.toggle('active',index===activeIndex || (stage.active==='dispatch' && step.dataset.trackStep==='prepared'));
       });
       /* The step names what happened once it has, and what is happening while
          it is. Written in Thai here, as the delivered hint already was, because
