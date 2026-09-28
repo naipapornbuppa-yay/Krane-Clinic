@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-book-empty-v167";
+    const release = "20260928-address-edit-entry-v168";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-address-book-empty-v167">
+<link rel="stylesheet" href="components.css?v=20260928-address-edit-entry-v168">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2196,7 +2196,7 @@
             <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
             <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
             <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-            <button class="address-pin__edit" type="button" data-go="address-map" data-address-detail-map-action>แก้ไขตำแหน่ง</button>
+            <button class="address-pin__edit" type="button" data-go="address" data-address-detail-map-action>แก้ไขตำแหน่ง</button>
           </div>
           <p class="address-pin__summary" data-address-detail-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</p>
         </div>
@@ -2313,7 +2313,7 @@
            empty fields show their label as the placeholder and float it only
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <div class="address-map-search-panel__head"><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
         <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
@@ -5561,7 +5561,7 @@
     const noteText=document.querySelector('[data-address-detail-note]');
     if(noteText) noteText.textContent=note;
     if(mapAction) mapAction.firstChild.textContent=confirmed ? 'แก้ไขตำแหน่ง ' : 'เลือกจากแผนที่ ';
-    if(editorMapAction) editorMapAction.textContent=deliveryAddressDraft().building ? 'แก้ไขที่อยู่' : 'เลือกที่อยู่จัดส่ง';
+    if(editorMapAction) editorMapAction.textContent='แก้ไขที่อยู่';
     if(confirm){
       confirm.disabled=!(confirmed && recipientComplete);
       confirm.setAttribute('aria-disabled',String(!(confirmed && recipientComplete)));
@@ -5801,7 +5801,7 @@
     const locationComplete=a.building && a.line && a.subdistrict && a.districtName && a.province && /^\d{5}$/.test(a.postcode);
     if(!locationComplete){
       showActionToast('เลือกตำแหน่งและค้นหาที่อยู่ให้ครบก่อนบันทึก','warning');
-      show('address-map');
+      show('address');
       return false;
     }
     /* Recipient data normally comes from the verified account. It only opens
@@ -6022,9 +6022,7 @@
     syncFieldClearButtons();
     const title=document.querySelector('[data-address-editor-title]');
     if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
-    /* New patients start with the actual delivery decision: where should the
-       medicine go? Naming/saving the address comes later and stays optional. */
-    show('address-map');
+    show('address');
   }
   document.addEventListener('click',event => {
     const bookOpen=event.target.closest('[data-address-book-open]');
@@ -10341,11 +10339,7 @@
         if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
         setAddressPageMode('editor');
       } else {
-        /* Across Thai telemedicine checkout flows the first useful decision is
-           the delivery location. Do not make a new patient pass through an
-           empty address book or a half-empty confirmation form first. */
-        replaceCurrent('address-map');
-        return;
+        setAddressPageMode('editor');
       }
 
     }
@@ -10859,7 +10853,10 @@
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
     const legacyRoutes = {'concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
-    const id = legacyRoutes[rawId] || rawId;
+    /* The manual address form is an edit action, not a public destination.
+       Reloaded/shared hashes return to the review screen; only its explicit
+       “แก้ไขที่อยู่” text link opens the form in the current session. */
+    const id = rawId==='address-map' ? 'address' : (legacyRoutes[rawId] || rawId);
     const hashParams = new URLSearchParams(hashQuery);
     const freshRequested=!freshDeepLinkConsumed && (hashParams.get('fresh')==='1' || flowConfig.get('fresh')==='1');
     if(freshRequested) freshDeepLinkConsumed=true;

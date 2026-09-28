@@ -23,12 +23,12 @@ try{
  const stored=await p.evaluate(()=>JSON.parse(localStorage.getItem('krane-address-book-v1:guest')));
  assert.equal(stored.entries.length,1);assert.equal(stored.entries[0].label,'บ้าน');
  // A new browser tab/session can retrieve the explicitly saved local book.
- const p2=await ctx.newPage();await p2.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address-map');await p2.waitForTimeout(500);
+ const p2=await ctx.newPage();await p2.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address');await p2.waitForTimeout(500);
  await p2.evaluate(()=>{const k='krane-p01-flow-state-v1';const s=JSON.parse(sessionStorage.getItem(k));delete s.savedAddresses;sessionStorage.setItem(k,JSON.stringify(s));});await p2.reload();await p2.waitForTimeout(400);
- await p2.locator('#address-map [data-address-book-open]').click();assert.match(await p2.locator('[data-address-book-list]').innerText(),/บ้าน 123/);
- await p2.locator('[data-address-new]').click();assert.equal(await p2.locator('#addressMapQuery').inputValue(),'');
+ await p2.locator('#address [data-address-book-open]').click();assert.match(await p2.locator('[data-address-book-list]').innerText(),/บ้าน 123/);
+ await p2.locator('[data-address-new]').click();assert.equal(await p2.locator('#address.active').isVisible(),true);
  assert.equal(await p2.locator('#address-book-dialog').isVisible(),false);
- await p2.locator('#address-map [data-address-book-open]').click();assert.equal(await p2.locator('[data-address-book-pick]').count(),1);
+ await p2.locator('#address [data-address-book-open]').click();assert.equal(await p2.locator('[data-address-book-pick]').count(),1);
  await p2.locator('[data-address-edit="0"]').click();
  await p2.locator('#addrLabel').fill('บ้านใหม่');
  await p2.locator('[data-address-save]').click();await p2.waitForTimeout(250);
@@ -38,13 +38,19 @@ try{
  const empty=await browser.newContext({viewport:{width:320,height:720}});
  await empty.addInitScript(()=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({patientInfoComplete:true,directGeneralHealthComplete:true})));
  const p3=await empty.newPage();await p3.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address-map');await p3.waitForTimeout(400);
- await p3.locator('#address-map [data-address-book-open]').click();
+ assert.equal(await p3.locator('#address.active').isVisible(),true);
+ assert.equal(await p3.locator('#address-map.active').count(),0);
+ assert.equal(await p3.locator('#address-map-search-title .ui-icon').count(),0);
+ await p3.locator('#address [data-address-book-open]').click();
  assert.equal(await p3.locator('[data-address-book-empty]').isVisible(),true);
  assert.equal(await p3.locator('.address-book-empty__art img').evaluate(el=>el.complete&&el.naturalWidth>0),true);
  assert.equal(await p3.locator('#address-book-title').evaluate(el=>getComputedStyle(el).fontSize),'16px');
  assert.equal(await p3.locator('#address-book-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth),true);
  await p3.screenshot({path:'/private/tmp/krane-address-book-empty-v167.png'});
- await p3.locator('[data-address-new]').click();assert.equal(await p3.locator('#addressMapQuery').isVisible(),true);
+ await p3.locator('[data-address-new]').click();assert.equal(await p3.locator('#address.active').isVisible(),true);
+ assert.equal(await p3.locator('#address [data-go="address-map"]').innerText(),'แก้ไขที่อยู่');
+ await p3.locator('#address [data-go="address-map"]').click();assert.equal(await p3.locator('#address-map.active').isVisible(),true);
+ await p3.screenshot({path:'/private/tmp/krane-address-map-v168.png'});
  await empty.close();
  assert.deepEqual(errors,[]);
  console.log('PASS: visible entry points, saved list, cancel preserves draft/order, selection hydrates recipient without committing, confirm persists without duplicates, new session loads saved book, add-new clears location without deleting saved entries.');
