@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-fields-visibility-v171";
+    const release = "20260928-address-clear-state-v172";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-address-fields-visibility-v171">
+<link rel="stylesheet" href="components.css?v=20260928-address-clear-state-v172">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -5327,12 +5327,16 @@
      means replacing it rather than appending — holding backspace through a
      Thai address is the worst part of this form. One clear button per field,
      added here so the nine fields cannot drift apart in the markup. */
+  function hasClearableFieldValue(input){
+    const value=String(input?.value || '').trim();
+    return input?.type==='tel' ? /\d/.test(value) : value.length>0;
+  }
   function syncFieldClearButtons(){
     const recipientClear=document.querySelector('[data-clear-recipient]');
-    if(recipientClear) recipientClear.hidden=!recipientFields().some(input => input.value);
+    if(recipientClear) recipientClear.hidden=!recipientFields().some(hasClearableFieldValue);
     document.querySelectorAll('#address .field__clear').forEach(button => {
       const input=button.parentElement?.querySelector('input.input');
-      button.hidden=!(input && input.value);
+      button.hidden=!hasClearableFieldValue(input);
     });
   }
   function setupClearableFields(){
@@ -5355,16 +5359,20 @@
       button.className='field__clear';
       button.setAttribute('aria-label','ล้างข้อมูลในช่องนี้');
       button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>';
-      button.hidden=!input.value;
+      button.hidden=!hasClearableFieldValue(input);
       (input.closest('.float-field__slot') || input).insertAdjacentElement('afterend',button);
-      input.addEventListener('input',() => { button.hidden=!input.value; });
+      ['input','change'].forEach(type => input.addEventListener(type,() => { button.hidden=!hasClearableFieldValue(input); }));
       button.addEventListener('click',() => {
         input.value='';
         input.dispatchEvent(new Event('input',{bubbles:true}));
         input.focus();
       });
     });
+    /* Password managers and browser autofill can restore a value without an
+       input event. Reconcile once after the restored paint and on pageshow. */
+    window.requestAnimationFrame(syncFieldClearButtons);
   }
+  window.addEventListener('pageshow',syncFieldClearButtons);
 
   function clearDeliveryAddressForm(){
     const screen=document.getElementById('address');

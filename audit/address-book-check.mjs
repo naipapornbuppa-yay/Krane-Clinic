@@ -57,7 +57,11 @@ try{
  const layout=await browser.newContext({viewport:{width:1260,height:1094}});
  await layout.addInitScript(saved=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({patientInfoComplete:true,directGeneralHealthComplete:true,addressDraft:saved})),saved);
  const p4=await layout.newPage();await p4.goto('http://127.0.0.1:5178/b2c/krane-b2c.html#address');await p4.waitForTimeout(400);
- await p4.locator('#recipientPhone').fill('222-222-2222');
+ await p4.locator('#recipientPhone').fill('081-234-5678');
+ assert.equal(await p4.locator('#address .phone-field>.field__clear').isVisible(),true);
+ await p4.locator('#address .phone-field>.field__clear').click();
+ assert.equal(await p4.locator('#recipientPhone').inputValue(),'');
+ assert.equal(await p4.locator('#address .phone-field>.field__clear').isVisible(),false);
  await p4.locator('#address-instructions-title').scrollIntoViewIfNeeded();
  assert.equal(await p4.locator('#addrFloor').isVisible(),true);
  assert.equal(await p4.locator('#addrNote').isVisible(),true);
