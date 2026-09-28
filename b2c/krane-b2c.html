@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-scheduled-consultation-v191";
+    const release = "20260928-waitroom-delayed-action-v192";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-scheduled-consultation-v191">
+<link rel="stylesheet" href="components.css?v=20260928-waitroom-delayed-action-v192">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260928-address-research-v133" defer></script>
-<script src="i18n.js?v=20260928-scheduled-consultation-v191" defer></script>
+<script src="i18n.js?v=20260928-waitroom-delayed-action-v192" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -1993,9 +1993,8 @@
         <span class="waitroom-entry-cta__timer" data-wait-timer aria-live="polite"></span>
       </button>
       <div class="queue-wait-actions stack-2">
-        <p class="queue-clock" data-queue-clock>รอแล้ว <strong data-queue-elapsed>00:00</strong></p>
-        <p class="hint" data-queue-estimate></p>
-        <button class="btn btn--ghost" type="button" data-queue-book>เลือกเวลานัดหมายแพทย์</button>
+        <p class="queue-clock" data-queue-clock><strong data-queue-elapsed>00:00</strong></p>
+        <button class="btn btn--ghost" type="button" data-queue-book hidden>เลือกเวลานัดหมายแพทย์</button>
       </div>
     </div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
@@ -10802,7 +10801,6 @@
        estimate; ready carries the UX-doc copy. Same three hooks either way. */
     if(!pendingQueue) pendingQueue={startedAt:Date.now(),suspended:false};
     w.querySelector('[data-queue-clock]').hidden=false;
-    w.querySelector('[data-queue-estimate]').hidden=false;
     savePendingQueue();
     const queuePos = flowState.orderState.queuePosition || 2;
     if(title) title.textContent = 'กำลังรอคิวเข้าห้องปรึกษา';
@@ -10820,9 +10818,7 @@
     const paintDelay=()=>{
       const delayed=elapsedSeconds>=120 || flowConfig.get('wait')==='long';
       paintElapsedTimer(w.querySelector('[data-queue-elapsed]'),elapsedSeconds);
-      w.querySelector('[data-queue-estimate]').textContent=delayed
-        ? 'ยังระบุเวลาที่แน่นอนไม่ได้ กรุณารอการเรียกเข้าห้อง'
-        : 'เวลารอโดยประมาณ 2 นาที อาจเปลี่ยนแปลงตามคิวของแพทย์';
+      w.querySelector('[data-queue-book]').hidden=!delayed;
       if(delayed){title.textContent='ขออภัยที่ให้รอนาน';copy.textContent='คุณยังอยู่ในคิวปรึกษาแพทย์ เราจะแจ้งเมื่อถึงคิวของคุณ'}
     };
     paintDelay();
@@ -10846,7 +10842,7 @@
         pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+150000;
         savePendingQueue();
       }
-      w.querySelector('[data-queue-estimate]').hidden=true;
+      w.querySelector('[data-queue-book]').hidden=true;
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย แพทย์${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
       if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }
