@@ -62,7 +62,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260928-address-research-v133" defer></script>
-<script src="i18n.js?v=20260928-general-care-copy-v134" defer></script>
+<script src="i18n.js?v=20260928-address-ux-audit-v136" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2154,6 +2154,11 @@
         </div>
       </section>
 
+      <section class="form-group address-detail-section" data-address-detail-note-section hidden>
+        <h2 class="form-group__title">โน้ตถึงไรเดอร์</h2>
+        <p class="hint" data-address-detail-note></p>
+      </section>
+
       <section class="form-group address-detail-section" aria-labelledby="address-detail-delivery-title">
         <h2 class="form-group__title" id="address-detail-delivery-title">รูปแบบการจัดส่ง</h2>
         <div class="checkout-row address-detail-delivery-row">
@@ -2202,7 +2207,8 @@
         <button type="button" data-address-editor-recipient-edit>แก้ไข</button>
       </section>
 
-      <section class="address-essential-fields" aria-label="รายละเอียดที่อยู่">
+      <section class="address-essential-fields stack-3" aria-label="รายละเอียดที่อยู่">
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="address-line2" placeholder=" "><label for="addrFloor">ชั้น / ห้อง (ถ้ามี)</label></span></div></div>
         <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
       </section>
 
@@ -2216,7 +2222,6 @@
       <div class="address-data-fields" hidden aria-hidden="true">
         <input id="addrSearch" type="hidden">
         <input id="addrBuilding" type="hidden">
-        <input id="addrFloor" type="hidden">
         <input id="addrLine" type="hidden">
         <input id="addrSubdistrict" type="hidden">
         <input id="addrDistrictName" type="hidden">
@@ -2243,7 +2248,7 @@
       </div>
     </div>
     <div class="screen__footer address-footer" data-address-editor-footer>
-      <button class="btn btn--primary" data-address-save disabled>ใช้ที่อยู่นี้</button>
+      <button class="btn btn--primary" type="button" data-address-save>ยืนยันที่อยู่จัดส่ง</button>
     </div>
   </section>
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
@@ -2281,13 +2286,13 @@
            empty fields show their label as the placeholder and float it only
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ค้นหาที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <div class="address-map-search-panel__head"><i data-lucide="search" class="ui-icon" aria-hidden="true"></i><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="2" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince"><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
         <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
-        <button class="btn btn--ink" type="button" data-address-map-search-submit disabled>ค้นหาตำแหน่ง</button>
+        <button class="btn btn--ink" type="button" data-address-map-search-submit>ตรวจสอบที่อยู่นี้</button>
       </section>
       </div>
       <p class="address-readout" role="status" aria-live="polite">
@@ -4676,6 +4681,8 @@
   if(IS_DEMO_EMBED) document.documentElement.classList.add('is-demo-embed');
   function persistFlowState(){ if(IS_DEMO_EMBED) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
+    delete flowState.addressDraft;
+    delete flowState.addressSearchDraft;
     Object.assign(flowState,{
       draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
@@ -5237,10 +5244,10 @@
     return {firstName:parts.shift() || '',lastName:parts.join(' ')};
   }
   function recipientNameParts(address=flowState.orderState.address){
-    const fallback=splitRecipientName(address.recipientName || flowState.patientName || '');
+    const fallback=splitRecipientName(address.recipientName ?? flowState.patientName ?? '');
     return {
-      firstName:String(address.recipientFirstName || fallback.firstName || '').trim(),
-      lastName:String(address.recipientLastName || fallback.lastName || '').trim()
+      firstName:String(address.recipientFirstName ?? fallback.firstName ?? '').trim(),
+      lastName:String(address.recipientLastName ?? fallback.lastName ?? '').trim()
     };
   }
   const ADDRESS_FIELD_KEYS={addrBuilding:'building',addrFloor:'floor',addrLine:'line',addrDistrict:'district',addrNote:'note'};
@@ -5353,6 +5360,16 @@
   }
   document.querySelector('[data-clear-recipient]')?.addEventListener('click',clearRecipientFields);
 
+  function deliveryAddressDraft(){
+    return flowState.addressDraft || flowState.orderState.address || {};
+  }
+  function persistAddressEditorDraft(){
+    flowState.addressDraft={...deliveryAddressDraft(),...readAddressInputs()};
+    persistFlowState();
+  }
+  ['recipientFirstName','recipientLastName','recipientPhone','addrFloor','addrNote','addrLabel'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input',persistAddressEditorDraft);
+  });
   function syncDeliveryAddress({hydrateForm=false}={}){
     const address=flowState.orderState.address;
     const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
@@ -5406,11 +5423,12 @@
         : '';
       detail.hidden=!confirmed;
     }
+    const formAddress=deliveryAddressDraft();
     const previewTitles=document.querySelectorAll('[data-address-preview-title]');
     const previewDetails=document.querySelectorAll('[data-address-preview-detail]');
-    const hasDraft=Boolean(address.building && address.line && address.district);
-    previewTitles.forEach(el => { el.textContent=hasDraft ? (address.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง'; });
-    const previewParts=[...new Set([address.building,address.line,address.district].filter(Boolean))];
+    const hasDraft=Boolean(formAddress.building && formAddress.line && formAddress.district);
+    previewTitles.forEach(el => { el.textContent=hasDraft ? (formAddress.building || 'ที่อยู่จัดส่ง') : 'เลือกที่อยู่จัดส่ง'; });
+    const previewParts=[...new Set([formAddress.building,formAddress.line,formAddress.district].filter(Boolean))];
     previewDetails.forEach(el => { el.textContent=hasDraft
       ? previewParts.join(' · ')
       : 'เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง'; });
@@ -5421,7 +5439,7 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
-    const recipientParts=recipientNameParts(address);
+    const recipientParts=recipientNameParts(formAddress);
     const values={
       // The recipient defaults to the account holder until the patient
       // explicitly edits it for this order, so a fresh address always opens
@@ -5429,31 +5447,31 @@
       // screen sent the patient here.
       recipientFirstName:recipientParts.firstName,
       recipientLastName:recipientParts.lastName,
-      recipientPhone:address.recipientPhone || flowState.verifiedPhone || '',
-      addrSearch:address.building,
-      addrLabel:address.label,
-      addrBuilding:address.building,
-      addrFloor:address.floor,
-      addrLine:address.line,
-      addrSubdistrict:address.subdistrict,
-      addrDistrictName:address.districtName,
-      addrProvince:address.province,
-      addrPostcode:address.postcode,
-      addrDistrict:address.district,
-      addrNote:address.note
+      recipientPhone:formAddress.recipientPhone ?? flowState.verifiedPhone ?? '',
+      addrSearch:formAddress.building,
+      addrLabel:formAddress.label,
+      addrBuilding:formAddress.building,
+      addrFloor:formAddress.floor,
+      addrLine:formAddress.line,
+      addrSubdistrict:formAddress.subdistrict,
+      addrDistrictName:formAddress.districtName,
+      addrProvince:formAddress.province,
+      addrPostcode:formAddress.postcode,
+      addrDistrict:formAddress.district,
+      addrNote:formAddress.note
     };
     Object.entries(values).forEach(([id,value]) => {
       const input=screen.querySelector(`#${id}`);
       if(input) input.value=id==='recipientPhone' ? formatPhoneForDisplay(value) : (value || '');
     });
-    const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${address.dropoffMethod || 'hand'}"]`);
+    const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${formAddress.dropoffMethod || 'hand'}"]`);
     if(dropoff) dropoff.checked=true;
-    screen.dataset.selectedKm=address.km || '3.2';
+    screen.dataset.selectedKm=formAddress.km || '3.2';
     /* Hydration writes .value directly, so no input event fires and the ×
        buttons keep whatever state they had. Re-sync them here or an emptied
        field keeps offering a clear (client, 19 Aug). */
     syncFieldClearButtons();
-    writeDeliveryAddressDraft(screen,address);
+    writeDeliveryAddressDraft(screen,formAddress);
     syncAddressEditorReadiness();
   }
   function syncAddressDetail(){
@@ -5465,18 +5483,34 @@
     const mapAction=document.querySelector('[data-address-detail-map-action]');
     const editorMapAction=document.querySelector('#address .address-pin__edit');
     const confirm=document.querySelector('[data-address-detail-confirm]');
-    if(summary) summary.textContent=confirmed ? deliveryAddressSummary(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
+    if(summary) summary.textContent=confirmed ? addressBookFullLine(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
     if(recipient){
       const parts=recipientNameParts(address);
       recipient.textContent=[parts.firstName,parts.lastName].filter(Boolean).join(' ') || 'ยังไม่มีข้อมูลผู้รับ';
     }
     if(phone) phone.textContent=confirmed ? formatPhoneForDisplay(address.recipientPhone || '') : '';
+    const note=String(address.note || '').trim();
+    const noteSection=document.querySelector('[data-address-detail-note-section]');
+    if(noteSection) noteSection.hidden=!note;
+    const noteText=document.querySelector('[data-address-detail-note]');
+    if(noteText) noteText.textContent=note;
     if(mapAction) mapAction.firstChild.textContent=confirmed ? 'แก้ไขตำแหน่ง ' : 'เลือกจากแผนที่ ';
-    if(editorMapAction) editorMapAction.textContent=confirmed ? 'แก้ไขตำแหน่ง' : 'เลือกตำแหน่ง';
+    if(editorMapAction) editorMapAction.textContent=deliveryAddressDraft().building ? 'แก้ไขตำแหน่ง' : 'เลือกตำแหน่ง';
     if(confirm){
       confirm.disabled=!confirmed;
       confirm.setAttribute('aria-disabled',String(!confirmed));
     }
+    const method=flowState.orderState.deliveryMethod;
+    const methodLabels={priority:'ด่วนพิเศษ','same-day':'จัดส่งภายในวัน',postal:'จัดส่งทางไปรษณีย์',scheduled:'เลือกช่วงเวลาจัดส่ง'};
+    const methodText=document.querySelector('[data-address-detail-method]');
+    const eta=document.querySelector('[data-address-detail-eta]');
+    const fee=document.querySelector('[data-address-detail-fee]');
+    if(methodText) methodText.textContent=methodLabels[method] || methodLabels['same-day'];
+    const estimateLabels={priority:'ประมาณ 60 นาที','same-day':'ภายในวันนี้ก่อน 18:00 น.',postal:'1 ถึง 3 วัน',scheduled:'ตามช่วงเวลาที่เลือก'};
+    if(eta) eta.textContent=estimateLabels[method] || estimateLabels['same-day'];
+    const quote=flowState.orderState.deliveryQuoteAmount;
+    if(fee) fee.textContent=confirmed && flowState.orderState.deliveryQuoteStatus==='accepted' && quote!=null
+      ? baht(quote) : 'คำนวณหลังยืนยันที่อยู่';
     const editorTitle=document.querySelector('[data-address-editor-title]');
     if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่จัดส่ง' : 'ตรวจสอบที่อยู่จัดส่ง';
   }
@@ -5514,7 +5548,7 @@
     const complete=['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS]
       .every(id => String(document.getElementById(id)?.value || '').trim());
     const submit=document.querySelector('[data-address-map-search-submit]');
-    if(submit){submit.disabled=!complete;submit.setAttribute('aria-disabled',String(!complete))}
+    if(submit){submit.disabled=false;submit.classList.toggle('btn--blocked',!complete);submit.setAttribute('aria-disabled',String(!complete))}
   }
   function syncAddressMapCascade(changedId='',savedValues={}){
     const province=document.getElementById('addressMapProvince');
@@ -5541,29 +5575,41 @@
     syncAddressMapSearchSubmit();
   }
   function hydrateAddressMapSearch(){
-    const address=flowState.orderState.address || {};
+    const address=deliveryAddressDraft();
+    const search=flowState.addressSearchDraft;
     const query=document.getElementById('addressMapQuery');
-    if(query)query.value=[address.building,address.line].filter(Boolean).join(' ');
+    if(query)query.value=search?.query ?? [...new Set([address.building,address.line].filter(Boolean))].join(' ');
     const province=document.getElementById('addressMapProvince');
     if(province){
       if(address.province && ![...province.options].some(option => option.value===address.province)){
         province.add(new Option(address.province,address.province));
         window.kraneRefreshSelectOptions?.(province);
       }
-      province.value=address.province || '';
+      province.value=search?.addressMapProvince ?? address.province ?? '';
     }
     syncAddressMapCascade('',{
-      addressMapProvince:address.province || '',
-      addressMapDistrict:address.districtName || '',
-      addressMapSubdistrict:address.subdistrict || '',
-      addressMapPostcode:address.postcode || ''
+      addressMapProvince:search?.addressMapProvince ?? address.province ?? '',
+      addressMapDistrict:search?.addressMapDistrict ?? address.districtName ?? '',
+      addressMapSubdistrict:search?.addressMapSubdistrict ?? address.subdistrict ?? '',
+      addressMapPostcode:search?.addressMapPostcode ?? address.postcode ?? ''
     });
     syncFloatingFieldState(query?.closest('.float-field'));
   }
   document.addEventListener('change',event => {
-    if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id))syncAddressMapCascade(event.target.id);
+    if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id)){
+      syncAddressMapCascade(event.target.id);
+      persistAddressSearchDraft();
+    }
   });
-  document.getElementById('addressMapQuery')?.addEventListener('input',syncAddressMapSearchSubmit);
+  function persistAddressSearchDraft(){
+    const value=id => document.getElementById(id)?.value || '';
+    flowState.addressSearchDraft={query:value('addressMapQuery'),...Object.fromEntries(ADDRESS_MAP_CASCADE_IDS.map(id => [id,value(id)]))};
+    persistFlowState();
+  }
+  document.getElementById('addressMapQuery')?.addEventListener('input',() => {
+    syncAddressMapSearchSubmit();
+    persistAddressSearchDraft();
+  });
   function applyAddressMapSearch(){
     const value=id => (document.getElementById(id)?.value || '').trim();
     const query=value('addressMapQuery');
@@ -5574,10 +5620,15 @@
     if(!query || !province || !district || !subdistrict || !postcode){
       showActionToast('กรอกข้อมูลตำแหน่งให้ครบก่อนค้นหา','warning');
       const missing=!query ? 'addressMapQuery' : !province ? 'addressMapProvince' : !district ? 'addressMapDistrict' : !subdistrict ? 'addressMapSubdistrict' : 'addressMapPostcode';
-      document.getElementById(missing)?.focus();
+      const input=document.getElementById(missing);
+      if(input){
+        setFieldError(input,'กรุณากรอกข้อมูลช่องนี้');
+        const focusTarget=input.closest('.field')?.querySelector('[role="combobox"]') || input;
+        focusTarget.focus();
+      }
       return;
     }
-    const place={title:query,building:query,floor:flowState.orderState.address?.floor || '',line:query,
+    const place={title:query,building:query,floor:deliveryAddressDraft().floor || '',line:query,
       subdistrict,districtName:district,province,postcode};
     place.district=composeDistrict(place);
     place.detail=[place.building,place.line,place.district].filter(Boolean).join(' · ');
@@ -5612,11 +5663,14 @@
     if(!screen)return;
     const a=readAddressInputs();
     const locationComplete=Boolean(a.building && a.line && a.subdistrict && a.districtName && a.province && /^\d{5}$/.test(a.postcode));
-    const recipientComplete=Boolean(a.recipientFirstName && a.recipientLastName && normalizePhone(a.recipientPhone).length===10);
+    const recipientComplete=Boolean(a.recipientFirstName && a.recipientLastName && /^0\d{9}$/.test(normalizePhone(a.recipientPhone)));
     const button=screen.querySelector('[data-address-save]');
     if(button){
-      button.disabled=!(locationComplete && recipientComplete);
-      button.setAttribute('aria-disabled',String(button.disabled));
+      const blocked=!(locationComplete && recipientComplete);
+      button.disabled=false;
+      button.classList.toggle('btn--blocked',blocked);
+      button.setAttribute('aria-disabled',String(blocked));
+      button.textContent=!locationComplete ? 'เลือกที่อยู่ให้ครบก่อน' : !recipientComplete ? 'กรอกข้อมูลผู้รับให้ครบ' : 'ยืนยันที่อยู่จัดส่ง';
     }
     const recipient=screen.querySelector('[data-address-editor-recipient]');
     const phone=screen.querySelector('[data-address-editor-phone]');
@@ -5687,8 +5741,8 @@
       if(!firstMissing) firstMissing=el;
     }
     const phone=document.getElementById('recipientPhone');
-    if(phone && phone.value.trim() && normalizePhone(phone.value).length!==10){
-      setFieldError(phone,'เบอร์โทรศัพท์ต้องมี 10 หลัก');
+    if(phone && phone.value.trim() && !/^0\d{9}$/.test(normalizePhone(phone.value))){
+      setFieldError(phone,'กรอกเบอร์โทรศัพท์ 10 หลักที่ขึ้นต้นด้วย 0');
       if(!firstMissing) firstMissing=phone;
     }
     if(firstMissing){
@@ -5718,6 +5772,7 @@
       km:screen.dataset.selectedKm || flowState.orderState.address.km || '3.2'
     };
     flowState.orderState.addressConfirmed=true;
+    delete flowState.addressDraft;
     const remember=document.getElementById('addrRemember')?.checked===true;
     if(remember){
       rememberDeliveryAddress(flowState.orderState.address,{index:addressEditingSavedIndex});
@@ -7334,6 +7389,8 @@
   }
 
   function applyAddress(place){
+    delete flowState.addressSearchDraft;
+    const before=deliveryAddressDraft();
     simState.picked=true;
     const set=(id,v)=>{ const el=document.getElementById(id); if(el && el.value!==v){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); } };
     set('addrBuilding',place.building); set('addrFloor',place.floor); set('addrLine',place.line);
@@ -7344,27 +7401,12 @@
     document.querySelectorAll('[data-address-preview-detail]').forEach(el => { el.textContent=place.detail; });
     const prev=document.querySelector('[data-address-map]');
     if(prev) prev.classList.add('is-pin-selected');
-    /* The pin has to survive the trip back to the form. show('address')
-       re-hydrates every input from flowState.orderState.address — three times,
-       once on a timer — so a pick that only touched the DOM was wiped on
-       arrival and the form looked as if nothing had been filled at all
-       (client, 19 Aug). Persist the pick as an unconfirmed draft: the same
-       values come back out of hydration, and the address still counts as
-       unsaved until the patient presses บันทึก. */
-    const order=flowState.orderState;
-    const before=order.address || {};
-    const moved=['building','line','subdistrict','districtName','province','postcode']
-      .some(key => (before[key] || '')!==(place[key] || ''));
-    order.address={...before,
+    // Location edits remain a draft until the patient confirms the recipient.
+    flowState.addressDraft={...before,
       building:place.building || '', floor:place.floor || before.floor || '',
       line:place.line || '', subdistrict:place.subdistrict || '',
       districtName:place.districtName || '', province:place.province || '',
       postcode:place.postcode || '', district:place.district || ''};
-    if(moved && order.addressConfirmed){
-      // A new pin is a different delivery: the saved quote no longer applies.
-      order.addressConfirmed=false;
-      invalidateFulfillmentQuote();
-    }
     persistFlowState();
     syncFieldClearButtons();
   }
@@ -10148,12 +10190,13 @@
     if(['address-detail','address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       const recipientEditor=document.querySelector('[data-address-recipient-editor]');
-      if(recipientEditor) recipientEditor.hidden=!addressRecipientEditing;
-      // Some desktop browsers restore remembered address values just after the
-      // screen becomes visible. Re-apply the persisted order address after that
-      // restore pass so the form and preview can never disagree.
+      const recipientDraft=deliveryAddressDraft();
+      const recipientParts=recipientNameParts(recipientDraft);
+      const missingRecipient=!recipientParts.firstName || !recipientParts.lastName || !/^0\d{9}$/.test(normalizePhone(recipientDraft.recipientPhone ?? flowState.verifiedPhone ?? ''));
+      if(recipientEditor) recipientEditor.hidden=!(addressRecipientEditing || missingRecipient);
+      // Restore the editor draft once. Delayed hydration must not erase typing.
       syncDeliveryAddress({hydrateForm:true});
-      const draft=flowState.orderState.address || {};
+      const draft=deliveryAddressDraft();
       const hasReviewDraft=Boolean(draft.building && draft.line && draft.subdistrict && draft.districtName && draft.province && /^\d{5}$/.test(draft.postcode || ''));
       if(addressRecipientEditing || hasReviewDraft){
         addressEditingSavedIndex=-1;
@@ -10167,10 +10210,7 @@
         replaceCurrent('address-map');
         return;
       }
-      window.requestAnimationFrame(() => syncDeliveryAddress({hydrateForm:true}));
-      window.setTimeout(() => {
-        if(document.getElementById('address')?.classList.contains('active')) syncDeliveryAddress({hydrateForm:true});
-      },120);
+
     }
     if(id==='consultpay') applyCoverageFlag();
     if(id==='plan') syncDeclinedMedicines();
