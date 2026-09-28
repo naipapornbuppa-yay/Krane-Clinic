@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-general-care-copy-v134";
+    const release = "20260928-address-detail-ui-v135";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260924-screen-directory-v78">
-<link rel="stylesheet" href="components.css?v=20260928-address-research-v133">
+<link rel="stylesheet" href="components.css?v=20260928-address-detail-ui-v135">
 <link rel="stylesheet" href="custom-select.css?v=20260920-float-v1">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2317,33 +2317,51 @@
 
 
 
-  <!-- ===================== DELIVERY ADDRESS (KRANE-F18) ===================== -->
+  <!-- ===================== DELIVERY ADDRESS REVIEW (KRANE-F18) =====================
+       This is a review screen, not another form. It deliberately reuses the
+       same map preview, recipient summary, checkout row and primary action as
+       the current address/payment flow. -->
   <section class="screen" id="address-detail" data-screen-code="SCR-013A">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
-    <div class="screen__body delivery-details-body">
-      <h1 class="delivery-details-title">รายละเอียดจัดส่ง</h1>
-      <section class="delivery-details-card delivery-details-card--map">
-        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span><h2>ที่อยู่จัดส่ง</h2></div>
-        <button class="delivery-details-map" type="button" data-go="address-map" aria-label="เลือกตำแหน่งจากแผนที่">
-          <span class="sim-map__plane delivery-details-map__plane" aria-hidden="true"></span>
-          <span class="delivery-details-map__pin"><i data-lucide="map-pin" class="ui-icon" aria-hidden="true"></i></span>
-          <span class="delivery-details-map__cta" data-address-detail-map-action>เลือกจากแผนที่ <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span>
-        </button>
-        <div class="delivery-details-card__summary" data-address-detail-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</div>
+    <div class="screen__body address-detail-body stack-4">
+      <div class="address-detail-intro">
+        <h1 class="address-page-title">ตรวจสอบการจัดส่ง</h1>
+        <p class="hint">เช็กข้อมูลให้ถูกต้องก่อนดำเนินการต่อ</p>
+      </div>
+
+      <section class="form-group address-detail-section" aria-labelledby="address-detail-location-title">
+        <h2 class="form-group__title" id="address-detail-location-title">ที่อยู่จัดส่ง</h2>
+        <div class="address-pin__card address-detail-location-card">
+          <div class="address-pin__map" data-address-pin-map>
+            <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
+            <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
+            <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+            <button class="address-pin__edit" type="button" data-go="address-map" data-address-detail-map-action>แก้ไขตำแหน่ง</button>
+          </div>
+          <p class="address-pin__summary" data-address-detail-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</p>
+        </div>
       </section>
 
-      <section class="delivery-details-card">
-        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="contact" class="ui-icon" aria-hidden="true"></i></span><h2>ข้อมูลผู้รับ</h2></div>
-        <div class="delivery-details-card__row"><span><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><small data-address-detail-phone></small></span><button type="button" data-go="address" data-address-recipient-edit>แก้ไข</button></div>
+      <section class="form-group address-detail-section" aria-labelledby="address-detail-recipient-title">
+        <h2 class="form-group__title" id="address-detail-recipient-title">ผู้รับยา</h2>
+        <div class="address-recipient-summary">
+          <span class="address-recipient-summary__icon" aria-hidden="true"><i data-lucide="contact" class="ui-icon"></i></span>
+          <span class="address-recipient-summary__copy"><small>ข้อมูลผู้รับ</small><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><span data-address-detail-phone></span></span>
+          <button type="button" data-go="address" data-address-recipient-edit>แก้ไข</button>
+        </div>
       </section>
 
-      <section class="delivery-details-card">
-        <div class="delivery-details-card__head"><span class="delivery-details-card__icon"><i data-lucide="bike" class="ui-icon" aria-hidden="true"></i></span><h2>รูปแบบการจัดส่ง</h2></div>
-        <p class="delivery-details-card__notice">ค่าจัดส่งอาจเปลี่ยนแปลงตามพื้นที่และร้านยาที่พร้อมให้บริการ</p>
-        <div class="delivery-details-card__row"><span><strong data-address-detail-method>จัดส่งภายในวัน</strong><small data-address-detail-eta>ได้รับยาภายในวันนี้</small></span><strong data-address-detail-fee>คำนวณหลังยืนยันที่อยู่</strong></div>
+      <section class="form-group address-detail-section" aria-labelledby="address-detail-delivery-title">
+        <h2 class="form-group__title" id="address-detail-delivery-title">รูปแบบการจัดส่ง</h2>
+        <div class="checkout-row address-detail-delivery-row">
+          <span class="checkout-row__icon" aria-hidden="true"><i data-lucide="bike" class="ui-icon"></i></span>
+          <span class="checkout-row__body"><span class="checkout-row__value" data-address-detail-method>จัดส่งภายในวัน</span><span class="checkout-row__recipient" data-address-detail-eta>ได้รับยาภายในวันนี้</span></span>
+          <span class="checkout-row__tag" data-address-detail-fee>คำนวณหลังยืนยันที่อยู่</span>
+        </div>
+        <p class="hint address-detail-delivery-note">ค่าจัดส่งอาจเปลี่ยนตามพื้นที่และร้านยาที่พร้อมให้บริการ</p>
       </section>
     </div>
-    <div class="screen__footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ต่อไป <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
+    <div class="screen__footer address-detail-footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ดำเนินการต่อ</button></div>
   </section>
 
   <!-- Research-informed address flow: choose the delivery location first,
@@ -7333,28 +7351,29 @@
      behind them, so a blocked or slow tile server leaves something that still
      reads as a map rather than an empty rectangle. */
   function renderAddressPinPreview(){
-    const host=document.querySelector('[data-address-pin-map]');
-    const plane=host?.querySelector('[data-address-pin-tiles]');
-    if(!host || !plane) return;
-    if(osmView.failed){ plane.innerHTML=''; return; }
-    const width=host.clientWidth || 320, height=host.clientHeight || 132;
-    const z=osmView.zoom, scale=Math.pow(2,z);
-    const originX=osmLonToX(osmView.lon,z)*OSM_TILE_SIZE - width/2;
-    const originY=osmLatToY(osmView.lat,z)*OSM_TILE_SIZE - height/2;
-    const firstX=Math.floor(originX/OSM_TILE_SIZE), lastX=Math.floor((originX+width)/OSM_TILE_SIZE);
-    const firstY=Math.floor(originY/OSM_TILE_SIZE), lastY=Math.floor((originY+height)/OSM_TILE_SIZE);
-    const tiles=[];
-    for(let y=firstY;y<=lastY;y++){
-      if(y<0 || y>=scale) continue;
-      for(let x=firstX;x<=lastX;x++){
-        const wrapped=((x%scale)+scale)%scale;
-        tiles.push(`<img class="osm-map__tile" alt="" aria-hidden="true" loading="lazy" src="${OSM_TILES}/${z}/${wrapped}/${y}.png"
-          style="left:${Math.round(x*OSM_TILE_SIZE-originX)}px;top:${Math.round(y*OSM_TILE_SIZE-originY)}px">`);
+    document.querySelectorAll('[data-address-pin-map]').forEach(host => {
+      const plane=host.querySelector('[data-address-pin-tiles]');
+      if(!plane) return;
+      if(osmView.failed){ plane.innerHTML=''; return; }
+      const width=host.clientWidth || 320, height=host.clientHeight || 132;
+      const z=osmView.zoom, scale=Math.pow(2,z);
+      const originX=osmLonToX(osmView.lon,z)*OSM_TILE_SIZE - width/2;
+      const originY=osmLatToY(osmView.lat,z)*OSM_TILE_SIZE - height/2;
+      const firstX=Math.floor(originX/OSM_TILE_SIZE), lastX=Math.floor((originX+width)/OSM_TILE_SIZE);
+      const firstY=Math.floor(originY/OSM_TILE_SIZE), lastY=Math.floor((originY+height)/OSM_TILE_SIZE);
+      const tiles=[];
+      for(let y=firstY;y<=lastY;y++){
+        if(y<0 || y>=scale) continue;
+        for(let x=firstX;x<=lastX;x++){
+          const wrapped=((x%scale)+scale)%scale;
+          tiles.push(`<img class="osm-map__tile" alt="" aria-hidden="true" loading="lazy" src="${OSM_TILES}/${z}/${wrapped}/${y}.png"
+            style="left:${Math.round(x*OSM_TILE_SIZE-originX)}px;top:${Math.round(y*OSM_TILE_SIZE-originY)}px">`);
+        }
       }
-    }
-    plane.innerHTML=tiles.join('');
-    plane.querySelectorAll('img').forEach(img => {
-      img.addEventListener('error',() => { plane.innerHTML=''; },{once:true});
+      plane.innerHTML=tiles.join('');
+      plane.querySelectorAll('img').forEach(img => {
+        img.addEventListener('error',() => { plane.innerHTML=''; },{once:true});
+      });
     });
   }
 
@@ -10194,7 +10213,12 @@
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
     if(id==='address-map') window.setTimeout(() => { setupAddressMap(); hydrateAddressMapSearch(); },0);
-    if(id==='address-detail') syncAddressDetail();
+    if(id==='address-detail'){
+      syncAddressDetail();
+      /* Paint the map after this screen becomes measurable. Hidden screens
+         have no reliable client width, which made the preview look cropped. */
+      window.requestAnimationFrame(renderAddressPinPreview);
+    }
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
