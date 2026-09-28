@@ -20,9 +20,6 @@ try{
  await page.reload();await page.waitForSelector('#queue-resume.active');
  await page.locator('[data-queue-resume]').click();await page.waitForSelector('#waitroom.active');
  assert.equal(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)).startedAt,key),started);
- await page.locator('#waitroom [data-queue-cancel]').click();
- await page.locator('[data-queue-cancel-back]').click();
- assert(await page.evaluate(k=>!!localStorage.getItem(k),key));
  // A deadline in the past cannot be renewed by reopening the queue.
  await page.evaluate(()=>sessionStorage.setItem('test-expire-queue','1'));
  await page.addInitScript(k=>{if(sessionStorage.getItem('test-expire-queue')){sessionStorage.removeItem('test-expire-queue');const q=JSON.parse(localStorage.getItem(k));q.readyAt=Date.now()-301000;localStorage.setItem(k,JSON.stringify(q))}},key);
@@ -32,13 +29,22 @@ try{
  await page.locator('[data-waitroom-retry]').click();
  assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),null);
  assert.equal(await page.evaluate(()=>JSON.parse(sessionStorage.getItem('krane-p01-flow-state-v1')).patientName),'Queue test');
- // Re-enter and cancel; the next visit must not offer the previous queue.
+ // Booking fallback retires the immediate queue without erasing intake.
  await page.goto(url+'?wait=long#waitroom');await page.waitForSelector('#waitroom.active');
- await page.locator('#waitroom [data-queue-cancel]').click();
- await page.locator('[data-queue-cancel-confirm]').click();await page.waitForURL('**#intake1');
+ assert.equal(await page.locator('[data-queue-cancel]').count(),0);
+ assert.equal(await page.locator('#queue-cancel-dialog').count(),0);
+ const draft=await page.evaluate(()=>sessionStorage.getItem('krane-p01-intake-draft-v2'));
+ await page.locator('#waitroom [data-queue-book]').click();
+ await page.waitForSelector('#appointment.active');
  assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),null);
- assert.equal(await page.evaluate(()=>sessionStorage.getItem('krane-p01-intake-draft-v2')),null);
+ const afterDraft=JSON.parse(await page.evaluate(()=>sessionStorage.getItem('krane-p01-intake-draft-v2')));
+ const beforeDraft=JSON.parse(draft);delete afterDraft.savedAt;delete beforeDraft.savedAt;
+ assert.deepEqual(afterDraft,beforeDraft);
+ assert.equal(await page.evaluate(()=>JSON.parse(sessionStorage.getItem('krane-p01-flow-state-v1')).patientName),'Queue test');
+ await page.locator('[data-appointment-day]').nth(1).click();
+ await page.locator('[data-appointment-slot]:not([aria-disabled="true"])').first().click();
+ assert.equal(await page.locator('[data-appointment-confirm]').getAttribute('aria-disabled'),'false');
  await page.reload();assert.equal(await page.locator('#queue-resume.active').count(),0);
  assert.deepEqual(errors,[]);
- console.log('PASS: elapsed timer, long wait, close/resume, cancel dismissal, persisted expiry, rematch preservation, cancellation reset; no page errors');
+ console.log('PASS: elapsed timer, long wait, close/resume, persisted expiry, rematch preservation, booking fallback with intake retained; no page errors');
 }finally{await browser.close()}

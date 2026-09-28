@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-queue-lifecycle-v181";
+    const release = "20260928-queue-booking-fallback-v182";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-queue-lifecycle-v181">
+<link rel="stylesheet" href="components.css?v=20260928-queue-booking-fallback-v182">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1809,7 +1809,7 @@
       <!-- Arrived here because matching just failed, so the screen has to say so.
            The old lead ("this needs booking in advance") described a different
            story from the one the patient actually went through. -->
-      <p class="muted appointment-lead">ขณะนี้ไม่มีแพทย์ว่างสำหรับเรื่องนี้ เลือกวันและเวลาที่คุณสะดวก</p>
+      <p class="muted appointment-lead">เลือกวันและเวลาที่คุณสะดวก ข้อมูลที่กรอกไว้จะส่งต่อให้แพทย์</p>
 
       <div class="stack-2">
         <span class="section-label">เลือกวัน</span>
@@ -1998,8 +1998,8 @@
         <p class="queue-clock" data-queue-clock>รอแล้ว <strong data-queue-elapsed>00:00</strong></p>
         <p class="hint" data-queue-estimate></p>
         <p class="muted" data-queue-delay hidden>ขณะนี้มีผู้ใช้บริการจำนวนมาก คุณอาจต้องรอนานกว่าปกติ</p>
-        <button class="btn btn--ghost" type="button" data-queue-cancel>ยกเลิกคิว</button>
-        <p class="hint">ปิดหน้านี้แล้วกลับมารอคิวเดิมได้<br>หากยกเลิกคิว ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง</p>
+        <button class="btn btn--ghost" type="button" data-queue-book>เลือกเวลานัดหมายแพทย์</button>
+        <p class="hint">ไม่สะดวกรอต่อ เลือกเวลานัดหมายได้โดยไม่ต้องกรอกข้อมูลใหม่</p>
       </div>
     </div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
@@ -2016,13 +2016,10 @@
     <div class="screen__body state-view center">
       <div class="state-view__visual" aria-hidden="true"><span class="state-view__tile state-view__tile--cutout"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-waiting-room"></use></svg></span></div>
       <div class="state-view__copy"><h2 class="h1">ต้องการดำเนินการต่อไหม?</h2><p class="muted">คุณมีคิวปรึกษาแพทย์ที่ยังค้างอยู่<br>ข้อมูลที่กรอกไว้ยังอยู่ กลับไปรอคิวเดิมได้เลย</p></div>
-      <div class="queue-wait-actions stack-2"><button class="btn btn--primary" type="button" data-queue-resume>กลับไปรอคิว</button><button class="btn btn--ghost" type="button" data-queue-cancel>ยกเลิกคิวและเริ่มใหม่</button><p class="hint">เริ่มใหม่จะล้างข้อมูลที่กรอกในครั้งนี้</p></div>
+      <div class="queue-wait-actions stack-2"><button class="btn btn--primary" type="button" data-queue-resume>กลับไปรอคิว</button><button class="btn btn--ghost" type="button" data-queue-book>เลือกเวลานัดหมายแพทย์</button><p class="hint">ข้อมูลที่กรอกไว้จะใช้ต่อในการจองนัดหมาย</p></div>
     </div>
   </section>
-  <dialog id="queue-cancel-dialog" class="modal-dialog" aria-labelledby="queue-cancel-title">
-    <h2 id="queue-cancel-title">ยกเลิกคิวนี้?</h2><p>ข้อมูลที่กรอกในครั้งนี้จะถูกล้าง หากกลับมาใช้บริการอีกครั้ง คุณจะต้องกรอกข้อมูลใหม่</p>
-    <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-queue-cancel-confirm>ยืนยันยกเลิกคิว</button><button class="btn btn--ghost" type="button" data-queue-cancel-back>รอต่อ</button></div>
-  </dialog>
+
 
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
@@ -10780,14 +10777,15 @@
       if(pendingQueue){pendingQueue.suspended=false;savePendingQueue()}
       show('waitroom');
     }
-    if(event.target.closest('[data-queue-cancel]')) document.getElementById('queue-cancel-dialog').showModal();
-    if(event.target.closest('[data-queue-cancel-back]')) document.getElementById('queue-cancel-dialog').close();
-    if(event.target.closest('[data-queue-cancel-confirm]')){
+    if(event.target.closest('[data-queue-book]')){
+      saveIntakeDraft();
+      persistFlowState();
+      clearTimeout(waitTimer);
+      clearInterval(waitCountdownTimer);
+      stopWaitroomEntryWindow();
       pendingQueue=null;
-      try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
-      resetRequiredFlow();
-      [FLOW_STATE_KEY,DRAFT_KEY,CONSENT_RECORD_KEY].forEach(key => {try{sessionStorage.removeItem(key)}catch(_){}});
-      location.href='krane-b2c.html#intake1';
+      if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
+      show('appointment');
     }
   });
   window.addEventListener('pagehide',()=>{if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}});

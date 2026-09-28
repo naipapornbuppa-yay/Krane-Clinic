@@ -1,5 +1,7 @@
 # LINE Health recording → Krane UX audit
 
+**Updated product decision (v182):** Krane does not offer queue cancellation/reset. Both waiting and resume screens offer appointment booking instead, preserving intake and consent. This supersedes the cancellation recommendations and validation described below; those describe the reference recording and v181 history.
+
 Reference: RPReplay_Final1790595474.MP4, duration 10:17. Screen frames inspected every 15 seconds and every 2 seconds during exit/re-entry/cancellation (9:02–10:17). This is a UI observation, not evidence of the provider's backend implementation.
 
 | Video | Observed behavior | Krane comparison/action |
