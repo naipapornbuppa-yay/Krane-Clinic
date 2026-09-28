@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-address-clear-state-v172";
+    const release = "20260928-payment-direct-success-v173";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -8800,7 +8800,7 @@
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
     'address-detail':'payment', address:'address-detail', 'address-map':'address-detail', 'delivery-quote':'address-detail', 'pharmacy-search':'address-detail',
     pharmacypending:'pharmacy-search', payment:'pharmacypending',
-    'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-processing', insurance:'payment',
+    'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw',
     pharmacyissue:'pharmacy-search',
     tracking:'payment-success', 'order-summary':'tracking', feedback:'consult', feedbackdone:'feedback',
@@ -10128,6 +10128,7 @@
     return target;
   }
   function normalizeScreenTarget(target){
+    if(target==='payment-processing') return 'payment-success';
     // `concern` was removed when the landing treatment selector became the entry
     // point, but prerequisite guards can still return that legacy route. Resolve
     // it before toggling `.active`; otherwise every real screen is hidden and the
@@ -10455,11 +10456,6 @@
        their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
     clearTimeout(preloaderTimer);
-    if(id==='payment-processing'){
-      paymentSuccessTimer=setTimeout(() => {
-        if(document.getElementById('payment-processing')?.classList.contains('active')) replaceCurrent('payment-success');
-      },reduceMotion ? 450 : 1500);
-    }
     if(id==='preloader'){
       preloaderTimer=setTimeout(() => {
         if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
@@ -12978,7 +12974,7 @@
       window.KraneGoldenDemo?.advanceFulfilment('Preparing');
       persistFlowState();
       syncPaymentOutcome();
-      show('payment-processing');
+      show('payment-success');
       return;
     }
     if(event.target.closest('[data-payment-retry]')){
