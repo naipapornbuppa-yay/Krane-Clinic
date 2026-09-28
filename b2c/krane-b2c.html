@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260928-resume-copy-cleanup-v184";
+    const release = "20260928-waitroom-copy-cleanup-v185";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -56,7 +56,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260928-resume-copy-cleanup-v184">
+<link rel="stylesheet" href="components.css?v=20260928-waitroom-copy-cleanup-v185">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1997,9 +1997,7 @@
       <div class="queue-wait-actions stack-2">
         <p class="queue-clock" data-queue-clock>รอแล้ว <strong data-queue-elapsed>00:00</strong></p>
         <p class="hint" data-queue-estimate></p>
-        <p class="muted" data-queue-delay hidden>ขณะนี้มีผู้ใช้บริการจำนวนมาก คุณอาจต้องรอนานกว่าปกติ</p>
         <button class="btn btn--ghost" type="button" data-queue-book>เลือกเวลานัดหมายแพทย์</button>
-        <p class="hint">ไม่สะดวกรอต่อ เลือกเวลานัดหมายได้โดยไม่ต้องกรอกข้อมูลใหม่</p>
       </div>
     </div>
     <!-- The room opens in video. Chat is where the room falls back to, not where it starts.
@@ -10820,7 +10818,6 @@
       w.querySelector('[data-queue-estimate]').textContent=delayed
         ? 'ยังระบุเวลาที่แน่นอนไม่ได้ กรุณารอการเรียกเข้าห้อง'
         : 'เวลารอโดยประมาณ 2 นาที อาจเปลี่ยนแปลงตามคิวของแพทย์';
-      w.querySelector('[data-queue-delay]').hidden=!delayed;
       if(delayed){title.textContent='ขออภัยที่ให้รอนาน';copy.textContent='คุณยังอยู่ในคิวปรึกษาแพทย์ เราจะแจ้งเมื่อถึงคิวของคุณ'}
     };
     paintDelay();
@@ -10845,7 +10842,6 @@
         savePendingQueue();
       }
       w.querySelector('[data-queue-estimate]').hidden=true;
-      w.querySelector('[data-queue-delay]').hidden=true;
       if(title) title.textContent = 'ถึงคิวแล้ว!';
       if(copy) copy.textContent = `กดเข้าห้องได้เลย คุณหมอ${DOCTOR_NAME} พร้อมเจอคุณแล้ว`;
       if(btn){ btn.hidden = false; btn.classList.add('is-ready-pop'); }

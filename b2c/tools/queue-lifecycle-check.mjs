@@ -13,7 +13,8 @@ try{
  await page.goto(url+'?wait=long#waitroom');
  await page.waitForSelector('#waitroom.active');
  assert(await page.locator('[data-queue-elapsed]').isVisible());
- assert(await page.locator('[data-queue-delay]').isVisible());
+ assert.equal(await page.locator('[data-queue-delay]').count(),0);
+ assert(await page.locator('#waitroom [data-queue-book]').isVisible());
  await page.screenshot({path:'/tmp/krane-queue-v181.png'});
  const started=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)).startedAt,key);
  await page.locator('#waitroom [data-queue-close]').click();
