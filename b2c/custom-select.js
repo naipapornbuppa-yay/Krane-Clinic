@@ -2,6 +2,18 @@
   var enhanced=[];
   var sequence=0;
   var enhancementFrame=0;
+  function syncKeyboardInset(){
+    if(!window.visualViewport)return;
+    var visible=window.visualViewport;
+    var inset=Math.max(0,window.innerHeight-visible.height-visible.offsetTop);
+    enhanced.forEach(function(record){
+      if(!record.search)return;
+      record.root.style.setProperty('--custom-select-keyboard-inset',inset+'px');
+      record.root.style.setProperty('--custom-select-visible-height',Math.max(180,visible.height-24)+'px');
+    });
+  }
+  window.visualViewport?.addEventListener('resize',syncKeyboardInset);
+  window.visualViewport?.addEventListener('scroll',syncKeyboardInset);
 
   /* Safari composites -webkit-backdrop-filter elements above later content no matter
      how high the overlay's z-index is, so the blurred screen header and footer painted
@@ -22,6 +34,7 @@
   function closeSelect(record,returnFocus){
     record.root.classList.remove('is-open');
     record.trigger.setAttribute('aria-expanded','false');
+    if(record.search){record.search.value='';filterOptions(record)}
     syncSheetFlag();
     if(returnFocus)record.trigger.focus();
   }
@@ -31,7 +44,7 @@
   }
 
   function focusOption(record,index){
-    var options=record.options.filter(function(option){return !option.disabled});
+    var options=record.options.filter(function(option){return !option.disabled&&!option.hidden});
     if(!options.length)return;
     var safeIndex=Math.max(0,Math.min(index,options.length-1));
     options[safeIndex].focus();
@@ -43,6 +56,11 @@
     record.root.classList.add('is-open');
     record.trigger.setAttribute('aria-expanded','true');
     syncSheetFlag();
+    if(record.search){
+      syncKeyboardInset();
+      record.search.focus();
+      return;
+    }
     if(focusSelected){
       var selectedIndex=record.options.findIndex(function(option){return option.getAttribute('aria-selected')==='true'});
       window.requestAnimationFrame(function(){focusOption(record,selectedIndex<0?0:selectedIndex)});
@@ -65,12 +83,27 @@
     closeSelect(record,true);
   }
 
+  function filterOptions(record){
+    if(!record.search)return;
+    var query=record.search.value.trim().toLocaleLowerCase();
+    var count=0;
+    record.options.forEach(function(option){
+      option.hidden=!option.textContent.toLocaleLowerCase().includes(query);
+      if(!option.hidden)count++;
+    });
+    record.empty.hidden=count>0;
+  }
+
   /* Cascading selects (province → district → subdistrict → postcode) replace
      their native option list as the parent value changes. Keep the enhanced
      control attached and rebuild only its option buttons, so labels and focus
      listeners are not duplicated on every upstream edit. */
   function refreshOptions(record){
     record.menu.replaceChildren();
+    if(record.search){
+      record.list.replaceChildren();
+      record.menu.append(record.search,record.list,record.empty);
+    }
     record.options=Array.from(record.select.options).map(function(nativeOption,index){
       // Retain the native placeholder for required-field validation, never as a choice.
       if(!nativeOption.value.trim() || !nativeOption.textContent.trim() || nativeOption.hidden)return null;
@@ -83,7 +116,7 @@
       option.dataset.nativeIndex=String(index);
       option.addEventListener('click',function(){chooseOption(record,index)});
       option.addEventListener('keydown',function(event){
-        var enabled=record.options.filter(function(item){return !item.disabled});
+        var enabled=record.options.filter(function(item){return !item.disabled&&!item.hidden});
         var current=enabled.indexOf(option);
         if(event.key==='ArrowDown'){event.preventDefault();focusOption(record,current+1)}
         if(event.key==='ArrowUp'){event.preventDefault();focusOption(record,current-1)}
@@ -91,9 +124,10 @@
         if(event.key==='End'){event.preventDefault();focusOption(record,enabled.length-1)}
         if(event.key==='Escape'){event.preventDefault();closeSelect(record,true)}
       });
-      record.menu.appendChild(option);
+      record.list.appendChild(option);
       return option;
     }).filter(Boolean);
+    filterOptions(record);
     syncSelect(record);
   }
 
@@ -168,8 +202,30 @@
     var menu=document.createElement('div');
     menu.className='custom-select__menu';
     menu.id=(select.id||'custom-select-'+sequence)+'-listbox';
-    menu.setAttribute('role','listbox');
+    menu.setAttribute('role',select.hasAttribute('data-searchable-select')?'dialog':'listbox');
+    if(select.hasAttribute('data-searchable-select'))trigger.setAttribute('aria-haspopup','dialog');
     trigger.setAttribute('aria-controls',menu.id);
+
+    var search=null,empty=null;
+    var list=menu;
+    if(select.hasAttribute('data-searchable-select')){
+      list=document.createElement('div');
+      list.className='custom-select__list';
+      list.id=menu.id+'-options';
+      list.setAttribute('role','listbox');
+      search=document.createElement('input');
+      search.type='search';
+      search.className='custom-select__search';
+      search.placeholder='พิมพ์เพื่อค้นหา';
+      search.setAttribute('aria-label','ค้นหา'+(select.id?document.querySelector('label[for="'+select.id+'"]')?.textContent||'ตัวเลือก':'ตัวเลือก'));
+      search.setAttribute('aria-controls',list.id);
+      search.autocomplete='off';
+      search.inputMode=select.id==='addressMapPostcode'?'numeric':'text';
+      empty=document.createElement('p');
+      empty.className='custom-select__empty';
+      empty.textContent='ไม่พบรายการที่ตรงกัน';
+      empty.hidden=true;
+    }
 
     var scrim=document.createElement('button');
     scrim.type='button';
@@ -196,9 +252,21 @@
     select.tabIndex=-1;
     select.setAttribute('aria-hidden','true');
 
-    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,scrim:scrim,options:[]};
+    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,list:list,scrim:scrim,search:search,empty:empty,options:[]};
     enhanced.push(record);
     refreshOptions(record);
+
+    if(search){
+      search.addEventListener('input',function(){filterOptions(record)});
+      search.addEventListener('keydown',function(event){
+        if(event.key==='Escape'){event.preventDefault();closeSelect(record,true)}
+        if(event.key==='ArrowDown'){event.preventDefault();focusOption(record,0)}
+        if(event.key==='Enter'){
+          var first=record.options.find(function(option){return !option.hidden&&!option.disabled});
+          if(first){event.preventDefault();first.click()}
+        }
+      });
+    }
 
     trigger.addEventListener('click',function(){record.root.classList.contains('is-open')?closeSelect(record,false):openSelect(record,false)});
     trigger.addEventListener('keydown',function(event){
