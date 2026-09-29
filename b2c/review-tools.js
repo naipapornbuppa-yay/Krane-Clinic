@@ -57,7 +57,6 @@
       screens: [
         ["nurse", "SID-023", "พยาบาลคัดกรอง", "Nurse pre-screen"],
         ["matching", "SID-024", "กำลังจับคู่แพทย์", "Doctor matching"],
-        ["choosedoc", "SID-025", "เลือกแพทย์", "Choose doctor", "alternative"],
         ["appointment", "SID-026", "จองคิวแพทย์ · เลือกวันและเวลา", "Book a doctor · Choose date & time", "featured"],
         ["appointment-booked", "SID-026A", "ยืนยันนัดหมาย", "Appointment confirmed"],
         ["consultpay", "SID-027", "สรุปค่าปรึกษา", "Consultation order summary"],

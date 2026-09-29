@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260929-appointment-borderless-v209";
+    const release = "20260929-remove-doctor-choice-v210";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260927-screen-tab-order-v79"></script>
+<script src="review-tools.js?v=20260929-remove-doctor-choice-v210"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260929-appointment-borderless-v209">
+<link rel="stylesheet" href="components.css?v=20260929-remove-doctor-choice-v210">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260929-appointment-borderless-v209" defer></script>
-<script src="i18n.js?v=20260929-appointment-borderless-v209" defer></script>
+<script src="custom-select.js?v=20260929-remove-doctor-choice-v210" defer></script>
+<script src="i18n.js?v=20260929-remove-doctor-choice-v210" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -1786,17 +1786,6 @@
     </div>
   </section>
 
-  <!-- ===================== CHOOSE A DOCTOR (optional / multiple available · KRANE-F09 / F11) ===================== -->
-  <section class="screen" id="choosedoc">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Choose your doctor</span></div>
-    <div class="screen__body stack-4">
-      <div class="alert alert--success"><span class="a-ic">✓</span><div><div class="a-title">Two doctors are available now</div></div></div>
-      <div class="stack-3">
-        <button class="option" aria-selected="true" data-select><span class="avatar avatar--brand" style="width:44px;height:44px">N</span><span class="opt-body"><span class="opt-title">Dr. Narin T.</span><span class="opt-sub">Dermatology · available now · licensed doctor</span></span><span class="opt-check"></span></button>
-        <button class="option" data-select><span class="avatar avatar--brand" style="width:44px;height:44px">A</span><span class="opt-body"><span class="opt-title">Dr. Anong S.</span><span class="opt-sub">Dermatology · available now · licensed doctor</span></span><span class="opt-check"></span></button>
-      </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="consultpay">Continue with selected doctor</button><button class="btn btn--ghost btn--sm" data-go="matching">Just match me automatically</button></div>
-  </section>
 
   <!-- ===================== NO DOCTOR FREE NOW, PICK A TIME (KRANE-F09 fallback) ===================== -->
   <!-- SCR-007B. Client, 31 Aug: sexual health cannot be matched to a doctor on
@@ -4390,7 +4379,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260929-appointment-borderless-v209"></script>
+  <script src="b2c-icons.js?v=20260929-remove-doctor-choice-v210"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -5075,7 +5064,7 @@
   const careJourneyStageOrder = {
     1: ['concern','conditions','intake1','intake2','intake3','intake4','intake5','intake-concern',
         'signup','login','social-confirm','otp','consent-terms','identity','patient-info','insurance-result'],
-    2: ['intake-general','matching','choosedoc','appointment','consultpay','consultpay-gw','consultpay-fail',
+    2: ['intake-general','matching','appointment','consultpay','consultpay-gw','consultpay-fail',
         'waitroom','consult','video','rx-writing','rx-plan','appointment-booked'],
     /* Tracking is not a step of the journey: by then it is finished and paid,
        and the stepper sat above the delivery saying the patient was still in
@@ -8746,7 +8735,7 @@
     if(directGate){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=false;
-    } else if(flowState.entryChannel==='direct' && ['matching','choosedoc','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'].includes(target)){
+    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'].includes(target)){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=true;
     }
@@ -8894,7 +8883,7 @@
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', identity:'consent-terms', 'patient-info':'identity', 'insurance-result':'insurance', nurse:'patient-info',
-    matching:'patient-info', choosedoc:'matching', appointment:'matching', 'appointment-booked':'appointment',
+    matching:'patient-info', appointment:'matching', 'appointment-booked':'appointment',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
     'address-detail':'payment', address:'address-detail', 'address-map':'address-detail', 'delivery-quote':'address-detail', 'pharmacy-search':'address-detail',
@@ -10128,14 +10117,14 @@
   });
 
   const REQUIRED_CARE_TARGETS = new Set([
-    'nurse','matching','choosedoc','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
+    'nurse','matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue',
     'tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'
   ]);
   /* Everything from doctor matching onwards now sits after the health page,
      so all of it waits on that page rather than only the waiting room. */
-  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','choosedoc','appointment',
+  const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','appointment',
     'consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan']);
   // Client update: PDPA consent now comes right after OTP, before patient info and
   // identity. New order: otp -> consent-terms -> patient-info -> identity -> care flow.
@@ -10235,6 +10224,7 @@
     return target;
   }
   function normalizeScreenTarget(target){
+    if(target==='choosedoc') return 'matching';
     if(target==='payment-processing') return 'payment-success';
     // `concern` was removed when the landing treatment selector became the entry
     // point, but prerequisite guards can still return that legacy route. Resolve
@@ -11068,7 +11058,7 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
+    const legacyRoutes = {'choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
@@ -12618,7 +12608,6 @@
     'login':            { id:'KRANE-F03', name:'Log In, Returning User', stories:['A returning patient verifies the phone number with OTP','A still-valid identity may skip repeat identity verification','Current PDPA and telemedicine consent remains mandatory before matching'] },
     'social-confirm':   { id:'KRANE-F03', name:'Social Login Callback, Confirm Account', stories:['Client 14 Jul: LINE / Google login returns to a clear confirmation screen before continuing','Patient reviews the verified identity and contact details shared by the provider','New-patient and returning-patient routes continue to the correct next step'] },
     'matching':         { id:'KRANE-F09 + KRANE-F11', name:'Doctor Matching (Auto-match default)', stories:['US-F09.1: Auto-match assigns an available licensed doctor without a redundant introduction screen','US-F11.1: The patient sees one waiting state while a doctor is assigned','If no doctor is immediately available, the system offers the next suitable appointment without sending the patient to an error page'] },
-    'choosedoc':        { id:'KRANE-F09 + KRANE-F11', name:'Choose a Doctor (optional)', stories:['US-F09.2: Patient browses available doctors for the service type and selects one','US-F09.5: When two doctors are free at once, a choice can be offered after a successful match'] },
     'consultpay':       { id:'KRANE-F39 + KRANE-F09', name:'Consultation Fee Payment', stories:['US-F39.1: Discount / coupon code can be entered at checkout','Prototype assumption: Payment 1 is consultation fee only and is required before entering the waiting room','Prototype assumption: medicine and delivery remain a separate payment after prescription acceptance'] },
     'waitroom':         { id:'KRANE-F14', name:'Waiting Room, Doctor Joins First', stories:['US-F14.4: Doctor joins first before patient enters the consultation room','Client v3: the patient cannot enter a blank room; the Enter button unlocks only when the doctor admits them','Patient sees current status, estimated next step, and what to prepare while waiting'] },
     'consult':          { id:'KRANE-F13', name:'Consultation Screen (Patient), Chat Tab', stories:['US-F13.1: Chat + video tabs freely switchable during session','US-F13.2: Patient sees doctor name, photo, and licence number in session','US-F13.3: Patient can view intake form summary in the same view','US-F13.4: Session stays open until doctor closes it and sends the treatment plan','Prototype assumption: consultation fee is already paid before this screen'] },
