@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260929-secondary-actions-v222";
+    const release = "20260929-remove-direct-nurse-v223";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260929-secondary-actions-v222"></script>
+<script src="review-tools.js?v=20260929-remove-direct-nurse-v223"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260929-secondary-actions-v222">
+<link rel="stylesheet" href="components.css?v=20260929-remove-direct-nurse-v223">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260929-secondary-actions-v222" defer></script>
-<script src="i18n.js?v=20260929-secondary-actions-v222" defer></script>
+<script src="custom-select.js?v=20260929-remove-direct-nurse-v223" defer></script>
+<script src="i18n.js?v=20260929-remove-direct-nurse-v223" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -1750,20 +1750,6 @@
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="matching">ใช้สิทธิ์นี้และไปต่อ</button></div>
-  </section>
-
-  <!-- ===================== NURSE PRE-SCREENING (KRANE-F38) ===================== -->
-  <section class="screen" id="nurse">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Nurse check-in</span></div>
-    <div class="screen__body stack-4">
-      <div class="card card--pad-sm row"><span class="avatar"></span><div class="grow"><div style="font-weight:var(--fw-semibold)">Nurse Priya</div><div class="hint">Registered nurse · partner: MTL</div></div><span class="badge badge--line">Online</span></div>
-      <div class="stack-2"><div class="eyebrow">Quick safety check · 2 to 3 min</div></div>
-      <div class="card card--pad-sm stack-2">
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">Confirm your symptoms</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">Check basic eligibility</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">Refer you to the right doctor</div></div>
-      </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="matching">Start nurse check-in</button><button class="btn btn--ghost" data-go="matching">Skip</button></div>
   </section>
 
   <!-- ===================== MATCHING (auto-match in progress) ===================== -->
@@ -4240,7 +4226,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260929-secondary-actions-v222"></script>
+  <script src="b2c-icons.js?v=20260929-remove-direct-nurse-v223"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -8755,7 +8741,7 @@
     intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
     'intake-edu':'intake-general', ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
-    otp:'signup', 'consent-terms':'landing', identity:'consent-terms', 'patient-info':'identity', 'insurance-result':'insurance', nurse:'patient-info',
+    otp:'signup', 'consent-terms':'landing', identity:'consent-terms', 'patient-info':'identity', 'insurance-result':'insurance',
     matching:'patient-info', appointment:'matching', 'appointment-booked':'appointment',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
@@ -8781,7 +8767,6 @@
   const PARTNER_SCREENS = ['partner-idcard','partner-patient-info','partner-insurance',
     'partner-nurse','partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
-  const DIRECT_NURSE_SCREENING_ENABLED = false;
   const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
   /* Client, 26 Aug: the height / weight / conditions page belongs immediately
      after the name-and-phone page, not on the far side of doctor matching and
@@ -8806,7 +8791,6 @@
      that has never been user-tested. doctorAvailable=false makes the matching
      screen fail on its timer and hand over to #appointment. */
   function directClinicalStartTarget(){
-    if(DIRECT_NURSE_SCREENING_ENABLED) return 'nurse';
     doctorAvailable = !needsAppointment();
     return 'matching';
   }
@@ -9990,7 +9974,7 @@
   });
 
   const REQUIRED_CARE_TARGETS = new Set([
-    'nurse','matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
+    'matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue',
     'tracking','order-summary','feedback','feedbackdone','upload-rx'
@@ -10932,7 +10916,7 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'prescription':'my-documents','choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
+    const legacyRoutes = {'prescription':'my-documents','choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general','nurse':'matching'};
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
@@ -12465,7 +12449,6 @@
     'conditions':       { id:'KRANE-F08', name:'Condition Selection', stories:['US-F08.1: Patient selects the specific condition after choosing a category','US-F08.2: Selection gates the doctor pool to relevant specialists only','Prototype note: categories and conditions render from consultationCatalog'] },
     'articles':         { id:'KRANE-F37', name:'Health Articles & Education (Patient)', stories:['US-F37.1: Read articles, medicine info, condition guides (educational framing)','US-F37.2: Author/attribution header + links/tags for navigation','US-F37.3: Only Published items from the CMS (F30) are shown'] },
     'article':          { id:'KRANE-F37', name:'Health Article, Read View', stories:['US-F37.1: Educational content with clear author and review date','US-F37.2: Tags link to related topics'] },
-    'nurse':            { id:'KRANE-F38', name:'Nurse Pre-Screening Flow', stories:['US-F38.1: Patient consults a nurse before doctor referral (when required)','US-F38.2: Admin enables/disables the nurse step per partner','US-F38.3: Nurse screens and refers to the right doctor'] },
     'insurance':        { id:'KRANE-F35', name:'Insurance Demand-Side Intake & Claim', stories:['Enter ID/passport, DOB, policy number','Choose "Check entitlement" or "Pay myself"','Edit copay vs credit-limit split','Claim connects to back-office claim system'] },
     'intake1':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02 Symptoms & Duration', stories:['Every Direct service, including General consultation, starts its clinical intake here','Questions adapt to the selected service'] },
     'intake2':          { id:'KRANE-F02', name:'Direct Intake, SCR-DIR-02A Detail', stories:['Captures severity and concern-specific pattern before safety screening'] },

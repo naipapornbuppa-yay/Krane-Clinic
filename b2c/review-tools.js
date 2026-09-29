@@ -55,7 +55,6 @@
     {
       step: "04", th: "จับคู่แพทย์และนัดหมาย", en: "Match & book",
       screens: [
-        ["nurse", "SID-023", "พยาบาลคัดกรอง", "Nurse pre-screen"],
         ["matching", "SID-024", "กำลังจับคู่แพทย์", "Doctor matching"],
         ["appointment", "SID-026", "จองคิวแพทย์ · เลือกวันและเวลา", "Book a doctor · Choose date & time", "featured"],
         ["appointment-booked", "SID-026A", "ยืนยันนัดหมาย", "Appointment confirmed"],
