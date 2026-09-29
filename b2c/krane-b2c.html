@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260929-remove-doctor-choice-v210";
+    const release = "20260929-remove-prescription-screen-v211";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260929-remove-doctor-choice-v210"></script>
+<script src="review-tools.js?v=20260929-remove-prescription-screen-v211"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260929-remove-doctor-choice-v210">
+<link rel="stylesheet" href="components.css?v=20260929-remove-prescription-screen-v211">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260929-remove-doctor-choice-v210" defer></script>
-<script src="i18n.js?v=20260929-remove-doctor-choice-v210" defer></script>
+<script src="custom-select.js?v=20260929-remove-prescription-screen-v211" defer></script>
+<script src="i18n.js?v=20260929-remove-prescription-screen-v211" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -3743,146 +3743,6 @@
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-auth-complete disabled>ยืนยันรหัสและไปต่อ</button></div>
   </section>
 
-  <!-- Prescription document (ใบสั่งยา · 8 fields) -->
-  <!-- Client (6 Jul): documents are CONTENT on one screen, not separate pages.
-       Prescription and medical certificate live here as tabs. -->
-  <section class="screen" id="prescription" data-screen-code="SCR-018">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Documents</span></div>
-    <div class="screen__body stack-4">
-      <!-- Four equal document buttons made the summary, which is what a patient
-           opens this screen for, one option among four. It leads now, the
-           medicine detail sits beside it and the paperwork behind one tab
-           (client wireframe, 10 Sep). -->
-      <!-- The consultation summary: what was discussed, what the doctor concluded and
-           what happens next, in the patient's own words rather than clinical shorthand. -->
-      <!-- This tab is the treatment plan, in the shape the record screen uses:
-           what was found, what the plan is, who is looking after it and when
-           they are seen next. The SOAP note it carried before restated the
-           same four facts as a clinical note (client, 10 Sep).
-
-           The sections carry no inner container: the sheet is already a card,
-           and a grey box inside a white card inside a grey screen was three
-           surfaces deep for one paragraph of text. -->
-      <div data-doc="summary" class="stack-4">
-        <div class="card card--pad-sm stack-4 doc-sheet doc-plan">
-          <div class="treatment-record__head">
-            <div class="treatment-record__date">วันที่ <span>30 มิ.ย. 2026</span></div>
-            <span class="badge badge--ok">เสร็จสิ้น</span>
-          </div>
-          <div class="treatment-detail__summary">
-            <div class="eyebrow">แผนการรักษา</div>
-            <h2 class="h2">ผมร่วง</h2>
-          </div>
-          <section class="doc-plan__block">
-            <div class="section-label">คำวินิจฉัย</div>
-            <p>ภาวะผมร่วงจากพันธุกรรม (Androgenetic alopecia) ระยะเริ่มต้น ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้</p>
-          </section>
-          <section class="doc-plan__block">
-            <div class="section-label">รายละเอียดการรักษา</div>
-            <p>เริ่มยาตามใบสั่งยา RX-2026-10293 และใช้ต่อเนื่องทุกวัน ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม หากมีผื่น คัน หรืออาการผิดปกติ ให้หยุดยาและติดต่อแพทย์</p>
-          </section>
-          <section class="doc-plan__care">
-            <div class="treatment-doctor">
-              <span class="avatar">น</span>
-              <span><strong>แพทย์นรินทร์ ทานากะ</strong><small>ว.42317</small></span>
-            </div>
-            <div class="doc-plan__next">
-              <small>นัดติดตามผลครั้งถัดไป</small>
-              <strong data-followup-date data-followup-offset="11">12 Sep 2026</strong>
-            </div>
-          </section>
-        </div>
-      </div>
-      <div data-doc="rx" class="stack-4" hidden>
-      <div class="card card--pad-sm stack-3 doc-sheet">
-        <div class="between"><div><strong>Krane Clinic · Prescription</strong><div class="hint">Prescribed by Dr. Narin T. · licence 42317</div></div><span class="badge badge--ok">Valid</span></div>
-        <div class="divider"></div>
-        <div class="kv-list stack-3">
-          <div class="between"><span class="muted">Diagnosis</span><strong>Androgenetic alopecia</strong></div>
-          <div class="between"><span class="muted">Presenting symptom</span><strong>Hair thinning</strong></div>
-          <div class="between"><span class="muted">Prescription no.</span><strong>RX-2026-10293</strong></div>
-          <div class="between"><span class="muted">Issued date</span><strong>30 Jun 2026</strong></div>
-          <div class="between"><span class="muted">Follow-up date</span><strong>12 Sep 2026</strong></div>
-          <div class="between"><span class="muted">Refills</span><strong>3</strong></div>
-        </div>
-        <div class="divider"></div>
-        <div class="section-label">ยาและเวชภัณฑ์</div>
-        <!-- The list gave a name and one line of directions. The client's
-             wireframe asks for what each medicine is for, how to take it and
-             what it can do, which is what a patient reads a prescription for
-             (client wireframe, 10 Sep). -->
-        <div class="doc-med">
-          <div class="doc-med__head">
-            <span class="thumb med-thumb doc-med__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
-            <span class="doc-med__title"><strong>Loratadine 10 mg</strong><span class="hint">ยาแก้แพ้ชนิดไม่ง่วงซึม</span></span>
-          </div>
-          <p class="doc-med__purpose">ใช้ลดอาการแพ้ ผื่นคัน ลมพิษ และลดน้ำมูก</p>
-          <ul class="doc-med__facts">
-            <li><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รับประทานครั้งละ 1 เม็ด</span></li>
-            <li><i data-lucide="clock" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>วันละ 1 ครั้ง เวลาเดิมทุกวัน</span></li>
-            <li><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ต่อเนื่อง 30 วัน หรือจนกว่าอาการจะดีขึ้น</span></li>
-            <li><i data-lucide="triangle-alert" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>อาจมีอาการปากแห้ง หรือง่วงเล็กน้อยในบางราย</span></li>
-          </ul>
-        </div>
-        <div class="doc-med">
-          <div class="doc-med__head">
-            <span class="thumb med-thumb doc-med__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
-            <span class="doc-med__title"><strong>Paracetamol 500 mg</strong><span class="hint">ยาแก้ปวด ลดไข้</span></span>
-          </div>
-          <p class="doc-med__purpose">ใช้บรรเทาอาการปวดและลดไข้</p>
-          <ul class="doc-med__facts">
-            <li><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รับประทานครั้งละ 1 ถึง 2 เม็ด</span></li>
-            <li><i data-lucide="clock" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เมื่อมีอาการ ห่างกันอย่างน้อย 4 ถึง 6 ชั่วโมง</span></li>
-            <li><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ไม่เกิน 8 เม็ดต่อวัน</span></li>
-            <li><i data-lucide="triangle-alert" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>เลี่ยงการดื่มแอลกอฮอล์ระหว่างใช้ยา</span></li>
-          </ul>
-        </div>
-        <div class="divider"></div>
-        <div class="doc-sign">
-          <span class="hint">Digitally signed</span>
-          <img class="doc-sign__mark" src="assets/documents-v1/signature-narin.svg" width="300" height="104" alt="ลายเซ็นแพทย์" decoding="async">
-          <strong>Dr. Narin T.</strong>
-          <span class="hint">ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ ว.42317</span>
-        </div>
-      </div>
-      </div>
-      <!-- The issued certificate itself, laid out like the prescription beside
-           it: this tab was a request form, so the patient never saw the
-           document they had already been given. -->
-      <div data-doc="cert" class="stack-4" hidden>
-        <!-- The document the clinic actually issues, shown as its rendered
-             page. The browser's own PDF viewer is a dark panel at this size
-             and some phones refuse to inline one at all; the file itself is
-             the link underneath. -->
-        <div class="doc-pdf">
-          <img class="doc-pdf__page" src="assets/documents-v1/medical-certificate-page1.png" width="1240" height="1754" loading="lazy" alt="ใบรับรองแพทย์ หน้า 1">
-          <img class="doc-pdf__page" src="assets/documents-v1/medical-certificate-page2.png" width="1240" height="1754" loading="lazy" alt="ใบรับรองแพทย์ หน้า 2">
-        </div>
-        <a class="btn btn--secondary doc-pdf__open" href="assets/documents-v1/medical-certificate-v2.pdf" target="_blank" rel="noopener">เปิดเอกสารเต็มหน้า <i data-lucide="arrow-up-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
-
-        <p class="hint">ใบรับรองนี้ออกให้เพื่อใช้ตามวัตถุประสงค์ที่ระบุ และตรวจสอบความถูกต้องได้ด้วยเลขที่ใบรับรอง</p>
-      </div>
-      <!-- Receipt: the same tabbed document surface, so the patient has one
-           place to find every paper the visit produced. -->
-      </div>
-      <div data-doc="receipt" class="stack-4" hidden>
-        <!-- The document the clinic actually issues, shown as its rendered
-             page. The browser's own PDF viewer is a dark panel at this size
-             and some phones refuse to inline one at all; the file itself is
-             the link underneath. -->
-        <div class="doc-pdf">
-          <img class="doc-pdf__page" src="assets/documents-v1/receipt-page1.png" width="1240" height="1754" loading="lazy" alt="ใบเสร็จรับเงิน หน้า 1">
-        </div>
-        <a class="btn btn--secondary doc-pdf__open" href="assets/documents-v1/receipt-v2.pdf" target="_blank" rel="noopener">เปิดเอกสารเต็มหน้า <i data-lucide="arrow-up-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
-
-      </div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-demo-action="กำลังดาวน์โหลดเอกสาร PDF">ดาวน์โหลด PDF</button></div>
-  </section>
-
-  <!-- Medical certificate request -->
-
-  <!-- Follow-up details (active treatment) -->
-
   <!-- Upload prescription (order without consult) -->
   <section class="screen" id="upload-rx">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Upload a prescription</span></div>
@@ -4379,7 +4239,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260929-remove-doctor-choice-v210"></script>
+  <script src="b2c-icons.js?v=20260929-remove-prescription-screen-v211"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -6154,18 +6014,6 @@
       el.textContent = flowState.patientName || 'มะลิ สุธิดา';
     });
   }
-  function setDocumentTab(name){
-    syncCertificateIdentity();
-    const screen=document.getElementById('prescription');
-    if(!screen) return;
-    /* The screen shows one document, the one that was opened. The tab strip is
-       gone: the treatment record is where the four documents are listed, and a
-       strip here was a second index above the thing it indexed (client, 10 Sep). */
-    if(!screen.querySelector(`[data-doc="${name}"]`)) return;
-    screen.querySelectorAll('[data-doc]').forEach(block => { block.hidden = block.dataset.doc !== name; });
-    screen.querySelector('.screen__body').scrollTop=0;
-  }
-
   function refreshMyDocuments(){
     const screen=document.getElementById('my-documents');
     if(!screen) return;
@@ -6194,7 +6042,7 @@
     const paid=Number(flowState.orderState.paidAmount ?? currentMedicationDue());
     const net=paid;
     const method=PAYMENT_METHOD_LABELS[flowState.orderState.paidMethod || flowState.orderState.paymentMethod] || 'Original payment method';
-    ['payfail','payment-processing','payment-success','pharmacypending','tracking','order-summary','prescription'].forEach(id => {
+    ['payfail','payment-processing','payment-success','pharmacypending','tracking','order-summary'].forEach(id => {
       const screen=document.getElementById(id);
       if(!screen) return;
       screen.querySelectorAll('[data-payment-outcome-amount]').forEach(el => { el.textContent=baht(net); });
@@ -6216,7 +6064,7 @@
       ? (thai ? 'ร้านขายยาได้รับคำสั่งซื้อและกำลังเตรียมยาให้คุณ' : 'The pharmacy received your order and is preparing your medicine.')
       : (thai ? 'ชำระเงินสำเร็จแล้ว ใบรับรองแพทย์และเอกสารการรักษาเปิดดูหรือดาวน์โหลดได้ทุกเมื่อ' : 'Payment is complete. Your medical certificate and treatment documents are ready to open or download.');
     if(successCta){
-      successCta.dataset.go=hasDelivery ? 'tracking' : 'prescription';
+      successCta.dataset.go=hasDelivery ? 'tracking' : 'my-documents';
       successCta.textContent=hasDelivery
         ? (thai ? 'ติดตามคำสั่งซื้อ' : 'Track order')
         : (thai ? 'ดูเอกสาร' : 'View documents');
@@ -8735,7 +8583,7 @@
     if(directGate){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=false;
-    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'].includes(target)){
+    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','upload-rx'].includes(target)){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=true;
     }
@@ -8746,7 +8594,7 @@
        deep link never walked through it. Without this the tracking demo showed
        "no delivery address chosen" on a delivered order. */
     if(['tracking','order-summary','payment-items','payment','payment-gw','payment-processing','payment-success','payfail','delivery-quote',
-        'pharmacy-search','pharmacypending','pharmacyissue','prescription'].includes(target)
+        'pharmacy-search','pharmacypending','pharmacyissue'].includes(target)
        && !flowState.orderState.addressConfirmed){
       Object.assign(flowState.orderState.address,{
         building:'ลุมพินี เพลส พระราม 4',floor:'ชั้น 12 ห้อง 1204',line:'1922 ถนนพระรามที่ 4',
@@ -8758,7 +8606,7 @@
       });
       flowState.orderState.addressConfirmed=true;
     }
-    if(['payment','payment-gw','payment-processing','payment-success','payfail','tracking','order-summary','prescription'].includes(target)){
+    if(['payment','payment-gw','payment-processing','payment-success','payfail','tracking','order-summary'].includes(target)){
       flowState.consultationPaid=true;
     }
     if(target==='payment'){
@@ -8894,7 +8742,7 @@
     tracking:'payment-success', 'order-summary':'tracking', feedback:'consult', feedbackdone:'feedback',
     profile:'landing', followups:'profile', 'treatment-detail':'profile', 'my-documents':'profile', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
-    prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
+    'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
     // screening is a separate exception case, not the happy path.
     'partner-idcard':'consent-terms',
@@ -10120,7 +9968,7 @@
     'nurse','matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
     'consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue',
-    'tracking','order-summary','feedback','feedbackdone','prescription','upload-rx'
+    'tracking','order-summary','feedback','feedbackdone','upload-rx'
   ]);
   /* Everything from doctor matching onwards now sits after the health page,
      so all of it waits on that page rather than only the waiting room. */
@@ -10224,6 +10072,7 @@
     return target;
   }
   function normalizeScreenTarget(target){
+    if(target==='prescription') return 'my-documents';
     if(target==='choosedoc') return 'matching';
     if(target==='payment-processing') return 'payment-success';
     // `concern` was removed when the landing treatment selector became the entry
@@ -11058,7 +10907,7 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
+    const legacyRoutes = {'prescription':'my-documents','choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general'};
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
@@ -12528,13 +12377,13 @@
       syncIntakeDropdownContinue(multi.closest('.screen'));
     }
     // segmented toggles (ID/passport, article filters): single-select within parent group
-    /* Receipt and certificate are reached from wherever the patient happens to
-       be looking for them, so the caller names the tab and the documents
-       screen opens on it. */
+    /* Open issued PDFs directly; the treatment record contains medicine details. */
     const docOpen = e.target.closest('[data-doc-open]');
     if(docOpen){
-      show('prescription');
-      setDocumentTab(docOpen.dataset.docOpen);
+      const documentUrls={receipt:'assets/documents-v1/receipt-v2.pdf',cert:'assets/documents-v1/medical-certificate-v2.pdf'};
+      const file=documentUrls[docOpen.dataset.docOpen];
+      if(file) window.open(file,'_blank','noopener');
+      else show('treatment-detail');
       return;
     }
     const tog = e.target.closest('[data-toggle]');
@@ -13143,7 +12992,7 @@
       window.KraneGoldenDemo?.advanceFulfilment('Preparing');
       persistFlowState();
       syncPaymentOutcome();
-      show(hasFulfillableItems() ? 'payment-success' : 'prescription');
+      show(hasFulfillableItems() ? 'payment-success' : 'my-documents');
       return;
     }
     show('payment-gw');

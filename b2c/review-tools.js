@@ -74,8 +74,7 @@
         ["video", "SID-031", "วิดีโอคอลกับแพทย์", "Video consultation"],
         ["consult", "SID-032", "ปรึกษาผ่านแชต", "Chat consultation"],
         ["rx-writing", "SID-033", "แพทย์กำลังเขียนใบสั่งยา", "Writing prescription"],
-        ["rx-plan", "SID-034", "แผนการรักษา", "Treatment plan"],
-        ["prescription", "SID-035", "เอกสารใบสั่งยา", "Prescription document"]
+        ["rx-plan", "SID-034", "แผนการรักษา", "Treatment plan"]
       ]
     },
     {
