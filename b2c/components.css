@@ -3208,10 +3208,13 @@ body.lang-th *{letter-spacing:normal}
   padding:0;
   list-style:none
 }
-.care-journey__step{position:relative;display:grid;inline-size:100%;min-inline-size:0;grid-template-rows:auto 3px;gap:8px;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.care-journey__step{position:relative;display:grid;inline-size:100%;min-inline-size:0;grid-template-rows:auto 3px;gap:5px;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .care-journey__step::before,.care-journey__dot{display:none}
 .care-journey__step::after{content:"";display:block;width:100%;height:3px;border-radius:var(--radius-pill);background:var(--color-line)}
-.care-journey__name{display:grid;place-items:center;width:100%;min-height:2.4em;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;word-break:keep-all;text-overflow:clip}
+/* The label is nowrap, so it is always one line. Reserving 2.4em for a
+   second line (added 21 Sep for longer wording) left the bar floating a
+   half-line below its own title (client, 29 Sep). */
+.care-journey__name{display:grid;place-items:center;width:100%;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;word-break:keep-all;text-overflow:clip}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
 /* This is a stage indicator, not a loading meter: finished and current stages
@@ -3229,7 +3232,7 @@ body.lang-th *{letter-spacing:normal}
 @media(max-width:780px){
   .care-journey{display:block;padding:10px 12px 12px}
   .care-journey__steps{gap:7px}
-  .care-journey__step{grid-template-rows:auto 3px;gap:7px}
+  .care-journey__step{grid-template-rows:auto 3px;gap:5px}
   .care-journey__name{display:block;font-size:13.5px}
   .screen__subprogress{padding-block:7px}
   .screen__subprogress .progress{height:2px}
@@ -5811,7 +5814,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #address .address-recipient-editor .hint{margin:0;color:var(--color-ink-3);font-size:14px;line-height:1.5}
 #address .address-essential-fields{gap:16px}
 #address .address-optional{color:var(--color-ink-3);font-weight:var(--fw-regular)}
-#address .address-remember-choice{grid-template-columns:24px auto;align-items:center;justify-self:center;width:max-content;max-width:100%;min-height:44px;padding:0;border:0;border-radius:0;background:transparent}
+#address .address-remember-choice{grid-template-columns:24px auto;align-items:center;justify-self:start;width:max-content;max-width:100%;min-height:44px;padding:0;border:0;border-radius:0;background:transparent}
 #address .address-remember-choice__copy strong{font-size:14px}
 #address .address-readiness{margin:0 0 10px;text-align:center;color:var(--color-ink-3);font-size:13px;line-height:1.5}
 #address .address-readiness[hidden]{display:none}
@@ -5975,3 +5978,53 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   top:8px;transform:none;font-size:var(--fs-xs);line-height:1
 }
 .float-field>.float-field__box .float-field__slot>textarea.textarea{display:block}
+
+/* The consultation list price beside what is actually due: the struck figure is
+   context, so it stays quieter than the amount it is struck against. */
+.consult-fee{display:inline-flex;align-items:baseline;gap:var(--sp-2)}
+.consult-fee__was{color:var(--color-ink-3);font-weight:var(--fw-regular);text-decoration-thickness:1px}
+.consult-fee__was[hidden]{display:none}
+
+/* The "or type it yourself" line between the keyword search and the form it
+   fills in, so the two are read as one path rather than two competing ones. */
+.address-search__hint{margin:-2px 0 0;color:var(--color-ink-3);font-size:var(--fs-xs);line-height:1.4}
+
+/* The address book is a sheet on a phone and a dialog on a desktop: on a phone
+   a centred box floating over the form read as an error, and its actions sat
+   away from the thumb (client, 29 Sep). The map picker keeps its own layout. */
+@media(max-width:600px){
+  .address-book-dialog{
+    position:fixed;
+    inset:auto 0 0 0;
+    width:100%;
+    max-width:none;
+    max-height:min(86dvh,640px);
+    margin:0;
+    padding:var(--sp-3) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom));
+    border:0;
+    border-radius:22px 22px 0 0;
+    box-shadow:0 -8px 40px rgba(18,24,36,.22);
+    animation:address-sheet-rise .26s var(--ease-out);
+  }
+  /* The grab bar says which edge the sheet came from and where it goes back to. */
+  .address-book-dialog::before{
+    content:"";
+    display:block;
+    width:40px;
+    height:4px;
+    margin:0 auto var(--sp-3);
+    border-radius:var(--radius-pill);
+    background:var(--color-line);
+  }
+  .address-book-dialog::backdrop{background:var(--color-overlay,rgba(26,30,40,.45))}
+}
+/* A short rise rather than a full-height slide: if the animation never ticks
+   (hidden tab, backgrounded page) a stuck first frame leaves the sheet a few
+   pixels low instead of parked entirely off-screen. */
+@keyframes address-sheet-rise{
+  from{transform:translateY(16px)}
+  to{transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .address-book-dialog{animation:none}
+}
