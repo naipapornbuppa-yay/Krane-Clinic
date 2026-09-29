@@ -2033,6 +2033,7 @@
     "หากคุณเป็นผู้ชาย กรุณาเลือก “ไม่มี”":"If you are male, please select “No”.",
     "กรุณาเพิ่มรูปบริเวณรอบศีรษะทั้ง 4 มุม เพื่อให้แพทย์วินิจฉัยได้ถูกต้อง":"Add four views around your head so your doctor can assess it accurately.",
     "กรุณาเพิ่มรูปบริเวณรอบศีรษะทั้ง 4 มุม":"Add four views around your head.",
+    "09:00–24:00 น. · ทุก 15 นาที":"09:00–24:00 · Every 15 minutes",
     "คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง?":"Do you already have a treatment approach in mind?",
     "อยากให้แพทย์แนะนำการรักษาที่เหมาะให้":"I would like the doctor to recommend suitable treatment",
     "อยากปรึกษาแพทย์เพื่อเรียนรู้เพิ่มเติม":"I would like to speak to a doctor and learn more",
