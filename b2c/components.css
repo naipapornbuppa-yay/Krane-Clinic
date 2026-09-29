@@ -3921,9 +3921,11 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 /* Sexual health books a time instead of queueing. Two single choices — a day,
    then a time — then a commit, so the screen keeps its CTA. */
 
-.appointment-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.appointment-days{display:flex;gap:var(--sp-2);max-width:100%;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;overscroll-behavior-inline:contain;scrollbar-width:none}
+.appointment-days::-webkit-scrollbar{display:none}
 /* Day/time choices need a distinct surface and boundary against the canvas. */
-.appointment-day{display:grid;gap:2px;padding:11px 4px;border:1px solid transparent;
+.appointment-day{display:grid;flex:0 0 max(96px,calc((100% - 3 * var(--sp-2)) / 4));scroll-snap-align:start;gap:2px;padding:11px 4px;border:1px solid transparent;
   border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-ink);
   text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
@@ -3940,11 +3942,9 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
   font-size:var(--fs-sm);font-weight:var(--fw-medium);cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
 .appointment-slot[aria-checked="true"]{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
-/* Taken slots stay visible so the day does not look emptier than it is — but
-   they sit back on the page rather than carrying a plate of their own, so the
-   free ones are what the eye lands on. */
-.appointment-slot.is-taken{background:transparent;border-color:transparent;color:var(--color-ink-3);
-  cursor:default;text-decoration:line-through;opacity:.55}
+/* Unavailable times remain in the grid as pale, non-selectable choices. */
+.appointment-slot.is-taken{background:var(--color-bg-2);border-color:transparent;color:var(--color-ink-3);
+  cursor:default;text-decoration:none;opacity:.65}
 @media(max-width:360px){
   .appointment-slots{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
