@@ -40,6 +40,8 @@ try {
   await page.locator('[data-address-map-search-submit]').click();
   await page.waitForTimeout(300);
   assert.equal(await screen(),'address');
+  assert.equal(await page.locator('[data-address-editor-title]').innerText(),'เพิ่มที่อยู่');
+  assert.equal(await page.locator('[data-address-save]').innerText(),'บันทึกที่อยู่');
   assert.equal(await page.locator('[data-address-recipient-editor]').isVisible(),true);
   assert.equal(await page.locator('[data-address-save]').isEnabled(),true);
   assert.equal(await page.locator('[data-address-readiness]').count(),0);
@@ -73,6 +75,8 @@ try {
   assert.equal((await state()).orderState.addressConfirmed,true);
   assert.equal((await state()).orderState.address.floor,'12 / 1203');
   assert.equal((await state()).addressDraft,undefined);
+  await visit('address');
+  assert.equal(await page.locator('[data-address-editor-title]').innerText(),'แก้ไขที่อยู่จัดส่ง');
   // Editing the confirmed delivery address goes directly to the form.
   await visit('address-detail');
   assert.equal(await screen(),'payment');

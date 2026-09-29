@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260930-remove-delivery-review-v232";
+    const release = "20260930-address-add-mode-v233";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260930-remove-delivery-review-v232"></script>
+<script src="review-tools.js?v=20260930-address-add-mode-v233"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260930-remove-delivery-review-v232">
+<link rel="stylesheet" href="components.css?v=20260930-address-add-mode-v233">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260930-remove-delivery-review-v232" defer></script>
-<script src="i18n.js?v=20260930-remove-delivery-review-v232" defer></script>
+<script src="custom-select.js?v=20260930-address-add-mode-v233" defer></script>
+<script src="i18n.js?v=20260930-address-add-mode-v233" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2173,7 +2173,7 @@
     <div class="screen__body address-body stack-4">
       <div class="address-editor-view stack-4" data-address-editor-view>
       <div class="address-page-head">
-        <h2 class="address-page-title" data-address-editor-title>ตรวจสอบที่อยู่จัดส่ง</h2>
+        <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่</h2>
       </div>
       <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
       <section class="form-group address-location" aria-labelledby="address-location-title">
@@ -2231,7 +2231,7 @@
       </div>
     </div>
     <div class="screen__footer address-footer" data-address-editor-footer>
-      <button class="btn btn--primary" type="button" data-address-save>ยืนยันที่อยู่จัดส่ง</button>
+      <button class="btn btn--primary" type="button" data-address-save>บันทึกที่อยู่</button>
     </div>
   </section>
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
@@ -4173,7 +4173,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260930-remove-delivery-review-v232"></script>
+  <script src="b2c-icons.js?v=20260930-address-add-mode-v233"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -5478,7 +5478,7 @@
     syncFieldClearButtons();
     addressRecipientEditing=false;
     show('address');
-    setAddressPageMode('editor');
+    setAddressPageMode(addressPageMode);
     showActionToast('เลือกตำแหน่งแล้ว กรุณาตรวจรายละเอียดก่อนบันทึก','success');
   }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
@@ -5511,7 +5511,7 @@
       button.disabled=false;
       button.classList.remove('btn--blocked');
       button.removeAttribute('aria-disabled');
-      button.textContent='ยืนยันที่อยู่จัดส่ง';
+      button.textContent=addressPageMode==='new' ? 'บันทึกที่อยู่' : 'ยืนยันที่อยู่จัดส่ง';
 
     }
     const recipient=screen.querySelector('[data-address-editor-recipient]');
@@ -5743,7 +5743,7 @@
     if(at>=0) book[at]=entry; else book.push(entry);
 
   }
-  let addressPageMode='editor';
+  let addressPageMode=flowState.addressDraftMode==='new' || (!flowState.addressDraftMode && !flowState.orderState.addressConfirmed) ? 'new' : 'editor';
   let addressEditingSavedIndex=-1;
   function syncAddressRememberChoice({reveal=false}={}){
     const remember=document.getElementById('addrRemember');
@@ -5761,16 +5761,19 @@
       });
     }
   }
-  function setAddressPageMode(_mode,{focus=false}={}){
-    /* The saved-address chooser was removed from the patient flow. #address is
-       now one canonical Krane editor/review screen, whether the form starts
-       empty or is hydrated from an existing delivery address. */
+  function setAddressPageMode(mode,{focus=false}={}){
+    /* New and existing addresses share one form; the heading and action make
+       the task clear while the controls stay in the same places. */
     const editing=true;
-    addressPageMode='editor';
+    addressPageMode=mode==='new' ? 'new' : 'editor';
+    flowState.addressDraftMode=addressPageMode;
+    persistFlowState();
     const editorView=document.querySelector('[data-address-editor-view]');
     const editorFooter=document.querySelector('[data-address-editor-footer]');
     if(editorView) editorView.hidden=!editing;
     if(editorFooter) editorFooter.hidden=!editing;
+    const title=document.querySelector('[data-address-editor-title]');
+    if(title) title.textContent=addressPageMode==='new' ? 'เพิ่มที่อยู่' : 'แก้ไขที่อยู่จัดส่ง';
     /* Optional delivery details are part of the canonical editor. A restored
        session could retain stale hidden attributes from the retired compact
        mode, leaving only the section title above the CTA. Clear those flags
@@ -5779,6 +5782,7 @@
       .forEach(element => { element.hidden=false; });
     syncAddressRememberChoice();
     syncFieldClearButtons();
+    syncAddressEditorReadiness();
     if(focus){
       const target=document.querySelector('#address [data-go="address-map"]') || document.getElementById('addrNote');
       target?.focus({preventScroll:true});
@@ -5798,12 +5802,11 @@
     list.innerHTML=book.map((entry,index) => {
       const selected=addressBookKey(entry)===currentKey;
       return `<article class="address-select-card${selected ? ' is-selected' : ''}">
-        <button class="address-select-card__choice" type="button" aria-label="${escapeAddressText(addressBookName(entry))}" data-address-book-pick="${index}">
+        <button class="address-select-card__choice" type="button" aria-label="${escapeAddressText(addressBookName(entry))}" aria-pressed="${selected}" data-address-book-pick="${index}">
           <span class="address-select-card__content">
-            <strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>
+            <span class="address-select-card__heading"><strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>${selected ? '<span class="address-select-card__selected">เลือกอยู่</span>' : ''}</span>
             <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
             <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
-            <span class="address-select-card__use">ใช้ที่อยู่นี้</span>
           </span>
         </button>
         <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
@@ -5816,9 +5819,11 @@
     closeAddressBook();
     delete flowState.addressSearchDraft;
     flowState.addressDraft={...entry,remember:true};
+    addressPageMode='editor';
+    flowState.addressDraftMode='editor';
     persistFlowState();
-    show('address');
     addressEditingSavedIndex=index;
+    show('address');
     syncDeliveryAddress({hydrateForm:true});
     syncFloatingFieldStates(document.getElementById('address'));
     document.querySelectorAll('#address .is-invalid input').forEach(clearFieldError);
@@ -5840,13 +5845,13 @@
         clearFieldError(field);
       });
     addressEditingSavedIndex=-1;
+    addressPageMode='new';
+    flowState.addressDraftMode='new';
     const remember=document.getElementById('addrRemember');
     if(remember) remember.checked=false;
     syncAddressRememberChoice();
     persistFlowState();
     syncFieldClearButtons();
-    const title=document.querySelector('[data-address-editor-title]');
-    if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
     show('address');
   }
   document.addEventListener('click',event => {
@@ -10294,15 +10299,7 @@
       if(recipientEditor) recipientEditor.hidden=false;
       // Restore the editor draft once. Delayed hydration must not erase typing.
       syncDeliveryAddress({hydrateForm:true});
-      const draft=deliveryAddressDraft();
-      const hasReviewDraft=Boolean(draft.building && draft.line && draft.subdistrict && draft.districtName && draft.province && /^\d{5}$/.test(draft.postcode || ''));
-      if(addressRecipientEditing || hasReviewDraft){
-        const title=document.querySelector('[data-address-editor-title]');
-        if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
-        setAddressPageMode('editor');
-      } else {
-        setAddressPageMode('editor');
-      }
+      setAddressPageMode(addressPageMode);
 
     }
     if(id==='consultpay'){ applyCoverageFlag(); syncConsultationAppointmentSummary(); }
@@ -11968,6 +11965,9 @@
       if(!saveDeliveryAddress()) return;
       const remembered=document.getElementById('addrRemember')?.checked===true;
       addressEditingSavedIndex=-1;
+      addressPageMode='editor';
+      flowState.addressDraftMode='editor';
+      persistFlowState();
       renderAddressBook();
       focusCheckoutDelivery=true;
       replaceCurrent('payment');
