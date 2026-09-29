@@ -1,0 +1,26 @@
+name: UI contract
+
+# Agreed work has disappeared between releases more than once, and the client
+# found it before we did. This runs the locked contract on every push so a
+# silent removal fails here instead of on a client's phone.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Check the UI contract
+        run: npm run check:ui
