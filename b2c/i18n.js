@@ -2028,6 +2028,8 @@
     "มีอาการคัน แสบ ปวด สะเก็ด ตุ่ม หรือรอยแดงที่หนังศีรษะร่วมด้วยหรือไม่?":"Do you also have itching, burning, pain, scaling, bumps, or redness on your scalp?",
     "มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่? (เฉพาะผู้หญิง)":"Do you have irregular periods or unusual weight changes? (Women only)",
     "คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่? (เฉพาะผู้หญิง)":"Are you pregnant or planning a pregnancy? (Women only)",
+    "คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่?":"Are you pregnant or planning a pregnancy?",
+    "หากคุณเป็นผู้ชาย กรุณาเลือก “ไม่มี”":"If you are male, please select “No”.",
     "กรุณาเพิ่มรูปบริเวณรอบศีรษะทั้ง 4 มุม เพื่อให้แพทย์วินิจฉัยได้ถูกต้อง":"Add four views around your head so your doctor can assess it accurately.",
     "คุณมีแนวทางการรักษาที่อยากลองไว้ในใจแล้วหรือยัง?":"Do you already have a treatment approach in mind?",
     "อยากให้แพทย์แนะนำการรักษาที่เหมาะให้":"I would like the doctor to recommend suitable treatment",
