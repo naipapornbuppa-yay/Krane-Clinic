@@ -73,11 +73,11 @@ try {
   assert.equal((await state()).orderState.addressConfirmed,true);
   assert.equal((await state()).orderState.address.floor,'12 / 1203');
   assert.equal((await state()).addressDraft,undefined);
+  // Editing the confirmed delivery address goes directly to the form.
   await visit('address-detail');
-  assert.match(await page.locator('[data-address-detail-note]').innerText(),/โทรก่อนถึง/);
-  assert.match(await page.locator('[data-address-detail-address]').innerText(),/1203/);
-  await page.screenshot({path:'/private/tmp/krane-address-review-mobile.png'});
-  await page.locator('[data-address-recipient-edit]').click();await page.waitForTimeout(200);
+  assert.equal(await screen(),'payment');
+  await page.locator('[data-payment-address-row]').click();await page.waitForTimeout(200);
+  assert.equal(await screen(),'address');
   await page.locator('#recipientFirstName').fill('ยกเลิก');
   await page.locator('#address [data-back]').click();await page.waitForTimeout(400);
   assert.equal((await state()).orderState.address.recipientFirstName,'ทดสอบ');
@@ -123,13 +123,11 @@ try {
   await page.locator('[data-address-save]').click();await page.waitForTimeout(300);
   assert.equal((await state()).savedAddresses.length,1);
   assert.equal((await state()).orderState.address.recipientFirstName,'ใหม่');
-  // Review reflects the actual selected method and accepted quote, including zero.
-  await page.evaluate(()=>{const key='krane-p01-flow-state-v1';const s=JSON.parse(sessionStorage.getItem(key));s.orderState.deliveryMethod='postal';s.orderState.deliveryQuoteStatus='accepted';s.orderState.deliveryQuoteAmount=0;sessionStorage.setItem(key,JSON.stringify(s));});
+  // Old delivery-review links now land on checkout.
   await visit('address-detail');
-  assert.match(await page.locator('[data-address-detail-method]').innerText(),/ไปรษณีย์/);
-  assert.match(await page.locator('[data-address-detail-fee]').innerText(),/0/);
+  assert.equal(await screen(),'payment');
   await page.setViewportSize({width:1440,height:1000});
-  await page.screenshot({path:'/private/tmp/krane-address-review-desktop.png'});
+  await page.screenshot({path:'/private/tmp/krane-checkout-address-desktop.png'});
   await page.goto(`${base}/b2c/krane-b2c.html?lang=en#address`,{waitUntil:'domcontentloaded'});await page.waitForTimeout(800);
   assert.match(await page.locator('[data-address-save]').innerText(),/Confirm delivery address/);
   assert.match(await page.locator('#address-location-title').innerText(),/Deliver to/);

@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260930-searchable-address-select-v231";
+    const release = "20260930-remove-delivery-review-v232";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260930-searchable-address-select-v231"></script>
+<script src="review-tools.js?v=20260930-remove-delivery-review-v232"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260930-searchable-address-select-v231">
+<link rel="stylesheet" href="components.css?v=20260930-remove-delivery-review-v232">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260930-searchable-address-select-v231" defer></script>
-<script src="i18n.js?v=20260930-searchable-address-select-v231" defer></script>
+<script src="custom-select.js?v=20260930-remove-delivery-review-v232" defer></script>
+<script src="i18n.js?v=20260930-remove-delivery-review-v232" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2164,57 +2164,6 @@
 
 
 
-  <!-- ===================== DELIVERY ADDRESS REVIEW (KRANE-F18) =====================
-       This is a review screen, not another form. It deliberately reuses the
-       same map preview, recipient summary, checkout row and primary action as
-       the current address/payment flow. -->
-  <section class="screen" id="address-detail" data-screen-code="SCR-013A">
-    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
-    <div class="screen__body address-detail-body stack-4">
-      <div class="address-detail-intro">
-        <h1 class="address-page-title">ตรวจสอบการจัดส่ง</h1>
-      </div>
-
-      <section class="form-group address-detail-section" aria-labelledby="address-detail-location-title">
-        <h2 class="form-group__title" id="address-detail-location-title">ที่อยู่จัดส่ง</h2>
-        <div class="address-pin__card address-detail-location-card">
-          <div class="address-pin__map" data-address-pin-map>
-            <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
-            <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
-            <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
-            <button class="address-pin__edit" type="button" data-address-picker-open data-address-detail-map-action>แก้ไขตำแหน่ง</button>
-          </div>
-          <p class="address-pin__summary" data-address-detail-address>ยังไม่ได้เลือกที่อยู่จัดส่ง</p>
-        </div>
-      </section>
-
-      <section class="form-group address-detail-section" aria-labelledby="address-detail-recipient-title">
-        <h2 class="form-group__title" id="address-detail-recipient-title">ผู้รับยา</h2>
-        <div class="address-recipient-summary">
-          <span class="address-recipient-summary__icon" aria-hidden="true"><i data-lucide="contact" class="ui-icon"></i></span>
-          <span class="address-recipient-summary__copy"><small>ข้อมูลผู้รับ</small><strong data-address-detail-recipient>ยังไม่มีข้อมูลผู้รับ</strong><span data-address-detail-phone></span></span>
-          <button type="button" data-go="address" data-address-recipient-edit>เพิ่มข้อมูล</button>
-        </div>
-      </section>
-
-      <section class="form-group address-detail-section" data-address-detail-note-section hidden>
-        <h2 class="form-group__title">โน้ตถึงไรเดอร์</h2>
-        <p class="hint" data-address-detail-note></p>
-      </section>
-
-      <section class="form-group address-detail-section" aria-labelledby="address-detail-delivery-title">
-        <h2 class="form-group__title" id="address-detail-delivery-title">รูปแบบการจัดส่ง</h2>
-        <div class="checkout-row address-detail-delivery-row">
-          <span class="checkout-row__icon" aria-hidden="true"><i data-lucide="bike" class="ui-icon"></i></span>
-          <span class="checkout-row__body"><span class="checkout-row__value" data-address-detail-method>จัดส่งภายในวัน</span></span>
-          <span class="checkout-row__tag" data-address-detail-fee>คำนวณหลังยืนยันที่อยู่</span>
-        </div>
-        <p class="hint address-detail-delivery-note">ค่าจัดส่งอาจเปลี่ยนตามพื้นที่และร้านยาที่พร้อมให้บริการ</p>
-      </section>
-    </div>
-    <div class="screen__footer address-detail-footer"><button class="btn btn--primary" type="button" data-address-detail-confirm disabled>ดำเนินการต่อ</button></div>
-  </section>
-
   <!-- Research-informed address flow: choose the delivery location first,
        then confirm the recipient and optional rider note. Structured postal
        values stay in the DOM for persistence and fulfilment, but are not
@@ -4224,7 +4173,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260930-searchable-address-select-v231"></script>
+  <script src="b2c-icons.js?v=20260930-remove-delivery-review-v232"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -5314,14 +5263,14 @@
     const title=document.querySelector('[data-fulfillment-address-title]');
     if(title) title.hidden=confirmed;
     if(row){
-      row.dataset.go=confirmed ? 'address-detail' : 'address';
+      row.dataset.go='address';
       row.classList.toggle('checkout-row--empty',!confirmed);
       row.setAttribute('aria-label',confirmed
         ? `${pickup ? 'เปลี่ยนตำแหน่ง' : 'เปลี่ยนที่อยู่จัดส่ง'}: ${deliveryAddressSummary(address)}`
         : (pickup ? 'เพิ่มตำแหน่งเพื่อค้นหาสาขาใกล้คุณ' : 'เพิ่มที่อยู่จัดส่ง'));
     }
     const compactRow=document.querySelector('[data-delivery-address-detail-section]');
-    if(compactRow) compactRow.dataset.go=confirmed ? 'address-detail' : 'address';
+    if(compactRow) compactRow.dataset.go='address';
     const action=document.querySelector('[data-payment-address-action]');
     if(action){
       action.textContent=pickup ? 'เพิ่มตำแหน่ง' : 'เพิ่มที่อยู่';
@@ -5351,7 +5300,6 @@
       ? previewParts.join(' · ')
       : 'เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง'; });
     renderAddressPinPreview();
-    syncAddressDetail();
     syncAddressEditorReadiness();
     syncCheckoutReadiness();
     if(!hydrateForm) return;
@@ -5395,50 +5343,6 @@
     writeDeliveryAddressDraft(screen,formAddress);
     syncAddressEditorReadiness();
   }
-  function syncAddressDetail(){
-    const address=flowState.orderState.address || {};
-    const recipientDraft=deliveryAddressDraft();
-    const confirmed=Boolean(flowState.orderState.addressConfirmed && address.building && address.line && address.district);
-    const summary=document.querySelector('[data-address-detail-address]');
-    const recipient=document.querySelector('[data-address-detail-recipient]');
-    const phone=document.querySelector('[data-address-detail-phone]');
-    const mapAction=document.querySelector('[data-address-detail-map-action]');
-    const editorMapAction=document.querySelector('#address .address-pin__edit');
-    const confirm=document.querySelector('[data-address-detail-confirm]');
-    if(summary) summary.textContent=confirmed ? addressBookFullLine(address) : 'ยังไม่ได้เลือกที่อยู่จัดส่ง';
-    const recipientParts=recipientNameParts(recipientDraft);
-    const recipientName=[recipientParts.firstName,recipientParts.lastName].filter(Boolean).join(' ');
-    const recipientPhone=normalizePhone(recipientDraft.recipientPhone || '');
-    const recipientComplete=Boolean(recipientParts.firstName && recipientParts.lastName && /^0\d{9}$/.test(recipientPhone));
-    if(recipient) recipient.textContent=recipientComplete ? recipientName : 'ยังไม่มีข้อมูลผู้รับ';
-    if(phone) phone.textContent=recipientComplete ? formatPhoneForDisplay(recipientPhone) : '';
-    const recipientSummary=document.querySelector('.address-recipient-summary');
-    if(recipientSummary) recipientSummary.classList.toggle('is-empty',!recipientComplete);
-    const recipientAction=document.querySelector('[data-address-recipient-edit]');
-    if(recipientAction) recipientAction.textContent=recipientComplete ? 'แก้ไข' : 'เพิ่มข้อมูล';
-    const note=String(address.note || '').trim();
-    const noteSection=document.querySelector('[data-address-detail-note-section]');
-    if(noteSection) noteSection.hidden=!note;
-    const noteText=document.querySelector('[data-address-detail-note]');
-    if(noteText) noteText.textContent=note;
-    if(mapAction) mapAction.firstChild.textContent=confirmed ? 'แก้ไขตำแหน่ง ' : 'เลือกจากแผนที่ ';
-    if(editorMapAction) editorMapAction.textContent='แก้ไขที่อยู่';
-    if(confirm){
-      confirm.disabled=!(confirmed && recipientComplete);
-      confirm.setAttribute('aria-disabled',String(!(confirmed && recipientComplete)));
-    }
-    const method=flowState.orderState.deliveryMethod;
-    const methodLabels={priority:'ด่วนพิเศษ','same-day':'จัดส่งภายในวัน',postal:'จัดส่งทางไปรษณีย์',scheduled:'เลือกช่วงเวลาจัดส่ง'};
-    const methodText=document.querySelector('[data-address-detail-method]');
-    const fee=document.querySelector('[data-address-detail-fee]');
-    if(methodText) methodText.textContent=methodLabels[method] || methodLabels['same-day'];
-    const quote=flowState.orderState.deliveryQuoteAmount;
-    if(fee) fee.textContent=confirmed && flowState.orderState.deliveryQuoteStatus==='accepted' && quote!=null
-      ? baht(quote) : 'คำนวณหลังยืนยันที่อยู่';
-    const editorTitle=document.querySelector('[data-address-editor-title]');
-    if(editorTitle) editorTitle.textContent=confirmed ? 'แก้ไขที่อยู่จัดส่ง' : 'ตรวจสอบที่อยู่จัดส่ง';
-  }
-
   /* Address search is a true hierarchy, not four unrelated dropdowns. Each
      choice filters the next level; changing an upstream value clears every
      dependent answer so an impossible address can never be submitted. */
@@ -5940,7 +5844,6 @@
     if(remember) remember.checked=false;
     syncAddressRememberChoice();
     persistFlowState();
-    syncAddressDetail();
     syncFieldClearButtons();
     const title=document.querySelector('[data-address-editor-title]');
     if(title) title.textContent='ตรวจสอบที่อยู่จัดส่ง';
@@ -8607,7 +8510,7 @@
     if(directGate){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=false;
-    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','upload-rx'].includes(target)){
+    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue','tracking','order-summary','feedback','feedbackdone','upload-rx'].includes(target)){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=true;
     }
@@ -8758,7 +8661,7 @@
     matching:'patient-info', appointment:'matching', 'appointment-booked':'appointment',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
-    'address-detail':'payment', address:'address-detail', 'address-map':'address-detail', 'delivery-quote':'address-detail', 'pharmacy-search':'address-detail',
+    address:'payment', 'address-map':'address', 'delivery-quote':'payment', 'pharmacy-search':'payment',
     pharmacypending:'pharmacy-search', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw',
@@ -10065,7 +9968,7 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','video','rx-writing','rx-plan','address-detail','address','address-map','delivery-quote','pharmacy-search',
+    'consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','pharmacyissue',
     'tracking','order-summary','feedback','feedbackdone','upload-rx'
   ]);
@@ -10173,6 +10076,7 @@
   function normalizeScreenTarget(target){
     if(target==='prescription') return 'my-documents';
     if(target==='choosedoc') return 'matching';
+    if(target==='address-detail') return 'payment';
     if(target==='payment-processing') return 'payment-success';
     // `concern` was removed when the landing treatment selector became the entry
     // point, but prerequisite guards can still return that legacy route. Resolve
@@ -10237,12 +10141,6 @@
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
     if(id==='address-map') window.setTimeout(hydrateAddressMapSearch,0);
-    if(id==='address-detail'){
-      syncAddressDetail();
-      /* Paint the map after this screen becomes measurable. Hidden screens
-         have no reliable client width, which made the preview look cropped. */
-      window.requestAnimationFrame(renderAddressPinPreview);
-    }
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
@@ -10390,7 +10288,7 @@
     // An active case starts when the patient actually has one: a treatment plan accepted
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
-    if(['address-detail','address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
+    if(['address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
     if(id==='address'){
       const recipientEditor=document.querySelector('[data-address-recipient-editor]');
       if(recipientEditor) recipientEditor.hidden=false;
@@ -11010,7 +10908,7 @@
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
-    const id = rawId==='address-map' ? 'address' : (legacyRoutes[rawId] || rawId);
+    const id = rawId==='address-detail' ? 'payment' : rawId==='address-map' ? 'address' : (legacyRoutes[rawId] || rawId);
     const hashParams = new URLSearchParams(hashQuery);
     const freshRequested=!freshDeepLinkConsumed && (hashParams.get('fresh')==='1' || flowConfig.get('fresh')==='1');
     if(freshRequested) freshDeepLinkConsumed=true;
@@ -12075,14 +11973,6 @@
       replaceCurrent('payment');
       startInlineDeliveryQuote();
       showActionToast(remembered ? 'บันทึกและใช้ที่อยู่นี้แล้ว' : 'ใช้ที่อยู่นี้สำหรับการจัดส่ง','success');
-      return;
-    }
-    if(e.target.closest('[data-address-detail-confirm]')){
-      /* Delivery pricing is a short system calculation, so it stays in the
-         selected delivery card instead of interrupting checkout with a page. */
-      focusCheckoutDelivery=true;
-      replaceCurrent('payment');
-      startInlineDeliveryQuote();
       return;
     }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');

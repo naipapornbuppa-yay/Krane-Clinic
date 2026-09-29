@@ -81,7 +81,6 @@
       screens: [
         ["payment", "SID-040", "สรุปรายการและชำระเงิน", "Medication checkout"],
         ["payment-items", "SID-040A", "แก้ไขรายการยา", "Edit medication items"],
-        ["address-detail", "SID-036B", "สรุปรายละเอียดจัดส่ง", "Delivery details"],
         ["address", "SID-036", "รายละเอียดที่อยู่", "Delivery address"],
         ["address-map", "SID-036A", "เลือกที่อยู่จากแผนที่", "Choose address on map"],
         ["delivery-quote", "SID-037", "คำนวณค่าจัดส่ง", "Delivery quote"],
