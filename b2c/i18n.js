@@ -1492,6 +1492,7 @@
     "ไม่รวมในสิทธิ์":"Not covered",
     "ใช้สิทธิ์นี้และไปต่อ":"Use this cover and continue",
     "ตัวอย่างมุมที่แพทย์ต้องใช้":"The angles the doctor needs",
+    "ตัวอย่าง":"Examples",
     "แนวไรผมด้านหน้า":"Front hairline",
     "กลางศีรษะ":"Mid-scalp",
     "ขม่อมด้านหลัง":"Crown, from behind",
