@@ -42,6 +42,7 @@ try {
   assert.equal(await screen(),'address');
   assert.equal(await page.locator('[data-address-editor-title]').innerText(),'เพิ่มที่อยู่');
   assert.equal(await page.locator('[data-address-save]').innerText(),'บันทึกที่อยู่');
+  assert.equal(await page.locator('#address > .care-journey').isVisible(),false);
   assert.equal(await page.locator('[data-address-recipient-editor]').isVisible(),true);
   assert.equal(await page.locator('[data-address-save]').isEnabled(),true);
   assert.equal(await page.locator('[data-address-readiness]').count(),0);
@@ -77,6 +78,7 @@ try {
   assert.equal((await state()).addressDraft,undefined);
   await visit('address');
   assert.equal(await page.locator('[data-address-editor-title]').innerText(),'แก้ไขที่อยู่จัดส่ง');
+  assert.equal(await page.locator('#address > .care-journey').isVisible(),true);
   // Editing the confirmed delivery address goes directly to the form.
   await visit('address-detail');
   assert.equal(await screen(),'payment');
