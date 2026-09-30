@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260930-nav-fill-state-v240";
+    const release = "20260930-address-autosave-v241";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -34,7 +34,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260930-nav-fill-state-v240"></script>
+<script src="review-tools.js?v=20260930-address-autosave-v241"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -56,13 +56,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
-<link rel="stylesheet" href="components.css?v=20260930-nav-fill-state-v240">
+<link rel="stylesheet" href="components.css?v=20260930-address-autosave-v241">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
-<script src="custom-select.js?v=20260930-nav-fill-state-v240" defer></script>
-<script src="i18n.js?v=20260930-nav-fill-state-v240" defer></script>
+<script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
+<script src="i18n.js?v=20260930-address-autosave-v241" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2210,12 +2210,7 @@
         <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
       </section>
 
-      <label class="address-remember-choice" for="addrRemember">
-        <input id="addrRemember" type="checkbox">
-        <span class="address-remember-choice__check" aria-hidden="true"><i data-lucide="check" class="ui-icon ui-icon--sm"></i></span>
-        <span class="address-remember-choice__copy"><strong>บันทึกไว้ใช้ครั้งถัดไป</strong></span>
-      </label>
-      <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field hidden><span>ชื่อที่อยู่</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
+      <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field><span>ชื่อที่อยู่ (ถ้ามี)</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
 
       <div class="address-data-fields" hidden aria-hidden="true">
         <input id="addrSearch" type="hidden">
@@ -2274,7 +2269,7 @@
     </div>
   </section>
   <dialog class="address-picker address-book-dialog" id="address-book-dialog" aria-labelledby="address-book-title">
-    <div class="address-picker__head"><h2 id="address-book-title">สมุดที่อยู่</h2><button type="button" data-address-book-close aria-label="ปิด">×</button></div>
+    <div class="address-picker__head"><h2 id="address-book-title">สมุดที่อยู่</h2></div>
     <p class="hint">เลือกที่อยู่ที่บันทึกไว้ แล้วตรวจสอบข้อมูลก่อนยืนยันจัดส่ง</p>
     <div data-address-book>
       <div class="address-book-empty" data-address-book-empty>
@@ -4178,7 +4173,7 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20260930-nav-fill-state-v240"></script>
+  <script src="b2c-icons.js?v=20260930-address-autosave-v241"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -5335,9 +5330,6 @@
       const input=screen.querySelector(`#${id}`);
       if(input) input.value=id==='recipientPhone' ? formatPhoneForDisplay(value) : (value || '');
     });
-    const remember=screen.querySelector('#addrRemember');
-    if(remember) remember.checked=formAddress.remember===true;
-    syncAddressRememberChoice();
     const dropoff=screen.querySelector(`input[name="dropoffMethod"][value="${formAddress.dropoffMethod || 'hand'}"]`);
     if(dropoff) dropoff.checked=true;
     screen.dataset.selectedKm=formAddress.km || '3.2';
@@ -5497,7 +5489,7 @@
       recipientFirstName:v('recipientFirstName'), recipientLastName:v('recipientLastName'),
       recipientName:[v('recipientFirstName'),v('recipientLastName')].filter(Boolean).join(' '), recipientPhone:normalizePhone(v('recipientPhone')),
       label:v('addrLabel'),
-      remember:document.getElementById('addrRemember')?.checked===true,
+      remember:true,
       building:v('addrBuilding'), floor:v('addrFloor'), line:v('addrLine'),
       subdistrict:v('addrSubdistrict'), districtName:v('addrDistrictName'),
       province:v('addrProvince'), postcode:v('addrPostcode'),
@@ -5664,10 +5656,7 @@
     };
     flowState.orderState.addressConfirmed=true;
     delete flowState.addressDraft;
-    const remember=document.getElementById('addrRemember')?.checked===true;
-    if(remember){
-      rememberDeliveryAddress(flowState.orderState.address,{index:addressEditingSavedIndex});
-    }
+    rememberDeliveryAddress(flowState.orderState.address,{index:addressEditingSavedIndex});
     persistAddressBook();
     invalidateFulfillmentQuote();
     persistFlowState();
@@ -5725,10 +5714,20 @@
   let addressBookOpener=null;
   function openAddressBook(opener){
     addressBookOpener=opener;
+    if(flowState.orderState.addressConfirmed){
+      rememberDeliveryAddress(flowState.orderState.address);
+      persistAddressBook();
+      persistFlowState();
+    }
     renderAddressBook();
     document.getElementById('address-book-dialog').showModal();
   }
   function closeAddressBook(){document.getElementById('address-book-dialog').close();}
+  document.getElementById('address-book-dialog').addEventListener('click',event=>{
+    const dialog=event.currentTarget;
+    const rect=dialog.getBoundingClientRect();
+    if(event.target===dialog && (event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom)) closeAddressBook();
+  });
   document.getElementById('address-book-dialog').addEventListener('close',()=>{
     if(addressBookOpener?.getClientRects().length)addressBookOpener.focus({preventScroll:true});
   });
@@ -5750,22 +5749,6 @@
   }
   let addressPageMode=flowState.addressDraftMode==='new' || (!flowState.addressDraftMode && !flowState.orderState.addressConfirmed) ? 'new' : 'editor';
   let addressEditingSavedIndex=-1;
-  function syncAddressRememberChoice({reveal=false}={}){
-    const remember=document.getElementById('addrRemember');
-    const labelField=document.querySelector('[data-address-label-field]');
-    if(!labelField) return;
-    const on=Boolean(remember?.checked);
-    labelField.hidden=!on;
-    /* Ticking the box adds a field that asks for a name, and it appeared below
-       the fold where nothing pointed at it. Bring it into view on the tick so
-       the patient can see there is something left to fill in (client, 29 Sep). */
-    if(on && reveal){
-      requestAnimationFrame(() => {
-        try{ labelField.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){ }
-        document.getElementById('addrLabel')?.focus({preventScroll:true});
-      });
-    }
-  }
   function setAddressPageMode(mode,{focus=false}={}){
     /* New and existing addresses share one form; the heading and action make
        the task clear while the controls stay in the same places. */
@@ -5784,9 +5767,8 @@
        session could retain stale hidden attributes from the retired compact
        mode, leaving only the section title above the CTA. Clear those flags
        whenever the editor opens so its heading and controls stay together. */
-    document.querySelectorAll('#address .address-essential-fields,#address .address-essential-fields>.field,#address .address-remember-choice')
+    document.querySelectorAll('#address .address-essential-fields,#address .address-essential-fields>.field')
       .forEach(element => { element.hidden=false; });
-    syncAddressRememberChoice();
     syncFieldClearButtons();
     syncAddressEditorReadiness();
     if(focus){
@@ -5853,9 +5835,6 @@
     addressEditingSavedIndex=-1;
     addressPageMode='new';
     flowState.addressDraftMode='new';
-    const remember=document.getElementById('addrRemember');
-    if(remember) remember.checked=false;
-    syncAddressRememberChoice();
     persistFlowState();
     syncFieldClearButtons();
     show('address');
@@ -5874,6 +5853,9 @@
         showActionToast('กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง','warning');
         return;
       }
+      rememberDeliveryAddress(flowState.orderState.address);
+      persistAddressBook();
+      persistFlowState();
       focusCheckoutDelivery=true;
       replaceCurrent('payment');
       startInlineDeliveryQuote();
@@ -5888,10 +5870,6 @@
       try{ editor?.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'}) }catch(err){}
       return;
     }
-  });
-  document.getElementById('addrRemember')?.addEventListener('change',() => {
-    syncAddressRememberChoice({reveal:true});
-    persistAddressEditorDraft();
   });
 
   function tomorrowLabel(){
@@ -11969,7 +11947,6 @@
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
       if(!saveDeliveryAddress()) return;
-      const remembered=document.getElementById('addrRemember')?.checked===true;
       addressEditingSavedIndex=-1;
       addressPageMode='editor';
       flowState.addressDraftMode='editor';
@@ -11978,7 +11955,7 @@
       focusCheckoutDelivery=true;
       replaceCurrent('payment');
       startInlineDeliveryQuote();
-      showActionToast(remembered ? 'บันทึกและใช้ที่อยู่นี้แล้ว' : 'ใช้ที่อยู่นี้สำหรับการจัดส่ง','success');
+      showActionToast('บันทึกและใช้ที่อยู่นี้แล้ว','success');
       return;
     }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
