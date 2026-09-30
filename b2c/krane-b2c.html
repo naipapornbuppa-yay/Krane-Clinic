@@ -2828,10 +2828,14 @@
         <div class="delivery-eta">
           <div class="delivery-eta__head">
             <span class="delivery-eta__label postpay-eyebrow">ถึงประมาณ</span>
-            <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่ง</span></button>
+            <!-- The stage the order is at belongs beside the label it qualifies,
+                 not under the time as a second sentence (client, 29 Sep). -->
+            <span class="delivery-eta__head-end">
+              <span class="delivery-eta__state" data-delivery-eta-state>ร้านยากำลังจัดยา</span>
+              <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่ง</span></button>
+            </span>
           </div>
           <strong class="delivery-eta__time" data-delivery-eta-window>15:00 - 15:55</strong>
-          <span class="delivery-eta__state" data-delivery-eta-state>ร้านยากำลังจัดยา</span>
         </div>
         <div class="postpay-progress" aria-label="ความคืบหน้าคำสั่งซื้อ">
           <div class="postpay-progress__step done" data-track-step="paid"><span><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span><strong>ชำระแล้ว</strong><time class="postpay-progress__time" data-track-time="paid"></time><div class="hint">ยืนยันยอดแล้ว</div><button class="step__link" type="button" data-doc-open="receipt">ใบเสร็จ</button></div>
@@ -5805,7 +5809,7 @@
       return `<article class="address-select-card${selected ? ' is-selected' : ''}">
         <button class="address-select-card__choice" type="button" aria-label="${escapeAddressText(addressBookName(entry))}" aria-pressed="${selected}" data-address-book-pick="${index}">
           <span class="address-select-card__content">
-            <strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>
+            <span class="address-select-card__heading"><strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>${selected ? '<span class="address-select-card__selected">เลือกอยู่</span>' : ''}</span>
             <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
             <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
           </span>
@@ -13463,6 +13467,7 @@
     const outForDelivery=screen.querySelector('[data-track-step="out"]')?.classList.contains('active');
     const preparing=screen.querySelector('[data-track-step="prepared"]')?.classList.contains('active');
     if(label) label.textContent=delivered ? 'ส่งถึงเมื่อ' : (pickup ? 'รับได้ประมาณ' : 'ถึงประมาณ');
+    screen.querySelector('.delivery-eta')?.classList.toggle('is-delivered',Boolean(delivered));
     /* The card is scanned, not read: one clause each. */
     if(state){
       state.textContent=delivered

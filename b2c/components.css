@@ -5819,10 +5819,13 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .address-book-empty__art img{display:block;width:92px;height:92px;object-fit:contain}
 .address-book-empty p{margin:0}
 .address-select-card{border:var(--control-border-width) solid var(--color-line);border-radius:var(--control-radius);overflow:hidden}
-.address-select-card.is-selected{border-color:var(--color-accent)}
+.address-select-card.is-selected{border-color:var(--color-accent);box-shadow:0 0 0 2px var(--color-accent)}
 .address-select-card__choice{display:flex;width:100%;padding:16px;text-align:left;border:0;background:var(--color-surface);cursor:pointer}
+.address-select-card.is-selected .address-select-card__choice{background:var(--color-accent-soft)}
 .address-select-card__content{display:grid;gap:6px;min-width:0;overflow-wrap:anywhere}
+.address-select-card__heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .address-select-card__label{font-size:var(--fs-base)}
+.address-select-card__selected{flex:none;color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
 .address-select-card__address,.address-select-card__recipient{font-size:var(--fs-sm);color:var(--color-ink-3)}
 .address-select-card__edit{display:block;margin:0 16px 8px;padding:8px 0;min-height:44px;border:0;background:transparent;color:var(--color-accent);cursor:pointer}
 .address-select-card__choice:focus-visible,.address-select-card__edit:focus-visible{outline:2px solid var(--color-accent);outline-offset:-3px}
@@ -6002,4 +6005,36 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   font-size:var(--fs-xs);
   font-weight:var(--fw-medium);
   line-height:1.45;
+}
+
+/* The order's stage, read as a chip in the corner of the card rather than as a
+   sentence under the time. It sits beside the rider button, which only appears
+   while the parcel is actually on the road (client, 29 Sep). */
+.delivery-eta__head-end{display:inline-flex;align-items:center;gap:var(--sp-2);min-width:0}
+.delivery-eta__state{
+  flex:none;
+  padding:3px var(--sp-3);
+  border-radius:var(--radius-pill);
+  background:var(--color-accent-soft);
+  color:var(--color-accent-ink,var(--color-accent));
+  font-size:var(--fs-xs);
+  font-weight:var(--fw-semibold);
+  line-height:1.5;
+  white-space:nowrap;
+}
+/* Delivered is the one terminal, good outcome, so it carries the success tone. */
+.delivery-eta.is-delivered .delivery-eta__state{
+  background:var(--color-success-soft);
+  color:var(--color-success);
+}
+#tracking .delivery-eta__state{
+  padding:3px var(--sp-3);
+  font-size:var(--fs-xs);
+  font-weight:var(--fw-semibold);
+}
+/* #tracking sets the chip's colour by id, so the delivered tone has to match
+   that weight or the green chip keeps blue text on it. */
+#tracking .delivery-eta.is-delivered .delivery-eta__state{
+  background:var(--color-success-soft);
+  color:var(--color-success);
 }
