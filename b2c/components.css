@@ -5922,28 +5922,18 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .page-heading__title{margin:0;line-height:1.3;color:var(--color-ink)}
 .page-heading__description{margin:0;color:var(--color-ink-2);font-size:var(--fs-base);line-height:var(--lh-base)}
 
-/* Stable tab geometry across all destinations; animate only the icon plate. */
-.bottomnav a .ic{transition:transform 160ms var(--ease-out),background 180ms var(--ease-out),color 180ms var(--ease-out)}
+/* Active tabs keep the same icon and footprint; only their colour/fill changes. */
+.bottomnav a .ic{transition:color 180ms var(--ease-out)}
 .bottomnav a[aria-current="page"]{color:var(--color-accent)}
-.bottomnav a .nav-icon-filled{display:none;fill:currentColor;stroke:none}
-.bottomnav a[aria-current="page"] .ic>svg:not(.nav-icon-filled){display:none}
-.bottomnav a[aria-current="page"] .nav-icon-filled{display:block}
-.bottomnav a:active .ic{transform:scale(.88);background:var(--color-accent-soft)}
-.bottomnav a[aria-current="page"] .ic{animation:nav-pill-in 260ms var(--ease-out)}
+.bottomnav a[aria-current="page"] .ic,
+.bottomnav a:active .ic,
+.screen.is-entering .bottomnav a[aria-current="page"] .ic{background:transparent;transform:none;animation:none}
+.bottomnav a[aria-current="page"] .ic .ui-icon{
+  fill:color-mix(in srgb,var(--color-accent) 35%,transparent);
+  stroke:var(--color-accent);
+}
 @media(prefers-reduced-motion:reduce){
   .bottomnav a .ic{transition:none;animation:none!important}
-  .bottomnav a:active .ic{transform:none}
-}
-
-/* Reveal the brand fill inside the outlined glyph as its tab activates. */
-.bottomnav a .ic>svg{grid-area:1 / 1}
-.bottomnav a .nav-icon-filled{display:block;opacity:0;clip-path:inset(100% 0 0 0);pointer-events:none}
-.bottomnav a[aria-current="page"] .ic>svg:not(.nav-icon-filled){display:block;opacity:0;animation:nav-outline-out 360ms ease-out both}
-.bottomnav a[aria-current="page"] .nav-icon-filled{opacity:1;clip-path:inset(0);animation:nav-fill-in 360ms cubic-bezier(.22,1,.36,1) both}
-@keyframes nav-fill-in{from{opacity:.15;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0)}}
-@keyframes nav-outline-out{0%,35%{opacity:1}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){
-  .bottomnav a[aria-current="page"] .ic>svg{animation:none!important}
 }
 
 /* Multiline fields: text starts at the top; native resize grip hugs the shell. */
