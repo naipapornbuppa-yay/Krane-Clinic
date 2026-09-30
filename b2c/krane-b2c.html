@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260930-address-head-v1";
+    const release = "20260930-address-state-v1";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -2168,7 +2168,7 @@
        then confirm the recipient and optional rider note. Structured postal
        values stay in the DOM for persistence and fulfilment, but are not
        duplicated in the visible confirmation screen. -->
-  <section class="screen" id="address" data-screen-code="SCR-013" data-address-mode="new">
+  <section class="screen" id="address" data-screen-code="SCR-013" data-address-mode="editor">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
       <div class="address-editor-view stack-4" data-address-editor-view>
@@ -5751,7 +5751,11 @@
     if(at>=0) book[at]=entry; else book.push(entry);
 
   }
-  let addressPageMode=flowState.addressDraftMode==='new' || (!flowState.addressDraftMode && !flowState.orderState.addressConfirmed) ? 'new' : 'editor';
+  /* Client, 30 Sep: arriving here from checkout is the ordinary delivery
+     address page, whether or not one has been saved before. "เพิ่มที่อยู่ใหม่"
+     is the state reached from the address book's own button, so only that
+     sets it. */
+  let addressPageMode=flowState.addressDraftMode==='new' ? 'new' : 'editor';
   let addressEditingSavedIndex=-1;
   function setAddressPageMode(mode,{focus=false}={}){
     /* New and existing addresses share one form; the heading and action make
@@ -5766,7 +5770,12 @@
     if(editorView) editorView.hidden=!editing;
     if(editorFooter) editorFooter.hidden=!editing;
     const title=document.querySelector('[data-address-editor-title]');
-    if(title) title.textContent=addressPageMode==='new' ? 'เพิ่มที่อยู่ใหม่' : 'แก้ไขที่อยู่จัดส่ง';
+    if(title){
+      // Three states, and the heading names the one the patient is in.
+      const draft=deliveryAddressDraft();
+      title.textContent=addressPageMode==='new' ? 'เพิ่มที่อยู่ใหม่'
+        : (draft.building ? 'แก้ไขที่อยู่จัดส่ง' : 'ที่อยู่จัดส่ง');
+    }
     /* Optional delivery details are part of the canonical editor. A restored
        session could retain stale hidden attributes from the retired compact
        mode, leaving only the section title above the CTA. Clear those flags
