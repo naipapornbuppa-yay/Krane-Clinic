@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20260930-address-autosave-v241";
+    const release = "20260930-plex-en-v1";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Retire the old private-review parameter without breaking saved links.
@@ -55,14 +55,14 @@
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
-<link rel="stylesheet" href="design-tokens.css?v=20260928-address-cleanup-v158">
+<link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
 <link rel="stylesheet" href="components.css?v=20260930-address-autosave-v241">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20260930-address-autosave-v241" defer></script>
+<script src="i18n.js?v=20260930-plex-en-v1" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -2244,7 +2244,7 @@
            empty fields show their label as the placeholder and float it only
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><h1 id="address-map-search-title">ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
+        <div class="address-map-search-panel__head"><h1 id="address-map-search-title" data-address-map-title>ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
         <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
         <!-- Typing the name of a building or a soi fills the five fields below
              in one go. The form underneath stays the way to correct whatever
@@ -5402,6 +5402,11 @@
   }
   function hydrateAddressMapSearch(){
     const address=deliveryAddressDraft();
+    /* Client, 30 Sep: reaching this form from an address that already exists is
+       an edit. Calling it "ระบุที่อยู่จัดส่ง" read as a blank new-address page
+       even though every field arrived filled in. */
+    const mapTitle=document.querySelector('[data-address-map-title]');
+    if(mapTitle) mapTitle.textContent=address.building ? 'แก้ไขที่อยู่จัดส่ง' : 'ระบุที่อยู่จัดส่ง';
     const search=flowState.addressSearchDraft;
     const query=document.getElementById('addressMapQuery');
     if(query)query.value=search?.query ?? [...new Set([address.building,address.line].filter(Boolean))].join(' ');
