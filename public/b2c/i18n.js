@@ -252,7 +252,7 @@
     "Pay consultation fee":"รายละเอียดการปรึกษา","Pay with":"ชำระด้วย","QR / PromptPay":"QR / พร้อมเพย์","Credit / debit card":"บัตรเครดิต / เดบิต","Change slot":"เปลี่ยนเวลา",
     /* ---- KBank gateway ---- */
     "Secure payment":"ชำระเงินอย่างปลอดภัย","First payment":"การชำระเงินครั้งแรก","Doctor match":"แพทย์ที่จับคู่","Discount":"ส่วนลด","Pay now":"ชำระตอนนี้","Discount code (optional)":"รหัสส่วนลด (ถ้ามี)","Enter code":"กรอกรหัส",
-    "Amount to pay":"ยอดที่ต้องชำระ","Merchant":"ร้านค้า","Amount":"จำนวนเงิน","Card":"บัตร","Mobile banking":"โมบายแบงก์กิ้ง","CVV":"รหัส CVV","Secured":"ปลอดภัย","PromptPay":"พร้อมเพย์",
+    "Amount to pay":"ยอดที่ต้องชำระ","Merchant":"ร้านค้า","Amount":"จำนวนเงิน","Card":"บัตร","Mobile banking":"โมบายแบงก์กิ้ง","CVV":"CVV","Secured":"ปลอดภัย","PromptPay":"พร้อมเพย์",
     "Scan with any Thai banking app · code expires in":"สแกนด้วยแอปธนาคารใดก็ได้ · รหัสหมดอายุใน","You are on KBank's secure page. Krane never sees or stores your card details.":"คุณอยู่บนหน้าชำระเงินที่ปลอดภัยของ KBank · Krane ไม่เห็นและไม่เก็บข้อมูลบัตรของคุณ",
     /* ---- waiting room / consult ---- */
     "Waiting room":"ห้องรอ","Waiting for Dr. Narin to let you in":"กำลังรอ แพทย์นรินทร์ ทานากะ เรียกเข้าห้อง","Enter the room":"เข้าห้องปรึกษา","Notify me when it's ready":"แจ้งเตือนเมื่อพร้อม",
@@ -1996,7 +1996,6 @@
      weight and ED intake, sliders, signup consent, referral, the weight safety
      sheet and sample leaflets, plus the matching line in Thai ---- */
   var EN_FROM_TH_20SEP = {
-    "ใช้อยู่":"In use",
     "วว / ดด / ปปปป":"DD / MM / YYYY",
     "ชื่อ":"First name",
     "นามสกุล":"Last name",
