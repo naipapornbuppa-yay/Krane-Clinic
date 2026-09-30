@@ -1996,6 +1996,7 @@
      weight and ED intake, sliders, signup consent, referral, the weight safety
      sheet and sample leaflets, plus the matching line in Thai ---- */
   var EN_FROM_TH_20SEP = {
+    "ใช้อยู่":"In use",
     "วว / ดด / ปปปป":"DD / MM / YYYY",
     "ชื่อ":"First name",
     "นามสกุล":"Last name",
