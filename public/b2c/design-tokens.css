@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
 /* ============================================================
    KRANE CLINIC, DESIGN TOKENS (single source of truth)
    ------------------------------------------------------------
@@ -72,6 +72,7 @@
   --theme-accent-vivid: #4E6DBC;
   --theme-accent: #395AA4;
   --theme-accent-hover: #2E4A8B;
+  --theme-promo-bar: #5871B5;
   --theme-action: #1A1E28;
   --theme-action-hover: #0F172A;
   --theme-on-dark: #FFFFFF;
@@ -184,6 +185,7 @@
 
   /* ---- Active theme: BLUE (28 Jul) ---- change only this block to revert. */
   --color-accent: var(--preset-blue-accent);      /* links, selected emphasis and key signals */
+  --color-promo-bar: var(--theme-promo-bar);      /* announcement + mobile browser/notch surface */
   --color-accent-vivid: var(--preset-blue-accent-vivid);  /* opt-in punchier hue for large-scale/graphic use only */
   --color-accent-hover: var(--preset-blue-accent-hover); /* pressed / hover emphasis, STATE only */
   --color-accent-mark: var(--preset-blue-accent-mark);  /* static deep mark: indicator dots, ticks, small icons.
@@ -349,12 +351,11 @@
   --color-schedule-hover: var(--color-bg-2);
   --color-schedule-ink: #495366;
 
-  /* ---- Primary button ---- The Figma file keeps the primary CTA a near-black
-     plate rather than the accent, so the one blue on screen stays the link
-     colour. White on #121824 is 17.8:1. ---- */
-  --btn-primary-bg: var(--theme-action);
-  --btn-primary-bg-hover: var(--theme-action-hover);
-  --btn-primary-ink: var(--theme-on-dark);
+  /* ---- Primary button ---- Primary actions use the Krane brand blue across
+     the flow; hover is the darker state from the same brand palette. ---- */
+  --btn-primary-bg: var(--color-accent);
+  --btn-primary-bg-hover: var(--color-accent-hover);
+  --btn-primary-ink: var(--color-on-accent);
 
   /* ---- Semantic ---- */
   --color-success: #2A6152;
@@ -415,10 +416,15 @@
      controls; Prompt for display headings. */
   --font-thai-base: "Noto Sans Thai", sans-serif;
   --font-thai-display: "Prompt", sans-serif;
-  --font-latin: "Noto Sans Thai", sans-serif;
+  --font-latin: "IBM Plex Sans", "Noto Sans Thai", sans-serif;
   --font-base: var(--font-thai-base);
   --font-display: var(--font-thai-display);
   --font-serif: "Prompt", sans-serif;
+  /* The landing and the public pages name three roles instead of a face per
+     rule, so one language switch re-points all of them (client, 30 Sep). */
+  --landing-font-display: "Prompt", "Noto Sans Thai", sans-serif;
+  --landing-font-body: "Prompt", "Inter", system-ui, sans-serif;
+  --landing-font-ui: "Inter", "Prompt", sans-serif;
   --fs-xs:12px; --fs-sm:13px; --fs-base:15px; --fs-md:17px; --fs-lg:20px; --fs-xl:26px; --fs-2xl:32px; --fs-3xl:40px;
   /* Web display sizes (landing/desktop only; the app stops at --fs-3xl).
      These are the settled desktop values of the landing's clamp() ramps. */
@@ -485,10 +491,30 @@
   --tap-target-min:44px;         /* minimum touch target (DESIGN.md 3); expand hit
                                     areas to this, do not inflate the visual control */
   --control-h-icon:40px;         /* square icon buttons */
-  --control-h:48px;              /* primary buttons / inputs */
+  /* Actions stay compact, while fields reserve enough vertical room for the
+     two-line floating-label contract (small title + entered value). Keeping
+     these as separate tokens prevents a taller input from inflating every CTA. */
+  --control-h:48px;              /* primary / secondary action */
+  --field-h:64px;                /* input shell: floating title + value */
   --control-h-lg:56px;           /* high-priority media controls */
   --control-radius:var(--radius-sm);
-  --button-radius:var(--control-radius); /* actions share one rounded-rectangle geometry; pill is for statuses only */
+  --button-radius:var(--control-radius); /* default actions; explicit pill variants use --radius-pill */
+  /* Shared control primitives. Values preserve the approved UI; variants use
+     the same tokens rather than copying constants into individual screens. */
+  --control-border-width:1px;
+  --control-border-width-strong:1.5px;
+  --field-padding-inline:16px;
+  --field-floating-padding-top:24px;
+  --field-floating-padding-bottom:4px;
+  --control-focus-ring:0 0 0 3px var(--color-accent-soft);
+  --icon-size-xs:14px;
+  --icon-size-sm:17px;
+  --icon-size:20px;
+  --icon-size-md:22px;
+  --icon-size-lg:28px;
+  --icon-stroke-width:1.85;
+  --section-divider-size:8px;
+  --section-divider-color:#e9e9e9;
   --selection-size:22px;
   --selection-border-width:1.5px;
   --selection-radius:var(--radius-sm);
@@ -500,6 +526,8 @@
   --selection-check-h:11px;
   --mobile-frame:393px;          /* iPhone 16 Pro width */
   --form-frame:520px;            /* flow/form column on tablet */
+  --care-flow-content-max:704px; /* selection + intake: one stable desktop column */
+  --app-shell-max:calc(var(--care-flow-content-max) + 48px); /* 704px content + 24px desktop gutters */
   --tablet-frame:768px;          /* tablet device width */
   --desktop-frame:1120px;        /* desktop device width */
   --container-max:1120px;        /* web layout max (landing/dashboard) */
@@ -565,6 +593,9 @@
 html[lang="en"] {
   --font-base: var(--font-latin);
   --font-display: var(--font-latin);
+  --landing-font-display: var(--font-latin);
+  --landing-font-body: var(--font-latin);
+  --landing-font-ui: var(--font-latin);
 }
 
 /* Height of the inline consent reading box on the consent-terms screen. */

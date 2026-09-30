@@ -1217,9 +1217,10 @@ test("canonical B2C brand placements use the Krane wordmark, and the landing and
   const doctor = await readFile(path.join(publicRoot, "b2c/doctor-detail.html"), "utf8");
   const advisor = await readFile(path.join(publicRoot, "b2c/advisor-detail.html"), "utf8");
   const components = await readFile(path.join(publicRoot, "b2c/components.css"), "utf8");
-  // The wordmark file is what this test is about. The ?v= key rolls with every
-  // release, so match any key rather than pinning one and failing each deploy.
-  const canonicalBrand = /krane-logo-16aug26-2\.svg\?v=[A-Za-z0-9._-]+/;
+  // The wordmark file is what this test is about. One canonical source now
+  // carries it (30 Sep), and it is served without a release key, so the name
+  // is matched on its own.
+  const canonicalBrand = /assets\/krane-logo\.svg/;
 
   // The home header matches the landing's lockup (client, 17 Sep).
   assert.match(screenFragment(patient, "profile"), /<img class="brand-lockup" src="\.\.\/assets\/krane-clinic-lockup-v1\.svg\?v=[A-Za-z0-9._-]+"/);
@@ -1227,7 +1228,12 @@ test("canonical B2C brand placements use the Krane wordmark, and the landing and
   // The landing's header, mobile menu and footer carry the brand's horizontal
   // lockup, the same one the intake uses, instead of the art with "clinic"
   // typed beside it (client, 17 Sep).
-  assert.equal((landing.match(/<img class="brand-lockup" src="\.\.\/assets\/krane-clinic-lockup-v1\.svg\?v=[A-Za-z0-9._-]+"/g) || []).length, 3);
+  // The header and the mobile menu are rendered by the shared nav component
+  // now (27 Sep), so the page itself carries the footer lockup and site-nav.js
+  // carries the other two. Both are checked, so neither can lose the brand.
+  assert.equal((landing.match(/<img class="brand-lockup" src="\.\.\/assets\/krane-clinic-lockup-v1\.svg\?v=[A-Za-z0-9._-]+"/g) || []).length, 1);
+  const siteNav = await readFile(path.join(publicRoot, "b2c/site-nav.js"), "utf8");
+  assert.match(siteNav, /krane-clinic-lockup-v1\.svg\?v=[A-Za-z0-9._-]+/);
   assert.doesNotMatch(landing, /class="brand__clinic"/);
   assert.match(doctor, canonicalBrand);
   assert.match(advisor, canonicalBrand);

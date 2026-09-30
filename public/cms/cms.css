@@ -320,6 +320,7 @@ body.role-doctor .admin-only{display:none}
   border-radius:var(--r-control);background:var(--color-surface);color:var(--color-ink);font:inherit;font-size:var(--fs-sm)}
 .select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23575f6a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
 .textarea{height:auto;min-height:96px;padding:var(--sp-3)}
+body.role-doctor .textarea{max-width:100%;resize:vertical}
 .input:hover,.select:hover,.textarea:hover{border-color:var(--color-ink-3)}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--cms-blue);box-shadow:var(--focus-ring)}
 .input:disabled,.select:disabled,.textarea:disabled{background:var(--color-bg-soft);color:var(--color-ink-3);cursor:not-allowed}
@@ -671,7 +672,8 @@ body.lang-th *{letter-spacing:normal}
 /* ---------- Calendar: doctor shift planning ---------- */
 .cal-add{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
 .cal-view{width:auto;min-width:120px}
-.shift-chip{display:inline-block;margin-top:4px;padding:3px 8px;border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-accent-ink);font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums}
+.shift-chip{display:inline-block;margin-top:4px;padding:3px 8px;border:0;border-radius:var(--radius-sm);background:var(--color-accent-soft);color:var(--color-accent-ink);font:inherit;font-size:var(--fs-xs);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;cursor:pointer}
+.shift-chip:hover,.shift-chip:focus-visible{box-shadow:inset 0 0 0 1px var(--color-accent-ink)}
 .shift-chip--off{background:var(--color-bg-2);color:var(--color-ink-3)}
 .shift-chip.is-custom{box-shadow:inset 0 0 0 1px var(--color-accent-ink)}
 .calendar-panel.is-shift-mode .month-day{cursor:pointer}
@@ -1098,7 +1100,7 @@ body.role-doctor .cms{height:100vh}
 body.role-doctor .cms-body{min-height:0}
 
 /* Sign in */
-body.is-signed-out .cms,body.is-signed-out .flow-guide__list{display:none}
+body.is-signed-out .cms{display:none}
 .doc-auth{min-height:100vh;display:grid;place-items:center;padding:var(--sp-5);background:var(--cms-canvas)}
 .doc-auth[hidden]{display:none}
 .doc-auth__card{width:min(420px,100%);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-7) var(--sp-6);
@@ -1258,25 +1260,6 @@ button.cms-top__user:hover{background:var(--cms-surface-sunk)}
 .photo-drop__copy small{color:var(--color-ink-3);font-size:var(--fs-sm)}
 .photo-drop__actions{display:flex;gap:var(--sp-2)}
 
-/* Reviewer guide: the doctor's core flow in order (prototype only) */
-.flow-guide{position:fixed;right:var(--sp-5);bottom:var(--sp-5);z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-2)}
-.flow-guide__toggle{display:inline-flex;align-items:center;gap:var(--sp-3);height:var(--ctrl-h);padding:0 var(--sp-4);border:0;
-  border-radius:var(--radius-pill);background:var(--color-ink);color:var(--color-on-dark);font:inherit;font-size:var(--fs-sm);
-  font-weight:var(--fw-medium);box-shadow:var(--shadow-lg);cursor:pointer}
-.flow-guide__toggle b{font-variant-numeric:tabular-nums;opacity:.7;font-weight:var(--fw-semibold)}
-.flow-guide__list{order:-1;list-style:none;margin:0;padding:var(--sp-2);width:300px;background:var(--cms-surface);
-  border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);counter-reset:flow}
-.flow-guide__list[hidden]{display:none}
-.flow-guide__list button{counter-increment:flow;display:flex;align-items:center;gap:var(--sp-3);width:100%;text-align:left;
-  border:0;background:transparent;font:inherit;font-size:var(--fs-sm);color:var(--color-ink-2);padding:var(--sp-2);
-  border-radius:var(--radius-sm);cursor:pointer}
-.flow-guide__list button::before{content:counter(flow);width:22px;height:22px;flex:none;border-radius:var(--radius-pill);
-  display:grid;place-items:center;font-size:var(--fs-xs);font-weight:var(--fw-semibold);background:var(--cms-surface-sunk);color:var(--color-ink-3)}
-.flow-guide__list button:hover{background:var(--cms-surface-sunk);color:var(--color-ink)}
-.flow-guide__list button.is-done::before{background:var(--color-success-soft);color:var(--color-success)}
-.flow-guide__list button.is-current{color:var(--color-ink);font-weight:var(--fw-semibold);background:var(--cms-surface-sunk)}
-.flow-guide__list button.is-current::before{background:var(--color-accent);color:var(--color-on-accent)}
-
 /* Grid children may shrink below their tables; the tables scroll in their panel. */
 .patient-grid>*,.rx-layout>*{min-width:0}
 body.role-doctor .panel--flush{overflow-x:auto}
@@ -1299,6 +1282,5 @@ body.role-doctor .panel--flush{overflow-x:auto}
   .drug-search .field:first-child{width:100%}
   .cms-top .oncall{display:none}
   .room__controls{flex-wrap:wrap;row-gap:var(--sp-2)}
-  .flow-guide{right:var(--sp-3);bottom:var(--sp-3)}
   .done-state{padding:var(--sp-5)}
 }

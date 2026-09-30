@@ -58,6 +58,15 @@ img,video,canvas{max-width:100%}
     margin-left:var(--site-header-safe-start);
     margin-right:var(--site-header-safe-end);
   }
+  /* The safe-area gutter is a floor, not a replacement for the design's own.
+     Loaded after site-header.css, the 10px above was pulling the shared header
+     in to 10px on the pages that do not also load the landing stylesheet, so
+     the same component sat at a different inset depending on the page it was
+     on (client, 23 Sep). */
+  .site-header--landing{
+    --site-header-safe-start:max(16px,env(safe-area-inset-left));
+    --site-header-safe-end:max(16px,env(safe-area-inset-right));
+  }
 
   .mobile-menu{
     max-height:calc(100dvh - max(16px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));

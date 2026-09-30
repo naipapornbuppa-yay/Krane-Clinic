@@ -8,6 +8,29 @@ the walkthrough and can also be opened directly from `krane-b2c-landing.html`.
 
 Keep every file and the `assets/` and `i18n/` folders together.
 
+## Backend string contract
+
+Use the stable message IDs in
+[`handoff/string-ids.v1.json`](handoff/string-ids.v1.json) for API-driven
+statuses, validation, and error messages. The integration rules and payload
+example for P'Tinn are in
+[`handoff/STRING-ID-HANDOFF.md`](handoff/STRING-ID-HANDOFF.md).
+
+Run `npm run check:strings` before handing off changes to confirm IDs are unique
+and Thai/English parameters still match. This catalog is intentionally not
+loaded by the current prototype, so it cannot change the visible UI.
+
+## Canonical live links
+
+Share only these stable links. The app adds its current release identifier
+automatically, so neither link needs to be replaced after each deployment.
+
+- Customer app: `https://naipapornbuppa-yay.github.io/Krane-Clinic/b2c/krane-b2c.html?public=1#landing`
+- App with screen directory: `https://naipapornbuppa-yay.github.io/Krane-Clinic/b2c/krane-b2c.html?public=1&with_screen_tab=1#landing`
+
+The retired `only-me=1` parameter is normalized to `with_screen_tab=1` so old
+bookmarks continue to work without creating a third supported link.
+
 Use Git history for superseded versions. The former workspace copy was archived at
 `Output/05_Design/.archived-b2c-2026-08-14/` outside this repository.
 

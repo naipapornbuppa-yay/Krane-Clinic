@@ -92,7 +92,7 @@
     weight: {
       category: "weight",
       tone: "weight",
-      image: "assets/product-hero/weight-injection-hand-bright-v7.png",
+      image: "assets/product-hero/weight-care-couple-cool-greige-v9.png",
       kicker: "ดูแลน้ำหนักกับแพทย์",
       hook: "ลดน้ำหนักด้วยแผนที่แพทย์ออกให้คุณ",
       lead: "เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ",
@@ -126,13 +126,13 @@
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
-    ed: {
+    "re-flow": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png",
-      kicker: "ดูแลภาวะ ED อย่างเป็นส่วนตัว",
-      hook: "คุยเรื่องนี้กับแพทย์ได้ โดยไม่ต้องเดินเข้าคลินิก",
-      lead: "ประเมินออนไลน์อย่างเป็นส่วนตัว หาสาเหตุที่แท้จริง แล้วเลือกทางที่ปลอดภัยกับหัวใจของคุณ",
+      image: "assets/figma-draft-20260830/hero-ed-lifestyle-french-manicure-v4.png",
+      kicker: "โปรแกรม re:flow",
+      hook: "กลับมามั่นใจ ในจังหวะของคุณ",
+      lead: "เริ่มจากการประเมินสุขภาพกับแพทย์อย่างเป็นส่วนตัว เพื่อหาสาเหตุและวางแผนการดูแลที่ปลอดภัยสำหรับคุณ",
       knowledgeTitle: "ED มักเป็นสัญญาณของร่างกาย ไม่ใช่ความล้มเหลว",
       knowledge:
         "การแข็งตัวต้องอาศัยหลอดเลือด เส้นประสาท ฮอร์โมน และสภาพจิตใจทำงานร่วมกัน เมื่อส่วนใดส่วนหนึ่งเปลี่ยนไป อาการจึงปรากฏ และบ่อยครั้งมาก่อนโรคหัวใจหลายปี",
@@ -205,7 +205,7 @@
     "hair-loss": {
       category: "hair-skin",
       tone: "hair",
-      image: "assets/product-hero/hair-care-vanity-v10-left-hand.png",
+      image: "assets/product-hero/hair-asian-man-left-hand-final-v1.png",
       kicker: "ฟื้นฟูเส้นผม",
       hook: "รู้สาเหตุก่อน แล้วผมจะกลับมาถูกทาง",
       lead: "รูปแบบผมร่วง หนังศีรษะ ประวัติครอบครัว และความเครียด ช่วยให้แพทย์เลือกวิธีดูแลได้ตรงจุด",
@@ -353,6 +353,10 @@
     }
   };
 
+  // Keep bookmarked and shared legacy ED links working while re:flow is now
+  // the canonical programme name and URL.
+  CONDITIONS.ed = CONDITIONS["re-flow"];
+
   const SUPPORTING_CONTENT = {
     weight: {
       fit: ["ต้องการประเมินน้ำหนักและความเสี่ยงสุขภาพอย่างเป็นระบบ", "เคยลองปรับพฤติกรรมแล้วแต่ผลไม่ต่อเนื่อง", "พร้อมติดตามผลและปรับแผนร่วมกับแพทย์"],
@@ -400,11 +404,86 @@
     if (node && value) node.textContent = value;
   };
 
+  // Copy and section structure transcribed from the supplied programme design.
+  // Existing hero, product and article image sources remain the source of truth.
+  const programme = {
+    weight: {
+      title:'Re:Body Program',
+      lead:'โปรแกรมลดน้ำหนักออนไลน์ด้วย GLP-1 (เปปไทด์คุมหิว) ดูแลโดยแพทย์ประจำตัวอย่างใกล้ชิด',
+      overview:'เน้นการลดน้ำหนักอย่างมีคุณภาพ (Quality Weight Loss) ทุกเคสแพทย์จะประเมินความเหมาะสมก่อนเริ่มการรักษาเสมอ นัดติดตามอาการและปรับแผนให้เหมาะสมเฉพาะบุคคล พร้อม coaching ปรับไลฟ์สไตล์และการกินให้ถูกต้อง เพื่อช่วยให้คุณไปถึงเป้าหมายน้ำหนัก ควบคู่กับการรักษามวลกล้ามเนื้อ',
+      knowledgeTitle:'น้ำหนักขึ้นได้จากหลายสาเหตุ',
+      knowledge:'พันธุกรรม ฮอร์โมน การนอน ความเครียด และยาที่ใช้อยู่ ล้วนมีผลต่อน้ำหนัก แพทย์จะแยกสาเหตุก่อน แล้วจึงออกแบบแผนที่เหมาะกับคุณ',
+      stats:[['5 ถึง 10%','น้ำหนักที่ลดลงอย่างมีคุณภาพ ช่วยลดความเสี่ยงสุขภาพได้ชัดเจน'],['3 ถึง 6 เดือน','ระยะเวลาที่เริ่มเห็นผลของการรักษา'],['ต่อเนื่อง','หยุดยาโดยไม่ปรับพฤติกรรม น้ำหนักมีโอกาสกลับมา']],
+      quote:'โปรแกรมลดน้ำหนักผ่าน GLP-1 ต้องมีแพทย์คอยติดตามผลอย่างใกล้ชิด ช่องทางออนไลน์จะช่วยให้หลายคนเริ่มต้นได้ง่ายขึ้น ประหยัดเวลา และไม่ต้องเสียค่าเดินทางครับ'
+    },
+    'hair-skin':{
+      title:'Re:hair Program',
+      lead:'ปรึกษาเรื่องผมร่วงและหนังศีรษะแบบส่วนตัว กับแพทย์ที่มีใบอนุญาต พร้อมส่งยาถึงบ้าน',
+      overview:'ดูแลผมร่วงอย่างมีหลักฐาน แพทย์จะประเมินรูปแบบผมร่วงและสาเหตุก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามผลและปรับแผนให้เหมาะกับคุณเป็นรายบุคคล',
+      knowledgeTitle:'ผมร่วงแต่ละแบบดูแลไม่เหมือนกัน',
+      knowledge:'ผมบางจากพันธุกรรม ผมร่วงเป็นหย่อม การอักเสบของหนังศีรษะ และผมร่วงหลังความเครียดหรือเจ็บป่วย ล้วนมีกลไกต่างกัน การรักษาที่ได้ผลกับแบบหนึ่งอาจไม่ช่วยอีกแบบเลย',
+      stats:[['ราว 50%','ผู้ชายมีผมบางจากพันธุกรรมเมื่ออายุ 50 ปี'],['3 ถึง 6 เดือน','ระยะเวลาที่เริ่มเห็นผลของการรักษา'],['ต่อเนื่อง','หยุดใช้ยา ผมมักกลับไปร่วงเหมือนเดิม']],
+      quote:'ผมร่วงส่วนใหญ่ดูแลได้ ถ้าเริ่มถูกวิธีและติดตามต่อเนื่อง สิ่งสำคัญคือแยกสาเหตุให้ชัดก่อน แล้วจึงเลือกแนวทางที่เหมาะกับแต่ละคนครับ'
+    },
+    'sexual-health':{
+      title:'Re:Flow Program',
+      lead:'ปรึกษาเรื่องสมรรถภาพทางเพศแบบส่วนตัว กับแพทย์ที่มีใบอนุญาต พร้อมส่งยาถึงบ้าน',
+      overview:'ดูแลปัญหาการแข็งตัวอย่างเป็นระบบ แพทย์จะประเมินสาเหตุและความเสี่ยงก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามผลและปรับแผนให้เหมาะกับคุณเป็นรายบุคคล',
+      knowledgeTitle:'ปัญหาการแข็งตัวมีได้หลายสาเหตุ',
+      knowledge:'ความเครียด ฮอร์โมน การไหลเวียนเลือด ยาที่ใช้อยู่ และโรคประจำตัว ล้วนส่งผลต่อการแข็งตัวได้ แพทย์จะแยกสาเหตุก่อน แล้วจึงเลือกแนวทางที่เหมาะกับคุณ',
+      stats:[['ราว 50%','ผู้ชายอายุ 40 ถึง 70 ปี เคยมีปัญหาการแข็งตัวในระดับหนึ่ง'],['30 ถึง 60 นาที','ระยะเวลาก่อนยาเริ่มออกฤทธิ์'],['ต่อเนื่อง','ยาช่วยเฉพาะตอนที่ใช้ ไม่ได้แก้ที่ต้นเหตุ']],
+      quote:'ปัญหาการแข็งตัวมักเป็นสัญญาณของสุขภาพโดยรวม การตรวจให้ครบและเลือกยาให้เหมาะกับโรคประจำตัว สำคัญกว่าการรีบใช้ยาครับ'
+    }
+  }[data.category];
+  if(programme){
+    data.hook=programme.title;data.lead=programme.lead;
+    data.knowledgeTitle=programme.knowledgeTitle;data.knowledge=programme.knowledge;data.knowledgeStats=programme.stats;
+    setText('[data-overview-copy]',programme.overview);
+    setText('[data-doctor-quote]',programme.quote);
+    setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
+    setText('[data-pricing-note]',data.category==='weight' ? 'ราคาที่แจ้งรวมค่ายาแล้วในโปรแกรม ขึ้นอยู่กับแผนการรักษา แพทย์จะประเมินความเหมาะสมก่อนสั่งยาทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
+    document.querySelector('[data-programme-price]').hidden=data.category!=='weight';
+    if(data.category==='weight') setText('[data-coaching-copy]','1:1 health coaching');
+    supporting.faqs=[
+      [data.category==='weight' ? 'โปรแกรม Re:Body เหมาะกับใครบ้าง?' : 'ต้องใช้ยาทุกคนไหม', 'ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่'],
+      ['จะรู้ค่าใช้จ่ายเมื่อไร','ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ'],
+      ['ถ้าเริ่มยาแล้วต้องติดตามอย่างไร','แพทย์จะนัดติดตามผลและอาการข้างเคียงเป็นระยะ แล้วปรับแผนให้เหมาะกับคุณ ประวัติและแผนการรักษาอยู่ในบัญชีของคุณ']
+    ];
+    const reviews=document.querySelector('[data-programme-reviews]');
+    if(data.category==='weight'){
+      setText('[data-reviews-title]',"Customer’s Reviews");
+      setText('[data-reviews-note]','ภาพประกอบเปรียบเทียบ ผลลัพธ์แตกต่างกันในแต่ละบุคคล');
+      reviews.innerHTML='<img src="assets/figma-draft-20260830/results-v2/weight-pair-1-diptych-v2.png" alt="ภาพประกอบเปรียบเทียบรูปร่างก่อนและหลัง" loading="lazy" width="1536" height="1024">';
+    }else if(data.category==='hair-skin'){
+      setText('[data-reviews-title]','ผลลัพธ์จากผู้ใช้จริง');
+      setText('[data-reviews-note]','ภาพเปรียบเทียบจากผู้ใช้ที่ยินยอมให้เผยแพร่ ผลลัพธ์แตกต่างกันในแต่ละบุคคล');
+      reviews.innerHTML='<div class="review-placeholder"><strong>ก่อน</strong><span>รอภาพที่ได้รับความยินยอม</span></div><div class="review-placeholder"><strong>หลัง 6 เดือน</strong><span>รอภาพที่ได้รับความยินยอม</span></div>';
+    }else{
+      setText('[data-reviews-title]','เสียงจากผู้ใช้จริง');
+      setText('[data-reviews-note]','เรื่องเล่าจากผู้ใช้ที่ยินยอมให้เผยแพร่ ไม่เปิดเผยตัวตน และไม่ใช้ภาพประกอบเพื่อความเป็นส่วนตัว');
+      reviews.innerHTML=Array.from({length:3},()=>'<div class="review-placeholder"><b>“</b><span>รอข้อความรีวิวที่ได้รับความยินยอม</span></div>').join('');
+    }
+  }
+
+  if(!programme){
+    setText('[data-overview-copy]',data.lead);
+    document.querySelectorAll('.doctor-perspective,.programme-reviews,.programme-pricing').forEach(node=>node.hidden=true);
+    document.querySelectorAll('[data-section-tab="doctor-perspective"],[data-section-tab="reviews"],[data-section-tab="pricing"]').forEach(node=>node.hidden=true);
+  }
+
   document.title = `${data.kicker} | Krane Clinic`;
-  document.querySelector(".condition-hero")?.setAttribute("data-tone", data.tone);
+  const hero = document.querySelector(".condition-hero");
+  hero?.setAttribute("data-tone", data.tone);
   document.querySelector("main")?.setAttribute("data-tone", data.tone);
   const image = document.querySelector("[data-hero-image]");
   if (image) image.src = data.image;
+  const imageAlt = document.querySelector("[data-hero-image-alt]");
+  const hasAlternateHero = Boolean(imageAlt && data.imageAlt);
+  if (imageAlt) {
+    imageAlt.hidden = !hasAlternateHero;
+    if (hasAlternateHero) imageAlt.src = data.imageAlt;
+  }
+  hero?.classList.toggle("has-alternate-image", hasAlternateHero);
   setText("[data-kicker]", data.kicker);
   setText("[data-title]", data.hook);
   setText("[data-lead]", data.lead);
@@ -573,6 +652,11 @@
     .filter(({ section }) => section);
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (hasAlternateHero && hero && !prefersReducedMotion.matches) {
+    window.setInterval(() => {
+      if (!document.hidden) hero.classList.toggle("is-showing-alternate");
+    }, 5200);
+  }
   let indicatorReadyFrame = 0;
   const moveSectionIndicator = (tab) => {
     if (!sectionViewport || !sectionIndicator || !tab) return;

@@ -45,7 +45,14 @@
     document.querySelectorAll('.map-pin').forEach(function (node) { setIcon(node, 'map-pin', 'ui-icon--lg'); });
     document.querySelectorAll('.map-cta').forEach(function (node) { replaceFirstSvg(node, 'locate-fixed', 'ui-icon--sm'); });
     document.querySelectorAll('.ac-ic').forEach(function (node) { setIcon(node, 'map-pin', 'ui-icon--sm'); });
+    /* This dates from when the only .option with an icon was a payment method,
+       so everything else it reaches — the pickup branch list, for one — was
+       being stamped with a QR code (client, 23 Sep). An option that names its
+       own icon in the markup keeps it; the payment default is only the fallback
+       for the ones that never named one. */
     document.querySelectorAll('.option .opt-icon').forEach(function (node) {
+      var declared = node.querySelector('[data-lucide]');
+      if (declared) { node.dataset.iconReady = declared.getAttribute('data-lucide'); return; }
       setIcon(node, /card/i.test(node.closest('.option').textContent) ? 'credit-card' : 'qr-code', 'ui-icon--md');
     });
     document.querySelectorAll('.quick-row a').forEach(function (link) {

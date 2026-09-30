@@ -32,7 +32,6 @@
     "appointment-booked",
     "article",
     "articles",
-    "choosedoc",
     "conditions",
     "consent-terms",
     "consult",
@@ -83,7 +82,6 @@
     "pharmacyissue",
     "pharmacypending",
     "preloader",
-    "prescription",
     "profile",
     "referral",
     "rx-plan",
@@ -148,22 +146,6 @@
     {
       "selector": "#refill-sheet .modal-dialog__close[data-refill-sheet-close]",
       "why": "The refill picker needs an explicit close control in addition to its dismissible scrim."
-    },
-    {
-      "selector": "#prescription [data-doc='summary']",
-      "why": "Consultation summary document."
-    },
-    {
-      "selector": "#prescription [data-doc='rx']",
-      "why": "Prescription document."
-    },
-    {
-      "selector": "#prescription [data-doc='cert']",
-      "why": "Medical certificate."
-    },
-    {
-      "selector": "#prescription [data-doc='receipt']",
-      "why": "Receipt."
     },
     {
       "selector": "#tracking [data-doc-open='receipt']",
@@ -388,6 +370,55 @@
       ]
     },
     {
+      "name": "PDPA always leads through personal details before health",
+      "enter": "#consent-terms",
+      "seed": {
+        "entryChannel": "direct",
+        "draftReady": true,
+        "accountCreated": true,
+        "otpVerified": true,
+        "passwordSet": true,
+        "returningIdentityValid": true,
+        "consentsComplete": false,
+        "patientInfoComplete": true,
+        "verifiedPhone": "0812345678",
+        "patientName": "มะลิ สุธิดา",
+        "paymentPreference": "self-pay"
+      },
+      "assertBeforeClick": [
+        {
+          "activeScreen": "consent-terms"
+        }
+      ],
+      "steps": [
+        {
+          "click": "[data-consent-auto-scroll]",
+          "waitAfter": 500
+        },
+        {
+          "click": "[data-consent-continue]",
+          "assert": [
+            {
+              "activeScreen": "patient-info"
+            }
+          ]
+        },
+        {
+          "click": "[data-patient-info-continue]",
+          "assert": [
+            {
+              "activeScreen": "intake-general"
+            }
+          ]
+        }
+      ],
+      "assert": [
+        {
+          "activeScreen": "intake-general"
+        }
+      ]
+    },
+    {
       "name": "Tracking offers the receipt confirmation on the Delivered step",
       "enter": "#tracking",
       "seed": {
@@ -465,7 +496,10 @@
     {
       "name": "Scroll text follows the positioning statement",
       "page": "krane-b2c-landing.html",
-      "count": [".positioning-section + .scroll-text[data-scroll-reveal]", 1]
+      "count": [
+        ".positioning-section + .scroll-text[data-scroll-reveal]",
+        1
+      ]
     },
     {
       "name": "Scroll text never opens the page",
@@ -612,7 +646,7 @@
     },
     {
       "name": "English mode leaves no Thai on a condition page",
-      "page": "condition-detail.html?condition=ed&lang=en",
+      "page": "condition-detail.html?condition=re-flow&lang=en",
       "noThaiInEnglish": true
     },
     {
@@ -636,15 +670,17 @@
       "order": [
         "#payment .screen__body",
         [
-          "[data-fulfillment-mode-option]",
-          "[data-payment-address-row]",
-          "[data-delivery-option]",
-          ".checkout-final-summary",
+          ".checkout-order",
           "[data-payment-addons]",
-          "[data-payment-method]"
+          ".checkout-final-summary",
+          ".checkout-fulfillment-tabs",
+          "[data-payment-address-row]",
+          "[data-delivery-options]",
+          "[data-open-methods]",
+          "[data-open-promo]"
         ]
       ],
-      "why": "Client, 1 Sep, after auditing Grab: the bill follows the basket it totals, before the optional add-ons and the payment method."
+      "why": "Client, 20 Sep: follow the reference order-app flow — basket, add-ons, subtotal, fulfilment, address, delivery speed, payment and offers — while retaining Krane styling."
     },
     {
       "name": "Navigation bar stays a floating capsule, not a docked bar",

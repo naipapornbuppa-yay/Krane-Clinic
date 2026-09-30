@@ -35,7 +35,8 @@
 }
 
 *{box-sizing:border-box}
-html{width:100%;max-width:none;scroll-behavior:smooth;scroll-padding-top:104px}
+html{width:100%;max-width:none;scroll-behavior:smooth;scroll-padding-top:104px;scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
 body{
   width:100%;
   max-width:none;
@@ -44,10 +45,34 @@ body{
   overflow-x:hidden;
   background:var(--landing-canvas);
   color:var(--landing-ink);
-  font-family:"Prompt","Inter",system-ui,sans-serif;
+  font-family:var(--landing-font-body);
   font-size:16px;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
+}
+/* The landing runs inside the app shell iframe. Chrome on iOS may sample this
+   inner document—not the parent—for its top browser/status surfaces, so the
+   blue has to reach the very top of this document. The top is covered three
+   times over: the theme-color meta, the fixed inset band on body::before, and
+   the top stop of the body's own fixed gradient below.
+
+   Client, 23 Sep: the root canvas must NOT be that blue. Safari tints the
+   bottom toolbar with the document's canvas colour rather than the pixels
+   above it, so a blue root painted the toolbar blue even though the page ends
+   in light grey. The canvas is the page colour; only the top is blue. */
+html{background:var(--landing-canvas)}
+body.landing-figma-draft{
+  /* Desktop has no browser-notch inset. Keep the campaign surface exactly as
+     tall as the 32px announcement instead of painting an extra blue block
+     underneath it. Mobile overrides this stop to include its safe area. */
+  --landing-notch-stop:32px;
+  background-color:#5871B5;
+  background-image:linear-gradient(to bottom,
+    #5871B5 0,
+    #5871B5 var(--landing-notch-stop),
+    var(--landing-canvas) var(--landing-notch-stop),
+    var(--landing-canvas) 100%);
+  background-attachment:fixed;
 }
 body.menu-open,body.review-open{overflow:hidden}
 button,select{font:inherit}
@@ -87,6 +112,23 @@ button{color:inherit}
 .button--dark:hover{background:#182541}
 .button--outline{border-color:currentColor;background:transparent;color:var(--landing-ink)}
 
+/* Client, 23 Sep: the strip above the banner was white. iOS does not honour
+   theme-color on every device, so the top inset is painted here as well — the
+   same blue as the banner it sits above. Top inset only: the page canvas stays
+   light so a translucent bottom toolbar is not tinted with it. The app shell
+   does the same thing for the embedded route. */
+body::before{
+  content:"";
+  position:fixed;
+  z-index:2147483647;
+  top:0;
+  right:0;
+  left:0;
+  height:env(safe-area-inset-top, 0px);
+  background:var(--campaign-banner-surface);
+  pointer-events:none;
+}
+
 /* Announcement and navigation */
 .announcement{
   position:relative;
@@ -106,7 +148,7 @@ button{color:inherit}
 }
 .announcement__track{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 .announcement__group{height:100%;min-height:40px;display:flex;align-items:center;justify-content:center;gap:var(--sp-2,8px);padding-inline:var(--page-gutter);white-space:nowrap;text-align:center}
-.announcement span,.announcement strong{font:400 var(--fs-sm,13px)/var(--lh-snug,1.35) "Inter","Prompt",sans-serif}
+.announcement span,.announcement strong{font:400 var(--fs-sm,13px)/var(--lh-snug,1.35) var(--landing-font-ui)}
 .announcement strong{font-weight:700}
 
 .site-header{
@@ -178,7 +220,7 @@ button{color:inherit}
   border-radius:8px;
   background:transparent;
   color:var(--landing-navy);
-  font:600 13px/1 "Inter",sans-serif;
+  font:600 13px/1 var(--landing-font-ui);
   cursor:pointer;
 }
 .language-control select:hover{background:var(--landing-canvas)}
@@ -252,7 +294,7 @@ button{color:inherit}
   border-radius:10px;
   background:transparent;
   color:var(--landing-navy);
-  font:500 13px/1.2 "Prompt","Noto Sans Thai","Inter",sans-serif;
+  font:500 13px/1.2 var(--landing-font-display);
   text-align:left;
   cursor:pointer;
 }
@@ -379,7 +421,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   color:rgba(255,255,255,.86);
   transform:translateX(-50%);
 }
-.hero__signals>span{display:inline-flex;align-items:center;gap:7px;font:500 13px/1.3 "Inter","Prompt",sans-serif}
+.hero__signals>span{display:inline-flex;align-items:center;gap:7px;font:500 13px/1.3 var(--landing-font-ui)}
 .hero__signals svg{width:14px;height:14px}
 .hero h1{
   position:absolute;
@@ -468,7 +510,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .compliance__group{width:max-content;min-width:max-content;flex:none;display:flex;align-items:center;justify-content:flex-start;flex-wrap:nowrap;gap:clamp(24px,3.5vw,52px);padding-inline:clamp(18px,2.6vw,42px);white-space:nowrap}
 .compliance__group>div{display:flex;align-items:center;gap:10px;min-width:0;transition:transform .25s var(--ease),filter .25s ease}
 .compliance__logos img{width:56px;height:56px;flex:none;object-fit:contain}
-.compliance__logos strong{color:#8a94a6;font:700 16px/1.2 "Inter","Prompt",sans-serif;letter-spacing:-.3px;white-space:nowrap}
+.compliance__logos strong{color:#8a94a6;font:700 16px/1.2 var(--landing-font-ui);letter-spacing:-.3px;white-space:nowrap}
 .compliance__motion-toggle{display:none}
 @keyframes compliance-marquee{to{transform:translate3d(-50%,0,0)}}
 
@@ -521,7 +563,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 }
 .product-stage__glow{position:absolute;left:57%;bottom:30px;width:369px;height:369px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(214,228,255,.92),rgba(234,242,255,.2) 72%,transparent)}
 .product-stage__image{position:absolute;left:calc(50% - 18px);top:-80px;width:575px;height:688px;object-fit:contain;object-position:center;transform:translateX(-50%);filter:drop-shadow(0 26px 30px rgba(23,46,81,.12));transition:opacity .18s ease}
-.product-tag{position:absolute;z-index:3;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.9);color:#1a2433;box-shadow:0 4px 12px rgba(15,23,42,.06);font:600 11px/1 "Prompt","Noto Sans Thai",sans-serif;white-space:nowrap}
+.product-tag{position:absolute;z-index:3;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.9);color:#1a2433;box-shadow:0 4px 12px rgba(15,23,42,.06);font:600 11px/1 var(--landing-font-display);white-space:nowrap}
 .product-tag svg{width:12px;height:12px;color:var(--landing-blue)}
 .product-tag b{width:6px;height:6px;border-radius:50%;background:#12b88f}
 .product-tag--one{top:var(--tag-one-top);left:var(--tag-one-left)}
@@ -555,7 +597,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .motion-enabled.motion-loaded .product-stage__image{animation:product-breathe 5.8s ease-in-out infinite}
 .carousel-footer{height:48px;display:flex;align-items:center;justify-content:space-between;padding-inline:32px}
 .carousel-indicator{height:48px;display:flex;align-items:center;padding:0 16px;border:1px solid var(--landing-line);border-radius:28px;background:#fff}
-.carousel-indicator strong{width:44px;height:24px;display:grid;place-items:center;border-radius:16px;background:#0f172a;color:#fff;font:700 10px/1 "Inter",sans-serif}
+.carousel-indicator strong{width:44px;height:24px;display:grid;place-items:center;border-radius:16px;background:#0f172a;color:#fff;font:700 10px/1 var(--landing-font-ui)}
 .carousel-indicator span{display:flex;gap:6px;padding-left:14px}
 .carousel-indicator i{width:4px;height:4px;border-radius:50%;background:#cbd5e1}
 .carousel-indicator i:first-child{background:#0f172a}
@@ -628,7 +670,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .review-column::-webkit-scrollbar,.review-collage::-webkit-scrollbar{display:none}
 .review-column figure,.review-mobile-sequence figure{position:relative;width:208px;height:320px;overflow:hidden;border-radius:24px;flex:none;background:var(--landing-canvas);cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s ease}
 .review-collage figure img{width:100%;height:100%;object-fit:cover}
-.review-collage figcaption{position:absolute;left:12px;top:14px;padding:6px 12px;border-radius:20px;background:#1a1f2e;color:#fff;font:600 11px/1 "Inter",sans-serif}
+.review-collage figcaption{position:absolute;left:12px;top:14px;padding:6px 12px;border-radius:20px;background:#1a1f2e;color:#fff;font:600 11px/1 var(--landing-font-ui)}
 .review-collage figure>svg{position:absolute;left:50%;top:50%;width:36px;height:36px;padding:11px;border-radius:50%;background:rgba(26,31,46,.4);color:#fff;transform:translate(-50%,-50%)}
 .review-loop-clone{pointer-events:auto}
 .review-loop-clone--vertical{display:none}
@@ -1115,7 +1157,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   width:100%;
   max-width:720px;
   color:var(--draft-ink);
-  font:600 clamp(48px,4.3vw,62px)/1.15 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 clamp(48px,4.3vw,62px)/1.15 var(--landing-font-display);
   letter-spacing:-.045em;
 }
 .landing-figma-draft .hero__lead{max-width:440px;margin-top:24px;color:var(--draft-muted);font-size:20px;line-height:1.6;text-wrap:balance}
@@ -1218,13 +1260,13 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
 .figma-how__scene{width:100%;max-width:1110px;display:grid;grid-template-columns:1fr 330px 1fr;gap:44px;align-items:center;margin-top:44px}
 .figma-how__steps{display:flex;flex-direction:column;gap:76px;margin:0;padding:0;list-style:none}
 .figma-how__steps li{display:grid;grid-template-columns:36px 1fr;gap:18px;align-items:start}
-.figma-how__steps span{font:600 12px/36px "Inter",sans-serif;text-align:center;border:1px solid rgba(23,28,40,.18);border-radius:50%}
+.figma-how__steps span{font:600 12px/36px var(--landing-font-ui);text-align:center;border:1px solid rgba(23,28,40,.18);border-radius:50%}
 .figma-how__steps h3{font-size:18px;font-weight:600}
 .figma-how__steps p{margin-top:8px;color:var(--draft-muted);font-size:13px;line-height:1.65}
 .figma-how__phone{position:relative;width:330px;height:410px;display:grid;place-items:center}
 .figma-how__phone>img{position:absolute;inset:-8px -45px auto;width:420px;height:420px;max-width:none;object-fit:contain;filter:drop-shadow(0 28px 32px rgba(26,32,46,.14))}
 .figma-how__phone-screen{position:relative;width:178px;height:320px;display:flex;flex-direction:column;align-items:center;padding:26px 16px;border-radius:30px;background:linear-gradient(180deg,#f7f9fd,#e8eef9);box-shadow:inset 0 0 0 1px rgba(88,113,181,.12)}
-.figma-how__phone-screen b{align-self:flex-start;font:600 15px/1 "Inter",sans-serif;letter-spacing:-.05em}
+.figma-how__phone-screen b{align-self:flex-start;font:600 15px/1 var(--landing-font-ui);letter-spacing:-.05em}
 .figma-how__phone-screen>svg{width:62px;height:62px;margin-top:64px;padding:18px;border-radius:50%;background:var(--draft-blue);color:#fff}
 .figma-how__phone-screen strong{margin-top:20px;font-size:12px;text-align:center}
 .figma-how__phone-screen small{margin-top:6px;color:var(--draft-muted);font-size:9px}
@@ -1527,7 +1569,7 @@ main{display:flex;flex-direction:column;gap:32px;margin-top:32px}
   color:var(--landing-ink-2);
   transform:none;
 }
-.hero--campaign .hero__signals>span{display:inline-flex;align-items:center;gap:var(--sp-2,8px);font:500 var(--fs-sm,13px)/var(--lh-snug,1.35) "Inter","Prompt",sans-serif;white-space:nowrap}
+.hero--campaign .hero__signals>span{display:inline-flex;align-items:center;gap:var(--sp-2,8px);font:500 var(--fs-sm,13px)/var(--lh-snug,1.35) var(--landing-font-ui);white-space:nowrap}
 .hero--campaign .hero__signals svg{width:var(--fs-md,17px);height:var(--fs-md,17px);color:var(--landing-navy)}
 .hero--campaign h1{
   position:static;
@@ -1668,7 +1710,7 @@ main{gap:28px;margin-top:0}
   order:1;
   max-width:none;
   margin:0;
-  font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;
+  font-family:var(--landing-font-display);
   font-size:clamp(48px,4.6vw,68px);
   font-weight:600;
   line-height:1.1;
@@ -2017,7 +2059,7 @@ body{
 }
 .campaign-slide h2{
   margin-top:16px;
-  font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;
+  font-family:var(--landing-font-display);
   font-size:clamp(38px,4.25vw,62px);
   font-weight:600;
   line-height:1.08;
@@ -2118,7 +2160,7 @@ body{
 .hero__legal{margin-top:12px}
 .hero+.treatments{margin-top:-6px}
 .treatments{padding:4px 0 0}
-.treatment-panel h2{font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif}
+.treatment-panel h2{font-family:var(--landing-font-display)}
 .treatment-pill{
   border-color:rgba(17,27,48,.07);
   background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(255,255,255,.06)),var(--paper-blue);
@@ -2377,7 +2419,7 @@ body{
   font-weight:500;
 }
 .hero__journey li:last-child{border-bottom:0}
-.hero__journey b{color:var(--landing-blue);font:600 11px/1 "Inter",sans-serif;letter-spacing:.08em}
+.hero__journey b{color:var(--landing-blue);font:600 11px/1 var(--landing-font-ui);letter-spacing:.08em}
 .hero--campaign .hero__signals{
   width:100%;
   margin-top:0;
@@ -2424,7 +2466,7 @@ body{
 .care-discovery__heading h2{
   margin-top:3px;
   color:var(--landing-navy);
-  font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;
+  font-family:var(--landing-font-display);
   font-size:22px;
   font-weight:600;
   line-height:1.2;
@@ -2605,7 +2647,7 @@ body{
 .care-banner__copy>strong{
   display:block;
   color:#fff;
-  font-family:"Prompt","Noto Sans Thai",system-ui,sans-serif;
+  font-family:var(--landing-font-display);
   font-size:clamp(20px,1.8vw,27px);
   font-weight:500;
   line-height:1.14;
@@ -2972,7 +3014,7 @@ body{background:var(--landing-page-bg)}
   border-radius:999px;
   background:rgba(247,245,238,.9);
   color:var(--landing-navy);
-  font:600 12px/1.2 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 12px/1.2 var(--landing-font-display);
   font-style:normal;
   backdrop-filter:blur(8px);
 }
@@ -2986,7 +3028,7 @@ body{background:var(--landing-page-bg)}
 .trust-section__heading h2,.privacy-section h2{
   margin-top:8px;
   color:var(--landing-navy);
-  font:600 clamp(36px,4.8vw,66px)/1.1 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 clamp(36px,4.8vw,66px)/1.1 var(--landing-font-display);
   letter-spacing:-.035em;
 }
 /* Credential cards keep each mark on a generous white stage. Wordmarks and
@@ -3040,21 +3082,21 @@ body{background:var(--landing-page-bg)}
   color:var(--landing-navy);
   text-align:center;
 }
-.iso-standard b{color:var(--landing-blue);font:700 10px/1.2 "Inter",sans-serif;letter-spacing:.04em}
-.iso-standard strong{margin-top:7px;font:700 clamp(14px,1.5vw,19px)/1 "Inter",sans-serif;letter-spacing:-.04em}
-.iso-standard small{margin-top:7px;color:#68758b;font:600 9px/1.2 "Inter",sans-serif;text-transform:uppercase}
+.iso-standard b{color:var(--landing-blue);font:700 10px/1.2 var(--landing-font-ui);letter-spacing:.04em}
+.iso-standard strong{margin-top:7px;font:700 clamp(14px,1.5vw,19px)/1 var(--landing-font-ui);letter-spacing:-.04em}
+.iso-standard small{margin-top:7px;color:#68758b;font:600 9px/1.2 var(--landing-font-ui);text-transform:uppercase}
 .trust-card__body{min-width:0}
 .trust-card__eyebrow{
   margin:0;
   color:var(--landing-navy);
-  font:600 16px/1.4 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 16px/1.4 var(--landing-font-display);
   letter-spacing:-.01em;
 }
 .trust-card__line{
   max-width:44ch;
   margin:5px 0 0;
   color:#5b6678;
-  font:400 14px/1.6 "Prompt","Noto Sans Thai",sans-serif;
+  font:400 14px/1.6 var(--landing-font-display);
 }
 @media(min-width:861px){
   .trust-grid{grid-template-columns:.92fr .92fr 1.16fr;gap:16px;max-width:1160px}
@@ -3155,7 +3197,7 @@ body{background:var(--landing-page-bg)}
   color:#fff;
 }
 .privacy-card__icon svg{width:24px;height:24px}
-.privacy-card h3{color:var(--landing-navy);font:600 20px/1.4 "Prompt","Noto Sans Thai",sans-serif}
+.privacy-card h3{color:var(--landing-navy);font:600 20px/1.4 var(--landing-font-display)}
 .privacy-card p{margin-top:8px;color:var(--landing-ink-2);font-size:15px;line-height:1.6}
 /* The icons ride at their own rate, so the row reads as two planes sliding
    past each other rather than one block moving sideways. */
@@ -3197,8 +3239,8 @@ body{background:var(--landing-page-bg)}
 }
 .expert-card--identity:nth-child(3)>.expert-card__identity{background:linear-gradient(145deg,#dce8f7,#e9f2ee)}
 .expert-card--identity:nth-child(4)>.expert-card__identity{background:linear-gradient(145deg,#e8e4f3,#f4efe8)}
-.expert-card__identity span{display:grid;width:104px;height:104px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy);font:600 35px/1 "Prompt",sans-serif;box-shadow:0 16px 40px rgba(17,35,60,.08)}
-.expert-card__identity small{margin-top:18px;color:#4f5f79;font:600 13px/1.35 "Prompt","Noto Sans Thai",sans-serif}
+.expert-card__identity span{display:grid;width:104px;height:104px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy);font:600 35px/1 var(--landing-font-display);box-shadow:0 16px 40px rgba(17,35,60,.08)}
+.expert-card__identity small{margin-top:18px;color:#4f5f79;font:600 13px/1.35 var(--landing-font-display)}
 .expert-card--identity>div:last-child{padding:20px}
 
 @media(max-width:960px){
@@ -3284,11 +3326,11 @@ body{background:var(--landing-page-bg)}
   padding:0;
   border:0;
   background:none;
-  font:600 13px/1.35 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 13px/1.35 var(--landing-font-display);
 }
 .confidence-campaign h2{
   margin-top:18px;
-  font:500 clamp(34px,4.1vw,56px)/1.14 "Prompt","Noto Sans Thai",sans-serif;
+  font:500 clamp(34px,4.1vw,56px)/1.14 var(--landing-font-display);
   letter-spacing:-.03em;
   text-wrap:balance;
 }
@@ -3305,7 +3347,7 @@ body{background:var(--landing-page-bg)}
   border-radius:var(--button-radius,14px);
   background:var(--landing-navy);
   color:#fff;
-  font:600 17px/1.2 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 17px/1.2 var(--landing-font-display);
   box-shadow:0 14px 34px rgba(11,20,35,.28);
   transition:transform .24s var(--ease),box-shadow .24s var(--ease);
 }
@@ -3331,8 +3373,8 @@ body{background:var(--landing-page-bg)}
 }
 .confidence-campaign__proof>svg{width:36px;height:36px;flex:0 0 auto;padding:8px;border-radius:50%;background:rgba(255,255,255,.16)}
 .confidence-campaign__proof span{display:flex;min-width:0;flex-direction:column;gap:3px}
-.confidence-campaign__proof strong{font:600 15px/1.4 "Prompt","Noto Sans Thai",sans-serif}
-.confidence-campaign__proof small{color:rgba(255,255,255,.78);font:500 12px/1.45 "Prompt","Noto Sans Thai",sans-serif}
+.confidence-campaign__proof strong{font:600 15px/1.4 var(--landing-font-display)}
+.confidence-campaign__proof small{color:rgba(255,255,255,.78);font:500 12px/1.45 var(--landing-font-display)}
 .confidence-campaign__legal{position:absolute;bottom:30px;left:clamp(34px,5vw,78px);z-index:2;color:rgba(255,255,255,.72);font-size:11px;line-height:1.45}
 
 @media(max-width:800px){
@@ -3491,14 +3533,14 @@ body.expert-open{overflow:hidden}
 .experts__intro{max-width:780px;padding-right:0}
 .experts__seal{width:42px;height:42px;margin-bottom:48px;color:var(--landing-navy)}
 .experts__intro .section-kicker{color:#56637a;font-weight:600}
-.experts__intro h2{margin-top:12px;font:500 clamp(38px,4vw,58px)/1.12 "Prompt","Noto Sans Thai",sans-serif;letter-spacing:-.04em}
+.experts__intro h2{margin-top:12px;font:500 clamp(38px,4vw,58px)/1.12 var(--landing-font-display);letter-spacing:-.04em}
 .experts__lead{max-width:39ch;margin-top:26px;color:#3f4a5d;font-size:16px;line-height:1.75}
 .experts__principles{display:grid;gap:16px;margin:36px 0 0;padding:0;list-style:none}
 .experts__principles li{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start}
 .experts__principles>li>svg{width:20px;height:20px;margin-top:2px;color:var(--landing-navy)}
 .experts__principles span{display:flex;flex-direction:column;gap:2px}
-.experts__principles strong{font:600 15px/1.4 "Prompt","Noto Sans Thai",sans-serif}
-.experts__principles small{color:#59657a;font:400 13px/1.55 "Prompt","Noto Sans Thai",sans-serif}
+.experts__principles strong{font:600 15px/1.4 var(--landing-font-display)}
+.experts__principles small{color:#59657a;font:400 13px/1.55 var(--landing-font-display)}
 .experts__jump{display:inline-flex;min-height:54px;align-items:center;gap:32px;margin-top:38px;padding:0 22px;border:1px solid #cfd5dd;border-radius:var(--button-radius,14px);font-weight:600}
 .experts__jump svg{width:19px;height:19px;transition:transform .2s var(--ease)}
 .experts__jump:hover svg,.experts__jump:focus-visible svg{transform:translateX(4px)}
@@ -3527,8 +3569,8 @@ body.expert-open{overflow:hidden}
 .expert-card__media--identity{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#e3eaf1,#f3eee8)}
 .expert-card:nth-child(3) .expert-card__media--identity{background:linear-gradient(145deg,#dce8f7,#e9f2ee)}
 .expert-card:nth-child(4) .expert-card__media--identity{background:linear-gradient(145deg,#e8e4f3,#f4efe8)}
-.expert-card__media--identity b{display:grid;width:126px;height:126px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy);font:600 38px/1 "Prompt",sans-serif;box-shadow:0 16px 40px rgba(17,35,60,.08)}
-.expert-card__media--identity small{margin-top:18px;color:#4f5f79;font:600 13px/1.35 "Prompt","Noto Sans Thai",sans-serif}
+.expert-card__media--identity b{display:grid;width:126px;height:126px;place-items:center;border-radius:50%;background:#fff;color:var(--landing-navy);font:600 38px/1 var(--landing-font-display);box-shadow:0 16px 40px rgba(17,35,60,.08)}
+.expert-card__media--identity small{margin-top:18px;color:#4f5f79;font:600 13px/1.35 var(--landing-font-display)}
 .expert-card__body{display:block;padding:22px 0 0}
 .experts .expert-card h3{min-height:0;font-size:22px;font-weight:600;line-height:1.45}
 .experts .expert-card strong{display:block;min-height:0;margin-top:3px;color:#252d3b;font-size:14px;font-weight:500;line-height:1.5}
@@ -3540,7 +3582,7 @@ body.expert-open{overflow:hidden}
 .expert-dialog__media>.expert-card__media{height:100%}
 .expert-dialog__media .expert-card__media>svg{display:none}
 .expert-dialog__content{padding:clamp(32px,4vw,58px)}
-.expert-dialog__content h2{margin-top:10px;font:500 clamp(34px,3.5vw,50px)/1.18 "Prompt","Noto Sans Thai",sans-serif;letter-spacing:-.035em}
+.expert-dialog__content h2{margin-top:10px;font:500 clamp(34px,3.5vw,50px)/1.18 var(--landing-font-display);letter-spacing:-.035em}
 .expert-dialog__role{margin-top:8px;color:#2f394b;font-size:17px;font-weight:600;line-height:1.5}
 .expert-dialog__bio{max-width:54ch;margin-top:28px;color:#344054;font-size:17px;line-height:1.75}
 .expert-dialog__facts{display:grid;gap:0;margin:34px 0 0}
@@ -3679,7 +3721,7 @@ body.expert-open{overflow:hidden}
   position:relative;
   z-index:1;
   max-width:68%;
-  font:500 19px/1.28 "Prompt","Noto Sans Thai",sans-serif;
+  font:500 19px/1.28 var(--landing-font-display);
   text-shadow:0 2px 12px rgba(0,0,0,.28);
 }
 /* Same button, icon-only variant: shares the navy/white pair every labeled CTA
@@ -3809,7 +3851,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   position:relative;
   z-index:2;
   max-width:66%;
-  font:600 clamp(14px,1.35vw,17px)/1.3 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 clamp(14px,1.35vw,17px)/1.3 var(--landing-font-display);
 }
 .service-card__art{
   position:absolute;
@@ -3862,7 +3904,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .service-tile__bg{object-posi
   border-radius:999px;
   background:var(--surface-card);
   color:var(--landing-ink-2);
-  font:600 11px/1 "Prompt","Noto Sans Thai",sans-serif;
+  font:600 11px/1 var(--landing-font-display);
   white-space:nowrap;
 }
 @media(max-width:860px){
@@ -4145,7 +4187,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
   content:"";position:absolute;inset:10px;border:1px dashed var(--landing-line);border-radius:inherit
 }
 .progress-card__frame figcaption{
-  position:relative;color:var(--landing-ink-2);font:600 12px/1.3 "Prompt","Noto Sans Thai",sans-serif
+  position:relative;color:var(--landing-ink-2);font:600 12px/1.3 var(--landing-font-display)
 }
 .progress-card__meta{margin:0;color:var(--landing-muted);font-size:13px;line-height:1.5}
 .progress-section__note{
@@ -4177,8 +4219,8 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--product{
 .article-card__tags{display:flex;align-items:center;gap:8px}
 .article-card__tag{padding:3px 9px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent);font-size:11px;font-style:normal;font-weight:600}
 .article-card__meta{color:var(--landing-muted);font-size:11.5px;font-weight:600}
-.article-card__title{font:500 17px/1.35 "Prompt","Noto Sans Thai",sans-serif;text-wrap:balance}
-.article-card__excerpt{color:var(--landing-ink-2);font:400 13.5px/1.6 "Prompt","Noto Sans Thai",sans-serif}
+.article-card__title{font:500 17px/1.35 var(--landing-font-display);text-wrap:balance}
+.article-card__excerpt{color:var(--landing-ink-2);font:400 13.5px/1.6 var(--landing-font-display)}
 .article-card__go{margin-top:auto;display:inline-flex;align-items:center;color:var(--landing-blue)}
 .article-card__go svg{width:20px;height:20px}
 .articles-section__all{
@@ -4576,7 +4618,7 @@ main>.how{
   align-self:start;
   margin-top:5px;
   color:var(--landing-ink-2);
-  font:600 9px/1.3 "Inter",sans-serif;
+  font:600 9px/1.3 var(--landing-font-ui);
   letter-spacing:.01em;
   white-space:normal;
 }
@@ -4800,7 +4842,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   border-radius:48px;
   background:rgba(255,255,255,.07);
   color:#fff;
-  font:600 11px/1 "Inter","Prompt",sans-serif;
+  font:600 11px/1 var(--landing-font-ui);
   font-style:normal;
   backdrop-filter:blur(20px);
 }
@@ -4880,7 +4922,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   border-radius:99px;
   background:#111b30;
   color:#fff;
-  font:600 13px/1 "Inter","Prompt",sans-serif;
+  font:600 13px/1 var(--landing-font-ui);
   opacity:0;
   pointer-events:none;
   transition:opacity .35s ease;
@@ -4922,7 +4964,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 .how .steps li>.step-art{grid-column:2;grid-row:2;align-self:end;margin-top:24px}
 .how-mock{position:relative;width:100%;min-height:292px;overflow:hidden;border:1px solid rgba(23,46,81,.12);border-radius:24px;background:#fff;box-shadow:0 18px 42px rgba(23,46,81,.11)}
 .how-mock__chrome{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #e8ecf2;background:#fbfcfe}
-.how-mock__chrome b{color:#121a29;font:600 16px/1 "Inter","Prompt",sans-serif;letter-spacing:-.05em}
+.how-mock__chrome b{color:#121a29;font:600 16px/1 var(--landing-font-ui);letter-spacing:-.05em}
 .how-mock__chrome>span{display:flex;gap:4px}
 .how-mock__chrome i{display:block;width:5px;height:5px;border-radius:50%;background:#cbd2dc}
 .how-mock__body{height:254px;padding:16px;color:#172e51}
@@ -4930,7 +4972,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 .how-intake__meta{display:flex;align-items:center;gap:9px}
 .how-intake__progress{height:3px;flex:1;overflow:hidden;border-radius:999px;background:#e5e8ed}
 .how-intake__progress i{display:block;height:100%;border-radius:inherit;background:#172e51;transition:width .42s var(--ease)}
-.how-intake__meta small{color:#7a8495;font:600 9px/1 "Inter",sans-serif}
+.how-intake__meta small{color:#7a8495;font:600 9px/1 var(--landing-font-ui)}
 .how-mock__body--intake>strong{min-height:42px;margin-top:15px;font-size:14px;line-height:1.45}
 .how-intake__options{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .how-intake__options span{min-height:28px;display:flex;align-items:center;padding:6px 9px;border:1px solid #e2e6ec;border-radius:9px;color:#5d6878;background:#fff;font-size:10px;line-height:1.25;transition:background .3s ease,border-color .3s ease,color .3s ease}
@@ -4977,7 +5019,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 .how-delivery__card{display:flex;align-items:center;gap:10px;margin-top:auto;padding:11px;border:1px solid #e3e7ec;border-radius:13px;background:#fafbfd}
 .how-delivery__card>span{width:30px;height:30px;border-radius:8px;background:linear-gradient(145deg,#dde7f3,#f8fafc);box-shadow:inset 0 0 0 1px rgba(23,46,81,.06)}
 .how-delivery__card div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.how-delivery__card b{font:600 9px/1.2 "Inter",sans-serif;color:#29364c}
+.how-delivery__card b{font:600 9px/1.2 var(--landing-font-ui);color:#29364c}
 .how-delivery__card small{overflow:hidden;color:#778296;font-size:8px;white-space:nowrap;text-overflow:ellipsis}
 @media(max-width:960px){
   .how .steps li{min-height:440px}
@@ -5028,7 +5070,11 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .site-header .brand{width:112px}.landing-figma-draft .desktop-nav{gap:40px}
   .landing-figma-draft main{gap:40px;padding-top:40px}
   .landing-figma-draft .page-section{margin-inline:40px}
-  .landing-figma-draft .hero{height:696px;margin-inline:40px}
+  /* Keep the desktop hero content-led. The intro can grow when type metrics or
+     localisation add a line; a fixed 696px box let the 452px service mosaic
+     paint outside the hero, so the following white section covered its lower
+     edge in the Screen Tab iframe. */
+  .landing-figma-draft .hero{height:auto;min-height:696px;margin-inline:40px}
   .landing-figma-draft .hero-draft__intro{
     width:100%;height:204px;grid-template-columns:minmax(0,1fr) 363px;gap:32px;align-items:center;padding:0
   }
@@ -5043,7 +5089,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .hero h1{
     max-width:none;margin:0;color:#000;font-size:62px;line-height:72px;font-weight:600;letter-spacing:1px;white-space:nowrap
   }
-  .landing-figma-draft .hero__lead{max-width:440px;margin:0;font-size:20px;line-height:1.6}
+  .landing-figma-draft .hero__lead{max-width:none;margin:0;font-size:20px;line-height:1.6;white-space:nowrap;text-wrap:nowrap}
   .landing-figma-draft .hero-draft__benefits{width:363px;gap:16px;align-content:center}
   .landing-figma-draft .hero-draft__benefits li{grid-template-columns:14px 1fr;gap:6px;padding:0;border:0;align-items:center}
   .landing-figma-draft .hero-draft__benefits svg{width:14px;height:14px;margin:0}
@@ -5160,7 +5206,10 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   .landing-figma-draft .site-header{height:80px;min-height:80px;padding-inline:20px}
   .landing-figma-draft main{gap:12px;padding-top:12px}
   .landing-figma-draft .page-section{margin-inline:var(--mobile-gutter)}
-  .landing-figma-draft .hero-draft__intro{padding:22px 4px 28px}
+  /* Client, 23 Sep: the proof strip sat a long way under the nav capsule on a
+     phone, pushing the headline and the care cards down with it. The hero's own
+     top padding is where that space came from. */
+  .landing-figma-draft .hero-draft__intro{padding:8px 4px 28px}
   .landing-figma-draft .hero h1{font-size:42px;line-height:1.08;letter-spacing:-.035em}
   .landing-figma-draft .hero__lead{font-size:17px;line-height:1.6}
   /* Client, 1 Sep: three chips are wider than the screen, so the third was cut
@@ -5351,7 +5400,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   border-radius:50%;
   background:#fff;
   color:var(--draft-ink);
-  font:600 12px/1 "Inter",sans-serif;
+  font:600 12px/1 var(--landing-font-ui);
 }
 .figma-how__step--active .figma-how__rail span{background:var(--draft-ink);color:#fff;border-color:var(--draft-ink)}
 .figma-how__rail i{
@@ -5545,11 +5594,11 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 .figma-how__arrow svg{width:14px;height:14px}
 .figma-how__indicators{display:flex;align-items:center;gap:7px}
 .figma-how__indicators button{display:flex;align-items:center;gap:5px;padding:0;border:0;background:transparent;color:#8a91a0;cursor:pointer}
-.figma-how__indicators span{font:600 10px/1 "Inter",sans-serif}
+.figma-how__indicators span{font:600 10px/1 var(--landing-font-ui)}
 .figma-how__indicators i{width:12px;height:1px;background:#cbd0da;transition:width .5s cubic-bezier(.22,.72,.2,1),background .3s ease}
 .figma-how__indicators button.is-current{color:var(--draft-ink)}
 .figma-how__indicators button.is-current i{width:46px;background:var(--draft-ink)}
-.figma-how__count{margin-left:auto;color:#7a8291;font:500 10px/1 "Inter",sans-serif}
+.figma-how__count{margin-left:auto;color:#7a8291;font:500 10px/1 var(--landing-font-ui)}
 .figma-how[data-how-carousel] .figma-pill-button{
   position:absolute;
   z-index:7;
@@ -6397,7 +6446,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   min-height:32px;
   padding:0;
   overflow:hidden;
-  background:var(--draft-blue,#5871b5);
+  background:var(--color-promo-bar,var(--draft-blue,#5871b5));
   color:#fff;
 }
 @keyframes announcement-drop-in{
@@ -6422,7 +6471,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 }
 .landing-figma-draft .announcement span,
 .landing-figma-draft .announcement strong{
-  font:400 14px/1.2 "Prompt","Noto Sans Thai","Inter",sans-serif;
+  font:400 14px/1.2 var(--landing-font-display);
 }
 .landing-figma-draft .announcement__cta{
   display:inline-flex;
@@ -6434,14 +6483,14 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   border-radius:999px;
   background:rgba(15,31,73,.18);
   color:inherit;
-  font:600 14px/1.2 "Prompt","Noto Sans Thai","Inter",sans-serif;
+  font:600 14px/1.2 var(--landing-font-display);
   text-decoration:none;
   transition:background-color 180ms ease,transform 180ms ease;
 }
 .landing-figma-draft .announcement__cta::after{
   content:"→";
   display:inline-block;
-  font:600 18px/1 "Inter",sans-serif;
+  font:600 18px/1 var(--landing-font-ui);
   transition:transform 220ms cubic-bezier(.22,.8,.3,1);
 }
 .landing-figma-draft .announcement__cta:hover,
@@ -6606,7 +6655,10 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     height:44px;
     min-height:44px;
     padding:0;
-    border:1px solid rgba(17,27,48,.18);
+    /* No resting outline on the icon-only login button: the icon carries it,
+       and the ring read as a second control beside the menu button. The focus
+       ring stays, so keyboard users still see where they are. */
+    border:0;
     background:transparent;
     color:var(--draft-footer,#111b30);
   }
@@ -6619,6 +6671,9 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 }
 
 @media(max-width:760px){
+  body.landing-figma-draft{
+    --landing-notch-stop:calc(34px + env(safe-area-inset-top,0px));
+  }
   .landing-figma-draft .announcement{
     height:auto;
     min-height:calc(34px + env(safe-area-inset-top,0px));
@@ -6737,21 +6792,22 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
 }
 
 @media(min-width:781px){
-  /* The desktop hair tile is much wider than the portrait cutout. Anchor the
-     crop near the crown so the subject remains hair-led instead of shirt-led. */
+  /* Match the hair detail hero crop: keep the raised hand and hair in frame. */
   .care-banner-grid--auto-products a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyle{
-    object-position:68% 12%!important;
+    --banner-image-scale:1;
+    object-position:68% 50%!important;
+    transform:scale(1)!important;
+    transform-origin:center;
   }
 }
 
 @media(max-width:780px){
-  /* Keep the narrow crop centred on the crown and back of the head, with only
-     a small part of the face visible at the left edge. */
+  /* Use the same subject focus in the compact mobile card. */
   .care-banner-grid--auto-products a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyle{
-    --banner-image-scale:1.24;
-    object-position:78% 50%!important;
-    transform:scale(1.24)!important;
-    transform-origin:78% 18%;
+    --banner-image-scale:1;
+    object-position:68% 50%!important;
+    transform:scale(1)!important;
+    transform-origin:center;
   }
 }
 
@@ -8587,6 +8643,182 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .trust-section--figma .trust-grid--open{animation:none!important;will-change:auto}
 }
 
+/* ---------- Trust showcase ----------
+   One hierarchy, two continuous rails. Logo size is tuned optically per mark so
+   official square, portrait and landscape artwork carries equal visual weight. */
+.landing-figma-draft .trust-section--figma{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  padding:clamp(68px,7vw,104px) 0 clamp(58px,6vw,88px)!important;
+  border-radius:0!important;
+  color:#171d2a;
+  background:transparent!important;
+}
+.landing-figma-draft .trust-section--figma::before{
+  display:none;
+}
+.landing-figma-draft .trust-section--figma .trust-section__intro{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+  align-items:end;
+  gap:clamp(40px,7vw,108px);
+  width:min(100%,1280px);
+  margin-inline:auto;
+  padding-inline:clamp(26px,5vw,72px);
+}
+.landing-figma-draft .trust-section--figma .trust-section__intro h2{
+  margin:0;
+  color:#171d2a;
+  font-size:clamp(48px,5.3vw,76px);
+  font-weight:600;
+  line-height:1.03;
+  letter-spacing:-.055em;
+}
+.landing-figma-draft .trust-section--figma .trust-section__lead{
+  max-width:45ch;
+  margin:0 0 7px;
+  color:#667085;
+  font-size:clamp(16px,1.45vw,20px);
+  line-height:1.72;
+}
+.landing-figma-draft .trust-section--figma .trust-marquee{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:100%;
+  margin-top:clamp(44px,6vw,76px);
+  overflow:visible;
+}
+.landing-figma-draft .trust-section--figma .trust-rail{
+  width:100%;
+  padding:10px 0 30px;
+  overflow:hidden;
+  overflow:clip;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%);
+}
+.landing-figma-draft .trust-section--figma .trust-grid--open{
+  display:flex!important;
+  width:max-content!important;
+  max-width:none!important;
+  grid-template-columns:none!important;
+  gap:18px!important;
+  margin:0!important;
+  padding-inline:18px;
+  animation:trust-showcase-loop 64s linear infinite!important;
+  will-change:transform;
+}
+.landing-figma-draft .trust-section--figma .trust-grid--b{
+  animation:trust-showcase-loop-reverse 70s linear infinite!important;
+}
+.landing-figma-draft .trust-section--figma .trust-grid--open:hover,
+.landing-figma-draft .trust-section--figma .trust-grid--open:focus-within{animation-play-state:paused!important}
+.landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{
+  position:relative;
+  width:clamp(260px,21vw,310px)!important;
+  min-height:330px!important;
+  flex:0 0 clamp(260px,21vw,310px)!important;
+  display:grid!important;
+  grid-template-rows:144px 1fr;
+  gap:0!important;
+  overflow:hidden;
+  padding:0!important;
+  border:1px solid #e2e7ef!important;
+  border-radius:28px!important;
+  background:#fff!important;
+  box-shadow:0 16px 38px rgba(23,32,48,.09)!important;
+}
+.landing-figma-draft .trust-section--figma .trust-card__logo-stage{
+  height:144px!important;
+  min-height:0!important;
+  display:grid;
+  place-items:center;
+  padding:22px 28px;
+  border-bottom:1px solid #e9edf3;
+  background:linear-gradient(145deg,#fff,#f5f7fa);
+}
+.landing-figma-draft .trust-section--figma .trust-card__logo-stage img{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:96px;
+  object-fit:contain;
+}
+.landing-figma-draft .trust-section--figma .trust-card--clinic .trust-card__logo-stage img{max-width:90px;max-height:90px}
+.landing-figma-draft .trust-section--figma .trust-card--pharmacy .trust-card__logo-stage img{max-width:78px;max-height:100px}
+.landing-figma-draft .trust-section--figma .trust-card--privacy .trust-card__logo-stage img{max-width:118px;max-height:118px}
+.landing-figma-draft .trust-section--figma .trust-card--iso27001 .trust-card__logo-stage img{max-width:184px;max-height:90px}
+.landing-figma-draft .trust-section--figma .trust-card--iso27018 .trust-card__logo-stage img{max-width:96px;max-height:96px}
+.landing-figma-draft .trust-section--figma .trust-card--iso20000 .trust-card__logo-stage img{max-width:190px;max-height:88px}
+.landing-figma-draft .trust-section--figma .trust-card__body{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start;
+  gap:0!important;
+  padding:22px 22px 24px;
+}
+.landing-figma-draft .trust-section--figma .trust-card__category{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:5px 10px;
+  border-radius:999px;
+  color:#3f5fae;
+  background:#edf2ff;
+  font-size:11px;
+  font-weight:600;
+  line-height:1.2;
+}
+.landing-figma-draft .trust-section--figma .trust-card__eyebrow{
+  margin:15px 0 0;
+  color:#171d2a;
+  font-size:18px;
+  font-weight:600;
+  line-height:1.38;
+  letter-spacing:-.015em;
+}
+.landing-figma-draft .trust-section--figma .trust-card__line{
+  margin:8px 0 0;
+  color:#667085;
+  font-size:13px;
+  line-height:1.62;
+}
+.landing-figma-draft .trust-section--figma .trust-card.is-clone{display:grid!important}
+@keyframes trust-showcase-loop{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(calc(-50% - 9px),0,0)}
+}
+@keyframes trust-showcase-loop-reverse{
+  from{transform:translate3d(calc(-50% - 9px),0,0)}
+  to{transform:translate3d(0,0,0)}
+}
+@media (max-width:760px){
+  .landing-figma-draft .trust-section--figma{padding:54px 0 48px!important;border-radius:0!important}
+  .landing-figma-draft .trust-section--figma .trust-section__intro{
+    grid-template-columns:1fr;
+    align-items:start;
+    gap:22px;
+    padding-inline:24px;
+  }
+  .landing-figma-draft .trust-section--figma .trust-section__intro h2{font-size:44px;line-height:1.04}
+  .landing-figma-draft .trust-section--figma .trust-section__lead{margin:0;font-size:15px;line-height:1.65}
+  .landing-figma-draft .trust-section--figma .trust-marquee{width:100%;gap:2px;margin:38px 0 0}
+  .landing-figma-draft .trust-section--figma .trust-rail{padding:8px 0 22px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent);mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent)}
+  .landing-figma-draft .trust-section--figma .trust-grid--open{gap:14px!important;padding-inline:14px;animation-duration:54s!important}
+  .landing-figma-draft .trust-section--figma .trust-grid--b{animation-duration:60s!important}
+  .landing-figma-draft .trust-section--figma .trust-grid--open .trust-card{width:242px!important;min-height:314px!important;flex-basis:242px!important;grid-template-rows:132px 1fr;border-radius:24px!important}
+  .landing-figma-draft .trust-section--figma .trust-card__logo-stage{height:132px!important;padding:20px 24px}
+  .landing-figma-draft .trust-section--figma .trust-card__body{padding:19px 19px 22px}
+  .landing-figma-draft .trust-section--figma .trust-card__eyebrow{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){
+  .landing-figma-draft .trust-section--figma .trust-rail{overflow-x:auto;scroll-snap-type:x proximity;-webkit-mask-image:none;mask-image:none}
+  .landing-figma-draft .trust-section--figma .trust-grid--open{animation:none!important;will-change:auto}
+  .landing-figma-draft .trust-section--figma .trust-card{scroll-snap-align:center}
+}
+
 /* The positioning statement reads as it is scrolled: each word carries its own
    colour and lifts out of the page as the section crosses the viewport. Until
    the script has wrapped the words the block renders exactly as before, so it
@@ -8634,12 +8866,21 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 /* The closing pair answers the three that came before it, so it carries the
    accent colour while keeping the same weight on screen (client, 12 Sep). */
-.scroll-text__phrase--accent{
-  color:var(--draft-blue,#2E5BD8);
+.scroll-text__phrase--paired{
+  max-width:min(90%,24ch);
+  font-size:clamp(30px,7.2vw,64px);
+  font-weight:400;
+  line-height:1.2;
+  letter-spacing:-.035em;
 }
-.scroll-text__nowrap{
-  display:inline-block;
+.scroll-text__line{
+  display:block;
   white-space:nowrap;
+}
+.scroll-text__phrase--accent{color:var(--landing-navy,#1A1E28)}
+.scroll-text__emphasis{
+  color:var(--draft-blue,#2E5BD8);
+  font-weight:700;
 }
 
 /* Once the script has measured it, the section becomes a tall track with a
@@ -8668,6 +8909,32 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .scroll-text.is-phrase-ready .scroll-text__phrase:nth-of-type(even){
   justify-self:end;
   text-align:right;
+}
+@media(max-width:760px){
+  .scroll-text{
+    margin-inline:24px;
+  }
+  .scroll-text__phrase,
+  .scroll-text.is-phrase-ready .scroll-text__phrase,
+  .scroll-text.is-phrase-ready .scroll-text__phrase:nth-of-type(even){
+    width:100%;
+    max-width:100%;
+    justify-self:center;
+    text-align:center;
+    font-size:clamp(32px,9vw,44px);
+    line-height:1.12;
+    letter-spacing:-.035em;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+  .scroll-text__phrase--paired{
+    font-size:clamp(27px,7.4vw,44px);
+    font-weight:400;
+    line-height:1.22;
+  }
+  .scroll-text__line{
+    white-space:nowrap;
+  }
 }
 @media(prefers-reduced-motion:reduce){
   .scroll-text.is-phrase-ready{height:auto}
@@ -8927,8 +9194,11 @@ html[lang="en"] .landing-figma-draft #ed-title{
     margin-top:8px !important;
     font-size:17px !important;
   }
+  /* Client, 23 Sep: and the strip's own bottom margin came off too, so the
+     headline and everything below it move up with it. The 24px the hero grid
+     already puts between its rows is the whole gap now. */
   .landing-figma-draft .hero-draft__marquee{
-    margin-bottom:14px !important;
+    margin-bottom:0 !important;
   }
 }
 
@@ -9447,4 +9717,168 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .site-header .brand img{width:68px}
   .landing-figma-draft .site-header .brand__clinic{font-size:15px}
   .landing-figma-draft .site-header .brand:has(> .brand__clinic){gap:4px}
+}
+
+/* ---------- Weight result frames ----------
+   Each before/after photograph owns its own card so the comparison reads as
+   two intentional frames instead of one pre-composed image. */
+.landing-figma-draft #weight-program .program-result-frames{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  padding:12px 58px 62px;
+}
+.landing-figma-draft #weight-program .program-result-frame{
+  position:relative;
+  min-width:0;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:24px;
+  background:#b9ada4;
+  box-shadow:0 14px 34px rgba(28,34,45,.14);
+}
+.landing-figma-draft #weight-program .program-result-frame>img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+}
+.landing-figma-draft #weight-program .program-result-frame>figcaption{
+  position:absolute;
+  top:14px;
+  right:0;
+  bottom:auto;
+  left:0;
+  height:auto;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  pointer-events:none;
+}
+.landing-figma-draft #weight-program .program-result-frame>figcaption span{
+  height:auto;
+  min-height:30px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 14px;
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:999px;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 5px 16px rgba(28,34,45,.1);
+  color:#1c2230;
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+  text-align:center;
+  backdrop-filter:blur(8px);
+}
+
+@media(max-width:760px){
+  .landing-figma-draft #weight-program .weight-results__stage{
+    height:clamp(270px,72vw,340px);
+  }
+  .landing-figma-draft #weight-program .program-result-frames{
+    gap:8px;
+    padding:8px 8px 54px;
+  }
+  .landing-figma-draft #weight-program .program-result-frame{
+    border-radius:18px;
+    box-shadow:0 9px 22px rgba(28,34,45,.12);
+  }
+  .landing-figma-draft #weight-program .program-result-frame>figcaption{top:9px}
+  .landing-figma-draft #weight-program .program-result-frame>figcaption span{
+    min-height:25px;
+    padding:4px 9px;
+    font-size:11px;
+  }
+}
+
+/* Results galleries share one quiet, full-bleed treatment. The photographs
+   provide the frame; navigation floats above them instead of sitting in a
+   separate white tray. */
+.landing-figma-draft :is(#weight-program,#hair-program) .weight-results__stage{
+  overflow:hidden;
+  border:0;
+  border-radius:24px;
+  background:transparent;
+  box-shadow:none;
+}
+.landing-figma-draft #weight-program .program-result-frames{
+  gap:12px;
+  padding:0;
+}
+.landing-figma-draft #weight-program .program-result-frame{
+  border:0;
+  border-radius:24px;
+  box-shadow:none;
+}
+.landing-figma-draft #hair-program .program-result-diptych,
+.landing-figma-draft #hair-program .program-result-diptych>img{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.landing-figma-draft #hair-program .program-result-diptych>img{
+  object-fit:cover!important;
+}
+.landing-figma-draft :is(#weight-program,#hair-program) .weight-results__controls{
+  right:18px;
+  bottom:18px;
+  left:18px;
+}
+.landing-figma-draft :is(#weight-program,#hair-program) .weight-results__controls>button{
+  border:1px solid rgba(255,255,255,.34);
+  background:rgba(17,27,48,.34);
+  box-shadow:0 6px 18px rgba(17,27,48,.12);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+.landing-figma-draft :is(#weight-program,#hair-program) .weight-results__dots{
+  background:rgba(17,27,48,.3);
+  box-shadow:0 4px 14px rgba(17,27,48,.08);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+
+@media(max-width:760px){
+  .landing-figma-draft :is(#weight-program,#hair-program) .weight-results__stage{
+    border-radius:20px;
+  }
+  .landing-figma-draft #weight-program .program-result-frames{
+    gap:6px;
+    padding:0;
+  }
+  .landing-figma-draft #weight-program .program-result-frame{
+    border-radius:18px;
+  }
+  .landing-figma-draft :is(#weight-program,#hair-program) .weight-results__controls{
+    right:10px;
+    bottom:10px;
+    left:10px;
+  }
+}
+
+/* Release v63 — the hair lifestyle photo is a true subject cutout. Keep the
+   person in the source's natural colour and let the card own the sage field in
+   both carousel states, instead of tinting or repainting the photograph. */
+.care-banner-grid--auto-products a[data-category="hair-skin"].care-banner-grid__sub,
+.care-banner-grid--auto-products a[data-category="hair-skin"].care-banner-grid__sub.is-product-frame{
+  background:#8db5aa!important;
+}
+.care-banner-grid--auto-products a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyle{
+  object-fit:cover!important;
+  /* The source is intentionally hand-led: anchor its top edge so the hand
+     lifting the hair and the exposed hairline stay inside the wide card. */
+  object-position:68% top!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
 }
