@@ -1554,7 +1554,6 @@
     "ยังไม่ได้เลือกที่อยู่จัดส่ง":"No delivery address selected yet",
     "เพิ่มที่อยู่":"Add address",
     "บันทึกที่อยู่":"Save address",
-    "เลือกอยู่":"Selected",
     "แก้ไขที่อยู่จัดส่ง":"Edit delivery address",
     "เปลี่ยนที่อยู่":"Change address",
     "ตัวเลือกการจัดส่ง":"Delivery options",
