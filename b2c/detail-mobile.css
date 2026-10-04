@@ -1,0 +1,149 @@
+/* ============================================================
+   Detail pages, designed for the phone first (client, 4 Oct)
+   ============================================================
+
+   The detail pages were laid out at desktop and scaled down. The tell is in
+   the type: almost every heading is sized with clamp(<desktop floor>, Nvw,
+   <desktop ceiling>) — and on a 390px screen the vw term is always smaller
+   than the floor, so the floor is what renders. The phone was being served
+   the desktop minimum. Measured at 390px before this file existed:
+
+     condition-detail   "Overview" h2            48px
+     doctor-detail      h1 43px, section h2      44px
+     doctors            h1 56px, section h2      44px
+     glp1-safety        h1                       49px
+
+   A 56px Thai heading on a 390px screen is three or four lines of shouting
+   before any content. Worse, on the condition page the section headings (34px)
+   outranked the hero title (30px), so the page's own hierarchy ran backwards.
+
+   This file is the phone layer for all five detail pages — condition-detail,
+   doctor-detail, advisor-detail, doctors and glp1-safety. It is loaded last by
+   each of them, so it needs no !important to win, and one scale here keeps the
+   five from drifting apart the way their headings already had.
+
+   Nothing here applies above 560px: the desktop compositions are untouched. */
+
+@media(max-width:560px){
+  /* ---- One type scale, so the hero outranks the sections again ---- */
+  :root{
+    --detail-m-h1:32px;
+    --detail-m-h2:26px;
+    --detail-m-h3:19px;
+  }
+
+  .condition-hero h1,
+  .detail-hero .detail-copy h1,
+  .doctors-about h1,
+  .safety-hero__copy h1,
+  h1[data-title]{
+    font-size:var(--detail-m-h1);
+    line-height:1.15;
+    letter-spacing:-.02em;
+  }
+
+  .content-section h2,
+  .section-heading h2,
+  .programme-overview h2,
+  .comparison-heading h2,
+  .knowledge h2,
+  .safety h2,
+  .closing-cta h2,
+  .doctor-work__header h2,
+  .doctors-index-page .doctors-articles__header h2,
+  .doctors-articles__header h2,
+  .doctor-profile-dialog__content h2,
+  .safety-section h2,
+  .detail-page section > h2{
+    font-size:var(--detail-m-h2);
+    line-height:1.25;
+    letter-spacing:-.015em;
+  }
+
+  .content-section h3,
+  .detail-page h3,
+  .safety-section h3,
+  main section > h3{
+    font-size:var(--detail-m-h3);
+    line-height:1.35;
+  }
+
+  /* ---- Side gutters ----
+     30px of a 390px screen was margin, leaving 330px to read in. The app's own
+     phone gutter is 18px everywhere else, so these pages use it too and gain
+     24px of line length. */
+  :root{--detail-page-gutter:0px;--detail-section-pad:36px 18px;--page-gutter:18px}
+  .detail-page{padding-inline:18px}
+
+  /* 52px of padding at the top and bottom of seventeen sections is most of why
+     this page is 12,000px long. */
+  .content-section{padding:36px 18px}
+  .programme-overview{padding-block:32px}
+
+  /* ---- The hero image ----
+     The weight hero asked for a 165px band and then scaled the photo to 108%
+     and pushed it to 78%, which on a phone cropped the couple to a headless
+     strip of torsos bleeding past both edges of the panel it sat on. The band
+     is deep enough to hold a picture now, the photo is the width of its own
+     hero, and the crop keeps the people in it. */
+  .condition-hero[data-tone] .condition-hero__image,
+  .condition-hero .condition-hero__image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 34%;
+  }
+  .condition-hero,
+  .condition-hero[data-tone="weight"]{
+    grid-template-rows:clamp(190px,50vw,260px) auto;
+  }
+
+  /* ---- Full-bleed sections ----
+     The sections are coloured blocks that used to float as cards inside a
+     10px gutter, so they carried a 36px radius. Edge to edge that radius has
+     nothing to curve against: it pulls each block away from the screen at all
+     four corners and leaves a pinched grey notch between one colour band and
+     the next. Running them square is what full bleed means. */
+  .content-section,
+  .price-clarity,
+  .care-proof,
+  .closing-cta,
+  .condition-hero,
+  main[data-tone] > footer{border-radius:0}
+  /* main is a flex column with a 10px gap — right when the sections were cards
+     floating in a gutter, a seam of page colour once they run edge to edge. */
+  main[data-tone]{gap:0}
+  .content-section+.content-section{margin-top:0}
+
+  /* A pull quote centred over 354px of Thai breaks mid-word and reads as six
+     ragged lines. Ranged left at the body's own measure it reads as a quote. */
+  .doctor-perspective blockquote{
+    font-size:20px;
+    line-height:1.5;
+    text-align:left;
+  }
+  /* This heading sat at 29px while every other section heading moved to 26. */
+  .price-clarity h2{font-size:var(--detail-m-h2);line-height:1.25}
+
+  /* The doctors hero reserves 500px and bottom-aligns its copy, so it opened
+     with 212px of empty blue before the first word — and shrinking the 56px
+     heading only made the void bigger. It takes the height its content needs. */
+  .doctors-index-page .doctors-about{min-height:0;padding:28px 18px 32px}
+
+  /* ---- The section tabs ----
+     Six tabs at a fixed 142px is 880px of strip in a 366px window, so the last
+     word sat chopped in half at the right edge with nothing to say it scrolled.
+     The tabs take their own width now and the strip fades at the edge it
+     continues past. */
+  .condition-sections__viewport{
+    grid-auto-columns:max-content;
+    -webkit-mask-image:linear-gradient(90deg,#000 0 calc(100% - 28px),transparent 100%);
+    mask-image:linear-gradient(90deg,#000 0 calc(100% - 28px),transparent 100%);
+  }
+  .condition-sections__tab{padding-inline:12px;white-space:nowrap}
+  /* The mask would clip the pill on the last tab once it is scrolled to. */
+  .condition-sections__viewport:not([data-scroll-end="0"]){
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+}
