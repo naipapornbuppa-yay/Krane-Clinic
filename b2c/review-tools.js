@@ -85,7 +85,6 @@
         ["insurance", "SID-039", "ตรวจสอบสิทธิ์ประกัน", "Insurance eligibility", "eligibility"],
         ["insurance-result", "SID-039A", "ผลการตรวจสอบสิทธิ์", "Insurance result", "eligibility"],
         ["payment-gw", "SID-041", "ช่องทางชำระเงิน", "Payment gateway"],
-        ["payment-processing", "SID-041A", "กำลังตรวจสอบการชำระเงิน", "Payment processing"],
         ["payment-success", "SID-042", "ชำระเงินสำเร็จ", "Payment confirmed"],
         ["pharmacypending", "SID-045", "ร้านยายืนยันรายการ", "Pharmacy confirmed"],
         ["payfail", "SID-043", "ชำระเงินไม่สำเร็จ", "Medication payment failed", "exception"]
@@ -159,10 +158,13 @@
     const fragment = global.document.createDocumentFragment();
     const registered = new Set();
 
-    SCREEN_DIRECTORY.forEach((group, groupIndex) => {
+    SCREEN_DIRECTORY.forEach(group => {
       const details = global.document.createElement("details");
       details.className = "rail-group";
-      if (groupIndex === 0) details.open = true;
+      /* Client, 5 Oct: everything is open. The reviewer is checking whether a
+         screen exists at all, and a screen behind two closed accordions reads
+         as a screen that is missing. */
+      details.open = true;
       const summary = global.document.createElement("summary");
       summary.innerHTML = `<span class="rail-step">${group.step}</span><span>${thai ? group.th : group.en}</span>`;
       const body = global.document.createElement("div");
@@ -203,21 +205,11 @@
         specialLinks.push(link);
       });
 
-      const appendPageGroup = (label, links, open, stateClass) => {
-        if (!links.length) return;
-        const page = global.document.createElement("details");
-        page.className = `rail-page ${stateClass || ""}`.trim();
-        page.open = open;
-        const pageSummary = global.document.createElement("summary");
-        pageSummary.textContent = label;
-        const pageBody = global.document.createElement("div");
-        pageBody.className = "rail-sub";
-        links.forEach(link => pageBody.appendChild(link));
-        page.append(pageSummary, pageBody);
-        body.appendChild(page);
-      };
-      appendPageGroup("Default", defaultLinks, true, "rail-page--default");
-      appendPageGroup(thai ? "Eligibility / กรณีพิเศษ" : "Eligibility / edge cases", specialLinks, false, "rail-page--special");
+      /* The error and edge-case screens used to sit behind a second accordion
+         inside each group, which meant half the inventory was one more click
+         away. They are in the same list now, after the happy path, and the
+         legend's red dot is what tells them apart. */
+      [...defaultLinks, ...specialLinks].forEach(link => body.appendChild(link));
 
       details.append(summary, body);
       fragment.appendChild(details);
@@ -246,27 +238,6 @@
     }
 
     rail.appendChild(fragment);
-    /* Screen Tab is an accordion: keeping only one journey group expanded
-       makes long inventories easier to scan and prevents stale open groups
-       from hiding the current route below the fold. */
-    rail.querySelectorAll(":scope > .rail-group").forEach(details => {
-      details.addEventListener("toggle", () => {
-        if (!details.open) return;
-        rail.querySelectorAll(":scope > .rail-group[open]").forEach(other => {
-          if (other !== details) other.open = false;
-        });
-      });
-    });
-    rail.querySelectorAll(":scope > .rail-group .rail-group__body").forEach(groupBody => {
-      groupBody.querySelectorAll(":scope > .rail-page").forEach(page => {
-        page.addEventListener("toggle", () => {
-          if (!page.open) return;
-          groupBody.querySelectorAll(":scope > .rail-page[open]").forEach(other => {
-            if (other !== page) other.open = false;
-          });
-        });
-      });
-    });
     rail.dataset.screenCount = String(implemented.size);
     return missing;
   }

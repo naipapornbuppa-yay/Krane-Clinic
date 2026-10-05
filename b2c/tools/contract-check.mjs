@@ -76,8 +76,9 @@ for (const id of contract.screens) {
 
 /* ---- reviewer Screen Tab --------------------------------------------------
    The left rail is the reviewer's map of the implementation. Every real
-   screen belongs there exactly once; journey groups and their Default / edge
-   buckets are accordions, so opening one never leaves another expanded. */
+   screen belongs there exactly once, and every group is open with its error
+   and edge-case screens in the same list as the happy path — a screen behind
+   a closed accordion reads as a screen that is missing (client, 5 Oct). */
 const railAudit = await app.evaluate(() => {
   const screens = [...document.querySelectorAll('section.screen[id]')].map(screen => screen.id);
   const links = [...document.querySelectorAll('#prototype-rail a[data-go]')].map(link => link.dataset.go);
@@ -86,11 +87,9 @@ const railAudit = await app.evaluate(() => {
     missing:screens.filter(id => !links.includes(id)),
     stale:links.filter(id => !screens.includes(id)),
     duplicates:links.filter((id, index) => links.indexOf(id) !== index),
-    openGroups:groups.filter(group => group.open).length,
-    invalidBuckets:groups.filter(group => {
-      const pages=[...group.querySelectorAll(':scope > .rail-group__body > .rail-page')];
-      return !pages.length || !pages[0].classList.contains('rail-page--default') || pages.filter(page => page.open).length !== 1;
-    }).length
+    groups:groups.length,
+    closedGroups:groups.filter(group => !group.open).length,
+    nestedBuckets:groups.filter(group => group.querySelector(':scope > .rail-group__body > .rail-page')).length
   };
 });
 did();
@@ -98,8 +97,8 @@ if (railAudit.missing.length || railAudit.stale.length || railAudit.duplicates.l
   fail('Screen Tab coverage', JSON.stringify(railAudit));
 }
 did();
-if (railAudit.openGroups !== 1 || railAudit.invalidBuckets) {
-  fail('Screen Tab accordion', JSON.stringify(railAudit));
+if (railAudit.closedGroups || railAudit.nestedBuckets) {
+  fail('Screen Tab is fully expanded', JSON.stringify(railAudit));
 }
 
 /* ---- components ----------------------------------------------------------- */
