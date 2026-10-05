@@ -62,19 +62,25 @@ body{
    in light grey. The canvas is the page colour; only the top is blue. */
 html{background:var(--landing-canvas)}
 body.landing-figma-draft{
-  /* Client, 5 Oct: the page is one flat colour below the banner. It used to be
-     a fixed two-stop gradient — blue to the height of the announcement, canvas
-     the rest of the way — as a third belt under the top blue, on top of the
-     theme-color meta and the inset band on body::before. Safari does not keep
-     a fixed background the size of the viewport inside an iframe, which is how
-     this page is embedded, so those two hard stops were being stretched down
-     the document and read as a wash of blue creeping up the bottom of the
-     screen. The announcement paints its own blue, notch included, so nothing
-     below it needs painting at all.
+  /* Desktop has no browser-notch inset. Keep the campaign surface exactly as
+     tall as the 32px announcement instead of painting an extra blue block
+     underneath it. Mobile overrides this stop to include its safe area.
 
-     Mobile still reads --landing-notch-stop for its own banner sizing. */
+     Client, 5 Oct: this was a two-stop gradient over the whole body — blue to
+     the stop, canvas the rest of the way — and Safari does not keep a fixed
+     background viewport-sized inside an iframe, which is how this page is
+     embedded. The stops were stretched down the document instead, and read as
+     a wash of blue creeping up the bottom of the screen. It is a sized band
+     now rather than a full-height gradient: one flat blue the exact height of
+     the stop, over a flat canvas. There is no second stop left to stretch, so
+     the top paints the same either way and the rest of the page cannot be
+     tinted at all. */
   --landing-notch-stop:32px;
   background-color:var(--landing-canvas);
+  background-image:linear-gradient(#5871B5,#5871B5);
+  background-repeat:no-repeat;
+  background-size:100% var(--landing-notch-stop);
+  background-attachment:fixed;
 }
 body.menu-open,body.review-open{overflow:hidden}
 button,select{font:inherit}
