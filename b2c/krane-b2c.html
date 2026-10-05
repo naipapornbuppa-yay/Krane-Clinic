@@ -2716,9 +2716,11 @@
           <div class="postpay-progress__step done" data-track-step="paid"><span><i data-lucide="check" class="ui-icon" aria-hidden="true"></i></span><strong>ชำระแล้ว</strong><time class="postpay-progress__time" data-track-time="paid"></time><div class="hint">ยืนยันยอดแล้ว</div><button class="step__link" type="button" data-doc-open="receipt">ใบเสร็จ</button></div>
           <div class="postpay-progress__step active" data-track-step="prepared"><span><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดยา</strong><div class="hint">ร้านยาฟาสซิโน อารีย์</div></div>
           <div class="postpay-progress__step" data-track-step="out"><span><i data-lucide="bike" class="ui-icon" aria-hidden="true"></i></span><strong>กำลังจัดส่ง</strong><div class="hint delivery-rider" data-track-rider hidden><span>ไรเดอร์ ณัฐพงษ์ ด.</span><a class="delivery-fact__call" href="tel:+66912342345">091-234-2345</a></div></div>
-          <div class="postpay-progress__step" data-track-step="delivered"><span><i data-lucide="home" class="ui-icon" aria-hidden="true"></i></span><strong>ส่งถึงแล้ว</strong><time class="postpay-progress__time" data-track-time="delivered"></time><div class="hint">รอดำเนินการ</div></div>
+          <!-- Confirming receipt belongs to the step it completes, not to a
+               button floating under the whole timeline: it is the one thing
+               the patient does on "ส่งถึงแล้ว" (client, 5 Oct). -->
+          <div class="postpay-progress__step" data-track-step="delivered"><span><i data-lucide="home" class="ui-icon" aria-hidden="true"></i></span><strong>ส่งถึงแล้ว</strong><time class="postpay-progress__time" data-track-time="delivered"></time><div class="hint">รอดำเนินการ</div><button class="btn btn--primary postpay-confirm-receipt" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button></div>
         </div>
-        <button class="btn btn--primary postpay-confirm-receipt" type="button" data-delivery-confirm hidden>ยืนยันว่าได้รับยาแล้ว</button>
       </section>
 
       <section class="postpay-card postpay-route-card">
@@ -2878,7 +2880,11 @@
       <!-- A patient can have multiple active treatments. The profile mirrors the
            three programmes currently offered by Krane: weight, hair and ED. -->
       <div class="stack-3">
-        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><span class="section-count">3</span></div>
+        <!-- The follow-up hub — progress chart, upcoming appointments and
+             past visits in one place — was built and nothing linked to it, so
+             the only way in was a URL. The treatments it follows up are right
+             here, so the way in is here (client, 5 Oct). -->
+        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><button class="section-link" type="button" data-go="followups">ดูการติดตามผล<i data-lucide="chevron-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
         <!-- Every case is under a doctor, so every card shows its follow-up.
              The card itself is the affordance. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
@@ -3232,6 +3238,16 @@
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--active" data-order-progress-badge>กำลังจัดส่ง</span></span>
             <span class="activity-card__date">13 ก.ย. 2026<small data-order-progress-note>ไรเดอร์กำลังไปส่ง</small></span>
+          </span>
+          <!-- Client, 20 Aug: four stages as a segmented bar, so the card
+               answers "where is it" without opening tracking. The styles were
+               written then; the markup is the card's, and it is spans rather
+               than a list because the card is a button. -->
+          <span class="order-progress" data-order-progress>
+            <span class="order-progress__step" data-order-step="prepared">จัดยา</span>
+            <span class="order-progress__step" data-order-step="dispatch">ไรเดอร์รับของ</span>
+            <span class="order-progress__step" data-order-step="out">กำลังส่ง</span>
+            <span class="order-progress__step" data-order-step="delivered">ส่งถึง</span>
           </span>
           <span class="activity-card__foot"><span>เลขอ้างอิง · KR-10293</span><strong data-order-total>฿ 558</strong></span>
         </button>
@@ -13456,6 +13472,18 @@
     document.querySelectorAll('[data-order-progress-badge]').forEach(badge => {
       badge.textContent=stage.label;
       badge.className='badge badge--'+stage.tone;
+    });
+    /* The bar reads the same stage the badge does. A null active stage is
+       delivered, so every segment is behind the patient. */
+    const orderSteps=['prepared','dispatch','out','delivered'];
+    const at=stage.active ? orderSteps.indexOf(stage.active) : orderSteps.length;
+    document.querySelectorAll('[data-order-progress] [data-order-step]').forEach(step => {
+      const index=orderSteps.indexOf(step.dataset.orderStep);
+      step.classList.toggle('is-done',index<at);
+      step.classList.toggle('is-current',index===at);
+    });
+    document.querySelectorAll('[data-order-progress]').forEach(bar => {
+      bar.setAttribute('aria-label','ความคืบหน้าคำสั่งซื้อ · '+stage.label);
     });
     document.querySelectorAll('[data-order-progress-note]').forEach(note => { note.textContent=stage.note; });
     const charge=orderChargeSummary();
