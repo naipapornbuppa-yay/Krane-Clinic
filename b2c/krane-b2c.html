@@ -2274,7 +2274,6 @@
            after focus or a value, rather than adding a second title outside. -->
       <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
         <div class="address-map-search-panel__head"><h1 id="address-map-search-title" data-address-map-title>ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
-        <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
         <!-- Typing the name of a building or a soi fills the five fields below
              in one go. The form underneath stays the way to correct whatever
              the search got wrong, or to enter an address it cannot find
@@ -2297,25 +2296,6 @@
       </div>
     </div>
   </section>
-  <dialog class="address-picker address-book-dialog" id="address-book-dialog" aria-labelledby="address-book-title">
-    <!-- Client, 5 Oct: showModal() focuses the first focusable thing it finds,
-         which was the first saved address. Its focus ring then read as a second
-         kind of "chosen" — a blue outline inset inside the card, with แก้ไข
-         outside it — while the address actually in use was marked a different
-         way, filled. The sheet takes focus on its own head instead, the way the
-         mobile drawer does, so the only card that looks chosen is the one that
-         is. -->
-    <div class="address-picker__head" tabindex="-1" autofocus><h2 id="address-book-title">สมุดที่อยู่</h2></div>
-    <p class="hint">เลือกที่อยู่ที่บันทึกไว้ แล้วตรวจสอบข้อมูลก่อนยืนยันจัดส่ง</p>
-    <div data-address-book>
-      <div class="address-book-empty" data-address-book-empty>
-        <span class="address-book-empty__art" aria-hidden="true"><img src="assets/empty-states/address-book-empty-linework-v1.png" width="512" height="512" alt=""></span>
-        <p>ยังไม่มีที่อยู่ที่บันทึกไว้</p>
-      </div>
-      <div class="address-book__list" data-address-book-list></div>
-    </div>
-    <button class="btn btn--primary" type="button" data-address-new>เพิ่มที่อยู่ใหม่</button>
-  </dialog>
   <dialog class="address-picker" id="address-picker" aria-labelledby="address-picker-title">
     <div class="address-picker__head"><h2 id="address-picker-title">เลือกตำแหน่งจัดส่ง</h2><button type="button" data-address-picker-close aria-label="ปิด">×</button></div>
       <div class="address-map address-map--full" data-address-map>
@@ -5730,9 +5710,6 @@
   function addressBookName(address){
     return String(address.label || '').trim() || String(address.building || '').trim() || 'ที่อยู่จัดส่ง';
   }
-  function addressBookLine(address){
-    return [address.building,address.floor,address.line,address.district].filter(Boolean).join(' · ');
-  }
   function addressBookFullLine(address){
     const parts=[
       address.building,
@@ -5762,26 +5739,6 @@
   function persistAddressBook(){
     if(!IS_DEMO_EMBED)writeLocalJson(addressBookStorageKey(),{entries:savedAddresses()});
   }
-  let addressBookOpener=null;
-  function openAddressBook(opener){
-    addressBookOpener=opener;
-    if(flowState.orderState.addressConfirmed){
-      rememberDeliveryAddress(flowState.orderState.address);
-      persistAddressBook();
-      persistFlowState();
-    }
-    renderAddressBook();
-    document.getElementById('address-book-dialog').showModal();
-  }
-  function closeAddressBook(){document.getElementById('address-book-dialog').close();}
-  document.getElementById('address-book-dialog').addEventListener('click',event=>{
-    const dialog=event.currentTarget;
-    const rect=dialog.getBoundingClientRect();
-    if(event.target===dialog && (event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom)) closeAddressBook();
-  });
-  document.getElementById('address-book-dialog').addEventListener('close',()=>{
-    if(addressBookOpener?.getClientRects().length)addressBookOpener.focus({preventScroll:true});
-  });
   function savedAddresses(){
     if(!Array.isArray(flowState.savedAddresses)){
       const stored=readLocalJson(addressBookStorageKey());
@@ -5942,35 +5899,9 @@
       target?.focus({preventScroll:true});
     }
   }
-  function renderAddressBook(){
-    const section=document.querySelector('[data-address-book]');
-    const list=document.querySelector('[data-address-book-list]');
-    const empty=document.querySelector('[data-address-book-empty]');
-    if(!section || !list || !empty) return;
-    const book=savedAddresses();
-    section.hidden=false;
-    empty.hidden=book.length>0;
-    list.hidden=book.length<1;
-    if(!book.length){ list.innerHTML=''; return; }
-    const currentKey=addressBookKey(deliveryAddressDraft());
-    list.innerHTML=book.map((entry,index) => {
-      const selected=addressBookKey(entry)===currentKey;
-      return `<article class="address-select-card${selected ? ' is-selected' : ''}">
-        <button class="address-select-card__choice" type="button" aria-label="${escapeAddressText(addressBookName(entry))}" aria-pressed="${selected}" data-address-book-pick="${index}">
-          <span class="address-select-card__content">
-            <span class="address-select-card__heading"><strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong></span>
-            <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
-            <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
-          </span>
-        </button>
-        <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
-      </article>`;
-    }).join('');
-  }
   function useSavedAddress(index,{quiet=false}={}){
     const entry=savedAddresses()[index];
     if(!entry) return;
-    closeAddressBook();
     delete flowState.addressSearchDraft;
     flowState.addressDraft={...entry,remember:true};
     addressPageMode='editor';
@@ -5988,7 +5919,6 @@
   function editSavedAddress(index){useSavedAddress(index,{quiet:true});}
 
   function startNewAddress({focus=true}={}){
-    closeAddressBook();
     delete flowState.addressSearchDraft;
     /* Client, 5 Oct: a new address starts blank, all of it. The recipient was
        left behind because only the address fields were listed here, so the
@@ -6014,9 +5944,6 @@
     show('address');
   }
   document.addEventListener('click',event => {
-    const bookOpen=event.target.closest('[data-address-book-open]');
-    if(bookOpen){openAddressBook(bookOpen);return;}
-    if(event.target.closest('[data-address-book-close]')){closeAddressBook();return;}
     if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
     const listPick=event.target.closest('[data-address-list-pick]');
     if(listPick){ selectListAddress(Number(listPick.dataset.addressListPick)); return; }
@@ -6025,8 +5952,6 @@
     if(event.target.closest('[data-address-list-confirm]')){ confirmListAddress(); return; }
     const edit=event.target.closest('[data-address-edit]');
     if(edit){ editSavedAddress(Number(edit.dataset.addressEdit)); return; }
-    const pick=event.target.closest('[data-address-book-pick]');
-    if(pick){ useSavedAddress(Number(pick.dataset.addressBookPick)); return; }
     if(event.target.closest('[data-address-confirm]')){
       if(!flowState.orderState.addressConfirmed){
         showActionToast('กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง','warning');
@@ -12148,7 +12073,6 @@
          it shows the address that was just saved, selected. */
       addressListSelected=savedAddresses().findIndex(entry => addressBookKey(entry)===addressBookKey(flowState.orderState.address));
       setAddressPageMode('list');
-      renderAddressBook();
       focusCheckoutDelivery=true;
       replaceCurrent('payment');
       startInlineDeliveryQuote();

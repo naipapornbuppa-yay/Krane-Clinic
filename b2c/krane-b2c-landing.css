@@ -62,17 +62,19 @@ body{
    in light grey. The canvas is the page colour; only the top is blue. */
 html{background:var(--landing-canvas)}
 body.landing-figma-draft{
-  /* Desktop has no browser-notch inset. Keep the campaign surface exactly as
-     tall as the 32px announcement instead of painting an extra blue block
-     underneath it. Mobile overrides this stop to include its safe area. */
+  /* Client, 5 Oct: the page is one flat colour below the banner. It used to be
+     a fixed two-stop gradient — blue to the height of the announcement, canvas
+     the rest of the way — as a third belt under the top blue, on top of the
+     theme-color meta and the inset band on body::before. Safari does not keep
+     a fixed background the size of the viewport inside an iframe, which is how
+     this page is embedded, so those two hard stops were being stretched down
+     the document and read as a wash of blue creeping up the bottom of the
+     screen. The announcement paints its own blue, notch included, so nothing
+     below it needs painting at all.
+
+     Mobile still reads --landing-notch-stop for its own banner sizing. */
   --landing-notch-stop:32px;
-  background-color:#5871B5;
-  background-image:linear-gradient(to bottom,
-    #5871B5 0,
-    #5871B5 var(--landing-notch-stop),
-    var(--landing-canvas) var(--landing-notch-stop),
-    var(--landing-canvas) 100%);
-  background-attachment:fixed;
+  background-color:var(--landing-canvas);
 }
 body.menu-open,body.review-open{overflow:hidden}
 button,select{font:inherit}
