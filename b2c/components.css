@@ -5794,6 +5794,12 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .address-picker{width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:20px;border:1px solid var(--color-line);border-radius:var(--radius-lg);background:var(--color-surface);color:var(--color-ink);overflow:auto}
 .address-picker::backdrop{background:var(--color-overlay,rgba(26,30,40,.45))}
 .address-picker__head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+/* The sheet parks focus on its own head when it opens so it does not land on
+   the first saved address and ring it like a selection. The head is not a
+   control — it is not in the tab order and there is nothing to operate — so it
+   does not draw a focus ring; the controls inside the sheet still draw theirs. */
+.address-picker__head[tabindex="-1"]:focus,
+.address-picker__head[tabindex="-1"]:focus-visible{outline:none}
 .address-picker__head h2{margin:0;font-size:18px}
 .address-picker__head>button{width:44px;height:44px;border:0;background:transparent;color:var(--color-ink);font:inherit;font-size:28px;cursor:pointer}
 .address-picker__head+.address-map{margin-top:12px}

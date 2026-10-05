@@ -2268,7 +2268,14 @@
     </div>
   </section>
   <dialog class="address-picker address-book-dialog" id="address-book-dialog" aria-labelledby="address-book-title">
-    <div class="address-picker__head"><h2 id="address-book-title">สมุดที่อยู่</h2></div>
+    <!-- Client, 5 Oct: showModal() focuses the first focusable thing it finds,
+         which was the first saved address. Its focus ring then read as a second
+         kind of "chosen" — a blue outline inset inside the card, with แก้ไข
+         outside it — while the address actually in use was marked a different
+         way, filled. The sheet takes focus on its own head instead, the way the
+         mobile drawer does, so the only card that looks chosen is the one that
+         is. -->
+    <div class="address-picker__head" tabindex="-1" autofocus><h2 id="address-book-title">สมุดที่อยู่</h2></div>
     <p class="hint">เลือกที่อยู่ที่บันทึกไว้ แล้วตรวจสอบข้อมูลก่อนยืนยันจัดส่ง</p>
     <div data-address-book>
       <div class="address-book-empty" data-address-book-empty>
@@ -5304,15 +5311,22 @@
     if(!hydrateForm) return;
     const screen=document.getElementById('address');
     if(!screen) return;
-    const recipientParts=recipientNameParts(formAddress);
+    /* The recipient defaults to the account holder on the ordinary address
+       page, so a first order opens prefilled with the name and phone captured
+       at signup. Adding a *new* address is the exception: that page is blank
+       by request (client, 5 Oct), because the second address a patient saves
+       is often going to somebody else. */
+    const creatingNewAddress=flowState.addressDraftMode==='new';
+    const recipientParts=creatingNewAddress
+      ? {firstName:String(formAddress.recipientFirstName || '').trim(),
+         lastName:String(formAddress.recipientLastName || '').trim()}
+      : recipientNameParts(formAddress);
     const values={
-      // The recipient defaults to the account holder until the patient
-      // explicitly edits it for this order, so a fresh address always opens
-      // prefilled with the name and phone captured at signup, no matter which
-      // screen sent the patient here.
       recipientFirstName:recipientParts.firstName,
       recipientLastName:recipientParts.lastName,
-      recipientPhone:formAddress.recipientPhone ?? flowState.verifiedPhone ?? '',
+      recipientPhone:creatingNewAddress
+        ? (formAddress.recipientPhone ?? '')
+        : (formAddress.recipientPhone ?? flowState.verifiedPhone ?? ''),
       addrSearch:formAddress.building,
       addrLabel:formAddress.label,
       addrBuilding:formAddress.building,
@@ -5836,8 +5850,14 @@
   function startNewAddress({focus=true}={}){
     closeAddressBook();
     delete flowState.addressSearchDraft;
-    flowState.addressDraft={building:'',line:'',subdistrict:'',districtName:'',province:'',postcode:'',district:'',label:'',floor:'',note:'',remember:false};
-    ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote']
+    /* Client, 5 Oct: a new address starts blank, all of it. The recipient was
+       left behind because only the address fields were listed here, so the
+       page titled "เพิ่มที่อยู่ใหม่" opened with the last recipient already in
+       it — and a second address is often for somebody else. */
+    flowState.addressDraft={building:'',line:'',subdistrict:'',districtName:'',province:'',postcode:'',district:'',label:'',floor:'',note:'',
+      recipientFirstName:'',recipientLastName:'',recipientName:'',recipientPhone:'',remember:false};
+    ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote',
+     'recipientFirstName','recipientLastName','recipientPhone']
       .forEach(id => {
         const field=document.getElementById(id);
         if(!field) return;
