@@ -2194,6 +2194,18 @@
       </div>
       <section class="form-group address-location" aria-labelledby="address-location-title">
         <div class="address-section-head"><h3 class="form-group__title" id="address-location-title">จัดส่งไปที่</h3><button class="address-pin__edit" type="button" data-go="address-map">แก้ไขที่อยู่</button></div>
+        <!-- Client, 5 Oct: typing the place is how most people give an address;
+             the map is for when they cannot name it. The search was moved off
+             this page to the map screen, which put two taps between opening the
+             form and typing. It is back above the pin it fills. -->
+        <div class="address-search" data-address-search-wrap>
+          <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
+          <div class="field address-search__field">
+            <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
+            <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาที่อยู่ คอนโด หรือสถานที่" data-address-search>
+          </div>
+          <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
+        </div>
         <div class="address-pin__card">
           <div class="address-pin__map" data-address-pin-map>
             <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
@@ -2228,7 +2240,6 @@
       <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field><span>บันทึกที่อยู่นี้เป็น (ถ้ามี)</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
 
       <div class="address-data-fields" hidden aria-hidden="true">
-        <input id="addrSearch" type="hidden">
         <input id="addrBuilding" type="hidden">
         <input id="addrLine" type="hidden">
         <input id="addrSubdistrict" type="hidden">
@@ -5511,6 +5522,7 @@
     syncFloatingFieldStates(document.getElementById('address'));
     syncFieldClearButtons();
     addressRecipientEditing=false;
+    addressFormIntent=true;
     show('address');
     setAddressPageMode(addressPageMode);
     showActionToast('เลือกตำแหน่งแล้ว กรุณาตรวจรายละเอียดก่อนบันทึก','success');
@@ -5886,6 +5898,11 @@
      is the state reached from the address book's own button, so only that
      sets it. */
   let addressPageMode=['new','editor'].includes(flowState.addressDraftMode) ? flowState.addressDraftMode : 'list';
+  /* Client, 5 Oct: opening the address page lands on the addresses, every
+     time. Three things open the form instead, and they say so — adding one,
+     editing one, and coming back from the map with a pin. Anything else, from
+     checkout to a restored session that was left mid-form, gets the list. */
+  let addressFormIntent=false;
   let addressEditingSavedIndex=-1;
   function setAddressPageMode(mode,{focus=false}={}){
     /* New and existing addresses share one form; the heading and action make
@@ -5960,6 +5977,7 @@
     flowState.addressDraftMode='editor';
     persistFlowState();
     addressEditingSavedIndex=index;
+    addressFormIntent=true;
     show('address');
     syncDeliveryAddress({hydrateForm:true});
     syncFloatingFieldStates(document.getElementById('address'));
@@ -5978,7 +5996,7 @@
        it — and a second address is often for somebody else. */
     flowState.addressDraft={building:'',line:'',subdistrict:'',districtName:'',province:'',postcode:'',district:'',label:'',floor:'',note:'',
       recipientFirstName:'',recipientLastName:'',recipientName:'',recipientPhone:'',remember:false};
-    ['addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote',
+    ['addrSearch','addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote',
      'recipientFirstName','recipientLastName','recipientPhone']
       .forEach(id => {
         const field=document.getElementById(id);
@@ -5992,6 +6010,7 @@
     flowState.addressDraftMode='new';
     persistFlowState();
     syncFieldClearButtons();
+    addressFormIntent=true;
     show('address');
   }
   document.addEventListener('click',event => {
@@ -7430,9 +7449,17 @@
     ).slice(0,5);
   }
   let addressSuggestions=[];
+  /* The form and the map screen each carry one of these, so a plain
+     document.querySelector would answer for whichever comes first in the
+     markup rather than for the one the patient is typing into. */
+  function activeAddressSearch(){
+    const wraps=[...document.querySelectorAll('[data-address-search-wrap]')];
+    const wrap=wraps.find(node => node.closest('.screen')?.classList.contains('active')) || wraps[0];
+    return {input:wrap?.querySelector('[data-address-search]') || null,
+            list:wrap?.querySelector('[data-address-suggestions]') || null};
+  }
   function renderAddressSuggestions(matches,{allowEmptyMessage=false}={}){
-    const list=document.querySelector('[data-address-suggestions]');
-    const input=document.querySelector('[data-address-search]');
+    const {input,list}=activeAddressSearch();
     if(!list) return;
     addressSuggestions=matches;
     /* A search that finds nothing says so. Silence reads as a broken field. */
@@ -7455,10 +7482,8 @@
     if(window.krane_normalizeIcons) window.krane_normalizeIcons();
   }
   function closeAddressSuggestions(){
-    const list=document.querySelector('[data-address-suggestions]');
-    const input=document.querySelector('[data-address-search]');
-    if(list) list.hidden=true;
-    if(input) input.setAttribute('aria-expanded','false');
+    document.querySelectorAll('[data-address-suggestions]').forEach(list => { list.hidden=true; });
+    document.querySelectorAll('[data-address-search]').forEach(input => { input.setAttribute('aria-expanded','false'); });
   }
   /* Local samples answer the first keystroke instantly; the real geocoder
      replaces them a beat later. Typing "The Line" used to return nothing at
@@ -7473,14 +7498,20 @@
       const token=++addressSearchToken;
       const remote=await osmSearch(text);
       if(token!==addressSearchToken) return;
-      const input=document.querySelector('[data-address-search]');
+      const {input}=activeAddressSearch();
       if(!input || input.value.trim()!==text) return;
       renderAddressSuggestions(remote && remote.length ? remote : addressSuggestionsFor(text),{allowEmptyMessage:true});
     },180);
   }
   function setupAddressSearch(){
-    const input=document.querySelector('[data-address-search]');
-    const list=document.querySelector('[data-address-suggestions]');
+    document.querySelectorAll('[data-address-search-wrap]').forEach(bindAddressSearch);
+    document.addEventListener('click',event => {
+      if(!event.target.closest('[data-address-search-wrap]')) closeAddressSuggestions();
+    });
+  }
+  function bindAddressSearch(wrap){
+    const input=wrap.querySelector('[data-address-search]');
+    const list=wrap.querySelector('[data-address-suggestions]');
     if(!input || !list || input.dataset.searchBound==='true') return;
     input.dataset.searchBound='true';
     input.addEventListener('input',event => { if(!event.isComposing) scheduleAddressSearch(input.value); });
@@ -7517,13 +7548,12 @@
           if(field) clearFieldError(field);
         });
       }
+      /* Searching from the form moves the pin the form is showing. */
+      if(document.getElementById('address')?.classList.contains('active')) renderAddressPinPreview();
       const gaps=addressLocationGaps();
       showActionToast(gaps.length
         ? 'กรอกที่อยู่จากผลการค้นหาแล้ว ยังขาด'+gaps[0].label
         : 'กรอกที่อยู่จากผลการค้นหาแล้ว', gaps.length ? 'warning' : 'success');
-    });
-    document.addEventListener('click',event => {
-      if(!event.target.closest('[data-address-search-wrap]')) closeAddressSuggestions();
     });
   }
 
@@ -10268,6 +10298,7 @@
   document.addEventListener('change',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
   document.addEventListener('focusout',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
   function show(id, push=true){
+    const leavingScreen=document.querySelector('.screen.active')?.id;
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
     id=normalizeScreenTarget(id);
@@ -10443,6 +10474,11 @@
       if(recipientEditor) recipientEditor.hidden=false;
       // Restore the editor draft once. Delayed hydration must not erase typing.
       syncDeliveryAddress({hydrateForm:true});
+      /* Cancelling out of the map returns to the form it was opened from,
+         the same as confirming a pin does. */
+      if(leavingScreen==='address-map') addressFormIntent=true;
+      if(!addressFormIntent) addressPageMode='list';
+      addressFormIntent=false;
       setAddressPageMode(addressPageMode);
 
     }
