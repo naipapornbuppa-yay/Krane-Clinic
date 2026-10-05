@@ -2168,14 +2168,30 @@
        then confirm the recipient and optional rider note. Structured postal
        values stay in the DOM for persistence and fulfilment, but are not
        duplicated in the visible confirmation screen. -->
-  <section class="screen" id="address" data-screen-code="SCR-013" data-address-mode="editor">
+  <section class="screen" id="address" data-screen-code="SCR-013" data-address-mode="list">
     <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body address-body stack-4">
+      <!-- Client, 5 Oct: the address page opens on the list of saved
+           addresses, not on the form. A returning patient picks one and
+           confirms; a first-time patient gets the empty state and one way out
+           of it. The form is the state behind "เพิ่มที่อยู่ใหม่" and "แก้ไข",
+           which is what it was always for. The controls inside it are
+           unchanged — this is the flow around them. -->
+      <div class="address-list-view" data-address-list-view hidden>
+        <h2 class="address-page-title">ที่อยู่จัดส่ง</h2>
+        <div class="address-list-empty" data-address-list-empty hidden>
+          <span class="address-list-empty__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+          <strong>ยังไม่มีที่อยู่จัดส่ง</strong>
+          <p>เพิ่มที่อยู่เพื่อให้เราจัดส่งยาถึงคุณ<br>แพ็กเกจปิดมิดชิด ไม่ระบุชื่อสินค้า</p>
+          <button class="btn btn--primary" type="button" data-address-new><i data-lucide="plus" class="ui-icon" aria-hidden="true"></i> เพิ่มที่อยู่ใหม่</button>
+        </div>
+        <div class="address-list" data-address-list role="radiogroup" aria-label="ที่อยู่จัดส่งที่บันทึกไว้"></div>
+        <button class="address-list__add" type="button" data-address-new hidden><i data-lucide="plus" class="ui-icon" aria-hidden="true"></i> เพิ่มที่อยู่ใหม่</button>
+      </div>
       <div class="address-editor-view stack-4" data-address-editor-view>
       <div class="address-page-head">
         <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
       </div>
-      <button class="btn btn--secondary address-book-open" type="button" data-address-book-open><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i> เลือกจากสมุดที่อยู่</button>
       <section class="form-group address-location" aria-labelledby="address-location-title">
         <div class="address-section-head"><h3 class="form-group__title" id="address-location-title">จัดส่งไปที่</h3><button class="address-pin__edit" type="button" data-go="address-map">แก้ไขที่อยู่</button></div>
         <div class="address-pin__card">
@@ -2187,6 +2203,12 @@
           </div>
           <p class="address-pin__summary" data-address-preview-detail>เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง</p>
         </div>
+      </section>
+
+      <section class="address-essential-fields stack-3" aria-labelledby="address-instructions-title">
+        <h3 class="form-group__title" id="address-instructions-title">รายละเอียดเพิ่มเติม <span class="address-optional">(ถ้ามี)</span></h3>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="address-line2" placeholder=" "><label for="addrFloor">ชั้น / ห้อง (ถ้ามี)</label></span></div></div>
+        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
       </section>
 
       <section class="form-group address-recipient-editor" data-address-recipient-editor>
@@ -2203,13 +2225,7 @@
         </div>
       </section>
 
-      <section class="address-essential-fields stack-3" aria-labelledby="address-instructions-title">
-        <h3 class="form-group__title" id="address-instructions-title">รายละเอียดเพิ่มเติม <span class="address-optional">(ถ้ามี)</span></h3>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="address-line2" placeholder=" "><label for="addrFloor">ชั้น / ห้อง (ถ้ามี)</label></span></div></div>
-        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
-      </section>
-
-      <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field><span>ชื่อที่อยู่ (ถ้ามี)</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
+      <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field><span>บันทึกที่อยู่นี้เป็น (ถ้ามี)</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
 
       <div class="address-data-fields" hidden aria-hidden="true">
         <input id="addrSearch" type="hidden">
@@ -2225,8 +2241,11 @@
       <input type="radio" name="dropoffMethod" value="hand" checked hidden>
       </div>
     </div>
+    <div class="screen__footer address-footer" data-address-list-footer hidden>
+      <button class="btn btn--primary" type="button" data-address-list-confirm>ยืนยันที่อยู่จัดส่ง</button>
+    </div>
     <div class="screen__footer address-footer" data-address-editor-footer>
-      <button class="btn btn--primary" type="button" data-address-save>บันทึกที่อยู่</button>
+      <button class="btn btn--primary" type="button" data-address-save>บันทึกและใช้ที่อยู่นี้</button>
     </div>
   </section>
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
@@ -5526,7 +5545,9 @@
       button.disabled=false;
       button.classList.remove('btn--blocked');
       button.removeAttribute('aria-disabled');
-      button.textContent=addressPageMode==='new' ? 'บันทึกที่อยู่' : 'ยืนยันที่อยู่จัดส่ง';
+      /* The form saves to the book and sends the order to this address, in
+         both modes — the list is where an address is merely chosen. */
+      button.textContent='บันทึกและใช้ที่อยู่นี้';
 
     }
     const recipient=screen.querySelector('[data-address-editor-recipient]');
@@ -5761,28 +5782,129 @@
     const book=savedAddresses();
     const key=addressBookKey(address);
     const at=index>=0 && index<book.length ? index : book.findIndex(entry => addressBookKey(entry)===key);
-    const entry={...address};
+    const entry={...address,lastUsedAt:Date.now()};
     if(at>=0) book[at]=entry; else book.push(entry);
-
+  }
+  /* "ใช้ล่าสุด" marks the address the patient last had delivered to, which is
+     almost always the one they want again — so the list says which that was
+     rather than making them read all of them to work it out. */
+  function lastUsedAddressIndex(){
+    const book=savedAddresses();
+    let at=-1, newest=0;
+    book.forEach((entry,index) => {
+      const used=Number(entry.lastUsedAt) || 0;
+      if(used>newest){ newest=used; at=index; }
+    });
+    return at;
+  }
+  /* Selecting in the list is selecting, not navigating: the radio moves, the
+     footer confirms. Opening the form is what "แก้ไข" is for. */
+  let addressListSelected=-1;
+  function renderAddressList(){
+    const list=document.querySelector('[data-address-list]');
+    const empty=document.querySelector('[data-address-list-empty]');
+    const add=document.querySelector('.address-list__add');
+    const footer=document.querySelector('[data-address-list-footer]');
+    if(!list || !empty) return;
+    const book=savedAddresses();
+    empty.hidden=book.length>0;
+    list.hidden=book.length<1;
+    if(add) add.hidden=book.length<1;
+    if(footer) footer.hidden=book.length<1 || addressPageMode!=='list';
+    if(!book.length){ list.innerHTML=''; return; }
+    if(addressListSelected<0 || addressListSelected>=book.length){
+      const currentKey=addressBookKey(flowState.orderState.address || {});
+      const matching=book.findIndex(entry => addressBookKey(entry)===currentKey);
+      addressListSelected=matching>=0 ? matching : Math.max(0,lastUsedAddressIndex());
+    }
+    const lastUsed=lastUsedAddressIndex();
+    list.innerHTML=book.map((entry,index) => {
+      const selected=index===addressListSelected;
+      const badge=index===lastUsed && book.length>1
+        ? '<span class="badge address-select-card__badge">ใช้ล่าสุด</span>' : '';
+      return `<article class="address-select-card${selected ? ' is-selected' : ''}">
+        <button class="address-select-card__choice" type="button" role="radio" aria-checked="${selected}" data-address-list-pick="${index}">
+          <span class="address-select-card__radio" aria-hidden="true"></span>
+          <span class="address-select-card__content">
+            <span class="address-select-card__heading"><strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>${badge}</span>
+            <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
+            <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
+          </span>
+        </button>
+        <span class="address-select-card__actions">
+          <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
+          <button class="address-select-card__delete" type="button" data-address-delete="${index}" aria-label="ลบ ${escapeAddressText(addressBookName(entry))}">ลบ</button>
+        </span>
+      </article>`;
+    }).join('');
+  }
+  function selectListAddress(index){
+    if(!savedAddresses()[index]) return;
+    addressListSelected=index;
+    renderAddressList();
+  }
+  function deleteSavedAddress(index){
+    const book=savedAddresses();
+    const entry=book[index];
+    if(!entry) return;
+    book.splice(index,1);
+    if(addressListSelected>index) addressListSelected--;
+    else if(addressListSelected===index) addressListSelected=-1;
+    /* The order was going to this address. Deleting it leaves the order
+       without one rather than silently moving it to a different address. */
+    if(addressBookKey(flowState.orderState.address || {})===addressBookKey(entry)){
+      flowState.orderState.address={};
+      flowState.orderState.addressConfirmed=false;
+      invalidateFulfillmentQuote();
+    }
+    persistAddressBook();
+    persistFlowState();
+    renderAddressList();
+    syncDeliveryAddress();
+    showActionToast('ลบ' + addressBookName(entry) + 'แล้ว','success');
+  }
+  function confirmListAddress(){
+    const entry=savedAddresses()[addressListSelected];
+    if(!entry){
+      showActionToast('กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง','warning');
+      return;
+    }
+    flowState.orderState.address={...entry};
+    flowState.orderState.addressConfirmed=true;
+    flowState.addressDraft={...entry,remember:true};
+    rememberDeliveryAddress(flowState.orderState.address,{index:addressListSelected});
+    invalidateFulfillmentQuote();
+    persistAddressBook();
+    persistFlowState();
+    syncDeliveryAddress();
+    focusCheckoutDelivery=true;
+    replaceCurrent('payment');
+    startInlineDeliveryQuote();
   }
   /* Client, 30 Sep: arriving here from checkout is the ordinary delivery
      address page, whether or not one has been saved before. "เพิ่มที่อยู่ใหม่"
      is the state reached from the address book's own button, so only that
      sets it. */
-  let addressPageMode=flowState.addressDraftMode==='new' ? 'new' : 'editor';
+  let addressPageMode=['new','editor'].includes(flowState.addressDraftMode) ? flowState.addressDraftMode : 'list';
   let addressEditingSavedIndex=-1;
   function setAddressPageMode(mode,{focus=false}={}){
     /* New and existing addresses share one form; the heading and action make
        the task clear while the controls stay in the same places. */
     const editing=true;
-    addressPageMode=mode==='new' ? 'new' : 'editor';
+    addressPageMode=mode==='new' ? 'new' : (mode==='list' ? 'list' : 'editor');
     document.getElementById('address')?.setAttribute('data-address-mode',addressPageMode);
     flowState.addressDraftMode=addressPageMode;
     persistFlowState();
+    const listing=addressPageMode==='list';
     const editorView=document.querySelector('[data-address-editor-view]');
     const editorFooter=document.querySelector('[data-address-editor-footer]');
-    if(editorView) editorView.hidden=!editing;
-    if(editorFooter) editorFooter.hidden=!editing;
+    const listView=document.querySelector('[data-address-list-view]');
+    const listFooter=document.querySelector('[data-address-list-footer]');
+    if(editorView) editorView.hidden=listing;
+    if(editorFooter) editorFooter.hidden=listing;
+    if(listView) listView.hidden=!listing;
+    if(listFooter) listFooter.hidden=!listing;
+    if(listing){ renderAddressList(); return; }
     const title=document.querySelector('[data-address-editor-title]');
     if(title){
       // Three states, and the heading names the one the patient is in.
@@ -5877,6 +5999,11 @@
     if(bookOpen){openAddressBook(bookOpen);return;}
     if(event.target.closest('[data-address-book-close]')){closeAddressBook();return;}
     if(event.target.closest('[data-address-new]')){ startNewAddress(); return; }
+    const listPick=event.target.closest('[data-address-list-pick]');
+    if(listPick){ selectListAddress(Number(listPick.dataset.addressListPick)); return; }
+    const remove=event.target.closest('[data-address-delete]');
+    if(remove){ deleteSavedAddress(Number(remove.dataset.addressDelete)); return; }
+    if(event.target.closest('[data-address-list-confirm]')){ confirmListAddress(); return; }
     const edit=event.target.closest('[data-address-edit]');
     if(edit){ editSavedAddress(Number(edit.dataset.addressEdit)); return; }
     const pick=event.target.closest('[data-address-book-pick]');
@@ -11981,9 +12108,10 @@
     if(addressSave){
       if(!saveDeliveryAddress()) return;
       addressEditingSavedIndex=-1;
-      addressPageMode='editor';
-      flowState.addressDraftMode='editor';
-      persistFlowState();
+      /* The form is done with; the page goes back to its list so returning to
+         it shows the address that was just saved, selected. */
+      addressListSelected=savedAddresses().findIndex(entry => addressBookKey(entry)===addressBookKey(flowState.orderState.address));
+      setAddressPageMode('list');
       renderAddressBook();
       focusCheckoutDelivery=true;
       replaceCurrent('payment');
@@ -12307,6 +12435,13 @@
     if(back){
       const backScreen=back.closest('.screen');
       if(backScreen && retreatIntakeQuestionPage(backScreen)) return;
+      /* The form is a step inside the address page, so back leaves the form
+         rather than the page — unless there is no list to go back to. */
+      if(backScreen?.id==='address' && addressPageMode!=='list' && savedAddresses().length){
+        addressEditingSavedIndex=-1;
+        setAddressPageMode('list');
+        return;
+      }
       if(backScreen?.id==='otp' && flowState.partnerPhoneOtpPending){
         flowState.partnerPhoneOtpPending=false;
         flowState.partnerPendingPhone='';

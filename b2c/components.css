@@ -379,7 +379,9 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
    accordion). The map is half the first viewport, clamped so it never eats a
    short landscape screen or floats absurdly tall on a tablet. ------------- */
 #address{background:#f7f7f8}
-#address[data-address-mode="new"]>.care-journey{display:none!important}
+/* The form is a step inside the address page, so the journey strip belongs to
+   the page — the list — and not to the form, whether it is new or an edit. */
+#address:not([data-address-mode="list"])>.care-journey{display:none!important}
 #address>.address-body{--address-gutter:18px;gap:18px;padding:18px var(--address-gutter) 32px;background:#f7f7f8;scrollbar-gutter:auto}
 .address-page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
 .address-page-title{margin:0;color:var(--color-ink-strong,#121824);font-family:var(--font-display);font-size:16px;line-height:1.3;font-weight:var(--fw-bold)}
@@ -5779,7 +5781,10 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #address .address-editor-view>*{margin-top:0}
 #address .address-location,#address .address-recipient-editor{gap:8px}
 /* Match checkout's 8px solid section bands with 16px breathing room. */
-#address .address-location+.address-recipient-editor,
+/* The band is drawn by the section it sits above, so each section that starts
+   one has to establish its own containing block — the order of the two is set
+   by the form, not by this rule. */
+#address .address-recipient-editor,
 #address .address-essential-fields{position:relative;margin-top:-8px;padding-top:24px;border-top:0}
 #address .address-recipient-editor::before,
 #address .address-essential-fields::before{content:"";display:block;position:absolute;top:0;left:calc(var(--address-gutter) * -1);right:calc(var(--address-gutter) * -1);height:var(--section-divider-size);background:var(--section-divider-color)}
@@ -5834,6 +5839,67 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .address-select-card__address,.address-select-card__recipient{font-size:var(--fs-sm);color:var(--color-ink-3)}
 .address-select-card__edit{display:block;margin:0 16px 8px;padding:8px 0;min-height:44px;border:0;background:transparent;color:var(--color-accent);cursor:pointer}
 .address-select-card__choice:focus-visible,.address-select-card__edit:focus-visible{outline:2px solid var(--color-accent);outline-offset:-3px}
+
+/* ---------- The saved-address list (client, 5 Oct) ----------
+   The address page opens on what the patient already has. The card is the
+   same .address-select-card the address book used; what is new is that it
+   carries a radio, so picking one is a choice made in place rather than a
+   trip through the form, and the actions sit together on the right. */
+#address .address-list-view{display:grid;gap:16px;align-content:start}
+.address-list{display:grid;gap:12px}
+.address-select-card__choice{align-items:flex-start;gap:12px}
+/* Same mark as .radio .dot, so the list reads as the radios elsewhere. */
+.address-select-card__radio{
+  width:var(--selection-size);height:var(--selection-size);flex:none;margin-top:2px;
+  display:grid;place-items:center;border-radius:var(--radius-pill);
+  border:var(--selection-border-width) solid var(--color-line-strong);background:var(--color-surface);
+  transition:border-color var(--dur-micro) var(--ease-out);
+}
+.address-select-card__choice[aria-checked="true"] .address-select-card__radio{border-color:var(--color-accent)}
+.address-select-card__choice[aria-checked="true"] .address-select-card__radio::after{
+  content:"";width:10px;height:10px;border-radius:var(--radius-pill);background:var(--color-accent);
+}
+.address-select-card__heading{justify-content:flex-start}
+.address-select-card__badge{background:var(--color-accent-soft);color:var(--color-accent)}
+/* "แก้ไข" and "ลบ" belong to the card, not to the choice, so they sit in the
+   corner beside the address rather than nesting inside the radio's button. */
+.address-list .address-select-card{position:relative}
+.address-select-card__actions{position:absolute;top:6px;right:10px;display:grid;justify-items:end}
+.address-select-card__choice{padding-right:72px}
+.address-select-card__edit,.address-select-card__delete{
+  min-height:38px;padding:0 6px;border:0;background:transparent;cursor:pointer;
+  font-size:var(--fs-sm);font-weight:var(--fw-semibold);
+}
+.address-select-card__edit{display:block;margin:0;color:var(--color-accent)}
+.address-select-card__delete{color:var(--color-danger)}
+.address-select-card__delete:focus-visible{outline:2px solid var(--color-accent);outline-offset:-3px}
+
+/* First time through there is nothing to list, so the page says so once and
+   offers the single way forward. */
+.address-list-empty{
+  display:grid;justify-items:center;gap:10px;padding:32px 24px;text-align:center;
+  border:var(--control-border-width) solid var(--color-line);border-radius:var(--control-radius);
+  background:var(--color-surface);
+}
+.address-list-empty__icon{
+  display:grid;place-items:center;width:64px;height:64px;margin-bottom:4px;
+  border-radius:var(--radius-pill);background:var(--color-accent-soft);color:var(--color-accent);
+}
+.address-list-empty__icon .ui-icon{width:26px;height:26px}
+.address-list-empty strong{font-size:var(--fs-base)}
+.address-list-empty p{margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);line-height:1.6}
+.address-list-empty .btn{margin-top:6px;gap:8px}
+/* Dashed, because adding one is the open slot after the addresses, not a
+   third action competing with ยืนยัน in the footer. */
+.address-list__add{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;
+  border:var(--control-border-width) dashed var(--color-line-strong);border-radius:var(--control-radius);
+  background:transparent;color:var(--color-accent);font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;
+}
+.address-list__add:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+@media(hover:hover) and (pointer:fine){
+  .address-list__add:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+}
 
 
 /* Tracking uses the same readable body scale as checkout. */
