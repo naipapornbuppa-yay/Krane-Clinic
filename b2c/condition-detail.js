@@ -524,12 +524,13 @@
           <p class="cd-fine">เรื่องเล่าจากผู้ใช้ที่ยินยอมให้เผยแพร่ ไม่เปิดเผยตัวตน และไม่ใช้ภาพประกอบเพื่อความเป็นส่วนตัว</p>
         </article>` : `
         <article class="cd-review">
-          <div class="cd-review__media">
-            <span class="cd-ph cd-review__clip">[วิดีโอสั้น 9:16]<b class="cd-review__play" aria-hidden="true"><i data-lucide="play"></i></b><em class="cd-review__time">0:30</em></span>
-            <span class="cd-review__pair">
-              <span class="cd-ph">[ภาพก่อน]<em class="cd-review__tag">ก่อน</em></span>
-              <span class="cd-ph">[ภาพหลัง]<em class="cd-review__tag cd-review__tag--after">หลัง [ระยะเวลา]</em></span>
-            </span>
+          <div class="cd-review__media" data-cd-carousel>
+            <div class="cd-review__track" data-cd-track tabindex="0" role="group" aria-label="คลิปและภาพก่อนหลัง เลื่อนเพื่อดู">
+              <span class="cd-ph cd-review__slide">[วิดีโอสั้น 9:16]<b class="cd-review__play" aria-hidden="true"><i data-lucide="play"></i></b><em class="cd-review__time">0:30</em></span>
+              <span class="cd-ph cd-review__slide">[ภาพก่อน]<em class="cd-review__tag">ก่อน</em></span>
+              <span class="cd-ph cd-review__slide">[ภาพหลัง]<em class="cd-review__tag cd-review__tag--after">หลัง [ระยะเวลา]</em></span>
+            </div>
+            <div class="cd-review__dots" data-cd-dots aria-hidden="true"><i class="is-on"></i><i></i><i></i></div>
           </div>
           <div class="cd-review__copy">
             <p class="cd-review__quote">“[คำรีวิวสั้น — เน้นประสบการณ์การดูแล เช่น หมอติดตามใกล้ชิด สะดวก]”</p>
@@ -721,6 +722,26 @@
       if (!document.hidden) hero.classList.toggle("is-showing-alternate");
     }, 5200);
   }
+
+  /* Client, 5 Oct: the clip and the two photographs are one carousel now —
+     the video first, then swipe to the pictures — rather than a clip beside a
+     stacked pair. The dots are the only thing that has to be told where the
+     track got to. */
+  document.querySelectorAll("[data-cd-carousel]").forEach((carousel) => {
+    const track = carousel.querySelector("[data-cd-track]");
+    const dots = Array.from(carousel.querySelectorAll("[data-cd-dots] i"));
+    if (!track || !dots.length) return;
+    let frame = 0;
+    const syncDots = () => {
+      frame = 0;
+      const at = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      dots.forEach((dot, index) => dot.classList.toggle("is-on", index === at));
+    };
+    track.addEventListener("scroll", () => {
+      if (frame) return;
+      frame = requestAnimationFrame(syncDots);
+    }, { passive: true });
+  });
 
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
   const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));

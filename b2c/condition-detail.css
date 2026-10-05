@@ -603,12 +603,24 @@ footer .brand-lockup{width:193px;height:31px;filter:brightness(0) invert(1)}
 }
 .cd-rail::-webkit-scrollbar{display:none}
 .cd-rail>*{scroll-snap-align:start}
-.cd-review{flex:0 0 86%;display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:16px;background:var(--cd-card);box-shadow:0 1px 3px rgba(17,27,48,.05)}
+.cd-review{flex:0 0 82%;display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:16px;background:var(--cd-card);box-shadow:0 1px 3px rgba(17,27,48,.05)}
 .cd-review--quote{flex:0 0 78%;gap:8px;padding:18px}
-.cd-review__media{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
-.cd-review__clip{height:264px;border-radius:12px}
-.cd-review__pair{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px}
-.cd-review__pair .cd-ph{border-radius:12px}
+/* The clip and the two photographs are one swipeable track: the video is
+   what the card opens on, the before and after are a swipe away. A portrait
+   box suits all three — the clip is shot 9:16 and the pair are phone photos
+   — where the old half-width column cropped the video to a letterbox. */
+.cd-review__media{position:relative;display:grid;gap:8px}
+.cd-review__track{
+  display:grid;grid-auto-flow:column;grid-auto-columns:100%;
+  overflow-x:auto;border-radius:12px;
+  scroll-snap-type:x mandatory;scrollbar-width:none;
+}
+.cd-review__track::-webkit-scrollbar{display:none}
+.cd-review__track:focus-visible{outline:3px solid color-mix(in srgb,var(--detail-tone) 48%,transparent);outline-offset:2px}
+.cd-review__slide{aspect-ratio:4/5;scroll-snap-align:start}
+.cd-review__dots{display:flex;justify-content:center;gap:6px}
+.cd-review__dots i{width:6px;height:6px;border-radius:50%;background:var(--detail-tone-soft);transition:background .2s var(--detail-ease,ease),width .2s var(--detail-ease,ease)}
+.cd-review__dots i.is-on{width:18px;border-radius:999px;background:var(--detail-tone-deep)}
 .cd-review__play{position:absolute;inset:50% auto auto 50%;translate:-50% -50%;display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(31,26,23,.6);color:#fff}
 .cd-review__play .ui-icon,.cd-review__play svg{width:18px;height:18px}
 .cd-review__time{position:absolute;top:8px;left:8px;background:#fff;color:#1f1a17;font-size:11px;font-style:normal;padding:3px 8px;border-radius:999px}
