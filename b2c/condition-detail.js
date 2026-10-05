@@ -34,17 +34,41 @@
       tags: ["weight"],
       category: "น้ำหนัก",
       meta: "อ่าน 6 นาที",
-      title: "ลดน้ำหนักอย่างปลอดภัยใต้การดูแลแพทย์",
-      excerpt: "เริ่มจากประเมินสุขภาพ ตั้งเป้าที่ทำได้จริง และติดตามผลเป็นระยะ",
+      title: "อะไรคือ GLP-1 agonists? ที่มาของ GLP-1",
+      excerpt: "กลไกโดยย่อ ที่มาของยากลุ่มนี้ และเหตุผลที่แพทย์ต้องค่อย ๆ ปรับขนาดยา",
       image: "assets/landing-573/treatments/weight-management.png"
     },
     {
       tags: ["weight"],
       category: "น้ำหนัก",
       meta: "อ่าน 4 นาที",
-      title: "GLP-1 ทำงานอย่างไรกับความอยากอาหาร",
-      excerpt: "กลไกโดยย่อ ผลข้างเคียงที่พบบ่อย และเหตุผลที่ต้องค่อย ๆ ปรับขนาดยา",
+      title: "semaglutide หรือ tirzepatide? ทำไมแพทย์ต้องเป็นผู้ประเมิน",
+      excerpt: "สองตัวยาต่างกันอย่างไร และอะไรที่แพทย์ดูก่อนเลือกให้แต่ละคน",
       image: "assets/landing-573/treatments/hormonal-balance-trt.png"
+    },
+    {
+      tags: ["weight"],
+      category: "น้ำหนัก",
+      meta: "อ่าน 5 นาที",
+      title: "ผลข้างเคียงของ GLP-1 ที่พบบ่อย และวิธีรับมือ",
+      excerpt: "อาการที่เจอได้ในช่วงแรก วิธีบรรเทา และสัญญาณที่ต้องแจ้งแพทย์",
+      image: "assets/landing-573/treatments/daily-focus-mind.png"
+    },
+    {
+      tags: ["weight"],
+      category: "น้ำหนัก",
+      meta: "อ่าน 4 นาที",
+      title: "วิธีสังเกตยาของแท้ ทำไมยาควรมาในบรรจุภัณฑ์เดิม",
+      excerpt: "บรรจุภัณฑ์จากผู้ผลิต เลข serial และการตรวจสอบกับ อย.",
+      image: "assets/landing-573/treatments/hair-loss-prevention.png"
+    },
+    {
+      tags: ["weight"],
+      category: "น้ำหนัก",
+      meta: "อ่าน 5 นาที",
+      title: "ทำไมการออกกำลังกายสำคัญระหว่างใช้ GLP-1",
+      excerpt: "รักษามวลกล้ามเนื้อระหว่างน้ำหนักลด และลดโอกาสน้ำหนักเด้งกลับ",
+      image: "assets/landing-573/treatments/skin-anti-aging.png"
     },
     {
       tags: ["sexual-health"],
@@ -359,7 +383,13 @@
 
   const SUPPORTING_CONTENT = {
     weight: {
-      fit: ["ต้องการประเมินน้ำหนักและความเสี่ยงสุขภาพอย่างเป็นระบบ", "เคยลองปรับพฤติกรรมแล้วแต่ผลไม่ต่อเนื่อง", "พร้อมติดตามผลและปรับแผนร่วมกับแพทย์"],
+      fit: [
+        "ผู้ที่มองหาช่องทางเริ่มรักษาที่ไม่ต้องเดินทาง สะดวก และคุ้มค่า",
+        "ผู้ที่ต้องการลดน้ำหนักภายใต้การดูแลของแพทย์",
+        "ผู้ที่มีค่า BMI สูงกว่า 25",
+        "ผู้ที่คุมอาหารแล้ว แต่น้ำหนักยังไม่ลดตามที่ต้องการ",
+        "ผู้ที่มีภาวะน้ำหนักเกินที่อาจเกี่ยวข้องกับปัจจัยด้านสุขภาพอื่นๆ"
+      ],
       consult: ["กำลังตั้งครรภ์ ให้นมบุตร หรือวางแผนตั้งครรภ์", "มีประวัติตับอ่อน ถุงน้ำดี หรือโรคต่อมไทรอยด์บางชนิด", "ใช้ยา หรือมีโรคประจำตัวที่อาจกระทบการรักษา"],
       faqs: [
         ["ต้องใช้ยาทุกคนไหม", "ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่"],
@@ -409,8 +439,8 @@
   const programme = {
     weight: {
       title:'Re:Body Program',
-      lead:'โปรแกรมลดน้ำหนักออนไลน์ด้วย GLP-1 (เปปไทด์คุมหิว) ดูแลโดยแพทย์ประจำตัวอย่างใกล้ชิด',
-      overview:'เน้นการลดน้ำหนักอย่างมีคุณภาพ (Quality Weight Loss) ทุกเคสแพทย์จะประเมินความเหมาะสมก่อนเริ่มการรักษาเสมอ นัดติดตามอาการและปรับแผนให้เหมาะสมเฉพาะบุคคล พร้อม coaching ปรับไลฟ์สไตล์และการกินให้ถูกต้อง เพื่อช่วยให้คุณไปถึงเป้าหมายน้ำหนัก ควบคู่กับการรักษามวลกล้ามเนื้อ',
+      lead:'โปรแกรมลดน้ำหนักออนไลน์ด้วย GLP-1 ประเมินและดูแลโดยคุณหมอประจำตัวอย่างใกล้ชิด',
+      overview:'แพทย์จะประเมินความเหมาะสมก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามอาการและปรับแผนให้เหมาะกับคุณ ควบคู่กับ coaching ปรับไลฟ์สไตล์และการกิน โดยเน้นรักษามวลกล้ามเนื้อ และลดความเสี่ยงน้ำหนักเด้งกลับ (yo-yo effect)',
       knowledgeTitle:'น้ำหนักขึ้นได้จากหลายสาเหตุ',
       knowledge:'พันธุกรรม ฮอร์โมน การนอน ความเครียด และยาที่ใช้อยู่ ล้วนมีผลต่อน้ำหนัก แพทย์จะแยกสาเหตุก่อน แล้วจึงออกแบบแผนที่เหมาะกับคุณ',
       stats:[['5 ถึง 10%','น้ำหนักที่ลดลงอย่างมีคุณภาพ ช่วยลดความเสี่ยงสุขภาพได้ชัดเจน'],['3 ถึง 6 เดือน','ระยะเวลาที่เริ่มเห็นผลของการรักษา'],['ต่อเนื่อง','หยุดยาโดยไม่ปรับพฤติกรรม น้ำหนักมีโอกาสกลับมา']],
@@ -444,24 +474,69 @@
     setText('[data-pricing-note]',data.category==='weight' ? 'ราคาที่แจ้งรวมค่ายาแล้วในโปรแกรม ขึ้นอยู่กับแผนการรักษา แพทย์จะประเมินความเหมาะสมก่อนสั่งยาทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
     document.querySelector('[data-programme-price]').hidden=data.category!=='weight';
     if(data.category==='weight') setText('[data-coaching-copy]','1:1 health coaching');
-    supporting.faqs=[
-      [data.category==='weight' ? 'โปรแกรม Re:Body เหมาะกับใครบ้าง?' : 'ต้องใช้ยาทุกคนไหม', 'ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่'],
-      ['จะรู้ค่าใช้จ่ายเมื่อไร','ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ'],
-      ['ถ้าเริ่มยาแล้วต้องติดตามอย่างไร','แพทย์จะนัดติดตามผลและอาการข้างเคียงเป็นระยะ แล้วปรับแผนให้เหมาะกับคุณ ประวัติและแผนการรักษาอยู่ในบัญชีของคุณ']
+    /* The five questions and their answers are the design's, verbatim. They
+       answer what the old three did and then the three the patient asks next
+       — insurance, which medicine, and how much weight. */
+    supporting.faqs=data.category==='weight' ? [
+      ['ราคาเท่าไหร่? มีค่าใช้จ่ายอะไรบ้าง?',
+       '<p>ไม่มีค่าสมาชิกรายเดือน ระบบจะแสดงรายการราคาทั้งหมดให้คุณยืนยันก่อนชำระเงินทุกครั้ง</p>'+
+       '<ul><li><b>ค่าปรึกษาแพทย์:</b> ครั้งแรกฟรี สำหรับบัญชีใหม่ · ครั้งถัดไป 350 บาท/ครั้ง</li>'+
+       '<li><b>ค่ายา:</b> ขึ้นอยู่กับชนิดและขนาดยาที่แพทย์สั่ง เช่น ยาขนาดเริ่มต้น 4 โดส (ใช้ได้ราว 1 เดือน) เพียง 9,999 บาท</li>'+
+       '<li><b>ค่าจัดส่ง:</b> ส่งด่วน คิดตามระยะทางจริง · ส่งไปรษณีย์ 50 บาท</li></ul>'],
+      ['ขั้นตอนทั้งหมดเป็นออนไลน์ใช่ไหม?',
+       '<p>ใช่ ทุกขั้นตอนทำผ่านออนไลน์ ไม่ต้องเดินทางไปคลินิก</p>'+
+       '<ul><li>ทำแบบประเมินสุขภาพและเป้าหมาย</li>'+
+       '<li>ปรึกษาแพทย์ผ่านวิดีโอคอล เปิดกล้องช่วงแรกเพื่อยืนยันตัวตน จากนั้นเปลี่ยนเป็นแชทได้</li>'+
+       '<li>รับยาที่บ้าน หากแพทย์ประเมินว่าเหมาะสม</li>'+
+       '<li>ติดตามผลและเติมยาผ่านระบบออนไลน์</li></ul>'+
+       '<p>บางกรณีแพทย์อาจขอผลตรวจเลือดเพิ่มเติม เพื่อความปลอดภัยก่อนเริ่มยา</p>'],
+      ['ใช้สิทธิประกันอะไรได้บ้าง?',
+       '<p>ขณะนี้ re:body ยังไม่รองรับการเบิกจ่ายตรงกับประกันสุขภาพ ประกันสังคม หรือสิทธิบัตรทอง</p>'+
+       '<p>คุณขอใบเสร็จรับเงินเพื่อนำไปยื่นเบิกกับบริษัทประกันเองได้ ทั้งนี้ขึ้นอยู่กับเงื่อนไขกรมธรรม์ของคุณ</p>'],
+      ['มียาอะไรที่แพทย์อาจจะจ่ายให้ได้บ้าง?',
+       '<p>แพทย์จะเลือกยาจากประวัติสุขภาพ เป้าหมาย และความปลอดภัยของคุณเป็นหลัก โดยยาในโปรแกรมเป็นยากลุ่ม GLP-1 ที่ขึ้นทะเบียนกับ อย. แล้ว</p>'+
+       '<p>ยาทุกกล่องจัดส่งโดย Fascino Pharmacy Chain ในบรรจุภัณฑ์เดิมจากผู้ผลิต และตรวจสอบเลข serial ได้ที่เว็บไซต์ อย.</p>'],
+      ['จะลดน้ำหนักได้เท่าไหร่?',
+       '<p>ขึ้นอยู่กับแต่ละคน ทั้งเป้าหมายน้ำหนัก ยาที่แพทย์สั่ง น้ำหนักตั้งต้น ความสม่ำเสมอ และไลฟ์สไตล์</p>'+
+       '<p class="cd-faq__lead">ค่าเฉลี่ยจากงานวิจัยทางคลินิก*</p>'+
+       '<div class="cd-faq__figures"><div><b>~10%</b><span>ใน 5 เดือนแรก</span></div><div><b>15–21%</b><span>ในราว 1 ปีครึ่ง</span></div></div>'+
+       '<p class="cd-fine">*ผู้ใช้ยากลุ่ม GLP-1 ควบคู่กับการปรับพฤติกรรม ผลลัพธ์แตกต่างกันในแต่ละบุคคล ไม่ใช่การรับประกันผล · อ้างอิง: '+
+       '<a href="https://jamanetwork.com/journals/jama/fullarticle/2777886" rel="noopener" target="_blank">STEP 4</a> · '+
+       '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2032183" rel="noopener" target="_blank">STEP 1</a> · '+
+       '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2206038" rel="noopener" target="_blank">SURMOUNT-1</a></p>']
+    ] : [
+      ['ต้องใช้ยาทุกคนไหม','<p>ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่</p>'],
+      ['จะรู้ค่าใช้จ่ายเมื่อไร','<p>ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ</p>'],
+      ['ถ้าเริ่มยาแล้วต้องติดตามอย่างไร','<p>แพทย์จะนัดติดตามผลและอาการข้างเคียงเป็นระยะ แล้วปรับแผนให้เหมาะกับคุณ ประวัติและแผนการรักษาอยู่ในบัญชีของคุณ</p>']
     ];
+    /* Three cards in a rail, each a short clip beside the before/after pair,
+       as the design draws them. The media is not shot yet, so every slot is a
+       labelled placeholder rather than a stand-in photograph. */
     const reviews=document.querySelector('[data-programme-reviews]');
-    if(data.category==='weight'){
-      setText('[data-reviews-title]',"Customer’s Reviews");
-      setText('[data-reviews-note]','ภาพประกอบเปรียบเทียบ ผลลัพธ์แตกต่างกันในแต่ละบุคคล');
-      reviews.innerHTML='<img src="assets/figma-draft-20260830/results-v2/weight-pair-1-diptych-v2.png" alt="ภาพประกอบเปรียบเทียบรูปร่างก่อนและหลัง" loading="lazy" width="1536" height="1024">';
-    }else if(data.category==='hair-skin'){
-      setText('[data-reviews-title]','ผลลัพธ์จากผู้ใช้จริง');
-      setText('[data-reviews-note]','ภาพเปรียบเทียบจากผู้ใช้ที่ยินยอมให้เผยแพร่ ผลลัพธ์แตกต่างกันในแต่ละบุคคล');
-      reviews.innerHTML='<div class="review-placeholder"><strong>ก่อน</strong><span>รอภาพที่ได้รับความยินยอม</span></div><div class="review-placeholder"><strong>หลัง 6 เดือน</strong><span>รอภาพที่ได้รับความยินยอม</span></div>';
-    }else{
-      setText('[data-reviews-title]','เสียงจากผู้ใช้จริง');
-      setText('[data-reviews-note]','เรื่องเล่าจากผู้ใช้ที่ยินยอมให้เผยแพร่ ไม่เปิดเผยตัวตน และไม่ใช้ภาพประกอบเพื่อความเป็นส่วนตัว');
-      reviews.innerHTML=Array.from({length:3},()=>'<div class="review-placeholder"><b>“</b><span>รอข้อความรีวิวที่ได้รับความยินยอม</span></div>').join('');
+    setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
+      : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
+    if(reviews){
+      const privateStory=data.category==='sexual-health';
+      reviews.innerHTML=Array.from({length:3},()=>privateStory ? `
+        <article class="cd-review cd-review--quote">
+          <p class="cd-review__quote">“[คำรีวิวสั้น — เน้นประสบการณ์การดูแล เช่น หมอติดตามใกล้ชิด สะดวก]”</p>
+          <span class="cd-fine"><b>[ชื่อย่อ]</b> · ผู้ใช้ ${programme.title}</span>
+          <p class="cd-fine">เรื่องเล่าจากผู้ใช้ที่ยินยอมให้เผยแพร่ ไม่เปิดเผยตัวตน และไม่ใช้ภาพประกอบเพื่อความเป็นส่วนตัว</p>
+        </article>` : `
+        <article class="cd-review">
+          <div class="cd-review__media">
+            <span class="cd-ph cd-review__clip">[วิดีโอสั้น 9:16]<b class="cd-review__play" aria-hidden="true"><i data-lucide="play"></i></b><em class="cd-review__time">0:30</em></span>
+            <span class="cd-review__pair">
+              <span class="cd-ph">[ภาพก่อน]<em class="cd-review__tag">ก่อน</em></span>
+              <span class="cd-ph">[ภาพหลัง]<em class="cd-review__tag cd-review__tag--after">หลัง [ระยะเวลา]</em></span>
+            </span>
+          </div>
+          <div class="cd-review__copy">
+            <p class="cd-review__quote">“[คำรีวิวสั้น — เน้นประสบการณ์การดูแล เช่น หมอติดตามใกล้ชิด สะดวก]”</p>
+            <span class="cd-fine"><b>[ชื่อย่อ]</b> · ผู้ใช้ ${programme.title}</span>
+            <p class="cd-fine">ใช้เป็นตัวอย่าง ผลจากการเข้ารับการรักษาแตกต่างกันในแต่ละบุคคล</p>
+          </div>
+        </article>`).join('');
     }
   }
 
@@ -532,7 +607,7 @@
   if (faqList) faqList.innerHTML = supporting.faqs.map(([question, answer], index) => `
     <details class="faq-item"${index === 0 ? " open" : ""}>
       <summary>${question}<i data-lucide="plus" aria-hidden="true"></i></summary>
-      <p>${answer}</p>
+      <div class="cd-faq__answer">${answer}</div>
     </details>
   `).join("");
 
@@ -628,115 +703,56 @@
       articlesSection?.remove();
     } else {
       articles.innerHTML = matches.map((article) => `
-        <li><a class="article-card" href="krane-b2c.html#articles" target="_parent" data-route="articles">
-          <span class="article-card__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
-          <span class="article-card__body">
-            <span class="article-card__tags"><em class="article-card__tag">${article.category}</em><span class="article-card__meta">${article.meta}</span></span>
-            <strong class="article-card__title">${article.title}</strong>
-            <span class="article-card__excerpt">${article.excerpt}</span>
-          </span>
+        <li><a class="cd-article" href="krane-b2c.html#articles" target="_parent" data-route="articles">
+          <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
+          <span class="cd-article__title">${article.title}</span>
         </a></li>
       `).join("");
     }
   }
 
-  /* The guide rail is a compact table of contents, not a separate carousel.
-     It mirrors the active chapter as the page moves and keeps that chapter in
-     view inside the horizontal mobile rail. */
-  const sectionNav = document.querySelector("[data-section-nav]");
-  const sectionViewport = sectionNav?.querySelector(".condition-sections__viewport");
-  const sectionIndicator = sectionViewport?.querySelector(".condition-sections__indicator");
-  const sectionTabs = Array.from(document.querySelectorAll("[data-section-tab]"));
-  const sectionTargets = sectionTabs
-    .map((tab) => ({ tab, section: document.getElementById(tab.dataset.sectionTab) }))
-    .filter(({ section }) => section);
-
+  /* Client, 5 Oct: the six-chapter rail that used to live here only scrolled
+     the page between sections it was already showing. The design replaces it
+     with three tabs over one panel, so the middle of the page is the one part
+     the patient asked for rather than all of it at once. */
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (hasAlternateHero && hero && !prefersReducedMotion.matches) {
     window.setInterval(() => {
       if (!document.hidden) hero.classList.toggle("is-showing-alternate");
     }, 5200);
   }
-  let indicatorReadyFrame = 0;
-  const moveSectionIndicator = (tab) => {
-    if (!sectionViewport || !sectionIndicator || !tab) return;
-    sectionViewport.style.setProperty("--section-indicator-x", `${tab.offsetLeft}px`);
-    sectionViewport.style.setProperty("--section-indicator-width", `${tab.offsetWidth}px`);
-    if (!sectionViewport.classList.contains("is-indicator-ready") && !indicatorReadyFrame) {
-      indicatorReadyFrame = requestAnimationFrame(() => {
-        indicatorReadyFrame = 0;
-        sectionViewport.classList.add("is-indicator-ready");
-      });
-    }
-  };
 
-  const setActiveSection = (id, bringIntoView = true) => {
-    let activeTab = null;
-    sectionTabs.forEach((tab) => {
-      const active = tab.dataset.sectionTab === id;
-      tab.classList.toggle("is-active", active);
-      if (active) {
-        activeTab = tab;
-        tab.setAttribute("aria-current", "location");
-      } else {
-        tab.removeAttribute("aria-current");
-      }
+  const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
+  const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));
+  const showCdPanel = (name) => {
+    cdTabs.forEach((tab) => {
+      const on = tab.dataset.cdTab === name;
+      tab.classList.toggle("is-selected", on);
+      tab.setAttribute("aria-selected", String(on));
     });
-    if (!activeTab) return;
-    moveSectionIndicator(activeTab);
-    if (bringIntoView && sectionViewport) {
-      const centeredLeft = activeTab.offsetLeft - ((sectionViewport.clientWidth - activeTab.offsetWidth) / 2);
-      sectionViewport.scrollTo({
-        left: Math.max(0, centeredLeft),
-        behavior: prefersReducedMotion.matches ? "auto" : "smooth"
-      });
-    }
+    cdPanels.forEach((panel) => { panel.hidden = panel.dataset.cdPanel !== name; });
   };
-
-  if (sectionNav && sectionTargets.length) {
-    let sectionFrame = 0;
-    const syncActiveSection = () => {
-      sectionFrame = 0;
-      const readingLine = sectionNav.getBoundingClientRect().bottom + 48;
-      let current = sectionTargets[0];
-      sectionTargets.forEach((candidate) => {
-        if (candidate.section.getBoundingClientRect().top <= readingLine) current = candidate;
-      });
-      setActiveSection(current.tab.dataset.sectionTab);
-    };
-    const requestSectionSync = () => {
-      if (sectionFrame) return;
-      sectionFrame = requestAnimationFrame(syncActiveSection);
-    };
-
-    sectionTabs.forEach((tab) => {
-      tab.addEventListener("click", (event) => {
-        const id = tab.dataset.sectionTab;
-        const target = document.getElementById(id);
-        if (!target) return;
-        event.preventDefault();
-        if (window.location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
-        setActiveSection(id);
-        const scrollMargin = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
-        const targetTransform = getComputedStyle(target).transform;
-        const revealOffset = targetTransform === "none" ? 0 : new DOMMatrixReadOnly(targetTransform).m42;
-        window.scrollTo({
-          top: window.scrollY + target.getBoundingClientRect().top - revealOffset - scrollMargin,
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
-        });
-      });
+  cdTabs.forEach((tab) => {
+    tab.addEventListener("click", () => showCdPanel(tab.dataset.cdTab));
+    /* Arrow keys move between tabs, which is what a tablist owes a keyboard. */
+    tab.addEventListener("keydown", (event) => {
+      const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      if (!step) return;
+      event.preventDefault();
+      const next = cdTabs[(cdTabs.indexOf(tab) + step + cdTabs.length) % cdTabs.length];
+      showCdPanel(next.dataset.cdTab);
+      next.focus();
     });
-    window.addEventListener("scroll", requestSectionSync, { passive: true });
-    if ("ResizeObserver" in window && sectionViewport) {
-      new ResizeObserver(() => {
-        const activeTab = sectionTabs.find((tab) => tab.classList.contains("is-active"));
-        moveSectionIndicator(activeTab);
-      }).observe(sectionViewport);
-    } else {
-      window.addEventListener("resize", requestSectionSync, { passive: true });
-    }
-    requestSectionSync();
-  }
+  });
+  /* A link to #pricing or #faq from the nav still has to land somewhere, and
+     the price is inside a panel now. */
+  const hashPanel = { pricing: "price", price: "price", how: "steps", overview: "overview" };
+  const openFromHash = () => {
+    const name = hashPanel[decodeURIComponent(location.hash.slice(1))];
+    if (name) showCdPanel(name);
+  };
+  openFromHash();
+  window.addEventListener("hashchange", openFromHash);
 
   /* The landing page reveals one editorial chapter at a time. Detail pages
      use the same restrained movement so the system feels related without

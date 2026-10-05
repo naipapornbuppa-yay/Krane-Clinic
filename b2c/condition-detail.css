@@ -563,3 +563,162 @@ footer .brand-lockup{width:193px;height:31px;filter:brightness(0) invert(1)}
  .footer__bottom{flex-direction:column;margin-top:36px}
 }
 .footer__links>div,.footer__brand,.footer__bottom{min-width:0;overflow-wrap:anywhere}
+
+/* ============================================================
+   Programme page, three tabs over one panel (client, 5 Oct)
+   ============================================================
+   The page used to be fifteen sections stacked top to bottom with a
+   six-chapter rail that only scrolled between them. The design keeps the
+   hero and the reviews above, puts ภาพรวม / ขั้นตอน / ราคา behind tabs, and
+   leaves the questions, the reading list and the safety link below. The
+   palette is still the page's own per-condition tone — only the arrangement
+   is new. */
+.condition-detail-page main{--cd-gutter:16px;--cd-card:#fff;--cd-line:#ece7e4}
+.cd-h2{margin:0 0 14px;font-size:22px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
+.cd-h3{margin:0 0 12px;font-size:18px;line-height:1.35;font-weight:500}
+.cd-body{margin:0;font-size:14px;line-height:1.8;color:var(--detail-ink-2,#3a322d)}
+.cd-fine{margin:0;font-size:12px;line-height:1.6;color:var(--detail-ink-3,#5e5550)}
+.cd-card{padding:18px;border-radius:16px;background:var(--cd-card);box-shadow:0 1px 3px rgba(17,27,48,.05)}
+
+/* A labelled slot, not a stand-in photograph: the media for these cards is
+   not shot yet and a borrowed image would read as a real patient. */
+.cd-ph{
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  background:repeating-linear-gradient(135deg,#e8e2de 0 10px,#efeae7 10px 20px);
+  color:#6b5b53;font-size:12px;text-align:center;
+}
+
+/* ---- Reviews ---- */
+.cd-reviews{padding:24px var(--cd-gutter) 4px}
+.cd-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px}
+.cd-section-head .cd-h3{margin:0}
+.cd-seeall{font-size:13px;color:var(--detail-tone-deep);text-decoration:none}
+.cd-seeall:hover{text-decoration:underline}
+/* One rail serves the reviews and the reading list, so the two scroll the
+   same way and bleed to the same edge. */
+.cd-rail{
+  display:flex;gap:12px;overflow-x:auto;margin:0 calc(var(--cd-gutter) * -1);
+  padding:0 var(--cd-gutter) 6px;list-style:none;
+  scroll-snap-type:x mandatory;scrollbar-width:none;
+}
+.cd-rail::-webkit-scrollbar{display:none}
+.cd-rail>*{scroll-snap-align:start}
+.cd-review{flex:0 0 86%;display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:16px;background:var(--cd-card);box-shadow:0 1px 3px rgba(17,27,48,.05)}
+.cd-review--quote{flex:0 0 78%;gap:8px;padding:18px}
+.cd-review__media{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.cd-review__clip{height:264px;border-radius:12px}
+.cd-review__pair{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px}
+.cd-review__pair .cd-ph{border-radius:12px}
+.cd-review__play{position:absolute;inset:50% auto auto 50%;translate:-50% -50%;display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(31,26,23,.6);color:#fff}
+.cd-review__play .ui-icon,.cd-review__play svg{width:18px;height:18px}
+.cd-review__time{position:absolute;top:8px;left:8px;background:#fff;color:#1f1a17;font-size:11px;font-style:normal;padding:3px 8px;border-radius:999px}
+.cd-review__tag{position:absolute;bottom:6px;left:6px;background:#1f1a17;color:#fff;font-size:11px;font-style:normal;padding:2px 8px;border-radius:999px}
+.cd-review__tag--after{background:var(--detail-tone-deep)}
+.cd-review__copy{display:grid;gap:6px;padding:0 4px 4px}
+.cd-review__quote{margin:0;font-size:15px;line-height:1.6}
+.cd-review .cd-fine b{color:var(--detail-ink,#1f1a17);font-weight:500}
+
+/* ---- The tabs ---- */
+.cd-tabs{position:sticky;top:0;z-index:3;padding:14px var(--cd-gutter);background:var(--detail-page-bg,#f3f4f6)}
+.cd-tabs__group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--cd-card)}
+.cd-tab{
+  min-height:44px;padding:10px 4px;border:0;border-radius:10px;
+  background:transparent;color:var(--detail-ink,#1f1a17);
+  font:inherit;font-size:13px;cursor:pointer;
+  transition:background .2s var(--detail-ease,ease),color .2s var(--detail-ease,ease);
+}
+.cd-tab.is-selected{background:var(--detail-ink,#1f1a17);color:#fff;font-weight:500}
+.cd-tab:focus-visible{outline:3px solid color-mix(in srgb,var(--detail-tone) 48%,transparent);outline-offset:2px}
+
+/* ---- The panels ---- */
+.cd-panels{padding:0 var(--cd-gutter) 24px;min-height:620px}
+.cd-panel{display:flex;flex-direction:column;gap:14px}
+.cd-panel[hidden]{display:none}
+.cd-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}
+.cd-feature{display:flex;flex-direction:column;gap:8px;padding:14px;font-size:13px;line-height:1.55}
+.cd-check{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--detail-tone-soft);color:var(--detail-tone-deep)}
+.cd-check .ui-icon,.cd-check svg{width:16px;height:16px}
+.cd-checklist{display:flex;flex-direction:column;gap:8px;margin:0 0 10px;padding:0;list-style:none;font-size:14px;line-height:1.6}
+.cd-checklist li{display:flex;gap:10px;align-items:flex-start}
+.cd-checklist li::before{
+  content:"";flex:none;width:16px;height:16px;margin-top:4px;
+  background:var(--detail-tone-deep);
+  -webkit-mask:var(--cd-tick) center / contain no-repeat;mask:var(--cd-tick) center / contain no-repeat;
+}
+.condition-detail-page{--cd-tick:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E")}
+.cd-card>.cd-checklist:last-child{margin-bottom:0}
+
+/* ---- Steps ---- */
+.cd-steps{margin:0;padding:0;list-style:none}
+.cd-step{display:flex;gap:14px}
+.cd-step__rail{display:flex;flex-direction:column;align-items:center;flex:none}
+.cd-step__rail b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--detail-tone-deep);color:#fff;font-size:14px;font-weight:600}
+.cd-step__rail i{flex:1;width:2px;margin:4px 0;background:var(--detail-tone-soft)}
+.cd-step>div{padding:5px 0 22px}
+.cd-step--last>div{padding-bottom:0}
+.cd-step strong{display:block;margin-bottom:4px;font-size:15px;line-height:1.45;font-weight:500}
+.cd-step p{margin:0;font-size:13px;line-height:1.7;color:var(--detail-ink-3,#5e5550)}
+
+/* ---- Price ---- */
+.cd-price{padding:22px;display:grid;gap:0}
+.cd-price__label{margin:0;font-size:14px;color:var(--detail-ink-3,#5e5550)}
+.cd-price__amount{margin:6px 0 10px;font-size:32px;line-height:1.25;font-weight:600}
+.cd-price__amount span{font-size:16px;font-weight:400}
+.cd-price__chip{display:inline-flex;align-self:flex-start;gap:8px;align-items:center;margin:0 0 14px;padding:6px 12px;border-radius:999px;background:var(--detail-tone-soft);color:var(--detail-tone-deep);font-size:13px}
+.cd-price__chip .ui-icon,.cd-price__chip svg{width:14px;height:14px;flex:none}
+.cd-price .cd-fine+.cd-fine{margin-top:6px}
+
+/* ---- Tail: questions, reading list, safety ---- */
+.cd-tail{padding:32px var(--cd-gutter) 24px;margin-top:8px;border-top:1px solid var(--detail-line,#e4e0dd)}
+.cd-faq__list{padding:4px 18px}
+.cd-faq__list .faq-item{border-top:1px solid var(--cd-line)}
+.cd-faq__list .faq-item:first-child{border-top:0}
+.cd-faq__list summary{position:relative;list-style:none;cursor:pointer;padding:16px 26px 16px 0;font-size:15px;font-weight:500;line-height:1.5}
+.cd-faq__list summary::-webkit-details-marker{display:none}
+.cd-faq__list summary .ui-icon,.cd-faq__list summary svg{position:absolute;right:0;top:16px;width:20px;height:20px;color:var(--detail-tone-deep);transition:transform .2s var(--detail-ease,ease)}
+.cd-faq__list details[open] summary svg{transform:rotate(45deg)}
+.cd-faq__answer{padding:0 0 16px;font-size:14px;line-height:1.75;color:var(--detail-ink-2,#3a322d)}
+.cd-faq__answer p{margin:0 0 8px}
+.cd-faq__answer ul{margin:0 0 8px;padding-left:18px}
+.cd-faq__answer li{margin-bottom:4px}
+.cd-faq__lead{font-weight:500}
+.cd-faq__figures{display:flex;gap:8px;margin-bottom:10px}
+.cd-faq__figures div{flex:1;padding:12px;border-radius:10px;background:var(--detail-tone-soft)}
+.cd-faq__figures b{display:block;font-size:24px;font-weight:600;color:var(--detail-tone-deep)}
+.cd-faq__figures span{font-size:12px}
+.cd-articles{margin-top:32px}
+.cd-articles .article-card{flex-direction:column;width:100%}
+.cd-rail>li{flex:0 0 64%;display:flex}
+.cd-safety-link{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-top:24px;padding:16px 18px;border:1px dashed var(--detail-tone);border-radius:16px;
+  color:var(--detail-ink,#1f1a17);text-decoration:none;
+}
+.cd-safety-link strong{display:block;font-weight:500}
+.cd-safety-link .ui-icon,.cd-safety-link svg{width:20px;height:20px;flex:none;color:var(--detail-tone-deep)}
+.cd-safety-link:hover{background:color-mix(in srgb,var(--detail-tone-soft) 60%,transparent)}
+
+/* ---- One action, always reachable ---- */
+.cd-stickybar{
+  position:sticky;bottom:0;z-index:4;
+  display:flex;align-items:center;gap:12px;
+  padding:12px var(--cd-gutter) calc(12px + env(safe-area-inset-bottom,0px));
+  background:var(--cd-card);border-top:1px solid var(--cd-line);
+}
+.cd-stickybar__copy{flex:1;margin:0;font-size:12px;line-height:1.4;color:var(--detail-ink-3,#5e5550)}
+.cd-stickybar__copy b{font-size:15px;color:var(--detail-ink,#1f1a17)}
+.cd-stickybar .button{min-height:48px;padding:0 22px;gap:0}
+
+@media(min-width:720px){
+  .condition-detail-page main{--cd-gutter:24px}
+  .cd-reviews,.cd-tabs,.cd-panels,.cd-tail,.cd-stickybar{width:min(100%,720px);margin-inline:auto}
+  .cd-review{flex:0 0 420px}
+  .cd-rail>li{flex:0 0 280px}
+}
+/* The reading list in the rail is a picture and its title, as the design has
+   it — the category and excerpt belong to the full article index. */
+.cd-article{display:flex;flex-direction:column;width:100%;border-radius:16px;overflow:hidden;background:var(--cd-card);box-shadow:0 1px 3px rgba(17,27,48,.05);color:var(--detail-ink,#1f1a17);text-decoration:none}
+.cd-article__thumb{display:block;height:110px;background:var(--detail-tone-soft)}
+.cd-article__thumb img{width:100%;height:100%;object-fit:cover}
+.cd-article__title{padding:14px;font-size:14px;line-height:1.55;font-weight:500}
+.cd-article:hover{box-shadow:0 6px 18px rgba(17,27,48,.1)}
