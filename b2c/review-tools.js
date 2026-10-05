@@ -79,7 +79,6 @@
         ["payment", "SID-040", "สรุปรายการและชำระเงิน", "Medication checkout"],
         ["payment-items", "SID-040A", "แก้ไขรายการยา", "Edit medication items"],
         ["address", "SID-036", "รายละเอียดที่อยู่", "Delivery address"],
-        ["address-map", "SID-036A", "เลือกที่อยู่จากแผนที่", "Choose address on map"],
         ["delivery-quote", "SID-037", "คำนวณค่าจัดส่ง", "Delivery quote"],
         ["pharmacy-search", "SID-038", "ตรวจสอบสต็อกและราคา", "Pharmacy stock & price"],
         ["insurance", "SID-039", "ตรวจสอบสิทธิ์ประกัน", "Insurance eligibility", "eligibility"],

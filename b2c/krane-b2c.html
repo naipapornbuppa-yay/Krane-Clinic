@@ -2172,34 +2172,6 @@
   <!-- PRE-PAYMENT DELIVERY ESTIMATE
        The patient sees the selected delivery method and an estimate here. The
        following SCR-014 pharmacy review locks stock, branch and final price. -->
-  <!-- Manual address entry stays independent of the optional current-location picker. -->
-  <section class="screen" id="address-map">
-    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
-    <div class="screen__body address-map-body">
-      <!-- Open the map only on request; cancel leaves these fields untouched. -->
-      <div class="address-map-stage">
-      <!-- Product rule: references may inform UX flow and validation only.
-           Visual controls here must reuse Krane components. In particular,
-           empty fields show their label as the placeholder and float it only
-           after focus or a value, rather than adding a second title outside. -->
-      <section class="address-map-search-panel" aria-labelledby="address-map-search-title">
-        <div class="address-map-search-panel__head"><h1 id="address-map-search-title" data-address-map-title>ระบุที่อยู่จัดส่ง</h1><button type="button" data-back aria-label="ปิด">×</button></div>
-        <!-- Typing the name of a building or a soi fills the five fields below
-             in one go. The form underneath stays the way to correct whatever
-             the search got wrong, or to enter an address it cannot find
-             (client, 29 Sep). -->
-        <div class="address-search" data-address-search-wrap>
-          <div class="field address-search__field">
-            <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
-            <input class="input" type="search" id="addressMapSearch" data-address-search autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="address-map-suggestions" placeholder="ค้นหาชื่ออาคาร ถนน หรือย่าน">
-          </div>
-          <ul class="address-suggestions" id="address-map-suggestions" data-address-suggestions role="listbox" aria-label="ผลการค้นหาที่อยู่" hidden></ul>
-        </div>
-        <p class="hint address-search__hint">เลือกผลการค้นหาเพื่อกรอกที่อยู่ให้อัตโนมัติ</p>
-      </section>
-      </div>
-    </div>
-  </section>
   <dialog class="address-picker" id="address-picker" aria-labelledby="address-picker-title">
     <div class="address-picker__head"><h2 id="address-picker-title">เลือกตำแหน่งจัดส่ง</h2><button type="button" data-address-picker-close aria-label="ปิด">×</button></div>
       <div class="address-map address-map--full" data-address-map>
@@ -5327,12 +5299,6 @@
     window.kraneRefreshSelectOptions?.(control);
     syncFloatingFieldState(control.closest('.float-field'));
   }
-  function syncAddressMapSearchSubmit(){
-    const complete=['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS]
-      .every(id => String(document.getElementById(id)?.value || '').trim());
-    const submit=document.querySelector('[data-address-map-search-submit]');
-    if(submit){submit.disabled=false;submit.classList.toggle('btn--blocked',!complete);submit.setAttribute('aria-disabled',String(!complete))}
-  }
   function syncAddressMapCascade(changedId='',savedValues={}){
     const province=document.getElementById('addressMapProvince');
     const district=document.getElementById('addressMapDistrict');
@@ -5356,15 +5322,9 @@
     if(!postcodes.includes(postcodeValue) && !savedValues.addressMapPostcode)postcodeValue='';
     if(postcodes.length===1)postcodeValue=postcodes[0];
     replaceAddressMapOptions(postcode,postcodes,postcodeValue,Boolean(subdistrictValue));
-    syncAddressMapSearchSubmit();
   }
   function hydrateAddressMapSearch(){
     const address=deliveryAddressDraft();
-    /* Client, 30 Sep: reaching this form from an address that already exists is
-       an edit. Calling it "ระบุที่อยู่จัดส่ง" read as a blank new-address page
-       even though every field arrived filled in. */
-    const mapTitle=document.querySelector('[data-address-map-title]');
-    if(mapTitle) mapTitle.textContent=address.building ? 'แก้ไขที่อยู่จัดส่ง' : 'ระบุที่อยู่จัดส่ง';
     const search=flowState.addressSearchDraft;
     const query=document.getElementById('addressMapQuery');
     if(query)query.value=search?.query ?? [...new Set([address.building,address.line].filter(Boolean))].join(' ');
@@ -5408,7 +5368,6 @@
   }
   document.getElementById('addressMapQuery')?.addEventListener('input',() => {
     resizeAddressMapQuery();
-    syncAddressMapSearchSubmit();
     persistAddressSearchDraft();
   });
   /* The manual fields sit on the form now, so what the patient types in them
@@ -5433,37 +5392,6 @@
     field?.addEventListener('change',commitManualAddress);
     field?.addEventListener('input',() => { clearFieldError(field); commitManualAddress(); });
   });
-  function applyAddressMapSearch(){
-    const value=id => (document.getElementById(id)?.value || '').trim();
-    const query=value('addressMapQuery');
-    const province=value('addressMapProvince');
-    const district=value('addressMapDistrict');
-    const subdistrict=value('addressMapSubdistrict');
-    const postcode=value('addressMapPostcode');
-    if(!query || !province || !district || !subdistrict || !postcode){
-      showActionToast('กรอกข้อมูลตำแหน่งให้ครบก่อนค้นหา','warning');
-      const missing=!query ? 'addressMapQuery' : !province ? 'addressMapProvince' : !district ? 'addressMapDistrict' : !subdistrict ? 'addressMapSubdistrict' : 'addressMapPostcode';
-      const input=document.getElementById(missing);
-      if(input){
-        setFieldError(input,'กรุณากรอกข้อมูลช่องนี้');
-        const focusTarget=input.closest('.field')?.querySelector('[role="combobox"]') || input;
-        focusTarget.focus();
-      }
-      return;
-    }
-    const place={title:query,building:query,floor:deliveryAddressDraft().floor || '',line:query,
-      subdistrict,districtName:district,province,postcode};
-    place.district=composeDistrict(place);
-    place.detail=[place.building,place.line,place.district].filter(Boolean).join(' · ');
-    applyAddress(place);
-    syncFloatingFieldStates(document.getElementById('address'));
-    syncFieldClearButtons();
-    addressRecipientEditing=false;
-    addressFormIntent=true;
-    show('address');
-    setAddressPageMode(addressPageMode);
-    showActionToast('เลือกตำแหน่งแล้ว กรุณาตรวจรายละเอียดก่อนบันทึก','success');
-  }
   /* Read the form itself. The old version read screen.dataset.addressDraft,
      which was only ever written by the fake "pick an address" demo button. That
      button is gone, so the draft stayed empty, validation always failed and the
@@ -7468,13 +7396,10 @@
       closeAddressSuggestions();
       /* The search writes the stored address; the visible form has to be read
          back from it or the patient sees the old values in the fields below. */
-      if(document.getElementById('address-map')?.classList.contains('active')){
-        hydrateAddressMapSearch();
-        ['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS].forEach(id => {
-          const field=document.getElementById(id);
-          if(field) clearFieldError(field);
-        });
-      }
+      ['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS].forEach(id => {
+        const field=document.getElementById(id);
+        if(field) clearFieldError(field);
+      });
       /* Searching from the form moves the pin the form is showing. */
       if(document.getElementById('address')?.classList.contains('active')) renderAddressPinPreview();
       const gaps=addressLocationGaps();
@@ -8616,7 +8541,7 @@
     if(directGate){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=false;
-    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','tracking','order-summary','feedback','feedbackdone','upload-rx'].includes(target)){
+    } else if(flowState.entryChannel==='direct' && ['matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom','consult','video','rx-writing','rx-plan','address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail','tracking','order-summary','feedback','feedbackdone','upload-rx'].includes(target)){
       flowState.consultationFeeAcknowledged=true;
       flowState.directGeneralHealthComplete=true;
     }
@@ -8753,7 +8678,7 @@
     matching:'patient-info', appointment:'matching', 'appointment-booked':'appointment',
     consultpay:'matching', 'consultpay-gw':'consultpay', 'consultpay-fail':'consultpay-gw', waitroom:'consultpay', consult:'waitroom',
     video:'consult', 'rx-writing':'consult', 'rx-plan':'consult',
-    address:'payment', 'address-map':'address', 'delivery-quote':'payment', 'pharmacy-search':'payment',
+    address:'payment', 'delivery-quote':'payment', 'pharmacy-search':'payment',
     pharmacypending:'pharmacy-search', payment:'pharmacypending',
     'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw',
@@ -10061,7 +9986,7 @@
 
   const REQUIRED_CARE_TARGETS = new Set([
     'matching','appointment','appointment-booked','consultpay','consultpay-gw','consultpay-fail','waitroom',
-    'consult','video','rx-writing','rx-plan','address','address-map','delivery-quote','pharmacy-search',
+    'consult','video','rx-writing','rx-plan','address','delivery-quote','pharmacy-search',
     'pharmacypending','payment-items','payment','payment-gw','payment-processing','payment-success','insurance','insurance-result','payfail',
     'tracking','order-summary','feedback','feedbackdone','upload-rx'
   ]);
@@ -10234,7 +10159,6 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
-    if(id==='address-map') window.setTimeout(hydrateAddressMapSearch,0);
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
@@ -10393,9 +10317,6 @@
          filled in, the same way the map screen used to get them. */
       hydrateAddressMapSearch();
       syncAddressLabelChips();
-      /* Cancelling out of the map returns to the form it was opened from,
-         the same as confirming a pin does. */
-      if(leavingScreen==='address-map') addressFormIntent=true;
       if(!addressFormIntent) addressPageMode='list';
       addressFormIntent=false;
       setAddressPageMode(addressPageMode);
@@ -10403,8 +10324,8 @@
     }
     if(id==='consultpay'){ applyCoverageFlag(); syncConsultationAppointmentSummary(); }
     if(id==='plan') syncDeclinedMedicines();
-    /* The pannable map moved to #address-map; what is on the form now is a
-       still of the pin, so there is nothing here to bind panning to. */
+    /* What is on the form is a still of the pin — the pannable map is the
+       current-location dialog — so there is nothing here to bind panning to. */
     if(id==='address'){ renderAddressPinPreview(); }
     fillDoctorName();
     if(id==='profile' || id==='followups') syncHomeFollowUpCta();
@@ -12070,10 +11991,6 @@
     if(e.target.closest('[data-address-picker-open]')){ openAddressPicker(); return; }
     if(e.target.closest('[data-address-picker-close]')){ closeAddressPicker(); return; }
     if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
-    if(e.target.closest('[data-address-map-search-submit]')){
-      applyAddressMapSearch();
-      return;
-    }
     if(e.target.closest('[data-address-map-confirm]')){ confirmAddressPicker(); return; }
     const addressSave=e.target.closest('[data-address-save]');
     if(addressSave){
