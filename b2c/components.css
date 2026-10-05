@@ -3189,9 +3189,18 @@ body.lang-th *{letter-spacing:normal}
 .care-journey__name{display:grid;place-items:center;width:100%;overflow:visible;color:var(--color-ink-3);font-size:14.5px;font-weight:var(--fw-medium);line-height:1.2;text-align:center;white-space:nowrap;word-break:keep-all;text-overflow:clip}
 .care-journey__step.is-done,.care-journey__step.is-current{background:transparent}
 .care-journey__step.is-done .care-journey__name{color:var(--color-ink-3);font-weight:var(--fw-medium)}
-/* This is a stage indicator, not a loading meter: finished and current stages
-   are complete segments; only future stages remain neutral. */
-.care-journey__step.is-done::after,.care-journey__step.is-current::after{background:var(--color-accent)}
+/* Finished stages are complete segments and future stages stay neutral. The
+   current one fills to --journey-fill, which is how far into that stage the
+   screen is — the sub-step bar that used to sit under the stepper said this,
+   and the segment carries it now (client, 5 Oct). */
+.care-journey__step.is-done::after{background:var(--color-accent)}
+.care-journey__step.is-current::after{
+  background:linear-gradient(to right,
+    var(--color-accent) 0 var(--journey-fill,100%),
+    var(--color-line) var(--journey-fill,100%) 100%);
+  transition:background var(--dur-base,.24s) var(--ease-out,ease);
+}
+@media(prefers-reduced-motion:reduce){.care-journey__step.is-current::after{transition:none}}
 /* Client, 1 Sep: bigger, and the live stage in brand blue rather than ink —
    the accent is what the rest of the app uses to say "you are here". Past and
    future stages stay grey, so there is still only one stage being pointed at. */
@@ -5292,6 +5301,33 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 .address-essential-fields{display:grid;gap:28px}
 .address-simple-field{display:grid;gap:10px;color:var(--color-ink);font-size:18px;font-weight:var(--fw-semibold)}
+/* Every heading on the address form is a .form-group__title, so the ones that
+   are not sections — the manual block's intro, the saved-address name — read
+   at the same size rather than one step larger (client, 5 Oct). */
+#address .address-manual-head{display:grid;gap:4px}
+#address .address-manual-head .hint{margin:0;color:var(--color-ink-3);font-size:var(--fs-sm);line-height:1.5}
+#address .address-label-field{display:grid;gap:12px}
+.address-label-chips{display:flex;flex-wrap:wrap;gap:8px}
+.address-label-chip{
+  min-height:44px;padding:0 18px;
+  border:var(--control-border-width) solid var(--color-line-strong);border-radius:var(--radius-pill);
+  background:var(--color-surface);color:var(--color-ink-2);
+  font:inherit;font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;
+  transition:border-color var(--dur-micro) var(--ease-out),background var(--dur-micro) var(--ease-out),color var(--dur-micro) var(--ease-out);
+}
+.address-label-chip.is-selected{border-color:var(--color-accent);background:var(--color-accent-soft);color:var(--color-accent)}
+.address-label-chip:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+@media(hover:hover) and (pointer:fine){
+  .address-label-chip:hover{border-color:var(--color-accent)}
+}
+/* The one line of the form that is reassurance rather than a question, so it
+   sits with the action it reassures about rather than inside a section. */
+.address-privacy-note{
+  display:flex;align-items:flex-start;gap:8px;margin:0;
+  padding:12px 14px;border-radius:var(--radius-md);background:var(--color-bg-2);
+  color:var(--color-ink-3);font-size:var(--fs-sm);line-height:1.5;
+}
+.address-privacy-note .ui-icon{width:16px;height:16px;flex:none;margin-top:2px}
 .address-simple-field span small{color:var(--color-ink-3);font-size:inherit;font-weight:var(--fw-regular)}
 .address-simple-field :is(.input,.textarea){
   width:100%;

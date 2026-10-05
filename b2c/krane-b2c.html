@@ -2192,8 +2192,7 @@
       <div class="address-page-head">
         <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
       </div>
-      <section class="form-group address-location" aria-labelledby="address-location-title">
-        <div class="address-section-head"><h3 class="form-group__title" id="address-location-title">จัดส่งไปที่</h3><button class="address-pin__edit" type="button" data-go="address-map">แก้ไขที่อยู่</button></div>
+      <section class="form-group address-location" aria-label="ตำแหน่งที่จัดส่ง">
         <!-- Client, 5 Oct: typing the place is how most people give an address;
              the map is for when they cannot name it. The search was moved off
              this page to the map screen, which put two taps between opening the
@@ -2217,10 +2216,21 @@
         </div>
       </section>
 
-      <section class="address-essential-fields stack-3" aria-labelledby="address-instructions-title">
-        <h3 class="form-group__title" id="address-instructions-title">รายละเอียดเพิ่มเติม <span class="address-optional">(ถ้ามี)</span></h3>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrFloor" autocomplete="address-line2" placeholder=" "><label for="addrFloor">ชั้น / ห้อง (ถ้ามี)</label></span></div></div>
-        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">โน้ตถึงไรเดอร์ (ถ้ามี)</label></span></div></div>
+      <!-- Client, 5 Oct: the address itself was behind "แก้ไขที่อยู่", on a
+           screen of its own. Searching and picking a pin are the fast paths,
+           but neither finds every soi, so the fields they fill are on the page
+           they fill — under a line that says so, rather than a tap away. -->
+      <section class="address-essential-fields stack-3" aria-labelledby="address-manual-title">
+        <div class="address-manual-head">
+          <h3 class="form-group__title" id="address-manual-title">หรือกรอกที่อยู่เอง</h3>
+          <p class="hint">ค้นหาไม่เจอ? กรอกที่อยู่ในช่องด้านล่างได้เลย</p>
+        </div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince" data-searchable-select><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" data-searchable-select disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
+        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงคนส่ง (ไม่บังคับ)</label></span></div></div>
       </section>
 
       <section class="form-group address-recipient-editor" data-address-recipient-editor>
@@ -2237,9 +2247,20 @@
         </div>
       </section>
 
-      <label class="address-simple-field address-simple-field--saved-label" for="addrLabel" data-address-label-field><span>บันทึกที่อยู่นี้เป็น (ถ้ามี)</span><input class="input" id="addrLabel" autocomplete="off" placeholder="เช่น บ้าน หรือ ที่ทำงาน"></label>
+      <section class="address-label-field" data-address-label-field>
+        <h3 class="form-group__title">บันทึกที่อยู่นี้เป็น</h3>
+        <div class="address-label-chips" role="group" aria-label="บันทึกที่อยู่นี้เป็น">
+          <button class="address-label-chip" type="button" data-address-label="บ้าน">บ้าน</button>
+          <button class="address-label-chip" type="button" data-address-label="ที่ทำงาน">ที่ทำงาน</button>
+          <button class="address-label-chip" type="button" data-address-label="">อื่นๆ</button>
+        </div>
+        <div class="field float-field" data-address-label-custom hidden><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLabel" autocomplete="off" placeholder=" "><label for="addrLabel">ชื่อที่อยู่</label></span></div></div>
+      </section>
+
+      <p class="address-privacy-note"><i data-lucide="lock" class="ui-icon" aria-hidden="true"></i><span>จัดส่งในกล่องปิดมิดชิด ไม่ระบุชื่อสินค้าหรือคลินิก</span></p>
 
       <div class="address-data-fields" hidden aria-hidden="true">
+        <input id="addrFloor" type="hidden">
         <input id="addrBuilding" type="hidden">
         <input id="addrLine" type="hidden">
         <input id="addrSubdistrict" type="hidden">
@@ -2285,13 +2306,7 @@
           </div>
           <ul class="address-suggestions" id="address-map-suggestions" data-address-suggestions role="listbox" aria-label="ผลการค้นหาที่อยู่" hidden></ul>
         </div>
-        <p class="hint address-search__hint">หรือกรอกที่อยู่เองด้านล่าง</p>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince" data-searchable-select><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
-        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" data-searchable-select disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
-        <button class="btn btn--primary" type="button" data-address-map-search-submit>ตรวจสอบที่อยู่นี้</button>
+        <p class="hint address-search__hint">เลือกผลการค้นหาเพื่อกรอกที่อยู่ให้อัตโนมัติ</p>
       </section>
       </div>
     </div>
@@ -4885,6 +4900,52 @@
   };
   const careJourneyScreens = Object.entries(careJourneyStageOrder)
     .reduce((acc,[stage,ids]) => { ids.forEach(id => { acc[id]=Number(stage); }); return acc; },{});
+  /* Client, 5 Oct: the thin sub-step bar under the stepper was taken out on
+     the promise written two comments below — "the current stage's segment now
+     fills as the sub-steps complete" — and that half was never written. Every
+     current stage drew a full segment, so the bar said exactly the same thing
+     on the first question of the questionnaire as on the last one. It is
+     computed here: how far into its own stage the screen is, refined by the
+     question pager on the screens that paginate. */
+  function intakeQuestionFraction(screen){
+    const body=screen?.querySelector('.screen__body');
+    const total=body ? body.querySelectorAll('[data-intake-question]').length : 0;
+    if(total<2) return 0;
+    const index=Number(body.dataset.intakeQuestionIndex || 0);
+    return Math.min(1,(Math.max(0,index)+1)/total);
+  }
+  /* Measured against the steps a patient actually walks, not against every
+     screen in the stage: the gateway, retry and error screens are the same
+     step as the one they belong to, so counting them would make the bar crawl
+     and then jump. Each inner list is one step; the first id in it is the one
+     it is named for. */
+  const careJourneyMilestones={
+    1:[['concern','conditions'],['intake1'],['intake2'],['intake3'],['intake4'],
+       ['intake5','intake-concern'],['signup','login','social-confirm','otp'],
+       ['consent-terms'],['identity','patient-info','insurance-result']],
+    2:[['intake-general'],['matching'],['appointment','appointment-booked'],
+       ['consultpay','consultpay-gw','consultpay-fail'],['waitroom'],
+       ['consult','video'],['rx-writing','rx-plan']],
+    3:[['address'],['delivery-quote'],['pharmacy-search','pharmacypending','pharmacyissue'],
+       ['payment','payment-gw','payfail'],['payment-processing'],['payment-success']]
+  };
+  function careJourneyFill(id){
+    const stage=careJourneyScreens[id];
+    if(!stage) return 1;
+    const steps=careJourneyMilestones[stage] || [];
+    const at=steps.findIndex(ids => ids.includes(id));
+    if(at<0) return 1;
+    /* Landing on a step counts it whole, unless the screen paginates and can
+       say how far through itself the patient is. */
+    const within=intakeQuestionFraction(document.getElementById(id)) || 1;
+    return Math.min(1,Math.max(.08,(at + within) / steps.length));
+  }
+  function syncCareJourneyFill(id){
+    const nav=document.getElementById(id)?.querySelector('.care-journey');
+    if(!nav) return;
+    const current=nav.querySelector('.care-journey__step.is-current');
+    if(current) current.style.setProperty('--journey-fill',(careJourneyFill(id)*100).toFixed(1)+'%');
+  }
   function careJourneyMarkup(current){
     const total=careJourneyLabels.length;
     const nextStep=current<total ? careJourneyShort[current] : '';
@@ -5476,6 +5537,28 @@
     syncAddressMapSearchSubmit();
     persistAddressSearchDraft();
   });
+  /* The manual fields sit on the form now, so what the patient types in them
+     has to reach the address the form saves without a "check this address"
+     round trip. Same mapping applyAddressMapSearch makes, minus the
+     validation and the navigation: those belong to a submit, and there isn't
+     one any more. */
+  function commitManualAddress(){
+    if(!document.getElementById('address')?.classList.contains('active')) return;
+    const value=id => (document.getElementById(id)?.value || '').trim();
+    const query=value('addressMapQuery');
+    const place={title:query,building:query,floor:deliveryAddressDraft().floor || '',line:query,
+      subdistrict:value('addressMapSubdistrict'),districtName:value('addressMapDistrict'),
+      province:value('addressMapProvince'),postcode:value('addressMapPostcode')};
+    place.district=composeDistrict(place);
+    place.detail=[place.building,place.line,place.district].filter(Boolean).join(' · ');
+    applyAddress(place);
+    syncAddressEditorReadiness();
+  }
+  ['addressMapQuery',...ADDRESS_MAP_CASCADE_IDS].forEach(id => {
+    const field=document.getElementById(id);
+    field?.addEventListener('change',commitManualAddress);
+    field?.addEventListener('input',() => { clearFieldError(field); commitManualAddress(); });
+  });
   function applyAddressMapSearch(){
     const value=id => (document.getElementById(id)?.value || '').trim();
     const query=value('addressMapQuery');
@@ -5610,7 +5693,10 @@
      leaving the patient to find them. hydrateAddressMapSearch runs on its own
      timeout when the screen opens, so the errors are painted after it. */
   function openAddressFormForGaps(gaps){
-    show('address-map');
+    /* The fields these gaps name are on the form now, not on a screen of
+       their own, so this opens the form rather than the map. */
+    addressFormIntent=true;
+    show('address');
     window.setTimeout(() => {
       let first=null;
       const seen=new Set();
@@ -5895,7 +5981,7 @@
     syncFieldClearButtons();
     syncAddressEditorReadiness();
     if(focus){
-      const target=document.querySelector('#address [data-go="address-map"]') || document.getElementById('addrNote');
+      const target=document.getElementById('addrSearch') || document.getElementById('addrNote');
       target?.focus({preventScroll:true});
     }
   }
@@ -5913,11 +5999,51 @@
     syncDeliveryAddress({hydrateForm:true});
     syncFloatingFieldStates(document.getElementById('address'));
     document.querySelectorAll('#address .is-invalid input').forEach(clearFieldError);
-    document.querySelector('#address [data-go="address-map"]')?.focus({preventScroll:true});
+    document.getElementById('addrSearch')?.focus({preventScroll:true});
     if(!quiet)showActionToast('เลือกที่อยู่แล้ว กรุณาตรวจสอบก่อนยืนยัน','success');
   }
   function editSavedAddress(index){useSavedAddress(index,{quiet:true});}
 
+  /* บ้าน and ที่ทำงาน are what nearly every saved address is called, so they
+     are two taps rather than two words typed. อื่นๆ opens the field for the
+     rest. */
+  /* อื่นๆ stays open on an empty field — it was just tapped to type in, and
+     deriving it from the value alone closed it again on the same keystroke. */
+  let addressLabelCustom=false;
+  function syncAddressLabelChips(){
+    const label=(document.getElementById('addrLabel')?.value || '').trim();
+    const chips=[...document.querySelectorAll('[data-address-label]')];
+    const preset=chips.find(chip => chip.dataset.addressLabel && chip.dataset.addressLabel===label);
+    if(preset) addressLabelCustom=false;
+    else if(label) addressLabelCustom=true;
+    chips.forEach(chip => {
+      const on=preset ? chip===preset : (!chip.dataset.addressLabel && addressLabelCustom);
+      chip.classList.toggle('is-selected',on);
+      chip.setAttribute('aria-pressed',String(on));
+    });
+    const custom=document.querySelector('[data-address-label-custom]');
+    if(custom) custom.hidden=!addressLabelCustom;
+  }
+  document.addEventListener('click',event => {
+    const chip=event.target.closest('[data-address-label]');
+    if(!chip) return;
+    const field=document.getElementById('addrLabel');
+    if(!field) return;
+    const custom=document.querySelector('[data-address-label-custom]');
+    if(chip.dataset.addressLabel){
+      addressLabelCustom=false;
+      field.value=chip.dataset.addressLabel;
+      if(custom) custom.hidden=true;
+    } else {
+      addressLabelCustom=true;
+      if(custom) custom.hidden=false;
+      if([...document.querySelectorAll('[data-address-label]')].some(other => other.dataset.addressLabel===field.value.trim())) field.value='';
+      field.focus({preventScroll:true});
+    }
+    field.dispatchEvent(new Event('input',{bubbles:true}));
+    syncAddressLabelChips();
+  });
+  document.getElementById('addrLabel')?.addEventListener('input',syncAddressLabelChips);
   function startNewAddress({focus=true}={}){
     delete flowState.addressSearchDraft;
     /* Client, 5 Oct: a new address starts blank, all of it. The recipient was
@@ -5927,6 +6053,7 @@
     flowState.addressDraft={building:'',line:'',subdistrict:'',districtName:'',province:'',postcode:'',district:'',label:'',floor:'',note:'',
       recipientFirstName:'',recipientLastName:'',recipientName:'',recipientPhone:'',remember:false};
     ['addrSearch','addrLabel','addrBuilding','addrFloor','addrLine','addrSubdistrict','addrDistrictName','addrProvince','addrPostcode','addrNote',
+     'addressMapQuery','addressMapProvince','addressMapDistrict','addressMapSubdistrict','addressMapPostcode',
      'recipientFirstName','recipientLastName','recipientPhone']
       .forEach(id => {
         const field=document.getElementById(id);
@@ -5935,6 +6062,7 @@
         field.dispatchEvent(new Event('input',{bubbles:true}));
         clearFieldError(field);
       });
+    addressLabelCustom=false;
     addressEditingSavedIndex=-1;
     addressPageMode='new';
     flowState.addressDraftMode='new';
@@ -6734,6 +6862,7 @@
     if(!state.screen || !state.body || !state.total) return false;
     const nextIndex = Math.max(0,Math.min(index,state.total-1));
     state.body.dataset.intakeQuestionIndex=String(nextIndex);
+    syncCareJourneyFill(state.screen.id);
     state.questions.forEach((question,questionIndex) => {
       const active = questionIndex===nextIndex;
       question.hidden=!active;
@@ -10302,6 +10431,7 @@
         && ownerScreen.id==='intake-general';
       cj.hidden=flowState.entryChannel==='partner' || coldAuth || refillDetour || followUpDetour;
     });
+    syncCareJourneyFill(id);
     screens.forEach(s => s.classList.toggle('active', s.id === id));
     const activeScreen=document.getElementById(id);
     if(id==='landing') resetLandingViewport();
@@ -10399,6 +10529,10 @@
       if(recipientEditor) recipientEditor.hidden=false;
       // Restore the editor draft once. Delayed hydration must not erase typing.
       syncDeliveryAddress({hydrateForm:true});
+      /* The manual fields are the address; an edit has to arrive with them
+         filled in, the same way the map screen used to get them. */
+      hydrateAddressMapSearch();
+      syncAddressLabelChips();
       /* Cancelling out of the map returns to the form it was opened from,
          the same as confirming a pin does. */
       if(leavingScreen==='address-map') addressFormIntent=true;
