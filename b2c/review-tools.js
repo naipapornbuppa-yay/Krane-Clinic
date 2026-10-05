@@ -17,9 +17,6 @@
       step: "01", th: "เริ่มต้นและค้นหาบริการ", en: "Start & discover",
       screens: [
         ["landing", "SID-001", "หน้าหลัก", "Landing"],
-        ["onboard1", "SID-002", "แนะนำบริการ · ความเป็นส่วนตัว", "Onboarding · Private care"],
-        ["onboard2", "SID-003", "แนะนำบริการ · การดูแลเฉพาะบุคคล", "Onboarding · Personal care"],
-        ["onboard3", "SID-004", "แนะนำบริการ · การจัดส่ง", "Onboarding · Delivery"],
         ["conditions", "SID-005", "เลือกบริการ", "Choose care"],
         ["articles", "SID-006", "บทความสุขภาพ", "Health articles"],
         ["article", "SID-007", "รายละเอียดบทความ", "Article detail"]
@@ -91,8 +88,7 @@
         ["payment-processing", "SID-041A", "กำลังตรวจสอบการชำระเงิน", "Payment processing"],
         ["payment-success", "SID-042", "ชำระเงินสำเร็จ", "Payment confirmed"],
         ["pharmacypending", "SID-045", "ร้านยายืนยันรายการ", "Pharmacy confirmed"],
-        ["payfail", "SID-043", "ชำระเงินไม่สำเร็จ", "Medication payment failed", "exception"],
-        ["pharmacyissue", "SID-046", "เปลี่ยนวิธีจัดส่ง", "Delivery fallback", "exception"]
+        ["payfail", "SID-043", "ชำระเงินไม่สำเร็จ", "Medication payment failed", "exception"]
       ],
       variants: [
         { ref: "pharmacy-search", action: "data-demo-nostock", th: "กรณีร้านยาไม่มีสินค้า", en: "State · Pharmacy declines stock", exception: true }
