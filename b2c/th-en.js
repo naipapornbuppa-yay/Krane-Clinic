@@ -243,6 +243,7 @@
     "ตจวิทยา (ผิวหนัง)":"Dermatology",
     "ดูประวัติเต็ม":"See full profile",
     "ดูประวัติเต็ม →":"See full profile →",
+    "ดูประวัติแบบเต็มหน้า":"Open the full profile page",
     "ดูประวัติ พญ. กรผกา ขันติโกสุม":"See Dr. Kornpaka Khantikosum's profile",
     "ดูประวัติ นพ. ไพรัช เกตุรัตนกุล":"See Dr. Pairat Ketrattanakul's profile",
     "ดูประวัติ อ.นพ. พหล สโรจวิสุทธิ์":"See Dr. Pahol Sarojwisut's profile",
