@@ -217,7 +217,11 @@
       search.type='search';
       search.className='custom-select__search';
       search.placeholder='พิมพ์เพื่อค้นหา';
-      search.setAttribute('aria-label','ค้นหา'+(select.id?document.querySelector('label[for="'+select.id+'"]')?.textContent||'ตัวเลือก':'ตัวเลือก'));
+      /* The field label is already in whatever language is showing, so a
+         hard-coded Thai prefix produced 'ค้นหาDistrict' in English mode. */
+      var searchEn=document.documentElement.lang==='en';
+      var searchField=(select.id&&document.querySelector('label[for="'+select.id+'"]')?.textContent)||(searchEn?'options':'ตัวเลือก');
+      search.setAttribute('aria-label',(searchEn?'Search ':'ค้นหา')+searchField);
       search.setAttribute('aria-controls',list.id);
       search.autocomplete='off';
       search.inputMode=select.id==='addressMapPostcode'?'numeric':'text';

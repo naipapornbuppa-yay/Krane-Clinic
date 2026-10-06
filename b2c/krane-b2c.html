@@ -13889,6 +13889,9 @@
     document.querySelectorAll('.date-control>input[type="date"]').forEach(syncPatientDateField);
   }
   document.addEventListener('krane:languagechange',syncPatientDateFields);
+  /* The checkout composes its own add-on labels, so they keep whichever
+     language they were built in until the row is rebuilt. */
+  document.addEventListener('krane:languagechange',()=>{ try{ syncOrderCheckout(); }catch(_error){ /* Checkout is not on every screen. */ } });
   function openPatientDatePicker(input){
     if(!input || input.disabled || input.readOnly) return;
     input.focus({preventScroll:true});

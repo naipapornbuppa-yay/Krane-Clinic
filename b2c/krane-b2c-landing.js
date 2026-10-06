@@ -271,7 +271,7 @@
      receive a page-local English equivalent when the language changes. */
   const draftEnglishText = new Map([
     ["ข้ามไปยังเนื้อหาหลัก", "Skip to main content"],
-    ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["ผม & ผิว", "Hair & skin"],
+    ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["สุขภาพผู้ชาย · re:flow", "Men's health · re:flow"], ["ผม & ผิว", "Hair & skin"],
     ["อาการที่เราดูแล", "Conditions we treat"], ["โรคอ้วน / การลดน้ำหนัก", "Obesity / Weight loss"],
     ["ผมบาง ผมร่วง", "Thinning hair / Hair loss"], ["ภาวะหย่อนสมรรถภาพทางเพศ", "Erectile dysfunction"], ["เจ็บป่วยทั่วไป", "General health"],
     ["บริการของเรา", "our services"], ["โปรแกรม re:body", "re:body program"], ["โปรแกรม re:hair", "re:hair program"],
