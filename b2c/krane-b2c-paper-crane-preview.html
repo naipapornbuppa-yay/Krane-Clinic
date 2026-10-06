@@ -751,7 +751,6 @@
         <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">SCR-002</span></a>
         <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
         <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
-          <a class="is-exception" data-go="partner-nurse"><span class="rail-error-tag">Error case</span>ต้องคัดกรองโดยพยาบาล</a>
           <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
         </div></details>
       </div>
@@ -2737,20 +2736,6 @@
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-health-continue>ยืนยันข้อมูลสุขภาพ</button></div>
-  </section>
-
-  <section class="screen" id="partner-nurse" data-screen-code="SCR-004">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
-    <div class="screen__body stack-4">
-      <div class="card card--pad-sm row"><span class="avatar partner-nurse-avatar"><span data-demo-icon="video"></span></span><div class="grow"><div style="font-weight:var(--fw-semibold)">ทีมพยาบาลคัดกรอง</div><div class="hint">พยาบาลวิชาชีพของบริษัทประกัน</div></div><span class="badge badge--line">พร้อมรับเคส</span></div>
-      <div class="stack-2"><div class="eyebrow">คัดกรองความปลอดภัย · 2 ถึง 3 นาที</div></div>
-      <div class="card card--pad-sm stack-2">
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ยืนยันอาการและประวัติสุขภาพ</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">คัดกรองอาการเร่งด่วน</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">พยาบาลเลือกแพทย์ที่ว่างและเหมาะสมให้คุณ</div></div>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="partner-nurse-session">เริ่มวิดีโอคัดกรอง</button></div>
   </section>
 
   <section class="screen" id="partner-nurse-session">
@@ -4751,7 +4736,7 @@
   function seedPartnerStage(target){
     const order=['consent-terms','partner-patient-info','partner-insurance','partner-concern','partner-intake','matching'];
     let targetIndex=order.indexOf(target);
-    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
+    if(['partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0){
@@ -4913,19 +4898,19 @@
     refill:'profile', profile:'landing', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     prescription:'profile', 'upload-rx':'profile', referral:'profile', preloader:'landing',
-    // Partner access reuses the same consent screen as direct entry. Nurse
-    // screening is a separate exception case, not the happy path.
+    // Partner access reuses the same consent screen as direct entry. The
+    // screening video remains an optional exception path.
     'partner-patient-info':'consent-terms',
     'partner-insurance':'partner-patient-info',
     'partner-concern':'partner-patient-info',
     'partner-intake':'partner-concern',
-    'partner-nurse':'partner-intake', 'partner-nurse-session':'partner-nurse',
+    'partner-nurse-session':'partner-intake',
     'partner-phr':'partner-nurse-session'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
   const PARTNER_SCREENS = ['partner-patient-info','partner-insurance','partner-concern','partner-intake',
-    'partner-nurse','partner-nurse-session','partner-phr'];
+    'partner-nurse-session','partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
   const DIRECT_NURSE_SCREENING_ENABLED = false;
   const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
@@ -4935,7 +4920,7 @@
     return 'matching';
   }
   function partnerClinicalStartTarget(){
-    if(PARTNER_NURSE_SCREENING_ENABLED) return 'partner-nurse';
+    if(PARTNER_NURSE_SCREENING_ENABLED) return 'partner-nurse-session';
     doctorAvailable=true;
     return 'matching';
   }
@@ -5361,9 +5346,9 @@
     if(PARTNER_SCREENS.includes(target)){
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-patient-info' && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-insurance','partner-concern','partner-intake','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(['partner-insurance','partner-concern','partner-intake','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(target==='partner-intake' && !flowState.partnerConcernComplete) return 'partner-concern';
-      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
+      if(['partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'partner-intake';
       if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
     }
     if(target==='signup' && !flowState.draftReady) return 'concern';
@@ -5395,6 +5380,7 @@
     return target;
   }
   function show(id, push=true){
+    if(id === 'partner-nurse') id = 'partner-nurse-session'; // Old links skip the removed introduction.
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
     if(id === 'concern'){
