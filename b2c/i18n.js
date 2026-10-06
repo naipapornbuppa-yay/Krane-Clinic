@@ -2365,6 +2365,7 @@
     "ค้นหาจังหวัด": "Search province",
     "ค้นหารหัสไปรษณีย์": "Search postcode",
     "ค้นหาประเทศ": "Search country",
+    "ชำระค่าปรึกษาด้วยตนเองก่อนเข้าพบแพทย์": "Pay the consultation fee yourself before seeing the doctor",
     /* Reached only through the demo stages, so the plain ?lang=en sweep never
        showed them. */
     "ยังไม่มีที่อยู่จัดส่ง": "No delivery address yet",
