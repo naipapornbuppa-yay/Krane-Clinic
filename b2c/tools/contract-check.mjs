@@ -102,6 +102,41 @@ if (railAudit.openGroups !== 1 || railAudit.nestedBuckets) {
   fail('Screen Tab group accordion, flat inside', JSON.stringify(railAudit));
 }
 
+/* The insurance entry keeps its original reviewer sequence, even when the
+   older paper-crane preview links into the current component set. */
+const partnerRail = await app.evaluate(() => {
+  const group = [...document.querySelectorAll('#prototype-rail > .rail-group')]
+    .find(item => item.querySelector('.rail-step')?.textContent === '09');
+  return group ? [...group.querySelectorAll('a[data-go]')].map(link => link.dataset.go) : [];
+});
+did();
+if (JSON.stringify(partnerRail) !== JSON.stringify(['partner-idcard','partner-patient-info','partner-phr','partner-insurance'])) {
+  fail('partner Screen Tab order', JSON.stringify(partnerRail));
+}
+const legacyPartner = await ctx.newPage();
+try {
+  await legacyPartner.goto(`${base}/b2c/krane-b2c-paper-crane-preview.html#partner-idcard`, { waitUntil: 'domcontentloaded' });
+  await legacyPartner.waitForURL(url => url.pathname.endsWith('/krane-b2c.html') && url.searchParams.get('screens') === '1');
+  await legacyPartner.waitForTimeout(800);
+  did();
+  const first = await legacyPartner.evaluate(() => document.querySelector('.screen.active')?.id);
+  if (first !== 'partner-idcard') fail('partner preview handoff', `expected partner-idcard, got ${first}`);
+  await legacyPartner.locator('#partner-idcard [data-idcard-skip]').click();
+  await legacyPartner.waitForTimeout(800);
+  did();
+  const next = await legacyPartner.evaluate(() => document.querySelector('.screen.active')?.id);
+  if (next !== 'partner-patient-info') fail('partner ID-card flow', `expected partner-patient-info, got ${next}`);
+  await legacyPartner.locator('#partner-patient-info [data-partner-info-continue]').click();
+  await legacyPartner.waitForTimeout(800);
+  did();
+  const coverage = await legacyPartner.evaluate(() => document.querySelector('.screen.active')?.id);
+  if (coverage !== 'insurance') fail('partner patient flow', `expected insurance, got ${coverage}`);
+} catch (error) {
+  fail('partner preview handoff', error.message);
+} finally {
+  await legacyPartner.close();
+}
+
 /* ---- components ----------------------------------------------------------- */
 for (const item of contract.components) {
   did();

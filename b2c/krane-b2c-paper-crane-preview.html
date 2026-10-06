@@ -22,6 +22,33 @@
 <meta name="twitter:description" content="Private online consultation, doctor-led treatment and discreet delivery.">
 <meta name="twitter:image" content="/b2c/assets/landing-573/latest/hero-base.png">
 
+<!-- Insurance entry uses the current patient flow; this older visual preview only
+     forwards its partner routes so the review list and patient journey stay in sync. -->
+<script>
+  window.openCurrentPartnerFlow = function(route) {
+    const routes = {
+      'partner-idcard':'partner-idcard',
+      'partner-patient-info':'partner-patient-info',
+      'partner-insurance':'partner-insurance',
+      'partner-phr':'partner-phr',
+      'partner-concern':'intake-concern',
+      'partner-intake':'intake-general',
+      'partner-nurse':'matching',
+      'partner-nurse-session':'matching'
+    };
+    const target = routes[route];
+    if (!target) return false;
+    const url = new URL('krane-b2c.html', location.href);
+    url.search = '';
+    url.searchParams.set('screens', '1');
+    url.searchParams.set('demoStage', target);
+    url.hash = target;
+    location.replace(url.href);
+    return true;
+  };
+  window.openCurrentPartnerFlow(location.hash.slice(1).split('?')[0]);
+</script>
+
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
@@ -742,20 +769,14 @@
     </details>
 
     <details class="rail-group">
-      <summary><span class="rail-step">09</span><span>เข้าผ่านประกัน</span></summary>
+      <summary><span class="rail-step">09</span><span>เข้าผ่านสิทธิ์ประกัน</span></summary>
       <div class="rail-group__body">
-        <a data-go="consent-terms" data-entry-channel="partner">PDPA &amp; consents <span class="rail-state">shared consent screen</span></a>
-        <a data-go="partner-patient-info">ยืนยันชื่อและเบอร์โทรศัพท์</a>
-        <a data-go="insurance" data-insurance-entry="partner">ตรวจสอบสิทธิ์ประกัน</a>
-        <a data-go="partner-insurance">สิทธิ์และการชำระเงิน</a>
-        <a data-go="partner-concern">อาการที่ต้องการปรึกษา <span class="rail-state">SCR-002</span></a>
-        <a data-go="partner-intake">ข้อมูลสุขภาพ (prefilled)</a>
-        <details class="rail-page" open><summary>ส่งต่อแพทย์</summary><div class="rail-error-menu">
-          <a class="is-exception" data-go="partner-nurse-session"><span class="rail-error-tag">Error case</span>วิดีโอคัดกรองโดยพยาบาล</a>
-        </div></details>
+        <a href="krane-b2c.html?screens=1&amp;demoStage=partner-idcard#partner-idcard">ถ่ายบัตรประชาชน <span class="rail-state">SID-070</span></a>
+        <a href="krane-b2c.html?screens=1&amp;demoStage=partner-patient-info#partner-patient-info">ยืนยันข้อมูลผู้รับบริการ <span class="rail-state">SID-062</span></a>
+        <a href="krane-b2c.html?screens=1&amp;demoStage=partner-phr#partner-phr">ข้อมูลสุขภาพจากพาร์ตเนอร์ <span class="rail-state">SID-068</span></a>
+        <a class="is-eligibility" href="krane-b2c.html?screens=1&amp;demoStage=partner-insurance#partner-insurance">Eligibility / กรณีพิเศษ <span class="rail-state">SID-063</span></a>
       </div>
     </details>
-
 
     <details class="rail-group">
       <summary><span class="rail-step">10</span><span>System states</span></summary>
@@ -5380,6 +5401,7 @@
     return target;
   }
   function show(id, push=true){
+    if(window.openCurrentPartnerFlow?.(id)) return;
     if(id === 'partner-nurse') id = 'partner-nurse-session'; // Old links skip the removed introduction.
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
