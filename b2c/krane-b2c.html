@@ -15,11 +15,14 @@
     const release = "20261005-hair-stories-v245";
     const url = new URL(window.location.href);
     let canonicalized = false;
-    /* Retire the old private-review parameter without breaking saved links.
-       All review links now converge on one explicit screen-tab URL. */
-    if (url.searchParams.get("only-me") === "1") {
-      url.searchParams.set("with_screen_tab", "1");
+    /* Two versions of this app, and the URL should say which one you are on:
+       ?screens=1 carries the screen inventory down the side, no parameter is
+       the plain patient app. Older links — only-me=1, with_screen_tab=1 —
+       keep working and are rewritten to it (client, 6 Oct). */
+    if (url.searchParams.get("only-me") === "1" || url.searchParams.get("with_screen_tab") === "1") {
+      url.searchParams.set("screens", "1");
       url.searchParams.delete("only-me");
+      url.searchParams.delete("with_screen_tab");
       canonicalized = true;
     }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
@@ -121,10 +124,16 @@
   .rail a:hover{background:var(--color-bg-2);color:var(--color-ink)}
   .rail a.is-key-route{background:var(--color-blue-soft);color:var(--color-blue);font-weight:var(--fw-semibold)}
   .rail a.is-key-route:hover{background:var(--color-info-soft);color:var(--color-blue-hover)}
-  .rail a.current{background:#171717;color:#fff;font-weight:var(--fw-semibold)}
+  /* Client, 6 Oct: the current item is a light highlight with a bar in its
+     own colour, not a near-black pill. The pill only ever set white text for
+     two of the four link states, so an eligibility or alternative screen kept
+     its blue or grey text on black and could not be read. Keeping each state's
+     colour and changing only the surface means every state is legible and the
+     inventory still says at a glance which kind of screen each one is. */
+  .rail a.current{background:var(--color-bg-2);box-shadow:inset 3px 0 0 currentColor;font-weight:var(--fw-semibold)}
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
   .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
-  .rail a.current .rail-screen-id,.rail a.is-exception.current .rail-screen-id{color:inherit;opacity:.68}
+  .rail a.current .rail-screen-id{color:inherit;opacity:.68}
   .rail-legend{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
   .rail-legend span{display:inline-flex;align-items:center;gap:5px}
   .rail-legend .rail-legend__screen-id{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;opacity:.82}
@@ -141,8 +150,11 @@
   .rail a.is-exception,.rail-sub a.is-exception{color:var(--color-danger-ink);font-weight:var(--fw-medium)}
   .rail a.is-exception .rail-state{color:inherit;opacity:.82}
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
-  .rail a.is-exception.current{background:var(--color-danger-ink);color:#fff;font-weight:var(--fw-semibold)}
+  .rail a.is-exception.current{background:var(--color-danger-soft);color:var(--color-danger-ink)}
   .rail a.is-exception.current .rail-state{color:inherit}
+  .rail a.is-key-route.current{background:var(--color-blue-soft);color:var(--color-blue)}
+  .rail a.is-eligibility.current{background:var(--color-blue-soft);color:var(--color-blue)}
+  .rail a.is-alternative.current{background:var(--color-bg-2);color:var(--color-ink-2)}
   .rail a.is-eligibility{color:var(--color-blue);font-weight:var(--fw-medium)}
   .rail a.is-eligibility:hover{background:var(--color-blue-soft);color:var(--color-blue-hover)}
   .rail a.is-alternative{color:var(--color-ink-3)}
@@ -3680,50 +3692,6 @@
       </div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-partner-payment="insurance" data-go="intake-concern">Noted</button></div>
-  </section>
-
-  <section class="screen" id="partner-nurse" data-screen-code="SCR-004">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
-    <div class="screen__body stack-4">
-      <div class="card card--pad-sm row"><span class="avatar partner-nurse-avatar"><span data-demo-icon="video"></span></span><div class="grow"><div style="font-weight:var(--fw-semibold)">ทีมพยาบาลคัดกรอง</div><div class="hint">พยาบาลวิชาชีพของบริษัทประกัน</div></div><span class="badge badge--line">พร้อมรับเคส</span></div>
-      <div class="stack-2"><div class="eyebrow">คัดกรองความปลอดภัย · 2 ถึง 3 นาที</div></div>
-      <div class="card card--pad-sm stack-2">
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">ยืนยันอาการและประวัติสุขภาพ</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">คัดกรองอาการเร่งด่วน</div></div>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="opt-check"></span><div class="hint">พยาบาลเลือกแพทย์ที่ว่างและเหมาะสมให้คุณ</div></div>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="partner-nurse-session">เริ่มวิดีโอคัดกรอง</button></div>
-  </section>
-
-  <section class="screen" id="partner-nurse-session">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">พยาบาลคัดกรอง</span></div>
-    <div class="screen__body stack-4">
-      <div class="partner-nurse-call" aria-label="กำลังวิดีโอคอลกับทีมพยาบาลคัดกรอง">
-        <div class="partner-nurse-call__status"><span></span>วิดีโอเชื่อมต่อแล้ว · 00:42</div>
-        <div class="partner-nurse-call__avatar"><span data-demo-icon="stethoscope"></span></div>
-        <strong>ทีมพยาบาลคัดกรอง</strong>
-        <span>บริษัทประกัน</span>
-        <div class="partner-nurse-call__self"><span data-demo-icon="video"></span><small>คุณ</small></div>
-      </div>
-      <div class="stack-2"><h2 class="h1">ยืนยันข้อมูลกับพยาบาล</h2></div>
-      <div class="stack-3" data-partner-screening-question="urgent">
-        <div class="section-label">มีอาการหายใจลำบาก เจ็บหน้าอก หมดสติ หรือเลือดออกมากตอนนี้หรือไม่?</div>
-        <button class="option" data-partner-screening-value="no"><span class="opt-body"><span class="opt-title">ไม่มี</span></span><span class="opt-check"></span></button>
-        <button class="option" data-partner-screening-value="yes"><span class="opt-body"><span class="opt-title">มีอาการดังกล่าว</span><span class="opt-sub">ควรรับการดูแลฉุกเฉินหรือพบแพทย์ด้วยตนเอง</span></span><span class="opt-check"></span></button>
-      </div>
-      <div class="stack-3" data-partner-screening-question="accurate">
-        <div class="section-label">ข้อมูลอาการและประวัติสุขภาพที่ตรวจทานถูกต้องหรือไม่?</div>
-        <button class="option" data-partner-screening-value="yes"><span class="opt-body"><span class="opt-title">ถูกต้อง</span></span><span class="opt-check"></span></button>
-        <button class="option" data-partner-screening-value="no"><span class="opt-body"><span class="opt-title">ต้องแก้ไข</span></span><span class="opt-check"></span></button>
-      </div>
-      <div class="stack-3" data-partner-screening-question="remote">
-        <div class="section-label">สะดวกปรึกษาแพทย์ผ่านวิดีโอหรือแชตหรือไม่?</div>
-        <button class="option" data-partner-screening-value="yes"><span class="opt-body"><span class="opt-title">สะดวก</span></span><span class="opt-check"></span></button>
-        <button class="option" data-partner-screening-value="no"><span class="opt-body"><span class="opt-title">ไม่สะดวก</span></span><span class="opt-check"></span></button>
-      </div>
-    </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-partner-nurse-complete disabled>ยืนยันและพบแพทย์ที่พยาบาลเลือก</button></div>
   </section>
 
   <section class="screen" id="partner-phr">
@@ -8349,11 +8317,6 @@
         option.setAttribute('aria-selected',String(option.dataset.partnerScreeningValue===value));
       });
     });
-    const complete=document.querySelector('[data-partner-nurse-complete]');
-    if(complete){
-      const answers=flowState.partnerScreening;
-      complete.disabled=!(answers.urgent && answers.accurate && answers.remote);
-    }
   }
   function setPartnerHistoryChoice(group,hasDetails){
     if(!group) return;
@@ -8485,7 +8448,7 @@
   function seedPartnerStage(target){
     const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
     let targetIndex=order.indexOf(target);
-    if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target)) targetIndex=6;
+    if(target==='partner-phr') targetIndex=6;
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0){
@@ -8669,10 +8632,16 @@
   function syncRailPath(id){
     const link = railLinks.find(a => a.dataset.go === id);
     if(!link) return;
-    /* Client, 5 Oct: the rail stays fully expanded, so following the current
-       screen means scrolling to it rather than closing the nine groups the
-       reviewer is reading. */
-    link.closest('.rail-group')?.setAttribute('open','');
+    /* Following the current screen opens its group and closes the others, so
+       the rail always shows one journey at a time. The edge cases inside it
+       are already expanded — there is no second accordion to open. */
+    const activeGroup = link.closest('.rail-group');
+    if(activeGroup){
+      prototypeRail?.querySelectorAll(':scope > .rail-group[open]').forEach(group => {
+        if(group !== activeGroup) group.open = false;
+      });
+      activeGroup.open = true;
+    }
     if(link.scrollIntoView) link.scrollIntoView({ block:'nearest' });
   }
   function replaceCurrent(id){
@@ -8707,15 +8676,13 @@
     'partner-idcard':'consent-terms',
     'partner-patient-info':'partner-idcard',
     'partner-insurance':'partner-patient-info',
-    'partner-nurse':'intake-general', 'partner-nurse-session':'partner-nurse',
-    'partner-phr':'partner-nurse-session'
+    'partner-phr':'intake-general'
   });
   // Partner ids, kept in one place so the B2C journey arrays never have to know
   // about them and the care stepper does not try to number partner screens.
   const PARTNER_SCREENS = ['partner-idcard','partner-patient-info','partner-insurance',
-    'partner-nurse','partner-nurse-session','partner-phr'];
+    'partner-phr'];
   const CONSULTATION_FEE_BAHT = 350;
-  const PARTNER_NURSE_SCREENING_ENABLED = flowConfig.get('partner_nurse')==='1';
   /* Client, 26 Aug: the height / weight / conditions page belongs immediately
      after the name-and-phone page, not on the far side of doctor matching and
      payment. Everything the patient knows about themselves is now asked in one
@@ -8742,8 +8709,10 @@
     doctorAvailable = !needsAppointment();
     return 'matching';
   }
+  /* Client, 6 Oct: nurse screening had two screens of its own that duplicated
+     the doctor consultation — if it comes back it reuses #matching and the
+     consultation screens rather than a second pair. */
   function partnerClinicalStartTarget(){
-    if(PARTNER_NURSE_SCREENING_ENABLED) return 'partner-nurse';
     doctorAvailable=true;
     return 'matching';
   }
@@ -10048,10 +10017,9 @@
       if(!flowState.partnerConsentComplete) return 'consent-terms';
       if(target!=='partner-idcard' && !flowState.partnerIdStepDone) return 'partner-idcard';
       if(!['partner-idcard','partner-patient-info'].includes(target) && !flowState.partnerInfoComplete) return 'partner-patient-info';
-      if(['partner-insurance','partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
-      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerConcernComplete) return 'intake-concern';
-      if(['partner-nurse','partner-nurse-session','partner-phr'].includes(target) && !flowState.partnerHealthComplete) return 'intake-general';
-      if(target==='partner-phr' && !flowState.partnerNurseComplete) return 'partner-nurse-session';
+      if(['partner-insurance','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
+      if(target==='partner-phr' && !flowState.partnerConcernComplete) return 'intake-concern';
+      if(target==='partner-phr' && !flowState.partnerHealthComplete) return 'intake-general';
     }
     if(target==='intake-general' && flowState.entryChannel==='direct'){
       if(!flowState.draftReady) return 'intake1';
@@ -10183,7 +10151,6 @@
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='intake-general') syncGeneralHealthContext();
     if(id==='partner-phr') syncPartnerReview();
-    if(id==='partner-nurse-session') syncPartnerScreening();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
     // Arriving at the picker fresh shows categories only; step two is a tap away.
@@ -11697,52 +11664,8 @@
       }
       return;
     }
-    const partnerNurseComplete=e.target.closest('[data-partner-nurse-complete]');
-    if(partnerNurseComplete){
-      if(partnerNurseComplete.disabled) return;
-      if(flowState.partnerScreening.urgent==='yes'){
-        showActionToast('พบอาการเร่งด่วน แนะนำให้รับการดูแลด้วยตนเองทันที','warning');
-        show('ineligible');
-        return;
-      }
-      if(flowState.partnerScreening.accurate!=='yes'){
-        flowState.partnerHealthComplete=false;
-        flowState.partnerReviewComplete=false;
-        persistFlowState();
-        showActionToast('กลับไปแก้ไขข้อมูลสุขภาพก่อนส่งให้พยาบาล','info');
-        show('intake-general');
-        return;
-      }
-      if(flowState.partnerScreening.remote!=='yes'){
-        showActionToast('พยาบาลแนะนำบริการที่พบแพทย์ด้วยตนเอง','info');
-        show('ineligible');
-        return;
-      }
-      submitOnce('partner-nurse-session',partnerNurseComplete,() => {
-        flowState.partnerNurseComplete=true;
-        flowState.draftReady=true;
-        flowState.accountCreated=true;
-        flowState.otpVerified=true;
-        flowState.consentsComplete=true;
-        flowState.patientInfoComplete=true;
-        flowState.identityVerified=true;
-        flowState.patientName=flowState.partnerName||'มะลิ สุธิดา';
-        persistFlowState();
-        showActionToast('คัดกรองเรียบร้อย พยาบาลเลือกแพทย์ที่พร้อมให้แล้ว','success');
-        show(consultationHandoffTarget());
-      });
-      return;
-    }
-    // Partner exception path: nurse screening is available as a separate demo
-    // case. The partner happy path now skips this and proceeds from review to
-    // matching directly.
     const partnerComplete = e.target.closest('[data-partner-complete]');
     if(partnerComplete){
-      if(!flowState.partnerNurseComplete){
-        showActionToast('กรุณาทำการคัดกรองกับพยาบาลให้ครบก่อน','warning');
-        show('partner-nurse-session');
-        return;
-      }
       submitOnce('partner-phr',partnerComplete,() => {
         flowState.draftReady=true;
         flowState.accountCreated=true;

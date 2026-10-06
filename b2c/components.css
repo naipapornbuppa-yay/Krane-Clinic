@@ -145,8 +145,13 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .intake-dropdown-field .select option{color:var(--color-ink)}
 
 /* Social sign-in returns to Krane for profile completion before the care flow continues. */
+/* Client, 5 Oct: first name and surname stay on one line, the way the
+   recipient block on the address form has them. They used to stack below
+   576px — every phone — so the same two fields had two different shapes
+   depending on which screen asked for them. They only stack where they
+   genuinely will not fit, which is the same 359px the address form uses. */
 .auth-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
-@media(max-width:36rem){.auth-name-grid{grid-template-columns:1fr}}
+@media(max-width:359px){.auth-name-grid{grid-template-columns:1fr}}
 /* Profile completion after social sign-in is the same narrow form flow on every
    surface: the mobile column grows comfortably on desktop, then stops at a
    readable width. Its back row, fields and actions all share that one edge. */
@@ -796,7 +801,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
 .pharmacy-review-simple__status strong{margin-left:5px;font-size:13px}
 .partner-relief-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
 .partner-relief-grid button{min-height:54px;padding:8px 6px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--color-field);color:var(--color-ink);font:inherit;font-size:14px;font-weight:var(--fw-medium);line-height:1.3;cursor:pointer}
-.partner-relief-grid button[aria-selected="true"]{border-color:var(--color-surface-deep);background:var(--color-surface-deep);color:var(--color-on-dark)}
+/* Client, 6 Oct: a selected choice is accent-soft with accent text, the way
+   .option and the address label chips have been since the sweep. This one was
+   still filling near-black, which was the only near-black fill left in a
+   questionnaire. */
+.partner-relief-grid button[aria-selected="true"]{border-color:var(--color-accent);background:var(--color-accent-soft);color:var(--color-accent);font-weight:var(--fw-semibold)}
+.partner-relief-grid button:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
 .partner-photo-upload{display:flex!important;flex-direction:column;align-items:center!important;justify-content:center!important;padding:var(--sp-5) var(--sp-4);background:var(--color-surface);text-align:center}
 .partner-photo-upload .up-ic{margin-inline:auto}
 .partner-photo-upload .up-ic [data-demo-icon]{width:24px;height:24px}

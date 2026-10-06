@@ -76,9 +76,10 @@ for (const id of contract.screens) {
 
 /* ---- reviewer Screen Tab --------------------------------------------------
    The left rail is the reviewer's map of the implementation. Every real
-   screen belongs there exactly once, and every group is open with its error
-   and edge-case screens in the same list as the happy path — a screen behind
-   a closed accordion reads as a screen that is missing (client, 5 Oct). */
+   screen belongs there exactly once. Journey groups stay an accordion — one
+   open at a time — but inside a group there is no second accordion: opening
+   it shows the error and edge-case screens with the default ones
+   (client, 5 Oct). */
 const railAudit = await app.evaluate(() => {
   const screens = [...document.querySelectorAll('section.screen[id]')].map(screen => screen.id);
   const links = [...document.querySelectorAll('#prototype-rail a[data-go]')].map(link => link.dataset.go);
@@ -88,7 +89,7 @@ const railAudit = await app.evaluate(() => {
     stale:links.filter(id => !screens.includes(id)),
     duplicates:links.filter((id, index) => links.indexOf(id) !== index),
     groups:groups.length,
-    closedGroups:groups.filter(group => !group.open).length,
+    openGroups:groups.filter(group => group.open).length,
     nestedBuckets:groups.filter(group => group.querySelector(':scope > .rail-group__body > .rail-page')).length
   };
 });
@@ -97,8 +98,8 @@ if (railAudit.missing.length || railAudit.stale.length || railAudit.duplicates.l
   fail('Screen Tab coverage', JSON.stringify(railAudit));
 }
 did();
-if (railAudit.closedGroups || railAudit.nestedBuckets) {
-  fail('Screen Tab is fully expanded', JSON.stringify(railAudit));
+if (railAudit.openGroups !== 1 || railAudit.nestedBuckets) {
+  fail('Screen Tab group accordion, flat inside', JSON.stringify(railAudit));
 }
 
 /* ---- components ----------------------------------------------------------- */

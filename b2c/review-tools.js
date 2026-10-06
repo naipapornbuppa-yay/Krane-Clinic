@@ -2,7 +2,13 @@
   "use strict";
 
   const params = new URLSearchParams(global.location.search);
-  const enabled = params.get("with_screen_tab") === "1";
+  /* Two versions of the same app: ?screens=1 is the one with the screen
+     inventory down the side, no parameter is the plain patient app. The old
+     with_screen_tab=1 links keep working and get rewritten to ?screens=1
+     (client, 6 Oct). */
+  const screensParam = params.get("screens");
+  const enabled = screensParam === "1" || screensParam === "" || screensParam === "true"
+    || params.get("with_screen_tab") === "1";
 
   /*
    * Reviewer navigation has one source of truth.
@@ -128,15 +134,16 @@
         ["partner-idcard", "SID-070", "ถ่ายบัตรประชาชน", "Capture ID card"],
         ["partner-patient-info", "SID-062", "ยืนยันข้อมูลผู้รับบริการ", "Confirm patient details"],
         ["partner-insurance", "SID-063", "สิทธิ์และการชำระเงิน", "Coverage & payment", "eligibility"],
-        ["partner-nurse", "SID-064", "พยาบาลคัดกรอง", "Nurse screening", "exception"],
-        ["partner-nurse-session", "SID-065", "วิดีโอคัดกรองโดยพยาบาล", "Nurse video screening", "exception"],
         ["partner-phr", "SID-068", "ข้อมูลสุขภาพจากพาร์ตเนอร์", "Partner health record"],
         ["intake-concern", "SID-069", "เลือกอาการเพื่อเข้ารับบริการ", "Choose consultation concern"]
       ]
     },
     {
       step: "10", th: "สถานะระบบ", en: "System states",
-      screens: [["preloader", "SID-066", "กำลังเตรียมข้อมูล", "Pre-loader overlay"]]
+      screens: [
+        ["preloader", "SID-066", "กำลังเตรียมข้อมูล", "Pre-loader overlay"],
+        ["queue-resume", "SID-067", "กลับมาที่คิวที่ค้างอยู่", "Resume a held queue"]
+      ]
     }
   ]);
 
@@ -157,13 +164,14 @@
     const fragment = global.document.createDocumentFragment();
     const registered = new Set();
 
-    SCREEN_DIRECTORY.forEach(group => {
+    SCREEN_DIRECTORY.forEach((group, groupIndex) => {
       const details = global.document.createElement("details");
       details.className = "rail-group";
-      /* Client, 5 Oct: everything is open. The reviewer is checking whether a
-         screen exists at all, and a screen behind two closed accordions reads
-         as a screen that is missing. */
-      details.open = true;
+      /* One journey group open at a time, so a long inventory stays scannable.
+         What changed on 5 Oct is inside a group, not this: the error and
+         edge-case screens no longer sit behind a second accordion of their
+         own — opening a group shows them with its default state. */
+      if (groupIndex === 0) details.open = true;
       const summary = global.document.createElement("summary");
       summary.innerHTML = `<span class="rail-step">${group.step}</span><span>${thai ? group.th : group.en}</span>`;
       const body = global.document.createElement("div");
@@ -237,6 +245,14 @@
     }
 
     rail.appendChild(fragment);
+    rail.querySelectorAll(":scope > .rail-group").forEach(details => {
+      details.addEventListener("toggle", () => {
+        if (!details.open) return;
+        rail.querySelectorAll(":scope > .rail-group[open]").forEach(other => {
+          if (other !== details) other.open = false;
+        });
+      });
+    });
     rail.dataset.screenCount = String(implemented.size);
     return missing;
   }
