@@ -1720,6 +1720,19 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
 .bottomnav .nav-icon{display:block;fill:currentColor;stroke:none}
 .bottomnav a[aria-current="page"]{color:var(--color-ink)}
 .bottomnav a[aria-current="page"] .ic{background:var(--color-accent-soft)}
+/* Client, 6 Oct: the tab you are on reads as a solid icon, not an outline.
+   The bar's icons are line icons swapped in at runtime, and every one of them
+   is drawn as closed paths — so filling them gives the solid counterpart
+   without shipping a second icon set, and the inactive tabs stay the line
+   icons they already are. */
+.bottomnav a[aria-current="page"] .ui-icon>:is(path,circle,rect,ellipse,polygon){fill:currentColor}
+.bottomnav a[aria-current="page"] .ui-icon{stroke-width:1.2}
+/* It settles rather than snapping, the same 260ms the pill behind it takes. */
+.screen.is-entering .bottomnav a[aria-current="page"] .ui-icon{animation:nav-icon-settle 260ms var(--ease-out)}
+@keyframes nav-icon-settle{from{transform:scale(.82)}60%{transform:scale(1.06)}to{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){
+  .screen.is-entering .bottomnav a[aria-current="page"] .ui-icon{animation:none}
+}
 .bottomnav a:active .ic{background:color-mix(in srgb,var(--color-ink) 8%,transparent)}
 .bottomnav a[aria-current="page"]:active .ic{background:var(--color-accent-soft)}
 .bottomnav a:focus-visible .ic{outline:3px solid var(--color-accent);outline-offset:2px}
