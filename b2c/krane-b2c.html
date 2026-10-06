@@ -2656,7 +2656,7 @@
         <div class="field-label">Identification</div>
         <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle aria-selected="true">ID card</button><button class="btn btn--ghost btn--sm" data-toggle>Passport</button></div>
       </div>
-      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-id" placeholder="x-xxxx-xxxxx-xx-x"><label for="insurance-id">ID / passport number</label></span></div></div>
+      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-id" inputmode="numeric" maxlength="17" autocomplete="off" data-national-id placeholder="0-0000-00000-00-0"><label for="insurance-id">ID / passport number</label></span></div></div>
       <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-dob" type="date" autocomplete="bday" required><label for="insurance-dob">Date of birth</label></span></div></div>
       <div class="card card--pad-sm stack-2" data-insurance-order>
         <div class="between"><span class="muted">Order total</span><span class="amt">฿ 558</span></div>
@@ -3613,7 +3613,7 @@
        the name can be read off it, rather than typed twice. Demo only: nothing is
        uploaded anywhere and only the name is carried forward. -->
   <section class="screen" id="partner-idcard" data-screen-code="SCR-002A">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ยืนยันตัวตน</span></div>
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body stack-4">
       <div class="stack-2">
         <h2 class="h1">ถ่ายบัตรประชาชน</h2>
@@ -3641,7 +3641,7 @@
   </section>
 
   <section class="screen" id="partner-patient-info" data-screen-code="SCR-003">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลผู้รับบริการ</span></div>
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">ยืนยันข้อมูลส่วนตัว</h2></div>
       <!-- Keep the personal-detail fields directly on the page. The individual
@@ -3664,7 +3664,7 @@
   </section>
 
   <section class="screen" id="partner-insurance" data-screen-code="SCR-INS-RESULT">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Coverage &amp; payment</span></div>
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">ตรวจสอบสิทธิ์ประกันแล้ว</h2></div>
       <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><select class="input" id="partner-policy-select" data-partner-policy-select>
@@ -3695,7 +3695,7 @@
   </section>
 
   <section class="screen" id="partner-phr">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">บันทึกสุขภาพ</span></div>
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/krane-clinic-lockup-v1.svg" width="193" height="31" alt="Krane Clinic"></div>
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">ยืนยันบันทึกสุขภาพ</h2></div>
       <div class="card card--pad-sm stack-3">
@@ -6586,7 +6586,9 @@
   /* Specialty care keeps one clinical question per page. General consultation
      is intentionally compact: its concern, description and duration belong on
      one screen, and the shared health profile is one complete form just like
-     the insurance journey. */
+     the insurance journey. Client, 6 Oct: the three-page version of the
+     general intake is dropped for good — the check that still asked for it
+     went with it. */
   const INTAKE_ONE_QUESTION_SCREENS = ['intake1','intake2','intake3','intake4'];
   /* Client, 17 Sep: "Why we ask" on every question read as nagging. It stays
      only where the patient must be told something (the emergency check) or the
@@ -8223,6 +8225,16 @@
       if(atEnd) phone.setSelectionRange(phone.value.length,phone.value.length);
       return;
     }
+    /* Client, 6 Oct: the national ID groups itself as you type, the way the
+       phone number does. Its placeholder has always shown the shape; the
+       field just never held it. */
+    const nationalId=event.target.closest('[data-national-id]');
+    if(nationalId){
+      const atEnd=nationalId.selectionStart===nationalId.value.length;
+      nationalId.value=formatNationalId(nationalId.value);
+      if(atEnd) nationalId.setSelectionRange(nationalId.value.length,nationalId.value.length);
+      return;
+    }
     const standalonePhone=event.target.matches('input[type="tel"]') ? event.target : null;
     if(standalonePhone){
       const atEnd=standalonePhone.selectionStart===standalonePhone.value.length;
@@ -8246,6 +8258,12 @@
 
   function normalizePhone(value){
     return String(value || '').replace(/\D/g,'');
+  }
+  /* 1-4-5-2-1, the grouping printed on a Thai ID card. */
+  function formatNationalId(value){
+    const digits=String(value || '').replace(/\D/g,'').slice(0,13);
+    const groups=[digits.slice(0,1),digits.slice(1,5),digits.slice(5,10),digits.slice(10,12),digits.slice(12,13)];
+    return groups.filter(Boolean).join('-');
   }
   function formatThaiPhone(value){
     const digits=normalizePhone(value).slice(0,10);
@@ -10801,17 +10819,23 @@
       paintDelay();
       paintElapsedTimer(timer,elapsedSeconds);
     }, 1000);
-    // Mock outcomes: ready at two minutes; wait=long becomes unavailable
-    // after two minutes. Preserve the chosen outcome and clock on resume.
+    /* Mock outcomes: the doctor admits you after QUEUE_ADMIT_MS; wait=long
+       becomes unavailable at the same point. Preserve the chosen outcome and
+       clock on resume.
+
+       Client, 6 Oct: this was two minutes, which is a realistic queue and an
+       unwatchable demo — nobody sits through it to see what happens next. It
+       is fifteen seconds: long enough to read the screen and see the clock
+       move, short enough to walk someone through the journey. */
     const admissionDelay=pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
       ? (reduceMotion ? 400 : 4200)
-      : Math.max(0,pendingQueue.startedAt+120000-Date.now());
+      : Math.max(0,pendingQueue.startedAt+QUEUE_ADMIT_MS-Date.now());
     if(unavailable) return;
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
       if(!pendingQueue.readyAt){
-        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+120000;
+        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+QUEUE_ADMIT_MS;
         savePendingQueue();
       }
       w.querySelector('[data-queue-book]').hidden=true;
@@ -10838,6 +10862,8 @@
      carries a label; when it runs out the slot is gone and the modal offers the
      only thing left worth doing. */
   const WAITROOM_ENTRY_WINDOW = 5 * 60;
+  /* How long the queue runs before the doctor opens the room. */
+  const QUEUE_ADMIT_MS = 15000;
   let waitEntryTimer = null;
   function stopWaitroomEntryWindow(){
     clearInterval(waitEntryTimer);
