@@ -6113,3 +6113,55 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .section-link .ui-icon{width:16px;height:16px}
 .section-link:hover{color:var(--color-accent-hover)}
 .section-link:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+
+/* Bottom navigation: one Lucide stroke style for every state. The selected
+   destination moves once on entry instead of switching to a filled glyph. */
+.bottomnav a .ic .ui-icon{
+  fill:none!important;
+  stroke:currentColor;
+  stroke-width:1.9;
+  transform-origin:50% 50%;
+  overflow:visible;
+}
+.bottomnav a[aria-current="page"] .ic .ui-icon{
+  fill:none!important;
+  stroke:currentColor;
+}
+@keyframes nav-motion-home{
+  0%{transform:translateY(3px) scale(.88)}
+  45%{transform:translateY(-3px) scale(1.04)}
+  72%{transform:translateY(1px) scale(.98)}
+  100%{transform:none}
+}
+@keyframes nav-motion-package{
+  0%{transform:translateY(3px) rotate(-9deg) scale(.9)}
+  45%{transform:translateY(-3px) rotate(5deg) scale(1.04)}
+  72%{transform:translateY(1px) rotate(-2deg)}
+  100%{transform:none}
+}
+@keyframes nav-motion-bell{
+  0%,100%{transform:rotate(0)}
+  22%{transform:rotate(15deg)}
+  43%{transform:rotate(-12deg)}
+  62%{transform:rotate(7deg)}
+  80%{transform:rotate(-3deg)}
+}
+@keyframes nav-motion-person{
+  0%{transform:translateY(3px) scale(.88);opacity:.7}
+  50%{transform:translateY(-2px) scale(1.06);opacity:1}
+  75%{transform:translateY(1px) scale(.98)}
+  100%{transform:none}
+}
+.screen.is-entering .bottomnav a[data-go="profile"][aria-current="page"] .ic .ui-icon{animation:nav-motion-home 620ms cubic-bezier(.22,.8,.25,1) both}
+.screen.is-entering .bottomnav a:is([data-go="activity"],[data-go="empty-activities"])[aria-current="page"] .ic .ui-icon{animation:nav-motion-package 650ms cubic-bezier(.22,.8,.25,1) both}
+.screen.is-entering .bottomnav a[data-go="notifications"][aria-current="page"] .ic .ui-icon{animation:nav-motion-bell 700ms ease-out both;transform-origin:50% 18%}
+.screen.is-entering .bottomnav a[data-go="settings"][aria-current="page"] .ic .ui-icon{animation:nav-motion-person 620ms cubic-bezier(.22,.8,.25,1) both}
+@media(hover:hover) and (pointer:fine){
+  .bottomnav a[data-go="profile"]:hover .ic .ui-icon{animation:nav-motion-home 620ms cubic-bezier(.22,.8,.25,1)}
+  .bottomnav a:is([data-go="activity"],[data-go="empty-activities"]):hover .ic .ui-icon{animation:nav-motion-package 650ms cubic-bezier(.22,.8,.25,1)}
+  .bottomnav a[data-go="notifications"]:hover .ic .ui-icon{animation:nav-motion-bell 700ms ease-out;transform-origin:50% 18%}
+  .bottomnav a[data-go="settings"]:hover .ic .ui-icon{animation:nav-motion-person 620ms cubic-bezier(.22,.8,.25,1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .bottomnav a .ic .ui-icon{animation:none!important;transform:none!important}
+}
