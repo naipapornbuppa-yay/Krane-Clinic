@@ -125,7 +125,7 @@
     const delivery = document.querySelector("[data-golden-delivery]");
     if (delivery) delivery.textContent = (thai() ? statusTH : statusEN)[state.fulfilmentStatus] || state.fulfilmentStatus;
     const trackingLink = document.querySelector("[data-golden-open-tracking]");
-    if (trackingLink) trackingLink.href = "/b2c/krane-b2c?demoStatus=" + encodeURIComponent(state.fulfilmentStatus) + "#tracking";
+    if (trackingLink) trackingLink.href = "../b2c/krane-b2c.html?demoStatus=" + encodeURIComponent(state.fulfilmentStatus) + "#tracking";
     const steps = Array.from(document.querySelectorAll("[data-status-step]"));
     const activeIndex = steps.findIndex(function (step) { return step.dataset.statusStep === adminValue; });
     steps.forEach(function (step, index) {

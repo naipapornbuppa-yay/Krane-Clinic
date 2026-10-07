@@ -13352,10 +13352,16 @@
   const ORDER_STEP_ORDER=['paid','prepared','dispatch','out','delivered'];
   function orderFulfilmentStatus(){
     if(flowState.orderDelivered) return 'Delivered';
+    const demoState=window.KraneGoldenDemo?.readState();
     // A normal showcase opens where a newly paid order really is: the pharmacy
-    // is preparing it. A later stage requires an explicit demoStatus or CMS state.
-    if(window.kraneDemoStage && !window.kraneDemoStatus) return 'Preparing';
-    const status=window.KraneGoldenDemo?.readState().fulfilmentStatus;
+    // is preparing it. A later stage requires an explicit demoStatus or CMS
+    // state. The CMS half of that was unreachable: this returned early on the
+    // demo stage alone, so an order the admin had moved to Delivered still read
+    // as preparing on every ?demoStage= link. updatedAt is null until something
+    // actually writes the shared state, which is what separates a fresh demo
+    // from one the clinic side has driven.
+    if(window.kraneDemoStage && !window.kraneDemoStatus && !demoState?.updatedAt) return 'Preparing';
+    const status=demoState?.fulfilmentStatus;
     return ORDER_STAGES[status] ? status : 'Preparing';
   }
   /* Client, 15 Sep: the order sat on "Preparing" and never moved, so the rest

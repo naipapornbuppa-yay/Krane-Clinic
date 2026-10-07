@@ -53,7 +53,62 @@
   document.addEventListener("krane-doctor-order-created", function () {
     demo.writeState({ consultationStatus: "Plan sent" });
     applyFixture();
+    syncOrderStatus();
   });
+
+  /* The doctor's wrap-up card stamped "Waiting for the patient to pay" when the
+     order was created and then never moved, so the clinic side still said the
+     patient had not paid while the admin had the same order out for delivery and
+     the patient was watching the rider. The two other apps already follow the
+     shared state; this one only wrote to it. Wording is taken from the admin's
+     own status table so one stage never reads two ways across the demo. */
+  const statusEN = {
+    "Order received": "Paid · waiting for the pharmacy to accept",
+    "Pharmacy accepted": "Paid · pharmacy preparing the medicine",
+    "Preparing": "Paid · pharmacy preparing the medicine",
+    "Rider pickup": "Paid · rider on the way to collect",
+    "Dispatched": "Paid · out for delivery",
+    "Delivered": "Delivered to the patient"
+  };
+  const statusTH = {
+    "Order received": "ชำระแล้ว · รอร้านยารับออเดอร์",
+    "Pharmacy accepted": "ชำระแล้ว · ร้านยากำลังจัดยา",
+    "Preparing": "ชำระแล้ว · ร้านยากำลังจัดยา",
+    "Rider pickup": "ชำระแล้ว · ไรเดอร์กำลังเข้าไปรับของ",
+    "Dispatched": "ชำระแล้ว · กำลังจัดส่ง",
+    "Delivered": "จัดส่งถึงผู้ป่วยแล้ว"
+  };
+  const rowBadgeEN = { "Delivered": "Delivered" };
+  function isThai() {
+    return !!document.querySelector('.lang__opt[data-lng="th"].is-active');
+  }
+
+  function syncOrderStatus() {
+    const state = demo.readState();
+    /* updatedAt is null until something actually writes the shared state. The
+       fixture's own default is "Dispatched" so the tracking demo can open
+       mid-flight, and reading that before anyone has paid would have the doctor
+       announcing a delivery for an order the patient has not bought yet. */
+    if (!state.updatedAt) return;
+    const field = document.querySelector("[data-done-order-status]");
+    if (field && field.textContent.trim() && field.textContent.trim() !== "No order"
+        && field.textContent.trim() !== "Referral guidance sent") {
+      const copy = (isThai() ? statusTH : statusEN)[state.fulfilmentStatus];
+      if (copy) field.textContent = copy;
+    }
+    /* The same order in the case list carries "Awaiting payment" until it is paid. */
+    const cell = document.querySelector('[data-consult-rows] tr[data-code="CONS-2041"]');
+    const badge = cell && cell.children[6] && cell.children[6].querySelector(".badge");
+    if (badge && badge.classList.contains("badge--warn")) {
+      badge.className = state.fulfilmentStatus === "Delivered" ? "badge badge--done" : "badge badge--ok";
+      badge.textContent = isThai()
+        ? (state.fulfilmentStatus === "Delivered" ? "จัดส่งแล้ว" : "ชำระแล้ว")
+        : (rowBadgeEN[state.fulfilmentStatus] || "Paid");
+    }
+  }
+
+  window.addEventListener("storage", syncOrderStatus);
+  window.addEventListener("krane-demo-state", syncOrderStatus);
 
   function openHash() {
     const id = location.hash.slice(1);
@@ -70,10 +125,11 @@
 
   window.addEventListener("hashchange", openHash);
   document.addEventListener("click", function (event) {
-    if (event.target.closest("[data-lng]")) setTimeout(applyFixture, 0);
+    if (event.target.closest("[data-lng]")) setTimeout(function () { applyFixture(); syncOrderStatus(); }, 0);
   });
   applyFixture();
+  syncOrderStatus();
   window.addEventListener("load", function () {
-    setTimeout(function () { openHash(); applyFixture(); }, 80);
+    setTimeout(function () { openHash(); applyFixture(); syncOrderStatus(); }, 80);
   }, { once: true });
 }());
