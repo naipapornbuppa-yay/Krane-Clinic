@@ -1818,14 +1818,13 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
    full width of the stage, edge to edge, with the patient's self-view as a small
    portrait above it. */
 .video-call-top{position:relative;justify-content:center;background:var(--color-surface);color:var(--color-ink)}
-/* The call and chat are two views of one consultation. Their chrome must not
-   jump when switching views: use the same app-bar height and lockup height as
-   .screen__top--chat at each breakpoint. */
+/* The call and chat are two views of one consultation, so the app bar keeps the
+   same height across both. The lockup used to be sized by height here, which
+   left it 4px narrower than every other brand bar; it takes the shared width
+   now (client, 7 Oct) — the chat header carries no lockup to match anyway. */
 .video-call-top.checkout-brandbar{min-height:72px;padding:16px 24px}
-.video-call-top .checkout-brandbar__logo{width:auto;height:22px}
 @media(max-width:760px){
   .video-call-top.checkout-brandbar{min-height:56px;padding:8px 16px}
-  .video-call-top .checkout-brandbar__logo{width:auto;height:18px}
 }
 .video-call-top .transition-stage__close{right:14px}
 #video .callstage--live{background:#000}
@@ -5422,7 +5421,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-screen{background:#f6f7f9}
 .postpay-screen>.care-journey{display:none!important}
 .postpay-brandbar{min-height:70px;justify-content:center;background:#f6f7f9;border-bottom:0}
-.postpay-brandbar img{width:132px;height:auto;display:block}
+/* Sizing comes from .checkout-brandbar__logo so this bar matches the rest. */
 .postpay-card{
   border:1px solid rgba(18,24,36,.06);
   border-radius:18px;
