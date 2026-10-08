@@ -270,6 +270,13 @@
      global translation contract: text nodes remember their Thai source and
      receive a page-local English equivalent when the language changes. */
   const draftEnglishText = new Map([
+    ["เสียงจากผู้รับการดูแล", "A care recipient's perspective"],
+    ["ตัวอย่างผลลัพธ์จากการติดตาม", "Example follow-up results"],
+    ["คำบอกเล่าและภาพตัวอย่างเป็นคนละกรณี", "The quote and example images show different cases."],
+    ["หลัง 3 เดือน", "After 3 months"], ["หลัง 4 เดือน", "After 4 months"],
+    ["“พอมีแพทย์ช่วยดูแลเรื่องความอยากอาหารและติดตามผล แผนลดน้ำหนักก็ชัดเจนขึ้น”", "“With a doctor helping me manage my appetite and follow my progress, my weight-care plan became clearer.”"],
+    ["“ปรึกษาออนไลน์สะดวก ไม่ต้องเดินทาง และคุยเรื่องน้ำหนักกับแพทย์ได้แบบเป็นส่วนตัว”", "“Online consultations are convenient. I can discuss my weight privately with a doctor without travelling.”"],
+    ["“การติดตามเป็นระยะช่วยให้รู้ว่าควรปรับพฤติกรรมตรงไหน เพื่อให้ทำต่อได้จริง”", "“Regular follow-ups helped me see which habits to adjust so I could keep going.”"],
     ["ข้ามไปยังเนื้อหาหลัก", "Skip to main content"],
     ["น้ำหนัก", "Weight"], ["ฟื้นฟูสมรรถภาพเพศชาย", "Men's health"], ["สุขภาพผู้ชาย", "Men's health"], ["สุขภาพผู้ชาย · re:flow", "Men's health · re:flow"], ["ผม & ผิว", "Hair & skin"],
     ["อาการที่เราดูแล", "Conditions we treat"], ["โรคอ้วน / การลดน้ำหนัก", "Obesity / Weight loss"],
@@ -416,6 +423,19 @@
   ]);
 
   const draftEnglishAttributes = new Map([
+    ["คำบอกเล่าและตัวอย่างภาพผลลัพธ์จากการติดตาม", "Stories and example follow-up results"],
+    ["เรื่องราวก่อนหน้า", "Previous story"], ["เรื่องราวถัดไป", "Next story"],
+    ["เลือกเรื่องราว", "Choose a story"],
+    ["เรื่องราวที่ 1", "Story 1"], ["เรื่องราวที่ 2", "Story 2"], ["เรื่องราวที่ 3", "Story 3"],
+    ["ตัวอย่างภาพเปรียบเทียบผลลัพธ์จากการติดตาม ชุดที่ 1", "Example before-and-after result, set 1"],
+    ["ตัวอย่างภาพเปรียบเทียบผลลัพธ์จากการติดตาม ชุดที่ 2", "Example before-and-after result, set 2"],
+    ["ตัวอย่างภาพเปรียบเทียบผลลัพธ์จากการติดตาม ชุดที่ 3", "Example before-and-after result, set 3"],
+    ["ภาพก่อนเริ่มแผนดูแลน้ำหนัก ชุดที่ 1", "Before starting weight care, example 1"],
+    ["ภาพก่อนเริ่มแผนดูแลน้ำหนัก ชุดที่ 2", "Before starting weight care, example 2"],
+    ["ภาพก่อนเริ่มแผนดูแลน้ำหนัก ชุดที่ 3", "Before starting weight care, example 3"],
+    ["ภาพหลังติดตามแผนดูแลน้ำหนัก 3 เดือน ชุดที่ 1", "After 3 months of weight-care follow-up, example 1"],
+    ["ภาพหลังติดตามแผนดูแลน้ำหนัก 6 เดือน ชุดที่ 2", "After 6 months of weight-care follow-up, example 2"],
+    ["ภาพหลังติดตามแผนดูแลน้ำหนัก 4 เดือน ชุดที่ 3", "After 4 months of weight-care follow-up, example 3"],
     ["ทำไมต้อง Krane", "Why Krane"],
     ["เลื่อนดูตัวเลือกดูแลเส้นผม", "Browse hair-care options"],
     ["รายการตัวเลือกดูแลเส้นผมแบบเลื่อนได้", "Scrollable list of hair-care options"],
