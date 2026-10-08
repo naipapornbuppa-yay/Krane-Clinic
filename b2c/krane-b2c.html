@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261008-nav-cutout-v254";
+    const release = "20261008-partner-original-flow-v255";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -23,6 +23,11 @@
       url.searchParams.set("screens", "1");
       url.searchParams.delete("only-me");
       url.searchParams.delete("with_screen_tab");
+      canonicalized = true;
+    }
+    if (url.searchParams.get('entry') === 'partner' && (!url.hash || url.hash === '#landing')) {
+      url.searchParams.set('fresh', '1');
+      url.hash = 'consent-terms';
       canonicalized = true;
     }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
@@ -37,7 +42,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20260930-address-autosave-v241"></script>
+<script src="review-tools.js?v=20261008-partner-original-flow-v255"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -59,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261008-nav-cutout-v254">
+<link rel="stylesheet" href="components.css?v=20261008-partner-original-flow-v255">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1423,7 +1428,7 @@
         </div>
         <!-- Health-history selects share the same single-line floating prompt as
              birth sex: the field title is the empty state and rises after a choice. -->
-        <div class="partner-health-grid">
+        <div class="partner-health-grid partner-health-grid--lifestyle" data-direct-health-lifestyle>
           <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-smoking"><option value=""></option><option value="0">ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">ทุกวัน</option></select><label for="intake-smoking">ประวัติการสูบบุหรี่</label></span></div></div>
           <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-alcohol"><option value=""></option><option value="0">ไม่เคย</option><option value="1">นานๆ ครั้ง</option><option value="2">บ่อย</option><option value="3">บ่อยมาก</option></select><label for="intake-alcohol">ประวัติการดื่มแอลกอฮอล์</label></span></div></div>
         </div>
@@ -3795,6 +3800,7 @@
   <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="health-history-title">
     <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="health-history-title">ยืนยันข้อมูลส่วนตัวและสุขภาพ</h2>
+    <p class="muted" data-partner-safety-intro hidden>สามข้อนี้จำเป็นต่อความปลอดภัยในการสั่งยา แพทย์จะเห็นก่อนเริ่มปรึกษา</p>
     <div class="partner-clinical-grid">
             <fieldset class="partner-history-field" data-direct-history="conditions">
               <legend>โรคประจำตัว</legend>
@@ -3805,12 +3811,12 @@
               <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-conditions" autocomplete="off" disabled placeholder=" "><label for="intake-conditions">ระบุโรคประจำตัว</label></span></div></div></div>
             </fieldset>
             <fieldset class="partner-history-field" data-direct-history="medications">
-              <legend>ยาหรืออาหารเสริมที่ใช้อยู่</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="ยาหรืออาหารเสริมที่ใช้อยู่">
+              <legend data-medications-question>ยาหรืออาหารเสริมที่ใช้อยู่</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ยาหรืออาหารเสริมที่ใช้อยู่" data-medications-group>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
               </div>
-              <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-medications" autocomplete="off" disabled placeholder=" "><label for="intake-medications">ระบุยาหรืออาหารเสริมที่ใช้อยู่</label></span></div></div></div>
+              <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-medications" autocomplete="off" disabled placeholder=" "><label for="intake-medications" data-medications-detail-label>ระบุยาหรืออาหารเสริมที่ใช้อยู่</label></span></div></div></div>
             </fieldset>
             <fieldset class="partner-history-field" data-direct-history="allergies">
               <legend>ประวัติแพ้ยา/อาหาร</legend>
@@ -8476,13 +8482,26 @@
   }
   function syncGeneralHealthContext(){
     const direct=flowState.entryChannel==='direct';
+    const partner=flowState.entryChannel==='partner';
     const assignedDoctorFlow=direct && flowState.followUpDirectToWaitroom;
+    const generalHealth=document.getElementById('intake-general');
+    if(generalHealth) generalHealth.dataset.entryChannel=flowState.entryChannel;
     const title=document.querySelector('#intake-general [data-general-health-title]');
     const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
     const submit=document.querySelector('#intake-general [data-general-health-submit]');
     if(title) title.textContent=assignedDoctorFlow ? 'ยืนยันข้อมูลสุขภาพ' : (direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ');
     if(hint) hint.hidden=!direct;
     if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
+    const safetyTitle=document.getElementById('health-history-title');
+    if(safetyTitle) safetyTitle.textContent=partner ? 'ยืนยันข้อมูลความปลอดภัย' : 'ยืนยันข้อมูลส่วนตัวและสุขภาพ';
+    const safetyIntro=document.querySelector('[data-partner-safety-intro]');
+    if(safetyIntro) safetyIntro.hidden=!partner;
+    const medicinesQuestion=document.querySelector('[data-medications-question]');
+    if(medicinesQuestion) medicinesQuestion.textContent=partner ? 'ยาที่ใช้ประจำ' : 'ยาหรืออาหารเสริมที่ใช้อยู่';
+    const medicinesGroup=document.querySelector('[data-medications-group]');
+    if(medicinesGroup) medicinesGroup.setAttribute('aria-label',partner ? 'ยาที่ใช้ประจำ' : 'ยาหรืออาหารเสริมที่ใช้อยู่');
+    const medicinesDetailLabel=document.querySelector('[data-medications-detail-label]');
+    if(medicinesDetailLabel) medicinesDetailLabel.textContent=partner ? 'ระบุยาที่ใช้ประจำ' : 'ระบุยาหรืออาหารเสริมที่ใช้อยู่';
     updateFollowUpPrefillCard(flowState.followUpContext?.active ? followUpRecordFor(flowState.followUpContext.category) : null);
   }
   function syncPartnerReview(){
@@ -11023,6 +11042,17 @@
           applyAuthenticatedAccount({returning:true});
         }
       }
+      // A partner link represents an authenticated handoff. Start at the same
+      // consent page as the reference journey, with a clean patient case.
+      if(id==='consent-terms' && freshRequested
+         && (hashParams.get('entry') || flowConfig.get('entry'))==='partner'){
+        resetRequiredFlow();
+        pendingQueue=null;
+        if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
+        flowState.entryChannel='partner';
+        seedClinicalDemoStage('consent-terms');
+        history=['landing'];
+      }
       /* A fresh tracking link represents the order immediately after payment,
          not the final state left behind by a previous QA run in this tab. */
       if(id==='tracking' && freshRequested){
@@ -13128,19 +13158,19 @@
         weight:document.getElementById('intake-weight')?.value.trim() || ''
       };
       flowState.partnerHealthComplete=true;
-      flowState.partnerReviewComplete=false;
-      flowState.partnerReviewConfirmedAt='';
+      flowState.partnerReviewComplete=true;
+      flowState.partnerReviewConfirmedAt=new Date().toISOString();
       flowState.accountCreated=true;
       flowState.otpVerified=true;
       flowState.consentsComplete=true;
       flowState.patientInfoComplete=true;
       flowState.identityVerified=true;
       flowState.patientName=flowState.partnerName || 'มะลิ สุธิดา';
-      flowState.lastRequiredScreen='partner-phr';
+      flowState.lastRequiredScreen='matching';
       persistFlowState();
       saveIntakeDraft();
-      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กรุณาตรวจสอบก่อนพบแพทย์','success');
-      show('partner-phr');
+      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กำลังจับคู่แพทย์','success');
+      show(partnerClinicalStartTarget());
       return;
     }
     flowState.lastRequiredScreen='signup';
@@ -14001,7 +14031,7 @@
       window.kraneDemoStatus=demoStatus;
     }
   })();
-  if(pendingQueue && !queuePreview){pendingQueue.suspended=true;history=['landing'];show('queue-resume',false);}
+  if(pendingQueue && !queuePreview && !(flowConfig.get('entry')==='partner' && flowConfig.get('fresh')==='1')){pendingQueue.suspended=true;history=['landing'];show('queue-resume',false);}
   else if(location.hash) applyHash();
   else if(window.kraneDemoStage){
     /* Embedded landing showcases opt in with ?demoStage= rather than a hash.

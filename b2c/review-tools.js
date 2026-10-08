@@ -129,12 +129,13 @@
       ]
     },
     {
-      step: "09", th: "เข้าผ่านสิทธิ์ประกัน", en: "Insurance partner entry",
+      step: "09", th: "เข้าผ่านพาร์ทเนอร์", en: "Partner entry",
+      start: { href: "?screens=1&entry=partner&fresh=1#consent-terms", th: "เริ่ม Partner flow ตามวิดีโอ", en: "Start original partner flow" },
       screens: [
         ["partner-idcard", "SID-070", "ถ่ายบัตรประชาชน", "Capture ID card"],
         ["partner-patient-info", "SID-062", "ยืนยันข้อมูลผู้รับบริการ", "Confirm patient details"],
         ["partner-insurance", "SID-063", "สิทธิ์และการชำระเงิน", "Coverage & payment", "eligibility"],
-        ["partner-phr", "SID-068", "ข้อมูลสุขภาพจากพาร์ตเนอร์", "Partner health record"],
+        ["partner-phr", "SID-068", "บันทึกสุขภาพ (หน้าทางเลือก)", "Health record (alternative)", "alternative"],
         ["intake-concern", "SID-069", "เลือกอาการเพื่อเข้ารับบริการ", "Choose consultation concern"]
       ]
     },
@@ -179,6 +180,13 @@
 
       const defaultLinks = [];
       const specialLinks = [];
+      if (group.start) {
+        const startLink = global.document.createElement("a");
+        startLink.href = group.start.href;
+        startLink.textContent = thai ? group.start.th : group.start.en;
+        startLink.classList.add("is-key-route");
+        defaultLinks.push(startLink);
+      }
       const makeScreenLink = ([id, sid, th, en, state]) => {
         /* Shared screens can be referenced by more than one clinical entry
            path, but the directory lists their implementation only once. */

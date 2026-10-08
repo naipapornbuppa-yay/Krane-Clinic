@@ -102,17 +102,25 @@ if (railAudit.openGroups !== 1 || railAudit.nestedBuckets) {
   fail('Screen Tab group accordion, flat inside', JSON.stringify(railAudit));
 }
 
-/* The insurance entry keeps its original reviewer sequence, even when the
-   older paper-crane preview links into the current component set. */
+/* The partner group lists only its unique views. Shared intake and care views
+   already appear in their primary groups, and the start link begins the full
+   sequence shown in the partner reference video. */
 const partnerRail = await app.evaluate(() => {
   const group = [...document.querySelectorAll('#prototype-rail > .rail-group')]
     .find(item => item.querySelector('.rail-step')?.textContent === '09');
   return group ? [...group.querySelectorAll('a[data-go]')].map(link => link.dataset.go) : [];
 });
 did();
-if (JSON.stringify(partnerRail) !== JSON.stringify(['partner-idcard','partner-patient-info','partner-phr','partner-insurance'])) {
+if (JSON.stringify(partnerRail) !== JSON.stringify(['partner-idcard','partner-patient-info','partner-insurance','partner-phr'])) {
   fail('partner Screen Tab order', JSON.stringify(partnerRail));
 }
+did();
+const partnerStartLink = await app.evaluate(() => {
+  const group = [...document.querySelectorAll('#prototype-rail > .rail-group')]
+    .find(item => item.querySelector('.rail-step')?.textContent === '09');
+  return group?.querySelector('a.is-key-route[href*="entry=partner"]')?.getAttribute('href') || '';
+});
+if (!partnerStartLink.includes('fresh=1#consent-terms')) fail('partner start link', partnerStartLink || 'missing');
 const legacyPartner = await ctx.newPage();
 try {
   await legacyPartner.goto(`${base}/b2c/krane-b2c-paper-crane-preview.html#partner-idcard`, { waitUntil: 'domcontentloaded' });
@@ -135,6 +143,61 @@ try {
   fail('partner preview handoff', error.message);
 } finally {
   await legacyPartner.close();
+}
+
+/* The partner handoff must use the shared intake views but preserve the
+   reference order and questions, then continue directly to doctor matching. */
+const partnerJourney = await ctx.newPage();
+try {
+  const active = () => partnerJourney.locator('.screen.active').getAttribute('id');
+  const step = async (label, expected) => {
+    did();
+    const actual = await active();
+    if (actual !== expected) fail('partner journey', `${label}: expected ${expected}, got ${actual}`);
+  };
+  await partnerJourney.goto(`${base}/b2c/krane-b2c.html?entry=partner`, { waitUntil: 'domcontentloaded' });
+  await step('entry', 'consent-terms');
+  await partnerJourney.locator('[data-consent-auto-scroll]').click();
+  await partnerJourney.locator('[data-consent-continue]').click();
+  await step('consent', 'partner-idcard');
+  await partnerJourney.locator('[data-idcard-skip]').click();
+  await step('ID card', 'partner-patient-info');
+  await partnerJourney.locator('[data-partner-info-continue]').click();
+  await step('patient details', 'insurance');
+  await partnerJourney.locator('#insurance-id').fill('1234567890123');
+  await partnerJourney.locator('#insurance-dob').fill('1997-09-01');
+  await partnerJourney.locator('#insurance [data-insurance-confirm]').click();
+  await step('eligibility check', 'partner-insurance');
+  await partnerJourney.locator('#partner-insurance [data-partner-payment="insurance"]').click();
+  await step('covered plan', 'intake-concern');
+  await partnerJourney.locator('#partner-concern-text').fill('มีผื่นคันที่แขนและปวดศีรษะ');
+  await partnerJourney.locator('#intake-concern [data-partner-relief-value="ยังไม่ได้ทำ"]').click();
+  await partnerJourney.locator('#intake-concern [data-intake-complete]').click();
+  await step('symptom answers', 'intake-general');
+  did();
+  if (await partnerJourney.locator('[data-direct-health-lifestyle]').isVisible()) {
+    fail('partner questions', 'direct-only lifestyle questions are visible');
+  }
+  await partnerJourney.locator('#intake-dob').fill('1994-03-12');
+  await partnerJourney.locator('#intake-height').fill('175');
+  await partnerJourney.locator('#intake-weight').fill('70');
+  await partnerJourney.locator('#intake-general [data-intake-complete]').click();
+  did();
+  const safety = await partnerJourney.locator('#health-history-modal').evaluate(modal => ({
+    visible: !modal.hidden,
+    title: modal.querySelector('h2')?.textContent.trim(),
+    questions: [...modal.querySelectorAll('fieldset legend')].map(legend => legend.textContent.trim())
+  }));
+  if (!safety.visible || safety.title !== 'ยืนยันข้อมูลความปลอดภัย'
+      || JSON.stringify(safety.questions) !== JSON.stringify(['โรคประจำตัว','ยาที่ใช้ประจำ','ประวัติแพ้ยา/อาหาร'])) {
+    fail('partner questions', JSON.stringify(safety));
+  }
+  await partnerJourney.locator('[data-health-history-confirm]').click();
+  await step('safety answers', 'matching');
+} catch (error) {
+  fail('partner journey', error.message);
+} finally {
+  await partnerJourney.close();
 }
 
 /* ---- components ----------------------------------------------------------- */
