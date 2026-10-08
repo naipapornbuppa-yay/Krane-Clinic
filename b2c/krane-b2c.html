@@ -6294,15 +6294,14 @@
   /* Doctor Review questionnaires share one rendering contract. Stable IDs are
      deliberately carried in the markup so the backend can persist answers
      without depending on Thai copy or DOM position. */
-  function intakeChoiceQuestion({id,title,options,multiple=false,helper='',skippable=false}){
+  function intakeChoiceQuestion({id,title,options,multiple=false,helper=''}){
     const selectAttribute=multiple ? 'data-multi' : 'data-select';
-    return `<div class="common-group" data-question-id="${id}" data-string-id="intake.${id}.title"${skippable ? ' data-question-skippable="true"' : ''}>
+    return `<div class="common-group" data-question-id="${id}" data-string-id="intake.${id}.title">
       <div class="section-label">${title}</div>
       ${helper ? `<p class="hint">${helper}</p>` : ''}
       <div class="stack-3">
         ${options.map((option,index) => `<button class="option" type="button" ${selectAttribute} data-answer-id="${id}.${index+1}"><span class="opt-body"><span class="opt-title">${option}</span></span><span class="opt-check"></span></button>`).join('')}
       </div>
-      ${skippable ? '<button class="intake-question-skip" type="button" data-intake-question-skip><span>ไม่เกี่ยวข้องกับฉัน</span><strong>ข้ามคำถามนี้</strong><i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button>' : ''}
     </div>`;
   }
   const intakeTemplates = {
@@ -6363,14 +6362,12 @@
         <div><h2 class="h1">แบบประเมินผมร่วงและหนังศีรษะ</h2></div>
         ${intakeChoiceQuestion({
           id:'hair.female_cycle_weight',
-          title:'มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่? (เฉพาะผู้หญิง)',
-          options:['มี','ไม่มี'],
-          skippable:true
+          title:'มีปัญหาประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติหรือไม่?',
+          options:['มี','ไม่มี']
         })}
         ${intakeChoiceQuestion({
           id:'hair.female_pregnancy',
           title:'คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์อยู่หรือไม่?',
-          helper:'หากคุณเป็นผู้ชาย กรุณาเลือก “ไม่มี”',
           options:['มี','ไม่มี']
         })}`
     },
@@ -12201,29 +12198,6 @@
       return;
     }
     if(e.target.closest('[data-address-recipient-edit]')) addressRecipientEditing=true;
-    const intakeSkip=e.target.closest('[data-intake-question-skip]');
-    if(intakeSkip){
-      const question=intakeSkip.closest('[data-intake-question]');
-      const screen=intakeSkip.closest('.screen');
-      if(!question || !screen) return;
-      question.querySelectorAll('.option[aria-selected="true"]')
-        .forEach(option => option.setAttribute('aria-selected','false'));
-      question.dataset.answerSkipped='true';
-      saveIntakeDraft();
-      const page=intakeQuestionPageState(screen);
-      if(page.index<page.total-1){
-        activateIntakeQuestionPage(screen,page.index+1);
-        return;
-      }
-      const next=screen.querySelector('.screen__footer [data-go]')?.dataset.go;
-      if(next==='intake5' && !categoryNeedsPhotos()){
-        if(flowState.entryChannel==='partner') show('intake-concern');
-        else finishDirectF02();
-        return;
-      }
-      if(next) show(next);
-      return;
-    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -12343,8 +12317,6 @@
     const opt = e.target.closest('.option[data-select]');
     if(opt){
       const group = opt.parentElement;
-      const optQuestion=opt.closest('[data-intake-question]');
-      if(optQuestion) delete optQuestion.dataset.answerSkipped;
       [...group.querySelectorAll('.option[data-select]')].forEach(o => o.setAttribute('aria-selected', o===opt));
       saveIntakeDraft();
       const optScreen = opt.closest('.screen');
