@@ -12,6 +12,26 @@
     node.innerHTML = icon(name, sizeClass);
   }
 
+  // The selected home and parcel icons are solid silhouettes with real
+  // see-through details. A mask keeps the motion on the whole SVG while the
+  // door, roof seam and parcel folds reveal whatever sits behind the icon.
+  var navMaskCounter = 0;
+  function setNavNegativeSpaceIcon(node, name) {
+    if (!node || node.dataset.iconReady) return;
+    var maskId = 'krane-nav-cutout-' + name + '-' + (++navMaskCounter);
+    var outer = name === 'house'
+      ? 'M11.1 2.8a1.5 1.5 0 0 1 1.8 0L21 8.9a1.5 1.5 0 0 1 .6 1.2v9.7a1.7 1.7 0 0 1-1.7 1.7H4.1a1.7 1.7 0 0 1-1.7-1.7v-9.7c0-.5.2-.9.6-1.2l8.1-6.1Z'
+      : 'M11.25 2.65a1.7 1.7 0 0 1 1.5 0l7.9 4a1.7 1.7 0 0 1 .85 1.47v8.76a1.7 1.7 0 0 1-.85 1.47l-7.9 4a1.7 1.7 0 0 1-1.5 0l-7.9-4a1.7 1.7 0 0 1-.85-1.47V8.12a1.7 1.7 0 0 1 .85-1.47l7.9-4Z';
+    var cutout = name === 'house'
+      ? '<path d="M4.3 10.5 12 4.7l7.7 5.8" fill="none" stroke="#000" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.8 21.5v-6.1a2.2 2.2 0 0 1 4.4 0v6.1Z" fill="#000" stroke="none"/>'
+      : '<path d="M3.2 7.35 12 11.85l8.8-4.5M12 11.85v9.35" fill="none" stroke="#000" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>';
+    node.dataset.iconReady = name;
+    node.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon--md nav-icon--negative" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<defs><mask id="' + maskId + '" x="0" y="0" width="24" height="24" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">' +
+      '<rect x="0" y="0" width="24" height="24" fill="#fff" stroke="none"/>' + cutout + '</mask></defs>' +
+      '<path d="' + outer + '" fill="currentColor" stroke="none" mask="url(#' + maskId + ')"/></svg>';
+  }
+
   function replaceFirstSvg(node, name, sizeClass) {
     if (!node || node.dataset.iconReady) return;
     var current = node.querySelector('svg:not([data-qr])');
@@ -66,7 +86,11 @@
       // glyphs have to change here too.
       var name = target === 'profile' ? 'house' : target.includes('activit') || target === 'tracking' ? 'package' :
         target === 'notifications' ? 'bell' : target === 'settings' ? 'user-round' : 'house';
-      setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
+      if (link.getAttribute('aria-current') === 'page' && (name === 'house' || name === 'package')) {
+        setNavNegativeSpaceIcon(link.querySelector('.ic'), name);
+      } else {
+        setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
+      }
     });
     document.querySelectorAll('.notif').forEach(function (row) {
       var name = row.dataset.go === 'tracking' ? 'truck' : row.dataset.go === 'consult' ? 'messages-square' :
