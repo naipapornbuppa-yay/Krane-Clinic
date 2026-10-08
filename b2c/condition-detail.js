@@ -775,24 +775,32 @@
   openFromHash();
   window.addEventListener("hashchange", openFromHash);
 
-  /* The landing page reveals one editorial chapter at a time. Detail pages
-     use the same restrained movement so the system feels related without
-     turning clinical content into a showreel. */
-  const revealTargets = document.querySelectorAll(
-    ".care-proof, .content-section, .price-clarity, .closing-cta"
-  );
-  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.documentElement.classList.add("detail-motion-ready");
+  /* Motion belongs to the chapters this version actually renders. Only the
+     desktop composition animates; narrow layouts and reduced-motion users
+     keep the stable, immediately readable layout. */
+  if (window.matchMedia("(min-width: 1000px)").matches &&
+      !prefersReducedMotion.matches && "IntersectionObserver" in window) {
+    const revealTargets = document.querySelectorAll(
+      ".cd-reviews .cd-section-head, .cd-reviews .cd-review, .cd-panels, .cd-faq, .cd-articles, .cd-safety-link"
+    );
+    document.documentElement.classList.add("desktop-motion-ready");
+    revealTargets.forEach((target, index) => {
+      target.dataset.desktopReveal = "";
+      if (target.classList.contains("cd-review")) {
+        target.style.setProperty("--motion-order", String(index % 4));
+      }
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      hero?.classList.add("is-motion-visible");
+    }));
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });
-    }, { rootMargin: "0px 0px -8%", threshold: 0.08 });
+    }, { rootMargin: "0px 0px -6%", threshold: 0.08 });
     revealTargets.forEach((target) => revealObserver.observe(target));
-  } else {
-    revealTargets.forEach((target) => target.classList.add("is-visible"));
   }
 
   /* site-header.js runs before dynamic FAQ/product content exists. Refresh the

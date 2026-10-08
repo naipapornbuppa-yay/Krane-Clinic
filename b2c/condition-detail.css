@@ -283,10 +283,6 @@ main{display:flex;flex-direction:column;gap:var(--detail-gap);padding:32px 0 var
 footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:16px;padding:34px 40px;background:var(--detail-ink);color:rgba(255,255,255,.62);font-size:11px}
 footer img{width:104px;height:auto;filter:brightness(0) invert(1)}
 
-/* Quiet chapter reveal; no content is hidden before JS confirms support. */
-.detail-motion-ready .care-proof,.detail-motion-ready .content-section,.detail-motion-ready .price-clarity,.detail-motion-ready .closing-cta{opacity:0;transform:translateY(26px)}
-.detail-motion-ready .care-proof.is-visible,.detail-motion-ready .content-section.is-visible,.detail-motion-ready .price-clarity.is-visible,.detail-motion-ready .closing-cta.is-visible{opacity:1;transform:none;transition:opacity .62s var(--detail-ease),transform .72s var(--detail-ease)}
-
 @media(max-width:1100px){
   :root{--detail-page-gutter:16px;--detail-section-pad:clamp(48px,5vw,68px);--page-gutter:16px}
   .condition-hero{grid-template-columns:minmax(360px,.88fr) minmax(0,1.12fr)}
@@ -449,7 +445,6 @@ footer img{width:104px;height:auto;filter:brightness(0) invert(1)}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *{animation:none!important;transition:none!important}
-  .detail-motion-ready .care-proof,.detail-motion-ready .content-section,.detail-motion-ready .price-clarity,.detail-motion-ready .closing-cta{opacity:1;transform:none}
 }
 .product-card__thumbs {
   display: none !important;
@@ -776,3 +771,33 @@ footer .brand-lockup{width:193px;height:31px;filter:brightness(0) invert(1)}
 /* The fixed call to action covers the end of the page, so the page ends above
    it rather than behind it (client, 6 Oct). */
 body.condition-detail-page{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+
+/* Programme motion is shared by every condition, but only on desktop. The
+   first frame stays visible without JavaScript and for reduced-motion users. */
+@media (min-width:1000px) and (prefers-reduced-motion:no-preference){
+  .desktop-motion-ready .condition-hero__copy{
+    opacity:0;transform:translate3d(-32px,0,0);
+    transition:opacity .72s var(--detail-ease),transform .9s var(--detail-ease);
+  }
+  .desktop-motion-ready .condition-hero.is-motion-visible .condition-hero__copy{opacity:1;transform:none}
+  .desktop-motion-ready .condition-hero__image{
+    transform:translate3d(18px,0,0) scale(1.055);
+    transition:opacity .72s ease,transform 1.2s var(--detail-ease);
+  }
+  .desktop-motion-ready .condition-hero.is-motion-visible .condition-hero__image{transform:none}
+  .desktop-motion-ready .condition-hero.is-motion-visible:hover .condition-hero__image{transform:scale(1.015)}
+  .desktop-motion-ready .condition-hero[data-tone="hair"].is-motion-visible:hover .condition-hero__image{transform:none}
+  .desktop-motion-ready [data-desktop-reveal]{
+    opacity:0;transform:translate3d(0,24px,0);
+    transition:opacity .65s var(--detail-ease),transform .8s var(--detail-ease);
+    transition-delay:calc(var(--motion-order,0) * 65ms);
+  }
+  .desktop-motion-ready [data-desktop-reveal].is-visible{opacity:1;transform:none}
+  .desktop-motion-ready .cd-panel:not([hidden]){animation:condition-panel-in .38s var(--detail-ease) both}
+  @keyframes condition-panel-in{
+    from{opacity:0;transform:translate3d(0,12px,0)}
+    to{opacity:1;transform:none}
+  }
+  .cd-review,.cd-article{transition:box-shadow .3s var(--detail-ease),translate .3s var(--detail-ease)}
+  .cd-review:hover,.cd-article:hover{translate:0 -4px;box-shadow:0 14px 32px rgba(17,27,48,.12)}
+}
