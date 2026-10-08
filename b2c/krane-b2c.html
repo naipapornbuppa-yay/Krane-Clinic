@@ -2663,19 +2663,23 @@
   <section class="screen" id="insurance">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Insurance check</span></div>
     <div class="screen__body stack-4">
-      <div class="stack-2">
-        <div class="field-label">Identification</div>
-        <div class="row" style="gap:var(--sp-2)"><button class="btn btn--ghost btn--sm" data-toggle aria-selected="true">ID card</button><button class="btn btn--ghost btn--sm" data-toggle>Passport</button></div>
+      <div class="stack-2" data-insurance-setup-title hidden>
+        <h2 class="h1">ยืนยันข้อมูลเพื่อเช็กสิทธิ์</h2>
+        <p class="muted">ตรวจสอบข้อมูลผู้ถือสิทธิ์ก่อนเลือกแผนประกันที่ใช้ได้</p>
       </div>
-      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-id" inputmode="numeric" maxlength="17" autocomplete="off" data-national-id placeholder="0-0000-00000-00-0"><label for="insurance-id">ID / passport number</label></span></div></div>
-      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-dob" type="date" autocomplete="bday" required><label for="insurance-dob">Date of birth</label></span></div></div>
+      <div class="stack-2">
+        <div class="field-label">เอกสารยืนยันตัวตน</div>
+        <div class="partner-binary partner-binary--accent" role="tablist" aria-label="ประเภทเอกสาร"><button class="partner-binary__option" type="button" role="tab" data-toggle data-insurance-doc="id" aria-selected="true">บัตรประชาชน</button><button class="partner-binary__option" type="button" role="tab" data-toggle data-insurance-doc="passport" aria-selected="false">หนังสือเดินทาง</button></div>
+      </div>
+      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-id" inputmode="numeric" maxlength="17" autocomplete="off" data-national-id placeholder="0-0000-00000-00-0"><label for="insurance-id">เลขบัตรประชาชนหรือหนังสือเดินทาง</label></span></div></div>
+      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-dob" type="date" autocomplete="bday" required><label for="insurance-dob">วันเกิด</label></span></div></div>
       <div class="card card--pad-sm stack-2" data-insurance-order>
         <div class="between"><span class="muted">Order total</span><span class="amt">฿ 558</span></div>
         <div class="between"><span class="muted">Use insurance credit</span><span class="amt">฿ 558</span></div>
         <div class="between"><span class="muted">You pay (overage)</span><strong>฿ 0</strong></div>
         <div class="hint">Choose how much insurance credit to use.</div>
       </div>
-      <p class="hint" data-insurance-profile-hint hidden>We will check your entitlement automatically the next time you have an order.</p>
+      <p class="hint" data-insurance-profile-hint hidden>ระบบจะตรวจสอบสิทธิ์ของคุณก่อนดำเนินการต่อ</p>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-insurance-confirm>ตรวจสอบสิทธิ์และชำระ ฿ 0</button><button class="btn btn--ghost" data-go="payment" data-insurance-order-action>ชำระเงินเอง</button></div>
   </section>
 
@@ -3685,7 +3689,7 @@
       </div>
       <div class="card card--pad-sm stack-3">
         <div class="section-label">ผลการตรวจสอบ</div>
-        <div class="between"><span class="muted">ผู้ถือสิทธิ์</span><strong>มะลิ สุธิดา</strong></div>
+        <div class="between"><span class="muted">ผู้ถือสิทธิ์</span><strong data-partner-policy-holder>มะลิ สุธิดา</strong></div>
         <div class="between"><span class="muted">ผลิตภัณฑ์</span><strong data-partner-policy-product>แผนสุขภาพออนไลน์</strong></div>
         <div class="between"><span class="muted">ความคุ้มครอง</span><strong><span class="badge badge--ok">ใช้สิทธิ์ได้</span></strong></div>
         <div class="divider"></div>
@@ -3710,7 +3714,7 @@
       <div class="stack-2"><h2 class="h1">ยืนยันบันทึกสุขภาพ</h2></div>
       <div class="card card--pad-sm stack-3">
         <div class="between"><span class="muted">ผู้รับบริการ</span><strong data-partner-phr-name>มะลิ สุธิดา</strong></div>
-        <div class="between"><span class="muted">สิทธิ์</span><strong>MTL Group</strong></div>
+        <div class="between"><span class="muted">วิธีชำระค่าปรึกษา</span><strong data-partner-phr-payment>ใช้สิทธิ์ประกันสุขภาพ</strong></div>
         <div class="between"><span class="muted">ข้อมูลสุขภาพ</span><span class="badge badge--ok">ตรวจสอบแล้ว</span></div>
       </div>
     </div>
@@ -4281,7 +4285,7 @@
     partnerPaymentChosen:false,
     partnerHealthComplete:false,
     partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
-    partnerReviewComplete:false,
+    partnerReviewComplete:false,partnerReviewConfirmedAt:'',
     partnerNurseComplete:false,
     partnerPhone:'081-234-5678',
     partnerPhoneVerified:true,
@@ -4417,7 +4421,7 @@
       coverage:{provider:'',policyId:'',consultationCredit:0,medicineCredit:0},
       orderState:{checkoutOrigin:'consultation',quantities:{cough:2,loratadine:1,paracetamol:2,naproxen:1},deliveryMethod:'same-day',fulfillmentMode:'delivery',address:{},addressConfirmed:false,deliveryQuoteStatus:'pending',deliveryQuoteAmount:null,checkoutFlowVersion:'pharmacy-precheckout-v4',addOns:{wellness:false,pillcase:false,pouch:false},addonQuantities:{wellness:0,pillcase:0,pouch:0},promoCode:'',promoAmount:0,paymentMethod:'qr',amountDue:558,stockLocked:false,pharmacyAccepted:false,pharmacyPrepared:false,paymentExpiresAt:null,paidAmount:null,paidMethod:'',paidDeliveryMethod:''},
       partnerConsentComplete:false,partnerIdStepDone:false,partnerInfoComplete:false,partnerPaymentChosen:false,
-      partnerHealthComplete:false,partnerReviewComplete:false,
+      partnerHealthComplete:false,partnerReviewComplete:false,partnerReviewConfirmedAt:'',
       partnerConcernComplete:false,partnerConcern:'',partnerConcernDuration:'',partnerConcernRelief:'',
       partnerNurseComplete:false,partnerPhone:'081-234-5678',partnerPhoneVerified:true,
       partnerPhoneOtpPending:false,partnerPendingPhone:'',partnerName:'มะลิ สุธิดา',partnerPaymentMethod:'',partnerConsultationBalanceDue:null,
@@ -8484,11 +8488,12 @@
   function syncPartnerReview(){
     const phrName=document.querySelector('[data-partner-phr-name]');
     if(phrName) phrName.textContent=flowState.partnerName || 'มะลิ สุธิดา';
+    const phrPayment=document.querySelector('[data-partner-phr-payment]');
+    if(phrPayment) phrPayment.textContent=flowState.partnerPaymentMethod==='self-pay' ? 'ชำระเงินเอง' : 'ใช้สิทธิ์ประกันสุขภาพ';
   }
   function seedPartnerStage(target){
-    const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','matching'];
-    let targetIndex=order.indexOf(target);
-    if(target==='partner-phr') targetIndex=6;
+    const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','partner-phr','matching'];
+    const targetIndex=order.indexOf(target);
     if(targetIndex<0) return;
     flowState.entryChannel='partner';
     if(targetIndex>0){
@@ -8511,10 +8516,9 @@
     }
     if(targetIndex>3) flowState.partnerConcernComplete=true;
     if(targetIndex>4) flowState.partnerHealthComplete=true;
-    if(targetIndex>5) flowState.partnerReviewComplete=true;
-    if(target==='partner-phr'){
-      flowState.partnerNurseComplete=true;
-      flowState.partnerScreening={urgent:'no',accurate:'yes',remote:'yes'};
+    if(targetIndex>6){
+      flowState.partnerReviewComplete=true;
+      flowState.partnerReviewConfirmedAt=new Date().toISOString();
     }
     persistFlowState();
     syncPartnerScreening();
@@ -9991,6 +9995,7 @@
       if(node) node.textContent=value || '';
     };
     bind('[data-partner-policy-product]',option.dataset.product);
+    bind('[data-partner-policy-holder]',flowState.partnerName || 'มะลิ สุธิดา');
     bind('[data-partner-policy-number]',option.dataset.policyNumber);
     bind('[data-partner-policy-start]',option.dataset.startDate);
     bind('[data-partner-policy-end]',option.dataset.endDate);
@@ -10060,6 +10065,10 @@
       if(['partner-insurance','partner-phr'].includes(target) && !flowState.partnerPaymentChosen) return 'partner-patient-info';
       if(target==='partner-phr' && !flowState.partnerConcernComplete) return 'intake-concern';
       if(target==='partner-phr' && !flowState.partnerHealthComplete) return 'intake-general';
+    }
+    if(flowState.entryChannel==='partner' && DIRECT_PRE_DOCTOR_GATE_TARGETS.has(target)
+       && (!flowState.partnerReviewComplete || !flowState.partnerReviewConfirmedAt)){
+      return requiredRouteFor('partner-phr');
     }
     if(target==='intake-general' && flowState.entryChannel==='direct'){
       if(!flowState.draftReady) return 'intake1';
@@ -10190,6 +10199,7 @@
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
     if(id==='intake-general') syncGeneralHealthContext();
+    if(id==='partner-insurance') syncPartnerPolicySummary();
     if(id==='partner-phr') syncPartnerReview();
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
@@ -10314,14 +10324,17 @@
       const isProfile = insuranceEntry === 'profile';
       const isPartner = insuranceEntry === 'partner';
       const isSetup = isProfile || isPartner;
+      document.getElementById('insurance')?.setAttribute('data-insurance-context',isSetup ? 'setup' : 'checkout');
       const order = document.querySelector('#insurance [data-insurance-order]');
+      const setupTitle = document.querySelector('#insurance [data-insurance-setup-title]');
       const profileHint = document.querySelector('#insurance [data-insurance-profile-hint]');
       const orderActions = document.querySelectorAll('#insurance [data-insurance-order-action]');
       const confirmBtn = document.querySelector('#insurance [data-insurance-confirm]');
       if(order) order.hidden = isSetup;
+      if(setupTitle) setupTitle.hidden = !isSetup;
       if(profileHint) profileHint.hidden = !isSetup;
       orderActions.forEach(btn => { btn.hidden = isSetup; });
-      if(confirmBtn) confirmBtn.textContent = isSetup ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160';
+      if(confirmBtn) confirmBtn.textContent = isPartner ? 'ตรวจสอบสิทธิ์และไปต่อ' : (isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160');
     }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     syncThemeColor(id);
@@ -11722,9 +11735,12 @@
         flowState.patientInfoComplete=true;
         flowState.identityVerified=true;
         flowState.patientName=flowState.partnerName||'มะลิ สุธิดา';
+        flowState.partnerReviewComplete=true;
+        flowState.partnerReviewConfirmedAt=new Date().toISOString();
+        flowState.lastRequiredScreen='matching';
         persistFlowState();
         showActionToast('ตรวจสอบสิทธิ์ประกันแล้ว กำลังจับคู่แพทย์','success');
-        show('matching');
+        show(partnerClinicalStartTarget());
       });
       return;
     }
@@ -12359,6 +12375,18 @@
     const tog = e.target.closest('[data-toggle]');
     if(tog){
       [...tog.parentElement.querySelectorAll('[data-toggle]')].forEach(o => o.setAttribute('aria-selected', o===tog));
+      if(tog.dataset.insuranceDoc){
+        const input=document.getElementById('insurance-id');
+        const passport=tog.dataset.insuranceDoc==='passport';
+        if(input){
+          input.value='';
+          input.inputMode=passport ? 'text' : 'numeric';
+          input.maxLength=passport ? 32 : 17;
+          input.placeholder=passport ? 'เลขหนังสือเดินทาง' : '0-0000-00000-00-0';
+          input.toggleAttribute('data-national-id',!passport);
+          syncFloatingFieldState(input.closest('.float-field'));
+        }
+      }
       saveIntakeDraft();
       // documents screen: the toggle swaps the prescription / certificate blocks
       if(tog.dataset.docTab){
@@ -13100,18 +13128,19 @@
         weight:document.getElementById('intake-weight')?.value.trim() || ''
       };
       flowState.partnerHealthComplete=true;
-      flowState.partnerReviewComplete=true;
+      flowState.partnerReviewComplete=false;
+      flowState.partnerReviewConfirmedAt='';
       flowState.accountCreated=true;
       flowState.otpVerified=true;
       flowState.consentsComplete=true;
       flowState.patientInfoComplete=true;
       flowState.identityVerified=true;
       flowState.patientName=flowState.partnerName || 'มะลิ สุธิดา';
-      flowState.lastRequiredScreen='intake-general';
+      flowState.lastRequiredScreen='partner-phr';
       persistFlowState();
       saveIntakeDraft();
-      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กำลังจับคู่แพทย์','success');
-      show(partnerClinicalStartTarget());
+      showActionToast('บันทึกข้อมูลสุขภาพแล้ว กรุณาตรวจสอบก่อนพบแพทย์','success');
+      show('partner-phr');
       return;
     }
     flowState.lastRequiredScreen='signup';
