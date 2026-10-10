@@ -176,10 +176,11 @@ try {
   did();
   const reliefChoices = await partnerJourney.locator('#intake-concern [data-partner-relief-value]').evaluateAll(options => ({
     count:options.length,
-    shared:options.every(option => option.matches('.option[data-select]') && Boolean(option.querySelector('.opt-check'))),
-    shadow:options[0] ? getComputedStyle(options[0]).boxShadow : null
+    compact:options.every(option => !option.classList.contains('option') && !option.querySelector('.opt-check')),
+    columns:options[0] ? getComputedStyle(options[0].parentElement).gridTemplateColumns.split(' ').length : 0,
+    surface:options[0] ? getComputedStyle(options[0]).backgroundColor : null
   }));
-  if (reliefChoices.count !== 4 || !reliefChoices.shared || reliefChoices.shadow !== 'none') {
+  if (reliefChoices.count !== 4 || !reliefChoices.compact || reliefChoices.columns !== 2 || reliefChoices.surface !== 'rgb(255, 255, 255)') {
     fail('partner relief component', JSON.stringify(reliefChoices));
   }
   await partnerJourney.locator('#partner-concern-text').fill('มีผื่นคันที่แขนและปวดศีรษะ');
