@@ -6,6 +6,7 @@
 
 | Need | Source |
 |---|---|
+| Canonical views and entry conditions | [SCREEN-REUSE-AUDIT.md](SCREEN-REUSE-AUDIT.md), [screen-view-contract.json](screen-view-contract.json) |
 | App and partner journey | [`../krane-b2c.html`](../krane-b2c.html) |
 | Shared visual tokens and components | [`../design-tokens.css`](../design-tokens.css), [`../components.css`](../components.css), [`../UI-RULES.md`](../UI-RULES.md) |
 | Screen/flow regression contract | [`../ui-contract.json`](../ui-contract.json), [`../tools/contract-check.mjs`](../tools/contract-check.mjs) |

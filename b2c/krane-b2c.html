@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-choice-tiles-v271";
+    const release = "20261010-shared-views-v272";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -42,7 +42,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261010-choice-tiles-v271"></script>
+<script src="review-tools.js?v=20261010-shared-views-v272"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -64,13 +64,13 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-choice-tiles-v271">
+<link rel="stylesheet" href="components.css?v=20261010-shared-views-v272">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20260920-float-v1"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261010-choice-tiles-v271" defer></script>
+<script src="i18n.js?v=20261010-shared-views-v272" defer></script>
 <script src="../krane-golden-patient.js?v=20260920-float-v1" defer></script>
 
 <style>
@@ -1157,7 +1157,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261010-choice-tiles-v271" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261010-shared-views-v272" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
@@ -1620,12 +1620,7 @@
       <!-- Client, 22 Sep: no white box behind the fields, as on the address and
            general-health pages. -->
       <div class="stack-3">
-        <div class="auth-name-grid" role="group" aria-label="ชื่อจริงและนามสกุล"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-first-name" autocomplete="given-name" placeholder=" "><label for="patient-first-name">ชื่อจริง</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-last-name" autocomplete="family-name" placeholder=" "><label for="patient-last-name">นามสกุล</label></span></div></div></div>
-        <!-- Changing the number is a normal thing to do, so it stays on this screen.
-             Social login (LINE / Google) proves the account, not possession of a new
-             number, so any edit re-runs OTP before we trust it for appointment,
-             prescription and delivery messages. -->
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="patient-phone" type="tel" autocomplete="tel" value="" readonly aria-readonly="true" data-phone-input placeholder=" "><label for="patient-phone">เบอร์โทรศัพท์</label></span></div><div class="between"><span class="hint" data-phone-note>ยืนยันด้วยรหัส OTP แล้ว</span><button class="btn btn--ghost btn--sm" data-phone-edit>เปลี่ยนเบอร์</button></div></div>
+        <div data-shared-identity-fields="patient"></div>
       </div>
       <p class="intake-privacy-note patient-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       <div class="stack-3" data-patient-payment-choice>
@@ -1797,47 +1792,7 @@
         <div class="divider" style="margin:0"></div>
           <div class="between"><span class="muted">Amount to pay</span><span class="amt" data-consult-payment-total style="font-size:var(--fs-lg);font-weight:var(--fw-bold)">฿ 350</span></div>
       </div>
-      <div class="gateway" data-gw>
-        <div class="gw-head">
-          <span class="gw-logo"><img src="assets/banks/kbank.png" alt="" loading="lazy"></span>
-          <div><div class="gw-t">K-Payment Gateway</div><div class="gw-s">Kasikornbank · secure checkout</div></div>
-          <span class="gw-lock"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Secured</span>
-        </div>
-        <div class="gw-body">
-          <div class="between"><span class="muted">Merchant</span><strong>Krane Clinic</strong></div>
-          <div class="between"><span class="muted">Amount</span><span class="amt" data-consult-payment-total style="font-weight:var(--fw-bold)">฿ 350</span></div>
-          <div class="gw-tabs">
-            <button class="gw-tab is-active" data-gw-tab="card">Card</button>
-            <button class="gw-tab" data-gw-tab="qr">QR / PromptPay</button>
-            <button class="gw-tab" data-gw-tab="bank">Mobile banking</button>
-          </div>
-          <div class="gw-pane" data-gw-pane="card">
-            <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="consult-card-number" autocomplete="cc-number" placeholder="0000 0000 0000 0000" inputmode="numeric"><label for="consult-card-number">Card number</label></span></div></div>
-            <div class="row" style="gap:var(--sp-2)">
-              <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="consult-card-expiry" autocomplete="cc-exp" placeholder="ดด / ปป"><label for="consult-card-expiry">Expiry</label></span></div></div>
-              <div class="field float-field" style="width:110px"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="consult-card-cvv" autocomplete="cc-csc" placeholder="•••" inputmode="numeric"><label for="consult-card-cvv">CVV</label></span></div></div>
-            </div>
-            <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="consult-card-name" autocomplete="cc-name" placeholder="ตามที่ปรากฏบนบัตร"><label for="consult-card-name">Name on card</label></span></div></div>
-          </div>
-          <div class="gw-pane gw-qr" data-gw-pane="qr" hidden>
-            <div class="qr-card">
-              <div class="qr-promptpay">PromptPay</div>
-              <svg class="qr-img" data-qr data-qr-seed="350"></svg>
-              <div class="qr-amt" data-consult-payment-total>฿ 350</div>
-              <div class="qr-hint">Scan with any Thai banking app · code expires in <b data-qr-countdown>04:59</b></div>
-            </div>
-          </div>
-          <div class="gw-pane" data-gw-pane="bank" hidden>
-            <div class="bank-grid">
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/kbank.png" alt="" loading="lazy"></span>กสิกรไทย</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/scb.png" alt="" loading="lazy"></span>ไทยพาณิชย์</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/bbl.png" alt="" loading="lazy"></span>กรุงเทพ</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/krungthai.png" alt="" loading="lazy"></span>กรุงไทย</button>
-            </div>
-          </div>
-        </div>
-        <div class="gw-foot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> You are on KBank's secure page. Krane never sees or stores your card details.</div>
-      </div>
+      <div data-shared-gateway="consult"></div>
     <div class="screen__footer"><button class="btn btn--primary" data-consult-payment-submit data-string-id="action.pay">ชำระเงิน</button></div>
   </section>
 
@@ -2588,47 +2543,7 @@
       <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
     </div>
     <div class="screen__body stack-4">
-<div class="gateway" data-gw>
-        <div class="gw-head">
-          <span class="gw-logo"><img src="assets/banks/kbank.png" alt="" loading="lazy"></span>
-          <div><div class="gw-t">K-Payment Gateway</div><div class="gw-s">Kasikornbank · secure checkout</div></div>
-          <span class="gw-lock"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Secured</span>
-        </div>
-        <div class="gw-body">
-          <div class="between"><span class="muted">Merchant</span><strong>Krane Clinic</strong></div>
-          <div class="between"><span class="muted">Amount</span><span class="amt" data-payment-total style="font-weight:var(--fw-bold)">฿ 558</span></div>
-          <div class="gw-tabs">
-            <button class="gw-tab is-active" data-gw-tab="card">Card</button>
-            <button class="gw-tab" data-gw-tab="qr">QR / PromptPay</button>
-            <button class="gw-tab" data-gw-tab="bank">Mobile banking</button>
-          </div>
-          <div class="gw-pane" data-gw-pane="card">
-            <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="medication-card-number" autocomplete="cc-number" placeholder="0000 0000 0000 0000" inputmode="numeric"><label for="medication-card-number">Card number</label></span></div></div>
-            <div class="row" style="gap:var(--sp-2)">
-              <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="medication-card-expiry" autocomplete="cc-exp" placeholder="ดด / ปป"><label for="medication-card-expiry">Expiry</label></span></div></div>
-              <div class="field float-field" style="width:110px"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="medication-card-cvv" autocomplete="cc-csc" placeholder="•••" inputmode="numeric"><label for="medication-card-cvv">CVV</label></span></div></div>
-            </div>
-            <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="medication-card-name" autocomplete="cc-name" placeholder="ตามที่ปรากฏบนบัตร"><label for="medication-card-name">Name on card</label></span></div></div>
-          </div>
-          <div class="gw-pane gw-qr" data-gw-pane="qr" hidden>
-            <div class="qr-card">
-              <div class="qr-promptpay">PromptPay</div>
-              <svg class="qr-img" data-qr data-qr-seed="558"></svg>
-              <div class="qr-amt" data-payment-total>฿ 558</div>
-              <div class="qr-hint">Scan with any Thai banking app · code expires in <b data-qr-countdown>04:59</b></div>
-            </div>
-          </div>
-          <div class="gw-pane" data-gw-pane="bank" hidden>
-            <div class="bank-grid">
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/kbank.png" alt="" loading="lazy"></span>กสิกรไทย</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/scb.png" alt="" loading="lazy"></span>ไทยพาณิชย์</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/bbl.png" alt="" loading="lazy"></span>กรุงเทพ</button>
-              <button class="bank-opt" data-bank-select><span class="bank-dot"><img src="assets/banks/krungthai.png" alt="" loading="lazy"></span>กรุงไทย</button>
-            </div>
-          </div>
-        </div>
-        <div class="gw-foot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> You are on KBank's secure page. Krane never sees or stores your card details.</div>
-      </div>
+<div data-shared-gateway="medication"></div>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-payment-submit data-string-id="action.pay">ชำระเงิน</button></div>
   </section>
@@ -3496,8 +3411,7 @@
       <!-- Keep the personal-detail fields directly on the page. The individual
            inputs retain their borders, but no white card wraps the group. -->
       <div class="stack-3">
-        <div class="auth-name-grid" role="group" aria-label="ชื่อจริงและนามสกุล"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-first-name" autocomplete="given-name" placeholder=" "><label for="partner-first-name">ชื่อจริง</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-last-name" autocomplete="family-name" placeholder=" "><label for="partner-last-name">นามสกุล</label></span></div></div></div>
-        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="partner-phone" type="tel" autocomplete="tel" data-phone-input placeholder=" "><label for="partner-phone">เบอร์โทรศัพท์</label></span></div><div class="between"><span class="hint" data-phone-note>กรอกเบอร์แล้ว ยืนยันด้วยรหัส OTP</span><button class="btn btn--ghost btn--sm" data-phone-edit>ยืนยันด้วย OTP</button></div></div>
+        <div data-shared-identity-fields="partner"></div>
       </div>
       <p class="intake-privacy-note patient-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>Private · We do not disclose your health information without your permission.</span></p>
       <div class="stack-3">
@@ -3558,7 +3472,7 @@
   <section class="screen" id="preloader">
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-choice-tiles-v271" alt=""></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-shared-views-v272" alt=""></span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
@@ -3878,7 +3792,8 @@
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
   <script src="b2c-icons.js?v=20261010-nav-silhouettes-v264"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
-  <script src="article-mocks.js?v=20261010-choice-tiles-v271"></script>
+  <script src="shared-view-components.js?v=20261010-shared-views-v272"></script>
+  <script src="article-mocks.js?v=20261010-shared-views-v272"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -3890,8 +3805,8 @@
   });
   const screens = [...document.querySelectorAll('.screen')];
   // Stable reviewer-facing IDs are separate from the product SCR inventory.
-  // One SID identifies one implemented <section>; repeated rail entries that open
-  // the same section therefore show the same number without redefining SCR scope.
+  // One SID identifies a canonical view; legacy route shells may provide different
+  // contexts to the same component without creating another screen identity.
   const reviewScreenIds=window.KraneReviewTools.screenIds;
   const prototypeRail = document.querySelector('#prototype-rail');
   window.KraneReviewTools.renderRail(prototypeRail, screens);
@@ -5525,8 +5440,8 @@
           </span>
         </button>
         <span class="address-select-card__actions">
-          <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}">แก้ไข</button>
-          <button class="address-select-card__delete" type="button" data-address-delete="${index}" aria-label="ลบ ${escapeAddressText(addressBookName(entry))}">ลบ</button>
+          <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z M14 5l5 5"/></svg></button>
+          <button class="address-select-card__delete" type="button" data-address-delete="${index}" aria-label="ลบ ${escapeAddressText(addressBookName(entry))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M9 6V3h6v3 M5 6l1 15h12l1-15 M10 10v7 M14 10v7"/></svg></button>
         </span>
       </article>`;
     }).join('');
@@ -10331,7 +10246,7 @@
        their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
     clearTimeout(preloaderTimer);
-    if(id==='preloader'){
+    if(id==='preloader' && !window.KraneReviewTools?.enabled){
       preloaderTimer=setTimeout(() => {
         if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
       },reduceMotion ? 350 : 1800);
@@ -10638,14 +10553,17 @@
   // several CSS-animated layers at once in some browsers.
   const craneImage=document.querySelector('[data-loader="paper-crane"] .ks-paper-crane-live');
   if(craneImage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-choice-tiles-v271`);
-    craneFrames.forEach(src=>{ const preload=new Image(); preload.src=src; });
-    let craneFrame=0;
-    setInterval(()=>{
-      if(!document.getElementById('preloader')?.classList.contains('active')) return;
-      craneFrame=(craneFrame+1)%craneFrames.length;
-      craneImage.src=craneFrames[craneFrame];
-    },360);
+    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-shared-views-v272`);
+    Promise.all(craneFrames.map(src=>new Promise(resolve=>{
+      const frame=new Image();frame.onload=()=>resolve(src);frame.onerror=()=>resolve(null);frame.src=src;
+    }))).then(frames=>{
+      const ready=frames.filter(Boolean);if(ready.length<2)return;
+      let craneFrame=0;
+      setInterval(()=>{
+        if(document.hidden || !document.getElementById('preloader')?.classList.contains('active'))return;
+        craneFrame=(craneFrame+1)%ready.length;craneImage.src=ready[craneFrame];
+      },360);
+    });
   }
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
   function paintElapsedTimer(timer,elapsedSeconds){
@@ -12189,8 +12107,8 @@
       // re-consulting from a treatment card must not re-ask which condition.
       if(go.dataset.category) setSelectedCategory(go.dataset.category);
       if(go.closest('.rail')){
-        if(go.dataset.entryChannel==='partner'){
-          flowState.entryChannel='partner';
+        if(go.dataset.entryChannel){
+          flowState.entryChannel=go.dataset.entryChannel;
           persistFlowState();
         }
         seedPartnerStage(go.dataset.go);

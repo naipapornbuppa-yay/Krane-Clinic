@@ -143,10 +143,12 @@
     }
   ]);
 
+  const canonicalRoutes = Object.freeze({"partner-patient-info": "patient-info", "partner-insurance": "insurance-result", "payment-gw": "consultpay-gw", "payfail": "consultpay-fail"});
   const screenIds = Object.freeze(SCREEN_DIRECTORY.reduce((map, group) => {
     group.screens.forEach(([id, sid]) => { if (!map[id]) map[id] = sid; });
     return map;
   }, {}));
+  const canonicalScreenIds = Object.freeze(Object.fromEntries(Object.entries(screenIds).map(([route,sid])=>[route,screenIds[canonicalRoutes[route]] || sid])));
 
   function isThai() {
     if (params.get("lang") === "en") return false;
@@ -189,7 +191,10 @@
         registered.add(id);
         const link = global.document.createElement("a");
         link.dataset.go = id;
-        link.textContent = thai ? th : en;
+        link.textContent = (thai ? th : en) + (canonicalRoutes[id] ? (thai ? ' · หน้าร่วม' : ' · Shared view') : '');
+        link.dataset.canonicalScreen = canonicalRoutes[id] || id;
+        if(group.step==='09') link.dataset.entryChannel='partner';
+        else if(/^intake[1-5]$/.test(id)){link.dataset.entryChannel='direct';link.dataset.category='hair-skin';}
         if (id === "landing") link.classList.add("current");
         if (state === "featured") link.classList.add("is-key-route");
         if (state === "exception") link.classList.add("is-exception");
@@ -261,5 +266,5 @@
   }
 
   global.document.documentElement.classList.toggle("review-tools-enabled", enabled);
-  global.KraneReviewTools = Object.freeze({ enabled, directory: SCREEN_DIRECTORY, screenIds, renderRail });
+  global.KraneReviewTools = Object.freeze({ enabled, directory: SCREEN_DIRECTORY, screenIds: canonicalScreenIds, canonicalRoutes, renderRail });
 })(window);

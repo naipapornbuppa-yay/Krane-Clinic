@@ -197,12 +197,36 @@ def stable_catalog(generated, existing, dynamic=False):
     return result
 
 
+def expand_shared_views(raw):
+    """Expand source templates for inventory, preserving existing per-route IDs."""
+    path = os.path.join(ROOT, 'shared-view-components.js')
+    if not os.path.exists(path):
+        return raw
+    source = io.open(path, encoding='utf-8').read()
+    def template(name):
+        match = re.search(r'const ' + name + r' = ("(?:[^"\\]|\\.)*");', source)
+        if not match:
+            raise ValueError('Missing shared template: ' + name)
+        return json.loads(match.group(1))
+    for kind in ('consult', 'medication'):
+        markup = template('gatewayMarkup')
+        if kind == 'medication':
+            markup = markup.replace('consult-card-', 'medication-card-').replace('data-consult-payment-total', 'data-payment-total').replace('350', '558')
+        raw = raw.replace('<div data-shared-gateway="'+kind+'"></div>', markup)
+    for prefix in ('patient', 'partner'):
+        markup = template('identityMarkup').replace('__PREFIX__', prefix)
+        markup = markup.replace('__PHONE_NOTE__', 'ยืนยันด้วยรหัส OTP แล้ว' if prefix == 'patient' else 'กรอกเบอร์แล้ว ยืนยันด้วยรหัส OTP')
+        markup = markup.replace('__PHONE_ACTION__', 'เปลี่ยนเบอร์' if prefix == 'patient' else 'ยืนยันด้วย OTP')
+        raw = raw.replace('<div data-shared-identity-fields="'+prefix+'"></div>', markup)
+    return raw
+
+
 def main():
     source = os.path.join(ROOT, 'krane-b2c.html')
     if not os.path.exists(source):
         sys.exit('cannot find %s' % source)
     raw = io.open(source, encoding='utf-8').read()
-    catalog = stable_catalog(build_catalog(strip_non_copy(raw), thai_to_english()),
+    catalog = stable_catalog(build_catalog(strip_non_copy(expand_shared_views(raw)), thai_to_english()),
                              read('krane-strings.json'))
     dynamic = stable_catalog(build_dynamic(raw),
                              read('krane-strings-dynamic.json'), dynamic=True)

@@ -4217,68 +4217,6 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
   }
 }
 
-/* Tracking is an operational dashboard on desktop, rather than a form flow.
-   Give the status timeline enough horizontal room and use the remaining width
-   for a genuine two-column summary. The phone/tablet composition above stays
-   unchanged. This must follow the shared desktop shell contract. */
-@media(min-width:1024px){
-  #tracking{--tracking-shell-max:1120px}
-  #tracking>.postpay-tracking-topbar{
-    min-height:72px;
-    padding-inline:24px;
-  }
-  #tracking>.postpay-tracking-body{
-    display:grid;
-    grid-template-columns:minmax(0,1fr);
-    grid-auto-rows:max-content;
-    align-content:start;
-    align-items:start;
-    gap:20px;
-    padding:24px!important;
-  }
-  #tracking>.postpay-tracking-body>*{
-    width:auto;
-    max-width:none;
-    margin-inline:0;
-  }
-  #tracking .postpay-tracking-hero{
-    grid-column:1;
-    display:grid;
-    grid-template-columns:minmax(280px,.72fr) minmax(560px,1.55fr);
-  }
-  #tracking .delivery-eta{
-    grid-column:1;
-    grid-row:1;
-    min-height:142px;
-    justify-content:center;
-    padding:22px 24px;
-    border-right:1px solid #eceef2;
-  }
-  #tracking .delivery-eta__time{font-size:31px}
-  #tracking .postpay-progress{
-    grid-column:2;
-    grid-row:1;
-    min-height:142px;
-    align-content:center;
-    padding:22px 16px 18px;
-    border-top:0;
-  }
-  #tracking .postpay-progress::before{top:39px}
-  #tracking .postpay-progress__step[data-track-step="delivered"]>.postpay-confirm-receipt{
-    right:16px;
-    left:16px;
-  }
-  /* Delivery is context for the order, so keep the same reading order on
-     desktop as on mobile: route first, then the order summary. */
-  #tracking .postpay-route-card,
-  #tracking .postpay-order-snapshot{
-    grid-column:1;
-    height:auto;
-  }
-  #tracking [data-tracking-reference],
-  #tracking .postpay-tracking-actions{grid-column:1}
-}
-
 /* Leading the record, the doctor block sits above the note rather than closing
    it, so its rule sits under it instead of over it (client, 11 Sep). */
 .treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
@@ -5726,8 +5664,8 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 @media(min-width:1024px){
   #tracking.screen>.postpay-tracking-topbar,
   #tracking.screen>.postpay-tracking-body{
-    width:min(100%,var(--tracking-shell-max,1120px));
-    max-width:var(--tracking-shell-max,1120px);
+    width:min(100%,var(--care-flow-shell-max,752px));
+    max-width:var(--care-flow-shell-max,752px);
   }
 }
 
@@ -6279,10 +6217,10 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 #refill-sheet .treatment-card .treatment-card__programme,#refill-sheet .treatment-card .followup-row>.hint{color:var(--color-ink-2)}
 #refill-sheet .treatment-card .followup-details{background:#E5F1F9}
 
-/* Match the held-queue illustration: retain dark ink, discard pale fills. */
+/* Keep the animated raster monochrome without an external SVG-filter dependency. */
 #preloader .ks-paper-crane-live,
 html[data-illustration-set] #preloader .ks-paper-crane-live{
-  filter:url(#krane-state-bw-white)!important;
+  filter:grayscale(1) contrast(1.15)!important;
   object-fit:contain;
 }
 
@@ -6305,3 +6243,13 @@ html[data-illustration-set] #preloader .ks-paper-crane-live{
 
 /* File pickers remain accessible without expanding narrow screens. */
 input.sr-only[type="file"]{width:1px!important;max-width:1px!important;height:1px!important;}
+
+@media(min-width:1024px){#tracking.screen>.postpay-tracking-body{padding:24px!important}#tracking.screen>.postpay-tracking-topbar{padding-inline:24px}}
+.address-select-card__actions{display:flex;align-items:center;gap:4px;top:6px;right:10px}
+.address-select-card__choice{padding-right:112px}
+.address-select-card__actions button{display:grid;place-items:center;width:40px;height:40px;min-height:40px;padding:8px;margin:0}
+.address-select-card__actions svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+[data-shared-identity-fields]{display:contents}
+
+[data-shared-gateway]{display:contents}
