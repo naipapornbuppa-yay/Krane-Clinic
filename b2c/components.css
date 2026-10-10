@@ -1562,6 +1562,12 @@ input[type="date"].input{display:block;width:100%;min-width:0;max-width:100%;inl
   align-items:center;
   gap:var(--sp-3);
 }
+.screen__top--chat:has(.intake-lockup){
+  box-sizing:border-box;
+  height:64px;
+  min-height:64px;
+  padding:12px 18px;
+}
 .screen__top--chat>.back{grid-column:1;justify-self:start}
 .screen__top--chat>.ttl,
 .screen__top--chat>.ttl.ttl--lockup{
@@ -1640,12 +1646,10 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
    collapsing back to the same mis-measured max-content and wrapping four deep. */
 .action-toast.is-wrapping{inline-size:calc(100% - 32px)}
 .action-toast.is-wrapping>span:last-child{white-space:normal;text-align:left}
-.action-toast--info{background:var(--btn-primary-bg);color:var(--btn-primary-ink)}
-.action-toast--success{background:var(--btn-primary-bg);color:var(--btn-primary-ink)}
+.action-toast--info,.action-toast--success{background:var(--color-powder);border-color:color-mix(in srgb,var(--color-accent) 16%,transparent);color:var(--color-accent-ink)}
 .action-toast--warning{background:var(--color-warning-soft);border-color:color-mix(in srgb,var(--color-warning) 24%,transparent);color:var(--color-ink-strong)}
 .action-toast--danger{background:var(--color-danger-soft);border-color:color-mix(in srgb,var(--color-danger) 24%,transparent);color:var(--color-ink-strong)}
-.action-toast--success .action-toast__icon{background:color-mix(in srgb,var(--color-accent) 22%,rgba(255,255,255,.12));color:var(--color-powder)}
-.action-toast--info .action-toast__icon{background:rgba(255,255,255,.14);color:var(--color-powder)}
+.action-toast--success .action-toast__icon,.action-toast--info .action-toast__icon{background:color-mix(in srgb,var(--color-accent) 12%,transparent);color:var(--color-accent-ink)}
 .action-toast--warning .action-toast__icon{background:rgba(133,96,28,.12);color:var(--color-warning)}
 .action-toast--danger .action-toast__icon{background:rgba(147,69,58,.12);color:var(--color-danger)}
 
@@ -1815,13 +1819,11 @@ body.overlay-open .screen__footer{-webkit-backdrop-filter:none;backdrop-filter:n
    full width of the stage, edge to edge, with the patient's self-view as a small
    portrait above it. */
 .video-call-top{position:relative;justify-content:center;background:var(--color-surface);color:var(--color-ink)}
-/* The call and chat are two views of one consultation, so the app bar keeps the
-   same height across both. The lockup used to be sized by height here, which
-   left it 4px narrower than every other brand bar; it takes the shared width
-   now (client, 7 Oct) — the chat header carries no lockup to match anyway. */
-.video-call-top.checkout-brandbar{min-height:72px;padding:16px 24px}
+/* The call and chat are two views of one consultation. Shared app chrome below
+   supplies their common height and logo size at each breakpoint. */
+.video-call-top.checkout-brandbar{padding:12px 18px}
 @media(max-width:760px){
-  .video-call-top.checkout-brandbar{min-height:56px;padding:8px 16px}
+  .video-call-top.checkout-brandbar{padding:8px 16px}
 }
 .video-call-top .transition-stage__close{right:14px}
 #video .callstage--live{background:#000}
@@ -4331,6 +4333,14 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 .delivery-item__meta{align-self:stretch;display:flex;flex:none;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:2px;text-align:right;white-space:nowrap}
 .delivery-item__price{font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
 .delivery-item__quantity{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+#consult [data-plan-card] .plan-item{display:grid;grid-template-columns:52px minmax(0,1fr) max-content;grid-template-rows:auto auto;column-gap:var(--sp-3);row-gap:2px;align-items:start}
+#consult [data-plan-card] .plan-item>.thumb{grid-column:1;grid-row:1 / span 2}
+#consult [data-plan-card] .plan-item>.grow,
+#consult [data-plan-card] .plan-item>.delivery-item__meta{display:contents}
+#consult [data-plan-card] .plan-item .grow>div:first-child{grid-column:2;grid-row:1;line-height:1.35}
+#consult [data-plan-card] .plan-item .plan-item__gist{grid-column:2;grid-row:2;margin-top:0}
+#consult [data-plan-card] .plan-item .checkout-order__price{grid-column:3;grid-row:1;line-height:1.35;text-align:right}
+#consult [data-plan-card] .plan-item .delivery-item__quantity{grid-column:3;grid-row:2;line-height:1.35;text-align:right}
 /* Two classes, because the phone rule below resets .delivery-item to the three
    product columns and was squeezing the total's label into the thumbnail slot. */
 .delivery-item.delivery-item--total{width:100%;grid-template-columns:minmax(0,1fr) max-content;padding-top:var(--sp-3);border-top:1px solid var(--color-line)}
@@ -5379,10 +5389,10 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .date-control__display>span:first-child{display:block}
 .float-field .date-control__icon{align-self:center}
 .float-field .date-control:focus-within .date-control__display{border-color:transparent;box-shadow:none}
-/* Intake DOB is intentionally a single-line picker: the empty date format is
-   the only visible prompt, while the accessible name stays on the native
-   input. Other date fields retain the shared two-line floating-label variant. */
-.float-field--date-placeholder-only .date-control__value{transform:none}
+/* Intake DOB shows just the date format while empty; its title rises only
+   after a date is selected. The native input keeps its accessible name. */
+.float-field--date-placeholder-only:not(.is-filled) .float-field__slot>label{display:none}
+.float-field--date-placeholder-only:not(.is-filled) .date-control__value{transform:none}
 /* An invalid field turns the whole box red, the way the password box does. */
 .float-field.is-invalid>.float-field__box{border-color:var(--color-danger);box-shadow:none}
 .float-field.is-invalid .float-field__slot>label{color:var(--color-danger)}
@@ -5948,6 +5958,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .screen__top .ttl--lockup .intake-lockup{
   --lockup-h:25px;
 }
+.screen__top--chat:has(.intake-lockup) .ttl--lockup .intake-lockup{--lockup-h:25px}
 .checkout-brandbar__logo{
   width:auto;
   height:25px;
@@ -5972,6 +5983,8 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   .screen__top:has(> .checkout-brandbar__logo, > .ttl .intake-lockup),
   #payment .payment-topbar{height:60px;min-height:60px}
   .screen__top .ttl--lockup .intake-lockup{--lockup-h:26px}
+  .screen__top--chat:has(.intake-lockup){height:60px;min-height:60px}
+  .screen__top--chat:has(.intake-lockup) .ttl--lockup .intake-lockup{--lockup-h:26px}
   .checkout-brandbar__logo,#payment .payment-topbar__logo{height:26px}
   .screen:has(> .bottomnav) > .screen__top:not(.profile-shell-nav){height:60px;min-height:60px;padding-block:10px}
 }
@@ -5981,6 +5994,8 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
     min-height:54px;
   }
   .screen__top .ttl--lockup .intake-lockup{--lockup-h:23px}
+  .screen__top--chat:has(.intake-lockup){height:54px;min-height:54px}
+  .screen__top--chat:has(.intake-lockup) .ttl--lockup .intake-lockup{--lockup-h:23px}
   .checkout-brandbar__logo{height:23px}
   #payment .payment-topbar{height:54px;min-height:54px}
   #payment .payment-topbar__logo{height:23px}
@@ -5988,10 +6003,12 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 }
 @media(max-width:374px){
   .screen__top .ttl--lockup .intake-lockup{--lockup-h:21px}
+  .screen__top--chat:has(.intake-lockup) .ttl--lockup .intake-lockup{--lockup-h:21px}
   .checkout-brandbar__logo,#payment .payment-topbar__logo{height:21px}
 }
 @media(max-width:339px){
   .screen__top .ttl--lockup .intake-lockup{--lockup-h:18px}
+  .screen__top--chat:has(.intake-lockup) .ttl--lockup .intake-lockup{--lockup-h:18px}
   .checkout-brandbar__logo,#payment .payment-topbar__logo{height:18px}
 }
 .queue-close{position:absolute;right:18px;top:12px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--color-ink);font-size:28px;cursor:pointer}

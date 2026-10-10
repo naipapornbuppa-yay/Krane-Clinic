@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-live-qa-prefill-v261";
+    const release = "20261010-live-qa-consult-v262";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-live-qa-prefill-v261">
+<link rel="stylesheet" href="components.css?v=20261010-live-qa-consult-v262">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -422,6 +422,8 @@
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-enter-room"]),
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-nurse-ready"]),
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-feedback"]){--art-bg-width:74%;--art-bg-ratio:1.02;--art-bg-radius:49% 51% 46% 54% / 44% 52% 48% 56%}
+    #waitroom .state-view__visual:has(use[href="#krane-state-waiting-room"]){--art-bg-width:86%;--art-bg-ratio:1.12;--art-bg-radius:42% 58% 47% 53% / 53% 44% 56% 47%}
+    #waitroom .state-view__visual:has(use[href="#krane-state-enter-room"]){--art-bg-width:82%;--art-bg-ratio:1.04;--art-bg-radius:56% 44% 54% 46% / 44% 56% 46% 54%}
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-treatment-plan"]),
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-pharmacy-search"]),
     :is(.state-view__visual,.editorial-dialog-visual):has(use[href="#krane-state-payment-failed"]),
@@ -529,6 +531,7 @@
        blob now, with room for the float to move it without clipping. */
     .state-view__tile--cutout>.krane-state-art,
     .state-view__tile--cutout>.krane-state-hatch-stack{width:72%;height:72%}
+    #waitroom .state-view__tile--cutout>.krane-state-art{width:78%;height:78%}
     .state-view__visual--loading .krane-state-art,
     .state-view__visual--loading .krane-state-hatch-layer{
       transform-origin:center;
@@ -1446,7 +1449,7 @@
       <div class="partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex"><option value=""></option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
-          <div class="field grow float-field float-field--date"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
+          <div class="field grow float-field float-field--date-placeholder-only"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" aria-label="วันเกิด (อายุ)" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
         </div>
         <div class="partner-health-grid">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-height" inputmode="numeric" placeholder=" "><label for="intake-height">ส่วนสูง</label></span></div></div>
@@ -2328,7 +2331,7 @@
           </span>
         </div>
       </div>
-      <p class="payment-items-editor__note"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>การเปลี่ยนจำนวนไม่แก้ไขชนิดยาและขนาดยาที่แพทย์สั่ง</span></p>
+      <p class="payment-items-editor__note"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>ลดจำนวนยาได้ แต่เพิ่มเกินที่แพทย์สั่งไม่ได้</span></p>
     </div>
     <div class="screen__footer"><button class="btn btn--primary" data-go="payment">บันทึกรายการ</button></div>
   </section>
@@ -4000,7 +4003,7 @@
         <button type="button" data-payment-item-plus aria-label="เพิ่มจำนวน">+</button>
       </span>
     </div>
-    <p class="payment-item-dialog__notice"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>การเปลี่ยนจำนวนไม่แก้ไขชนิดยาและขนาดยาที่แพทย์สั่ง</span></p>
+    <p class="payment-item-dialog__notice"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i><span>ลดจำนวนยาได้ แต่เพิ่มเกินที่แพทย์สั่งไม่ได้</span></p>
     <div class="payment-item-dialog__actions">
       <button class="btn btn--primary" type="button" data-payment-item-save>บันทึกการแก้ไข</button>
     </div>
