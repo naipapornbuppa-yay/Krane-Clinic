@@ -854,6 +854,10 @@
             window.top.location.assign(target.href);
             return;
           }
+          if (link.dataset.route === "article" && link.dataset.articleId) {
+            window.top.location.assign(link.href);
+            return;
+          }
           window.parent.postMessage({
             krane: "nav",
             to: link.dataset.route,

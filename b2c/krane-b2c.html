@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-nav-silhouettes-v264";
+    const release = "20261010-article-fixtures-v265";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-live-qa-toasts-bill-v263">
+<link rel="stylesheet" href="components.css?v=20261010-article-fixtures-v265">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -1171,7 +1171,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261008-weight-stories-v252" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261010-article-fixtures-v265" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
@@ -1189,44 +1189,33 @@
   </section>
 
   <!-- ===================== HEALTH ARTICLES (KRANE-F37) ===================== -->
-  <section class="screen" id="articles">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Health guide</span></div>
+  <section class="screen" id="articles" data-content-source="admin-cms:articles" data-content-status="published-only">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">บทความสุขภาพ</span></div>
     <div class="screen__body stack-4">
-      <div class="field"><input class="input" placeholder="ค้นหาบทความ ยา หรืออาการ"></div>
-      <div class="row" style="gap:var(--sp-2);flex-wrap:wrap">
-        <button class="btn btn--ghost btn--sm" data-toggle aria-selected="true">All</button>
-        <button class="btn btn--ghost btn--sm" data-toggle>Hair loss</button>
-        <button class="btn btn--ghost btn--sm" data-toggle>Skin</button>
-        <button class="btn btn--ghost btn--sm" data-toggle>Medicines</button>
+      <div class="field"><input class="input" data-article-search type="search" placeholder="ค้นหาบทความ ยา หรืออาการ" aria-label="ค้นหาบทความ"></div>
+      <div class="row article-filters" role="group" aria-label="หมวดบทความ">
+        <button class="btn btn--ghost btn--sm" data-article-filter="all" aria-pressed="true">ทั้งหมด</button>
+        <button class="btn btn--ghost btn--sm" data-article-filter="hair" aria-pressed="false">เส้นผม</button>
+        <button class="btn btn--ghost btn--sm" data-article-filter="weight" aria-pressed="false">น้ำหนัก</button>
       </div>
-      <div class="article-feed">
-        <button class="article-teaser" data-go="article" type="button">
-          <span class="photo-graphic photo-graphic--article photo-graphic--warm"><span class="photo-graphic__signal"><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i></span></span>
-          <span class="article-teaser__body"><span class="article-teaser__meta">Hair loss · 4 min read</span><span class="article-teaser__title">Does finasteride really work?</span><span class="article-teaser__summary">What the evidence says, when results usually appear, and what to ask your doctor.</span><span class="article-teaser__action">Read article <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span></span>
-        </button>
-        <button class="article-teaser article-teaser--compact" data-go="article" type="button">
-          <span class="photo-graphic photo-graphic--article"><span class="photo-graphic__signal"><i data-lucide="heart-pulse" class="ui-icon" aria-hidden="true"></i></span></span>
-          <span class="article-teaser__body"><span class="article-teaser__meta">Hair loss · 3 min read</span><span class="article-teaser__title">Minoxidil: what to expect</span><span class="article-teaser__action">Read article <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span></span>
-        </button>
-        <button class="article-teaser article-teaser--compact" data-go="article" type="button">
-          <span class="photo-graphic photo-graphic--article photo-graphic--success"><span class="photo-graphic__signal"><i data-lucide="shield-check" class="ui-icon" aria-hidden="true"></i></span></span>
-          <span class="article-teaser__body"><span class="article-teaser__meta">Lifestyle · 5 min read</span><span class="article-teaser__title">Healthy habits for your hair</span><span class="article-teaser__action">Read article <i data-lucide="arrow-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></span></span>
-        </button>
-      </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-go="conditions">Start a consultation</button></div>
+      <div class="article-feed" data-article-feed></div>
+      <p class="muted" data-article-empty hidden>ไม่พบบทความที่ตรงกับคำค้น</p>
+    </div>
+    <div class="screen__footer"><button class="btn btn--primary" data-go="conditions">เริ่มปรึกษาแพทย์</button></div>
   </section>
 
   <!-- ===================== ARTICLE · READ (KRANE-F37) ===================== -->
-  <section class="screen" id="article">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Article</span></div>
+  <section class="screen" id="article" data-content-source="admin-cms:articles">
+    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">บทความสุขภาพ</span></div>
     <div class="screen__body stack-4">
-      <div class="article-hero"><div class="photo-graphic photo-graphic--warm"><span class="photo-graphic__signal"><i data-lucide="book-open" class="ui-icon" aria-hidden="true"></i></span></div></div>
-      <div class="stack-2"><h2 class="h1">Does finasteride really work?</h2>
-        <div class="row" style="gap:var(--sp-2);align-items:center"><span class="avatar" style="width:28px;height:28px"></span><div class="hint">Dr. A., Dermatology · reviewed Jun 2026 · 4 min read</div></div></div>
-      <p class="muted">Finasteride is a once-daily tablet that lowers the hormone linked to male-pattern hair loss. Most people notice results after 3-6 months of consistent use.</p>
-      <p class="muted">This article is for education only and isn't a substitute for a consultation. Talk to a Krane doctor about what's right for you.</p>
-      <div class="row" style="gap:var(--sp-2);flex-wrap:wrap;align-items:center"><span class="hint">Tags:</span><button class="btn btn--ghost btn--sm" data-go="articles">Finasteride</button><button class="btn btn--ghost btn--sm" data-go="articles">Hair loss</button></div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="conditions">Consult a doctor</button><button class="btn btn--ghost" data-go="articles">Back to guide</button></div>
+      <div class="article-hero"><img data-article-hero src="assets/articles/editorial-v1/finasteride-evidence.jpg" width="1280" height="800" alt=""></div>
+      <div class="stack-2"><p class="article-teaser__meta" data-article-meta></p><h2 class="h1" data-article-title></h2><p class="hint" data-article-byline></p></div>
+      <p class="muted" data-article-summary></p>
+      <div class="article-reading" data-article-body></div>
+      <p class="hint">เนื้อหานี้ให้ข้อมูลทั่วไป ไม่ใช้แทนการประเมินหรือคำแนะนำจากแพทย์</p>
+      <div class="row article-tags" data-article-tags></div>
+    </div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="conditions">ปรึกษาแพทย์</button><button class="btn btn--ghost" data-go="articles">กลับไปดูบทความ</button></div>
   </section>
 
   <!-- ===================== DIRECT INTAKE Q1 (KRANE-F02 · SCR-DIR-02) =====================
@@ -4078,6 +4067,7 @@
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
   <script src="b2c-icons.js?v=20261010-nav-silhouettes-v264"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
+  <script src="article-mocks.js?v=20261010-article-fixtures-v265"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -10257,6 +10247,8 @@
        selected service's authored questions, not the generic base markup. */
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
+    if(id==='articles') window.kraneArticleMock?.renderFeed();
+    if(id==='article') window.kraneArticleMock?.renderDetail();
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
