@@ -12,14 +12,14 @@ only when the client asks for it, and the reason goes in the commit message.
 
 ## 1. Choice inputs
 
-- **Single-choice = tap to commit.** A list where exactly one option can win has no
-  Continue button and no radio tick: the tap is the answer and the view moves on.
+- **A standalone, paginated single-choice question = tap to commit.** When one answer completes the page, it has no
+  Continue button and no radio tick: the tap is the answer and the view moves on. A choice inside a multi-field form only updates that field; it does not submit the page.
   Intake: `intakeQuestionIsSingleChoice()` → `[data-intake-auto-advance]`.
   Sheets: the option handler commits and closes (payment method).
 - **Multi-choice keeps its CTA and its ticks.** There is no way to know when someone
   has finished with a multi-select, a text field or a dropdown.
-- **Segmented control** (`.partner-binary`, `.partner-duration-units`) is the pattern for
-  2–4 short mutually exclusive values. Selected = white surface + shadow on a sunken track.
+- **Segmented control** (`.partner-binary`) is for switching between existing views or a short binary answer. Selected = white surface + shadow on a sunken track.
+- **Intake duration and prior relief choices use the appointment-style choice buttons**, not the sliding segmented track (client correction, 10 October). Both groups share appearance but keep separate state rules: duration defaults to day; prior relief starts with no selection. Do not infer an answer from a visual default. This correction supersedes the earlier segmented-control instruction for these two groups.
 - **Two panels on one screen use that same control, not bespoke tabs** (client,
   1 Sep). Treatment detail had its own 72px boxed tab strip welded to the top of
   the record card; it is `.partner-binary--accent` now, the same switch as

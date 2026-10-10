@@ -2,6 +2,8 @@
 
 **Snapshot:** 10 October 2026, `gh-pages` prototype. This is a static, interactive review build, **not** a production patient system. Do not enter real patient data. The source of truth for B2C work is this repository's `b2c/` directory; copies under workspace `Output/` and `site/` are not deployment sources.
 
+For the combined patient, doctor and admin delivery, start with [FRONTEND-HANDOFF-READINESS.md](FRONTEND-HANDOFF-READINESS.md).
+
 ## Start here
 
 | Need | Source |
@@ -19,7 +21,11 @@
 
 The public app starts at `https://naipapornbuppa-yay.github.io/Krane-Clinic/b2c/krane-b2c.html?public=1#landing`. For the partner journey use `?entry=partner&fresh=1#consent-terms`; the screen directory can be enabled with `with_screen_tab=1`. `demoStage` URLs are isolated review shortcuts, not production routes.
 
+**Landing scope:** landing is WIP and excluded from accepted handoff. [START-HERE.md](START-HERE.md) is the current entry for all three deliverables.
+
 ## Journey contract
+
+Read [INTAKE-FLOWS.md](INTAKE-FLOWS.md) for current direct-category routes and guard conditions. The partner sequence below applies to the authenticated-partner demo bootstrap. Arbitrary hashes still obey normal guards; see the intake map for the distinction and production provider-identity requirement.
 
 Partner entry retains the original question order and shares the current UI components:
 

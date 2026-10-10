@@ -4,10 +4,11 @@
 <title>Krane CMS · Doctor Back Office</title>
 <!-- brand tokens are the single source of truth; back-office styles are token-driven semantic classes -->
 <link rel="stylesheet" href="design-tokens.css?v=20260918-doctor-colour-v1">
-<link rel="stylesheet" href="cms.css?v=20260920-doctor-schedule-v1">
+<link rel="stylesheet" href="cms.css?v=20261011-final-brand-v274">
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
-<script src="../krane-golden-fixture.js"></script>
+<script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
+<link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-logomark.svg">
 </head>
 <body class="role-doctor">
 
@@ -16,7 +17,7 @@
      Accounts are created by an admin, so there is no sign up here. -->
 <section class="doc-auth" data-doc-auth hidden>
   <div class="doc-auth__card">
-    <img class="doc-auth__logo" src="../assets/krane-clinic-lockup-v1.svg?v=20260918-doctor-core-v1" width="193" height="31" alt="Krane Clinic">
+    <img class="doc-auth__logo" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" alt="Krane Clinic">
     <div class="doc-auth__step" data-auth-step="method">
       <div><h1 class="doc-auth__title">Doctor sign in</h1><p class="hint">Choose how to sign in. Every time, we send a one-time code to your registered mobile.</p></div>
       <div class="doc-auth__methods" role="tablist" aria-label="Sign-in method">
@@ -50,7 +51,7 @@
 
   <!-- ================= SIDEBAR (role-filtered nav · F07) ================= -->
   <aside class="cms-rail">
-    <div class="cms-rail__brand"><img src="../assets/krane-logo.svg" width="1059" height="280" alt="Krane"><span class="cms-rail__role" data-role-label="">Doctor</span></div>
+    <div class="cms-rail__brand"><img src="../assets/brand-final/krane-logotype.svg" width="286" height="72" alt="Krane"><span class="cms-rail__role" data-role-label="">Doctor</span></div>
 
     <!-- Menus follow the Doctor Manual (section 6): หน้าหลัก, then การปรึกษา with
          แพทย์ and ผู้เข้ารับการปรึกษา. Follow-ups stay with the consultations. -->
@@ -77,7 +78,7 @@
     
     
 
-    <div class="cms-rail__watermark" aria-hidden="true"><img src="../assets/krane-logo.svg" width="1059" height="280" alt=""></div>
+    <div class="cms-rail__watermark" aria-hidden="true"><img src="../assets/brand-final/krane-logotype.svg" width="286" height="72" alt=""></div>
     <div class="cms-rail__foot">
       <div class="lang" data-lang="">
         <button class="lang__opt" data-lng="en">EN</button>
@@ -643,7 +644,7 @@
       <section class="page" id="audit-log">
         <div class="page-head">
           <div><h1 class="page-head__t">Clinical audit log</h1><div class="page-head__s">Timestamped clinical and security events for traceability. Records are append-only in production.</div></div>
-          <div class="page-actions"><button class="btn btn--ghost btn--sm" type="button" data-toast="Audit log exported">Export log</button></div>
+          <div class="page-actions"><button class="btn btn--ghost btn--sm" type="button" data-audit-export>Export log</button></div>
         </div>
         <div class="kpis">
           <div class="kpi"><div class="kpi__n" data-count="18">18</div><div class="kpi__l">Events today</div><div class="kpi__d kpi__d--up">All recorded</div></div>
@@ -884,7 +885,6 @@
           <div class="tabs__panel profile-form" role="tabpanel" data-prtab-panel="signature" hidden>
             <div class="signature-preview"><img src="assets/doctor-signature.png?v=20260715e" alt="Current signature of Dr. Narin Tanaka" data-signature-preview=""><span class="badge badge--done">Signature on file ✓</span></div>
             <div class="hint">Used automatically on prescriptions you send.</div>
-            <input type="file" accept="image/png,image/jpeg" data-signature-input="" hidden>
             <input type="file" accept="image/png,image/jpeg" data-signature-input="" hidden>
             <button class="btn btn--ghost" data-signature-upload="">Upload new signature</button>
           </div>
@@ -1602,11 +1602,12 @@
   const signatureUpload = document.querySelector('[data-signature-upload]');
   const signatureInput = document.querySelector('[data-signature-input]');
   const signaturePreview = document.querySelector('[data-signature-preview]');
+  try{const saved=localStorage.getItem('krane-doctor-signature-demo');if(saved && signaturePreview)signaturePreview.src=saved;}catch{}
   if(signatureUpload && signatureInput) signatureUpload.addEventListener('click', () => signatureInput.click());
   if(signatureInput && signaturePreview) signatureInput.addEventListener('change', () => {
     const file = signatureInput.files && signatureInput.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.addEventListener('load', () => { signaturePreview.src = reader.result; toast('Signature preview updated'); reapplyLangIfTH(); });
+    reader.addEventListener('load', () => { signaturePreview.src = reader.result; try{localStorage.setItem('krane-doctor-signature-demo',reader.result);toast('Signature preview saved in this browser');}catch{toast('Signature preview only: browser storage unavailable');} reapplyLangIfTH(); });
     reader.readAsDataURL(file);
   });
   renderCalendar();
@@ -1835,7 +1836,7 @@
 </script>
 <script src="cms-select.js?v=20260715a"></script>
 <script src="cms-datetime.js?v=20260726a"></script>
-<script src="i18n.js?v=20260923-calendar-cleanup-v1"></script>
+<script src="i18n.js?v=20261010-handoff-v273"></script>
 
 
 <script>
@@ -1917,6 +1918,6 @@
   applyCmsHash();
 </script>
 
-<script src="doctor-core-flow.js?v=20260919-doctor-complete-v2"></script>
-<script src="../krane-golden-doctor.js"></script>
+<script src="doctor-core-flow.js?v=20261011-final-brand-v274"></script>
+<script src="../krane-golden-doctor.js?v=20261011-final-brand-v274"></script>
 </body></html>

@@ -499,9 +499,14 @@
     complete(false, true, destination);
   });
 
+  document.addEventListener('click',e=>{if(!e.target.closest('[data-audit-export]'))return;const quote=value=>'\"'+String(value).replace(/^[=+@-]/,m=>"'"+m).replace(/\"/g,'\"\"')+'\"';const rows=[['Timestamp','Event','Patient / case','Actor','Result'],...$$('[data-audit-rows] tr').map(tr=>[...tr.cells].map(td=>td.textContent.trim()))];const url=URL.createObjectURL(new Blob(['\ufeff'+rows.map(row=>row.map(quote).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='krane-demo-audit.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
   /* ---------------------------------------------------------------- profile (manual 6.2.1) */
   document.addEventListener('click', e => {
     if (e.target.closest('[data-profile-save]')) {
+      const values=Object.fromEntries(['name','email','phone'].map(key=>[key,$('#doctor-profile-'+key).value.trim()]));
+      if(!values.name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(values.email) || !/^0\d{8,9}$/.test(values.phone.replace(/\D/g,''))){$('[data-profile-status]').textContent=T('Check name, email and phone.','ตรวจชื่อ อีเมล และเบอร์โทรศัพท์');return;}
+      for(const key of ['name','email','phone']){const input=$('#doctor-profile-'+key);input.removeAttribute('data-value-en');input.removeAttribute('data-value-th');}
+      try{localStorage.setItem('krane-doctor-profile-demo',JSON.stringify(values))}catch{$('[data-profile-status]').textContent=T('Could not save in this browser.','บันทึกในเบราว์เซอร์ไม่ได้');return;}
       $('[data-profile-status]').textContent = T('Saved at ', 'บันทึกแล้ว ') + clock();
       say(T('Personal details saved', 'บันทึกข้อมูลส่วนตัวแล้ว')); return;
     }
@@ -518,6 +523,7 @@
     if (e.target.closest('[data-photo-choose]')) { $('[data-photo-input]').click(); return; }
     if (e.target.closest('[data-photo-remove]')) { setPhoto(null); say(T('Photo deleted', 'ลบรูปแล้ว')); }
   });
+  try{const profile=JSON.parse(localStorage.getItem('krane-doctor-profile-demo')||'null');if(profile)for(const key of ['name','email','phone']){const input=$('#doctor-profile-'+key);input.value=profile[key]||'';input.removeAttribute('data-value-en');input.removeAttribute('data-value-th');}}catch{}
   function setPhoto(src) {
     const av = $('[data-photo-avatar]');
     const topAv = $('[data-user-avatar]');
@@ -527,7 +533,9 @@
       el.classList.toggle('has-photo', !!src);
     });
     $('[data-photo-remove]').hidden = !src;
+    try{if(src)localStorage.setItem('krane-doctor-photo-demo',src);else localStorage.removeItem('krane-doctor-photo-demo')}catch{say(T('Photo preview only: browser storage unavailable.','แสดงตัวอย่างเท่านั้น: บันทึกในเบราว์เซอร์ไม่ได้'));}
   }
+  try{const saved=localStorage.getItem('krane-doctor-photo-demo');if(saved)setPhoto(saved)}catch{}
   function readPhoto(file) {
     if (!file || !/\.(jpe?g|png)$/i.test(file.name)) { say(T('Use a .jpeg, .jpg or .png file', 'ใช้ไฟล์ .jpeg .jpg หรือ .png')); return; }
     const r = new FileReader();

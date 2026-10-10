@@ -91,15 +91,15 @@
       '<div class="grid-3">' +
       '<div class="kv"><span class="k">Patient</span><span class="strong">' + f.patient.name + '</span></div>' +
       '<div class="kv"><span class="k">Order</span><span class="strong">#' + f.order.id + '</span></div>' +
-      '<div class="kv"><span class="k">Order total</span><span class="strong">฿' + f.order.total.toLocaleString() + '</span></div>' +
+      '<div class="kv"><span class="k">Order total</span><span class="strong" data-golden-order-total>฿' + f.order.total.toLocaleString() + '</span></div>' +
       '</div><div class="grid-3">' +
       '<div class="kv"><span class="k">Doctor</span><span class="strong">' + f.doctor.name + '</span></div>' +
       '<div class="kv"><span class="k">Condition</span><span class="strong">Hair loss</span></div>' +
       '<div class="kv"><span class="k">Delivery status</span><span class="strong" data-golden-delivery></span></div>' +
       '</div><div class="grid-3">' +
       '<div class="kv"><span class="k">Consultation fee</span><span class="strong">฿' + f.consultation.fee.toLocaleString() + '</span></div>' +
-      '<div class="kv"><span class="k">Medicine fee</span><span class="strong">฿' + f.treatment.medicineFee.toLocaleString() + '</span></div>' +
-      '<div class="kv"><span class="k">Medicines</span><span class="strong">' + f.treatment.medicines.map(function (item) { return item.name; }).join(" + ") + '</span></div>' +
+      '<div class="kv"><span class="k">Medicine fee</span><span class="strong" data-golden-medicine-total>฿' + f.treatment.medicineFee.toLocaleString() + '</span></div>' +
+      '<div class="kv"><span class="k">Medicines</span><span class="strong" data-golden-medicine-names>' + f.treatment.medicines.map(function (item) { return item.name; }).join(" + ") + '</span></div>' +
       '</div>' +
       '<div class="kv"><span class="k">Delivery address</span><span class="strong">The Base Park West, Room 22/418, Soi Sukhumvit 77, Phra Khanong Nuea, Watthana, Bangkok 10110</span></div>' +
       '<div class="page-actions"><a class="btn btn--primary btn--sm" data-golden-open-tracking target="_blank" rel="noopener">Open the patient\'s tracking page</a></div>';
@@ -109,6 +109,20 @@
 
   function applyState() {
     const state = demo.readState();
+    const medicineTotal=state.prescription ? state.prescription.total : f.treatment.medicineFee;
+    const orderTotal=medicineTotal+f.order.deliveryFee;
+    const amount='฿'+orderTotal.toLocaleString();
+    const totalNode=document.querySelector('[data-golden-order-total]');
+    if(totalNode) totalNode.textContent=amount;
+    const medicineNode=document.querySelector('[data-golden-medicine-total]');
+    if(medicineNode) medicineNode.textContent='฿'+medicineTotal.toLocaleString();
+    const namesNode=document.querySelector('[data-golden-medicine-names]');
+    if(namesNode) namesNode.textContent=(state.prescription ? state.prescription.items : f.treatment.medicines).map(item=>item.name+(item.qty ? ' × '+item.qty : '')).join(' + ');
+    if(goldenRow) goldenRow.dataset.amount=amount;
+    const subtitle=document.querySelector('[data-fulfilment-subtitle]');
+    if(subtitle) subtitle.textContent=subtitle.textContent.replace(/฿[\d,]+/,amount);
+    const refundAmount=document.querySelector('[data-refund-amount]');
+    if(refundAmount) refundAmount.textContent=amount;
     const adminValue = state.fulfilmentStatus === "Order received" ? "Paid" :
       state.fulfilmentStatus === "Dispatched" ? "Out for delivery" : state.fulfilmentStatus;
     const select = document.querySelector("[data-status-select]");
@@ -125,7 +139,7 @@
     const delivery = document.querySelector("[data-golden-delivery]");
     if (delivery) delivery.textContent = (thai() ? statusTH : statusEN)[state.fulfilmentStatus] || state.fulfilmentStatus;
     const trackingLink = document.querySelector("[data-golden-open-tracking]");
-    if (trackingLink) trackingLink.href = "../b2c/krane-b2c.html?demoStatus=" + encodeURIComponent(state.fulfilmentStatus) + "#tracking";
+    if (trackingLink) trackingLink.href = "../b2c/krane-b2c.html?demoOrder=golden&demoStage=tracking&demoStatus=" + encodeURIComponent(state.fulfilmentStatus) + "#tracking";
     const steps = Array.from(document.querySelectorAll("[data-status-step]"));
     const activeIndex = steps.findIndex(function (step) { return step.dataset.statusStep === adminValue; });
     steps.forEach(function (step, index) {

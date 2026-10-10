@@ -4,10 +4,11 @@
 <title>Krane CMS · Admin Back Office</title>
 <!-- brand tokens are the single source of truth; back-office styles are token-driven semantic classes -->
 <link rel="stylesheet" href="design-tokens.css?v=20260918-doctor-colour-v1">
-<link rel="stylesheet" href="cms.css?v=20260918-doctor-colour-v1">
+<link rel="stylesheet" href="cms.css?v=20261011-final-brand-v274">
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
-<script src="../krane-golden-fixture.js?v=20260914-rider-pickup-v2"></script>
+<script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
+<link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-logomark.svg">
 </head>
 <body class="role-admin">
 
@@ -18,7 +19,7 @@
 
   <!-- ================= SIDEBAR (role-filtered nav · F07) ================= -->
   <aside class="cms-rail">
-    <div class="cms-rail__brand"><img src="../assets/krane-logo.svg" width="1059" height="280" alt="Krane"><span class="cms-rail__role" data-role-label="">Admin</span></div>
+    <div class="cms-rail__brand"><img src="../assets/brand-final/krane-logotype.svg" width="286" height="72" alt="Krane"><span class="cms-rail__role" data-role-label="">Admin</span></div>
 
     
     
@@ -45,7 +46,7 @@
     <a class="cms-rail__link admin-only" data-page="coupons"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z"></path><path d="M13 6v2M13 11v2M13 16v2"></path></svg></span>Promotions</a>
     <a class="cms-rail__link admin-only" data-page="config"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"></path><circle cx="16" cy="8" r="2.3"></circle><circle cx="8" cy="16" r="2.3"></circle></svg></span>Channels</a>
 
-    <div class="cms-rail__watermark" aria-hidden="true"><img src="../assets/krane-logo.svg" width="1059" height="280" alt=""></div>
+    <div class="cms-rail__watermark" aria-hidden="true"><img src="../assets/brand-final/krane-logotype.svg" width="286" height="72" alt=""></div>
     <div class="cms-rail__foot">
       <div class="lang" data-lang="">
         <button class="lang__opt" data-lng="en">EN</button>
@@ -180,26 +181,29 @@
       <!-- ===== ADMIN · CONTENT / CMS (F30) ===== -->
       <section class="page admin-only" id="content">
         <div class="page-head"><div><h1 class="page-head__t">Content</h1><div class="page-head__s">Health articles · two-step publish (draft → approve → live)</div></div>
-          <div class="page-actions"><button class="btn btn--primary btn--sm">New article</button></div></div>
-        <div class="editor">
-          <div class="panel panel--flush">
-            <table class="table">
-              <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th></th></tr></thead>
-              <tbody>
-                <tr><td class="strong">Does finasteride really work?</td><td>Hair loss</td><td>Dr. A.</td><td><span class="badge badge--done">Published</span></td><td><button class="btn btn--ghost btn--sm">Edit</button></td></tr>
-                <tr><td class="strong">Minoxidil: what to expect</td><td>Hair loss</td><td>Dr. B.</td><td><span class="badge badge--warn" data-article-status-badge="">Pending approval</span></td><td><button class="btn btn--primary btn--sm" data-publish-article="">Approve</button></td></tr>
-                <tr><td class="strong">Healthy habits for your hair</td><td>Lifestyle</td><td>Krane team</td><td><span class="badge badge--mute">Draft</span></td><td><button class="btn btn--ghost btn--sm">Edit</button></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <aside class="panel stack">
-            <div class="panel__title">Review · Minoxidil: what to expect</div>
-            <div class="field"><label for="admin-article-status">Status</label><select class="select" id="admin-article-status" data-article-status-select=""><option value="Pending approval">Pending approval</option><option value="Published">Published</option><option value="Draft">Draft</option></select></div>
-            <div class="field"><label for="admin-doctor-attribution">Doctor attribution</label><input class="input" id="admin-doctor-attribution" value="Dr. B. · reviewed Jun 2026"></div>
-            <div class="hint">No medical content goes live without an explicit approval action.</div>
-            <button class="btn btn--primary btn--block" data-publish-article="">Approve &amp; publish</button>
-            <button class="btn btn--ghost btn--block">Send back to draft</button>
-          </aside>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-editorial-new>New article</button></div></div>
+        <div class="editor" data-editorial-workspace>
+          <div class="panel panel--flush"><table class="table"><thead><tr><th>Article</th><th>Status</th><th></th></tr></thead><tbody data-editorial-rows></tbody></table></div>
+          <form class="panel stack" data-editorial-form>
+            <div class="panel__title">Edit article</div>
+            <div class="field"><label for="editor-title">Article title</label><input class="input" id="editor-title" name="title" required></div>
+            <div class="field"><label for="editor-summary">Summary</label><textarea class="input" id="editor-summary" name="summary" required></textarea></div>
+            <div class="field"><label for="editor-image">Image URL</label><input class="input" id="editor-image" name="image" required></div>
+            <div class="field"><label for="editor-alt">Image description</label><input class="input" id="editor-alt" name="imageAlt" required></div>
+            <div class="field"><label for="editor-author">Doctor author</label><input class="input" id="editor-author" name="authorName" required></div>
+            <div class="field"><label for="editor-photo">Author photo URL</label><input class="input" id="editor-photo" name="authorPhoto" required></div>
+            <div class="field"><label for="editor-category">Category</label><select class="select" id="editor-category" name="category"><option value="hair">Hair</option><option value="weight">Weight</option></select></div>
+            <div class="field"><label for="editor-tags">Tags (comma separated)</label><input class="input" id="editor-tags" name="tags"></div>
+            <div class="field"><label for="editor-source">Reference URL</label><input class="input" id="editor-source" name="source" type="url"></div>
+            <div data-editorial-sections></div>
+            <button class="btn btn--ghost" type="button" data-editorial-add-section>Add content section</button>
+            <p class="hint">Saving a draft does not change the published article until you approve and publish.</p>
+            <p role="status" aria-live="polite" data-editorial-feedback></p>
+            <button class="btn btn--ghost" type="submit" value="Draft">Save draft</button>
+            <button class="btn btn--primary" type="submit" value="Pending approval">Submit for review</button>
+            <button class="btn btn--primary" type="submit" value="Published">Approve and publish</button>
+            <a class="btn btn--ghost" data-editorial-preview target="_blank" rel="noopener">View published article</a>
+          </form>
         </div>
 
         <!-- Intake quiz management (F04): admin edits the quiz + per-condition re-intake rule -->
@@ -221,7 +225,7 @@
       <!-- ===== ADMIN · PRICING (F17) ===== -->
       <section class="page admin-only" id="pricing">
         <div class="page-head"><div><h1 class="page-head__t">Pricing</h1><div class="page-head__s">Krane price per item (separate from Fascino base price)</div></div>
-          <div class="page-actions"><button class="btn btn--primary btn--sm">Save changes</button></div></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-admin-save="pricing">Save changes</button></div></div>
         <div class="panel panel--flush">
           <table class="table">
             <thead><tr><th>Item</th><th>Fascino base</th><th>Krane price</th><th>Margin</th><th>Status</th></tr></thead>
@@ -262,14 +266,14 @@
         <div class="panel" data-coupon-form="">
           <div class="panel__head"><span class="panel__title">Create a coupon</span></div>
           <div class="cfg-row"><div><div class="cfg-t">Code &amp; value</div><div class="cfg-s">Fixed amount or percentage. Zero-value codes are allowed for QA.</div></div>
-            <div class="cfg-ctl"><input class="input" placeholder="CODE" style="height:38px;width:140px"><select class="select" style="height:38px;width:120px"><option>Fixed ฿</option><option>Percent %</option></select><input class="input" placeholder="Value" style="height:38px;width:90px"></div></div>
+            <div class="cfg-ctl" style="flex-wrap:wrap;max-width:100%"><input class="input" placeholder="CODE" name="couponCode" aria-label="Coupon code" maxlength="40" style="height:38px;width:140px"><select class="select" name="couponType" aria-label="Discount type" style="height:38px;width:120px"><option value="fixed">Fixed ฿</option><option value="percent">Percent %</option></select><input class="input" placeholder="Value" name="couponValue" aria-label="Discount value" type="number" min="0" step="0.01" style="height:38px;width:90px"></div></div>
           <div class="cfg-row"><div><div class="cfg-t">Applies to</div><div class="cfg-s">Redeemable at the consultation-fee checkout, the medication checkout, or both.</div></div>
-            <div class="cfg-ctl"><select class="select" style="height:38px;width:190px"><option>Both checkouts</option><option>Consultation fee</option><option>Medication</option></select></div></div>
+            <div class="cfg-ctl" style="flex-wrap:wrap;max-width:100%"><select class="select" name="couponScope" aria-label="Applies to" style="height:38px;width:190px"><option value="both">Both checkouts</option><option value="consultation">Consultation fee</option><option value="medication">Medication</option></select></div></div>
           <div class="cfg-row"><div><div class="cfg-t">Validity window &amp; max uses</div><div class="cfg-s">Multi-use codes are limited to once per account.</div></div>
-            <div class="cfg-ctl"><input class="input" value="1 Aug to 31 Aug" style="height:38px;width:160px"><input class="input" placeholder="Max uses" style="height:38px;width:100px"></div></div>
+            <div class="cfg-ctl" style="flex-wrap:wrap;max-width:100%"><input class="input" type="date" name="couponStart" aria-label="Valid from" style="height:38px;width:150px"><input class="input" type="date" name="couponEnd" aria-label="Valid until" style="height:38px;width:150px"><input class="input" placeholder="Max uses" name="couponMaxUses" aria-label="Maximum uses" type="number" min="1" step="1" style="height:38px;width:100px"></div></div>
           <div class="cfg-row"><div><div class="cfg-t">Restrict to a vertical</div><div class="cfg-s">Optional. Limit the code to one service type, e.g. hair loss.</div></div>
-            <div class="cfg-ctl"><select class="select" style="height:38px;width:190px"><option>All verticals</option><option>Hair loss</option><option>Skin care</option><option>Sleep &amp; stress</option></select></div></div>
-          <div class="cfg-row"><div class="cfg-ctl" style="margin-left:auto"><button class="btn btn--ghost btn--sm">Cancel</button><button class="btn btn--primary btn--sm" data-toast="Coupon saved">Save coupon</button></div></div>
+            <div class="cfg-ctl" style="flex-wrap:wrap;max-width:100%"><select class="select" name="couponVertical" aria-label="Service type" style="height:38px;width:190px"><option value="all">All verticals</option><option value="hair">Hair loss</option><option value="skin">Skin care</option><option value="sleep">Sleep &amp; stress</option></select></div></div>
+          <div class="cfg-row"><div class="cfg-ctl" style="flex-wrap:wrap;max-width:100%;margin-left:auto"><button class="btn btn--ghost btn--sm" data-coupon-cancel>Cancel</button><button class="btn btn--primary btn--sm" data-coupon-save>Save coupon</button></div></div>
         </div>
       </section>
 
@@ -279,7 +283,7 @@
       <section class="page admin-only" id="config">
         <div class="page-head">
           <div><h1 class="page-head__t">Channels &amp; configuration</h1><div class="page-head__s">Turn features on or off for each partner channel. Every channel runs from the same setup, so one change rolls out everywhere.</div></div>
-          <div class="page-actions"><button class="btn btn--primary btn--sm" data-toast="Configuration saved">Save changes</button></div>
+          <div class="page-actions"><button class="btn btn--primary btn--sm" data-admin-save="config">Save changes</button></div>
         </div>
         <div class="panel panel--flush" style="margin-bottom:var(--sp-5)">
           <div class="panel__head"><span class="panel__title">Channels</span><span class="badge badge--mute">3 channels</span></div>
@@ -293,8 +297,8 @@
           </table>
         </div>
         <div class="panel" style="margin-bottom:var(--sp-5)">
-          <div class="panel__head"><span class="panel__title">Intake quiz</span><button class="btn btn--ghost btn--sm" data-toast="Quiz editor is a build-phase feature">Edit quiz questions</button></div>
-          <div class="cfg-row"><div><div class="cfg-t">General consultation</div><div class="cfg-s">Fresh intake required every time. Fixed by clinical policy.</div></div><div class="cfg-ctl"><span class="badge badge--done">Always on</span></div></div>
+          <div class="panel__head"><span class="panel__title">Intake quiz</span><button class="btn btn--ghost btn--sm" disabled aria-describedby="quiz-build-note">Edit quiz questions</button></div>
+          <p class="hint" id="quiz-build-note">Question editing is not available in this prototype. The approved questionnaire and publishing rules are required before implementation.</p><div class="cfg-row"><div><div class="cfg-t">General consultation</div><div class="cfg-s">Fresh intake required every time. Fixed by clinical policy.</div></div><div class="cfg-ctl"><span class="badge badge--done">Always on</span></div></div>
           <div class="cfg-row"><div><div class="cfg-t">Hair loss</div><div class="cfg-s">Intake once before the first consultation. Toggle to re-prompt on every visit.</div></div><div class="cfg-ctl"><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div></div>
           <div class="cfg-row"><div><div class="cfg-t">Skin care</div><div class="cfg-s">Intake once before the first consultation. Toggle to re-prompt on every visit.</div></div><div class="cfg-ctl"><label class="switch"><input type="checkbox" checked=""><span class="track"></span><span class="thumb"></span></label></div></div>
         </div>
@@ -708,14 +712,6 @@
   });
   userPermissionInputs.forEach(chip => chip.addEventListener('click', () => chip.classList.toggle('is-active')));
 
-  const articleStatus = document.querySelector('[data-article-status-select]');
-  const articleBadge = document.querySelector('[data-article-status-badge]');
-  document.querySelectorAll('[data-publish-article]').forEach(button => button.addEventListener('click', () => {
-    if(articleStatus){ articleStatus.value = 'Published'; articleStatus.dispatchEvent(new Event('cms-sync')); }
-    if(articleBadge){ articleBadge.textContent = 'Published'; articleBadge.classList.remove('badge--warn'); articleBadge.classList.add('badge--done'); }
-    toast('Article published'); reapplyLangIfTH();
-  }));
-
   const newCoupon = document.querySelector('[data-scroll-coupon]');
   const couponForm = document.querySelector('[data-coupon-form]');
   if(newCoupon && couponForm) newCoupon.addEventListener('click', () => {
@@ -726,6 +722,7 @@
   // ---- fallback: any action button with no wired behaviour still gives feedback ----
   document.body.addEventListener('click', e => {
     const btn = e.target.closest('button.btn, a.btn'); if(!btn) return;
+    if(btn.closest('[data-editorial-workspace]') || btn.hasAttribute('data-editorial-new')) return;
     if(btn.closest('[data-page]') || btn.hasAttribute('data-toast') || btn.hasAttribute('data-update-status') ||
        btn.hasAttribute('data-publish-article') || btn.hasAttribute('data-scroll-coupon') ||
        btn.hasAttribute('data-user-open') || btn.hasAttribute('data-user-close') || btn.hasAttribute('data-user-save') ||
@@ -744,7 +741,8 @@
 </script>
 <script src="cms-select.js?v=20260715a"></script>
 <script src="cms-datetime.js?v=20260726a"></script>
-<script src="i18n.js?v=20260919-lang-v1">
+<script src="i18n.js?v=20261010-handoff-v273"></script>
+<script>
   // Deep link support: open the page named in the URL, and follow back/forward.
   // Runs after load so later init code cannot navigate away from the linked page.
   function applyCmsHash(){ const id = location.hash.slice(1); if(id) go(id, false); }
@@ -753,5 +751,9 @@
   applyCmsHash();
 </script>
 
-<script src="../krane-golden-admin.js?v=20260919-lang-v1"></script>
+<script src="../b2c/article-data.js?v=20261010-handoff-v273"></script>
+<script src="../b2c/article-store.js?v=20261010-handoff-v273"></script>
+<script src="article-editor.js?v=20261010-handoff-v273"></script>
+<script src="admin-settings.js?v=20261010-handoff-v273"></script>
+<script src="../krane-golden-admin.js?v=20261011-final-brand-v274"></script>
 </body></html>

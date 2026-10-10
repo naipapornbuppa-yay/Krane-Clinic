@@ -88,11 +88,40 @@
       return {
         fulfilmentStatus: allowedStatuses.includes(saved.fulfilmentStatus) ? saved.fulfilmentStatus : fixture.order.defaultStatus,
         consultationStatus: saved.consultationStatus || fixture.consultation.status,
+        prescription: normalizePrescription(saved.prescription),
         updatedAt: saved.updatedAt || null
       };
     } catch (error) {
-      return { fulfilmentStatus: fixture.order.defaultStatus, consultationStatus: fixture.consultation.status, updatedAt: null };
+      return { fulfilmentStatus: fixture.order.defaultStatus, consultationStatus: fixture.consultation.status, prescription: null, updatedAt: null };
     }
+  }
+
+  // Browser-only demonstration payload. Clinical strings are copied, never inferred.
+  function normalizePrescription(value) {
+    if (!value || !Array.isArray(value.items) || !value.items.length) return null;
+    const items = value.items.map(item => {
+      if (!item || typeof item.name !== "string" || !item.name.trim() ||
+          !Number.isFinite(item.price) || item.price < 0 ||
+          !Number.isSafeInteger(item.qty) || item.qty < 1) return null;
+      const result = { name: item.name, price: item.price, qty: item.qty };
+      ["key", "sku", "generic", "directions", "dir", "dirTH"].forEach(key => {
+        result[key] = typeof item[key] === "string" ? item[key] : "";
+      });
+      return result;
+    });
+    if (items.some(item => !item)) return null;
+    const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    if (!Number.isFinite(total)) return null;
+    return { consultationId: fixture.consultation.id, patientId: fixture.patient.id,
+      items, total, updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : null };
+  }
+
+  function writePrescription(details) {
+    const prescription = normalizePrescription(details);
+    if (!prescription) throw new Error("Invalid demo prescription");
+    prescription.updatedAt = new Date().toISOString();
+    // Never mark payment completed or advance fulfilment when a plan is sent.
+    return writeState({ prescription, consultationStatus: "Plan sent" });
   }
 
   function writeState(patch) {
@@ -154,6 +183,7 @@
     statuses: allowedStatuses.slice(),
     readState,
     writeState,
+    writePrescription,
     advanceFulfilment,
     replaceText,
     applyPairs,

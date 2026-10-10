@@ -50,8 +50,8 @@
   /* Creating the order is the moment the plan reaches the patient. It must never
      create or rewind a pharmacy order on its own: fulfilment advances only after the
      patient accepts and pays. */
-  document.addEventListener("krane-doctor-order-created", function () {
-    demo.writeState({ consultationStatus: "Plan sent" });
+  document.addEventListener("krane-doctor-order-created", function (event) {
+    demo.writePrescription(event.detail);
     applyFixture();
     syncOrderStatus();
   });

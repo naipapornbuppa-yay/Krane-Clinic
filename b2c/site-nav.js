@@ -18,9 +18,9 @@
    landing, so this file renders and does nothing else. */
 (() => {
 const SITE_NAV_BRAND = {
-  src: "../assets/krane-clinic-lockup-v1.svg?v=20260920-float-v1",
-  width: 193,
-  height: 31,
+  src: "../assets/brand-final/krane-lockup.svg",
+  width: 473,
+  height: 72,
   alt: "Krane Clinic"
 };
 /* "Our services": the treatment programmes first, then the three ways into
