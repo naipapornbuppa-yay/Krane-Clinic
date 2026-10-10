@@ -8345,6 +8345,8 @@
     }
     const directGate=target==='intake-general' && flowState.entryChannel==='direct';
     if(!REQUIRED_CARE_TARGETS.has(target) && !directGate) return;
+    // Review entry to downstream partner screens needs the completed PHR prerequisite.
+    if(flowState.entryChannel==='partner' && DIRECT_PRE_DOCTOR_GATE_TARGETS.has(target)) seedPartnerStage('matching');
     Object.assign(flowState,{
       draftReady:true,accountCreated:true,otpVerified:true,passwordSet:true,consentsComplete:true,
       patientInfoComplete:true,identityVerified:true,patientName:flowState.patientName || 'มะลิ ส.'
