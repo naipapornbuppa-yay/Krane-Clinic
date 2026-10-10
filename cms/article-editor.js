@@ -23,7 +23,7 @@
   const draft=KraneArticleStore.records().find(r=>r.id===selected).draft;
   for(const name of ['title','summary','image','imageAlt'])draft[name]=form.elements[name].value.trim();
   draft.author={...draft.author,name:form.elements.authorName.value.trim(),photo:form.elements.authorPhoto.value.trim()};
-  draft.category=form.elements.category.value;draft.categoryLabel=({hair:'เส้นผม',weight:'น้ำหนัก'})[draft.category];draft.tags=form.elements.tags.value.split(',').map(s=>s.trim()).filter(Boolean);draft.source=form.elements.source.value.trim();
+  draft.category=form.elements.category.value;draft.categoryLabel=({hair:'เส้นผม',weight:'น้ำหนัก',men:'โรคผู้ชาย',general:'ทั่วไป'})[draft.category];draft.tags=form.elements.tags.value.split(',').map(s=>s.trim()).filter(Boolean);draft.source=form.elements.source.value.trim();
   draft.sections=Array.from({length:sectionCount},(s,i)=>({heading:form.elements[`heading-${i}`].value.trim(),copy:form.elements[`copy-${i}`].value.trim()}));
   const segmenter=new Intl.Segmenter('th',{granularity:'word'});draft.minutes=Math.max(1,Math.ceil([...segmenter.segment(draft.summary+' '+draft.sections.map(s=>s.copy).join(' '))].filter(s=>s.isWordLike).length/180));
   const saved=KraneArticleStore.save(selected,draft,e.submitter?.value||'Draft');form.querySelector('[data-editorial-preview]').hidden=!saved.published;render();feedback.textContent=e.submitter?.value==='Published'?'เผยแพร่แล้ว เปิดดูในหน้าบทความได้':'บันทึกแล้ว บทความที่เผยแพร่ยังไม่เปลี่ยน';
