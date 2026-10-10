@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Krane Clinic · Online Care</title>
+
+<!-- Retired 6 Oct 2026.
+     This was a 545 KB visual preview of an earlier prototype. The prototype
+     itself is gone; what stays is the forwarding, because the partner review
+     links were shared outside the repo (chat, decks, bookmarks) and nothing in
+     the codebase points here — deleting the file outright would break links we
+     cannot see. Every route lands on the current app instead. -->
+<script>
+  window.openCurrentPartnerFlow = function (route) {
+    const routes = {
+      'partner-idcard':'partner-idcard',
+      'partner-patient-info':'partner-patient-info',
+      'partner-insurance':'partner-insurance',
+      'partner-phr':'partner-phr',
+      'partner-concern':'intake-concern',
+      'partner-intake':'intake-general',
+      'partner-nurse':'matching',
+      'partner-nurse-session':'matching'
+    };
+    const target = routes[route];
+    if (!target) return false;
+    const url = new URL('krane-b2c.html', location.href);
+    url.search = '';
+    url.searchParams.set('screens', '1');
+    url.searchParams.set('demoStage', target);
+    url.hash = target;
+    location.replace(url.href);
+    return true;
+  };
+  (function () {
+    const route = location.hash.slice(1).split('?')[0];
+    if (window.openCurrentPartnerFlow(route)) return;
+    /* Anything else this page used to show now lives in the current app. */
+    const url = new URL('krane-b2c.html', location.href);
+    url.search = '';
+    url.searchParams.set('screens', '1');
+    if (route) url.hash = route;
+    location.replace(url.href);
+  })();
+</script>
+<style>
+  body{margin:0;display:grid;place-items:center;min-height:100vh;
+       font:400 15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;
+       color:#4b5263;background:#f4f4f3}
+  a{color:#395aa4}
+</style>
+<link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-logomark.svg">
+</head>
+<body>
+  <p>หน้านี้ย้ายไปที่แอปเวอร์ชันปัจจุบันแล้ว · <a href="krane-b2c.html?screens=1">เปิดแอป Krane</a></p>
+</body>
+</html>
