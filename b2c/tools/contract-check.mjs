@@ -121,6 +121,31 @@ const partnerStartLink = await app.evaluate(() => {
   return group?.querySelector('a.is-key-route[href*="entry=partner"]')?.getAttribute('href') || '';
 });
 if (!partnerStartLink.includes('fresh=1#consent-terms')) fail('partner start link', partnerStartLink || 'missing');
+const completePartnerIdentity = async page => {
+  await page.locator('#partner-first-name').fill('ณัฐ');
+  await page.locator('#partner-last-name').fill('ตัวอย่าง');
+  await page.locator('#partner-phone').fill('0812345678');
+  await page.locator('#partner-patient-info [data-phone-edit]').click();
+  await page.locator('#otp.active [data-otp-code]').fill('123456');
+  await page.locator('#otp.active [data-auth-complete]').click();
+  await page.locator('#partner-patient-info.active').waitFor();
+  await page.locator('#partner-patient-info [data-partner-info-continue]').click();
+};
+const freshPartnerHealth = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+try {
+  const blankHealth = await freshPartnerHealth.newPage();
+  await blankHealth.goto(`${base}/b2c/krane-b2c.html?entry=partner&demoStage=intake-general#intake-general`, { waitUntil: 'domcontentloaded' });
+  const empty = await blankHealth.locator('#intake-general').evaluate(screen => ({
+    values:['intake-sex','intake-dob','intake-height','intake-weight'].map(id => screen.querySelector(`#${id}`)?.value),
+    datePrompt:screen.querySelector('#intake-dob')?.closest('.date-control')?.querySelector('.date-control__value')?.textContent.trim()
+  }));
+  did();
+  if (JSON.stringify(empty.values) !== JSON.stringify(['','','','']) || !empty.datePrompt?.includes('วว')) {
+    fail('partner health empty state', JSON.stringify(empty));
+  }
+} finally {
+  await freshPartnerHealth.close();
+}
 const legacyPartner = await ctx.newPage();
 try {
   await legacyPartner.goto(`${base}/b2c/krane-b2c-paper-crane-preview.html#partner-idcard`, { waitUntil: 'domcontentloaded' });
@@ -134,7 +159,11 @@ try {
   did();
   const next = await legacyPartner.evaluate(() => document.querySelector('.screen.active')?.id);
   if (next !== 'partner-patient-info') fail('partner ID-card flow', `expected partner-patient-info, got ${next}`);
-  await legacyPartner.locator('#partner-patient-info [data-partner-info-continue]').click();
+  const blankIdentity = await legacyPartner.locator('#partner-patient-info').evaluate(screen =>
+    ['partner-first-name','partner-last-name','partner-phone'].map(id => screen.querySelector(`#${id}`)?.value));
+  did();
+  if (JSON.stringify(blankIdentity) !== JSON.stringify(['','',''])) fail('partner identity empty state', JSON.stringify(blankIdentity));
+  await completePartnerIdentity(legacyPartner);
   await legacyPartner.waitForTimeout(800);
   did();
   const coverage = await legacyPartner.evaluate(() => document.querySelector('.screen.active')?.id);
@@ -165,7 +194,7 @@ try {
   await step('consent', 'partner-idcard');
   await partnerJourney.locator('[data-idcard-skip]').click();
   await step('ID card', 'partner-patient-info');
-  await partnerJourney.locator('[data-partner-info-continue]').click();
+  await completePartnerIdentity(partnerJourney);
   await step('patient details', 'insurance');
   await partnerJourney.locator('#insurance-id').fill('1234567890123');
   await partnerJourney.locator('#insurance-dob').fill('1997-09-01');
@@ -196,7 +225,13 @@ try {
   if (await partnerJourney.locator('[data-direct-health-lifestyle]').isVisible()) {
     fail('partner questions', 'direct-only lifestyle questions are visible');
   }
-  await partnerJourney.locator('#intake-dob').fill('1994-03-12');
+  const healthPrefill = await partnerJourney.locator('#intake-general').evaluate(screen =>
+    ['intake-sex','intake-dob','intake-height','intake-weight'].map(id => screen.querySelector(`#${id}`)?.value));
+  did();
+  if (JSON.stringify(healthPrefill) !== JSON.stringify(['','1997-09-01','',''])) {
+    fail('partner DOB prefill', JSON.stringify(healthPrefill));
+  }
+  await partnerJourney.locator('#intake-sex').selectOption('female');
   await partnerJourney.locator('#intake-height').fill('175');
   await partnerJourney.locator('#intake-weight').fill('70');
   await partnerJourney.locator('#intake-general [data-intake-complete]').click();

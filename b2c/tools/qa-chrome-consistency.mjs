@@ -65,6 +65,11 @@ try {
         await page.screenshot({path:join(screenshotDir,`${stage}-${width}.png`)});
       }
     }
+    if (screenshotDir && [390,1440].includes(width)) {
+      await page.goto(`${base}krane-b2c.html?entry=partner&demoStage=intake-general#intake-general`, {waitUntil:'domcontentloaded'});
+      await page.locator('#intake-general.active').waitFor();
+      await page.screenshot({path:join(screenshotDir,`partner-intake-general-${width}.png`)});
+    }
     await page.close();
   }
   const failures = [];
