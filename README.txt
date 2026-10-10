@@ -21,3 +21,7 @@ Date: 19 July 2026
 - Brand book: krane-brand-book.html
 
 ไฟล์นี้เป็น interactive prototype สำหรับ review flow, content และ component behavior ยังไม่ใช่ production system และไม่มีข้อมูลผู้ป่วยจริง
+
+เอกสารสำหรับส่งต่องานให้ developer ใหม่: b2c/handoff/DEVELOPER-HANDOFF.md
+รายการข้อความและ string ID: b2c/handoff/STRING-ID-HANDOFF.md และ b2c/strings/README.md
+รายการ error/edge case: b2c/handoff/ERROR-EDGE-CASES.md

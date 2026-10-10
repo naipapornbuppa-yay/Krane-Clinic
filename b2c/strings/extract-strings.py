@@ -8,7 +8,7 @@ first. Each screen is then sliced at its own closing </section>, counting nested
 sections, so a string is always attributed to the screen it actually appears on.
 """
 import re, io, json, html, os, sys
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict, defaultdict, deque
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -142,16 +142,75 @@ def write(name, data):
     print('%-36s %d entries' % (name, len(data)))
 
 
+def read(name):
+    path = os.path.join(HERE, name)
+    return json.load(io.open(path, encoding='utf-8')) if os.path.exists(path) else {}
+
+
+def stable_catalog(generated, existing, dynamic=False):
+    """Keep IDs for unchanged copy and mark removed copy as retired.
+
+    The previous extractor numbered every string by page order. Inserting one
+    label could therefore rename all later IDs. Matching the actual copy before
+    allocating an ID makes this safe to rerun during developer handoff.
+    """
+    exact, loose, next_number = defaultdict(deque), defaultdict(deque), defaultdict(int)
+    for key, row in existing.items():
+        if dynamic:
+            exact[(row.get('pattern'), row.get('lang'))].append(key)
+            number = re.fullmatch(r'dynamic\.msg(\d+)', key)
+            if number:
+                next_number['dynamic'] = max(next_number['dynamic'], int(number.group(1)))
+        else:
+            copy = row.get('th') or row.get('en')
+            exact[(row.get('screen'), row.get('role'), copy)].append(key)
+            loose[(row.get('screen'), copy)].append(key)
+            number = re.fullmatch(r'(.+)\.([a-zA-Z]+)(\d+)', key)
+            if number:
+                group = (number.group(1), number.group(2))
+                next_number[group] = max(next_number[group], int(number.group(3)))
+
+    result, used = OrderedDict(), set()
+    for provisional, row in generated.items():
+        if dynamic:
+            queue = exact[(row['pattern'], row['lang'])]
+        else:
+            copy = row.get('th') or row.get('en')
+            queue = exact[(row['screen'], row['role'], copy)]
+        key = next((candidate for candidate in queue if candidate not in used), None)
+        if key is None and not dynamic:
+            key = next((candidate for candidate in loose[(row['screen'], copy)] if candidate not in used), None)
+        if key is None:
+            if dynamic:
+                next_number['dynamic'] += 1
+                key = 'dynamic.msg%02d' % next_number['dynamic']
+            else:
+                group = (row['screen'], row['role'])
+                next_number[group] += 1
+                key = '%s.%s%02d' % (group[0], group[1], next_number[group])
+        used.add(key)
+        result[key] = row
+
+    for key, row in existing.items():
+        if key not in used:
+            result[key] = OrderedDict(row, status='retired')
+    return result
+
+
 def main():
     source = os.path.join(ROOT, 'krane-b2c.html')
     if not os.path.exists(source):
         sys.exit('cannot find %s' % source)
     raw = io.open(source, encoding='utf-8').read()
-    catalog = build_catalog(strip_non_copy(raw), thai_to_english())
+    catalog = stable_catalog(build_catalog(strip_non_copy(raw), thai_to_english()),
+                             read('krane-strings.json'))
+    dynamic = stable_catalog(build_dynamic(raw),
+                             read('krane-strings-dynamic.json'), dynamic=True)
     write('krane-strings.json', catalog)
-    write('krane-strings-dynamic.json', build_dynamic(raw))
+    write('krane-strings-dynamic.json', dynamic)
     write('krane-strings-missing-en.json', OrderedDict(
-        (k, v['th']) for k, v in catalog.items() if v['th'] and not v['en']))
+        (k, v['th']) for k, v in catalog.items()
+        if v.get('status') != 'retired' and v['th'] and not v['en']))
 
 
 if __name__ == '__main__':

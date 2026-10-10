@@ -114,7 +114,6 @@
         ["my-documents", "SID-051B", "เอกสารของฉัน", "My documents"],
         ["activity", "SID-052", "กิจกรรม", "Activity"],
         ["empty-activities", "SID-053", "ยังไม่มีกิจกรรม", "No activity yet", "exception"],
-        ["history", "SID-054", "ประวัติการรักษา", "Treatment history"],
         ["empty-history", "SID-055", "ยังไม่มีประวัติการรักษา", "No treatment history", "exception"],
         ["notifications", "SID-056", "การแจ้งเตือน", "Notifications"],
         ["account", "SID-057", "ข้อมูลส่วนตัว", "Personal details"],
@@ -128,13 +127,11 @@
     },
     {
       step: "09", th: "เข้าผ่านพาร์ทเนอร์", en: "Partner entry",
-      start: { href: "?screens=1&entry=partner&fresh=1#consent-terms", th: "เริ่ม Partner flow ตามวิดีโอ", en: "Start original partner flow" },
       screens: [
         ["partner-idcard", "SID-070", "ถ่ายบัตรประชาชน", "Capture ID card"],
         ["partner-patient-info", "SID-062", "ยืนยันข้อมูลผู้รับบริการ", "Confirm patient details"],
         ["partner-insurance", "SID-063", "สิทธิ์และการชำระเงิน", "Coverage & payment", "eligibility"],
         ["partner-phr", "SID-068", "บันทึกสุขภาพ (หน้าทางเลือก)", "Health record (alternative)", "alternative"],
-        ["intake-concern", "SID-069", "เลือกอาการเพื่อเข้ารับบริการ", "Choose consultation concern"]
       ]
     },
     {

@@ -1,6 +1,6 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
-const browser=await chromium.launch();
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 try {
   for(const hasTouch of [false,true]) {
     const page=await browser.newPage({hasTouch,viewport:{width:390,height:784}});
@@ -10,7 +10,7 @@ try {
     assert.equal(await page.locator('.custom-select__option').count(),2);
     assert.equal(await page.locator('#choice').inputValue(),'');
     await page.locator('#choice-trigger').press('ArrowDown');
-    await page.waitForTimeout(50);
+    await page.waitForFunction(()=>document.activeElement?.getAttribute('role')==='option');
     await page.keyboard.press('Enter');
     assert.equal(await page.locator('#choice').inputValue(),'0');
     assert.equal(await page.locator('[role=option][aria-selected=true]').innerText(),'Never');

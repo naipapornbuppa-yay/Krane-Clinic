@@ -6,6 +6,10 @@ Do not edit B2C copies under the workspace `Output/` or `site/` folders.
 Open `krane-b2c.html` for the complete patient walkthrough. The landing page loads inside
 the walkthrough and can also be opened directly from `krane-b2c-landing.html`.
 
+For a new developer, begin with [`handoff/DEVELOPER-HANDOFF.md`](handoff/DEVELOPER-HANDOFF.md).
+It links the active string catalogs, partner-flow behavior, prototype-only
+integrations, test commands, and the [`error/edge-case matrix`](handoff/ERROR-EDGE-CASES.md).
+
 Keep every file and the `assets/` and `i18n/` folders together.
 
 ## Backend string contract

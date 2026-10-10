@@ -1,7 +1,10 @@
 # Krane string IDs
 
-Every piece of user-facing copy in the patient app, given a stable ID so it can
-be changed, translated and reviewed without going through the HTML.
+This is the inventory of static screen copy in `krane-b2c.html`. It also
+records JavaScript template literals with interpolation. API-driven messages
+have a separate stable contract in `../handoff/string-ids.v1.json`. Ordinary
+JavaScript toast literals are inventoried in
+`../handoff/runtime-copy-inventory.json`; they are not yet ID-backed.
 
 ## Why this exists
 
@@ -14,15 +17,17 @@ the literal string. That has two consequences:
 2. There is no list of what copy exists, so nobody can tell what still needs
    translating, or review the wording as a whole.
 
-These files replace that with IDs that do not change when the words do.
+These files give reviewers stable references, but the current prototype still
+renders its original inline text. Adopting the IDs in the runtime is integration
+work for the next developer.
 
 ## The files
 
 | File | What it is |
 |---|---|
-| `krane-strings.json` | Every string, by ID, with its Thai and English forms |
-| `krane-strings-dynamic.json` | Messages that interpolate values, with named placeholders |
-| `krane-strings-missing-en.json` | Thai strings that have no English yet |
+| `krane-strings.json` | Static screen text with stable IDs; old entries are marked `status: retired` |
+| `krane-strings-dynamic.json` | JavaScript template literals with named placeholders |
+| `krane-strings-missing-en.json` | Active Thai screen strings that have no English yet |
 
 ## ID convention
 
@@ -45,8 +50,10 @@ the string appears. `role` says what the string does on that screen:
 }
 ```
 
-Add new strings with the next free number in that screen and role. Never renumber
-an existing ID: the number is only there to make it unique, not to record order.
+The extractor reuses an existing ID when its screen and text still match. It
+allocates new IDs above the highest number in that screen and role, even when
+older entries have been retired. Never renumber or reuse a retired ID for a
+different message.
 
 ## Placeholders
 
@@ -70,7 +77,7 @@ one per branch, rather than one string with a slot.
 Three things found while extracting these, which need a decision rather than a
 straight port:
 
-- **648 Thai strings have no English.** Thai is the default and English is
+- **540 active Thai strings have no English in this extracted catalog.** Thai is the default and English is
   opt-in, so today an English speaker sees a mix of both languages.
 - **Some copy is split across elements.** `waitroom.hint01` is the fragment
   "กดเข้าห้องได้เลย แพทย์" because a `<span>` holding the doctor's name sits in
@@ -81,6 +88,20 @@ straight port:
 
 ## Regenerating
 
-These are extracted from `krane-b2c.html`. Re-run the extraction after copy
-changes, then diff: new IDs mean new copy, and a changed `th` on an existing ID
-means that string needs re-translating.
+These are extracted from `krane-b2c.html`. Re-run after copy changes from the
+`b2c` directory with `python3 strings/extract-strings.py`. The extractor
+preserves IDs for unchanged copy, adds new IDs, and marks text no longer in
+markup as `retired`. Review the diff: a retired entry and a new entry on one
+screen may represent a copy edit that needs a translation review.
+
+As of the October 2026 handoff, this catalog has 952 active static entries,
+173 retired entries, and 53 active dynamic templates. It is an inventory, not
+proof of translation completeness or a runtime integration.
+
+## Shared primary CTA IDs
+
+`shared-cta-ids.json` is the canonical copy map for equivalent primary actions.
+Use `action.pay` for an actual positive payment, `action.continue` when no payment
+is due, and `action.check_eligibility` for insurance verification. The page
+marks these buttons with `data-string-id`; do not embed a changing amount or a
+security claim in the button label. Show the payable amount in the order summary.

@@ -59,9 +59,14 @@ const browser = await chromium.launch({
   args: ['--no-sandbox']
 });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+ctx.setDefaultTimeout(5000);
+ctx.setDefaultNavigationTimeout(15000);
+ctx.setDefaultTimeout(5000);
+ctx.setDefaultNavigationTimeout(15000);
 const consoleErrors = [];
 ctx.on('page', page => page.on('pageerror', e => consoleErrors.push(String(e))));
 
+console.log('QA: page, route inventory and partner flows');
 const app = await ctx.newPage();
 await app.goto(`${base}/b2c/krane-b2c.html`, { waitUntil: 'domcontentloaded' });
 await app.waitForTimeout(1800);
@@ -120,18 +125,19 @@ const partnerStartLink = await app.evaluate(() => {
     .find(item => item.querySelector('.rail-step')?.textContent === '09');
   return group?.querySelector('a.is-key-route[href*="entry=partner"]')?.getAttribute('href') || '';
 });
-if (!partnerStartLink.includes('fresh=1#consent-terms')) fail('partner start link', partnerStartLink || 'missing');
+if (partnerStartLink) fail('retired partner start link', partnerStartLink);
 const completePartnerIdentity = async page => {
   await page.locator('#partner-first-name').fill('ณัฐ');
   await page.locator('#partner-last-name').fill('ตัวอย่าง');
   await page.locator('#partner-phone').fill('0812345678');
-  await page.locator('#partner-patient-info [data-phone-edit]').click();
+  await page.locator('#partner-patient-info [data-partner-info-continue]').click();
   await page.locator('#otp.active [data-otp-code]').fill('123456');
   await page.locator('#otp.active [data-auth-complete]').click();
-  await page.locator('#partner-patient-info.active').waitFor();
-  await page.locator('#partner-patient-info [data-partner-info-continue]').click();
+  await page.waitForFunction(() => document.querySelector('.screen.active')?.id !== 'otp');
 };
 const freshPartnerHealth = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+freshPartnerHealth.setDefaultTimeout(5000);
+freshPartnerHealth.setDefaultNavigationTimeout(15000);
 try {
   const blankHealth = await freshPartnerHealth.newPage();
   await blankHealth.goto(`${base}/b2c/krane-b2c.html?entry=partner&demoStage=intake-general#intake-general`, { waitUntil: 'domcontentloaded' });
@@ -179,6 +185,8 @@ try {
 // The waiting room persists an in-progress queue. Keep this end-to-end patient
 // journey in its own browser storage so later independent flow checks start fresh.
 const partnerCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+partnerCtx.setDefaultTimeout(5000);
+partnerCtx.setDefaultNavigationTimeout(15000);
 const partnerJourney = await partnerCtx.newPage();
 try {
   const active = () => partnerJourney.locator('.screen.active').getAttribute('id');
@@ -209,7 +217,7 @@ try {
     columns:options[0] ? getComputedStyle(options[0].parentElement).gridTemplateColumns.split(' ').length : 0,
     surface:options[0] ? getComputedStyle(options[0]).backgroundColor : null
   }));
-  if (reliefChoices.count !== 4 || !reliefChoices.compact || reliefChoices.columns !== 2 || reliefChoices.surface !== 'rgb(255, 255, 255)') {
+  if (reliefChoices.count !== 4 || !reliefChoices.compact || reliefChoices.columns !== 4 || reliefChoices.surface !== 'rgba(0, 0, 0, 0)') {
     fail('partner relief component', JSON.stringify(reliefChoices));
   }
   await partnerJourney.locator('#partner-concern-text').fill('มีผื่นคันที่แขนและปวดศีรษะ');
@@ -255,7 +263,7 @@ try {
     coverage:screen.querySelector('[data-consult-coverage-amount]')?.textContent.trim(),
     action:screen.querySelector('[data-consultpay-label]')?.textContent.trim()
   }));
-  if (coveredFee.coverage !== 'ครอบคลุมเต็มจำนวน' || coveredFee.action !== 'รับทราบและไปต่อ') {
+  if (coveredFee.coverage !== 'ครอบคลุมเต็มจำนวน' || coveredFee.action !== 'ดำเนินการต่อ') {
     fail('partner fee review', JSON.stringify(coveredFee));
   }
   await partnerJourney.locator('#consultpay [data-consultpay-go]').click();

@@ -24,7 +24,7 @@ const results = [];
 const screenshotDir = process.env.QA_SCREENSHOT_DIR || '';
 if (screenshotDir) await mkdir(screenshotDir, { recursive:true });
 try {
-  for (const width of [320, 360, 390, 768, 1100, 1440]) {
+  for (const width of (process.env.QA_WIDTH ? [Number(process.env.QA_WIDTH)] : [320, 360, 390, 768, 1100, 1440])) {
     const page = await browser.newPage({ viewport:{ width, height:900 } });
     for (const route of ['krane-b2c-landing.html', 'condition-detail.html?condition=weight', 'doctors.html', 'glp1-safety.html']) {
       await page.goto(base + route, { waitUntil:'domcontentloaded' });
@@ -49,7 +49,7 @@ try {
         const box = element => { if (!element || getComputedStyle(element).display === 'none') return null; const r=element.getBoundingClientRect(); return {x:Math.round(r.x*10)/10,y:Math.round(r.y*10)/10,width:Math.round(r.width*10)/10,height:Math.round(r.height*10)/10}; };
         const screen=document.querySelector('.screen.active');
         const header=screen?.querySelector('.screen__top');
-        const option=screen?.querySelector(stage==='partner-patient-info' ? '[data-partner-payment-choice-value="self-pay"]' : stage==='intake1' ? '.option' : '.__none__');
+        const option=screen?.querySelector(stage==='partner-patient-info' ? '[data-partner-payment-choice-value="self-pay"]' : stage==='intake1' ? '.option:not([aria-selected="true"])' : '.__none__');
         const optionStyle=option && getComputedStyle(option);
         return {stage,width,active:screen?.id,header:box(header),padding:header && getComputedStyle(header).paddingLeft,logo:box(screen?.querySelector('.checkout-brandbar__logo,.ttl--lockup .intake-lockup,.profile-shell-nav__brand .brand-lockup')),links:box(screen?.querySelector('.profile-shell-nav__links')),actions:box(screen?.querySelector('.profile-shell-nav__actions')),bottom:box(screen?.querySelector('.bottomnav')),option:option && {box:box(option),border:optionStyle.borderWidth,radius:optionStyle.borderRadius,padding:optionStyle.padding,shadow:optionStyle.boxShadow,minHeight:optionStyle.minHeight}};
       }, {stage,width}));
@@ -78,7 +78,7 @@ try {
   const brandedStages = new Set(['intake1','intake-concern','intake-general','partner-idcard','partner-patient-info','partner-insurance','consultpay','payment']);
   const navStages = new Set(['profile','activity','notifications','settings','empty-activities']);
   const same = (a,b) => Math.abs(a-b) <= .2;
-  for (const width of [320, 360, 390, 768, 1100, 1440]) {
+  for (const width of (process.env.QA_WIDTH ? [Number(process.env.QA_WIDTH)] : [320, 360, 390, 768, 1100, 1440])) {
     const at = results.filter(row => row.width === width);
     const reference = at.find(row => row.route === 'krane-b2c-landing.html');
     const refLogo = reference.logo;

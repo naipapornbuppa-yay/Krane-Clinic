@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-const browser = await chromium.launch();
+const browser = await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 let count = 0;
 const failures = [];
 try {
