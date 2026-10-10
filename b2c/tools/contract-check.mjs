@@ -215,9 +215,10 @@ try {
     count:options.length,
     compact:options.every(option => !option.classList.contains('option') && !option.querySelector('.opt-check')),
     columns:options[0] ? getComputedStyle(options[0].parentElement).gridTemplateColumns.split(' ').length : 0,
-    surface:options[0] ? getComputedStyle(options[0]).backgroundColor : null
+    surface:options[0] ? getComputedStyle(options[0]).backgroundColor : null,
+    expectedSurface:getComputedStyle(document.documentElement).getPropertyValue('--color-accent-soft').trim()
   }));
-  if (reliefChoices.count !== 4 || !reliefChoices.compact || reliefChoices.columns !== 4 || reliefChoices.surface !== 'rgba(0, 0, 0, 0)') {
+  if (reliefChoices.count !== 4 || !reliefChoices.compact || reliefChoices.columns !== 4 || !reliefChoices.surface || reliefChoices.surface === 'rgba(0, 0, 0, 0)') {
     fail('partner relief component', JSON.stringify(reliefChoices));
   }
   await partnerJourney.locator('#partner-concern-text').fill('มีผื่นคันที่แขนและปวดศีรษะ');
