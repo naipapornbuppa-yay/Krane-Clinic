@@ -51,8 +51,7 @@
         ["ineligible", "SID-019", "ควรพบแพทย์ที่สถานพยาบาล", "In-person care required", "exception"],
         ["intake5", "SID-020", "5 · รูปภาพ (เฉพาะบางบริการ)", "5 · Photo (condition-specific)"],
         ["intake-concern", "SID-069", "อาการที่ต้องการปรึกษา", "Consultation concern"],
-        ["intake-general", "SID-021", "ข้อมูลสุขภาพทั่วไป", "General health"],
-        ["intake-edu", "SID-022", "ความรู้ก่อนพบแพทย์", "Education interstitial"]
+        ["intake-general", "SID-021", "ข้อมูลสุขภาพทั่วไป", "General health"]
       ]
     },
     {
@@ -111,7 +110,6 @@
         ["feedback", "SID-049", "ให้คะแนนการรับบริการ", "Rate visit"],
         ["feedbackdone", "SID-050", "ส่งความคิดเห็นแล้ว", "Feedback submitted"],
         ["profile", "SID-051", "หน้าหลักผู้รับบริการ", "Patient home"],
-        ["followups", "SID-051F", "การติดตามผล", "Follow-up cases"],
         ["treatment-detail", "SID-051A", "รายละเอียดการรักษา", "Treatment detail"],
         ["my-documents", "SID-051B", "เอกสารของฉัน", "My documents"],
         ["activity", "SID-052", "กิจกรรม", "Activity"],

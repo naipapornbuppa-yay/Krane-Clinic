@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-article-fixtures-v265";
+    const release = "20261010-qa-cleanup-v267";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -42,7 +42,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261008-hairline-contour-v256"></script>
+<script src="review-tools.js?v=20261010-qa-cleanup-v267"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-article-fixtures-v265">
+<link rel="stylesheet" href="components.css?v=20261010-qa-cleanup-v267">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -509,20 +509,6 @@
     .krane-state-defs .ks-dot-3,.krane-state-art .ks-dot-3{animation:ks-dot 1.35s .32s ease-in-out infinite}
     .krane-paper-crane-picture,.krane-paper-crane-media{display:block;width:100%;height:100%;object-fit:contain}
     .krane-paper-crane-picture img{display:block;width:100%;height:100%;object-fit:contain}
-    /* Keep the original five hand-drawn frames and their recoloured motion
-       marks in the same SVG group. Two independent animated images drifted a
-       frame apart and could momentarily colour a wing edge instead. */
-    .ks-crane-frame{opacity:0}
-    .ks-crane-frame--1{animation:ks-crane-frame-1 1.8s steps(1,end) infinite}
-    .ks-crane-frame--2{animation:ks-crane-frame-2 1.8s steps(1,end) infinite}
-    .ks-crane-frame--3{animation:ks-crane-frame-3 1.8s steps(1,end) infinite}
-    .ks-crane-frame--4{animation:ks-crane-frame-4 1.8s steps(1,end) infinite}
-    .ks-crane-frame--5{animation:ks-crane-frame-5 1.8s steps(1,end) infinite}
-    @keyframes ks-crane-frame-1{0%,19.999%,100%{opacity:1}20%,99.999%{opacity:0}}
-    @keyframes ks-crane-frame-2{0%,19.999%,40%,100%{opacity:0}20%,39.999%{opacity:1}}
-    @keyframes ks-crane-frame-3{0%,39.999%,60%,100%{opacity:0}40%,59.999%{opacity:1}}
-    @keyframes ks-crane-frame-4{0%,59.999%,80%,100%{opacity:0}60%,79.999%{opacity:1}}
-    @keyframes ks-crane-frame-5{0%,79.999%,100%{opacity:0}80%,99.999%{opacity:1}}
     .krane-state-hatch-stack{position:relative}
     .krane-state-hatch-layer{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
     /* Client, 6 Oct: the drawing ran outside the soft blob behind it — the
@@ -1456,17 +1442,6 @@
     <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching" data-general-health-submit>ยืนยันข้อมูลและดำเนินการต่อ</button></div>
   </section>
 
-  <!-- ===================== EDUCATIONAL INTERSTITIAL (hims-style), reassure + educate before review ===================== -->
-  <section class="screen" id="intake-edu">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"></span></div>
-    <div class="screen__subprogress"><div class="grow"><div class="progress"><span style="width:100%"></span></div></div><span class="hint">Almost done</span></div>
-    <div class="screen__body edu-body">
-      <div class="edu-eyebrow">While a doctor reviews your answers</div>
-      <p class="edu-text">Factors like <span class="hl">aging</span>, <span class="hl">family history</span> and <span class="hl">stress</span> can drive hair shedding and thinning.</p>
-      <p class="edu-text">The good news: <span class="hl">doctor-led treatment</span> can target those causes, so many men see visibly thicker, fuller hair in <span class="hl">3 to 6 months</span>.</p>
-    <div class="screen__footer"><button class="btn btn--primary" data-intake-complete data-post-auth="matching">Next</button></div>
-  </section>
-
   <!-- Doctor-facing intake summary source. Kept as inert template data; it is not
        a patient screen or route. -->
   <template id="doctor-intake-summary">
@@ -1810,7 +1785,7 @@
 <div class="screen__footer stack-2"><!-- Client, 22 Sep: said the same way every other notice in the app is said —
        icon, title, detail, read from the left — instead of a centred tinted
        paragraph of its own. -->
-    <div class="alert alert--info consultpay-fee-note" role="note"><span class="a-ic" aria-hidden="true">i</span><div class="a-title">นี่คือค่าปรึกษาแพทย์เท่านั้น</div></div><button class="btn btn--primary" data-consultpay-go><span data-consultpay-label>ดำเนินการต่อ</span> <span data-pay-btn-amt>฿ 350</span></button></div>
+    <div class="alert alert--info consultpay-fee-note" role="note"><span class="a-ic" aria-hidden="true">i</span><div class="a-title">นี่คือค่าปรึกษาแพทย์เท่านั้น</div></div><button class="btn btn--primary" data-consultpay-go data-string-id="action.pay"><span data-consultpay-label>ชำระเงิน</span> <span data-pay-btn-amt hidden>฿ 350</span></button></div>
   </section>
 
   <!-- ===================== CONSULTATION PAYMENT · KBANK GATEWAY (F39) ===================== -->
@@ -1863,7 +1838,7 @@
         </div>
         <div class="gw-foot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> You are on KBank's secure page. Krane never sees or stores your card details.</div>
       </div>
-    <div class="screen__footer"><button class="btn btn--primary" data-consult-payment-submit>Pay <span data-consult-payment-total>฿ 350</span> securely</button></div>
+    <div class="screen__footer"><button class="btn btn--primary" data-consult-payment-submit data-string-id="action.pay">ชำระเงิน</button></div>
   </section>
 
   <section class="screen" id="consultpay-fail">
@@ -2599,7 +2574,7 @@
           <span class="checkout-pay__save" data-payment-save hidden>ว้าว คุณประหยัดไป <span data-payment-save-amt>฿ 0</span></span>
           <s class="checkout-pay__was" data-payment-was hidden>฿ 0</s>
         </span>
-        <button class="btn btn--primary" data-payment-go disabled aria-disabled="true"><span data-payment-cta-label>ชำระเงิน</span></button>
+        <button class="btn btn--primary" data-payment-go data-string-id="action.pay" disabled aria-disabled="true"><span data-payment-cta-label>ชำระเงิน</span></button>
       </div>
     </div>
   </section>
@@ -2703,7 +2678,7 @@
         <div class="hint">Choose how much insurance credit to use.</div>
       </div>
       <p class="hint" data-insurance-profile-hint hidden>ระบบจะตรวจสอบสิทธิ์ของคุณก่อนดำเนินการต่อ</p>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-insurance-confirm>ตรวจสอบสิทธิ์และชำระ ฿ 0</button><button class="btn btn--ghost" data-go="payment" data-insurance-order-action>ชำระเงินเอง</button></div>
+    <div class="screen__footer stack-2"><button class="btn btn--primary" data-insurance-confirm data-string-id="action.check_eligibility">ตรวจสอบสิทธิ์</button><button class="btn btn--ghost" data-go="payment" data-insurance-order-action>ชำระเงินเอง</button></div>
   </section>
 
   <!-- ===================== PAYMENT FAILED (edge state) ===================== -->
@@ -2934,7 +2909,7 @@
              past visits in one place — was built and nothing linked to it, so
              the only way in was a URL. The treatments it follows up are right
              here, so the way in is here (client, 5 Oct). -->
-        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div><button class="section-link" type="button" data-go="followups">ดูการติดตามผล<i data-lucide="chevron-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i></button></div>
+        <div class="between"><div class="eyebrow" style="margin:0">Active treatments</div></div>
         <!-- Every case is under a doctor, so every card shows its follow-up.
              The card itself is the affordance. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
@@ -3000,116 +2975,6 @@
   </section>
 
   <!-- ===================== FOLLOW-UP CASES ===================== -->
-  <section class="screen screen--web" id="followups" data-screen-code="SCR-051F">
-    <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ติดตามผลของฉัน</span><span class="grow"></span></div>
-    <div class="screen__body followups-page stack-5">
-      <header class="followups-progress" aria-labelledby="followups-progress-title">
-        <div class="followups-progress__summary">
-          <span class="eyebrow">ความคืบหน้าของคุณ</span>
-          <h1 id="followups-progress-title"><span>ลดแล้ว</span><strong>6.4</strong><small>กก.</small></h1>
-          <p>จาก 89.0 กก. เหลือ 82.6 กก.</p>
-          <span class="followups-progress__change"><i data-lucide="trending-down" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ลดลง 7.2% จากน้ำหนักเริ่มต้น</span>
-        </div>
-        <div class="followups-progress__chart" role="img" aria-label="แนวโน้มน้ำหนัก 8 สัปดาห์ ลดลงจาก 89 กิโลกรัมเป็น 82.6 กิโลกรัม">
-          <div class="followups-progress__chart-head"><span>8 สัปดาห์ล่าสุด</span><strong>82.6 กก.</strong></div>
-          <svg viewBox="0 0 280 92" preserveAspectRatio="none" aria-hidden="true">
-            <defs><linearGradient id="followup-progress-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".2"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
-            <path class="followups-progress__area" d="M4 16 C36 19 54 27 76 31 S112 44 142 47 S184 61 210 63 S248 74 276 78 L276 92 L4 92 Z"/>
-            <path class="followups-progress__line" d="M4 16 C36 19 54 27 76 31 S112 44 142 47 S184 61 210 63 S248 74 276 78"/>
-            <circle cx="276" cy="78" r="4"/>
-          </svg>
-          <div class="followups-progress__axis"><span>18 ก.ค.</span><span>12 ก.ย.</span></div>
-        </div>
-        <div class="followups-progress__meta">
-          <span><small>เป้าหมาย</small><strong>80.0 กก.</strong></span>
-          <span><small>เหลืออีก</small><strong>2.6 กก.</strong></span>
-          <span><small>ชั่งล่าสุด</small><strong>12 ก.ย. 2026</strong></span>
-        </div>
-      </header>
-
-      <section class="followups-section" aria-labelledby="followups-upcoming-title">
-        <div class="followups-section__head">
-          <div><span class="eyebrow">กำลังจะมาถึง</span><h2 id="followups-upcoming-title">นัดหมายถัดไป</h2></div>
-          <span class="followups-section__count">3 นัด</span>
-        </div>
-        <div class="followups-list">
-          <article class="followup-case followup-case--featured" data-followup-case-card="weight">
-            <div class="followup-case__identity">
-              <span class="followup-case__icon"><i data-lucide="scale" class="ui-icon" aria-hidden="true"></i></span>
-              <div class="followup-case__copy">
-                <span class="followup-case__programme">รักษาโรคอ้วน</span>
-                <h3>นัดติดตามผลกับแพทย์นรินทร์</h3>
-                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="weight" data-followup-offset="1" data-followup-demo-minutes="12">14 ก.ย. 2026</span></p>
-              </div>
-            </div>
-            <div class="followup-case__appointment">
-              <span class="followup-case__status" data-followup-case-status>ภายใน 24 ชั่วโมง</span>
-              <div class="followup-case__timer">
-                <small>เริ่มใน</small>
-                <strong data-followup-case-countdown>23:58:00</strong>
-              </div>
-            </div>
-            <div class="followup-case__actions">
-              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="weight">ดูแผนการรักษา</button>
-              <button class="btn btn--primary btn--sm" type="button" data-followup-join data-category="weight" disabled aria-disabled="true"><i data-lucide="video" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-join-label>เข้าได้ก่อนนัด 10 นาที</span></button>
-            </div>
-          </article>
-
-          <article class="followup-case" data-followup-case-card="hair-skin">
-            <div class="followup-case__identity">
-              <span class="followup-case__icon"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
-              <div class="followup-case__copy">
-                <span class="followup-case__programme">แผนฟื้นฟูเส้นผม 6 เดือน</span>
-                <h3>นัดติดตามผลกับแพทย์นรินทร์</h3>
-                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="hair-skin" data-followup-offset="11">24 ก.ย. 2026</span></p>
-              </div>
-            </div>
-            <div class="followup-case__appointment">
-              <span class="followup-case__status followup-case__status--quiet">นัดหมายแล้ว</span>
-            </div>
-            <div class="followup-case__actions followup-case__actions--single">
-              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="hair-skin">ดูแผนการรักษา</button>
-            </div>
-          </article>
-
-          <article class="followup-case" data-followup-case-card="sexual-health">
-            <div class="followup-case__identity">
-              <span class="followup-case__icon"><i data-lucide="heart-pulse" class="ui-icon" aria-hidden="true"></i></span>
-              <div class="followup-case__copy">
-                <span class="followup-case__programme">ฟื้นฟูสมรรถภาพเพศชาย</span>
-                <h3>นัดติดตามผลกับแพทย์นรินทร์</h3>
-                <p><i data-lucide="calendar-days" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span data-followup-date data-followup-case="sexual-health" data-followup-offset="18">1 ต.ค. 2026</span></p>
-              </div>
-            </div>
-            <div class="followup-case__appointment">
-              <span class="followup-case__status followup-case__status--quiet">นัดหมายแล้ว</span>
-            </div>
-            <div class="followup-case__actions followup-case__actions--single">
-              <button class="btn btn--secondary btn--sm" type="button" data-followup-case-open="sexual-health">ดูแผนการรักษา</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="followups-section followups-history" aria-labelledby="followups-history-title">
-        <div class="followups-section__head">
-          <div><span class="eyebrow">History</span><h2 id="followups-history-title">ติดตามผลที่ผ่านมา</h2></div>
-        </div>
-        <button class="followup-history-row" type="button" data-followup-case-open="weight">
-          <span class="followup-history-row__icon"><i data-lucide="circle-check-big" class="ui-icon" aria-hidden="true"></i></span>
-          <span><strong>ติดตามการควบคุมน้ำหนัก ครั้งที่ 1</strong><small>26 ส.ค. 2026 · เสร็จสิ้นแล้ว</small></span>
-          <i data-lucide="chevron-right" class="ui-icon ui-icon--sm" aria-hidden="true"></i>
-        </button>
-      </section>
-    </div>
-    <nav class="bottomnav">
-      <a aria-current="page" data-go="profile"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-home"></use></svg></span>Home</a>
-      <a data-go="activity"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-activity"></use></svg></span>Activities</a>
-      <a data-go="notifications"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-alerts"></use></svg></span>Alerts</a>
-      <a data-go="settings"><span class="ic"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nav-profile"></use></svg></span>Settings</a>
-    </nav>
-  </section>
-
   <!-- ===================== ACTIVE TREATMENT DETAIL ===================== -->
   <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span></div>
@@ -3747,7 +3612,7 @@
   <section class="screen" id="preloader">
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><svg class="krane-state-art" viewBox="0 0 560 360"><use href="#krane-state-loading-info"></use></svg></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-qa-cleanup-v267" alt=""></span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
@@ -7712,7 +7577,7 @@
 
   window.setInterval(() => {
     const active=document.querySelector('.screen.active');
-    if(active && (active.id==='profile' || active.id==='followups')) syncHomeFollowUpCta();
+    if(active && (active.id==='profile')) syncHomeFollowUpCta();
   },1000);
 
   function beginAssignedDoctorFlow(category){
@@ -8758,7 +8623,7 @@
     concern:'landing', conditions:'landing', articles:'landing', article:'articles',
     intake1:'conditions', intake2:'intake1', intake3:'intake2', intake4:'intake3',
     intake5:'intake4', 'intake-concern':'intake5', 'intake-general':'intake-concern',
-    'intake-edu':'intake-general', ineligible:'intake4',
+    ineligible:'intake4',
     signup:'intake-general', login:'landing', 'social-confirm':'signup',
     otp:'signup', 'consent-terms':'landing', identity:'consent-terms', 'patient-info':'identity', 'insurance-result':'insurance',
     matching:'patient-info', appointment:'matching', 'appointment-booked':'appointment',
@@ -8769,7 +8634,7 @@
     'payment-gw':'payment', 'payment-processing':'payment-gw', 'payment-success':'payment-gw', insurance:'payment',
     payfail:'payment-gw',
     tracking:'payment-success', 'order-summary':'tracking', feedback:'consult', feedbackdone:'feedback',
-    profile:'landing', followups:'profile', 'treatment-detail':'profile', 'my-documents':'profile', activity:'profile', history:'profile', notifications:'profile',
+    profile:'landing', 'treatment-detail':'profile', 'my-documents':'profile', activity:'profile', history:'profile', notifications:'profile',
     account:'settings', settings:'profile', 'empty-activities':'activity', 'empty-history':'history',
     'upload-rx':'profile', referral:'profile', preloader:'landing',
     // Partner access reuses the same consent screen as direct entry. Nurse
@@ -10182,6 +10047,8 @@
     return target;
   }
   function normalizeScreenTarget(target){
+    if(target==='intake-edu') return 'intake-general';
+    if(target==='followups') return 'profile';
     if(target==='prescription') return 'my-documents';
     if(target==='choosedoc') return 'matching';
     if(target==='address-detail') return 'payment';
@@ -10394,7 +10261,7 @@
       if(setupTitle) setupTitle.hidden = !isSetup;
       if(profileHint) profileHint.hidden = !isSetup;
       orderActions.forEach(btn => { btn.hidden = isSetup; });
-      if(confirmBtn) confirmBtn.textContent = isPartner ? 'ตรวจสอบสิทธิ์และไปต่อ' : (isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์และชำระ ฿ 160');
+      if(confirmBtn) confirmBtn.textContent = isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์';
     }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     syncThemeColor(id);
@@ -10424,7 +10291,7 @@
        current-location dialog — so there is nothing here to bind panning to. */
     if(id==='address'){ renderAddressPinPreview(); }
     fillDoctorName();
-    if(id==='profile' || id==='followups') syncHomeFollowUpCta();
+    if(id==='profile') syncHomeFollowUpCta();
     if(id==='appointment'){ syncAppointmentDays(); resetAppointment(); }
     if(id==='appointment-booked'){
       const when=document.querySelector('#appointment-booked [data-appointment-when]');
@@ -10810,14 +10677,28 @@
     screen.querySelectorAll('[data-consult-payment-control]').forEach(control => { control.hidden=noticeMode || fullyCovered; });
     const label=screen.querySelector('[data-consultpay-label]');
     const amount=screen.querySelector('[data-pay-btn-amt]');
-    if(label) label.textContent=fullyCovered || noticeMode ? 'รับทราบและไปต่อ' : 'ชำระเงิน';
-    if(amount) amount.hidden=noticeMode || fullyCovered;
+    if(label) label.textContent=fullyCovered || noticeMode ? 'ดำเนินการต่อ' : 'ชำระเงิน';
+    screen.querySelector('[data-consultpay-go]')?.setAttribute('data-string-id',fullyCovered || noticeMode ? 'action.continue' : 'action.pay');
+    if(amount) amount.hidden=true;
   }
   document.body.addEventListener('change', e => {
     const c = e.target.closest('[data-cert-check]');
     if(!c) return;
     syncConsultationPaymentAmount();
   });
+  // A single img swaps preloaded frames. The old SVG <use> clone could paint
+  // several CSS-animated layers at once in some browsers.
+  const craneImage=document.querySelector('[data-loader="paper-crane"] .ks-paper-crane-live');
+  if(craneImage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-qa-cleanup-v267`);
+    craneFrames.forEach(src=>{ const preload=new Image(); preload.src=src; });
+    let craneFrame=0;
+    setInterval(()=>{
+      if(!document.getElementById('preloader')?.classList.contains('active')) return;
+      craneFrame=(craneFrame+1)%craneFrames.length;
+      craneImage.src=craneFrames[craneFrame];
+    },360);
+  }
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
   function paintElapsedTimer(timer,elapsedSeconds){
     if(!timer) return;
@@ -11041,7 +10922,7 @@
   function applyHash(){
     const [rawId,hashQuery=''] = location.hash.slice(1).split('?');
     // Preserve old bookmarks after removing obsolete patient-facing screens.
-    const legacyRoutes = {'prescription':'my-documents','choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general','nurse':'matching'};
+    const legacyRoutes = {'prescription':'my-documents','choosedoc':'matching','payment-processing':'payment-success','concern':'conditions','summary':'signup','intake-ins':'signup','insurance-policy':'insurance','reduce-order':'payment','partner-concern':'intake-concern','partner-intake':'intake-general','intake-edu':'intake-general','followups':'profile','nurse':'matching'};
     /* The manual address form is an edit action, not a public destination.
        Reloaded/shared hashes return to the review screen; only its explicit
        “แก้ไขที่อยู่” text link opens the form in the current session. */
@@ -12552,7 +12433,6 @@
     'intake-general':   { id:'KRANE-F04 + KRANE-F05', name:'Shared UI, Partner SCR-003 / Direct SCR-DIR-02E', stories:['Partner keeps its approved compact-health order unchanged','Direct confirms or updates general health after fee handling and immediately before the waiting room','The same health fields are reused without sharing route logic'] },
     'activity':         { id:'KRANE-F05', name:'Activity Tab, Active Orders + Past Treatments', stories:['Active delivery orders remain separate for tracking','Completed consultation and order events are merged into one treatment episode','Tapping a past treatment opens its diagnosis and previous prescription when available'] },
     'pharmacy-search':  { id:'KRANE-F20 + KRANE-F21', name:'Pre-payment Pharmacist Review & Routing', stories:['The signed prescription and order are reviewed before payment opens','A licensed pharmacist verifies the prescription, locks stock and confirms the final price','A declined branch reroutes automatically; repeated declines offer postal fulfilment before payment'] },
-    'intake-edu':       { id:'KRANE-F04 + KRANE-F37', name:'Supporting Content, Hair Education', stories:['Rail-only demonstration page; it does not interrupt either core intake flow','US-F37.1: Optional plain-language education can support condition-specific services'] },
     'ineligible':       { id:'KRANE-F04', name:'Health Intake, Not Eligible (edge state)', stories:['US-F04.7: Ineligible patients are clearly told to seek in-person care','US-F04.8: Option to review answers or return home'] },
     'signup':           { id:'KRANE-F03', name:'Create Account', stories:['A new patient creates an account with the phone number already carried into OTP','OTP verifies the account but never skips patient information, identity, or current consent','The completed intake draft remains available throughout authentication'] },
     'login':            { id:'KRANE-F03', name:'Log In, Returning User', stories:['A returning patient verifies the phone number with OTP','A still-valid identity may skip repeat identity verification','Current PDPA and telemedicine consent remains mandatory before matching'] },
@@ -14749,29 +14629,6 @@
     <!-- Backwards-compatible empty-state symbol for saved prototype links. -->
     <symbol id="krane-state-empty" viewBox="0 0 560 360">
       <image href="assets/state-editorial-v5-ink/empty-activities.png?v=20260927-clean-consult-art-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-    </symbol>
-    <symbol id="krane-state-loading-info-bw" viewBox="0 0 560 360">
-      <g class="ks-paper-crane-animated">
-        <g class="ks-crane-frame ks-crane-frame--1">
-          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20260927-crane-bw-halo-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-        </g>
-        <g class="ks-crane-frame ks-crane-frame--2">
-          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-02.png?v=20260927-crane-bw-halo-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-        </g>
-        <g class="ks-crane-frame ks-crane-frame--3">
-          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-03.png?v=20260927-crane-bw-halo-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-        </g>
-        <g class="ks-crane-frame ks-crane-frame--4">
-          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-04.png?v=20260927-crane-bw-halo-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-        </g>
-        <g class="ks-crane-frame ks-crane-frame--5">
-          <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-05.png?v=20260927-crane-bw-halo-v1" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-        </g>
-      </g>
-      <image href="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-03.png?v=20260927-crane-bw-halo-v1" class="ks-paper-crane-static" width="560" height="360" preserveAspectRatio="xMidYMid meet" filter="url(#krane-state-bw-white)"/>
-    </symbol>
-    <symbol id="krane-state-loading-info" viewBox="0 0 560 360">
-      <use href="#krane-state-loading-info-bw"/>
     </symbol>
   </defs>
 </svg>
