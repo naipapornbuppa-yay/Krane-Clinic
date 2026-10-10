@@ -147,7 +147,10 @@ try {
 
 /* The partner handoff must use the shared intake views but preserve the
    reference order and questions, then continue directly to doctor matching. */
-const partnerJourney = await ctx.newPage();
+// The waiting room persists an in-progress queue. Keep this end-to-end patient
+// journey in its own browser storage so later independent flow checks start fresh.
+const partnerCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+const partnerJourney = await partnerCtx.newPage();
 try {
   const active = () => partnerJourney.locator('.screen.active').getAttribute('id');
   const step = async (label, expected) => {
@@ -189,15 +192,28 @@ try {
     questions: [...modal.querySelectorAll('fieldset legend')].map(legend => legend.textContent.trim())
   }));
   if (!safety.visible || safety.title !== 'ยืนยันข้อมูลความปลอดภัย'
-      || JSON.stringify(safety.questions) !== JSON.stringify(['โรคประจำตัว','ยาที่ใช้ประจำ','ประวัติแพ้ยา/อาหาร'])) {
+      || JSON.stringify(safety.questions) !== JSON.stringify(['โรคประจำตัว','ยาที่ใช้ประจำ','ประวัติแพ้ยา'])) {
     fail('partner questions', JSON.stringify(safety));
   }
   await partnerJourney.locator('[data-health-history-confirm]').click();
   await step('safety answers', 'matching');
+  await partnerJourney.waitForSelector('#consultpay.active', { timeout: 12000 });
+  await step('doctor and fee details', 'consultpay');
+  did();
+  const coveredFee = await partnerJourney.locator('#consultpay').evaluate(screen => ({
+    mode:screen.dataset.checkoutMode,
+    coverage:screen.querySelector('[data-consult-coverage-amount]')?.textContent.trim(),
+    action:screen.querySelector('[data-consultpay-label]')?.textContent.trim()
+  }));
+  if (coveredFee.coverage !== 'ครอบคลุมเต็มจำนวน' || coveredFee.action !== 'รับทราบและไปต่อ') {
+    fail('partner fee review', JSON.stringify(coveredFee));
+  }
+  await partnerJourney.locator('#consultpay [data-consultpay-go]').click();
+  await step('covered fee acknowledgement', 'waitroom');
 } catch (error) {
   fail('partner journey', error.message);
 } finally {
-  await partnerJourney.close();
+  await partnerCtx.close();
 }
 
 /* ---- components ----------------------------------------------------------- */

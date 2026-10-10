@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261008-hairline-contour-v256";
+    const release = "20261010-partner-intake-v257";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261008-hairline-contour-v256">
+<link rel="stylesheet" href="components.css?v=20261010-partner-intake-v257">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -550,7 +550,7 @@
     /* Patient hub shell — the Figma capsule navigation adapted to an
        authenticated screen. The account affordance keeps the patient's state
        instead of presenting a misleading second log-in action. */
-    #profile > .profile-shell-nav {
+    #profile.screen > .profile-shell-nav {
       --profile-nav-ink: #171c28;
       --profile-nav-blue: #4668b1;
       --profile-nav-line: #dfe3e8;
@@ -561,8 +561,8 @@
       width: calc(100% - 48px);
       height: 64px;
       min-height: 64px;
-      margin: 28px 24px 0;
-      padding: 12px 12px 12px 22px;
+      margin: 28px auto 0;
+      padding: 12px 12px 12px 30px;
       gap: 16px;
       border: 1px solid #fff;
       border-radius: 40px;
@@ -897,10 +897,10 @@
        at the same two widths, so a patient crossing between the marketing site
        and the app never sees one header in a shape the other has left behind. */
     @container screen (min-width: 1321px) {
-      #profile > .profile-shell-nav {
+      #profile.screen > .profile-shell-nav {
         width: calc(100% - 80px);
-        margin: 40px 40px 0;
-        padding: 12px;
+        margin: 40px auto 0;
+        padding: 12px 12px 12px 28px;
       }
       /* The header itself is capped by the shared app shell, even on a wide
          viewport. Keep the token-sized link gap at this tier so the complete
@@ -914,7 +914,9 @@
     #profile .profile-shell-nav__brand img.brand-lockup {
       width: auto;
       height: 25px;
+      max-width: none;
       max-height: none;
+      flex: none;
       filter: brightness(0);
     }
     @container screen (max-width: 1100px) {
@@ -924,12 +926,12 @@
       #profile .profile-shell-nav__brand img.brand-lockup { height: 23px; }
     }
     @container screen (max-width: 1100px) {
-      #profile > .profile-shell-nav {
+      #profile.screen > .profile-shell-nav {
         width: calc(100% - 32px);
         height: 60px;
         min-height: 60px;
-        margin: 20px 16px 0;
-        padding: 0 14px 0 20px;
+        margin: 20px auto 0;
+        padding: 0 14px 0 36px;
         gap: 16px;
         border-radius: 34px;
       }
@@ -1019,12 +1021,12 @@
     }
 
     @container screen (max-width: 480px) {
-      #profile > .profile-shell-nav {
+      #profile.screen > .profile-shell-nav {
         width: calc(100% - 32px);
         height: 54px;
         min-height: 54px;
-        margin: 8px 16px 0;
-        padding: 0 7px 0 14px;
+        margin: 8px auto 0;
+        padding: 0 7px 0 18px;
         gap: 4px;
         border-radius: 27px;
       }
@@ -1045,6 +1047,30 @@
       #intake-general .followup-prefill__head { display: grid; }
       #intake-general .followup-prefill__edit { justify-self: start; }
       #intake-general .followup-prefill__grid { grid-template-columns: 1fr; }
+    }
+
+    /* The desktop viewport can be wide while the patient app is still capped
+       at 752px. Use its existing drawer there so the full-size logo and action
+       controls never overlap the horizontal links. */
+    @container screen (min-width: 1101px) {
+      #profile .profile-shell-nav__links { display: none; }
+      #profile .profile-shell-nav__mobile { display: block; }
+    }
+    #profile .profile-shell-nav__mobile > summary {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      list-style: none;
+      cursor: pointer;
+    }
+    #profile .profile-shell-nav__mobile > summary::marker { content: ""; }
+    #profile .profile-shell-nav__mobile > summary::-webkit-details-marker { display: none; }
+    @media (max-width: 374px) {
+      #profile .profile-shell-nav__brand img.brand-lockup { height: 21px; }
+    }
+    @media (max-width: 339px) {
+      #profile .profile-shell-nav__brand img.brand-lockup { height: 18px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -3819,12 +3845,12 @@
               <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-medications" autocomplete="off" disabled placeholder=" "><label for="intake-medications" data-medications-detail-label>ระบุยาหรืออาหารเสริมที่ใช้อยู่</label></span></div></div></div>
             </fieldset>
             <fieldset class="partner-history-field" data-direct-history="allergies">
-              <legend>ประวัติแพ้ยา/อาหาร</legend>
-              <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา/อาหาร">
+              <legend data-allergies-question>ประวัติแพ้ยา/อาหาร</legend>
+              <div class="partner-binary" role="radiogroup" aria-label="ประวัติแพ้ยา/อาหาร" data-allergies-group>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="true" data-direct-history-choice="none">ไม่มี</button>
                 <button class="partner-binary__option" type="button" role="radio" aria-checked="false" data-direct-history-choice="yes">มี</button>
               </div>
-              <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-allergies" autocomplete="off" disabled placeholder=" "><label for="intake-allergies">ระบุประวัติแพ้ยา/อาหาร</label></span></div></div></div>
+              <div class="partner-history-detail" data-direct-history-detail hidden><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-allergies" autocomplete="off" disabled placeholder=" "><label for="intake-allergies" data-allergies-detail-label>ระบุประวัติแพ้ยา/อาหาร</label></span></div></div></div>
             </fieldset>
           </div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-health-history-confirm>ยืนยันและไปต่อ</button><button class="btn btn--ghost" type="button" data-health-history-close>ย้อนกลับ</button></div>
@@ -8502,6 +8528,12 @@
     if(medicinesGroup) medicinesGroup.setAttribute('aria-label',partner ? 'ยาที่ใช้ประจำ' : 'ยาหรืออาหารเสริมที่ใช้อยู่');
     const medicinesDetailLabel=document.querySelector('[data-medications-detail-label]');
     if(medicinesDetailLabel) medicinesDetailLabel.textContent=partner ? 'ระบุยาที่ใช้ประจำ' : 'ระบุยาหรืออาหารเสริมที่ใช้อยู่';
+    const allergiesQuestion=document.querySelector('[data-allergies-question]');
+    if(allergiesQuestion) allergiesQuestion.textContent=partner ? 'ประวัติแพ้ยา' : 'ประวัติแพ้ยา/อาหาร';
+    const allergiesGroup=document.querySelector('[data-allergies-group]');
+    if(allergiesGroup) allergiesGroup.setAttribute('aria-label',partner ? 'ประวัติแพ้ยา' : 'ประวัติแพ้ยา/อาหาร');
+    const allergiesDetailLabel=document.querySelector('[data-allergies-detail-label]');
+    if(allergiesDetailLabel) allergiesDetailLabel.textContent=partner ? 'ระบุประวัติแพ้ยา' : 'ระบุประวัติแพ้ยา/อาหาร';
     updateFollowUpPrefillCard(flowState.followUpContext?.active ? followUpRecordFor(flowState.followUpContext.category) : null);
   }
   function syncPartnerReview(){
