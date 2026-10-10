@@ -60,7 +60,7 @@ try {
           throw new Error(`${width}px partner payment choice failed to select self-pay`);
         }
       }
-      if (screenshotDir && [390,1440].includes(width) && ['profile','notifications','partner-idcard','partner-patient-info','payment'].includes(stage)) {
+      if (screenshotDir && [390,1440].includes(width) && ['profile','notifications','intake-concern','partner-idcard','partner-patient-info','payment'].includes(stage)) {
         await page.waitForTimeout(450);
         await page.screenshot({path:join(screenshotDir,`${stage}-${width}.png`)});
       }

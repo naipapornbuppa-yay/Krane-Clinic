@@ -173,8 +173,22 @@ try {
   await step('eligibility check', 'partner-insurance');
   await partnerJourney.locator('#partner-insurance [data-partner-payment="insurance"]').click();
   await step('covered plan', 'intake-concern');
+  did();
+  const reliefChoices = await partnerJourney.locator('#intake-concern [data-partner-relief-value]').evaluateAll(options => ({
+    count:options.length,
+    shared:options.every(option => option.matches('.option[data-select]') && Boolean(option.querySelector('.opt-check'))),
+    shadow:options[0] ? getComputedStyle(options[0]).boxShadow : null
+  }));
+  if (reliefChoices.count !== 4 || !reliefChoices.shared || reliefChoices.shadow !== 'none') {
+    fail('partner relief component', JSON.stringify(reliefChoices));
+  }
   await partnerJourney.locator('#partner-concern-text').fill('มีผื่นคันที่แขนและปวดศีรษะ');
   await partnerJourney.locator('#intake-concern [data-partner-relief-value="ยังไม่ได้ทำ"]').click();
+  did();
+  const selectedRelief = await partnerJourney.locator('#intake-concern [data-partner-relief-value][aria-selected="true"]').allTextContents();
+  if (JSON.stringify(selectedRelief.map(text => text.trim())) !== JSON.stringify(['ยังไม่ได้ทำ'])) {
+    fail('partner relief selection', JSON.stringify(selectedRelief));
+  }
   await partnerJourney.locator('#intake-concern [data-intake-complete]').click();
   await step('symptom answers', 'intake-general');
   did();
