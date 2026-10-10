@@ -184,7 +184,7 @@
     "bottles":"ขวด",
 
     /* ---- common / buttons ---- */
-    "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Final step":"ขั้นตอนสุดท้าย","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระ","Order":"สั่งยา","treatment order and delivery":"สั่งยาและจัดส่ง","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log In":"เข้าสู่ระบบ",
+    "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Final step":"ขั้นตอนสุดท้าย","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระเงิน","Order":"สั่งยา","treatment order and delivery":"สั่งยาและจัดส่ง","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log In":"เข้าสู่ระบบ",
     "Get started":"เริ่มต้นใช้งาน","Start your visit":"เริ่มการปรึกษา","Continue to payment":"ไปต่อที่การชำระเงิน","Skip for now":"ข้ามไปก่อน",
     "Use my current location":"ใช้ตำแหน่งปัจจุบันของฉัน","Set location on the map":"ปักหมุดบนแผนที่","Refill now":"เติมยา","Reorder now":"เติมยา",
     "Already have an account? Log In":"มีบัญชีอยู่แล้ว? เข้าสู่ระบบ","Mark all read":"ทำเครื่องหมายว่าอ่านแล้วทั้งหมด","All read":"อ่านแล้วทั้งหมด","Edit answers":"แก้ไขคำตอบ",
@@ -918,7 +918,7 @@
 
   /* ---- implementation QA coverage for the client walkthrough · 15 Jul ---- */
   var TH_B2C_QA15 = {
-    "Payment preference":"รูปแบบการชำระเงิน","Self-pay":"ชำระเอง","Pay ฿ 350 securely":"ชำระ ฿ 350 อย่างปลอดภัย","Doctor admits you in 2-3 min":"แพทย์จะเปิดห้องให้ภายใน 2-3 นาที","in room · licence ว.42317":"อยู่ในห้อง · ใบอนุญาต ว.42317","from Dr. Narin":"จาก แพทย์นรินทร์ ทานากะ","1-month plan · review & accept here":"แผน 1 เดือน · ตรวจและยืนยันที่นี่","You":"คุณ","Video consultation · 02:14":"ปรึกษาผ่านวิดีโอ · 02:14","Voice consultation · 00:42":"ปรึกษาผ่านเสียง · 00:42",
+    "Payment preference":"รูปแบบการชำระเงิน","Self-pay":"ชำระเอง","Pay ฿ 350 securely":"ชำระเงิน","Doctor admits you in 2-3 min":"แพทย์จะเปิดห้องให้ภายใน 2-3 นาที","in room · licence ว.42317":"อยู่ในห้อง · ใบอนุญาต ว.42317","from Dr. Narin":"จาก แพทย์นรินทร์ ทานากะ","1-month plan · review & accept here":"แผน 1 เดือน · ตรวจและยืนยันที่นี่","You":"คุณ","Video consultation · 02:14":"ปรึกษาผ่านวิดีโอ · 02:14","Voice consultation · 00:42":"ปรึกษาผ่านเสียง · 00:42",
     "Order #KR-10293 is on its way, arriving by 6pm.":"ออเดอร์ #KR-10293 กำลังนำส่ง คาดว่าจะถึงก่อน 18:00","Consent":"ความยินยอม",
     "Krane provides doctor-led telemedicine and medicine delivery. By continuing you agree to how the service is delivered and your responsibilities as a patient.":"Krane ให้บริการพบแพทย์ทางไกลและจัดส่งยา โดยการดำเนินการต่อถือว่าคุณยอมรับรูปแบบบริการและหน้าที่ของผู้รับบริการ",
     "Online consultation has limits. A doctor may ask you to seek in-person care if your condition is not suitable for remote treatment.":"การปรึกษาออนไลน์มีข้อจำกัด แพทย์อาจแนะนำให้ไปพบแพทย์ที่สถานพยาบาล หากอาการไม่เหมาะกับการดูแลทางไกล",
@@ -1285,7 +1285,7 @@
     "หลังชำระเงิน อ่านผลวินิจฉัย รอรับยา และใบรับรองแพทย์ได้เลย":"After payment: your diagnosis, medicine tracking and certificate.",
     "ที่อยู่จัดส่ง":"Delivery address",
     "ล้างทั้งหมด":"Clear all",
-    "ชำระเงิน":"Payment",
+    "ชำระเงิน":"Pay",
     "กรอกที่อยู่":"Add your address",
     "ที่อยู่ที่บันทึกไว้":"Saved addresses",
     "เพิ่มที่อยู่ใหม่":"Add a new address",
