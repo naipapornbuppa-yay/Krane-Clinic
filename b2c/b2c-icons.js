@@ -29,7 +29,7 @@
       return;
     }
     var cutout = name === 'house'
-      ? '<path d="M4.3 10.5 12 4.7l7.7 5.8" fill="none" stroke="#000" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.8 21.5v-6.1a2.2 2.2 0 0 1 4.4 0v6.1Z" fill="#000" stroke="none"/>'
+      ? '<path d="M9.8 24v-8.6a2.2 2.2 0 0 1 4.4 0V24Z" fill="#000" stroke="none"/>'
       : '<path d="M3.2 7.35 12 11.85l8.8-4.5M12 11.85v9.35" fill="none" stroke="#000" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>';
     node.dataset.iconReady = name;
     if (active) {
