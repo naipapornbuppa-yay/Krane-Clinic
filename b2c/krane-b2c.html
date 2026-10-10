@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-live-qa-consult-v262";
+    const release = "20261010-live-qa-toasts-bill-v263";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-live-qa-consult-v262">
+<link rel="stylesheet" href="components.css?v=20261010-live-qa-toasts-bill-v263">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -2564,10 +2564,10 @@
         <div class="checkout-bill">
           <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
           <div class="checkout-bill__row" data-payment-medicine-row><span>ยอดรวมย่อย</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-consultation-discount-row><span>ส่วนลดค่าปรึกษาครั้งแรก</span><strong data-payment-consultation-discount>- ฿ 350</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
           <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
-          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
           <div class="checkout-bill__rule"></div>
           <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
         </div>
@@ -4178,8 +4178,9 @@
   function showActionToast(message,type='success'){
     const iconNames={info:'info',success:'circle-check',warning:'triangle-alert',danger:'circle-x'};
     placeActionToast();
-    actionToast.className = 'action-toast action-toast--' + type;
-    actionToast.innerHTML = '<span class="action-toast__icon">'+window.kraneIcon(iconNames[type]||iconNames.info,'ui-icon--sm')+'</span><span>'+message+'</span>';
+    const tone=['warning','danger','error'].includes(type) ? 'warning' : (type==='info' ? 'info' : 'success');
+    actionToast.className = 'action-toast action-toast--' + tone;
+    actionToast.innerHTML = '<span class="action-toast__icon">'+window.kraneIcon(iconNames[tone],'ui-icon--sm')+'</span><span>'+message+'</span>';
     actionToast.classList.remove('is-wrapping');
     actionToast.classList.add('is-visible');
     if(actionToast.scrollWidth > actionToast.clientWidth) actionToast.classList.add('is-wrapping');
