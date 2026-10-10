@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261010-qa-cleanup-v267";
+    const release = "20261010-stable-day-button-v268";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -42,7 +42,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261010-qa-cleanup-v267"></script>
+<script src="review-tools.js?v=20261010-stable-day-button-v268"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261010-qa-cleanup-v267">
+<link rel="stylesheet" href="components.css?v=20261010-stable-day-button-v268">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -3612,7 +3612,7 @@
   <section class="screen" id="preloader">
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-qa-cleanup-v267" alt=""></span>
+        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-stable-day-button-v268" alt=""></span>
         <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
@@ -9136,6 +9136,7 @@
   document.body.addEventListener('click', event => {
     const day=event.target.closest('#appointment [data-appointment-day]');
     if(day){
+      if(day.getAttribute('aria-checked')==='true') return;
       day.closest('.appointment-days').querySelectorAll('[data-appointment-day]')
         .forEach(el => el.setAttribute('aria-checked', String(el===day)));
       appointmentDay=day.dataset.dayLabel || '';
@@ -10690,7 +10691,7 @@
   // several CSS-animated layers at once in some browsers.
   const craneImage=document.querySelector('[data-loader="paper-crane"] .ks-paper-crane-live');
   if(craneImage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-qa-cleanup-v267`);
+    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-stable-day-button-v268`);
     craneFrames.forEach(src=>{ const preload=new Image(); preload.src=src; });
     let craneFrame=0;
     setInterval(()=>{
