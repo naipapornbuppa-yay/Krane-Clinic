@@ -39,10 +39,10 @@ Run `npm run check:strings` for the stable message contract. Regenerate B2C cata
 
 [Documentation manifest](DOCUMENT-MANIFEST.md) separates current instructions, immutable historical evidence and older external references. No app, asset or route is moved by this organization. The two superseded QA reports move into a dated archive with pointer files at their old paths, so existing links keep working. Other historical material remains in place.
 
-Final branding evidence: [QA-BRAND-FINAL-2026-10-11.md](QA-BRAND-FINAL-2026-10-11.md) — 20/20 brand checks; related consistency 114/114 and contract 170/170 passed. Deployment verification remains pending.
+Final branding evidence: [QA-BRAND-FINAL-2026-10-11.md](QA-BRAND-FINAL-2026-10-11.md) — 20/20 brand checks; related consistency 114/114 and contract 170/170 passed. The initial published release passed an exact 23-file check across the three apps, shared scripts and Final SVGs. Subsequent revisions must pass the same release check; local QA alone does not establish deployment.
 
 ## Run locally
 
 From the repository root, run `python3 -m http.server 8080` and open the canonical paths above under `http://localhost:8080`. Keep all three apps on the same origin to demonstrate shared browser data. Use fictional data. A different port/browser/device does not share the demo storage.
 
-Tooling uses Node.js and `npm ci`. The current Playwright scripts can use installed Chrome through `CHROMIUM_PATH`; see each QA report for exact commands and tested scope. No database, API server or provider credentials are bundled.
+Tooling uses Node.js and `npm install --no-audit --no-fund` (this prototype does not include a lockfile). The current Playwright scripts can use installed Chrome through `CHROMIUM_PATH`; see each QA report for exact commands and tested scope. No database, API server or provider credentials are bundled.

@@ -20,7 +20,7 @@ Current combined test report: [QA-HANDOFF-2026-10-11.md](QA-HANDOFF-2026-10-11.m
 
 | Area | Current position | Completion evidence needed |
 |---|---|---|
-| B2C web app | Reviewed implementation, structural tests and focused behavioral evidence | Brand 20/20, consistency 114/114 and contract 170/170 passed; partner branches and direct entry/auth QA passed; deployment verification pending, known String ID/localization boundaries remain |
+| B2C web app | Reviewed implementation, structural tests and focused behavioral evidence | Brand 20/20, consistency 114/114 and contract 170/170 passed; partner branches and direct entry/auth QA passed; initial 23-file deployment verification passed, known String ID/localization boundaries remain |
 | Landing page | WIP; existing routes preserved | Explicitly excluded from accepted handoff |
 | Doctor CMS | Interactive prototype; current report covers routes and core consultation actions | Integration requirements and test boundaries in the current QA report |
 | Admin CMS | Route/action QA plus local editorial/settings/coupon adapters | User/refund real persistence and quiz-authoring scope remain explicit boundaries |
@@ -28,7 +28,7 @@ Current combined test report: [QA-HANDOFF-2026-10-11.md](QA-HANDOFF-2026-10-11.m
 | Patient intake / doctor prescription payload transfer | Edited prescription payload persists for the fixed golden case; no arbitrary patient intake transfer established | API schemas, adapter replacement and a fresh-patient round trip |
 | Editorial publication | New browser draft/published adapter visible in source | QA of draft isolation, publish, validation, reload and cross-tab refresh |
 | Production identity, payment, video and insurance | Not implemented by this static frontend | Backend/service integration, credentials and provider test environments owned by implementation team |
-| Final branding assets | User-exported Final SVGs installed, byte-identical to originals; icon, horizontal and compact wordmark mapped by placement | Final brand QA 20/20 passed; see assets/BRAND-ASSETS.md and brand QA report. Release verification is pending deployment |
+| Final branding assets | User-exported Final SVGs installed, byte-identical to originals; icon, horizontal and compact wordmark mapped by placement | Final brand QA 20/20 passed; see assets/BRAND-ASSETS.md and brand QA report. Initial release verification passed for all 23 checked deployed files; verify later revisions independently |
 | Staff permissions/configuration | Pricing/config and new coupons save locally; permission display remains local and quiz editing is unavailable | Agree role matrix; server authorization and actual persistence |
 | Localization | Existing catalogs include known gaps | Reconcile missing English and runtime IDs before claiming bilingual completeness |
 
@@ -46,4 +46,4 @@ Do not change this assessment to “complete” until current QA evidence is lin
 
 The documentation source audit did not establish test coverage. Subsequent adapter tests are recorded separately: `node b2c/tools/shared-prescription-test.mjs` validates prescription persistence, input rejection, totals and fulfillment isolation; `node b2c/tools/admin-settings-qa.mjs` exercises admin validation, reload, storage failure and mobile controls. Results must be tied to the final source revision before release.
 
-Final branding evidence: [QA-BRAND-FINAL-2026-10-11.md](QA-BRAND-FINAL-2026-10-11.md) — 20/20 brand checks; related consistency 114/114 and contract 170/170 passed. Deployment verification remains pending.
+Final branding evidence: [QA-BRAND-FINAL-2026-10-11.md](QA-BRAND-FINAL-2026-10-11.md) — 20/20 brand checks; related consistency 114/114 and contract 170/170 passed. The initial published release passed an exact 23-file check across the three apps, shared scripts and Final SVGs. Subsequent revisions must pass the same release check; local QA alone does not establish deployment.

@@ -47,3 +47,10 @@ Ready for backend implementation discussion with these explicit boundaries. Do n
 - Direct entry passed intake start and guarded consent deep link → signup → OTP → consent. This case checks prerequisite enforcement; it does not claim a full direct clinical questionnaire completion.
 - Latest review-round regression: 9/9 pass. Latest night-edge regression: 4/4 pass. Evidence: `qa-handoff-evidence/real-entry.json`.
 - Partner entry intentionally rewrites to `fresh=1#consent-terms` and seeds an authenticated handoff. Consent-first documentation describes this prototype behavior correctly. Real partner assertion verification remains a backend integration boundary; URL parameters are not production authentication. No runtime changes were required in this verification.
+
+
+## Release language regression fix
+
+Remote CI identified a transient Thai order-progress accessibility label after English was selected. The runtime now renders that dynamic label in the current language synchronously, without waiting for the translation MutationObserver. `order-progress-language-qa.mjs` passed immediate same-task checks for Preparing, Rider pickup, Out for delivery and Delivered, plus Thai/English language changes.
+
+Full contract rerun after this fix: **170/170 passed** (63 screens, 44 components, 5 flows, 33 rules).

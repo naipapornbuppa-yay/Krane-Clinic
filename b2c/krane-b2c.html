@@ -13359,7 +13359,14 @@
     });
     document.querySelectorAll('[data-order-progress]').forEach(bar => {
       if(bar.closest('#activity')) bar.hidden=delivered;
-      bar.setAttribute('aria-label','ความคืบหน้าคำสั่งซื้อ · '+stage.label);
+      const thaiLabel='ความคืบหน้าคำสั่งซื้อ · '+stage.label;
+      const englishStage={prepared:'dispensing',dispatch:'rider collecting your order',out:'out for delivery'}[stage.active] || 'delivered';
+      // Dynamic accessibility copy must use the current language immediately;
+      // waiting for the translation observer leaves a Thai label for one frame.
+      bar.removeAttribute('data-al-th');
+      bar.dataset.progressLabelTh=thaiLabel;
+      bar.dataset.progressLabelEn='Order progress · '+englishStage;
+      bar.setAttribute('aria-label',document.documentElement.lang==='th' ? thaiLabel : bar.dataset.progressLabelEn);
     });
     document.querySelectorAll('[data-order-progress-note]').forEach(note => { note.textContent=stage.note; });
     const charge=orderChargeSummary();
@@ -13826,6 +13833,10 @@
     document.querySelectorAll('.date-control>input[type="date"]').forEach(syncPatientDateField);
   }
   document.addEventListener('krane:languagechange',syncPatientDateFields);
+  document.addEventListener('krane:languagechange',()=>document.querySelectorAll('[data-order-progress][data-progress-label-en]').forEach(bar=>{
+    bar.removeAttribute('data-al-th');
+    bar.setAttribute('aria-label',document.documentElement.lang==='th' ? bar.dataset.progressLabelTh : bar.dataset.progressLabelEn);
+  }));
   /* The checkout composes its own add-on labels, so they keep whichever
      language they were built in until the row is rebuilt. */
   document.addEventListener('krane:languagechange',()=>{ try{ syncOrderCheckout(); }catch(_error){ /* Checkout is not on every screen. */ } });

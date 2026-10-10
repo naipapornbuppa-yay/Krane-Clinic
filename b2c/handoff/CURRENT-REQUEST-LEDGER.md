@@ -20,7 +20,7 @@
 
 ## Exact open frontend / contract items
 
-1. Final frontend checks now pass: brand 20/20, consistency 114/114 and contract 170/170. Combined CMS/action evidence is in the current QA report. Deployment verification is pending the root agent’s release; fresh-entry QA passed both partner branches and direct entry/signup/OTP guards, with scope in the combined QA report.
+1. Final frontend checks now pass: brand 20/20, consistency 114/114 and contract 170/170. Combined CMS/action evidence is in the current QA report. The initial published release passed the 23-file deployment check; fresh-entry QA passed both partner branches and direct entry/signup/OTP guards, with scope in the combined QA report.
 2. Partner consent-first bootstrap has been verified: it models authenticated partner entry, while arbitrary hashes remain guarded. Partner insurance and self-pay branch tests passed; direct entry/auth guards also passed. This does not claim every clinical questionnaire end-to-end. No clinical question reordering is authorized.
 3. Finish/adopt String ID runtime mapping and bilingual review if complete bilingual frontend delivery is required: current B2C catalog has 565 missing-English entries and runtime literals remain; CMS copy has a separate literal translator and no complete String ID catalog is claimed.
 4. Agree whether admin questionnaire authoring is part of this frontend acceptance. Current control explicitly states unavailable; an approved question schema, edit permissions, versioning and in-progress-session behavior are prerequisites.
