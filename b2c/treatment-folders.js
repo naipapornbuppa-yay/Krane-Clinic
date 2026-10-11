@@ -15,10 +15,10 @@
   tabs.setAttribute('aria-hidden','true');
   card.before(folder);folder.append(tabs,card);card.id='treatment-folder-'+card.dataset.category;
   folder.dataset.visitCount=visits.length;
-  const depth=visits.length-1;
+  const depth=Math.min(visits.length,4);
   folder.style.setProperty('--folder-depth',depth);
   for(let layer=depth;layer>0;layer--){const sheet=document.createElement('i');sheet.className='treatment-folder__sheet';sheet.style.setProperty('--layer',layer);sheet.setAttribute('aria-hidden','true');folder.prepend(sheet);}
-  visits.forEach((visit,i)=>{const spine=document.createElement('span');spine.className='treatment-folder__spine';spine.style.setProperty('--spine',i);spine.setAttribute('aria-hidden','true');tabs.append(spine);});
+  visits.slice(0,4).forEach((visit,i)=>{const spine=document.createElement('span');spine.className='treatment-folder__spine';spine.style.setProperty('--spine',i);spine.setAttribute('aria-hidden','true');tabs.append(spine);});
   const label=document.createElement('span');label.className='treatment-folder__label';label.setAttribute('aria-hidden','true');tabs.append(label);
   function select(index){
    const visit=visits[index];
