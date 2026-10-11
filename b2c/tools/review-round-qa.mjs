@@ -107,6 +107,16 @@ await test('modal-preview-gallery',async p=>{
  await p.locator('.review-modal-preview__close').click();await p.locator('.review-modal-preview').waitFor({state:'detached'});
  }
 });
+await test('notification-icon-colors',async p=>{
+ await open(p,'notifications');
+ for(const kind of ['clock','check']){
+ const rows=p.locator('[data-notification-icon="'+kind+'"]');assert(await rows.count()>0);
+ for(let i=0;i<await rows.count();i++){
+ const ic=rows.nth(i).locator('.ic');assert.equal(await ic.evaluate(e=>getComputedStyle(e).backgroundColor),kind==='clock'?'rgb(244, 237, 180)':'rgb(231, 238, 251)');
+ assert.equal(await ic.locator('[data-lucide="'+kind+'"]').count(),1);
+ }
+ }
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);

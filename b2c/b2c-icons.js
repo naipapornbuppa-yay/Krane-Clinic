@@ -110,6 +110,9 @@
       }
     });
     document.querySelectorAll('.notif').forEach(function (row) {
+      var icon=row.querySelector('.ic');
+      if(icon){icon.style.background=row.dataset.notificationIcon==='clock'?'#f4edb4':'#e7eefb';icon.style.color=row.dataset.notificationIcon==='clock'?'#75681c':'#395aa4';}
+      if(row.dataset.notificationIcon){setIcon(icon,row.dataset.notificationIcon,'ui-icon--md');return;}
       // Preserve semantic icons authored for status, delivery method and reminders.
       if(row.querySelector('.ic svg, .ic [data-lucide]')) return;
       var name = row.dataset.go === 'tracking' ? 'truck' : row.dataset.go === 'consult' ? 'messages-square' :
