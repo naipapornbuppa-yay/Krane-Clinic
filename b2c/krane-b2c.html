@@ -2774,18 +2774,7 @@
   </section>
 
   <!-- ===================== POST-VISIT FEEDBACK (post-consult, not in Phase 1 feature scope) ===================== -->
-  <section class="screen" id="feedback">
-    <div class="screen__top"><span class="ttl">How was your consultation?</span></div>
-    <div class="screen__body stack-5">
-      <div class="card card--pad-sm">
-        <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Video quality</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star">★</button></div></div>
-        <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Voice quality</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button></div></div>
-        <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Overall satisfaction</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star">★</button></div></div>
-        <div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Your doctor</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button></div></div>
-      </div>
-      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="feedback-copy" placeholder="เล่าให้เราฟังว่าอะไรดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea><label for="feedback-copy">Anything else? (optional)</label></span></div></div>
-    <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="feedbackdone">Submit feedback</button><button class="btn btn--ghost" data-go="payment">Skip</button></div>
-  </section>
+  <template id="feedback"><div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Video quality</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star">★</button></div></div><div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Voice quality</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button></div></div><div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Overall satisfaction</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star">★</button></div></div><div class="rating-row"><div><div style="font-weight:var(--fw-semibold)">Your doctor</div></div><div class="rating" data-rate><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button><button class="star on">★</button></div></div></template>
 
   <!-- ===================== FEEDBACK · THANKS ===================== -->
   <section class="screen" id="feedbackdone">
@@ -10096,6 +10085,12 @@
   document.addEventListener('change',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
   document.addEventListener('focusout',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
   function show(id, push=true){
+    if(id==='feedback'){
+      if(flowConfig.get('screens')==='1')seedClinicalDemoStage('tracking');
+      show('tracking',push);
+      requestAnimationFrame(()=>openCsatModal('tracking',{preview:flowConfig.get('screens')==='1'}));
+      return;
+    }
     const leavingScreen=document.querySelector('.screen.active')?.id;
     // The landing treatment dropdown replaces the old broad-category page.
     // Legacy "new consultation" links now start the general intake directly.
@@ -13204,7 +13199,7 @@
   // Reuse the existing four-part feedback form as the delivery review sheet.
   const csatGroups=['video','voice','overall','doctor'];
   const csatRows=csatModal.querySelector('.csat-dialog__rows');
-  document.querySelectorAll('#feedback .rating-row').forEach((source,index)=>{
+  document.getElementById('feedback').content.querySelectorAll('.rating-row').forEach((source,index)=>{
     const row=source.cloneNode(true);
     row.querySelector('[data-rate]').setAttribute('data-csat-'+csatGroups[index],'');
     row.querySelectorAll('.star').forEach(button=>{button.classList.remove('on');button.type='button';});
@@ -13220,10 +13215,10 @@
     // The automatic hop replaces the payment screen in history; the CTA pushes.
     if(csatReplaces) replaceCurrent(csatTarget); else show(csatTarget);
   }
-  function openCsatModal(target,{replace=false}={}){
+  function openCsatModal(target,{replace=false,preview=false}={}){
     csatTarget = target || 'tracking';
     csatReplaces = replace;
-    if(!csatModal || flowState.csatDone){ leaveCsat(); return; }
+    if(!csatModal || (flowState.csatDone && !preview)){ leaveCsat(); return; }
     csatModal.hidden = false;
     csatModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
