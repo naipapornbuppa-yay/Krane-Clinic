@@ -53,11 +53,14 @@ await test('paid-order-starts-preparing',async p=>{
 });
 await test('notification-delivery-states',async p=>{
  await open(p,'notifications');assert.equal(await p.locator('[data-mock-status]').count(),12);
+ await p.waitForFunction(()=>document.querySelector('[data-mock-status=Preparing] .ic .lucide-pill'));
+ assert.equal(await p.locator('[data-mock-status=Preparing] .ic svg').first().innerHTML(),await p.locator('#tracking [data-track-step=prepared] svg').innerHTML());
  for(const method of ['same-day','postal'])for(const status of ['Preparing','Rider pickup','Dispatched','Delivered']){
  await p.evaluate(()=>location.hash='notifications');await p.locator('#notifications.active').waitFor();
  await p.locator(`[data-mock-delivery="${method}"][data-mock-status="${status}"]`).click();
  await p.locator('#tracking.active').waitFor();assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),status);
  assert.equal(await p.locator('#tracking [data-track-step="out"] use').getAttribute('href'),method==='postal'?'#krane-delivery-truck':'#krane-delivery-motorcycle');
+ if(status==='Rider pickup'){assert(await p.locator('#tracking [data-track-step=out]').evaluate(el=>el.classList.contains('active')));assert(!(await p.locator('#tracking').innerText()).includes('ไปรับ'));}
  if(status==='Delivered'){await p.locator('#csat-modal:not([hidden])').waitFor();await p.locator('#csat-modal .modal-dialog__actions [data-csat-close]').click();}
  }
 });
