@@ -276,7 +276,8 @@
   document.addEventListener('click', e => {
     if (e.target.closest('[data-rx-card-send]')) {
       const thread = $('#consult .chat__thread');
-      const rows = draft.map(d => '<div class="rx-card__row"><b>' + esc(d.name) + '</b><small>' + esc(T(d.dir, d.dirTH)) + '</small></div>').join('');
+      if (!dispensed.length) return;
+      const rows = dispensed.map(d => '<div class="rx-card__row"><b>' + esc(d.name) + '</b><small>' + esc(d.directions ?? T(d.dir, d.dirTH)) + '</small><small>' + T('Quantity: ', 'จำนวน: ') + d.qty + '</small></div>').join('');
       const card = appendBubble(thread,
         '<div class="rx-card"><div class="rx-card__head">' + T('Prescription (draft)', 'ใบสั่งยา (ร่าง)') + '</div>' + rows
         + '<div class="rx-card__foot">' + T('Not an order yet. Your doctor confirms it after the consultation.', 'ยังไม่ใช่คำสั่งซื้อ แพทย์จะยืนยันหลังจบการปรึกษา') + '</div></div>', true);
@@ -343,6 +344,9 @@
   }
   function rxTotal() { return dispensed.reduce((sum, d) => sum + d.price * (d.qty || 1), 0); }
   function renderRx() {
+    const editor = $('[data-consult-rx-list]');
+    if(editor) editor.innerHTML = dispensed.length ? dispensed.map((d,i) => '<div class="consult-rx__item"><div class="panel__head panel__head--bare"><b>'+esc(d.name)+'</b><button type="button" class="btn btn--ghost btn--sm" data-rx-remove="'+i+'">'+T('Remove','ลบ')+'</button></div><div class="consult-rx__fields"><label>'+T('Quantity','จำนวน')+'<input class="input" type="number" min="1" data-rx-qty="'+i+'" value="'+d.qty+'"></label><label>'+T('Directions','วิธีใช้')+'<input class="input" data-rx-dir="'+i+'" value="'+esc(d.directions ?? T(d.dir,d.dirTH))+'"></label></div></div>').join('') : '<p class="hint">'+T('Search and add medicine to start a draft.','ค้นหาและเพิ่มยาเพื่อเริ่มร่างใบสั่งยา')+'</p>';
+    const send = $('[data-rx-card-send]'); if(send) send.disabled = !dispensed.length;
     const draftList = $('[data-rx-draft-list]');
     if (draftList) {
       draftList.innerHTML = draft.map(d => {
@@ -378,7 +382,7 @@
     const total = $('[data-rx-total]'); if (total) total.textContent = baht(rxTotal());
   }
   function addDrug(item) {
-    if (dispensed.some(x => (x.sku && x.sku === item.sku) || x.key === item.key)) { say(T('Already in the list', 'มีในรายการแล้ว')); return false; }
+    if (dispensed.some(x => (x.sku && x.sku === item.sku) || (x.key && x.key === item.key))) { say(T('Already in the list', 'มีในรายการแล้ว')); return false; }
     dispensed.push(Object.assign({ qty: 1, directions: null }, item));
     markDirty(); renderRx(); return true;
   }
@@ -414,9 +418,8 @@
 
   /* medicine search */
   function runDrugSearch() {
-    const scope = $('[data-drug-scope]').value;
     const q = ($('[data-drug-q]').value || '').trim().toLowerCase();
-    const hits = CATALOG.filter(d => !q || String(d[scope]).toLowerCase().includes(q));
+    const hits = CATALOG.filter(d => !q || [d.brand,d.sku,d.generic,d.name].some(value=>String(value).toLowerCase().includes(q)));
     const box = $('[data-drug-results]');
     box.innerHTML = hits.length
       ? hits.map(d => '<div class="drug-row"><span class="drug-row__body"><b>' + esc(d.name) + '</b><small>' + T('Brand', 'ยี่ห้อ') + ' ' + esc(d.brand) + ' · ' + T('Code', 'รหัส') + ' ' + d.sku + ' · ' + esc(d.generic) + '</small></span><span class="strong">' + baht(d.price) + '</span><button class="btn btn--secondary btn--sm" type="button" data-drug-add="' + d.sku + '">' + T('Select', 'เลือก') + '</button></div>').join('')
@@ -434,6 +437,7 @@
       }
     }
   });
+  document.addEventListener('input', e => { if(e.target.matches('[data-drug-q]')) runDrugSearch(); });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('[data-drug-q]')) runDrugSearch(); });
   document.addEventListener('change', e => { if (e.target.matches('[data-drug-scope]')) runDrugSearch(); });
 

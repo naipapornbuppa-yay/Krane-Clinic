@@ -7,6 +7,12 @@
    ============================================================ */
 (function () {
   var TH = {
+    "Choose medicine for the patient": "เลือกยาให้ผู้ป่วย",
+    "Search, add medicine, review directions and share a preview in chat": "ค้นหาและเพิ่มยา ตรวจวิธีใช้ แล้วส่งตัวอย่างให้ผู้ป่วยดูในแชต",
+    "Search / add medicine": "ค้นหา / เพิ่มยา",
+    "Send prescription preview to chat": "ส่งตัวอย่างใบสั่งยาเข้าแชต",
+    "Draft for discussion only. This does not confirm a prescription or create an order.": "เป็นร่างสำหรับพูดคุยกับผู้ป่วย ยังไม่ยืนยันใบสั่งยาหรือสร้างคำสั่งซื้อ",
+
     /* ---- common / buttons ---- */
     "Continue":"ดำเนินการต่อ","Next":"ถัดไป","Skip":"ข้าม","Back":"ย้อนกลับ","Send":"ส่ง","Pay":"ชำระ","securely":"อย่างปลอดภัย","Apply":"ใช้","Edit":"แก้ไข","log in":"เข้าสู่ระบบ","Log in":"เข้าสู่ระบบ",
     "Get started":"เริ่มต้นใช้งาน","Start your visit":"เริ่มการปรึกษา","Continue to payment":"ไปต่อที่การชำระเงิน","Skip for now":"ข้ามไปก่อน",

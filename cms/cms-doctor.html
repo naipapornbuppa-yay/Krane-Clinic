@@ -9,7 +9,7 @@
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
 <link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-favicon.svg">
-</head>
+<style>.consult-rx{padding:20px;border:1px solid var(--line,#dce1e9);border-radius:16px;margin-bottom:20px}.consult-rx .panel__head{flex-wrap:wrap;gap:12px}.consult-rx__fields{display:grid;grid-template-columns:85px 1fr;gap:12px}.consult-rx__item{padding:14px;background:var(--bg,#f5f6f8);border-radius:12px}.consult-rx__item label{display:block;font-size:13px;margin-bottom:5px}@media(max-width:600px){.consult-rx__fields{grid-template-columns:1fr}.consult-rx .panel__head .btn{width:100%}}</style></head>
 <body class="role-doctor">
 
 <!-- ================= SIGN IN (manual 3) =================
@@ -505,6 +505,12 @@
             </div>
           <div class="chat">
             <div class="chat__head">Chat during the consultation<span class="hint">The patient sees these messages</span></div>
+            <section class="consult-rx stack" aria-label="Prescription draft">
+              <div class="panel__head panel__head--bare"><div><div class="panel__title">เลือกยาให้ผู้ป่วย</div><div class="hint">ค้นหาและเพิ่มยา ตรวจวิธีใช้ แล้วส่งตัวอย่างให้ผู้ป่วยดูในแชต</div></div><button class="btn btn--secondary" type="button" data-drug-open>ค้นหา / เพิ่มยา</button></div>
+              <div class="stack" data-consult-rx-list></div>
+              <button class="btn btn--primary" type="button" data-rx-card-send>ส่งตัวอย่างใบสั่งยาเข้าแชต</button>
+              <p class="hint">เป็นร่างสำหรับพูดคุยกับผู้ป่วย ยังไม่ยืนยันใบสั่งยาหรือสร้างคำสั่งซื้อ</p>
+            </section>
             <div class="chat__thread">
               <div class="bubble bubble--in" data-selected-patient-message-one>Hi doctor, I've been noticing more shedding at the crown.</div>
               <div class="bubble bubble--out" data-selected-doctor-message>Thanks Mali. I've reviewed your intake and photo. Any family history of hair loss?</div>
@@ -528,15 +534,7 @@
               <div class="field"><label for="soap-p">P · Plan</label><textarea class="textarea soap__box" id="soap-p" data-soap>Continue finasteride 1 mg daily and topical minoxidil 5%. Follow up with photos in 12 weeks.</textarea></div>
               <div class="hint" data-soap-status>Saved automatically</div>
             </div>
-            <div class="ctx__sec stack">
-              <div class="label">Recommended medicine (draft)</div>
-              <div class="draft-rx" data-draft-rx>
-                <div class="draft-rx__row"><b>Finasteride 1mg</b><small>1 tablet once daily</small></div>
-                <div class="draft-rx__row"><b>Minoxidil 5% topical</b><small>Apply 1 mL to the scalp twice daily</small></div>
-              </div>
-              <button class="btn btn--secondary btn--sm btn--block" type="button" data-rx-card-send>Show the prescription in chat</button>
-              <div class="hint">The patient sees the list in chat. It is not an order until you create one after the call.</div>
-            </div>
+
           </aside>
         </div>
       </section>
@@ -975,8 +973,8 @@
     <div class="cms-modal__head"><h2 id="drug-title">Search medicine</h2><button class="cms-modal__close" type="button" data-modal-close aria-label="Close">×</button></div>
     <div class="cms-modal__body">
       <div class="drug-search">
-        <div class="field"><label for="drug-scope">Search by</label><select class="select" id="drug-scope" data-drug-scope><option value="brand">Brand</option><option value="sku">Product code</option><option value="generic" selected>Generic name</option><option value="name">Product name</option></select></div>
-        <div class="field grow"><label for="drug-q">Search</label><input class="input" id="drug-q" data-drug-q value="Finasteride" placeholder="Type to search"></div>
+
+        <div class="field grow"><label for="drug-q">Search</label><input class="input" id="drug-q" data-drug-q value="" placeholder="Type to search"></div>
         <button class="btn btn--primary" type="button" data-drug-search>Search</button>
       </div>
       <div class="drug-results" data-drug-results></div>
@@ -1836,7 +1834,7 @@
 </script>
 <script src="cms-select.js?v=20260715a"></script>
 <script src="cms-datetime.js?v=20260726a"></script>
-<script src="i18n.js?v=20261010-handoff-v273"></script>
+<script src="i18n.js?v=20261011-rx-composer"></script>
 
 
 <script>
@@ -1918,6 +1916,6 @@
   applyCmsHash();
 </script>
 
-<script src="doctor-core-flow.js?v=20261011-final-brand-v274"></script>
+<script src="doctor-core-flow.js?v=20261011-rx-composer"></script>
 <script src="../krane-golden-doctor.js?v=20261011-final-brand-v274"></script>
 </body></html>
