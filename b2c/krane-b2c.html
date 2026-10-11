@@ -11002,7 +11002,7 @@
       flowState.csatDone=false;
       flowState.csatDeliveryPrompted=false;
       flowState.deliveryNotified=false;
-        window.KraneGoldenDemo?.advanceFulfilment('Preparing');
+        window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
         persistFlowState();
       }
       // Hash deep links can arrive from a standalone condition-detail page in
@@ -12248,6 +12248,17 @@
       return;
     }
     if(e.target.closest('[data-address-recipient-edit]')) addressRecipientEditing=true;
+    const paidTracking=e.target.closest('[data-payment-success-cta][data-go="tracking"]');
+    if(paidTracking){
+      flowState.orderDelivered=false;
+      flowState.csatDeliveryPrompted=false;
+      flowState.deliveryNotified=false;
+      flowState.orderState.deliveredAt=null;
+      flowState.orderState.justPaidTracking=true;
+      window.kraneDemoStatus='';
+      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
+      persistFlowState();
+    }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -13029,7 +13040,7 @@
          this one report that it had arrived before it was paid for
          (client, 29 Sep). */
       flowState.orderState.deliveredAt=null;
-      window.KraneGoldenDemo?.advanceFulfilment('Preparing');
+      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
       persistFlowState();
       syncPaymentOutcome();
       show(hasFulfillableItems() ? 'payment-success' : 'my-documents');
@@ -13070,7 +13081,7 @@
          this one report that it had arrived before it was paid for
          (client, 29 Sep). */
       flowState.orderState.deliveredAt=null;
-      window.KraneGoldenDemo?.advanceFulfilment('Preparing');
+      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
       persistFlowState();
       syncPaymentOutcome();
       show('payment-success');
@@ -13459,7 +13470,7 @@
   }
   function startTrackingDemoWalk(){
     stopTrackingDemoWalk();
-    if(reduceMotion) return;
+    if(reduceMotion || flowState.orderState.justPaidTracking || flowState.orderState.paidAt) return;
     const demo=window.KraneGoldenDemo;
     if(!demo || flowState.orderDelivered) return;
     if(new URLSearchParams(location.search).get('demoStatus')) return;

@@ -42,6 +42,15 @@ await test('how-vertical-scroll',async p=>{
  await p.locator('#how').scrollIntoViewIfNeeded();await p.locator('.figma-how__indicators [data-how-go="0"]').click();await p.waitForTimeout(1000);await p.locator('[data-how-next]').click();await p.waitForTimeout(1000);
  assert.equal(await p.locator('[data-how-count]').textContent(),'2 / 3');
 });
+await test('paid-order-starts-preparing',async p=>{
+ await open(p,'payment-success');
+ await p.evaluate(()=>window.KraneGoldenDemo.advanceFulfilment('Delivered'));
+ await p.locator('[data-payment-success-cta]').click();await p.locator('#tracking.active').waitFor();
+ assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),'Preparing');
+ assert.equal(await p.locator('#csat-modal:visible').count(),0);
+ await p.waitForTimeout(9500);
+ assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),'Preparing');
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
