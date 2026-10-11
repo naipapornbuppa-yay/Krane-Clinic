@@ -33,7 +33,7 @@
    if(!certificate)return;
    document.getElementById('treatment-visit-history')?.remove();
    const history=document.createElement('details');history.id='treatment-visit-history';
-   const summary=document.createElement('summary');summary.textContent='ประวัติการปรึกษา · '+visits.length+' ครั้ง';history.append(summary);
+   const summary=document.createElement('summary');summary.innerHTML='<span>ประวัติการปรึกษา</span>'+window.kraneIcon('chevron-down','ui-icon--sm');history.append(summary);
    const current=Number(card.dataset.consultationNumber);
    const label=document.createElement('p');label.className='hint';label.textContent='กำลังดูการปรึกษาครั้งที่ '+current;history.append(label);
    const other=visits.map((visit,index)=>({visit,index})).reverse();
