@@ -76,6 +76,27 @@ await test('appointment-flat-available-slots',async p=>{
  await p.locator('[data-appointment-slot]').first().click();assert.equal(await p.locator('[data-appointment-confirm]').isDisabled(),false);
  await p.locator('[data-appointment-day]').nth(2).click();assert.equal(await p.locator('[data-appointment-slot][aria-checked="true"]').count(),0);
 });
+await test('medicine-sheet-restore-quantity',async p=>{
+ await open(p,'payment');
+ for(const key of ['cough','loratadine','paracetamol','naproxen']){
+ const row=p.locator('#payment [data-order-item="'+key+'"]');
+ const max=Number(await row.locator('[data-qty]').getAttribute('data-max'));
+ const unit=Number(await row.locator('[data-qty]').getAttribute('data-unit'));
+ const initialTotal=await p.locator('#payment [data-payment-subtotal]').first().textContent();
+ await row.locator('[data-order-edit]').click();
+ const qty=p.locator('[data-payment-item-quantity]'),plus=p.locator('[data-payment-item-plus]'),minus=p.locator('[data-payment-item-minus]');
+ while(Number(await qty.textContent())>0)await minus.click();
+ assert(await minus.isDisabled());assert.equal(await plus.isDisabled(),false);
+ for(let n=1;n<=max;n++){await plus.click();assert.equal(Number(await qty.textContent()),n);assert.equal(Number((await p.locator('[data-payment-item-price]').textContent()).replace(/[^0-9.]/g,'')),unit*n);}
+ assert(await plus.isDisabled());
+ await p.locator('[data-payment-item-save]').click();
+ assert.equal(Number(await row.locator('[data-qty-n]').textContent()),max);
+ await row.locator('[data-order-edit]').click();await minus.click();await p.locator('[data-payment-item-save]').click();
+ await row.locator('[data-order-edit]').click();assert.equal(Number(await qty.textContent()),max-1);await plus.click();await p.locator('[data-payment-item-save]').click();
+ assert.equal(Number(await row.locator('[data-qty-n]').textContent()),max);
+ if(initialTotal)assert.equal(await p.locator('#payment [data-payment-subtotal]').first().textContent(),initialTotal);
+ }
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
