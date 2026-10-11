@@ -1399,6 +1399,8 @@
     let isVisible = false;
     let isPointerDown = false;
     let resumeTimer = 0;
+    let pageScrollUntil = 0;
+    let measuredWidth = viewport.clientWidth;
 
     function normalizeIndex(index) {
       return (index + slides.length) % slides.length;
@@ -1414,7 +1416,7 @@
     }
 
     function canAutoPlay() {
-      return isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+      return performance.now() >= pageScrollUntil && isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
     }
 
     function scheduleAuto(delay = AUTO_DELAY) {
@@ -1502,6 +1504,15 @@
     viewport.addEventListener('pointerup', releasePointer, { passive: true });
     viewport.addEventListener('pointercancel', releasePointer, { passive: true });
 
+    // Let vertical reading finish before moving the horizontal demonstration.
+    const pauseForPageScroll = () => {
+      pageScrollUntil = performance.now() + 1600;
+      stopAuto();
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(scheduleAuto, 1700);
+    };
+    window.addEventListener('scroll', pauseForPageScroll, { passive: true });
+    viewport.addEventListener('wheel', pauseForPageScroll, { passive: true });
     section.addEventListener('focusin', stopAuto);
     section.addEventListener('focusout', () => window.setTimeout(scheduleAuto, 0));
 
@@ -1524,7 +1535,9 @@
       else scheduleAuto();
     });
     window.addEventListener('resize', () => {
-      viewport.scrollLeft = slideScrollLeft(slides[activeIndex]);
+      if(viewport.clientWidth === measuredWidth) return;
+      measuredWidth = viewport.clientWidth;
+      viewport.scrollTo({left:slideScrollLeft(slides[activeIndex]),behavior:'instant'});
       updateFromScroll();
     }, { passive: true });
 

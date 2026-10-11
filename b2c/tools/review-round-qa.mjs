@@ -34,6 +34,14 @@ await test('insurance-document-shared-modes',async p=>{
  assert(Math.abs(tabs.width-field.width)<2);
  }
 });
+await test('how-vertical-scroll',async p=>{
+ await p.goto(`${base}/b2c/krane-b2c-landing.html`);await p.locator('#how').scrollIntoViewIfNeeded();
+ const viewport=p.locator('[data-how-viewport]');await viewport.hover();
+ const before=await p.evaluate(()=>scrollY);await p.mouse.wheel(0,500);await p.waitForTimeout(500);
+ assert((await p.evaluate(()=>scrollY))>before+100);
+ await p.locator('#how').scrollIntoViewIfNeeded();await p.locator('.figma-how__indicators [data-how-go="0"]').click();await p.waitForTimeout(1000);await p.locator('[data-how-next]').click();await p.waitForTimeout(1000);
+ assert.equal(await p.locator('[data-how-count]').textContent(),'2 / 3');
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
