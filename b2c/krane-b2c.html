@@ -10878,6 +10878,9 @@
          not the final state left behind by a previous QA run in this tab. */
       if(id==='tracking' && freshRequested){
         flowState.orderDelivered=false;
+      flowState.csatDone=false;
+      flowState.csatDeliveryPrompted=false;
+      flowState.deliveryNotified=false;
         window.KraneGoldenDemo?.advanceFulfilment('Preparing');
         persistFlowState();
       }
@@ -12887,6 +12890,9 @@
       flowState.paymentResolution='covered';
       flowState.documentsUnlocked=true;
       flowState.orderDelivered=false;
+      flowState.csatDone=false;
+      flowState.csatDeliveryPrompted=false;
+      flowState.deliveryNotified=false;
       /* A new payment starts a new parcel. The arrival stamp is written once
          and then read back, so leaving the previous order's stamp in place made
          this one report that it had arrived before it was paid for
@@ -12925,6 +12931,9 @@
       flowState.paymentResolution='final-paid';
       flowState.documentsUnlocked=true;
       flowState.orderDelivered=false;
+      flowState.csatDone=false;
+      flowState.csatDeliveryPrompted=false;
+      flowState.deliveryNotified=false;
       /* A new payment starts a new parcel. The arrival stamp is written once
          and then read back, so leaving the previous order's stamp in place made
          this one report that it had arrived before it was paid for
@@ -13098,6 +13107,7 @@
     syncDeliveryNotification();
   }
   function syncDeliveryNotification(){
+    if(orderFulfilmentStatus()==='Delivered' && !flowState.deliveryNotified){flowState.deliveryNotified=true;persistFlowState();}
     const notif=document.querySelector('[data-notif-delivered]');
     if(notif) notif.hidden=!flowState.deliveryNotified;
     const review=document.querySelector('[data-notif-review]');
@@ -13119,6 +13129,7 @@
          review is a request, not a gate. It is not marked done, so it can be
          asked again on the next delivery. */
       if(event.target.closest('[data-csat-close]')){
+        flowState.csatDeliveryPrompted=true;
         closeCsatModal();
         revealDeliveryNotification();
         leaveCsat();
@@ -13326,6 +13337,14 @@
     const status=orderFulfilmentStatus();
     const stage=ORDER_STAGES[status];
     const delivered=status==='Delivered';
+    if(delivered){
+      revealDeliveryNotification();
+      if(!flowState.csatDone && !flowState.csatDeliveryPrompted){
+        flowState.csatDeliveryPrompted=true;persistFlowState();
+        const target=document.querySelector('.screen.active')?.id || 'tracking';
+        requestAnimationFrame(()=>openCsatModal(target));
+      }
+    }
     const activeIndex=delivered ? ORDER_STEP_ORDER.length : ORDER_STEP_ORDER.indexOf(stage.active);
     const screen=document.getElementById('tracking');
     if(screen){
