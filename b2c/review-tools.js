@@ -255,20 +255,21 @@
         link.addEventListener('click',event=>{
           event.preventDefault();event.stopPropagation();
           const preview=global.document.createElement('dialog');preview.className='review-modal-preview';preview.setAttribute('aria-label',link.textContent);
-          const close=global.document.createElement('button');close.type='button';close.textContent='ปิดตัวอย่าง ×';close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
-          const note=global.document.createElement('p');note.className='hint';note.textContent='ตัวอย่างหน้าตาเท่านั้น';preview.append(note);
+          const close=global.document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','ปิดหน้าต่าง');close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
+          
           if(item.node){
             const content=item.node.querySelector('.modal-dialog') || item.node;
             const clone=content.cloneNode(true);clone.hidden=false;clone.removeAttribute('open');clone.removeAttribute('id');
+            clone.querySelectorAll('.shared-modal-close,.modal-dialog__close').forEach(el=>el.remove());
             clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
             clone.querySelectorAll('button,input,select,textarea,a').forEach(el=>{el.disabled=true;el.removeAttribute('href');el.removeAttribute('autofocus');});
-            clone.style.cssText+=';position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';preview.append(clone);
+            clone.style.cssText+=';display:block;position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';preview.append(clone);
           }else{
             const title=global.document.createElement('h2');title.textContent=item.title;preview.append(title);
             const text=global.document.createElement('p');text.textContent=item.text;preview.append(text);
             item.actions.forEach(label=>{const button=global.document.createElement('button');button.className='btn';button.textContent=label;button.disabled=true;preview.append(button);});
           }
-          preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});global.document.body.append(preview);preview.showModal();
+          preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
         });body.append(link);
       });
       details.appendChild(body);
