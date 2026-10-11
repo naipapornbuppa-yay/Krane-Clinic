@@ -259,24 +259,32 @@
         li.innerHTML = '<b>' + T(FIELD_LABEL[i.dataset.pe][0], FIELD_LABEL[i.dataset.pe][1]) + '</b> ' + T('set to', 'เปลี่ยนเป็น') + ' "' + esc(next) + '"<small>' + doctorName() + ' · ' + nowStamp() + '</small>';
         log.prepend(li);
       });
+      const allergy=$('[data-consult-allergies]');if(allergy)allergy.textContent=$('[data-pf=allergies]')?.textContent || T('Not recorded','ยังไม่บันทึก');
       closeModal($('[data-patient-modal]'));
       say(changed ? T('Patient details saved', 'บันทึกข้อมูลผู้ป่วยแล้ว') : T('Nothing changed', 'ไม่มีการเปลี่ยนแปลง'));
     }
   });
 
   /* ---------------------------------------------------------------- consultation room */
-  let soapTimer;
+  const noteKey = () => 'krane-doctor-soap-demo-v1:' + patientName().replace(/\s*\(Demo\)/gi,'');
+  const soapDefaults = $$('[data-soap]').map(el=>el.value);
+  function restoreNotes(){
+    let notes=null;try{notes=JSON.parse(sessionStorage.getItem(noteKey())||'null')}catch{}
+    $$('[data-soap]').forEach((el,i)=>el.value=Array.isArray(notes)?notes[i]||'':(/Mali/.test(patientName())?soapDefaults[i]:''));
+    $('[data-soap-status]').textContent=notes?T('Draft restored in this browser session','กู้คืนร่างในเบราว์เซอร์นี้แล้ว'):T('Demo notes · not saved to a clinical record','บันทึกตัวอย่าง · ยังไม่บันทึกเข้าระบบเวชระเบียน');
+  }
   document.addEventListener('input', e => {
     if (!e.target.matches('[data-soap]')) return;
-    const st = $('[data-soap-status]');
-    st.textContent = 'Saving';
-    clearTimeout(soapTimer);
-    soapTimer = setTimeout(() => { st.textContent = T('Saved automatically · ', 'บันทึกอัตโนมัติแล้ว · ') + clock(); }, 700);
+    const st=$('[data-soap-status]');
+    try { sessionStorage.setItem(noteKey(),JSON.stringify($$('[data-soap]').map(el=>el.value)));st.textContent=T('Draft saved in this browser session · ','บันทึกร่างในเบราว์เซอร์นี้แล้ว · ')+clock(); }
+    catch {st.textContent=T('Draft could not be saved. Keep this page open and retry.','บันทึกร่างไม่ได้ กรุณาเปิดหน้านี้ไว้แล้วลองใหม่');}
   });
+  restoreNotes();
+  document.addEventListener('krane:doctor-patient-changed',restoreNotes);
   document.addEventListener('click', e => {
     if (e.target.closest('[data-rx-card-send]')) {
       const thread = $('#consult .chat__thread');
-      if (!dispensed.length) return;
+      if (!validateRx()) return;
       const rows = dispensed.map(d => '<div class="rx-card__row"><b>' + esc(d.name) + '</b><small>' + esc(d.directions ?? T(d.dir, d.dirTH)) + '</small><small>' + T('Quantity: ', 'จำนวน: ') + d.qty + '</small></div>').join('');
       const card = appendBubble(thread,
         '<div class="rx-card"><div class="rx-card__head">' + T('Prescription (draft)', 'ใบสั่งยา (ร่าง)') + '</div>' + rows
@@ -336,11 +344,30 @@
   ];
   let dispensed = draft.map(d => Object.assign({ qty: 1, directions: null }, d));
   let saved = false;
+  const rxDraftKey=()=> 'krane-doctor-rx-demo-v1:'+patientName().replace(/\s*\(Demo\)/gi,'');
+  function restoreRxDraft(){
+    try{const items=JSON.parse(sessionStorage.getItem(rxDraftKey())||'null');
+      if(Array.isArray(items) && items.every(d=>d && typeof d.name==='string' && Number.isFinite(d.price)))dispensed=items;
+    }catch{}
+    saved=false;
+  }
+  restoreRxDraft();
+
 
   function markDirty() {
     saved = false;
+    try{sessionStorage.setItem(rxDraftKey(),JSON.stringify(dispensed))}catch{say(T('Draft could not be saved in this browser.','บันทึกร่างในเบราว์เซอร์ไม่ได้'));}
     const create = $('[data-order-open]'); if (create) create.disabled = true;
     const st = $('[data-rx-save-status]'); if (st) st.textContent = 'Save the prescription before you create the order.';
+  }
+  function validateRx(){
+    const invalid=dispensed.findIndex(d=>!Number.isInteger(Number(d.qty)) || Number(d.qty)<1 || !(d.directions ?? T(d.dir,d.dirTH)).trim());
+    if(!dispensed.length || invalid>=0){
+      say(T('Add medicine with a positive whole quantity and directions.','เพิ่มยา พร้อมจำนวนเต็มที่มากกว่า 0 และวิธีใช้'));
+      const section=$('.page.is-active');
+      const input=section?.querySelector('[data-rx-qty="'+invalid+'"], [data-rx-dir="'+invalid+'"]');input?.focus();return false;
+    }
+    return true;
   }
   function rxTotal() { return dispensed.reduce((sum, d) => sum + d.price * (d.qty || 1), 0); }
   function renderRx() {
@@ -362,7 +389,7 @@
       body.innerHTML = dispensed.map((d, i) =>
         '<tr><td><div class="strong">' + esc(d.name) + '</div><div class="sub">' + esc(d.generic) + (d.sku ? ' · SKU ' + d.sku : '') + '</div></td>'
         + '<td><input class="input input--qty" type="number" min="1" value="' + (d.qty || 1) + '" data-rx-qty="' + i + '" aria-label="' + T('Quantity', 'จำนวน') + '"></td>'
-        + '<td><input class="input" value="' + esc(d.directions || T(d.dir, d.dirTH)) + '" data-rx-dir="' + i + '" aria-label="' + T('Directions', 'วิธีใช้') + '"></td>'
+        + '<td><input class="input" value="' + esc(d.directions ?? T(d.dir, d.dirTH)) + '" data-rx-dir="' + i + '" aria-label="' + T('Directions', 'วิธีใช้') + '"></td>'
         + '<td class="strong">' + baht(d.price * (d.qty || 1)) + '</td>'
         + '<td><button class="btn btn--ghost btn--sm" type="button" data-rx-remove="' + i + '">' + T('Remove', 'ลบ') + '</button></td></tr>').join('');
     }
@@ -373,7 +400,7 @@
   }
   document.addEventListener('input', e => {
     const q = e.target.closest('[data-rx-qty]');
-    if (q) { dispensed[+q.dataset.rxQty].qty = Math.max(1, parseInt(q.value, 10) || 1); markDirty(); renderRxTotalsOnly(); }
+    if (q) { dispensed[+q.dataset.rxQty].qty = q.value === '' ? null : Number(q.value); markDirty(); renderRxTotalsOnly(); }
     const d = e.target.closest('[data-rx-dir]');
     if (d) { dispensed[+d.dataset.rxDir].directions = d.value; markDirty(); }
   });
@@ -392,7 +419,7 @@
     const rm = e.target.closest('[data-rx-remove]');
     if (rm) { dispensed.splice(+rm.dataset.rxRemove, 1); markDirty(); renderRx(); return; }
     if (e.target.closest('[data-rx-save]')) {
-      if (!dispensed.length) { say(T('Add at least one medicine first', 'เพิ่มยาอย่างน้อย 1 รายการก่อน')); return; }
+      if (!validateRx()) return;
       saved = true;
       $('[data-order-open]').disabled = false;
       $('[data-rx-save-status]').textContent = T('Saved at ', 'บันทึกแล้ว ') + clock() + T('. You can create the order now.', ' สร้างคำสั่งซื้อได้เลย');
@@ -406,14 +433,14 @@
       return;
     }
     if (e.target.closest('[data-order-open]')) {
-      if (!saved) return;
+      if (!saved || !validateRx()) return;
       $('[data-order-lines]').innerHTML = dispensed.map(d =>
         '<div class="kv"><span class="k">' + esc(d.name) + ' × ' + (d.qty || 1) + '</span><span class="strong">' + baht(d.price * (d.qty || 1)) + '</span></div>').join('')
         + '<div class="kv order-lines__total"><span class="k">' + T('Total medicine', 'ยอดค่ายารวม') + '</span><span class="strong">' + baht(rxTotal()) + '</span></div>';
       openModal('[data-order-modal]');
       return;
     }
-    if (e.target.closest('[data-order-confirm]')) { closeModal($('[data-order-modal]')); complete(true); }
+    if (e.target.closest('[data-order-confirm]')) { if(!saved || !validateRx()) return; saved=false;closeModal($('[data-order-modal]')); complete(true); }
   });
 
   /* medicine search */

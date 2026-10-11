@@ -13,3 +13,5 @@
 - Latest broad evidence: [night QA](QA-NIGHT-2026-10-11.md). Follow-up behavior evidence: [program pause and review completion](QA-PROGRAM-PAUSE-2026-10-11.md). Earlier CMS/brand reports retain their original scope; they were not rerun merely because this B2C change shipped.
 
 Refill modal: “ยาทั้งหมดที่เติมได้” uses the shared secondary CTA, retaining the combined-order action. Removed its card subtitle and the refill-limit helper sentence from this modal.
+
+Doctor portal audit: [workflow/readiness report](../../cms/DOCTOR-UX-AUDIT-2026-10-11.md). SOAP and prescription drafts now persist in browser session only; invalid Rx is blocked, allergy edits reach consultation context, and edited follow-up is not overwritten by fixture relabelling. Real signing, messaging, patient binding and booking remain backend work.

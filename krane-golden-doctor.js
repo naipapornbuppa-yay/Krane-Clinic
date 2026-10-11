@@ -16,11 +16,12 @@
     [/12 ก\.ย\. 2026/g, f.treatment.followUpTH]
   ];
 
+  document.querySelector('[data-golden-follow-up]')?.addEventListener('input',e=>{e.target.dataset.clinicianEdited='1'});
   function applyFixture() {
     demo.replaceText(document.body, pairs);
     const followUp = document.querySelector("[data-golden-follow-up]");
     const thai = document.querySelector('.lang__opt[data-lng="th"].is-active');
-    if (followUp) followUp.value = thai ? f.treatment.followUpTH : f.treatment.followUp;
+    if (followUp && !followUp.dataset.clinicianEdited) followUp.value = thai ? f.treatment.followUpTH : f.treatment.followUp;
   }
 
   document.querySelectorAll("[data-patient]").forEach(function (row) {

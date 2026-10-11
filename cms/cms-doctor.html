@@ -522,7 +522,7 @@
           </div>
           <aside class="ctx">
             <div class="ctx__sec"><div class="label">Patient</div><div class="strong" data-selected-context-primary>Mali S. · 34 · male</div><div class="hint" data-selected-context-secondary>Hair loss · ID #PT-2041</div></div>
-            <div class="ctx__sec"><div class="alertline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg>No known allergies</div></div>
+            <div class="ctx__sec"><div class="alertline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6Z"></path><path d="m9 12 2 2 4-4"></path></svg><span data-consult-allergies>None declared</span></div></div>
             <div class="ctx__sec"><div class="label">Intake</div><div class="kv"><span class="k">Duration</span><span>6mo-2y</span></div><div class="kv"><span class="k">Conditions</span><span>None</span></div><div class="kv"><span class="k">Meds</span><span>None</span></div><a class="crumb" data-page="preconsult" style="margin:6px 0 0">View full intake ›</a></div>
             <!-- Manual 6.2.3: SOAP notes during the call, and the recommended medicine
                  can be shown to the patient in chat. That card is not an order. -->
@@ -1188,6 +1188,7 @@
     if(selectedContextPrimary) selectedContextPrimary.textContent = name + ' · ' + patient.age + ' · ' + sex;
     if(selectedContextSecondary) selectedContextSecondary.textContent = concern + ' · ID ' + patient.id;
     if(selectedPrescribeTitle) selectedPrescribeTitle.textContent = (isThai ? 'จัดทำแผนการรักษา · ' : 'Prescribe treatment · ') + name;
+    document.dispatchEvent(new CustomEvent('krane:doctor-patient-changed'));
   }
   document.body.addEventListener('click', e => {
     // reassign / escalate (F12): send the matched patient back to matching
@@ -1916,6 +1917,6 @@
   applyCmsHash();
 </script>
 
-<script src="doctor-core-flow.js?v=20261011-rx-composer"></script>
-<script src="../krane-golden-doctor.js?v=20261011-final-brand-v274"></script>
+<script src="doctor-core-flow.js?v=20261011-doctor-audit"></script>
+<script src="../krane-golden-doctor.js?v=20261011-doctor-audit"></script>
 </body></html>
