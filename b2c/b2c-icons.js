@@ -38,6 +38,8 @@
         '<rect x="0" y="0" width="24" height="24" fill="#fff" stroke="none"/>' + cutout + '</mask></defs>' +
         '<path d="' + outer + '" fill="currentColor" stroke="none" mask="url(#' + maskId + ')"/></svg>';
     } else {
+      // Leave the doorway open at the base of the outlined house.
+      if (name === 'house') outer = 'M9.8 21.5H4.1a1.7 1.7 0 0 1-1.7-1.7v-9.7c0-.5.2-.9.6-1.2l8.1-6.1a1.5 1.5 0 0 1 1.8 0L21 8.9a1.5 1.5 0 0 1 .6 1.2v9.7a1.7 1.7 0 0 1-1.7 1.7h-5.7';
       var detail = name === 'house'
         ? '<path d="M9.8 21.5v-6.1a2.2 2.2 0 0 1 4.4 0v6.1"/>'
         : '<path d="M3.2 7.35 12 11.85l8.8-4.5M12 11.85v9.35"/>';
