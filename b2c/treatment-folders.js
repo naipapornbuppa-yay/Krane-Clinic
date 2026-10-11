@@ -12,14 +12,14 @@
   visits=visits.map((v,i)=>({...v,number:Number(v.number)||i+1})).sort((a,b)=>a.number-b.number);
   const folder=document.createElement('div');folder.className='treatment-folder';
   const tabs=document.createElement('div');tabs.className='treatment-folder__tabs';
-  tabs.setAttribute('aria-label',`ปรึกษาแล้ว ${visits.length} ครั้ง`);
+  tabs.setAttribute('aria-hidden','true');
   card.before(folder);folder.append(tabs,card);card.id='treatment-folder-'+card.dataset.category;
   folder.dataset.visitCount=visits.length;
   const depth=visits.length-1;
   folder.style.setProperty('--folder-depth',depth);
   for(let layer=depth;layer>0;layer--){const sheet=document.createElement('i');sheet.className='treatment-folder__sheet';sheet.style.setProperty('--layer',layer);sheet.setAttribute('aria-hidden','true');folder.prepend(sheet);}
   visits.forEach((visit,i)=>{const spine=document.createElement('span');spine.className='treatment-folder__spine';spine.style.setProperty('--spine',i);spine.setAttribute('aria-hidden','true');tabs.append(spine);});
-  const label=document.createElement('span');label.className='treatment-folder__label';label.textContent=`ปรึกษาแล้ว ${visits.length} ครั้ง`;tabs.append(label);
+  const label=document.createElement('span');label.className='treatment-folder__label';label.setAttribute('aria-hidden','true');tabs.append(label);
   function select(index){
    const visit=visits[index];
    Object.keys(card.dataset).filter(k=>k.startsWith('treatment')).forEach(k=>delete card.dataset[k]);
