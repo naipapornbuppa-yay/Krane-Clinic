@@ -238,6 +238,8 @@
     .otp-entry__cell{width:auto;height:58px;border-radius:12px;font-size:24px}
     .otp-entry{width:100%}
   }
+    #obesity-risk-modal [data-obesity-risk-warning]{margin-top:20px;padding:16px;gap:12px}
+    #obesity-risk-modal .modal-dialog__actions{margin-top:24px}
 </style>
   <style id="insurance-entry-polish">
     /* Insurance eligibility is entered before the consultation journey begins. */
@@ -3540,7 +3542,7 @@
               </div>
             </fieldset>
     </div>
-    <div class="alert alert--warning" data-obesity-risk-warning role="status" hidden><span class="a-ic"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span><div><div class="a-title">ยาลดน้ำหนักทางออนไลน์อาจไม่ปลอดภัยสำหรับคุณ</div><div class="hint">หากตอบ "ใช่" ข้อใดข้อหนึ่ง แพทย์แนะนำให้พบแพทย์ด้วยตนเองก่อนเริ่มยา</div></div></div>
+    <div class="alert alert--warning" data-obesity-risk-warning role="status" hidden><span class="a-ic"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span><div><div class="a-title">ยาลดน้ำหนักทางออนไลน์อาจไม่ปลอดภัยสำหรับคุณ</div></div></div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-obesity-risk-confirm>ยืนยันและไปต่อ</button><button class="btn btn--ghost" type="button" data-obesity-risk-close>ย้อนกลับ</button></div>
   </section>
 </div>
@@ -13717,13 +13719,16 @@
 
   const obesityRiskModal = document.getElementById('obesity-risk-modal');
   /* Client, 18 Sep: a "ใช่" to any GLP-1 exclusion stops online care. The sheet
-     warns as soon as one is ticked, and confirming routes to in-person care. */
+     warns as soon as one is ticked and disables confirmation. */
   function obesityRiskFlagged(){
     return Boolean(obesityRiskModal?.querySelector('[data-obesity-risk-choice="yes"][aria-checked="true"]'));
   }
   function syncObesityRiskWarning(){
     const warning=obesityRiskModal?.querySelector('[data-obesity-risk-warning]');
-    if(warning) warning.hidden=!obesityRiskFlagged();
+    const flagged=obesityRiskFlagged();
+    if(warning) warning.hidden=!flagged;
+    const confirm=obesityRiskModal?.querySelector("[data-obesity-risk-confirm]");
+    if(confirm) confirm.disabled=flagged;
   }
   function openObesityRiskModal(){
     if(!obesityRiskModal){ finishDirectF02(); return; }
@@ -13747,12 +13752,8 @@
         return;
       }
       if(!event.target.closest('[data-obesity-risk-confirm]')) return;
+      if(obesityRiskFlagged()) return;
       closeObesityRiskModal();
-      if(obesityRiskFlagged()){
-        saveIntakeDraft();
-        show('ineligible');
-        return;
-      }
       finishDirectF02();
     });
     document.addEventListener('keydown', event => {
