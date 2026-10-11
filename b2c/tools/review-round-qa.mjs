@@ -21,6 +21,19 @@ await test('shared-health-lifestyle',async p=>{
  }
  }
 });
+await test('insurance-document-shared-modes',async p=>{
+ for(const rail of [true,false]){
+ await p.goto(`${base}/b2c/krane-b2c.html?entry=partner&fresh=1&demoStage=insurance${rail?'&screens=1':''}#insurance`);
+ await p.locator('#insurance.active').waitFor();
+ for(const doc of ['passport','id']){
+ await p.locator('[data-insurance-doc="'+doc+'"]').click();
+ assert.equal(await p.locator('label[for="insurance-id"]').textContent(),doc==='id'?'เลขบัตรประชาชน':'เลขหนังสือเดินทาง');
+ assert.equal(await p.locator('#insurance-id').getAttribute('placeholder'),doc==='id'?'0-0000-00000-00-0':'เช่น AB1234567');
+ }
+ const tabs=await p.locator('#insurance .partner-binary').boundingBox();const field=await p.locator('#insurance-id').locator('xpath=ancestor::div[contains(@class,"float-field")][1]').boundingBox();
+ assert(Math.abs(tabs.width-field.width)<2);
+ }
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
