@@ -8184,6 +8184,24 @@
     flowState.phoneOtpDestination='';
     flowState.phoneOtpCompletesAuth=false;
   }
+  function completePartnerPatientInfo(){
+    const paymentMethod=flowState.partnerPaymentMethod;
+    flowState.entryChannel='partner';
+    flowState.partnerInfoComplete=true;
+    flowState.partnerPaymentChosen=true;
+    flowState.partnerPaymentMethod=paymentMethod;
+    flowState.partnerConsultationBalanceDue=paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null;
+    flowState.partnerMedicineCredit=0;
+    flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
+    persistFlowState();
+    showActionToast('ยืนยันข้อมูลผู้รับบริการแล้ว','success');
+    if(paymentMethod==='insurance') insuranceEntry='partner';
+    else setSelectedCategory('general');
+    // Paying out of pocket changes who settles the bill, not which intake
+    // this entry uses. Both branches start with concern details, then move
+    // to general health; insurance only adds the entitlement detour.
+    show(paymentMethod==='insurance' ? 'insurance' : 'intake-concern');
+  }
   function returnFromPhoneOtp(target){
     if(history[history.length-1]==='otp') history.pop();
     show(target,false);
@@ -11521,11 +11539,13 @@
           if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
           if(edit) edit.textContent='เปลี่ยนเบอร์';
           showActionToast('ยืนยันเบอร์โทรศัพท์ใหม่แล้ว','success');
-          returnFromPhoneOtp('partner-patient-info');
           if(flowState.partnerInfoContinueAfterOtp){
             flowState.partnerInfoContinueAfterOtp=false;
             persistFlowState();
-            document.querySelector('[data-partner-info-continue]')?.click();
+            if(history[history.length-1]==='otp') history.pop();
+            completePartnerPatientInfo();
+          }else{
+            returnFromPhoneOtp('partner-patient-info');
           }
         });
         return;
@@ -11635,25 +11655,6 @@
         persistFlowState();
         show('otp'); return;
       }
-      submitOnce('partner-patient-info',partnerInfoContinue,() => {
-        flowState.entryChannel='partner';
-        flowState.partnerName=name;
-        flowState.partnerPhone=normalizePhone(phone);
-        flowState.partnerInfoComplete=true;
-        flowState.partnerPaymentChosen=true;
-        flowState.partnerPaymentMethod=paymentMethod;
-        flowState.partnerConsultationBalanceDue=paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null;
-        flowState.partnerMedicineCredit=0;
-        flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
-        persistFlowState();
-        showActionToast('ยืนยันข้อมูลผู้รับบริการแล้ว','success');
-        if(paymentMethod==='insurance') insuranceEntry='partner';
-        else setSelectedCategory('general');
-        // Paying out of pocket changes who settles the bill, not which intake
-        // this entry uses. Both branches start with concern details, then move
-        // to general health; insurance only adds the entitlement detour.
-        show(paymentMethod==='insurance' ? 'insurance' : 'intake-concern');
-      });
       return;
     }
     const partnerPayment=e.target.closest('[data-partner-payment]');
