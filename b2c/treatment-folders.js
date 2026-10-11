@@ -48,6 +48,7 @@
    if(!other.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='ยังไม่มีการปรึกษาครั้งก่อน';history.append(empty);}
    other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row treatment-record__certificate-card';const title=document.createElement('strong');title.textContent='ปรึกษาครั้งที่ '+visit.number;const date=document.createElement('span');date.className='hint';date.textContent=visit.treatmentDate||'';button.append(title,date);button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
    certificate.after(history);
+   window.kraneTreatmentPause?.attach(card,history);
   });
   let opening=false, replay=false;
   card.addEventListener('click',event=>{

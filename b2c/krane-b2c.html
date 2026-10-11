@@ -70,7 +70,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261011-night-qa" defer></script>
+<script src="i18n.js?v=20261011-program-pause" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -1188,7 +1188,7 @@
 #settings .screen__body .ic, #settings .screen__body .avatar { background: #e7eefb; color: #395aa4; }
 #settings .screen__body .chev { color: #395aa4; }
 </style>
-<link rel="stylesheet" href="treatment-folders.css?v=20261011-refill-shared-folder">
+<link rel="stylesheet" href="treatment-folders.css?v=20261011-program-pause">
 <link rel="stylesheet" href="modal-chrome.css?v=20261011-choice-cards">
 </head>
 <body class="hide-feat">
@@ -2799,7 +2799,7 @@
         <span class="state-view__badge"><i data-lucide="heart" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Thank you</h2><p class="muted">Your feedback was submitted.</p></div>
-      <div class="state-view__action"><button class="btn btn--primary" data-go="payment">View treatment plan</button></div>
+      <div class="state-view__action"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
     </div>
   </section>
 
@@ -7394,7 +7394,7 @@
   const followUpAppointments=new Map();
   const followUpDemoState=new URLSearchParams(location.search).get('demoFollowup');
   function followUpAppointmentFor(node){
-    if(!node) return null;
+    if(!node || window.kraneTreatmentPause?.isPaused(node.dataset.followupCase)) return null;
     const caseId=node.dataset.followupCase || node.dataset.followupIso || String(node.dataset.followupOffset || 'followup');
     if(followUpAppointments.has(caseId)) return followUpAppointments.get(caseId);
     const offset=Number(node.dataset.followupOffset);
@@ -7455,7 +7455,7 @@
   function syncFollowUpDates(){
     document.querySelectorAll('[data-followup-date][data-followup-offset]').forEach(node => {
       const when=followUpAppointmentFor(node);
-      if(!when) return;
+      if(!when){if(window.kraneTreatmentPause?.isPaused(node.dataset.followupCase))node.textContent=document.documentElement.lang==='en'?'Program paused':'พักโปรแกรมอยู่';return;}
       const pad=value => String(value).padStart(2,'0');
       node.setAttribute('data-followup-iso',`${when.getFullYear()}-${pad(when.getMonth()+1)}-${pad(when.getDate())}`);
       node.setAttribute('data-followup-at',when.toISOString());
@@ -7510,6 +7510,8 @@
     const thai=document.documentElement.lang!=='en';
     document.querySelectorAll('[data-followup-case-card]').forEach(card => {
       const caseId=card.dataset.followupCaseCard;
+      card.hidden=Boolean(window.kraneTreatmentPause?.isPaused(caseId));
+      if(card.hidden)return;
       const dateNode=followUpNodeForCase(caseId);
       const when=followUpAppointmentFor(dateNode);
       if(!when) return;
@@ -7539,6 +7541,11 @@
       }
     });
   }
+  document.addEventListener('krane:program-paused',event=>{
+    syncHomeFollowUpCta();
+    const card=[...document.querySelectorAll('#profile .treatment-card')].find(card=>card.dataset.category===event.detail.category);
+    if(card)openTreatmentDetail(card);
+  });
   function syncHomeFollowUpCta(){
     const cta=document.querySelector('#profile [data-home-cta]');
     const toast=document.querySelector('#profile [data-followup-toast]');
@@ -7641,7 +7648,7 @@
     const title=card.dataset.treatmentTitle
       || card.querySelector('.treatment-card__title strong')?.textContent.trim()
       || card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
-    const status=card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน';
+    const status=window.kraneTreatmentPause?.isPaused(card.dataset.category)?'พักโปรแกรมอยู่':(card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน');
     const diagnosis=card.dataset.treatmentDiagnosis || '';
     const plan=card.dataset.treatmentPlan || '';
     const date=card.dataset.treatmentDate || '';
@@ -7664,6 +7671,7 @@
     };
     setDetail('[data-treatment-detail-title]',title);
     setDetail('[data-treatment-detail-status]',status);
+    detail.dataset.programState=window.kraneTreatmentPause?.isPaused(card.dataset.category)?'paused':'active';
     setDetail('[data-treatment-detail-diagnosis]',diagnosis);
     setDetail('[data-treatment-detail-plan]',plan);
     setDetail('[data-treatment-detail-refill]',refill);
@@ -11295,7 +11303,7 @@
     }
     const followUpJoin=e.target.closest('[data-followup-join]');
     if(followUpJoin){
-      if(followUpJoin.disabled || followUpJoin.getAttribute('aria-disabled')==='true') return;
+      if(followUpJoin.disabled || followUpJoin.getAttribute('aria-disabled')==='true' || window.kraneTreatmentPause?.isPaused(followUpJoin.dataset.category)) return;
       beginAssignedDoctorFlow(followUpJoin.dataset.category || selectedCategoryId);
       return;
     }
@@ -13299,8 +13307,7 @@
       }
       const submit=event.target.closest('[data-csat-submit]');
       if(!submit) return;
-      // The rating is the way past this dialog; there is no skip.
-      // All three are the review; a partial answer is not one.
+      // Submission needs all four ratings; dismissal remains optional.
       const missing=csatGroups.filter(group => !csatScore(group));
       if(missing.length){
         showActionToast('กรุณาให้คะแนนให้ครบทั้ง 4 ข้อ','warning');
@@ -13318,7 +13325,7 @@
       syncDeliveryNotification();
       persistFlowState();
       closeCsatModal();
-      leaveCsat();
+      show('feedbackdone');
     });
   }
 
@@ -14790,7 +14797,8 @@
     </symbol>
   </defs>
 </svg>
-<script src="treatment-folders.js?v=20261011-refill-shared-folder"></script>
+<script src="treatment-folders.js?v=20261011-program-pause"></script>
+<script src="treatment-pause.js?v=20261011-program-pause"></script>
 <script src="modal-chrome.js?v=20261011"></script>
 </body>
 </html>

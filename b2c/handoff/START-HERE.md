@@ -1,5 +1,7 @@
 # Developer start here — Krane frontend handoff
 
+**Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
+
 Updated 11 October 2026. This package covers the **B2C web app, Doctor CMS and Admin CMS**. **The landing page is work in progress and is explicitly excluded from accepted handoff.** Existing landing routes remain available for review; availability is not approval.
 
 ## Open the intended implementation
@@ -28,8 +30,8 @@ URLs name the canonical routes, not a verification that a pending local change i
 | Source | Use | Current limitation |
 |---|---|---|
 | [API/status catalog](string-ids.v1.json) and [contract instructions](STRING-ID-HANDOFF.md) | Stable message IDs and named params for backend/frontend errors and statuses | Separate from the UI literal-text translator |
-| [Static UI catalog](../strings/krane-strings.json), [dynamic strings](../strings/krane-strings-dynamic.json), [catalog guide](../strings/README.md) | Reference screen copy and retain retired IDs | 1,135 total static entries: 923 active, 212 retired; 56 dynamic entries including historical entries at audit time |
-| [Shared CTA IDs](../strings/shared-cta-ids.json), [unmapped runtime copy](runtime-copy-inventory.json), [missing English](../strings/krane-strings-missing-en.json) | Map shared actions, finish runtime binding and translation | 565 active Thai entries lack English in extracted catalog; no claim of complete bilingual delivery |
+| [Static UI catalog](../strings/krane-strings.json), [dynamic strings](../strings/krane-strings-dynamic.json), [catalog guide](../strings/README.md) | Reference screen copy and retain retired IDs | 1,179 total static entries: 929 active, 250 retired; 57 dynamic entries including historical entries at audit time |
+| [Shared CTA IDs](../strings/shared-cta-ids.json), [unmapped runtime copy](runtime-copy-inventory.json), [missing English](../strings/krane-strings-missing-en.json) | Map shared actions, finish runtime binding and translation | 588 active Thai entries lack English in extracted catalog; no claim of complete bilingual delivery |
 
 Question identity (`data-question-id` / `data-answer-id`) is a data contract, not automatically a translated String ID. Inspect `intakeTemplates` and its explicit `data-string-id` hooks in the app. Doctor/admin strings still use their literal translation runtime; the B2C catalog does not claim to cover every CMS label. Backend should not send display sentences as state; agree enum/message mapping and machine values.
 

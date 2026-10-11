@@ -47,9 +47,18 @@ This matrix covers the patient app's main routes and the partner flow. **Verifie
 | Quantity zero, max quantity or medicine declined | UI updates checkout amount and state | Manual; validate price and safety server-side |
 | Prescription refill too early, expired or limit reached | Backend catalog defines separate IDs | Integration; no authoritative refill service in this prototype |
 | Offline, timeout, unknown message ID | Catalog includes generic/offline/timeout fallbacks | Integration; runtime is not yet bound to ID catalog |
-| English language switch | Many catalog entries still lack English | Known gap; review 565 active catalog entries without English values before English release |
+| English language switch | Many catalog entries still lack English | Known gap; review 588 active catalog entries without English values before English release |
 | Mobile notch, fixed footer, nav/logo across screens | Shared visual QA spans 320–1440 px and 114 page/viewport cases | Browser QA passed before this handoff; repeat after layout changes |
 
 ## QA ownership
 
 Run `npm run check:ui`, `npm run check:strings`, and the visual consistency script listed in [`DEVELOPER-HANDOFF.md`](DEVELOPER-HANDOFF.md). The negative and integration cases marked above are **not** claims of completed production QA. Turn each integration row into a backend contract test and one UI acceptance test before release. For every new error message, add a stable ID to `string-ids.v1.json` with Thai/English copy and matching parameters, then replace the corresponding literal listed in `runtime-copy-inventory.json`.
+
+## Program pause / CSAT completion — 11 October evening
+
+- Cancel pause confirmation: must retain active state and scheduled reminder.
+- Confirm: only selected program changes; reload must retain pause, unrelated programs stay active, history remains accessible.
+- Storage failure: show inline error and keep confirmation open; do not pretend to save.
+- Real appointment cancellation, clinician notification, resume, account isolation and concurrent edits are integration work, not verified by this prototype.
+- Incomplete CSAT: stay in sheet. Complete all four scores: persist review, close sheet, open SID-050, return home from its CTA. Dismissal must not mark completion.
+- Evidence: [pause/review QA](QA-PROGRAM-PAUSE-2026-10-11.md).

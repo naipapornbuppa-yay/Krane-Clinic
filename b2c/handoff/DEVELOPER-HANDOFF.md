@@ -1,6 +1,8 @@
 # Krane B2C developer handoff
 
-**Snapshot:** 10 October 2026, `gh-pages` prototype. This is a static, interactive review build, **not** a production patient system. Do not enter real patient data. The source of truth for B2C work is this repository's `b2c/` directory; copies under workspace `Output/` and `site/` are not deployment sources.
+**Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
+
+**Snapshot:** 11 October 2026, `gh-pages` prototype. This is a static, interactive review build, **not** a production patient system. Do not enter real patient data. The source of truth for B2C work is this repository's `b2c/` directory; copies under workspace `Output/` and `site/` are not deployment sources.
 
 For the combined patient, doctor and admin delivery, start with [FRONTEND-HANDOFF-READINESS.md](FRONTEND-HANDOFF-READINESS.md).
 
@@ -45,8 +47,8 @@ The local `flowState` is stored in `sessionStorage` under the keys near `FLOW_ST
 ## String contract and current coverage
 
 - The API-facing `string-ids.v1.json` has **87 stable IDs** and five backend status maps. Backend sends `messageId` plus named parameters; the frontend resolves Thai/English. Run `npm run check:strings` to validate uniqueness and placeholder parity.
-- The extracted screen catalog has **923 active IDs** and **212 retired IDs**. Retired IDs are preserved for traceability and must not be reused for different copy. It also has **55 dynamic catalog entries (including retired entries)**. Regenerate with `cd b2c && python3 strings/extract-strings.py`; the extractor preserves an ID when screen and copy still match.
-- **565 active Thai screen entries lack an English value in that catalog.** The current runtime is still literal-text based (`i18n.js` / `th-en.js`), so the catalogs are handoff inventories, not evidence that the app renders by ID.
+- The extracted screen catalog has **929 active IDs** and **250 retired IDs**. Retired IDs are preserved for traceability and must not be reused for different copy. It also has **57 dynamic catalog entries (including retired entries)**. Regenerate with `cd b2c && python3 strings/extract-strings.py`; the extractor preserves an ID when screen and copy still match.
+- **588 active Thai screen entries lack an English value in that catalog.** The current runtime is still literal-text based (`i18n.js` / `th-en.js`), so the catalogs are handoff inventories, not evidence that the app renders by ID.
 - `runtime-copy-inventory.json` locates **92 toast call sites** still lacking message IDs. These require explicit mapping during integration. The inventory includes dynamic expressions and source line references; it does not assert that each branch is tested or translated.
 
 ## Production integration gaps
@@ -62,7 +64,7 @@ The local `flowState` is stored in `sessionStorage` under the keys near `FLOW_ST
 
 ## Verification and release
 
-From repository root run `npm run check:strings` and `npm run check:ui` with Node.js, Python 3 and Playwright Chromium installed. `node b2c/tools/qa-chrome-consistency.mjs` checks repeated header/logo/navigation geometry at six widths and key screen components. See [QA-REVIEW-2026-10-10.md](QA-REVIEW-2026-10-10.md) for the current run and remaining limitations. The generated copy inventories are reviewed separately; they are not part of `check:strings`.
+From repository root run `npm run check:strings` and `npm run check:ui` with Node.js, Python 3 and Playwright Chromium installed. `node b2c/tools/qa-chrome-consistency.mjs` checks repeated header/logo/navigation geometry at six widths and key screen components. See [QA-NIGHT-2026-10-11.md](QA-NIGHT-2026-10-11.md) and [QA-PROGRAM-PAUSE-2026-10-11.md](QA-PROGRAM-PAUSE-2026-10-11.md) for the latest B2C runs and remaining limitations. The generated copy inventories are reviewed separately; they are not part of `check:strings`.
 
 Before publishing a new version, run the checks, inspect the partner route at mobile and desktop widths, then update `gh-pages`. Git history is the rollback source. See the error matrix for cases that remain mock-only or unverified. Do not interpret the successful prototype checks as security, accessibility, medical, payment or backend acceptance tests.
 

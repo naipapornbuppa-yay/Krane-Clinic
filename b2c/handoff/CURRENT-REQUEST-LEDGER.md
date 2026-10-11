@@ -1,5 +1,7 @@
 # Current user-request closure ledger
 
+**Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
+
 11 October 2026. This is a closure register for the current frontend work, not the July backlog or a production-launch checklist. “Implemented” means source exists; test evidence is linked separately. Landing is explicitly **WIP / excluded from accepted handoff**.
 
 ## Current frontend work and evidence
@@ -22,7 +24,7 @@
 
 1. Final frontend checks now pass: brand 20/20, consistency 114/114 and contract 170/170. Combined CMS/action evidence is in the current QA report. The initial published release passed the 23-file deployment check; fresh-entry QA passed both partner branches and direct entry/signup/OTP guards, with scope in the combined QA report.
 2. Partner consent-first bootstrap has been verified: it models authenticated partner entry, while arbitrary hashes remain guarded. Partner insurance and self-pay branch tests passed; direct entry/auth guards also passed. This does not claim every clinical questionnaire end-to-end. No clinical question reordering is authorized.
-3. Finish/adopt String ID runtime mapping and bilingual review if complete bilingual frontend delivery is required: current B2C catalog has 565 missing-English entries and runtime literals remain; CMS copy has a separate literal translator and no complete String ID catalog is claimed.
+3. Finish/adopt String ID runtime mapping and bilingual review if complete bilingual frontend delivery is required: current B2C catalog has 588 missing-English entries and runtime literals remain; CMS copy has a separate literal translator and no complete String ID catalog is claimed.
 4. Agree whether admin questionnaire authoring is part of this frontend acceptance. Current control explicitly states unavailable; an approved question schema, edit permissions, versioning and in-progress-session behavior are prerequisites.
 5. Agree expectations for user-management/refund persistence in the prototype versus API-backed implementation. Current QA covers in-page behavior, not real account or refund persistence.
 6. Confirm clinical/editorial copy, sample author identity and demonstration documents with the responsible content owner; UI tests do not constitute clinical approval.

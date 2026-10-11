@@ -1,5 +1,7 @@
 # Frontend handoff readiness — patient, doctor and admin
 
+**Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
+
 **Landing is WIP and explicitly excluded from accepted handoff.** The candidate delivery comprises the B2C web app, Doctor CMS and Admin CMS. Start at [START-HERE.md](START-HERE.md); open items are recorded in [CURRENT-REQUEST-LEDGER.md](CURRENT-REQUEST-LEDGER.md).
 
 **Assessment: suitable for backend discovery and contract agreement; not yet accepted as a complete production integration handoff.** Source audit dated 10 October 2026. A published page or passing smoke test does not establish end-to-end integration.

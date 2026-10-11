@@ -105,3 +105,7 @@ Use `action.pay` for an actual positive payment, `action.continue` when no payme
 is due, and `action.check_eligibility` for insurance verification. The page
 marks these buttons with `data-string-id`; do not embed a changing amount or a
 security claim in the button label. Show the payable amount in the order summary.
+
+## 11 October evening refresh
+
+Regenerated static inventory: 1,179 entries (929 active, 250 retired), 57 dynamic entries, 588 active Thai entries without an English value in the extracted catalog. These counts are not runtime translation failures; runtime uses `i18n.js`, while the extractor has a separate English source inventory. New JS-generated pause-sheet text is in `treatment-pause.js` with runtime translations in `i18n.js`; this module is outside the HTML-only extractor and still needs stable UI IDs during integration. Runtime toast inventory refreshed: 92 call sites. Existing retired IDs are retained.

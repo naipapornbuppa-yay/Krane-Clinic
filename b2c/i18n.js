@@ -2477,6 +2477,16 @@
     "จัดส่งสำเร็จ · ส่งภายในวัน":"Delivered · Same-day delivery",
     "จัดส่งสำเร็จ · ไปรษณีย์":"Delivered · Postal delivery"
   });
+  Object.assign(EN_FROM_TH, {
+    "พักโปรแกรมการรักษา":"Pause treatment program",
+    "พักโปรแกรมการรักษา?":"Pause this treatment program?",
+    "พักโปรแกรมอยู่":"Program paused",
+    "ยืนยันพักโปรแกรม":"Confirm pause",
+    "กลับไป":"Go back",
+    "โปรแกรมนี้จะเปลี่ยนเป็นสถานะพัก และยกเลิกนัดติดตามครั้งถัดไปของโปรแกรมนี้":"This program will be paused and its next follow-up appointment will be cancelled.",
+    "การพักโปรแกรมไม่ได้เปลี่ยนคำสั่งใช้ยาของแพทย์":"Pausing the program does not change your doctor's medication instructions.",
+    "บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง":"Could not save. Please try again."
+  });
   var EN = {}, TH_FROM_EN = {};
   /* TH is the English-source table: English key, Thai value. Its Thai side is a
      perfectly good Thai -> English pair too, and for years it was not being used

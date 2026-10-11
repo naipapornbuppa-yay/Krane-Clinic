@@ -64,3 +64,7 @@ The golden demo now carries edited prescription payloads, but its fixed patient/
 Coupon values validate nonnegative fixed amounts, percentages from 0 to 100, uppercase unique code, ordered ISO dates and positive integer usage limits. Existing demonstration coupon rows remain separate fixture history; created records have no real redemptions. Once-per-account enforcement, eligibility, consumption counters and authoritative totals belong to the backend quote/redemption service. Neither these coupons nor changed admin prices affect B2C checkout today. Persisting a setting does not enact a clinical rule. Pricing/config writes must be approved and versioned before consumption by clinical or quote APIs.
 
 Question editing remains an explicit unavailable feature pending approved questionnaire schema, permitted edits, revision/publish policy and behavior for in-progress consultations. Do not invent or reorder clinical questions to fill this boundary.
+
+## Program pause — current B2C prototype seam
+
+Patient confirms a pause from treatment detail. The prototype stores category + pause timestamp in local browser storage and suppresses that program’s next follow-up UI. Doctor/admin do not receive this state. Production requires authenticated patient/case ownership, atomic pause plus next-appointment cancellation, clinician notification, audit logging, concurrency handling and explicit resume rules. No refund, prescription change or medication discontinuation is implied. See [latest behavior](LATEST-B2C-HANDOFF.md).

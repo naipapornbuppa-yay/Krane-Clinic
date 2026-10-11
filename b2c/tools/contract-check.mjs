@@ -276,6 +276,9 @@ try {
 }
 
 /* ---- components ----------------------------------------------------------- */
+// Availability count must not depend on how close today's service is to closing.
+// Tomorrow retains the full fixture window; separate booking tests cover today.
+await app.locator('#appointment [data-appointment-day]').nth(1).evaluate(button=>button.click());
 for (const item of contract.components) {
   did();
   const count = await app.evaluate(sel => document.querySelectorAll(sel).length, item.selector);

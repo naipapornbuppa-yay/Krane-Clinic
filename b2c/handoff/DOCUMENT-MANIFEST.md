@@ -1,5 +1,7 @@
 # Documentation manifest
 
+**Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
+
 The two superseded October 10 QA reports are physically archived in `archive/2026-10-10/`; their original paths contain compatibility pointers. Other historical references remain in place. Classification does not delete evidence or change a live route.
 
 ## Current developer entry and contracts

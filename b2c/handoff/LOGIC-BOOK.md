@@ -4,7 +4,7 @@
 
 - Both screen-directory and public links use the same appointment renderer.
 - Keep date selection. Remove morning, afternoon and evening tabs.
-- Render only available slots in a single responsive grid, ordered earliest to latest. Each row contains one hour, with four fixed columns for :00, :15, :30 and :45. Unavailable starts leave an empty position; hours with no availability are omitted. Apply the same four-column layout on mobile.
+- Render only available slots in a single responsive grid, ordered earliest to latest. Each row contains one hour, with up to four available starts packed from the left. Unavailable starts never leave empty columns; hours with no availability are omitted. Apply the same four-column layout on mobile.
 - Service window: 09:00–24:00, every 15 minutes; last start 23:45.
 - Hide occupied starts and starts less than 15 minutes away today. Prototype occupancy is deterministic mock data; production must use backend availability and revalidate at confirmation.
 - Changing day clears the selected time. Confirmation stays disabled until an available time is selected.
@@ -20,3 +20,15 @@
 - Group notification fixtures by calendar date, without New or Example labels.
 - Preserve each notification’s authored semantic icon. Do not replace all tracking notifications with a truck.
 - The active progress step and status badge must use the same label, including pickup and delivered states.
+
+## Latest patient-app changes — 11 October evening
+
+- Program cards use the shared translucent folder design on home and refill. Paper count is capped at four while complete consultation history is retained. Front cover remains still; paper movement respects reduced-motion preferences. History currently includes the selected consultation; excluding it was proposed but not implemented.
+- Treatment detail has a red, standard-size text action below consultation history: **พักโปรแกรมการรักษา**. It opens the shared confirmation sheet/modal. Confirmation persists only the selected program as paused, suppresses its future follow-up reminder/join eligibility and keeps clinical history readable. Cancelling makes no change. Paused folders are muted and explicitly labelled; they still open. No resume flow is defined in this iteration.
+- Pause persistence is prototype-only `localStorage["krane.paused-programs.v1"]`, keyed by category with `pausedAt`. It is not account-scoped or an authoritative clinical case record. Production must use an authenticated case ID, cancel the next appointment atomically, notify the assigned clinician, audit the change and define resume rules. The current UI does not send a doctor notification or change prescriptions, medicine orders, billing or clinical instructions. Clearing browser storage clears this prototype state.
+- CSAT requires all four ratings in this order: waiting time, combined video/audio, doctor, overall satisfaction. Dismissal keeps the review pending. Successful submission closes the sheet and opens **SID-050 / #feedbackdone**, whose CTA returns home. `#feedback` remains a route alias to the review sheet, not a standalone screen.
+- Shared modal chrome: X close on both layouts, one drag handle on mobile only, scrim/Escape dismissal. Screen-directory previews stay in the right canvas and contain no preview-only explanatory labels; cloned controls remain noninteractive previews. Help choices now use outlined cards like other choice dialogs.
+- Tracking and notifications use consistent status labels/icons. The delivery tag says **กำลังจัดส่ง**, and the location action has the same height. Notification descriptions are retained. Activity retains five order cards without embedded progress bars.
+- Appointment rows are grouped by hour, but available slots pack left with no empty minute columns. Unavailable starts are omitted. Changing day clears selection; booking still requires an available slot.
+- Receipt and certificate links use `assets/documents-v1/receipt-v3.pdf` and `medical-certificate-v3.pdf`, with the final blue Krane logo. They remain demonstration documents.
+- Latest broad evidence: [night QA](QA-NIGHT-2026-10-11.md). Follow-up behavior evidence: [program pause and review completion](QA-PROGRAM-PAUSE-2026-10-11.md). Earlier CMS/brand reports retain their original scope; they were not rerun merely because this B2C change shipped.
