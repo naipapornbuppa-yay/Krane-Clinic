@@ -85,6 +85,11 @@ for(const method of ['insurance','self-pay'])await test('partner-otp-completes-'
  await p.locator('#'+(method==='insurance'?'insurance':'intake-concern')+'.active').waitFor();
  await p.waitForTimeout(500);assert.equal(await p.locator('#otp.active').count(),0);
  assert.equal((await p.locator('#partner-phone').inputValue()).replace(/\D/g,''),'0812345678');
+ await p.evaluate(()=>location.hash='partner-patient-info');await p.locator('#partner-patient-info.active').waitFor();
+ await p.locator('[data-partner-info-continue]').click();
+ await p.locator('#'+(method==='insurance'?'insurance':'intake-concern')+'.active').waitFor();
+ assert.equal(await p.locator('#otp.active').count(),0);
+
 });
 await test('partner-invalid-phone',async p=>{await open(p,'partner-patient-info','partner');await p.locator('#partner-first-name').fill('QA');await p.locator('#partner-last-name').fill('Patient');await p.locator('#partner-phone').fill('123');await p.locator('[data-partner-info-continue]').click();assert(await p.locator('#partner-patient-info.active').count());assert.equal(await p.locator('#otp.active').count(),0);});
 await test('date-placeholder-and-value',async p=>{await open(p,'insurance','partner');const input=p.locator('#insurance-dob');await input.fill('');await input.dispatchEvent('input');assert.equal(await p.locator('label[for="insurance-dob"]').isVisible(),false);await input.fill('1994-03-12');assert(await p.locator('label[for="insurance-dob"]').isVisible());});
