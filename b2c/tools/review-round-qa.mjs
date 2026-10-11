@@ -10,6 +10,16 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('profile-menu-responsive',async p=>{
+ for(const width of [390,890,1440]){
+ await p.setViewportSize({width,height:900});await open(p,'profile');
+ const menu=p.locator('#profile .profile-shell-nav__mobile');await menu.locator('summary').click();
+ const drawer=menu.locator('nav');assert(await drawer.isVisible());
+ const layout=await drawer.evaluate(el=>({position:getComputedStyle(el).position,display:getComputedStyle(el.querySelector('a')).display,decoration:getComputedStyle(el.querySelector('a')).textDecorationLine,right:el.getBoundingClientRect().right,left:el.getBoundingClientRect().left}));
+ assert.equal(layout.position,'absolute');assert.equal(layout.display,'flex');assert.equal(layout.decoration,'none');assert(layout.left>=0 && layout.right<=width);
+ await menu.locator('summary').click();assert(!(await drawer.isVisible()));
+ }
+});
 await test('red-flag-sheet-weight-pages',async p=>{
  await open(p,'conditions');await p.locator('[data-category-id="weight"]').first().click();await p.evaluate(()=>location.hash='intake3');await p.locator('#intake3.active').waitFor();
  await p.evaluate(()=>{const body=document.querySelector('#intake3 .screen__body');body.dataset.intakeQuestionIndex=String(body.querySelectorAll('[data-intake-question]').length-1);const b=document.querySelector('#intake3 .screen__footer [data-go]');b.removeAttribute('aria-disabled');b.disabled=false;b.dataset.go='intake4';b.click();});
