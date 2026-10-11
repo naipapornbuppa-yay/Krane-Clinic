@@ -62,9 +62,9 @@
 <meta name="twitter:image" content="/b2c/assets/landing-573/latest/hero-base.png">
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
-     design-tokens.css = colors/type/spacing  |  components.css?v=20261011-order-padding-v277 = reusable UI -->
+     design-tokens.css = colors/type/spacing  |  components.css?v=20261011-csat-sheet-v278 = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261011-order-padding-v277">
+<link rel="stylesheet" href="components.css?v=20261011-csat-sheet-v278">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -3147,7 +3147,7 @@
     <div class="screen__top"><span class="ttl">Notifications</span><span class="grow"></span><button class="btn btn--ghost btn--sm" data-mark-read>Mark all read</button></div>
     <div class="screen__body stack-4">
       <div class="section-label">New</div>
-<button class="notif notif--unread" type="button" data-csat-go="notifications" data-notif-review hidden><span class="ic"><i data-lucide="star" class="ui-icon" aria-hidden="true"></i></span><span class="grow"><span class="n-title">จัดส่งสำเร็จแล้ว ให้คะแนนประสบการณ์ของคุณ</span><span class="hint">ยังไม่ได้รีวิว? กลับมาให้คะแนนได้ที่นี่</span></span><span class="n-time">ล่าสุด</span></button>
+<button class="notif notif--unread" type="button" data-go="tracking" data-notif-review hidden><span class="ic"><i data-lucide="star" class="ui-icon" aria-hidden="true"></i></span><span class="grow"><span class="n-title">จัดส่งสำเร็จแล้ว</span><span class="hint">ดูสถานะการจัดส่งและให้คะแนนประสบการณ์ของคุณ</span></span><span class="n-time">ล่าสุด</span></button>
 <button class="notif" type="button" data-go="payment-success" data-notification-fixture="0"><span class="ic"><i data-lucide="circle-check" class="ui-icon" aria-hidden="true"></i></span><span class="grow"><span class="n-title">ชำระเงินสำเร็จ</span><span class="hint">ดูรายละเอียดการชำระเงินและใบเสร็จ</span></span><span class="n-time">ก่อนหน้านี้</span></button>
 <button class="notif" type="button" data-go="payfail" data-notification-fixture="1"><span class="ic"><i data-lucide="circle-alert" class="ui-icon" aria-hidden="true"></i></span><span class="grow"><span class="n-title">ชำระเงินไม่สำเร็จ</span><span class="hint">ตรวจสอบวิธีชำระเงินแล้วลองอีกครั้ง</span></span><span class="n-time">ก่อนหน้านี้</span></button>
 <button class="notif" type="button" data-go="payment" data-notification-fixture="2"><span class="ic"><i data-lucide="clock" class="ui-icon" aria-hidden="true"></i></span><span class="grow"><span class="n-title">ใกล้หมดเวลาชำระเงิน</span><span class="hint">กลับไปตรวจสอบยอดและชำระเงิน</span></span><span class="n-time">ก่อนหน้านี้</span></button>
@@ -10015,6 +10015,9 @@
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
+    if(id==='tracking' && orderFulfilmentStatus()==='Delivered' && !flowState.csatDone){
+      requestAnimationFrame(()=>{if(document.querySelector('#tracking.active'))openCsatModal('tracking');});
+    }
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
     if(id==='my-documents') refreshMyDocuments();
@@ -13339,7 +13342,7 @@
     const delivered=status==='Delivered';
     if(delivered){
       revealDeliveryNotification();
-      if(!flowState.csatDone && !flowState.csatDeliveryPrompted){
+      if(!flowState.csatDone && !flowState.csatDeliveryPrompted && document.querySelector('#tracking.active')){
         flowState.csatDeliveryPrompted=true;persistFlowState();
         const target=document.querySelector('.screen.active')?.id || 'tracking';
         requestAnimationFrame(()=>openCsatModal(target));
