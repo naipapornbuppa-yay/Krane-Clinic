@@ -9077,17 +9077,18 @@
       if(appointmentSlotUnavailable(hour*60+minute,dayIndex,now)) appointmentSlot='';
     }
     const slots=[];
-    let hourRow=0,lastHour=-1;
+    let hourRow=0,lastHour=-1,hourColumn=0;
     for(let minutes=540;minutes<1440;minutes+=15){
       const unavailable=appointmentSlotUnavailable(minutes,dayIndex,now);
       if(unavailable) continue;
       const slotHour=Math.floor(minutes/60);
-      if(slotHour!==lastHour){hourRow++;lastHour=slotHour;}
+      if(slotHour!==lastHour){hourRow++;lastHour=slotHour;hourColumn=0;}
+      hourColumn++;
       const time=appointmentTime(minutes);
       // Split the visible digits so the page translator cannot turn a bare
       // "21:00" into "21:00 น." while the canonical value stays HH:mm.
       const [hour,minute]=time.split(':');
-      slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot style="grid-row:${hourRow};grid-column:${(minutes%60)/15+1}" data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
+      slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot style="grid-row:${hourRow};grid-column:${hourColumn}" data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
     }
     grid.innerHTML=slots.join('');
     syncAppointment();

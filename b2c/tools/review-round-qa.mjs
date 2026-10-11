@@ -106,6 +106,7 @@ await test('appointment-flat-available-slots',async p=>{
  assert.equal(await p.locator('[data-appointment-slot][aria-disabled="true"]').count(),0);
  const times=await p.locator('[data-appointment-slot]').evaluateAll(es=>es.map(e=>e.dataset.appointmentTime));assert(times.length>20);assert.deepEqual(times,[...times].sort());
  for(const width of [390,890]){await p.setViewportSize({width,height:844});const slots=await p.locator('[data-appointment-slot]').evaluateAll(es=>es.map(e=>({time:e.dataset.appointmentTime,y:e.getBoundingClientRect().y})));for(let i=1;i<slots.length;i++)assert.equal(slots[i].y===slots[i-1].y,slots[i].time.slice(0,2)===slots[i-1].time.slice(0,2));}
+ for(const width of [390,890]){await p.setViewportSize({width,height:844});const slots=await p.locator('[data-appointment-slot]').evaluateAll(es=>es.map(e=>({row:e.style.gridRow,column:Number(e.style.gridColumn)})));let row='',column=0;for(const slot of slots){if(slot.row!==row){row=slot.row;column=0;}assert.equal(slot.column,++column);}}
  await p.locator('[data-appointment-slot]').first().click();assert.equal(await p.locator('[data-appointment-confirm]').isDisabled(),false);
  await p.locator('[data-appointment-day]').nth(2).click();assert.equal(await p.locator('[data-appointment-slot][aria-checked="true"]').count(),0);
 });
