@@ -133,6 +133,7 @@ await test('glass-folder-motion',async p=>{
  for(const width of [390,890]){
  await p.setViewportSize({width,height:1000});await open(p,'profile');
  const card=p.locator('#profile .treatment-card').first();await card.scrollIntoViewIfNeeded();
+ const centered=await p.locator('#profile .treatment-folder__sheet').evaluateAll(es=>es.map(el=>{const p=getComputedStyle(el,'::before'),w=el.clientWidth;return Math.abs((w-parseFloat(p.width))/2-parseFloat(p.marginLeft));}));assert(centered.every(gap=>gap<1));
  await p.screenshot({path:output+'/glass-folder-'+width+'.png'});
  await card.hover();assert.equal(await card.evaluate(el=>getComputedStyle(el).transform),'none');
  await card.click();assert(await p.locator('#profile .treatment-folder.is-opening').isVisible());
