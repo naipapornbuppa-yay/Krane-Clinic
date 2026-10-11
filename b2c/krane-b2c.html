@@ -1784,13 +1784,8 @@
       <div class="stack-2">
         <span class="section-label">เลือกเวลา</span>
         <p class="hint">09:00–24:00 น. · ทุก 15 นาที</p>
-        <div class="appointment-periods" role="group" aria-label="ช่วงเวลา">
-          <button class="appointment-period" type="button" aria-pressed="true" data-appointment-period="morning"><span data-appointment-period-label>เช้า</span><small data-appointment-period-count></small></button>
-          <button class="appointment-period" type="button" aria-pressed="false" data-appointment-period="afternoon"><span data-appointment-period-label>บ่าย</span><small data-appointment-period-count></small></button>
-          <button class="appointment-period" type="button" aria-pressed="false" data-appointment-period="evening"><span data-appointment-period-label>ค่ำ</span><small data-appointment-period-count></small></button>
-        </div>
         <div class="appointment-slots" role="radiogroup" aria-label="เลือกเวลา" data-appointment-slots></div>
-        <p class="hint appointment-slots__empty" data-appointment-empty hidden>ไม่มีเวลาว่างในช่วงนี้ ลองช่วงอื่นหรือวันอื่น</p>
+        <p class="hint appointment-slots__empty" data-appointment-empty hidden>ไม่มีเวลาว่างในวันนี้ กรุณาเลือกวันอื่น</p>
       </div>
 
     </div>
@@ -9061,15 +9056,9 @@
   });
 
   /* Booking requires a day and time before enabling the shared Confirm action. */
-  let appointmentDay='วันนี้', appointmentSlot='', appointmentPeriod='morning';
+  let appointmentDay='วันนี้', appointmentSlot='';
   // 09:00–24:00 is a 15-minute service window: the last bookable start is 23:45.
-  // Keep all 60 mock starts in one schedule and show one period at a time so the
-  // fixed confirmation action remains easy to reach on a phone.
-  const APPOINTMENT_PERIODS = [
-    {id:'morning',start:540,end:720,th:'เช้า',en:'Morning'},
-    {id:'afternoon',start:720,end:1080,th:'บ่าย',en:'Afternoon'},
-    {id:'evening',start:1080,end:1440,th:'ค่ำ',en:'Evening'}
-  ];
+  // Render available starts chronologically in one shared grid.
   const appointmentTime = minutes => `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;
   const appointmentDayIndex = () => [...document.querySelectorAll('#appointment [data-appointment-day]')]
     .findIndex(day => day.getAttribute('aria-checked')==='true');
@@ -9087,27 +9076,16 @@
     const now=new Date();
     const dayIndex=Math.max(0,appointmentDayIndex());
     const thai=document.documentElement.lang==='th';
-    const current=APPOINTMENT_PERIODS.find(period=>period.id===appointmentPeriod) || APPOINTMENT_PERIODS[0];
     if(appointmentSlot){
       const [hour,minute]=appointmentSlot.split(':').map(Number);
       if(appointmentSlotUnavailable(hour*60+minute,dayIndex,now)) appointmentSlot='';
     }
-    scr.querySelectorAll('[data-appointment-period]').forEach(button => {
-      const period=APPOINTMENT_PERIODS.find(item=>item.id===button.dataset.appointmentPeriod);
-      if(!period) return;
-      let available=0;
-      for(let minutes=period.start;minutes<period.end;minutes+=15){
-        if(!appointmentSlotUnavailable(minutes,dayIndex,now)) available++;
-      }
-      button.setAttribute('aria-pressed',String(period.id===appointmentPeriod));
-      button.querySelector('[data-appointment-period-label]').textContent=thai ? period.th : period.en;
-      button.querySelector('[data-appointment-period-count]').textContent=thai ? `${available} ว่าง` : `${available} available`;
-    });
     let availableInPeriod=0;
     const slots=[];
-    for(let minutes=current.start;minutes<current.end;minutes+=15){
+    for(let minutes=540;minutes<1440;minutes+=15){
       const unavailable=appointmentSlotUnavailable(minutes,dayIndex,now);
-      if(!unavailable) availableInPeriod++;
+      if(unavailable) continue;
+      availableInPeriod++;
       const time=appointmentTime(minutes);
       // Split the visible digits so the page translator cannot turn a bare
       // "21:00" into "21:00 น." while the canonical value stays HH:mm.
@@ -9118,7 +9096,7 @@
     const empty=scr.querySelector('[data-appointment-empty]');
     if(empty){
       empty.hidden=availableInPeriod>0;
-      empty.textContent=thai ? 'ไม่มีเวลาว่างในช่วงนี้ ลองช่วงอื่นหรือวันอื่น' : 'No times available in this period. Try another period or day.';
+      empty.textContent=thai ? 'ไม่มีเวลาว่างในวันนี้ กรุณาเลือกวันอื่น' : 'No available times on this day. Please choose another day.';
     }
     syncAppointment();
   }
@@ -9173,9 +9151,6 @@
       day.setAttribute('aria-checked',String(index===defaultDayIndex)));
     const day=scr.querySelector('[data-appointment-day][aria-checked="true"]');
     appointmentDay=day?.dataset.dayLabel || 'วันนี้';
-    appointmentPeriod=defaultDayIndex===0
-      ? (currentMinutes>=1080 ? 'evening' : currentMinutes>=720 ? 'afternoon' : 'morning')
-      : 'morning';
     renderAppointmentSlots();
   }
   document.body.addEventListener('click', event => {
@@ -9187,16 +9162,6 @@
       appointmentDay=day.dataset.dayLabel || '';
       /* A slot free today may be taken tomorrow, so the time is re-chosen when
          the day changes rather than silently carried over. */
-      appointmentSlot='';
-      appointmentPeriod=day.closest('.appointment-days').querySelector('[data-appointment-day]')===day
-        ? (new Date().getHours()>=18 ? 'evening' : new Date().getHours()>=12 ? 'afternoon' : 'morning')
-        : 'morning';
-      renderAppointmentSlots();
-      return;
-    }
-    const period=event.target.closest('#appointment [data-appointment-period]');
-    if(period){
-      appointmentPeriod=period.dataset.appointmentPeriod;
       appointmentSlot='';
       renderAppointmentSlots();
       return;

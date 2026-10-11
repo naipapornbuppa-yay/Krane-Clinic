@@ -4,6 +4,8 @@
 
 For the combined patient, doctor and admin delivery, start with [FRONTEND-HANDOFF-READINESS.md](FRONTEND-HANDOFF-READINESS.md).
 
+See [Logic book](LOGIC-BOOK.md) for current interaction rules and appointment availability.
+
 ## Start here
 
 | Need | Source |

@@ -68,6 +68,14 @@ await test('address-delete-confirmation',async p=>{
  await buttons.first().click();await p.keyboard.press('Escape');assert.equal(await buttons.count(),before);
  await buttons.first().click();await p.locator('[data-delete-confirm]').click();assert.equal(await buttons.count(),before-1);
 });
+await test('appointment-flat-available-slots',async p=>{
+ await open(p,'appointment');await p.locator('[data-appointment-day]').nth(1).click();
+ assert.equal(await p.locator('[data-appointment-period]').count(),0);
+ assert.equal(await p.locator('[data-appointment-slot][aria-disabled="true"]').count(),0);
+ const times=await p.locator('[data-appointment-slot]').evaluateAll(es=>es.map(e=>e.dataset.appointmentTime));assert(times.length>20);assert.deepEqual(times,[...times].sort());
+ await p.locator('[data-appointment-slot]').first().click();assert.equal(await p.locator('[data-appointment-confirm]').isDisabled(),false);
+ await p.locator('[data-appointment-day]').nth(2).click();assert.equal(await p.locator('[data-appointment-slot][aria-checked="true"]').count(),0);
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
