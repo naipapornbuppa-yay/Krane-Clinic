@@ -134,7 +134,9 @@ await test('glass-folder-motion',async p=>{
  await p.setViewportSize({width,height:1000});await open(p,'profile');
  const card=p.locator('#profile .treatment-card').first();await card.scrollIntoViewIfNeeded();
  await p.screenshot({path:output+'/glass-folder-'+width+'.png'});
+ await card.hover();assert.equal(await card.evaluate(el=>getComputedStyle(el).transform),'none');
  await card.click();assert(await p.locator('#profile .treatment-folder.is-opening').isVisible());
+ assert.equal(await card.evaluate(el=>getComputedStyle(el).transform),'none');
  await p.locator('#treatment-detail.active').waitFor();
  }
  await p.emulateMedia({reducedMotion:'reduce'});await open(p,'profile');
