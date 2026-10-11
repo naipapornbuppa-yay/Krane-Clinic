@@ -10,6 +10,15 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('treatment-folder-latest',async p=>{
+ await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
+ assert.equal(await p.locator('#profile .treatment-card[data-category="general"]').count(),1);
+ await p.evaluate(()=>{const card=document.querySelector('#profile .treatment-card').cloneNode(true);card.dataset.category='qa-visits';card.dataset.consultations=JSON.stringify([{number:3,treatmentDiagnosis:'visit three'},{number:1,treatmentDiagnosis:'visit one'},{number:2,treatmentDiagnosis:'visit two'}]);document.querySelector('#profile .screen__body').append(card);window.kraneTreatmentFolders.mount(card);});
+ const folder=p.locator('.treatment-folder').last();assert.equal(await folder.locator('[role="tab"][aria-selected="true"]').textContent(),'ปรึกษาครั้งที่ 3');
+ await folder.locator('[role="tab"]').first().click();assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit one');
+ await p.evaluate(()=>{document.querySelector('#profile').classList.remove('active');document.querySelector('#profile').classList.add('active');});
+ await p.waitForFunction(()=>document.querySelector('[data-category="qa-visits"]').dataset.consultationNumber==='3');
+});
 await test('profile-menu-responsive',async p=>{
  for(const width of [390,890,1440]){
  await p.setViewportSize({width,height:900});await open(p,'profile');

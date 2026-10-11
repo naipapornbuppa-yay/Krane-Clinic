@@ -247,6 +247,14 @@
     #red-flag-modal legend{font-weight:600;line-height:1.5;margin-bottom:12px}
     #csat-modal .csat-dialog{scrollbar-width:none;-ms-overflow-style:none}
     #csat-modal .csat-dialog::-webkit-scrollbar{display:none;width:0;height:0}
+
+#profile .treatment-folder{margin-top:20px}
+#profile .treatment-folder .treatment-card{margin-top:0;width:100%}
+#profile .treatment-folder .treatment-card__programme{position:static;display:block;height:auto;padding:4px 0 0;background:none;border-radius:0;max-width:100%;font-size:14px;white-space:normal}
+.treatment-folder__tabs{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none}
+.treatment-folder__tabs button{border:0;flex:none;padding:12px 16px;border-radius:16px 16px 0 0;background:#e9edf3;color:#626b7c;font:inherit;font-size:12px;cursor:pointer}
+.treatment-folder__tabs button[aria-selected="true"]{background:white;color:#395AA4;font-weight:600}
+.treatment-folder__tabs button:focus-visible{outline:2px solid #395AA4;outline-offset:-3px}
 </style>
   <style id="insurance-entry-polish">
     /* Insurance eligibility is entered before the consultation journey begins. */
@@ -2921,6 +2929,12 @@
             <span class="followup-row"><span class="hint">Next follow-up</span><strong><span data-followup-date data-followup-case="sexual-health" data-followup-offset="18" data-followup-iso="2026-10-01">1 Oct 2026</span></strong></span>
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
+
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="general" data-treatment-title="ปรึกษาทั่วไป" data-treatment-medicines="[]" data-treatment-diagnosis="ดูรายละเอียดการปรึกษา" data-treatment-plan="ติดตามตามคำแนะนำของแพทย์">
+          <span class="treatment-card__head"><span class="treatment-card__title"><strong>ปรึกษาทั่วไป</strong><span class="treatment-card__programme">สุขภาพทั่วไป</span></span><span class="badge badge--ok">ปรึกษาสำเร็จ</span></span>
+          <span class="followup-details"><span class="followup-row"><span class="hint">แพทย์เจ้าของเคส</span><strong>แพทย์นรินทร์ ทานากะ</strong></span><span class="followup-row"><span class="hint">นัดติดตามครั้งถัดไป</span><strong>ไม่มีนัดติดตาม</strong></span></span>
+          <span class="treatment-card__go" aria-hidden="true">›</span>
         </button>
 
         <!-- Keep care support available as a quiet, consistent line beneath the active cases. -->
@@ -8931,7 +8945,7 @@
     if(!refillSheet) return;
     const today=new Date(); today.setHours(0,0,0,0);
     const list=refillSheet.querySelector('[data-refill-cards]');
-    if(list) list.replaceChildren(...[...document.querySelectorAll('#profile .treatment-card[data-category]')].map(source => refillCardFor(source,today)));
+    if(list) list.replaceChildren(...[...document.querySelectorAll('#profile .treatment-card[data-category]:not([data-category="general"])')].map(source => refillCardFor(source,today)));
     refillSheet.dataset.refillGated='1';
     // "All refillable" only means something when more than one refill is open.
     const allOption=refillSheet.querySelector('[data-refill-choice="all"]');
@@ -14735,5 +14749,6 @@
     </symbol>
   </defs>
 </svg>
+<script src="treatment-folders.js?v=20261011-visits"></script>
 </body>
 </html>
