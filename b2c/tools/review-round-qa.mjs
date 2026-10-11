@@ -51,6 +51,15 @@ await test('paid-order-starts-preparing',async p=>{
  await p.waitForTimeout(9500);
  assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),'Preparing');
 });
+await test('notification-delivery-states',async p=>{
+ await open(p,'notifications');assert.equal(await p.locator('[data-mock-status]').count(),12);
+ for(const method of ['same-day','postal'])for(const status of ['Preparing','Rider pickup','Dispatched','Delivered']){
+ await p.evaluate(()=>location.hash='notifications');await p.locator('#notifications.active').waitFor();
+ await p.locator(`[data-mock-delivery="${method}"][data-mock-status="${status}"]`).click();
+ await p.locator('#tracking.active').waitFor();assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),status);
+ if(status==='Delivered'){await p.locator('#csat-modal:not([hidden])').waitFor();await p.locator('#csat-modal .modal-dialog__actions [data-csat-close]').click();}
+ }
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
