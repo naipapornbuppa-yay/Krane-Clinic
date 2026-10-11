@@ -124,20 +124,17 @@ await test('activity-no-obsolete-orders',async p=>{
 });
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
- await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
- assert.equal(await p.locator('#profile .treatment-card[data-category="general"]').count(),1);
- await p.evaluate(()=>{const card=document.querySelector('#profile .treatment-card').cloneNode(true);card.dataset.category='qa-visits';card.dataset.consultations=JSON.stringify([{number:3,treatmentDiagnosis:'visit three'},{number:1,treatmentDiagnosis:'visit one'},{number:2,treatmentDiagnosis:'visit two'}]);document.querySelector('#profile .screen__body').append(card);window.kraneTreatmentFolders.mount(card);});
- const folder=p.locator('.treatment-folder').last();assert.equal(await folder.locator('[role="tab"][aria-selected="true"]').textContent(),'ครั้งล่าสุด');
- assert.equal(await folder.locator('[role="tab"]:visible').count(),3);
- await folder.locator('[role="tab"]').filter({hasText:'นัดถัดไป'}).click();assert(await folder.locator('.treatment-folder__upcoming').isVisible());
- await folder.locator('[role="tab"]').filter({hasText:'ครั้งล่าสุด'}).click();
+ await open(p,'profile');const folders=p.locator('#profile .treatment-folder');assert.equal(await folders.count(),4);
+ const counts=await folders.evaluateAll(es=>es.map(e=>Number(e.dataset.visitCount)));assert.deepEqual(counts,[6,4,2,1]);
+ assert.equal(await folders.locator('[role="tab"],button:not(.treatment-card)').count(),0);
+ for(let i=0;i<4;i++){
+ const folder=folders.nth(i);assert.equal(Number(await folder.locator('.treatment-card').getAttribute('data-consultation-number')),counts[i]);
  await folder.locator('.treatment-card').click();await p.locator('#treatment-detail.active').waitFor();
- await p.locator('#treatment-visit-history summary').click();await p.locator('#treatment-visit-history button').filter({hasText:'ปรึกษาครั้งที่ 1'}).click();
- assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit one');
+ await p.locator('#treatment-visit-history summary').click();assert.equal(await p.locator('#treatment-visit-history button').count(),counts[i]);
+ await p.locator('#treatment-visit-history button').last().click();assert.equal(Number(await folder.locator('.treatment-card').getAttribute('data-consultation-number')),1);
  await p.evaluate(()=>location.hash='profile');await p.locator('#profile.active').waitFor();
- await folder.locator('[role="tab"]:visible').first().click();assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit two');
- await p.evaluate(()=>{document.querySelector('#profile').classList.remove('active');document.querySelector('#profile').classList.add('active');});
- await p.waitForFunction(()=>document.querySelector('[data-category="qa-visits"]').dataset.consultationNumber==='3');
+ assert.equal(Number(await folder.locator('.treatment-card').getAttribute('data-consultation-number')),counts[i]);
+ }
 });
 await test('profile-menu-responsive',async p=>{
  for(const width of [390,890,1440]){
