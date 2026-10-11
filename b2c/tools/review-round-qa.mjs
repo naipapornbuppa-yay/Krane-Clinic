@@ -98,6 +98,15 @@ await test('medicine-sheet-restore-quantity',async p=>{
  if(initialTotal)assert.equal(await p.locator('#payment [data-payment-subtotal]').first().textContent(),initialTotal);
  }
 });
+await test('modal-preview-gallery',async p=>{
+ await p.goto(`${base}/b2c/krane-b2c.html?screens=1#profile`);await p.setViewportSize({width:1440,height:900});const links=p.locator('[data-modal-preview]');assert(await links.count()>=14);
+ await links.first().locator('xpath=ancestor::details').evaluate(e=>e.open=true);
+ for(let i=0;i<await links.count();i++){
+ await links.nth(i).click();await p.locator('.review-modal-preview[open]').waitFor();
+ assert.equal(await p.locator('#profile.active').count(),1);
+ await p.locator('.review-modal-preview__close').click();await p.locator('.review-modal-preview').waitFor({state:'detached'});
+ }
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
