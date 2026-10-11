@@ -56,12 +56,15 @@ await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
  assert.equal(await p.locator('#profile .treatment-card[data-category="general"]').count(),1);
  await p.evaluate(()=>{const card=document.querySelector('#profile .treatment-card').cloneNode(true);card.dataset.category='qa-visits';card.dataset.consultations=JSON.stringify([{number:3,treatmentDiagnosis:'visit three'},{number:1,treatmentDiagnosis:'visit one'},{number:2,treatmentDiagnosis:'visit two'}]);document.querySelector('#profile .screen__body').append(card);window.kraneTreatmentFolders.mount(card);});
- const folder=p.locator('.treatment-folder').last();assert.equal(await folder.locator('[role="tab"][aria-selected="true"]').textContent(),'ปรึกษาครั้งที่ 3');
+ const folder=p.locator('.treatment-folder').last();assert.equal(await folder.locator('[role="tab"][aria-selected="true"]').textContent(),'ครั้งล่าสุด');
+ assert.equal(await folder.locator('[role="tab"]:visible').count(),3);
+ await folder.locator('[role="tab"]').filter({hasText:'นัดถัดไป'}).click();assert(await folder.locator('.treatment-folder__upcoming').isVisible());
+ await folder.locator('[role="tab"]').filter({hasText:'ครั้งล่าสุด'}).click();
  await folder.locator('.treatment-card').click();await p.locator('#treatment-detail.active').waitFor();
  await p.locator('#treatment-visit-history summary').click();await p.locator('#treatment-visit-history button').filter({hasText:'ปรึกษาครั้งที่ 1'}).click();
  assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit one');
  await p.evaluate(()=>location.hash='profile');await p.locator('#profile.active').waitFor();
- await folder.locator('[role="tab"]').first().click();assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit one');
+ await folder.locator('[role="tab"]:visible').first().click();assert.equal(await folder.locator('.treatment-card').getAttribute('data-treatment-diagnosis'),'visit two');
  await p.evaluate(()=>{document.querySelector('#profile').classList.remove('active');document.querySelector('#profile').classList.add('active');});
  await p.waitForFunction(()=>document.querySelector('[data-category="qa-visits"]').dataset.consultationNumber==='3');
 });
