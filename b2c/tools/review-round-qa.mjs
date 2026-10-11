@@ -60,6 +60,14 @@ await test('notification-delivery-states',async p=>{
  if(status==='Delivered'){await p.locator('#csat-modal:not([hidden])').waitFor();await p.locator('#csat-modal .modal-dialog__actions [data-csat-close]').click();}
  }
 });
+await test('address-delete-confirmation',async p=>{
+ await p.addInitScript(()=>sessionStorage.setItem('krane-p01-flow-state-v1',JSON.stringify({savedAddresses:[{label:'QA Home',building:'123',province:'กรุงเทพมหานคร',district:'บางรัก',subdistrict:'สีลม',postcode:'10500',recipientName:'QA',recipientPhone:'0812345678'}]})));
+ await p.goto(`${base}/b2c/krane-b2c.html?screens=1&demoStage=address#address`);await p.locator('#address.active').waitFor();const buttons=p.locator('[data-address-delete]');const before=await buttons.count();assert(before>0);
+ await buttons.first().click();await p.locator('#address-delete-confirm[open]').waitFor();assert.equal(await buttons.count(),before);
+ await p.locator('[data-delete-cancel]').click();assert.equal(await buttons.count(),before);
+ await buttons.first().click();await p.keyboard.press('Escape');assert.equal(await buttons.count(),before);
+ await buttons.first().click();await p.locator('[data-delete-confirm]').click();assert.equal(await buttons.count(),before-1);
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
