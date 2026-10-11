@@ -11,3 +11,5 @@
 - Appointment rows are grouped by hour, but available slots pack left with no empty minute columns. Unavailable starts are omitted. Changing day clears selection; booking still requires an available slot.
 - Receipt and certificate links use `assets/documents-v1/receipt-v3.pdf` and `medical-certificate-v3.pdf`, with the final blue Krane logo. They remain demonstration documents.
 - Latest broad evidence: [night QA](QA-NIGHT-2026-10-11.md). Follow-up behavior evidence: [program pause and review completion](QA-PROGRAM-PAUSE-2026-10-11.md). Earlier CMS/brand reports retain their original scope; they were not rerun merely because this B2C change shipped.
+
+Refill modal: “ยาทั้งหมดที่เติมได้” uses the shared secondary CTA, retaining the combined-order action. Removed its card subtitle and the refill-limit helper sentence from this modal.
