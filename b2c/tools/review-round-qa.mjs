@@ -10,6 +10,16 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('shared-modal-dismissal',async p=>{
+ for(const width of [390,890]){
+ await p.setViewportSize({width,height:900});await p.goto(`${base}/b2c/krane-b2c.html?fresh=1&demoStage=tracking&demoStatus=Delivered#tracking`);
+ const sheet=p.locator('#csat-modal');await sheet.locator('.shared-modal-close').waitFor();
+ assert.equal(await sheet.locator('.shared-sheet-handle').isVisible(),width===390);
+ await sheet.locator('.shared-modal-close').click();await sheet.waitFor({state:'hidden'});
+ await p.evaluate(()=>location.hash='notifications');await p.locator('[data-notif-review]:visible').click();await sheet.waitFor({state:'visible'});
+ await sheet.locator('.modal-layer__scrim').click({position:{x:5,y:5}});await sheet.waitFor({state:'hidden'});
+ }
+});
 await test('shared-health-lifestyle',async p=>{
  for(const entry of ['partner','direct']){
  await open(p,'intake-general',entry);
