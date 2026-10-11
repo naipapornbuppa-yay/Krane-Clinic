@@ -4,7 +4,7 @@
 
 - Both screen-directory and public links use the same appointment renderer.
 - Keep date selection. Remove morning, afternoon and evening tabs.
-- Render only available slots in a single responsive grid, ordered earliest to latest.
+- Render only available slots in a single responsive grid, ordered earliest to latest. Each row contains one hour, with four fixed columns for :00, :15, :30 and :45. Unavailable starts leave an empty position; hours with no availability are omitted. Apply the same four-column layout on mobile.
 - Service window: 09:00–24:00, every 15 minutes; last start 23:45.
 - Hide occupied starts and starts less than 15 minutes away today. Prototype occupancy is deterministic mock data; production must use backend availability and revalidate at confirmation.
 - Changing day clears the selected time. Confirmation stays disabled until an available time is selected.

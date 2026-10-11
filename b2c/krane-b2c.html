@@ -62,9 +62,9 @@
 <meta name="twitter:image" content="/b2c/assets/landing-573/latest/hero-base.png">
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
-     design-tokens.css = colors/type/spacing  |  components.css?v=20261011-insurance-v281 = reusable UI -->
+     design-tokens.css = colors/type/spacing  |  components.css?v=20261011-hour-rows-v283 = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20260930-plex-en-v1">
-<link rel="stylesheet" href="components.css?v=20261011-insurance-v281">
+<link rel="stylesheet" href="components.css?v=20261011-hour-rows-v283">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -9079,14 +9079,17 @@
       if(appointmentSlotUnavailable(hour*60+minute,dayIndex,now)) appointmentSlot='';
     }
     const slots=[];
+    let hourRow=0,lastHour=-1;
     for(let minutes=540;minutes<1440;minutes+=15){
       const unavailable=appointmentSlotUnavailable(minutes,dayIndex,now);
       if(unavailable) continue;
+      const slotHour=Math.floor(minutes/60);
+      if(slotHour!==lastHour){hourRow++;lastHour=slotHour;}
       const time=appointmentTime(minutes);
       // Split the visible digits so the page translator cannot turn a bare
       // "21:00" into "21:00 น." while the canonical value stays HH:mm.
       const [hour,minute]=time.split(':');
-      slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
+      slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot style="grid-row:${hourRow};grid-column:${(minutes%60)/15+1}" data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
     }
     grid.innerHTML=slots.join('');
     syncAppointment();
