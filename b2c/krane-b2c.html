@@ -262,6 +262,7 @@
 #treatment-visit-history{margin-top:24px;border-top:1px solid #e1e5ec;padding-top:20px}
 #treatment-visit-history summary{cursor:pointer;font-weight:600;padding:8px 0}
 #treatment-visit-history .doc-row{width:100%;margin-top:12px;border:1px solid #d7deec;text-align:left;padding:16px;color:var(--color-ink);background:white}
+    [data-shared-identity-fields] .between:has([data-phone-note]){display:none}
 </style>
   <style id="insurance-entry-polish">
     /* Insurance eligibility is entered before the consultation journey begins. */
@@ -11622,7 +11623,7 @@
       const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
       if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
-      if(!flowState.partnerPhoneVerified || normalizePhone(phone)!==normalizePhone(flowState.partnerPhone)){
+      { // The main continue action always verifies the partner phone via OTP.
         flowState.partnerName=name;
         flowState.partnerPaymentMethod=paymentMethod;
         flowState.partnerPendingPhone=normalizePhone(phone);
@@ -11774,8 +11775,13 @@
           return;
         }
         if(normalizePhone(phoneInput.value)!==normalizePhone(flowState.verifiedPhone)){
-          showActionToast('กดยืนยันด้วย OTP เพื่อยืนยันเบอร์ใหม่ก่อนดำเนินการต่อ','warning');
-          phoneInput.focus();
+          flowState.pendingPhone=normalizePhone(phoneInput.value);
+          flowState.phoneOtpPending=true;
+          flowState.phoneOtpReturn='patient-info';
+          flowState.phoneOtpDestination='';
+          flowState.phoneOtpCompletesAuth=false;
+          persistFlowState();
+          show('otp');
           return;
         }
         phoneInput.readOnly=true;
