@@ -57,6 +57,7 @@ await test('notification-delivery-states',async p=>{
  await p.evaluate(()=>location.hash='notifications');await p.locator('#notifications.active').waitFor();
  await p.locator(`[data-mock-delivery="${method}"][data-mock-status="${status}"]`).click();
  await p.locator('#tracking.active').waitFor();assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),status);
+ assert.equal(await p.locator('#tracking [data-track-step="out"] use').getAttribute('href'),method==='postal'?'#krane-delivery-truck':'#krane-delivery-motorcycle');
  if(status==='Delivered'){await p.locator('#csat-modal:not([hidden])').waitFor();await p.locator('#csat-modal .modal-dialog__actions [data-csat-close]').click();}
  }
 });
