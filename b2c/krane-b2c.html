@@ -3629,9 +3629,7 @@
       <!-- Three things, named plainly and without sub-lines: the care, the app
            and the call itself (client, 19 Aug). Delivery is rated separately
            once the medicine arrives. -->
-      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">คำแนะนำของแพทย์</div><div class="rating" data-rate data-csat-advice><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
-      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">การใช้งานแอป</div><div class="rating" data-rate data-csat-platform><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
-      <div class="rating-row"><div style="font-weight:var(--fw-semibold)">คุณภาพภาพและเสียง</div><div class="rating" data-rate data-csat-quality><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button><button class="star" type="button">★</button></div></div>
+
     </div>
     <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="csat-note" placeholder="อะไรที่ดี หรืออะไรที่เราทำได้ดีกว่านี้…"></textarea><label for="csat-note">ความเห็นเพิ่มเติม (ไม่บังคับ)</label></span></div></div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-csat-submit data-string-id="action.submit_rating">ส่งคะแนน</button><button class="btn btn--ghost" type="button" data-csat-close>ไว้ทีหลัง</button></div>
@@ -13083,6 +13081,16 @@
      allowed — a rating nobody wants to give is worse than no rating — and
      either way the flow carries on to the same place. */
   const csatModal = document.getElementById('csat-modal');
+  // Reuse the existing four-part feedback form as the delivery review sheet.
+  const csatGroups=['video','voice','overall','doctor'];
+  const csatRows=csatModal.querySelector('.csat-dialog__rows');
+  document.querySelectorAll('#feedback .rating-row').forEach((source,index)=>{
+    const row=source.cloneNode(true);
+    row.querySelector('[data-rate]').setAttribute('data-csat-'+csatGroups[index],'');
+    row.querySelectorAll('.star').forEach(button=>{button.classList.remove('on');button.type='button';});
+    csatRows.append(row);
+  });
+
   let csatTarget = 'tracking';
   let csatReplaces = false;
   function leaveCsat(){
@@ -13142,15 +13150,16 @@
       if(!submit) return;
       // The rating is the way past this dialog; there is no skip.
       // All three are the review; a partial answer is not one.
-      const missing=['advice','platform','quality'].filter(group => !csatScore(group));
+      const missing=csatGroups.filter(group => !csatScore(group));
       if(missing.length){
-        showActionToast('กรุณาให้คะแนนให้ครบทั้ง 3 ข้อ','warning');
+        showActionToast('กรุณาให้คะแนนให้ครบทั้ง 4 ข้อ','warning');
         return;
       }
       flowState.csat={
-        advice:csatScore('advice'),
-        platform:csatScore('platform'),
-        quality:csatScore('quality'),
+        video:csatScore('video'),
+        voice:csatScore('voice'),
+        overall:csatScore('overall'),
+        doctor:csatScore('doctor'),
         note:document.getElementById('csat-note')?.value.trim() || ''
       };
       showActionToast('ขอบคุณสำหรับคะแนน','success');
