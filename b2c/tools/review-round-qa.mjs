@@ -117,6 +117,11 @@ await test('notification-icon-colors',async p=>{
  }
  }
 });
+await test('activity-no-obsolete-orders',async p=>{
+ await open(p,'activity');assert.equal(await p.locator('#activity [data-activity-type="order"]').count(),0);
+ await p.locator('[data-activity-filter="order"]').click();assert(await p.locator('[data-activity-empty]').isVisible());
+ await p.locator('[data-activity-filter="program"]').click();assert(await p.locator('#activity [data-activity-type="program"]').first().isVisible());
+});
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');assert.equal(await p.locator('#profile .treatment-folder').count(),4);
