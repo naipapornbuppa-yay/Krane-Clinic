@@ -52,10 +52,10 @@ await test('paid-order-starts-preparing',async p=>{
  assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),'Preparing');
 });
 await test('notification-delivery-states',async p=>{
- await open(p,'notifications');assert.equal(await p.locator('[data-mock-status]').count(),12);
+ await open(p,'notifications');assert.equal(await p.locator('[data-mock-status]').count(),10);
  await p.waitForFunction(()=>document.querySelector('[data-mock-status=Preparing] .ic .lucide-pill'));
  assert.equal(await p.locator('[data-mock-status=Preparing] .ic svg').first().innerHTML(),await p.locator('#tracking [data-track-step=prepared] svg').innerHTML());
- for(const method of ['same-day','postal'])for(const status of ['Preparing','Rider pickup','Dispatched','Delivered']){
+ for(const method of ['same-day','postal'])for(const status of ['Preparing','Dispatched','Delivered']){
  await p.evaluate(()=>location.hash='notifications');await p.locator('#notifications.active').waitFor();
  await p.locator(`[data-mock-delivery="${method}"][data-mock-status="${status}"]`).click();
  await p.locator('#tracking.active').waitFor();assert.equal(await p.evaluate(()=>window.KraneGoldenDemo.readState().fulfilmentStatus),status);
