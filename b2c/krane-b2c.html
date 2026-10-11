@@ -3862,7 +3862,7 @@
   function isGeneralPath(){ return selectedCategoryId === 'general'; }
   // SCR-002/SCR-003 are the approved compact Partner intake. Direct entry never
   // uses them: every Direct concern starts at SCR-DIR-02 (#intake1).
-  function sharedConcernRequired(){ return flowState.entryChannel === 'partner'; }
+  function sharedConcernRequired(){ return flowState.entryChannel === 'partner' || isGeneralPath(); }
 
   let selectedConditionId = 'hair-loss';
   let isAuthenticated = false;
@@ -9917,6 +9917,7 @@
     return target;
   }
   function normalizeScreenTarget(target){
+    if(target==='intake1' && isGeneralPath()) return 'intake-concern';
     if(target==='intake-edu') return 'intake-general';
     if(target==='followups') return 'profile';
     if(target==='history') return 'activity';
@@ -9931,7 +9932,7 @@
     // for the same reason.
     if(target==='concern'){
       setSelectedCategory('general');
-      return 'intake1';
+      return 'intake-concern';
     }
     // Keep legacy partner bookmarks working while routing each old page name to
     // the matching step in the now-separated clinical intake.
@@ -12954,6 +12955,7 @@
       flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
       flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
       flowState.partnerConcernComplete=true;
+      if(flowState.entryChannel==='direct') flowState.draftReady=true;
       flowState.lastRequiredScreen='intake-general';
       persistFlowState();
       saveIntakeDraft();
