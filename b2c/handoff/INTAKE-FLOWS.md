@@ -46,3 +46,9 @@ Canonical aliases: `partner-patient-info → patient-info`, `partner-insurance �
 For every available direct category and both partner payment branches, verify forward/back, required empty input, invalid dates/phone, refresh/resume, changed phone/OTP expiry/resend, invalid/oversized upload, insurance unavailable, no doctor/booking, cancel/retry and prevented guarded deep-link access. Preserve question wording/order from the approved source; do not generate clinical changes during integration.
 
 Existing QA reports document subsets of these dimensions. The route/category audit is structural coverage, not proof that every combination was executed. Backend must eventually own verified identity, eligibility, allowed next step, data durability and record permissions.
+
+## Red-flag presentation update — 11 October 2026
+
+Client-identified `hair.scalp_symptoms`, `ed.heart_history`, and `ed.nitrate_use`, plus existing `data-flag` safety choices, use a yes/no bottom sheet with at most three questions per step. Answers are written back to the original intake controls and draft. Affirmative responses go to `ineligible` on continue. Weight exclusions retain the separately requested disabled-on-yes behavior; their four questions are split 3 + 1. Unanswered new screening choices cannot continue.
+
+The local flow document does not define the full approved clinical red-flag inventory. The client was asked for the source document to reconcile additional questions; no other clinical question is newly classified by this UI change.

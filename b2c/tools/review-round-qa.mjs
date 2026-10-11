@@ -10,6 +10,29 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('red-flag-sheet-weight-pages',async p=>{
+ await open(p,'conditions');await p.locator('[data-category-id="weight"]').first().click();await p.evaluate(()=>location.hash='intake3');await p.locator('#intake3.active').waitFor();
+ await p.evaluate(()=>{const body=document.querySelector('#intake3 .screen__body');body.dataset.intakeQuestionIndex=String(body.querySelectorAll('[data-intake-question]').length-1);const b=document.querySelector('#intake3 .screen__footer [data-go]');b.removeAttribute('aria-disabled');b.disabled=false;b.dataset.go='intake4';b.click();});
+ await p.locator('#obesity-risk-modal:not([hidden])').waitFor();assert.equal(await p.locator('#obesity-risk-modal [data-obesity-risk]:visible').count(),3);
+ await p.locator('#obesity-risk-modal [data-obesity-risk-choice="yes"]:visible').first().click();assert(await p.locator('[data-obesity-risk-confirm]').isDisabled());
+ await p.locator('#obesity-risk-modal [data-obesity-risk-choice="no"]:visible').first().click();await p.locator('[data-obesity-risk-confirm]').click();assert.equal(await p.locator('#obesity-risk-modal [data-obesity-risk]:visible').count(),1);
+ await p.locator('#obesity-risk-modal [data-obesity-risk-choice="yes"]:visible').click();assert(await p.locator('[data-obesity-risk-confirm]').isDisabled());
+});
+await test('red-flag-sheet-ed',async p=>{
+ await open(p,'conditions');await p.locator('[data-category-id="sexual-health"]').first().click();await p.evaluate(()=>location.hash='intake3');
+ await p.locator('#red-flag-modal').waitFor();await p.locator('#red-flag-modal [role="radio"]').filter({hasText:/^ไม่$/}).click();await p.locator('#red-flag-modal [data-next]').click();
+ await p.locator('#intake4.active').waitFor();await p.locator('#red-flag-modal').waitFor();await p.locator('#red-flag-modal [role="radio"]').filter({hasText:'ใช่'}).click();await p.locator('#red-flag-modal [data-next]').click();await p.locator('#ineligible.active').waitFor();
+});
+await test('red-flag-sheet-hair',async p=>{
+ await open(p,'conditions');await p.locator('[data-category-id="hair-skin"]').first().click();
+ await p.evaluate(()=>location.hash='intake3');
+ await p.locator('#intake3 [data-question-id="hair.severity"] .option').first().click();
+ await p.locator('#red-flag-modal').waitFor();
+ assert.equal(await p.locator('#red-flag-modal fieldset').count(),1);
+ assert(await p.locator('#red-flag-modal [data-next]').isDisabled());
+ await p.locator('#red-flag-modal [role="radio"]').filter({hasText:'ใช่'}).click();
+ await p.locator('#red-flag-modal [data-next]').click();await p.locator('#ineligible.active').waitFor();
+});
 await test('partner-review-payment-failure-route',async p=>{await open(p,'partner-phr','partner');await p.setViewportSize({width:1440,height:900});await p.locator('.rail [data-go="consultpay-fail"]').first().evaluate(el=>{for(let n=el.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;});await p.locator('.rail [data-go="consultpay-fail"]').first().click();await p.locator('#consultpay-fail.active').waitFor();assert.equal(await p.locator('#partner-phr.active').count(),0);});
 await test('partner-review-no-doctor-route',async p=>{await open(p,'partner-phr','partner');await p.setViewportSize({width:1440,height:900});const link=p.locator('.rail [data-demo-nomatch]').first();await link.evaluate(el=>{for(let n=el.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;});await link.click();await p.locator('#matching.active').waitFor();assert.equal(await p.locator('#partner-phr.active').count(),0);await p.locator('#appointment.active').waitFor({timeout:15000});});
 await test('direct-general-shared-concern',async p=>{await open(p,'conditions');await p.locator('[data-category-id="general"]').first().click();await p.locator('#intake-concern.active').waitFor();await p.locator('#partner-concern-text').fill('มีอาการไอและเจ็บคอ');await p.locator('[data-partner-relief-value="ยังไม่ได้ทำ"]').click();await p.locator('#intake-concern [data-intake-complete]').click();await p.locator('#signup.active').waitFor();});
