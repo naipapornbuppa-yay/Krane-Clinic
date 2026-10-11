@@ -25,6 +25,19 @@
    if(visit.followup){const row=card.querySelector('.followup-row:last-child strong');row.textContent=visit.followup;}
   }
   tabs.onkeydown=e=>{const i=buttons.indexOf(document.activeElement);if(i<0)return;let next;if(e.key==='ArrowRight')next=(i+1)%buttons.length;if(e.key==='ArrowLeft')next=(i-1+buttons.length)%buttons.length;if(e.key==='Home')next=0;if(e.key==='End')next=buttons.length-1;if(next!==undefined){e.preventDefault();select(next);buttons[next].focus();}};
+  card.addEventListener('treatment-record-open',()=>{
+   const certificate=document.querySelector('#treatment-detail .treatment-record__certificate-card');
+   if(!certificate)return;
+   document.getElementById('treatment-visit-history')?.remove();
+   const history=document.createElement('details');history.id='treatment-visit-history';
+   const summary=document.createElement('summary');summary.textContent='ประวัติการปรึกษา';history.append(summary);
+   const current=Number(card.dataset.consultationNumber);
+   const label=document.createElement('p');label.className='hint';label.textContent='กำลังดูการปรึกษาครั้งที่ '+current;history.append(label);
+   const other=visits.map((visit,index)=>({visit,index})).filter(({visit})=>visit.number!==current).reverse();
+   if(!other.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='ยังไม่มีการปรึกษาครั้งก่อน';history.append(empty);}
+   other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row';button.textContent='ปรึกษาครั้งที่ '+visit.number+(visit.treatmentDate?' · '+visit.treatmentDate:'')+'  ›';button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
+   certificate.after(history);
+  });
   folder.selectLatest=()=>select(visits.length-1);
   select(visits.length-1);
  }
