@@ -1821,7 +1821,7 @@
     "การใช้งานแอป":"Using the app",
     "คุณภาพภาพและเสียง":"Picture and sound quality",
     "ความเห็นเพิ่มเติม (ไม่บังคับ)":"Anything else (optional)",
-    "ส่งคะแนนและไปต่อ":"Submit and continue",
+    "ส่งคะแนน":"Submit rating",
     "เลือกวิธีชำระเงิน":"Choose a payment method",
     "เลือกช่องทางที่ต้องการใช้สำหรับคำสั่งซื้อนี้":"Pick the channel you want to use for this order",
     "สแกนและชำระผ่านแอปธนาคาร":"Scan and pay in your banking app",
