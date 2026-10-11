@@ -110,6 +110,8 @@
       }
     });
     document.querySelectorAll('.notif').forEach(function (row) {
+      // Preserve semantic icons authored for status, delivery method and reminders.
+      if(row.querySelector('.ic svg, .ic [data-lucide]')) return;
       var name = row.dataset.go === 'tracking' ? 'truck' : row.dataset.go === 'consult' ? 'messages-square' :
         row.dataset.go === 'plan' ? 'clipboard-check' : row.dataset.go === 'profile' ? 'clock-3' : 'bell';
       setIcon(row.querySelector('.ic'), name, 'ui-icon--md');

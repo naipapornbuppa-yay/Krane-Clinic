@@ -14,3 +14,9 @@
 
 - Medicine quantity may decrease to zero and increase back up to the prescription maximum, including after save and reopen. Zero does not change the prescribed maximum.
 - Disable minus only at zero, plus only at the prescription maximum. Recalculate item price and checkout totals after saving.
+
+## Notifications and tracking labels
+
+- Group notification fixtures by calendar date, without New or Example labels.
+- Preserve each notification’s authored semantic icon. Do not replace all tracking notifications with a truck.
+- The active progress step and status badge must use the same label, including pickup and delivered states.
