@@ -70,7 +70,7 @@
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261011-program-pause" defer></script>
+<script src="i18n.js?v=20261011-program-resume" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -248,13 +248,13 @@
     #csat-modal .csat-dialog{scrollbar-width:none;-ms-overflow-style:none}
     #csat-modal .csat-dialog::-webkit-scrollbar{display:none;width:0;height:0}
 
-#profile .treatment-folder{margin-top:20px}
-#profile .treatment-folder .treatment-card{margin-top:0;width:100%}
-#profile .treatment-folder .treatment-card__programme{position:static;display:block;height:auto;padding:4px 0 0;background:none;border-radius:0;max-width:100%;font-size:14px;white-space:normal}
-#profile .treatment-folder{position:relative;isolation:isolate;margin-bottom:calc(var(--folder-depth,0)*5px)}
+:is(#profile,#refill-sheet) .treatment-folder{margin-top:20px}
+:is(#profile,#refill-sheet) .treatment-folder .treatment-card{margin-top:0;width:100%}
+:is(#profile,#refill-sheet) .treatment-folder .treatment-card__programme{position:static;display:block;height:auto;padding:4px 0 0;background:none;border-radius:0;max-width:100%;font-size:14px;white-space:normal}
+:is(#profile,#refill-sheet) .treatment-folder{position:relative;isolation:isolate;margin-bottom:calc(var(--folder-depth,0)*5px)}
 .treatment-folder__sheet{position:absolute;inset:30px calc(var(--layer)*5px) calc(var(--layer)*-5px);background:#e9edf3;border:1px solid #dce1e9;border-radius:24px;z-index:-1}
 .treatment-folder__upcoming{padding:28px;background:white;border-radius:0 24px 24px 24px;min-height:150px;box-shadow:0 8px 24px #2026330a}
-#profile .treatment-folder [hidden]{display:none!important}
+:is(#profile,#refill-sheet) .treatment-folder [hidden]{display:none!important}
 #notifications .notif .ic{background:#e7eefb;color:#395aa4}
 #address-delete-confirm{width:min(440px,calc(100% - 32px));border:0;border-radius:24px;padding:28px;color:var(--color-ink);background:white;box-shadow:0 24px 80px #17233333}
 #address-delete-confirm::backdrop{background:rgba(30,45,50,.45)}
@@ -1188,7 +1188,7 @@
 #settings .screen__body .ic, #settings .screen__body .avatar { background: #e7eefb; color: #395aa4; }
 #settings .screen__body .chev { color: #395aa4; }
 </style>
-<link rel="stylesheet" href="treatment-folders.css?v=20261011-program-pause">
+<link rel="stylesheet" href="treatment-folders.css?v=20261011-program-resume">
 <link rel="stylesheet" href="modal-chrome.css?v=20261011-choice-cards">
 </head>
 <body class="hide-feat">
@@ -7394,7 +7394,12 @@
   const followUpAppointments=new Map();
   const followUpDemoState=new URLSearchParams(location.search).get('demoFollowup');
   function followUpAppointmentFor(node){
-    if(!node || window.kraneTreatmentPause?.isPaused(node.dataset.followupCase)) return null;
+    if(!node) return null;
+    const program=window.kraneTreatmentPause;
+    if(program?.isPaused(node.dataset.followupCase))return null;
+    const resumed=program?.appointmentFor(node.dataset.followupCase);
+    if(resumed)return new Date(resumed);
+    if(program?.hasCancelledFollowup(node.dataset.followupCase))return null;
     const caseId=node.dataset.followupCase || node.dataset.followupIso || String(node.dataset.followupOffset || 'followup');
     if(followUpAppointments.has(caseId)) return followUpAppointments.get(caseId);
     const offset=Number(node.dataset.followupOffset);
@@ -7455,7 +7460,7 @@
   function syncFollowUpDates(){
     document.querySelectorAll('[data-followup-date][data-followup-offset]').forEach(node => {
       const when=followUpAppointmentFor(node);
-      if(!when){if(window.kraneTreatmentPause?.isPaused(node.dataset.followupCase))node.textContent=document.documentElement.lang==='en'?'Program paused':'พักโปรแกรมอยู่';return;}
+      if(!when){if(window.kraneTreatmentPause?.hasCancelledFollowup(node.dataset.followupCase))node.textContent=window.kraneTreatmentPause.isPaused(node.dataset.followupCase)?'พักโปรแกรม':'ไม่มีนัดติดตาม';return;}
       const pad=value => String(value).padStart(2,'0');
       node.setAttribute('data-followup-iso',`${when.getFullYear()}-${pad(when.getMonth()+1)}-${pad(when.getDate())}`);
       node.setAttribute('data-followup-at',when.toISOString());
@@ -7648,7 +7653,7 @@
     const title=card.dataset.treatmentTitle
       || card.querySelector('.treatment-card__title strong')?.textContent.trim()
       || card.querySelector('.between strong')?.textContent.trim() || 'ข้อมูลการรักษา';
-    const status=window.kraneTreatmentPause?.isPaused(card.dataset.category)?'พักโปรแกรมอยู่':(card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน');
+    const status=window.kraneTreatmentPause?.isPaused(card.dataset.category)?'พักโปรแกรม':(card.querySelector('.badge')?.textContent.trim() || 'เป็นไปตามแผน');
     const diagnosis=card.dataset.treatmentDiagnosis || '';
     const plan=card.dataset.treatmentPlan || '';
     const date=card.dataset.treatmentDate || '';
@@ -8958,7 +8963,8 @@
     [...card.attributes].forEach(attribute => {
       if(attribute.name.startsWith('data-') && attribute.name!=='data-category') card.removeAttribute(attribute.name);
     });
-    card.removeAttribute('aria-label');
+    card.removeAttribute('aria-label');card.removeAttribute('id');
+    card.querySelector('.treatment-pause-status')?.remove();
     card.classList.add('refill-card');
     card.setAttribute('role','listitem');
     const supply=((source.dataset.treatmentRefillText || '').match(/^(\d+\s*วัน)/) || [])[1] || '';
@@ -8991,7 +8997,7 @@
       card.classList.add('refill-card--off');
     }
     const sourceFolder=source.closest('.treatment-folder');
-    if(sourceFolder){const folder=sourceFolder.cloneNode(false);folder.removeAttribute('id');sourceFolder.querySelectorAll('.treatment-folder__sheet').forEach(sheet=>folder.append(sheet.cloneNode(true)));folder.append(card);return folder;}
+    if(sourceFolder){const folder=sourceFolder.cloneNode(false);folder.removeAttribute('id');sourceFolder.querySelectorAll('.treatment-folder__sheet').forEach(sheet=>folder.append(sheet.cloneNode(true)));folder.append(card);window.kraneTreatmentFolders?.outline(card,folder);return folder;}
     return card;
   }
   function openRefillSheet(){
@@ -9073,6 +9079,12 @@
     // Deterministic sample occupancy, varied by day; no backend availability is implied.
     return (slotIndex+dayIndex*3)%9===0 || (slotIndex+dayIndex*7)%17===0;
   }
+  window.kraneProgramSchedule={slots(date){
+    const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const selected=new Date(date+'T00:00:00'),dayIndex=Math.round((selected-today)/86400000);
+    if(!Number.isFinite(dayIndex)||dayIndex<0||dayIndex>30)return [];
+    const values=[];for(let minutes=540;minutes<1440;minutes+=15){if(!appointmentSlotUnavailable(minutes,dayIndex,now))values.push(appointmentTime(minutes));}return values;
+  }};
   function renderAppointmentSlots(){
     const scr=document.getElementById('appointment');
     const grid=scr?.querySelector('[data-appointment-slots]');
@@ -14797,8 +14809,8 @@
     </symbol>
   </defs>
 </svg>
-<script src="treatment-folders.js?v=20261011-program-pause"></script>
-<script src="treatment-pause.js?v=20261011-program-pause"></script>
+<script src="treatment-folders.js?v=20261011-program-resume"></script>
+<script src="treatment-pause.js?v=20261011-program-resume"></script>
 <script src="modal-chrome.js?v=20261011"></script>
 </body>
 </html>

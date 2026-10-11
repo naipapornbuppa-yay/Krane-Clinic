@@ -1,5 +1,16 @@
 /* Explicit presentation fixtures: stack count and visit history share these records. */
 (()=>{
+ let outlineSequence=0;
+ function outline(card,folder){
+  const outlineId='folder-outline-'+(++outlineSequence);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width','0');svg.setAttribute('height','0');svg.style.position='absolute';svg.setAttribute('aria-hidden','true');
+  svg.innerHTML='<defs><clipPath id="'+outlineId+'" clipPathUnits="userSpaceOnUse"><path/></clipPath></defs>';folder.append(svg);
+  card.style.setProperty('--pocket-outline','url(#'+outlineId+')');
+  const redraw=()=>{const w=card.offsetWidth,h=card.offsetHeight+14,r=22,t=Math.min(100,w*.24),y=14;
+   svg.querySelector('path').setAttribute('d',`M0 ${r} Q0 0 ${r} 0 H${t-20} C${t} 0 ${t} ${y} ${t+20} ${y} H${w-r} Q${w} ${y} ${w} ${y+r} V${h-r} Q${w} ${h} ${w-r} ${h} H${r} Q0 ${h} 0 ${h-r} Z`);};
+  new ResizeObserver(redraw).observe(card);redraw();
+ }
  function mount(card){
   if(card.closest('.treatment-folder'))return;
   let visits;try{visits=JSON.parse(card.dataset.consultations||'null')}catch{}
@@ -15,14 +26,7 @@
   tabs.setAttribute('aria-hidden','true');
   card.before(folder);folder.append(tabs,card);card.id='treatment-folder-'+card.dataset.category;
   folder.dataset.visitCount=visits.length;
-  const outlineId='folder-outline-'+card.dataset.category;
-  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('width','0');svg.setAttribute('height','0');svg.style.position='absolute';svg.setAttribute('aria-hidden','true');
-  svg.innerHTML='<defs><clipPath id="'+outlineId+'" clipPathUnits="userSpaceOnUse"><path/></clipPath></defs>';folder.append(svg);
-  card.style.setProperty('--pocket-outline','url(#'+outlineId+')');
-  const redraw=()=>{const w=card.offsetWidth,h=card.offsetHeight+14,r=22,t=Math.min(100,w*.24),y=14;
-   svg.querySelector('path').setAttribute('d',`M0 ${r} Q0 0 ${r} 0 H${t-20} C${t} 0 ${t} ${y} ${t+20} ${y} H${w-r} Q${w} ${y} ${w} ${y+r} V${h-r} Q${w} ${h} ${w-r} ${h} H${r} Q0 ${h} 0 ${h-r} Z`);};
-  new ResizeObserver(redraw).observe(card);redraw();
+  outline(card,folder);
 
   const depth=Math.min(visits.length,4);
   folder.style.setProperty('--folder-depth',depth);
@@ -46,7 +50,7 @@
    const current=Number(card.dataset.consultationNumber);
    const other=visits.map((visit,index)=>({visit,index})).reverse();
    if(!other.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='ยังไม่มีการปรึกษาครั้งก่อน';history.append(empty);}
-   other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row treatment-record__certificate-card';const title=document.createElement('strong');title.textContent='ปรึกษาครั้งที่ '+visit.number;const date=document.createElement('span');date.className='hint';date.textContent=visit.treatmentDate||'';button.append(title,date);button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
+   other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row treatment-record__certificate-card';const title=document.createElement('strong');title.textContent='ปรึกษาวันที่ '+(visit.treatmentDate||'');button.append(title);button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
    certificate.after(history);
    window.kraneTreatmentPause?.attach(card,history);
   });
@@ -67,6 +71,6 @@
  }
  function init(){document.querySelectorAll('#profile .treatment-card').forEach(mount);}
  new MutationObserver(()=>{if(document.querySelector('#profile.active'))document.querySelectorAll('.treatment-folder').forEach(folder=>folder.selectLatest?.());}).observe(document.getElementById('profile'),{attributes:true,attributeFilter:['class']});
- window.kraneTreatmentFolders={mount,init};
+ window.kraneTreatmentFolders={mount,init,outline};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

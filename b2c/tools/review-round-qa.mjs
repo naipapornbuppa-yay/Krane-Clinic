@@ -16,22 +16,44 @@ await test('pause-program-persistence',async p=>{
  await p.evaluate(()=>localStorage.removeItem('krane.paused-programs.v1'));await p.reload();
  const card=p.locator('#profile .treatment-card[data-category="weight"]');await card.click();await p.locator('#treatment-detail.active').waitFor();
  const action=p.locator('#treatment-pause-action');assert.equal(await action.innerText(),'พักโปรแกรมการรักษา');
- assert(await action.evaluate(e=>Boolean(e.previousElementSibling?.id==='treatment-visit-history')));
+ assert(await action.evaluate(e=>e.parentElement.matches('#treatment-detail > .screen__body') && !e.closest('.treatment-record') && e===e.parentElement.lastElementChild));
  await action.click();const modal=p.locator('#treatment-pause-modal');await modal.waitFor({state:'visible'});
  await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'active');
  await action.click();await modal.locator('[data-treatment-pause-confirm]').click();await modal.waitFor({state:'hidden'});
- assert.equal(await card.getAttribute('data-program-state'),'paused');assert(await p.locator('#treatment-pause-action').isDisabled());
+ assert.equal(await card.getAttribute('data-program-state'),'paused');assert.equal(await p.locator('#treatment-pause-action').innerText(),'กลับมารักษาต่อ');
  assert.equal(await p.locator('#profile [data-followup-toast]').isVisible(),false);
  await p.evaluate(()=>location.hash='profile');await p.reload();await p.locator('#profile.active').waitFor();
  assert.equal(await card.getAttribute('data-program-state'),'paused');assert.equal(await p.locator('#profile .treatment-card[data-category="hair-skin"]').getAttribute('data-program-state'),'active');
- await card.click();await p.locator('#treatment-detail.active').waitFor();assert(await p.locator('#treatment-pause-action').isDisabled());
+ await card.click();await p.locator('#treatment-detail.active').waitFor();assert.equal(await p.locator('#treatment-pause-action').innerText(),'กลับมารักษาต่อ');
  await p.locator('#treatment-pause-action').scrollIntoViewIfNeeded();await p.screenshot({path:output+`/paused-program-${width}.png`,fullPage:true});
+ assert.equal(await p.locator('#profile .treatment-folder').last().locator('.treatment-card').getAttribute('data-category'),'weight');
+ await p.locator('#treatment-pause-action').click();await modal.waitFor({state:'visible'});
+ assert(await modal.locator('#resume-program-time option').count()>0);
+ await modal.locator('[data-resume-change]').click();await modal.locator('#resume-program-time').selectOption({index:1});
+ await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'paused');
+ await p.locator('#treatment-pause-action').click();await modal.locator('[data-treatment-pause-confirm]').click();
+ assert.equal(await card.getAttribute('data-program-state'),'active');
+ const saved=await p.evaluate(()=>JSON.parse(localStorage.getItem('krane.paused-programs.v1')).weight);assert(saved.appointmentAt);assert(Date.parse(saved.appointmentAt)>Date.now());
+ assert.equal(await card.getAttribute('data-consultation-number'),'6');
+ assert.equal(await p.locator('#profile .treatment-folder').first().locator('.treatment-card').getAttribute('data-category'),'weight');
+ await p.evaluate(()=>location.hash='profile');await p.reload();await p.locator('#profile.active').waitFor();assert.equal(await card.getAttribute('data-program-state'),'active');
+
  }
 });
 await test('pause-program-storage-failure',async p=>{
  await open(p,'profile');await p.locator('#profile .treatment-card').first().click();await p.locator('#treatment-pause-action').click();
  await p.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='krane.paused-programs.v1')throw new Error('QA storage unavailable');return original.call(this,key,value);};});
  await p.locator('[data-treatment-pause-confirm]').click();assert(await p.locator('#treatment-pause-modal').isVisible());assert(await p.locator('[data-treatment-pause-error]').isVisible());assert.equal(await p.locator('#profile .treatment-card').first().getAttribute('data-program-state'),'active');
+});
+await test('refill-folder-outline',async p=>{
+ for(const width of [390,890]){
+ await p.setViewportSize({width,height:900});await open(p,'profile');await p.locator('#profile [data-refill-open]:visible').first().click();await p.locator('#refill-sheet').waitFor({state:'visible'});await p.waitForTimeout(300);
+ const cards=p.locator('#refill-sheet .treatment-folder .treatment-card');assert.equal(await cards.count(),3);
+ const checks=await cards.evaluateAll(cards=>cards.map(card=>{const svg=card.parentElement.querySelector(':scope > svg');return {ownOutline:!!svg&&card.style.getPropertyValue('--pocket-outline').includes(svg.querySelector('clipPath').id),width:card.offsetWidth,path:svg?.querySelector('path').getAttribute('d'),badgeVisible:!!card.querySelector('.badge')?.getClientRects().length};}));
+ for(const check of checks){assert(check.ownOutline);assert(check.path.includes('H'+(check.width-22)));assert.equal(check.badgeVisible,false);}
+ await p.screenshot({path:output+`/refill-folder-${width}.png`,fullPage:true});
+ await cards.first().click();await p.locator('#payment.active').waitFor();
+ }
 });
 await test('english-current-ui',async p=>{
  await open(p,'profile');await p.evaluate(()=>kraneSetLang(false));await p.waitForTimeout(300);

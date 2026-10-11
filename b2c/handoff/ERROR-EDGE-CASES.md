@@ -59,6 +59,8 @@ Run `npm run check:ui`, `npm run check:strings`, and the visual consistency scri
 - Cancel pause confirmation: must retain active state and scheduled reminder.
 - Confirm: only selected program changes; reload must retain pause, unrelated programs stay active, history remains accessible.
 - Storage failure: show inline error and keep confirmation open; do not pretend to save.
-- Real appointment cancellation, clinician notification, resume, account isolation and concurrent edits are integration work, not verified by this prototype.
+- Real appointment cancellation, clinician notification, authoritative resume booking, account isolation and concurrent edits are integration work, not verified by this prototype.
 - Incomplete CSAT: stay in sheet. Complete all four scores: persist review, close sheet, open SID-050, return home from its CTA. Dismissal must not mark completion.
 - Evidence: [pause/review QA](QA-PROGRAM-PAUSE-2026-10-11.md).
+
+Resume regression: earliest fixture slot proposed; alternate time available; cancellation keeps pause; confirmation persists active status/new appointment without changing completed visit number; paused folders sort last. Refill regression checks per-card outline geometry and checkout entry at 390/890 px.

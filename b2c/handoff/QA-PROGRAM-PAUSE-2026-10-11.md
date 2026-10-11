@@ -24,3 +24,7 @@ Mobile and desktop paused detail screenshots were visually inspected for readabl
 Evidence: `/tmp/krane-pause-final/`, `/tmp/krane-four-section-csat-submit/`, `/tmp/krane-pause-locale-final/`, `/tmp/krane-pause-gallery/`, `/tmp/krane-pause-contract-final.log`.
 
 Saved machine evidence: [qa-program-pause-2026-10-11](qa-program-pause-2026-10-11/).
+
+## Resume and refill follow-up
+
+Passed pause/resume persistence and storage failure tests at 390 and 890px. The centered action is outside all record cards; paused programs sort last. Resume proposes an available fixture appointment, supports choosing another time, and requires confirmation before activation without incrementing the consultation number. History uses consultation dates. Refill folders share home positioning, subtitle placement and responsive outline geometry. Refill selection still opens checkout. English UI audit passed. Availability remains a frontend fixture requiring backend booking integration.

@@ -2487,6 +2487,21 @@
     "การพักโปรแกรมไม่ได้เปลี่ยนคำสั่งใช้ยาของแพทย์":"Pausing the program does not change your doctor's medication instructions.",
     "บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง":"Could not save. Please try again."
   });
+  Object.assign(EN_FROM_TH, {
+    "พักโปรแกรม":"Program paused",
+    "กลับมารักษาต่อ":"Resume treatment program",
+    "กลับมารักษาต่อ?":"Resume this treatment program?",
+    "ยืนยันกลับมารักษาต่อ":"Confirm resume",
+    "เมื่อพักโปรแกรม นัดติดตามครั้งถัดไปจะถูกยกเลิก":"Pausing cancels the next follow-up appointment.",
+    "โปรแกรมจะกลับมาใช้งาน นัดที่ยกเลิกไปแล้วต้องนัดหมายใหม่":"The program will become active. Cancelled appointments must be booked again."
+  });
+  Object.assign(EN_FROM_TH, {
+    "ยืนยันนัดติดตามกับแพทย์เจ้าของเคสเพื่อกลับมารักษาต่อ":"Confirm a follow-up with your doctor to resume the program.",
+    "เลือกเวลาอื่น":"Choose another time",
+    "ยืนยันนัด":"Confirm appointment",
+    "ไม่มีเวลาว่างในวันที่เลือก":"No available times on this date",
+    "กรุณาเลือกเวลานัดใหม่":"Please choose a new appointment time"
+  });
   var EN = {}, TH_FROM_EN = {};
   /* TH is the English-source table: English key, Thai value. Its Thai side is a
      perfectly good Thai -> English pair too, and for years it was not being used
@@ -2509,6 +2524,7 @@
      cannot cover every value they can show. These keep the number and swap the
      words around it. */
   var EN_PATTERNS = [
+    [/^ปรึกษาวันที่ (.+)$/, "Consultation on $1"],
     [/^((?:RC|MC|RX)-[\d-]+) · ผมร่วง$/, "$1 · Hair loss"],
     [/^((?:RC|MC|RX)-[\d-]+) · รักษาโรคอ้วน$/, "$1 · Obesity treatment"],
     [/^ปรึกษาครั้งที่ (\d+)$/, "Consultation $1"],
