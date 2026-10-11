@@ -39,7 +39,7 @@
         '<path d="' + outer + '" fill="currentColor" stroke="none" mask="url(#' + maskId + ')"/></svg>';
     } else {
       var detail = name === 'house'
-        ? '<path d="M4.3 10.5 12 4.7l7.7 5.8M9.8 21.5v-6.1a2.2 2.2 0 0 1 4.4 0v6.1"/>'
+        ? '<path d="M9.8 21.5v-6.1a2.2 2.2 0 0 1 4.4 0v6.1"/>'
         : '<path d="M3.2 7.35 12 11.85l8.8-4.5M12 11.85v9.35"/>';
       node.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon--md nav-icon--paired" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
         '<path d="' + outer + '" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>' +
