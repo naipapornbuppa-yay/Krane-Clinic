@@ -1189,7 +1189,7 @@
 #settings .screen__body .chev { color: #395aa4; }
 </style>
 <link rel="stylesheet" href="treatment-folders.css?v=20261011-refill-shared-folder">
-<link rel="stylesheet" href="modal-chrome.css?v=20261011-canvas">
+<link rel="stylesheet" href="modal-chrome.css?v=20261011-choice-cards">
 </head>
 <body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="krane-folder-pocket" clipPathUnits="objectBoundingBox"><path d="M0 .09 C0 .035 .02 0 .055 0 H.21 C.24 0 .255 .015 .275 .04 C.295 .065 .305 .07 .335 .07 H.94 C.978 .07 1 .105 1 .16 V.91 C1 .965 .978 1 .94 1 H.06 C.022 1 0 .965 0 .91 Z"/></clipPath><symbol id="krane-delivery-motorcycle" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></symbol><symbol id="krane-delivery-truck" viewBox="0 0 24 24"><path d="M1 3h14v14H1zM15 8h4l3 4v5h-7"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/></symbol></defs></svg>
@@ -2727,7 +2727,7 @@
             <!-- The stage the order is at belongs beside the label it qualifies,
                  not under the time as a second sentence (client, 29 Sep). -->
             <span class="delivery-eta__head-end">
-              <span class="delivery-eta__state" data-delivery-eta-state>ร้านยากำลังจัดยา</span>
+              <span class="delivery-eta__state" data-delivery-eta-state>กำลังจัดยา</span>
               <button class="delivery-eta__rider" type="button" data-rider-locate><i data-lucide="map-pin" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>ดูตำแหน่ง</span></button>
             </span>
           </div>
@@ -13339,9 +13339,9 @@
      advances it. Steps before the active one are done, the active one runs, and
      everything after it waits. */
   const ORDER_STAGES={
-    'Order received':   {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
-    'Pharmacy accepted':{active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
-    'Preparing':        {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'ร้านยากำลังจัดยา'},
+    'Order received':   {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'กำลังจัดยา'},
+    'Pharmacy accepted':{active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'กำลังจัดยา'},
+    'Preparing':        {active:'prepared',label:'กำลังจัดยา',tone:'progress',note:'กำลังจัดยา'},
     'Rider pickup':     {active:'out',label:'กำลังจัดส่ง',tone:'active',note:'กำลังจัดส่ง'},
     'Dispatched':       {active:'out',label:'กำลังจัดส่ง',tone:'active',note:'กำลังจัดส่ง'},
     'Delivered':        {active:null,label:'จัดส่งสำเร็จ',tone:'done',note:'จัดส่งสำเร็จแล้ว'}
@@ -13606,7 +13606,7 @@
     /* The card is scanned, not read: one clause each. */
     if(state){
       state.textContent=delivered
-        ? 'จัดส่งสำเร็จแล้ว'
+        ? 'จัดส่งสำเร็จ'
         : pickup
           ? 'รับยาได้ที่ร้าน'
           : outForDelivery
@@ -13614,7 +13614,7 @@
             : orderFulfilmentStatus()==='Rider pickup'
               ? 'กำลังจัดส่ง'
             : preparing
-              ? 'ร้านยากำลังจัดยา'
+              ? 'กำลังจัดยา'
               : 'กำลังจัดส่ง';
     }
     if(windowEl) windowEl.textContent=delivered ? clockStamp(new Date(flowState.orderState.deliveredAt || Date.now())) : deliveryArrivalWindow();
