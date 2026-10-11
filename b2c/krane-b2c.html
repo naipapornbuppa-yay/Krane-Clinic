@@ -5108,9 +5108,27 @@
   document.addEventListener('change',event => {
     if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id)){
       syncAddressMapCascade(event.target.id);
+      commitManualAddress();
       persistAddressSearchDraft();
+      syncMapFromAddressFields();
     }
   });
+  let manualMapRequest=0;
+  async function syncMapFromAddressFields(){
+    const token=++manualMapRequest;
+    ++osmReverseToken;
+    const values=ADDRESS_MAP_CASCADE_IDS.map(id=>document.getElementById(id)?.value || '');
+    if(!values[0])return;
+    const results=await osmSearch([...values.slice(0,3).reverse(),values[3],'ประเทศไทย'].filter(Boolean).join(' '));
+    if(token!==manualMapRequest)return;
+    const place=results?.find(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+    if(!place){showActionToast('ยังค้นหาตำแหน่งบนแผนที่ไม่ได้ กรุณาลองอีกครั้งหรือเลือกจุดบนแผนที่','warning');return;}
+    Object.assign(osmView,{lat:place.lat,lon:place.lon,zoom:values[2]?15:values[1]?12:9});
+    flowState.addressDraft={...deliveryAddressDraft(),lat:place.lat,lon:place.lon};
+    persistFlowState();
+    renderAddressPinPreview();
+    if(addressPicker?.open)renderOsmTiles();
+  }
   function resizeAddressMapQuery(){
     const query=document.getElementById("addressMapQuery");
     if(!query || !query.clientWidth)return;
@@ -7166,6 +7184,10 @@
   }
 
   function applyAddress(place){
+    if(Number.isFinite(place.lat)&&Number.isFinite(place.lon)){
+      ++manualMapRequest;
+      Object.assign(osmView,{lat:place.lat,lon:place.lon});
+    }
     delete flowState.addressSearchDraft;
     const before=deliveryAddressDraft();
     simState.picked=true;
@@ -7183,7 +7205,9 @@
       building:place.building || '', floor:place.floor || before.floor || '',
       line:place.line || '', subdistrict:place.subdistrict || '',
       districtName:place.districtName || '', province:place.province || '',
-      postcode:place.postcode || '', district:place.district || ''};
+      postcode:place.postcode || '', district:place.district || '',
+      lat:place.lat ?? before.lat,lon:place.lon ?? before.lon};
+    if(Number.isFinite(place.lat)&&Number.isFinite(place.lon)){hydrateAddressMapSearch();renderAddressPinPreview();}
     persistFlowState();
     syncFieldClearButtons();
   }
