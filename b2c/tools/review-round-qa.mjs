@@ -13,6 +13,8 @@ try{
 await test('shared-health-lifestyle',async p=>{
  for(const entry of ['partner','direct']){
  await open(p,'intake-general',entry);
+ assert(await p.locator('[data-general-health-hint]').isVisible());
+ assert.equal(await p.locator('[data-general-health-submit]').textContent(),'ยืนยันข้อมูลและดำเนินการต่อ');
  for(const field of ['intake-smoking','intake-alcohol']){
  const select=p.locator('#'+field);assert(await select.locator('..').isVisible());
  await select.selectOption('2',{force:true});assert.equal(await select.inputValue(),'2');

@@ -1487,7 +1487,7 @@
   <section class="screen" id="intake-general">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl"><span class="ttl__text" data-general-health-title>ซักประวัติ</span></span><div class="grow"><div class="progress"><span style="width:100%"></span></div></div></div>
     <div class="screen__body partner-health-compact shared-health-intake">
-      <div class="stack-2"><h2 class="h1">ยืนยันข้อมูลสุขภาพ</h2><p class="hint" data-direct-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
+      <div class="stack-2"><h2 class="h1">ยืนยันข้อมูลสุขภาพ</h2><p class="hint" data-general-health-hint hidden>ตรวจสอบและอัปเดตข้อมูลนี้ก่อนพบแพทย์ทุกครั้ง เพื่อให้แพทย์เห็นข้อมูลล่าสุดของคุณ</p></div>
       <!-- Client, 22 Sep: no white container here. Every other questionnaire page
            puts its fields straight on the page; this was the only one in a card. -->
       <div class="partner-health-card">
@@ -8387,11 +8387,11 @@
     const generalHealth=document.getElementById('intake-general');
     if(generalHealth) generalHealth.dataset.entryChannel=flowState.entryChannel;
     const title=document.querySelector('#intake-general [data-general-health-title]');
-    const hint=document.querySelector('#intake-general [data-direct-general-health-hint]');
+    const hint=document.querySelector('#intake-general [data-general-health-hint]');
     const submit=document.querySelector('#intake-general [data-general-health-submit]');
-    if(title) title.textContent=assignedDoctorFlow ? 'ยืนยันข้อมูลสุขภาพ' : (direct ? 'ก่อนพบแพทย์' : 'ซักประวัติ');
-    if(hint) hint.hidden=!direct;
-    if(submit) submit.textContent=direct ? 'ยืนยันข้อมูลและเข้าห้องรอ' : 'ยืนยันข้อมูลและดำเนินการต่อ';
+    if(title) title.textContent='ยืนยันข้อมูลสุขภาพ';
+    if(hint) hint.hidden=false;
+    if(submit) submit.textContent='ยืนยันข้อมูลและดำเนินการต่อ';
     const safetyTitle=document.getElementById('health-history-title');
     if(safetyTitle) safetyTitle.textContent=partner ? 'ยืนยันข้อมูลความปลอดภัย' : 'ยืนยันข้อมูลส่วนตัวและสุขภาพ';
     const safetyIntro=document.querySelector('[data-partner-safety-intro]');
@@ -10189,7 +10189,7 @@
       const followUpDetour=flowState.followUpDirectToWaitroom
         && ownerScreen
         && ownerScreen.id==='intake-general';
-      cj.hidden=flowState.entryChannel==='partner' || coldAuth || refillDetour || followUpDetour;
+      cj.hidden=(flowState.entryChannel==='partner' && ownerScreen.id!=='intake-general') || coldAuth || refillDetour || followUpDetour;
     });
     syncCareJourneyFill(id);
     if(id==='patient-info') syncPatientInfoPrefill();
