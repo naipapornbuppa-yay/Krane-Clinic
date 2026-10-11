@@ -129,6 +129,18 @@ await test('activity-order-cards-no-progress',async p=>{
  await p.locator('[data-activity-filter="program"]').click();assert(await p.locator('#activity [data-activity-type="program"]').first().isVisible());
 });
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
+await test('glass-folder-motion',async p=>{
+ for(const width of [390,890]){
+ await p.setViewportSize({width,height:1000});await open(p,'profile');
+ const card=p.locator('#profile .treatment-card').first();await card.scrollIntoViewIfNeeded();
+ await p.screenshot({path:output+'/glass-folder-'+width+'.png'});
+ await card.click();assert(await p.locator('#profile .treatment-folder.is-opening').isVisible());
+ await p.locator('#treatment-detail.active').waitFor();
+ }
+ await p.emulateMedia({reducedMotion:'reduce'});await open(p,'profile');
+ await p.locator('#profile .treatment-card').first().click();await p.locator('#treatment-detail.active').waitFor();
+ assert.equal(await p.locator('.treatment-folder.is-opening').count(),0);
+});
 await test('treatment-folder-latest',async p=>{
  await open(p,'profile');const folders=p.locator('#profile .treatment-folder');assert.equal(await folders.count(),4);
  const counts=await folders.evaluateAll(es=>es.map(e=>Number(e.dataset.visitCount)));assert.deepEqual(counts,[6,4,2,1]);

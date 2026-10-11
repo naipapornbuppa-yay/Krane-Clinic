@@ -41,6 +41,18 @@
    other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row';button.textContent='ปรึกษาครั้งที่ '+visit.number+(visit.treatmentDate?' · '+visit.treatmentDate:'')+'  ›';button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
    certificate.after(history);
   });
+  let opening=false, replay=false;
+  card.addEventListener('click',event=>{
+   if(replay || !document.querySelector('#profile.active') || matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+   event.preventDefault();event.stopImmediatePropagation();
+   if(opening)return;
+   opening=true;folder.classList.add('is-opening');card.setAttribute('aria-busy','true');
+   setTimeout(()=>{
+    folder.classList.remove('is-opening');card.removeAttribute('aria-busy');opening=false;
+    if(!document.querySelector('#profile.active'))return;
+    replay=true;card.click();replay=false;
+   },480);
+  },true);
   folder.selectLatest=()=>select(visits.length-1);
   select(visits.length-1);
  }
