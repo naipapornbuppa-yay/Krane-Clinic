@@ -122,15 +122,15 @@ only when the client asks for it, and the reason goes in the commit message.
 
 ## 7. Reviews
 
-- **One review, after the medicine arrives** (`#csat-modal`), rating three
-  things: the doctor's advice, the app, and the video/sound quality. It fires
+- **One review, after the medicine arrives** (`#csat-modal`), rating four
+  things in order: waiting time, combined video/audio quality, the doctor, and overall satisfaction (client, 11 October). It fires
   when the patient confirms receipt on the Delivered step. The two-point split
   tried on 18 Aug was dropped on 19 Aug; the trigger moved off payment on
   20 Aug, because the review asks about the whole thing and at payment half of
   it has not happened yet.
 - **It can be closed.** The order is already complete by then, so the review is
   a request, not a gate: the scrim and "ไว้ทีหลัง" both dismiss it. Submitting
-  still needs all three rows — a partial rating is not a review.
+  still needs all four rows — a partial rating is not a review.
 - Never ask about something that has not happened yet.
 
 ## 8. Language
@@ -313,8 +313,7 @@ else (client, 23 Aug):
 - A booked consultation ends on its own confirmation, **not the waiting room**.
 - The booking screen is two single choices then a commit, so it keeps its CTA
   (rule 1), and the CTA reads back the time about to be booked. Changing the day
-  clears the time — a slot free today may be taken tomorrow. Taken slots stay
-  visible and struck through so the day does not look emptier than it is.
+  clears the time — a slot free today may be taken tomorrow. Unavailable slots are hidden (client, 11 October). Each hour has its own row, with available times packed from the left and no empty columns.
 
 ## 13. Sign-up
 

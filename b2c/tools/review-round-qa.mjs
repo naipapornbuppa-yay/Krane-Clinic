@@ -10,6 +10,21 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('english-current-ui',async p=>{
+ await open(p,'profile');await p.evaluate(()=>kraneSetLang(false));await p.waitForTimeout(300);
+ const missing=await p.evaluate(async()=>{
+ const found=new Set();const collect=root=>{
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
+ while(n=walker.nextNode()){if(['SCRIPT','STYLE','NOSCRIPT'].includes(n.parentElement?.tagName)||!n.parentElement?.getClientRects().length)continue;const t=n.textContent.trim();if(/[ก-฾เ-๛]/.test(t))found.add(t);}
+ root.querySelectorAll('[aria-label],[placeholder]').forEach(e=>{for(const k of ['aria-label','placeholder']){const t=e.getAttribute(k)||'';if(/[ก-฾เ-๛]/.test(t))found.add(t);}});
+ };
+ for(const m of document.querySelectorAll('.modal-layer'))m.hidden=false;
+ collect(document.body);
+ for(const screen of document.querySelectorAll('section.screen')){document.querySelectorAll('.screen.active').forEach(e=>e.classList.remove('active'));screen.classList.add('active');await new Promise(r=>setTimeout(r,80));collect(screen);}
+ return [...found];
+ });
+ await writeFile(output+'/untranslated.json',JSON.stringify(missing,null,2));assert.deepEqual(missing,[]);
+});
 await test('status-help-consistency',async p=>{
  for(const width of [390,890]){
  await p.setViewportSize({width,height:900});

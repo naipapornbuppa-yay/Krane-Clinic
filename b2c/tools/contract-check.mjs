@@ -91,7 +91,7 @@ const railAudit = await app.evaluate(() => {
   const groups = [...document.querySelectorAll('#prototype-rail > .rail-group')];
   return {
     missing:screens.filter(id => !links.includes(id)),
-    stale:links.filter(id => !screens.includes(id)),
+    stale:links.filter(id => !screens.includes(id) && !(id === 'feedback' && document.querySelector('#csat-modal'))),
     duplicates:links.filter((id, index) => links.indexOf(id) !== index),
     groups:groups.length,
     openGroups:groups.filter(group => group.open).length,

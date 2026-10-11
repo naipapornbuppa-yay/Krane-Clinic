@@ -2457,6 +2457,26 @@
   "เพื่อนได้ส่วนลดค่าปรึกษาแพทย์ 150 บาท": "Your friend gets 150 baht off their consultation",
   "คุณได้เครดิตค่ายา 150 บาท หลังเพื่อนปรึกษาสำเร็จ": "You get 150 baht in medicine credit after your friend completes a consultation"
 });
+  Object.assign(EN_FROM_TH, {
+    "ระยะเวลารอพบแพทย์":"Waiting time to see the doctor",
+    "คุณภาพวีดีโอและเสียง":"Video and audio quality",
+    "โรคผู้ชาย":"Men’s health",
+    "เลขบัตรประชาชน":"National ID number",
+    "ไม่มีนัดติดตาม":"No follow-up scheduled",
+    "ชำระเงินด้วยวิธีไหน":"How would you like to pay?"
+  });
+  Object.assign(EN_FROM_TH, {
+    "รับคำสั่งซื้อแล้ว · ส่งภายในวัน":"Order received · Same-day delivery",
+    "รับคำสั่งซื้อแล้ว · ไปรษณีย์":"Order received · Postal delivery",
+    "ร้านยายืนยันรายการแล้ว · ส่งภายในวัน":"Pharmacy confirmed · Same-day delivery",
+    "ร้านยายืนยันรายการแล้ว · ไปรษณีย์":"Pharmacy confirmed · Postal delivery",
+    "กำลังจัดยา · ส่งภายในวัน":"Preparing medicine · Same-day delivery",
+    "กำลังจัดยา · ไปรษณีย์":"Preparing medicine · Postal delivery",
+    "กำลังจัดส่ง · ส่งภายในวัน":"Out for delivery · Same-day delivery",
+    "กำลังจัดส่ง · ไปรษณีย์":"Out for delivery · Postal delivery",
+    "จัดส่งสำเร็จ · ส่งภายในวัน":"Delivered · Same-day delivery",
+    "จัดส่งสำเร็จ · ไปรษณีย์":"Delivered · Postal delivery"
+  });
   var EN = {}, TH_FROM_EN = {};
   /* TH is the English-source table: English key, Thai value. Its Thai side is a
      perfectly good Thai -> English pair too, and for years it was not being used
@@ -2479,6 +2499,9 @@
      cannot cover every value they can show. These keep the number and swap the
      words around it. */
   var EN_PATTERNS = [
+    [/^((?:RC|MC|RX)-[\d-]+) · ผมร่วง$/, "$1 · Hair loss"],
+    [/^((?:RC|MC|RX)-[\d-]+) · รักษาโรคอ้วน$/, "$1 · Obesity treatment"],
+    [/^ปรึกษาครั้งที่ (\d+)$/, "Consultation $1"],
     [/^ตรวจสอบสิทธิ์และชำระ (฿\s?[\d,]+)$/, "Check cover and pay $1"],
     [/^ครอบคลุม (฿\s?[\d,]+)$/, "$1 covered"],
     [/^สูงสุด (฿\s?[\d,]+)$/, "Up to $1"],
