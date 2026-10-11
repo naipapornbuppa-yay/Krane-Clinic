@@ -15,6 +15,15 @@
   tabs.setAttribute('aria-hidden','true');
   card.before(folder);folder.append(tabs,card);card.id='treatment-folder-'+card.dataset.category;
   folder.dataset.visitCount=visits.length;
+  const outlineId='folder-outline-'+card.dataset.category;
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width','0');svg.setAttribute('height','0');svg.style.position='absolute';svg.setAttribute('aria-hidden','true');
+  svg.innerHTML='<defs><clipPath id="'+outlineId+'" clipPathUnits="userSpaceOnUse"><path/></clipPath></defs>';folder.append(svg);
+  card.style.setProperty('--pocket-outline','url(#'+outlineId+')');
+  const redraw=()=>{const w=card.offsetWidth,h=card.offsetHeight+14,r=22,t=Math.min(100,w*.24),y=14;
+   svg.querySelector('path').setAttribute('d',`M0 ${r} Q0 0 ${r} 0 H${t-20} C${t} 0 ${t} ${y} ${t+20} ${y} H${w-r} Q${w} ${y} ${w} ${y+r} V${h-r} Q${w} ${h} ${w-r} ${h} H${r} Q0 ${h} 0 ${h-r} Z`);};
+  new ResizeObserver(redraw).observe(card);redraw();
+
   const depth=Math.min(visits.length,4);
   folder.style.setProperty('--folder-depth',depth);
   for(let layer=depth;layer>0;layer--){const sheet=document.createElement('i');sheet.className='treatment-folder__sheet';sheet.style.setProperty('--layer',layer);sheet.setAttribute('aria-hidden','true');folder.prepend(sheet);}
