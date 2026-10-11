@@ -117,9 +117,11 @@ await test('notification-icon-colors',async p=>{
  }
  }
 });
-await test('activity-no-obsolete-orders',async p=>{
- await open(p,'activity');assert.equal(await p.locator('#activity [data-activity-type="order"]').count(),0);
- await p.locator('[data-activity-filter="order"]').click();assert(await p.locator('[data-activity-empty]').isVisible());
+await test('activity-order-cards-no-progress',async p=>{
+ await open(p,'activity');assert.equal(await p.locator('#activity [data-activity-type="order"]').count(),5);
+ assert.equal(await p.locator('#activity .order-progress').count(),0);
+ await p.locator('[data-activity-filter="order"]').click();assert.equal(await p.locator('#activity [data-activity-type="order"]:visible').count(),5);
+ assert.equal(await p.locator('[data-activity-empty]').isVisible(),false);
  await p.locator('[data-activity-filter="program"]').click();assert(await p.locator('#activity [data-activity-type="program"]').first().isVisible());
 });
 await test('feedback-route-sheet',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?screens=1&fresh=1#feedback`);await p.locator('#tracking.active').waitFor();await p.locator('#csat-modal:not([hidden])').waitFor();assert.equal(await p.locator('#csat-modal .rating-row').count(),4);assert.equal(await p.locator('section#feedback').count(),0);});
