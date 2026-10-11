@@ -1784,7 +1784,6 @@
       <div class="stack-2">
         <span class="section-label">เลือกเวลา</span>
         <div class="appointment-slots" role="radiogroup" aria-label="เลือกเวลา" data-appointment-slots></div>
-        <p class="hint appointment-slots__empty" data-appointment-empty hidden>ไม่มีเวลาว่างในวันนี้ กรุณาเลือกวันอื่น</p>
       </div>
 
     </div>
@@ -9079,12 +9078,10 @@
       const [hour,minute]=appointmentSlot.split(':').map(Number);
       if(appointmentSlotUnavailable(hour*60+minute,dayIndex,now)) appointmentSlot='';
     }
-    let availableInPeriod=0;
     const slots=[];
     for(let minutes=540;minutes<1440;minutes+=15){
       const unavailable=appointmentSlotUnavailable(minutes,dayIndex,now);
       if(unavailable) continue;
-      availableInPeriod++;
       const time=appointmentTime(minutes);
       // Split the visible digits so the page translator cannot turn a bare
       // "21:00" into "21:00 น." while the canonical value stays HH:mm.
@@ -9092,11 +9089,6 @@
       slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
     }
     grid.innerHTML=slots.join('');
-    const empty=scr.querySelector('[data-appointment-empty]');
-    if(empty){
-      empty.hidden=availableInPeriod>0;
-      empty.textContent=thai ? 'ไม่มีเวลาว่างในวันนี้ กรุณาเลือกวันอื่น' : 'No available times on this day. Please choose another day.';
-    }
     syncAppointment();
   }
   function syncAppointment(){

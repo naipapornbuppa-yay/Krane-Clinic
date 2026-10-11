@@ -8,4 +8,4 @@
 - Service window: 09:00–24:00, every 15 minutes; last start 23:45.
 - Hide occupied starts and starts less than 15 minutes away today. Prototype occupancy is deterministic mock data; production must use backend availability and revalidate at confirmation.
 - Changing day clears the selected time. Confirmation stays disabled until an available time is selected.
-- If no starts remain, show “ไม่มีเวลาว่างในวันนี้ กรุณาเลือกวันอื่น”; keep confirmation disabled. Initial entry defaults to tomorrow when today's service window has ended.
+- If no starts remain, leave the time grid empty with no helper message; keep date selection available and confirmation disabled. Initial entry defaults to tomorrow when today's service window has ended.
