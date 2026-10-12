@@ -33,6 +33,8 @@ Run `npm run check:strings`. Do not rename or delete stable/retired IDs to clean
 - These checks do not prove external sites remain available, JavaScript-generated URLs are all reachable, every PDF is visually correct, or every component is behaviorally identical. Refer to individual QA reports for browser behavior and visual evidence.
 - ZIP was generated with `git archive`: tracked code/assets/documents only; no node_modules or browser session data.
 
+The full B2C UI contract was rerun against this handoff snapshot on 12 October: **170 checks passed** (62 screens, 45 components, 5 flows, 33 rules). This validates the declared contracts, not complete string-ID wiring or a single shared component architecture.
+
 ## Consolidation work still needed
 
 1. Extract a single token source with explicit patient/CMS themes; migrate consumers incrementally with visual regressions.
