@@ -1,4 +1,4 @@
-# Krane Clinic — ชุดส่งต่อพี่ทิน
+# Krane Clinic — ชุดส่งต่อBE DEV
 
 ชุดส่งต่อนี้แยกจาก branch เว็บที่เผยแพร่ ใช้โค้ดจาก `3b667fb` (11 ตุลาคม 2026) พร้อมเอกสารและ QA ล่าสุด
 
@@ -34,7 +34,7 @@ Landing page ยัง WIP ไม่ใช่งานที่อนุมั�
 
 ## อ่านก่อนเริ่มพัฒนา
 
-1. [สรุปส่งต่อและรายการงานค้าง](HANDOFF-THIN.md)
+1. [สรุปส่งต่อและรายการงานค้าง](HANDOFF-BE-DEV.md)
 2. [Developer start here](b2c/handoff/START-HERE.md)
 3. [พฤติกรรมล่าสุด — ใช้ทับคำอธิบายเก่าที่ขัดกัน](b2c/handoff/LATEST-B2C-HANDOFF.md)
 4. [Flow intake / partner / direct](b2c/handoff/INTAKE-FLOWS.md)
@@ -44,7 +44,7 @@ Landing page ยัง WIP ไม่ใช่งานที่อนุมั�
 
 ## สถานะการส่งมอบ
 
-นี่คือ **frontend prototype + developer handoff** ไม่ใช่ production medical system ข้อมูลคนไข้/OTP/ยา/การชำระเงินใน demo เป็น fixtures; browser storage ไม่ใช่ backend หรือระบบตรวจสิทธิ์ อ่านข้อจำกัดและงานค้างใน HANDOFF-THIN.md ก่อนต่อ API
+นี่คือ **frontend prototype + developer handoff** ไม่ใช่ production medical system ข้อมูลคนไข้/OTP/ยา/การชำระเงินใน demo เป็น fixtures; browser storage ไม่ใช่ backend หรือระบบตรวจสิทธิ์ อ่านข้อจำกัดและงานค้างใน HANDOFF-BE-DEV.md ก่อนต่อ API
 
 ไม่มี credentials และไม่มี node_modules ใน ZIP ใช้ข้อมูลสมมติสำหรับ QA เท่านั้น
 
