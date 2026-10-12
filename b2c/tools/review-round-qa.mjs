@@ -29,6 +29,8 @@ await test('pause-program-persistence',async p=>{
  assert.equal(await p.locator('#profile .treatment-folder').last().locator('.treatment-card').getAttribute('data-category'),'weight');
  await p.locator('#treatment-pause-action').click();await modal.waitFor({state:'visible'});
  assert(await modal.locator('#resume-program-time option').count()>0);
+ await modal.locator('.program-resume-art img').evaluate(img=>img.decode());
+ await p.waitForTimeout(300);await modal.locator('.modal-dialog').screenshot({path:output+`/resume-modal-${width}.png`});
  await modal.locator('[data-resume-change]').click();await modal.locator('#resume-program-time').selectOption({index:1});
  await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'paused');
  await p.locator('#treatment-pause-action').click();await modal.locator('[data-treatment-pause-confirm]').click();
