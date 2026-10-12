@@ -1,3 +1,5 @@
+> **Current handoff scope — 13 October 2026:** B2C patient app only. Landing is included as **WIP**, not accepted/final. **Doctor and Admin portals are not part of this handoff; coming later.** Any portal files or older cross-surface descriptions below are historical reference only. No backend integration is included.
+
 # Cross-surface integration matrix
 
 Source inspection: 10 October 2026. This document describes the browser prototype and proposes responsibilities for the future API; it does not assert that an API exists or that every flow passed QA.

@@ -17,6 +17,8 @@
   if(scrim)scrim.addEventListener('click',()=>{if(oldClose)oldClose.click();else queueMicrotask(()=>{layer.hidden=true;layer.setAttribute('aria-hidden','true');if(!document.querySelector('.modal-layer:not([hidden])'))document.body.classList.remove('modal-open');});});
   layer.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();dismiss();}});
  }
- function scan(){document.querySelectorAll('.modal-layer').forEach(mount)}
+ function scan(){document.querySelectorAll('.modal-layer').forEach(mount);
+  document.querySelectorAll('.modal-dialog__actions .btn--ghost').forEach(button=>{button.classList.remove('btn','btn--ghost');button.classList.add('textlink');});
+ }
  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});scan();
 })();

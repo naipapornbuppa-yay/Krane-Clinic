@@ -60,8 +60,9 @@ only when the client asks for it, and the reason goes in the commit message.
   Rounded rectangle, never a pill. Pills are for statuses only (`.live-pill`, chips).
 - Primary height is `--control-h`; the same button reads the same on landing, home,
   intake and checkout.
-- **Dialog and sheet actions stack:** primary full width on top, the way out full width
-  under it. Never side by side — Thai labels wrap.
+- **Dialog and sheet actions stack:** primary full width on top, with a centered text link
+  for back/cancel below it. Use the shared neutral close icon; only mobile sheets show
+  the drag handle. Live dialogs and review previews use the same chrome.
 - A blocked primary says *why* in its own label ("เลือกที่อยู่ก่อน"), it does not just grey out.
 - **A blocked primary is still tappable, and the tap answers it.** `disabled`
   swallows the click, so the one thing a stuck patient tries does nothing.

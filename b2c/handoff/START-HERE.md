@@ -1,3 +1,5 @@
+> **Current handoff scope — 13 October 2026:** B2C patient app only. Landing is included as **WIP**, not accepted/final. **Doctor and Admin portals are not part of this handoff; coming later.** Any portal files or older cross-surface descriptions below are historical reference only. No backend integration is included.
+
 # Developer start here — Krane frontend handoff
 
 **Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.

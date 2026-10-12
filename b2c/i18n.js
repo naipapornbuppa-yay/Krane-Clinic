@@ -7,6 +7,10 @@
    ============================================================ */
 (function () {
   var TH = {
+    "Request a refill review": "ขอให้แพทย์ทบทวนการเติมยา",
+    "Choose a prescription file": "เลือกไฟล์ใบสั่งยา",
+    "Prescription review requests": "คำขอทบทวนใบสั่งยา",
+    "No requests yet": "ยังไม่มีคำขอ",
     /* Written in English in the markup and again by the script, so Thai mode
      left the whole sentence in English. No rule catches English stranded in
      Thai — the contract only checks the other direction. */
@@ -2498,6 +2502,7 @@
   Object.assign(EN_FROM_TH, {
     "ยืนยันนัดติดตามกับแพทย์เจ้าของเคสเพื่อกลับมารักษาต่อ":"Confirm a follow-up with your doctor to resume the program.",
     "เลือกเวลาอื่น":"Choose another time",
+    "แก้ไขวันและเวลานัด":"Edit appointment date and time",
     "ยืนยันนัด":"Confirm appointment",
     "ไม่มีเวลาว่างในวันที่เลือก":"No available times on this date",
     "กรุณาเลือกเวลานัดใหม่":"Please choose a new appointment time"

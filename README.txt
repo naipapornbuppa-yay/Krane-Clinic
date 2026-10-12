@@ -1,27 +1,27 @@
-KRANE CLIENT REVIEW PACKAGE
-Date: 19 July 2026
+# BE DEV handoff — B2C patient app
 
-วิธีเปิด
-1. ดาวน์โหลดไฟล์ ZIP ลงเครื่อง
-2. แตกไฟล์ ZIP ทั้งหมดก่อน ห้ามเปิด HTML จากหน้าตัวอย่างของ Google Drive หรือโปรแกรมแชต
-3. เปิดโฟลเดอร์ KRANE-CLIENT-REVIEW
-4. ดับเบิลคลิก index.html
-5. แนะนำให้ใช้ Chrome, Microsoft Edge หรือ Safari เวอร์ชันปัจจุบัน
+Updated 13 October 2026 from preview commit `cce758a`.
 
-ไฟล์ในโฟลเดอร์ต้องอยู่ด้วยกัน เพราะหน้า HTML ใช้รูป วิดีโอ CSS และ JavaScript จากโฟลเดอร์ assets และไฟล์ประกอบข้างเคียง
+## Scope
 
-จุดเริ่มต้นแนะนำ
-- Patient walkthrough: krane-b2c.html
-- Landing page: krane-b2c-landing.html
-- Doctor CMS: cms-doctor.html
-- Admin CMS: cms-admin.html
-- Doctor detail: doctor-detail.html
-- Advisor detail: advisor-detail.html
-- UI component inventory: ui-components.html
-- Brand book: krane-brand-book.html
+- **B2C patient app: included for frontend implementation.**
+- **Landing page: included, WIP; not final or accepted.**
+- **Doctor portal: coming later, still in development; excluded.**
+- **Admin portal: coming later, still in development; excluded.**
 
-ไฟล์นี้เป็น interactive prototype สำหรับ review flow, content และ component behavior ยังไม่ใช่ production system และไม่มีข้อมูลผู้ป่วยจริง
+Portal source retained in this repository is historical reference, not a deliverable. Do not implement or accept it from this branch. Current portal development remains separate.
 
-เอกสารสำหรับส่งต่องานให้ developer ใหม่: b2c/handoff/DEVELOPER-HANDOFF.md
-รายการข้อความและ string ID: b2c/handoff/STRING-ID-HANDOFF.md และ b2c/strings/README.md
-รายการ error/edge case: b2c/handoff/ERROR-EDGE-CASES.md
+## Start
+
+Run `python3 -m http.server 8000` from the repository root, then open:
+
+- [Patient app](b2c/krane-b2c.html): `/b2c/krane-b2c.html?screens=1&entry=partner#profile`
+- [Handoff changes and checks](HANDOFF-BE-DEV.md)
+- [B2C implementation guide](b2c/handoff/START-HERE.md)
+- [System map and string-ID boundaries](SYSTEM-MAP.md)
+
+Canonical patient UI: `b2c/krane-b2c.html` and the CSS/JS beside it. Root/public copies are compatibility/reference files, not alternate sources to edit.
+
+Shared `krane-clinical-*.js` files are required frontend demo dependencies. They use browser storage; they do not provide authentication, role enforcement, backend persistence, real appointments, payments, or signed documents.
+
+Install dev dependencies with `npm install`. Run `npm run check:ui` and `npm run check:strings`. Use `CHROMIUM_PATH` if testing with installed Chrome.

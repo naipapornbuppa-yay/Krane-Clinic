@@ -10,6 +10,57 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH});
 async function test(name,fn){if(process.argv[2]&&!name.includes(process.argv[2]))return;const context=await browser.newContext({viewport:{width:390,height:844}});context.setDefaultTimeout(6000);context.setDefaultNavigationTimeout(15000);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.equal(errors.length,0,errors.join('; '));results.push({name,status:'pass'});console.log('PASS',name)}catch(e){results.push({name,status:'fail',error:e.message});console.log('FAIL',name,e.message.slice(0,200));await page.screenshot({path:output+'/'+name+'.png',fullPage:true}).catch(()=>{})}finally{await context.close()}}
 async function open(p,id,entry='direct'){await p.goto(`${base}/b2c/krane-b2c.html?public=1&screens=1&fresh=1&entry=${entry}&demoStage=${id}#${id}`,{waitUntil:'domcontentloaded'});await p.locator('#'+id+'.active').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(700);}
 try{
+await test('modal-chrome-consistency',async p=>{
+ for(const width of [390,890]){
+ await p.setViewportSize({width,height:900});await open(p,'profile');
+ assert.equal(await p.locator('.modal-dialog__actions .btn--ghost').count(),0);
+ const live=p.locator('#waitroom-expired-modal');
+ await p.evaluate(()=>{const n=document.getElementById('waitroom-expired-modal');n.hidden=false;n.setAttribute('aria-hidden','false');});
+ assert(await live.locator('[data-waitroom-expired-home]').evaluate(el=>el.classList.contains('textlink')));
+ const expected=await live.locator('.shared-modal-close').evaluate(el=>getComputedStyle(el).color);
+ await live.locator('.shared-modal-close').click();assert(await live.isHidden());
+ const link=p.locator('[data-modal-preview="waitroom-expired-modal"]');await link.evaluate(el=>el.closest('details').open=true);
+ await p.evaluate(()=>{document.getElementById('csat-modal').hidden=false;});
+ await link.evaluate(el=>el.click());const preview=p.locator('.review-modal-preview[open]');await preview.waitFor();
+ assert.equal(await preview.locator('.review-modal-preview__close').evaluate(el=>getComputedStyle(el).color),expected);
+ assert.equal(await preview.locator('[data-waitroom-retry]').isDisabled(),false);
+ assert(await preview.locator('[data-waitroom-expired-home]').evaluate(el=>el.classList.contains('textlink')));
+ assert(await p.locator('#csat-modal').isHidden());
+ await p.waitForTimeout(250);await preview.screenshot({path:output+`/modal-consistency-${width}.png`});
+ await preview.locator('.review-modal-preview__close').click();await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ }
+});
+await test('toast-gallery',async p=>{
+ for(const width of [390,1280]){
+ await p.setViewportSize({width,height:900});await open(p,'profile');
+ await p.locator('[data-toast-gallery]').evaluate(el=>el.click());
+ const panel=p.locator('.review-toast-gallery');await panel.waitFor();
+ assert.equal(await panel.locator('.action-toast').count(),5);
+ assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth));
+ await p.waitForTimeout(2000);assert.equal(await panel.locator('.action-toast.is-visible').count(),5);
+ await panel.screenshot({path:output+`/toast-gallery-${width}.png`});
+ await p.locator('[data-modal-preview="refill-sheet"]').evaluate(el=>el.click());
+ assert.equal(await p.locator('.review-toast-gallery').count(),0);
+ assert.equal(await p.locator('.review-modal-veil').count(),1);
+ await p.locator('[data-toast-gallery]').evaluate(el=>el.click());
+ await p.locator('.review-toast-gallery .review-modal-preview__close').click();
+ await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ }
+});
+await test('modal-gallery-replaces-previous',async p=>{
+ await p.setViewportSize({width:1280,height:900});await open(p,'profile');
+ await p.evaluate(()=>{document.getElementById('csat-modal').hidden=false;});
+ const links=p.locator('[data-modal-preview]');
+ for(let i=0;i<await links.count();i++){
+  await links.nth(i).evaluate(el=>el.click());
+  assert.equal(await p.locator('.review-modal-veil').count(),1);
+  assert.equal(await p.locator('.review-modal-preview[open]').count(),1);
+  assert.equal(await p.locator('.modal-layer:not([hidden])').count(),0);
+ }
+ await p.locator('.review-modal-preview__close').click();
+ await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ assert.equal(await p.locator('.modal-layer:not([hidden])').count(),0);
+});
 await test('pause-program-persistence',async p=>{
  for(const width of [390,890]){
  await p.setViewportSize({width,height:900});await open(p,'profile');
@@ -18,7 +69,7 @@ await test('pause-program-persistence',async p=>{
  const action=p.locator('#treatment-pause-action');assert.equal(await action.innerText(),'พักโปรแกรมการรักษา');
  assert(await action.evaluate(e=>e.parentElement.matches('#treatment-detail > .screen__body') && !e.closest('.treatment-record') && e===e.parentElement.lastElementChild));
  await action.click();const modal=p.locator('#treatment-pause-modal');await modal.waitFor({state:'visible'});
- await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'active');
+ await modal.locator('.textlink[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'active');
  await action.click();await modal.locator('[data-treatment-pause-confirm]').click();await modal.waitFor({state:'hidden'});
  assert.equal(await card.getAttribute('data-program-state'),'paused');assert.equal(await p.locator('#treatment-pause-action').innerText(),'กลับมารักษาต่อ');
  assert.equal(await p.locator('#profile [data-followup-toast]').isVisible(),false);
@@ -29,8 +80,14 @@ await test('pause-program-persistence',async p=>{
  assert.equal(await p.locator('#profile .treatment-folder').last().locator('.treatment-card').getAttribute('data-category'),'weight');
  await p.locator('#treatment-pause-action').click();await modal.waitFor({state:'visible'});
  assert(await modal.locator('#resume-program-time option').count()>0);
- await modal.locator('[data-resume-change]').click();await modal.locator('#resume-program-time').selectOption({index:1});
- await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'paused');
+ await modal.locator('.program-resume-art img').evaluate(img=>img.decode());
+ await p.waitForTimeout(300);await modal.locator('.modal-dialog').screenshot({path:output+`/resume-modal-${width}.png`});
+ await modal.locator('[data-resume-change]').click();
+ const dayPicker=modal.locator('#resume-program-date').locator('..');await dayPicker.locator('.custom-select__trigger').click();await dayPicker.locator('[data-native-index="1"]').click();
+ const timePicker=modal.locator('#resume-program-time').locator('..');await timePicker.locator('.custom-select__trigger').click();assert(await timePicker.locator('.custom-select__option').count()>0);await timePicker.locator('[data-native-index="1"]').click();
+ assert((await timePicker.locator('.custom-select__value').innerText()).trim().length>0);
+ await modal.locator('.modal-dialog').screenshot({path:output+`/resume-edit-${width}.png`});
+ await modal.locator('.textlink[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'paused');
  await p.locator('#treatment-pause-action').click();await modal.locator('[data-treatment-pause-confirm]').click();
  assert.equal(await card.getAttribute('data-program-state'),'active');
  const saved=await p.evaluate(()=>JSON.parse(localStorage.getItem('krane.paused-programs.v1')).weight);assert(saved.appointmentAt);assert(Date.parse(saved.appointmentAt)>Date.now());

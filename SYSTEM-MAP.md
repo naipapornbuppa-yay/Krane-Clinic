@@ -1,3 +1,5 @@
+> **Current handoff scope — 13 October 2026:** B2C patient app only. Landing is included as **WIP**, not accepted/final. **Doctor and Admin portals are not part of this handoff; coming later.** Any portal files or older cross-surface descriptions below are historical reference only. No backend integration is included.
+
 # BE DEV — source of truth and verification
 
 Verified 12 October 2026 against this handoff branch. **This is a structured prototype handoff, not a fully consolidated design system.** Do not assume identical names in different folders mean identical implementations.

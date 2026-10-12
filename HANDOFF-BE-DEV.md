@@ -1,48 +1,27 @@
-# ส่งต่อBE DEV — 11 ตุลาคม 2026
+# BE DEV — B2C update, 13 October 2026
 
-## สิ่งที่รวมมา
+> **Current handoff scope — 13 October 2026:** B2C patient app only. Landing is included as **WIP**, not accepted/final. **Doctor and Admin portals are not part of this handoff; coming later.** Any portal files or older cross-surface descriptions below are historical reference only. No backend integration is included.
 
-- Patient app: partner insurance/self-pay, direct intake, appointment, consultation, payment/address/tracking, activity/documents, notifications, CSAT, program pause/resume
-- Doctor portal: queue, preconsult, room/chat UI, SOAP, medicine search/editor + draft preview, prescribe/save/confirm, no-medicine/referral closeout, follow-ups, schedules/profile/audit
-- Admin portal: review prototype, local demo operations/settings/editorial tools; ขอบเขตการทำงานจริงดู integration matrix
-- Final brand assets, ตัวอย่าง PDF, UI contracts, status/message mapping และ QA evidence
+## Latest included changes
 
-## การเปลี่ยนแปลงล่าสุดที่ต้องรักษา
+- Shared neutral modal close icon and text-link back/cancel actions; mobile-only drag handles.
+- Design gallery opens only one modal at a time; closing never restores an older modal.
+- Toast gallery in the left review menu, with success, information, warning, error and long-message samples using app component styles.
+- Resume-treatment graphic contained within a circle; edit icon inside appointment card opens refreshed date/time controls.
+- B2C frontend clinical-state dependencies for demo chat, plan acceptance, prescription requests and program state. These remain browser-only and are not production integration.
 
-- แฟ้มหน้า home และ refill ใช้รูปทรงร่วมกัน กระดาษซ้อนกระจายไปทางขวามากขึ้น; หน้า home เป็น design reference
-- ยาทั้งหมดที่เติมได้ใน refill เป็น secondary CTA; ลบข้อความ helper เรื่องจำนวนยาจาก modal ตาม review
-- ใบสั่งยาใช้ pill icon; เอกสารการปรึกษาใช้ clipboard-list ตาม activity categories
-- Mobile bottom sheet มี drag bar; desktop ไม่มี; shared modal close behavior และ preview ในพื้นที่จอด้านขวา
-- ชื่อสถานะต้องตรงกับ progress เช่น กำลังจัดส่ง; ปุ่มดูตำแหน่งสูงเท่า status tag
-- นัดหมายเรียงเวลาที่มีจากซ้ายในแต่ละชั่วโมง
-- ประวัติเป็น “ปรึกษาวันที่…”; พักโปรแกรมอยู่กึ่งกลางล่างสุดนอกการ์ด; paused folder อยู่ท้ายรายการ
-- Resume เสนอเวลาจาก fixture ให้ยืนยันก่อนเปิด active; ยังไม่ใช่ doctor booking API
-- CSAT สี่หัวข้อ; ส่งเสร็จเปิด feedbackdone
-- Doctor medicine editor อยู่เหนือแชต: ค้นหา/เพิ่ม/ลบ/แก้จำนวนและวิธีใช้ → ส่ง snapshot ร่างเข้าแชต → ยังไม่เป็น order จน save/confirm
-- SOAP และ prescription drafts เก็บใน browser session, invalid Rx ถูกกั้น, allergy ในห้องใช้ข้อมูลที่แก้, แก้ follow-up แล้ว fixture ไม่เขียนทับ
+## Validation
 
-## ต้องทำต่อก่อน production
+- Fresh handoff-checkout UI contract run: all 170 checks passed (62 screens, 45 components, 5 flows, 33 rules).
+- Fresh string contract: 87 unique IDs and matching locale placeholders; 145 static local references checked with no missing target. Dynamic URLs and external links are outside this static check.
+- Targeted modal chrome, full gallery replacement, dismissal and preview tests passed.
+- Pause/resume persistence and CSAT dismissal/submission passed at mobile and desktop sizes.
+- Toast gallery: 390px and 1280px; five persistent samples, no horizontal overflow, modal/toast replacement and closing passed.
+- See `b2c/tools/review-round-qa.mjs` for reproducible checks.
+- This update does not claim a complete new portal audit or backend acceptance.
 
-1. Auth/RBAC และการผูก patient/encounter/doctor ฝั่ง server; ตอนนี้ doctor golden demo หนึ่งเคสเป็นหลัก
-2. Persist/version/conflict/retry สำหรับเวชระเบียน แชต และใบสั่งยา; ป้องกัน duplicate order ฝั่ง server
-3. ต่อ media/chat จริง พร้อม permission denied, no-show, reconnect, failed send และ delivery state
-4. ให้ทีมแพทย์/เภสัชยืนยัน structured prescription schema/catalog/clinical validation; fixture ไม่ใช่คำแนะนำรักษา
-5. ต่อ signing, audit log, certificate generation/revocation และเอกสารจริง
-6. นัดหมาย/availability/reservation และ pause/resume ข้าม patient-doctor; ไม่ใช้ local fixture เป็น source of truth
-7. Insurance eligibility, payment/webhooks/refund, shipping quote, stock และ pharmacy fulfillment จริง
-8. ปุ่มสาธิตบางส่วน เช่น reassign/send-link/time filters ต้องต่อ action จริง; อย่านับ toast หรือเปลี่ยนหน้าเป็น transaction สำเร็จ
-9. ตรวจ accessibility/keyboard/screen reader และ TH/EN ทั้งระบบก่อน acceptance; ยังไม่ผ่าน certification
+## Implementation boundaries
 
-## QA ที่มีหลักฐาน
+Use `b2c/UI-RULES.md`, the B2C contract and existing component files. String-ID inventories are references; not every runtime literal is bound to an ID (see SYSTEM-MAP.md). Backend appointments, clinical validation, auth, payments, fulfillment, document signing and notifications remain integration work.
 
-- [Night QA](b2c/handoff/QA-NIGHT-2026-10-11.md): B2C contract 170, chrome consistency 114 และ targeted suites ตามวันที่ระบุ เป็นผล ณ snapshot ในรายงาน ไม่ใช่การรันครบใหม่ในวันแพ็ก ZIP
-- [Doctor audit](cms/DOCTOR-UX-AUDIT-2026-10-11.md): route/render 50, action 13, lifecycle 10 ผ่าน; หมวดแรกรวม doctor/admin และไม่พิสูจน์ action
-- Doctor lifecycle 10 scenarios ตรวจซ้ำบนเว็บเผยแพร่ผ่านหลัง audit fixes: [หลักฐาน live](cms/evidence-doctor-audit/lifecycle-live.json)
-- [Pause/resume QA](b2c/handoff/QA-PROGRAM-PAUSE-2026-10-11.md)
-- [ข้อผิดพลาดและ integration boundaries](b2c/handoff/ERROR-EDGE-CASES.md)
-
-## วิธีใช้ชุดนี้
-
-เริ่มจาก README.md และ canonical paths เท่านั้น ZIP กับ branch เป็น snapshot เดียวกัน ไม่มี .git, node_modules, browser profile หรือข้อมูลจาก session ผู้ใช้ใน ZIP รหัส demo อยู่ใน source ตามลักษณะ prototype; ไม่ใช่ secret สำหรับระบบจริง
-
-โปรดอ่านเอกสาร latest ก่อนเอกสารประวัติเก่า รายงานเก่ามีไว้เป็นหลักฐาน ไม่ควรตีความว่า endpoint/auth/payment มีอยู่แล้ว
+Keep the existing repository link: this branch is updated in place. Doctor/Admin delivery will follow separately.
