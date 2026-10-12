@@ -34,6 +34,9 @@ Landing page ยัง WIP ไม่ใช่งานที่อนุมั�
 
 ## อ่านก่อนเริ่มพัฒนา
 
+เริ่มจาก [SYSTEM-MAP.md](SYSTEM-MAP.md) เพื่อดู canonical code, string-ID coverage, ผลตรวจ asset/link และข้อจำกัดของ component system ปัจจุบันยังเป็นสองระบบ B2C/CMS ไม่ใช่ shared library เดียวทั้งแอป
+
+
 1. [สรุปส่งต่อและรายการงานค้าง](HANDOFF-BE-DEV.md)
 2. [Developer start here](b2c/handoff/START-HERE.md)
 3. [พฤติกรรมล่าสุด — ใช้ทับคำอธิบายเก่าที่ขัดกัน](b2c/handoff/LATEST-B2C-HANDOFF.md)
