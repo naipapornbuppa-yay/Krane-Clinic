@@ -7,6 +7,10 @@
    ============================================================ */
 (function () {
   var TH = {
+    "Video call": "วิดีโอคอล",
+    "Prescription draft": "ร่างใบสั่งยา",
+    "Clinical notes": "บันทึกส่วนตัวแพทย์",
+    "Demo call · no recording": "การโทรสาธิต · ไม่มีการบันทึก",
     "Choose medicine for the patient": "เลือกยาให้ผู้ป่วย",
     "Search, add medicine, review directions and share a preview in chat": "ค้นหาและเพิ่มยา ตรวจวิธีใช้ แล้วส่งตัวอย่างให้ผู้ป่วยดูในแชต",
     "Search / add medicine": "ค้นหา / เพิ่มยา",

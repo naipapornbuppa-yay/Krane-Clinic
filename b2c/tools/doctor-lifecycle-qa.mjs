@@ -42,6 +42,11 @@ await p.goto(base+'/cms/cms-doctor.html#preconsult');await p.locator('[data-edit
 await test('edit invalidates saved prescription and duplicate confirm is ignored',async()=>{
 await p.goto(base+'/cms/cms-doctor.html#prescribe');await p.locator('[data-rx-save]').click();check(await p.locator('[data-order-open]').isEnabled(),'Valid draft not saved');await p.locator('[data-rx-rows] [data-rx-dir]').first().fill('QA revised directions');check(await p.locator('[data-order-open]').isDisabled(),'Edit did not invalidate save');await p.locator('[data-rx-save]').click();await p.locator('[data-order-open]').click();await p.evaluate(()=>{window.qaOrders=0;document.addEventListener('krane-doctor-order-created',()=>window.qaOrders++)});await p.locator('[data-order-confirm]').click();await p.locator('[data-order-confirm]').evaluate(el=>el.click());check(await p.evaluate(()=>window.qaOrders)===1,'Duplicate order event');
 });
+await test('workspace shortcuts focus the task without losing notes or route',async()=>{
+await p.goto(base+'/cms/cms-doctor.html#consult');await p.locator('#soap-s').fill('QA shortcut preserved');
+await p.locator('[data-workspace-jump=".composer"]').first().click();check(await p.locator('[data-selected-message]').evaluate(el=>el===document.activeElement),'Chat shortcut did not focus composer');
+await p.locator('[data-workspace-jump=".soap"]').click();check(await p.locator('#soap-s').evaluate(el=>el===document.activeElement),'Notes shortcut did not focus SOAP');check(await p.locator('#soap-s').inputValue()==='QA shortcut preserved','Shortcut lost notes');check(new URL(p.url()).hash==='#consult','Shortcut changed route');
+});
 await test('storage failure shows failed SOAP save',async()=>{
 await p.goto(base+'/cms/cms-doctor.html#consult');await p.evaluate(()=>Storage.prototype.setItem=function(){throw Error('QA storage unavailable')});await p.locator('#soap-s').fill('QA unsaved note');check(/could not|ไม่ได้/.test(await p.locator('[data-soap-status]').innerText()),'False save success');
 });

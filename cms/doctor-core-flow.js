@@ -449,7 +449,7 @@
     const hits = CATALOG.filter(d => !q || [d.brand,d.sku,d.generic,d.name].some(value=>String(value).toLowerCase().includes(q)));
     const box = $('[data-drug-results]');
     box.innerHTML = hits.length
-      ? hits.map(d => '<div class="drug-row"><span class="drug-row__body"><b>' + esc(d.name) + '</b><small>' + T('Brand', 'ยี่ห้อ') + ' ' + esc(d.brand) + ' · ' + T('Code', 'รหัส') + ' ' + d.sku + ' · ' + esc(d.generic) + '</small></span><span class="strong">' + baht(d.price) + '</span><button class="btn btn--secondary btn--sm" type="button" data-drug-add="' + d.sku + '">' + T('Select', 'เลือก') + '</button></div>').join('')
+      ? hits.map(d => '<div class="drug-row"><span class="drug-row__body"><b>' + esc(d.name) + '</b><small>' + T('Brand', 'ยี่ห้อ') + ' ' + esc(d.brand) + ' · ' + T('Code', 'รหัส') + ' ' + d.sku + ' · ' + esc(d.generic) + '</small></span><span class="strong">' + baht(d.price) + '</span><button class="btn btn--secondary btn--sm" type="button" data-drug-add="' + d.sku + '">' + '<span aria-hidden="true">＋</span> ' + T('Add medicine', 'เพิ่มยา') + '</button></div>').join('')
       : '<div class="record-empty">' + T('No medicine matches this search.', 'ไม่พบยาที่ตรงกับการค้นหา') + '</div>';
   }
   document.addEventListener('click', e => {
