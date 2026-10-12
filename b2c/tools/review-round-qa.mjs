@@ -25,10 +25,24 @@ await test('modal-chrome-consistency',async p=>{
  assert.equal(await preview.locator('.review-modal-preview__close').evaluate(el=>getComputedStyle(el).color),expected);
  assert.equal(await preview.locator('[data-waitroom-retry]').isDisabled(),false);
  assert(await preview.locator('[data-waitroom-expired-home]').evaluate(el=>el.classList.contains('textlink')));
- assert.equal(await p.locator('#csat-modal').evaluate(el=>getComputedStyle(el).visibility),'hidden');
+ assert(await p.locator('#csat-modal').isHidden());
  await p.waitForTimeout(250);await preview.screenshot({path:output+`/modal-consistency-${width}.png`});
  await preview.locator('.review-modal-preview__close').click();await p.locator('.review-modal-veil').waitFor({state:'detached'});
  }
+});
+await test('modal-gallery-replaces-previous',async p=>{
+ await p.setViewportSize({width:1280,height:900});await open(p,'profile');
+ await p.evaluate(()=>{document.getElementById('csat-modal').hidden=false;});
+ const links=p.locator('[data-modal-preview]');
+ for(let i=0;i<await links.count();i++){
+  await links.nth(i).evaluate(el=>el.click());
+  assert.equal(await p.locator('.review-modal-veil').count(),1);
+  assert.equal(await p.locator('.review-modal-preview[open]').count(),1);
+  assert.equal(await p.locator('.modal-layer:not([hidden])').count(),0);
+ }
+ await p.locator('.review-modal-preview__close').click();
+ await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ assert.equal(await p.locator('.modal-layer:not([hidden])').count(),0);
 });
 await test('pause-program-persistence',async p=>{
  for(const width of [390,890]){
