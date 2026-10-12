@@ -7,7 +7,7 @@ const server=createServer(async(req,res)=>{try{const p=resolve(root,'.'+decodeUR
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=process.env.KRANE_BASE||`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});const results=[],inventory=[];
 
-async function test(name,fn){console.log('RUN',name);try{await p.goto('about:blank');await p.waitForTimeout(250);await fn();results.push({test:name,status:'pass'})}catch(e){results.push({test:name,status:'fail',error:e.message,severity:'P1'});console.error(name,e.message)}}
+async function test(name,fn){console.log('RUN',name);try{await p.goto(base+'/cms/cms-doctor.html#dashboard');await p.evaluate(()=>localStorage.removeItem('krane.clinical.v1.plan.CONS-2041'));await p.goto('about:blank');await p.waitForTimeout(250);await fn();results.push({test:name,status:'pass'})}catch(e){results.push({test:name,status:'fail',error:e.message,severity:'P1'});console.error(name,e.message)}}
 function check(x,m){if(!x)throw Error(m)}
 
 const ctx=await browser.newContext();ctx.setDefaultTimeout(10000);const p=await ctx.newPage();

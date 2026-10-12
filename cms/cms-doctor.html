@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="design-tokens.css?v=20260918-doctor-colour-v1">
 <link rel="stylesheet" href="cms.css?v=20261011-final-brand-v274">
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
+<script src="../krane-clinical-demo.js?v=20261012-sync"></script>
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
 <link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-favicon.svg">
@@ -526,6 +527,7 @@
             <div class="ctx__sec"><div class="label">Intake</div><div class="kv"><span class="k">Duration</span><span>6mo-2y</span></div><div class="kv"><span class="k">Conditions</span><span>None</span></div><div class="kv"><span class="k">Meds</span><span>None</span></div><a class="crumb" data-page="preconsult" style="margin:6px 0 0">View full intake ›</a></div>
             <!-- Manual 6.2.3: SOAP notes during the call, and the recommended medicine
                  can be shown to the patient in chat. That card is not an order. -->
+            <div class="ctx__sec"><label for="patient-summary">สรุปให้ผู้ป่วยอ่าน</label><textarea id="patient-summary" class="textarea" data-patient-summary placeholder="คำแนะนำและสิ่งที่ต้องติดตาม (ผู้ป่วยเห็นข้อความนี้)"></textarea></div>
             <div class="ctx__sec soap">
               <div class="label">Clinical notes (SOAP) <span class="hint">not shown to the patient</span></div>
               <div class="field"><label for="soap-s">S · Subjective</label><textarea class="textarea soap__box" id="soap-s" data-soap>More shedding at the crown for about 6 months. Father has male-pattern hair loss.</textarea></div>
@@ -1123,10 +1125,15 @@
   const selectedContextSecondary = document.querySelector('[data-selected-context-secondary]');
   const selectedPrescribeTitle = document.querySelector('[data-selected-prescribe-title]');
   let currentPatientSelection = {name:'Mali S.',state:'waiting'};
+  const sharedPatients={};
+  document.addEventListener('krane:open-clinical-case',event=>{
+    const c=event.detail;sharedPatients[c.name]={id:c.patientId,age:'—',sex:'—',concern:c.category,time:c.appointmentAt||'—'};
+    loadSelectedPatient({dataset:{patient:c.name,patientState:'waiting'}});
+  });
   function loadSelectedPatient(target){
     if(!target || !target.dataset.patient) return;
     const name = target.dataset.patient;
-    const patient = PATIENTS[name] || PATIENTS['Mali S.'];
+    const patient = sharedPatients[name] || PATIENTS[name] || PATIENTS['Mali S.'];
     const state = target.dataset.patientState === 'done' ? 'completed' : target.dataset.patientState || 'waiting';
     const firstName = name.split(' ')[0].replace('.','');
     const isThai = !!document.querySelector('.lang__opt[data-lng="th"].is-active');
@@ -1917,6 +1924,7 @@
   applyCmsHash();
 </script>
 
-<script src="doctor-core-flow.js?v=20261012-workspace"></script>
-<script src="../krane-golden-doctor.js?v=20261011-doctor-audit"></script>
-<script src="doctor-workspace.js?v=20261012"></script></body></html>
+<script src="doctor-core-flow.js?v=20261012-sync"></script>
+<script src="../krane-golden-doctor.js?v=20261012-sync"></script>
+<script src="doctor-workspace.js?v=20261012"></script><script src="../krane-clinical-ui.js?v=20261012-sync"></script>
+<script src="../krane-clinical-requests.js?v=20261012-sync"></script></body></html>

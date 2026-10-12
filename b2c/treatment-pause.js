@@ -45,6 +45,7 @@
   const appointmentAt=resume?new Date(dateInput.value+'T'+timeInput.value+':00').toISOString():null;
   const next={...paused,[category]:resume?{...paused[category],state:'active',resumedAt:new Date().toISOString(),appointmentAt}:{state:'paused',pausedAt:new Date().toISOString()}};
   try{localStorage.setItem(key,JSON.stringify(next));}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง';error.hidden=false;return;}
+  try{window.KraneClinical?.setProgram(category,next[category]);}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='Could not sync. Please retry.';error.hidden=false;return;}
   paused=next;decorate(target);sortFolders();close();document.dispatchEvent(new CustomEvent('krane:program-paused',{detail:{category:target.dataset.category}}));
  });
  document.querySelectorAll('#profile .treatment-card').forEach(decorate);

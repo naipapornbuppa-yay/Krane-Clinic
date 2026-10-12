@@ -68,9 +68,10 @@
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
+<script src="../krane-clinical-demo.js?v=20261012-sync"></script>
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261011-program-resume" defer></script>
+<script src="i18n.js?v=20261012-sync" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -4224,6 +4225,8 @@
   if(IS_DEMO_EMBED) document.documentElement.classList.add('is-demo-embed');
   function persistFlowState(){ if(IS_DEMO_EMBED) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
+    delete flowState.sharedEncounterId;
+    delete flowState.orderState.clinicalPrescription;
     delete flowState.addressDraft;
     delete flowState.addressSearchDraft;
     Object.assign(flowState,{
@@ -4763,7 +4766,7 @@
         /* A refill basket represents the selected prescription(s), not the
            entire medicine catalogue. Eligibility is separate from quantity so
            an included medicine reduced to zero can still be added back. */
-        row.hidden=refillCheckout && !refillMedicineKeys.has(key);
+        row.hidden=flowState.orderState.clinicalPrescription ? !key.startsWith('clinical-') : refillCheckout && !refillMedicineKeys.has(key);
         const qty=row.querySelector('[data-order-qty]');
         const qtyControl=row.querySelector('[data-qty-n]');
         const price=row.querySelector('[data-order-price],[data-line-price]');
@@ -8749,6 +8752,29 @@
   }
   const MEDICINE_PRICES={cough:85,loratadine:94,paracetamol:20,naproxen:134};
   const ADDON_PRICES={wellness:290,pillcase:190,pouch:250};
+  function importClinicalPrescription(plan){
+    if(!plan || plan.outcome!=='prescription' || !plan.items.length)return;
+    const existing=flowState.orderState.clinicalPrescription;
+    if(existing?.id!==plan.id){flowState.orderState.quantities={};flowState.orderState.clinicalPrescription=plan;flowState.orderState.checkoutOrigin='consultation';}
+    document.querySelectorAll('[data-clinical-order-item]').forEach(row=>row.remove());
+    plan.items.forEach((item,index)=>{
+      const key='clinical-'+index;MEDICINE_PRICES[key]=item.price;
+      if(existing?.id!==plan.id)flowState.orderState.quantities[key]=item.qty;
+      for(const screen of ['payment','payment-items']){
+        const host=document.querySelector('#'+screen+' [data-order-item]')?.parentElement;if(!host)continue;
+        const row=document.createElement('div');row.className='checkout-order__item';row.dataset.orderItem=key;row.dataset.clinicalOrderItem='';
+        const body=document.createElement('span');body.className='checkout-order__body';
+        const name=document.createElement('span');name.className='checkout-order__name';name.textContent=item.name;
+        const note=document.createElement('span');note.className='checkout-order__note';note.textContent=item.directions||item.dirTH||item.dir||'';body.append(name,note);row.append(body);
+        const price=document.createElement('span');price.dataset.orderPrice='';price.className='checkout-order__price';row.append(price);
+        const qty=document.createElement('span');qty.dataset.qty='';qty.dataset.min='0';qty.dataset.max=String(item.qty);qty.dataset.unit=String(item.price);qty.className='qty checkout-order__stepper';
+        qty.innerHTML='<button type="button" class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span data-qty-n></span><button type="button" class="qty-btn" data-qty-plus aria-label="เพิ่มจำนวน">+</button>';row.append(qty);host.append(row);
+      }
+    });persistFlowState();
+  }
+  document.addEventListener('krane:accept-plan',()=>{importClinicalPrescription(window.KraneClinical.plan());refreshMedicationCheckout();show('payment');});
+  if(flowState.orderState.clinicalPrescription)importClinicalPrescription(flowState.orderState.clinicalPrescription);
+
   function resetOptionalAddOns(){
     Object.keys(ADDON_PRICES).forEach(key => {
       flowState.orderState.addOns[key]=false;
@@ -10142,6 +10168,13 @@
        selected service's authored questions, not the generic base markup. */
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
+    if(!IS_DEMO_EMBED && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
+      try {
+        const answers=[...document.querySelectorAll('[id^="intake"] input,[id^="intake"] select,[id^="intake"] textarea')].filter(el=>el.type!=='file' && !['password','hidden','button','submit'].includes(el.type) && (!['checkbox','radio'].includes(el.type)||el.checked) && el.value).map(el=>({label:el.closest('label')?.textContent.trim()||document.querySelector('label[for="'+CSS.escape(el.id)+'"]')?.textContent.trim()||el.name||el.id||'คำตอบ',value:el.value}));
+        const c=window.KraneClinical.create({name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,answers,channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;persistFlowState();
+      } catch { showActionToast('บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning'); }
+    }
+    if(id==='payment-success' && flowState.orderState.clinicalPrescription){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
     if(id==='articles') window.kraneArticleMock?.renderFeed();
     if(id==='article') window.kraneArticleMock?.renderDetail();
     ensureAppBarLockup(id);
@@ -12213,13 +12246,7 @@
       const input = document.querySelector('#consult [data-chat-input]');
       const value = input ? input.value.trim() : '';
       if(!value){ showActionToast('พิมพ์ข้อความก่อนส่ง','warning'); return; }
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble bubble--out bubble--lbl';
-      bubble.dataset.from = 'You';
-      bubble.textContent = value;
-      const body = document.querySelector('#consult .chat-body');
-      if(body){ body.appendChild(bubble); body.scrollTop = body.scrollHeight; }
-      input.value = '';
+      try { window.KraneClinical.send(value); input.value=''; } catch { showActionToast('ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง','warning'); }
       return;
     }
     const markRead = e.target.closest('[data-mark-read]');
@@ -14806,7 +14833,8 @@
   </defs>
 </svg>
 <script src="treatment-folders.js?v=20261011-program-resume"></script>
-<script src="treatment-pause.js?v=20261011-program-resume"></script>
+<script src="treatment-pause.js?v=20261012-sync"></script>
 <script src="modal-chrome.js?v=20261011"></script>
-</body>
+<script src="../krane-clinical-ui.js?v=20261012-sync"></script>
+<script src="../krane-clinical-requests.js?v=20261012-sync"></script></body>
 </html>

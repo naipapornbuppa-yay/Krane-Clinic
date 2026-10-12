@@ -7,6 +7,10 @@
    ============================================================ */
 (function () {
   var TH = {
+    "Request a refill review": "ขอให้แพทย์ทบทวนการเติมยา",
+    "Choose a prescription file": "เลือกไฟล์ใบสั่งยา",
+    "Prescription review requests": "คำขอทบทวนใบสั่งยา",
+    "No requests yet": "ยังไม่มีคำขอ",
     /* Written in English in the markup and again by the script, so Thai mode
      left the whole sentence in English. No rule catches English stranded in
      Thai — the contract only checks the other direction. */

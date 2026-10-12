@@ -2,6 +2,8 @@
 
 12 October 2026. Canonical entries: `cms/cms-doctor.html` and `b2c/krane-b2c.html`. Fictional records only. Doctor/admin are **work in progress, not included in the approved BE DEV handoff**. This audit does not change that handoff branch.
 
+Subsequent implementation and remaining gaps: [clinical sync status](CLINICAL-SYNC-2026-10-12.md). The findings below describe the pre-fix baseline.
+
 ## Verdict
 
 **Not complete:** the doctor portal supports the main single-case consultation demonstration, but does not accommodate every B2C feature through connected frontend state. Missing frontend logic is distinct from the deliberately deferred backend. Passing UI tests is not proof of a connected patient lifecycle.

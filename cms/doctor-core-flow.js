@@ -189,7 +189,7 @@
   }
   function sendFrom(input, thread) {
     const text = (input.value || '').trim(); if (!text) return;
-    appendBubble(thread, esc(text), true); input.value = '';
+    try { window.KraneClinical.send(text); input.value = ''; } catch { say(T('Message could not be saved. Please retry.','ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง')); }
   }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-record-chat-send]')) sendFrom($('[data-record-chat-input]'), $('[data-record-chat]'));
@@ -266,14 +266,16 @@
   });
 
   /* ---------------------------------------------------------------- consultation room */
-  const noteKey = () => 'krane-doctor-soap-demo-v1:' + patientName().replace(/\s*\(Demo\)/gi,'');
+  const noteKey = () => 'krane-doctor-soap-demo-v1:' + (window.KraneClinical?.id() || patientName().replace(/\s*\(Demo\)/gi,''));
   const soapDefaults = $$('[data-soap]').map(el=>el.value);
   function restoreNotes(){
+    const summary=$('[data-patient-summary]');if(summary)summary.value=sessionStorage.getItem('krane.summary.'+window.KraneClinical.id())||'';
     let notes=null;try{notes=JSON.parse(sessionStorage.getItem(noteKey())||'null')}catch{}
-    $$('[data-soap]').forEach((el,i)=>el.value=Array.isArray(notes)?notes[i]||'':(/Mali/.test(patientName())?soapDefaults[i]:''));
+    $$('[data-soap]').forEach((el,i)=>el.value=Array.isArray(notes)?notes[i]||'':(window.KraneClinical?.id()==='CONS-2041'?soapDefaults[i]:''));
     $('[data-soap-status]').textContent=notes?T('Draft restored in this browser session','กู้คืนร่างในเบราว์เซอร์นี้แล้ว'):T('Demo notes · not saved to a clinical record','บันทึกตัวอย่าง · ยังไม่บันทึกเข้าระบบเวชระเบียน');
   }
   document.addEventListener('input', e => {
+    if(e.target.matches('[data-patient-summary]')){try{sessionStorage.setItem('krane.summary.'+window.KraneClinical.id(),e.target.value)}catch{say('Could not save summary. Please retry.')}return;}
     if (!e.target.matches('[data-soap]')) return;
     const st=$('[data-soap-status]');
     try { sessionStorage.setItem(noteKey(),JSON.stringify($$('[data-soap]').map(el=>el.value)));st.textContent=T('Draft saved in this browser session · ','บันทึกร่างในเบราว์เซอร์นี้แล้ว · ')+clock(); }
@@ -285,11 +287,7 @@
     if (e.target.closest('[data-rx-card-send]')) {
       const thread = $('#consult .chat__thread');
       if (!validateRx()) return;
-      const rows = dispensed.map(d => '<div class="rx-card__row"><b>' + esc(d.name) + '</b><small>' + esc(d.directions ?? T(d.dir, d.dirTH)) + '</small><small>' + T('Quantity: ', 'จำนวน: ') + d.qty + '</small></div>').join('');
-      const card = appendBubble(thread,
-        '<div class="rx-card"><div class="rx-card__head">' + T('Prescription (draft)', 'ใบสั่งยา (ร่าง)') + '</div>' + rows
-        + '<div class="rx-card__foot">' + T('Not an order yet. Your doctor confirms it after the consultation.', 'ยังไม่ใช่คำสั่งซื้อ แพทย์จะยืนยันหลังจบการปรึกษา') + '</div></div>', true);
-      card.classList.add('bubble--card');
+      try { window.KraneClinical.send('', dispensed); } catch { say(T('Could not save preview. Please retry.','บันทึกตัวอย่างไม่ได้ กรุณาลองอีกครั้ง')); return; }
       say(T('Prescription shown in chat', 'แสดงใบสั่งยาในแชทแล้ว'));
       return;
     }
@@ -344,14 +342,17 @@
   ];
   let dispensed = draft.map(d => Object.assign({ qty: 1, directions: null }, d));
   let saved = false;
-  const rxDraftKey=()=> 'krane-doctor-rx-demo-v1:'+patientName().replace(/\s*\(Demo\)/gi,'');
+  const rxDraftKey=()=> 'krane-doctor-rx-demo-v1:'+(window.KraneClinical?.id() || patientName().replace(/\s*\(Demo\)/gi,''));
   function restoreRxDraft(){
+    dispensed=window.KraneClinical?.id()!=="CONS-2041"?[]:draft.map(d=>Object.assign({qty:1,directions:null},d));
     try{const items=JSON.parse(sessionStorage.getItem(rxDraftKey())||'null');
       if(Array.isArray(items) && items.every(d=>d && typeof d.name==='string' && Number.isFinite(d.price)))dispensed=items;
     }catch{}
     saved=false;
   }
   restoreRxDraft();
+  let restoredRxCase=window.KraneClinical?.id();
+  document.addEventListener("krane:doctor-patient-changed",()=>{if(restoredRxCase===window.KraneClinical?.id())return;restoredRxCase=window.KraneClinical?.id();restoreRxDraft();renderRx();});
 
 
   function markDirty() {
@@ -440,7 +441,7 @@
       openModal('[data-order-modal]');
       return;
     }
-    if (e.target.closest('[data-order-confirm]')) { if(!saved || !validateRx()) return; saved=false;closeModal($('[data-order-modal]')); complete(true); }
+    if (e.target.closest('[data-order-confirm]')) { if(!saved || !validateRx()) return; if(complete(true)){saved=false;closeModal($('[data-order-modal]'));} }
   });
 
   /* medicine search */
@@ -479,10 +480,11 @@
     body.prepend(row);
   }
   function complete(withOrder, referred, referralDestination) {
+    try { window.KraneClinical.finalize({outcome:withOrder?'prescription':referred?'referral':'no-medicine',items:withOrder?dispensed.slice():[],summary:$('[data-patient-summary]')?.value||'',referral:referred?referralDestination:'',followUp:$('[data-golden-follow-up]')?.value||''}); } catch(error) { say(error.message); return; }
     setStatus('available');
     $('[data-done-patient]').textContent = patientName();
     $('[data-done-rx]').textContent = withOrder ? 'Issued' : referred ? 'Not issued · referred' : 'None';
-    $('[data-done-order]').textContent = withOrder ? 'KR-10293' : '-';
+    $('[data-done-order]').textContent = withOrder ? window.KraneClinical.plan().id : '-';
     $('[data-done-order-status]').textContent = withOrder ? 'Waiting for the patient to pay' : referred ? 'Referral guidance sent' : 'No order';
     $('[data-done-lead]').textContent = withOrder
       ? 'The prescription is saved and the order is created. The patient reviews the price and pays in the app.'
@@ -496,7 +498,7 @@
     setConsultStatus('Completed', 'badge--done');
     const len = $('[data-consult-length]'); if (len) len.textContent = T('14 minutes', '14 นาที');
     // The golden row in the patients list reflects the outcome.
-    const row = $('[data-consult-rows] tr[data-code="CONS-2041"]');
+    const row = $('[data-consult-rows] tr[data-code="'+window.KraneClinical.id()+'"]');
     if (row) {
       row.dataset.status = 'completed';
       row.children[2].innerHTML = '<span class="badge badge--done"><span class="dot"></span>Completed</span>';
@@ -510,6 +512,7 @@
     } else if (referred) addAuditEvent(T('Referral and escalation saved', 'บันทึกการส่งต่อและยกระดับการดูแล'), 'CONS-2041', T('Handoff documented', 'บันทึกการส่งต่อแล้ว'));
     else addAuditEvent(T('Consultation closed without medicine', 'ปิดการปรึกษาโดยไม่จ่ายยา'), 'CONS-2041', T('Recorded', 'บันทึกแล้ว'));
     window.go('consult-done');
+    return true;
   }
 
   /* ---------------------------------------------------------------- referral / escalation */

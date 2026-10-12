@@ -52,6 +52,7 @@
      create or rewind a pharmacy order on its own: fulfilment advances only after the
      patient accepts and pays. */
   document.addEventListener("krane-doctor-order-created", function (event) {
+    if(window.KraneClinical?.id()!=="CONS-2041") return;
     demo.writePrescription(event.detail);
     applyFixture();
     syncOrderStatus();
@@ -85,6 +86,7 @@
   }
 
   function syncOrderStatus() {
+    if(window.KraneClinical?.plan()) return;
     const state = demo.readState();
     /* updatedAt is null until something actually writes the shared state. The
        fixture's own default is "Dispatched" so the tracking demo can open
@@ -114,6 +116,7 @@
   function openHash() {
     const id = location.hash.slice(1);
     if (!id) return;
+    if(window.KraneClinical?.id()!=="CONS-2041") return;
     const golden = document.querySelector('[data-patient="' + CSS.escape(f.patient.name) + '"]');
     if (golden) golden.click();
     if (typeof window.go === "function") window.go(id, true);
