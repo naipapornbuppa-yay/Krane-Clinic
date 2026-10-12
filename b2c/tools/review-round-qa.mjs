@@ -31,7 +31,11 @@ await test('pause-program-persistence',async p=>{
  assert(await modal.locator('#resume-program-time option').count()>0);
  await modal.locator('.program-resume-art img').evaluate(img=>img.decode());
  await p.waitForTimeout(300);await modal.locator('.modal-dialog').screenshot({path:output+`/resume-modal-${width}.png`});
- await modal.locator('[data-resume-change]').click();await modal.locator('#resume-program-time').selectOption({index:1});
+ await modal.locator('[data-resume-change]').click();
+ const dayPicker=modal.locator('#resume-program-date').locator('..');await dayPicker.locator('.custom-select__trigger').click();await dayPicker.locator('[data-native-index="1"]').click();
+ const timePicker=modal.locator('#resume-program-time').locator('..');await timePicker.locator('.custom-select__trigger').click();assert(await timePicker.locator('.custom-select__option').count()>0);await timePicker.locator('[data-native-index="1"]').click();
+ assert((await timePicker.locator('.custom-select__value').innerText()).trim().length>0);
+ await modal.locator('.modal-dialog').screenshot({path:output+`/resume-edit-${width}.png`});
  await modal.locator('.btn[data-treatment-pause-close]').click();assert.equal(await card.getAttribute('data-program-state'),'paused');
  await p.locator('#treatment-pause-action').click();await modal.locator('[data-treatment-pause-confirm]').click();
  assert.equal(await card.getAttribute('data-program-state'),'active');
