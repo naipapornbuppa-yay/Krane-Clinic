@@ -283,6 +283,44 @@
       console.warn("[Krane Screen Tab] registry mismatch", { missing, stale });
     }
 
+    // Design-only toast catalogue, using the same component classes as the app.
+    const toastGroup=global.document.createElement('details');
+    toastGroup.className='rail-group';
+    toastGroup.innerHTML='<summary><span class="rail-step">!</span><span>Toast</span></summary>';
+    const toastBody=global.document.createElement('div');toastBody.className='rail-group__body';
+    const toastSamples=[
+      {tone:'success',icon:'circle-check',title:thai?'สำเร็จ':'Success',message:thai?'บันทึกบัตรประชาชนแล้ว':'ID card saved'},
+      {tone:'info',icon:'info',title:thai?'ข้อมูล':'Information',message:thai?'กลับมาที่เคส #KR-10293 แล้ว':'Returned to case #KR-10293'},
+      {tone:'warning',icon:'triangle-alert',title:thai?'แจ้งเตือน':'Warning',message:thai?'เลือกเวลาที่สะดวกก่อน':'Choose an appointment time first'},
+      {tone:'warning',icon:'triangle-alert',title:thai?'ข้อผิดพลาด':'Error',message:thai?'รูปใหญ่เกิน 10 MB':'Image exceeds 10 MB'},
+      {tone:'warning',icon:'triangle-alert',title:thai?'ข้อความยาว':'Long message',message:thai?'ยังค้นหาตำแหน่งบนแผนที่ไม่ได้ กรุณาลองอีกครั้งหรือเลือกจุดบนแผนที่':'Could not find the location. Try again or choose a point on the map.'}
+    ];
+    const toastLink=global.document.createElement('a');toastLink.href='#';toastLink.dataset.toastGallery='';toastLink.textContent=thai?'รวมรูปแบบ Toast':'Toast gallery';
+    toastLink.addEventListener('click',event=>{
+      event.preventDefault();
+      global.document.querySelectorAll('.review-modal-veil').forEach(el=>el.remove());
+      global.document.querySelectorAll('.modal-layer').forEach(el=>{el.hidden=true;el.setAttribute('aria-hidden','true');});
+      global.document.querySelectorAll('dialog[open]').forEach(el=>el.close());
+      global.document.body.classList.remove('modal-open');
+      const veil=global.document.createElement('div');veil.className='review-modal-veil';
+      veil.style.left=Math.max(0,global.document.querySelector('main')?.getBoundingClientRect().left||0)+'px';
+      const panel=global.document.createElement('dialog');panel.className='review-modal-preview review-toast-gallery';panel.setAttribute('aria-label','Toast');
+      const close=global.document.createElement('button');close.type='button';close.className='review-modal-preview__close';close.textContent='×';close.setAttribute('aria-label',thai?'ปิดหน้าต่าง':'Close');close.onclick=()=>panel.close();panel.append(close);
+      const heading=global.document.createElement('h2');heading.textContent=thai?'รวมรูปแบบ Toast':'Toast gallery';panel.append(heading);
+      toastSamples.forEach(sample=>{
+        const section=global.document.createElement('section');
+        const label=global.document.createElement('h3');label.textContent=sample.title;section.append(label);
+        const toast=global.document.createElement('div');toast.className='action-toast is-visible is-wrapping action-toast--'+sample.tone;
+        const icon=global.document.createElement('span');icon.className='action-toast__icon';icon.innerHTML=global.kraneIcon?.(sample.icon,'ui-icon--sm')||'';
+        const text=global.document.createElement('span');text.textContent=sample.message;toast.append(icon,text);section.append(toast);panel.append(section);
+      });
+      veil.append(panel);global.document.body.append(veil);panel.show();
+      panel.addEventListener('close',()=>{veil.remove();toastLink.focus();},{once:true});
+      veil.addEventListener('click',e=>{if(e.target===veil)panel.close();});
+      panel.addEventListener('keydown',e=>{if(e.key==='Escape')panel.close();});
+    });
+    toastBody.append(toastLink);toastGroup.append(toastBody);fragment.append(toastGroup);
+
     rail.appendChild(fragment);
     rail.querySelectorAll(":scope > .rail-group").forEach(details => {
       details.addEventListener("toggle", () => {

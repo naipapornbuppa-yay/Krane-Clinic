@@ -30,6 +30,23 @@ await test('modal-chrome-consistency',async p=>{
  await preview.locator('.review-modal-preview__close').click();await p.locator('.review-modal-veil').waitFor({state:'detached'});
  }
 });
+await test('toast-gallery',async p=>{
+ for(const width of [390,1280]){
+ await p.setViewportSize({width,height:900});await open(p,'profile');
+ await p.locator('[data-toast-gallery]').evaluate(el=>el.click());
+ const panel=p.locator('.review-toast-gallery');await panel.waitFor();
+ assert.equal(await panel.locator('.action-toast').count(),5);
+ assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth));
+ await p.waitForTimeout(2000);assert.equal(await panel.locator('.action-toast.is-visible').count(),5);
+ await panel.screenshot({path:output+`/toast-gallery-${width}.png`});
+ await p.locator('[data-modal-preview="refill-sheet"]').evaluate(el=>el.click());
+ assert.equal(await p.locator('.review-toast-gallery').count(),0);
+ assert.equal(await p.locator('.review-modal-veil').count(),1);
+ await p.locator('[data-toast-gallery]').evaluate(el=>el.click());
+ await p.locator('.review-toast-gallery .review-modal-preview__close').click();
+ await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ }
+});
 await test('modal-gallery-replaces-previous',async p=>{
  await p.setViewportSize({width:1280,height:900});await open(p,'profile');
  await p.evaluate(()=>{document.getElementById('csat-modal').hidden=false;});
