@@ -25,3 +25,7 @@
 Use `b2c/UI-RULES.md`, the B2C contract and existing component files. String-ID inventories are references; not every runtime literal is bound to an ID (see SYSTEM-MAP.md). Backend appointments, clinical validation, auth, payments, fulfillment, document signing and notifications remain integration work.
 
 Keep the existing repository link: this branch is updated in place. Doctor/Admin delivery will follow separately.
+
+## QA follow-up — 16 October 2026
+
+[Scheduled QA report](b2c/handoff/QA-NIGHT-2026-10-13.md): font families are now hosted with the B2C assets to avoid a blocking remote dependency. Final contract 170/170, chrome 114/114, 46 review cases after retry, 4 error/recovery cases, 3 real-entry paths and the provider-blocked font test passed. Existing B2C-only delivery scope is unchanged.

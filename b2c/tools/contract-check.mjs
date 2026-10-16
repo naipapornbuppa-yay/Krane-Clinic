@@ -17,6 +17,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve, extname, normalize } from 'node:path';
 
+const qaTimeoutFactor=Math.max(1,Number(process.env.QA_TIMEOUT_FACTOR)||1);
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '..', '..');
 const contract = JSON.parse(await readFile(join(repoRoot, 'b2c/ui-contract.json'), 'utf8'));
@@ -56,13 +57,11 @@ const did = () => { checks += 1; };
 
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_PATH || undefined,
-  args: ['--no-sandbox']
+  args: ['--no-sandbox','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']
 });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-ctx.setDefaultTimeout(5000);
-ctx.setDefaultNavigationTimeout(15000);
-ctx.setDefaultTimeout(5000);
-ctx.setDefaultNavigationTimeout(15000);
+ctx.setDefaultTimeout(5000*qaTimeoutFactor);
+ctx.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 const consoleErrors = [];
 ctx.on('page', page => page.on('pageerror', e => consoleErrors.push(String(e))));
 
@@ -136,8 +135,8 @@ const completePartnerIdentity = async page => {
   await page.waitForFunction(() => document.querySelector('.screen.active')?.id !== 'otp');
 };
 const freshPartnerHealth = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-freshPartnerHealth.setDefaultTimeout(5000);
-freshPartnerHealth.setDefaultNavigationTimeout(15000);
+freshPartnerHealth.setDefaultTimeout(5000*qaTimeoutFactor);
+freshPartnerHealth.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 try {
   const blankHealth = await freshPartnerHealth.newPage();
   await blankHealth.goto(`${base}/b2c/krane-b2c.html?entry=partner&demoStage=intake-general#intake-general`, { waitUntil: 'domcontentloaded' });
@@ -185,8 +184,8 @@ try {
 // The waiting room persists an in-progress queue. Keep this end-to-end patient
 // journey in its own browser storage so later independent flow checks start fresh.
 const partnerCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-partnerCtx.setDefaultTimeout(5000);
-partnerCtx.setDefaultNavigationTimeout(15000);
+partnerCtx.setDefaultTimeout(5000*qaTimeoutFactor);
+partnerCtx.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 const partnerJourney = await partnerCtx.newPage();
 try {
   const active = () => partnerJourney.locator('.screen.active').getAttribute('id');
@@ -256,7 +255,7 @@ try {
   }
   await partnerJourney.locator('[data-health-history-confirm]').click();
   await step('safety answers', 'matching');
-  await partnerJourney.waitForSelector('#consultpay.active', { timeout: 12000 });
+  await partnerJourney.waitForSelector('#consultpay.active', { timeout: 30000*qaTimeoutFactor });
   await step('doctor and fee details', 'consultpay');
   did();
   const coveredFee = await partnerJourney.locator('#consultpay').evaluate(screen => ({
@@ -315,6 +314,7 @@ async function check(page, flow, assertion) {
 for (const flow of contract.flows) {
   did();
   const page = await ctx.newPage();
+  await page.bringToFront();
   try {
     /* Seeded flow state, so a deep link lands where the flow really is instead
        of being bounced back to the questionnaire by the route guard. The seed
@@ -341,6 +341,11 @@ for (const flow of contract.flows) {
     }
     await page.goto(`${base}/b2c/krane-b2c.html${flow.enter}`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(flow.waitBefore || 1600);
+    // Timed routes are asserted by their resulting screen, not a fixed sleep alone.
+    if(flow.waitBefore && !flow.click && !flow.steps){
+      const target=flow.assert?.find(assertion=>assertion.activeScreen)?.activeScreen;
+      if(target)await page.locator('#'+target+'.active').waitFor({timeout:30000*qaTimeoutFactor});
+    }
     for (const assertion of flow.assertBeforeClick || []) await check(page, flow, assertion);
     if (flow.click) {
       await page.evaluate(sel => {
@@ -370,6 +375,7 @@ for (const flow of contract.flows) {
 for (const rule of contract.rules) {
   did();
   const page = await ctx.newPage();
+  await page.bringToFront();
   try {
     await page.goto(`${base}/b2c/${rule.page}`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500);

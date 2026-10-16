@@ -1,6 +1,6 @@
 # BE DEV handoff — B2C patient app
 
-Updated 13 October 2026 from preview commit `cce758a`.
+Updated 16 October 2026 with B2C font reliability fix and scheduled QA from preview commit `17d87f6`.
 
 ## Scope
 
@@ -25,3 +25,5 @@ Canonical patient UI: `b2c/krane-b2c.html` and the CSS/JS beside it. Root/public
 Shared `krane-clinical-*.js` files are required frontend demo dependencies. They use browser storage; they do not provide authentication, role enforcement, backend persistence, real appointments, payments, or signed documents.
 
 Install dev dependencies with `npm install`. Run `npm run check:ui` and `npm run check:strings`. Use `CHROMIUM_PATH` if testing with installed Chrome.
+
+Latest regression: [scheduled B2C QA report](b2c/handoff/QA-NIGHT-2026-10-13.md). Contract 170/170 and responsive chrome 114/114 passed. Portals remain excluded.

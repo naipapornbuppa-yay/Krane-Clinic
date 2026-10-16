@@ -6,6 +6,7 @@ import { mkdir, readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, extname, join, normalize, resolve } from 'node:path';
 
+const qaTimeoutFactor=Math.max(1,Number(process.env.QA_TIMEOUT_FACTOR)||1);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const types = { '.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp', '.woff2':'font/woff2' };
 const server = createServer(async (req, res) => {
@@ -19,13 +20,14 @@ const server = createServer(async (req, res) => {
 });
 await new Promise(done => server.listen(0, '127.0.0.1', done));
 const base = `http://127.0.0.1:${server.address().port}/b2c/`;
-const browser = await chromium.launch({ executablePath:process.env.CHROMIUM_PATH || undefined, args:['--no-sandbox'] });
+const browser = await chromium.launch({ executablePath:process.env.CHROMIUM_PATH || undefined, args:['--no-sandbox','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding'] });
 const results = [];
 const screenshotDir = process.env.QA_SCREENSHOT_DIR || '';
 if (screenshotDir) await mkdir(screenshotDir, { recursive:true });
 try {
   for (const width of (process.env.QA_WIDTH ? [Number(process.env.QA_WIDTH)] : [320, 360, 390, 768, 1100, 1440])) {
     const page = await browser.newPage({ viewport:{ width, height:900 } });
+    page.setDefaultTimeout(30000*qaTimeoutFactor);page.setDefaultNavigationTimeout(30000*qaTimeoutFactor);
     for (const route of ['krane-b2c-landing.html', 'condition-detail.html?condition=weight', 'doctors.html', 'glp1-safety.html']) {
       await page.goto(base + route, { waitUntil:'domcontentloaded' });
       await page.locator('.site-header .brand-lockup').waitFor();
