@@ -30,7 +30,7 @@
     if(!feed) return;
     const query=(document.querySelector('[data-article-search]')?.value || '').trim().toLocaleLowerCase('th');
     const visible=articles.filter(article =>
-      (filter==='all' || article.category===filter) &&
+      (filter==='all' || article.category===filter || (filter==='men' && article.category==='sexual-health')) &&
       (!query || [article.title,article.summary,article.categoryLabel,...article.tags].join(' ').toLocaleLowerCase('th').includes(query)));
     feed.replaceChildren(...visible.map((sourceArticle,index) => {
       const article=localized(sourceArticle);
