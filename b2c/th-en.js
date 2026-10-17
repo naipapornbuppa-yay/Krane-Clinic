@@ -13,6 +13,7 @@
    ============================================================ */
 (function () {
   var EN = {
+    "เลื่อนดูทีมแพทย์":"Scroll through the medical team",
     "ทีมแพทย์ Krane Clinic":"Krane Clinic medical team",
     "รู้จักแพทย์ที่ร่วมออกแบบการดูแลของคุณ ตั้งแต่ประเมินข้อมูลสุขภาพ อธิบายทางเลือก ไปจนถึงติดตามและปรับแผนอย่างเหมาะสม":"Meet the doctors who help shape your care, from assessment and treatment discussions to follow-up and plan adjustments.",
     "ความเชี่ยวชาญที่ร่วมดูแลคุณ":"Expertise supporting your care",
