@@ -547,6 +547,25 @@
     document.querySelectorAll('[data-section-tab="doctor-perspective"],[data-section-tab="reviews"],[data-section-tab="pricing"]').forEach(node=>node.hidden=true);
   }
 
+  // Do not carry weight-only labels or dosing examples into other services.
+  if(!programme){
+    setText('[data-overview-title]',data.kicker);
+    const reviews=document.querySelector('.cd-reviews');if(reviews)reviews.hidden=true;
+  }
+  if(data.category!=='weight'){
+    setText('[data-pricing-title]','ค่าใช้จ่ายตามแผนการดูแล');
+    setText('[data-pricing-note]','ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ');
+    document.querySelectorAll('[data-programme-price],.cd-price__chip,.cd-price>.cd-fine:not([data-pricing-note])').forEach(n=>n.hidden=true);
+    const coaching=document.querySelector('[data-coaching-copy]');if(coaching){coaching.hidden=true;if(coaching.nextElementSibling)coaching.nextElementSibling.hidden=true;}
+    const delivery=document.querySelector('.cd-step:nth-child(3) p');if(delivery)delivery.textContent='รับยาที่บ้าน หากแพทย์ประเมินว่าเหมาะสม';
+    const safety=document.querySelector('.cd-safety-link');
+    if(safety){
+      const note=document.createElement('aside');note.className='cd-safety-link';note.setAttribute('role','note');
+      note.append(safety.firstElementChild);safety.replaceWith(note);
+      setText('[data-safety]',data.safety||data.medicalNote);
+    }
+
+  }
   document.title = `${data.kicker} | Krane Clinic`;
   const hero = document.querySelector(".condition-hero");
   hero?.setAttribute("data-tone", data.tone);
