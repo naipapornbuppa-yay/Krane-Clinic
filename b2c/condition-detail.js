@@ -537,9 +537,7 @@
       ['จะรู้ค่าใช้จ่ายเมื่อไร','<p>ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ</p>'],
       ['ถ้าเริ่มยาแล้วต้องติดตามอย่างไร','<p>แพทย์จะนัดติดตามผลและอาการข้างเคียงเป็นระยะ แล้วปรับแผนให้เหมาะกับคุณ ประวัติและแผนการรักษาอยู่ในบัญชีของคุณ</p>']
     ];
-    /* Three cards in a rail, each a short clip beside the before/after pair,
-       as the design draws them. The media is not shot yet, so every slot is a
-       labelled placeholder rather than a stand-in photograph. */
+    /* One media frame at a time keeps each review readable. */
     const reviews=document.querySelector('[data-programme-reviews]');
     setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
       : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
@@ -551,9 +549,12 @@
         const before=isHair?pair:`assets/figma-draft-20260830/results-v1/weight-pair-${i+1}-before-v1.png`;
         const after=isHair?pair:`assets/figma-draft-20260830/results-v1/weight-pair-${i+1}-after-v1.png`;
         return `<article class="cd-review cd-review--story ${isFlow?'cd-review--private':''}">
-          <div class="cd-review__story-media"><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video>
-          ${isFlow?'<blockquote>คุยกับแพทย์ได้อย่างเป็นส่วนตัว สะดวก และไม่ต้องเดินทางไปคลินิก</blockquote>':`<div class="cd-review__comparison ${isHair?'cd-review__comparison--diptych':''}"><figure><img src="${before}" alt="ภาพตัวอย่างก่อนเริ่มดูแล" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${after}" alt="ภาพตัวอย่างหลังติดตาม" loading="lazy"><figcaption>หลังติดตาม</figcaption></figure></div>`}</div>
-          ${isFlow?'':'<p class="cd-review__quote">มีแพทย์ช่วยติดตามและอธิบายแผนการดูแลอย่างต่อเนื่อง</p>'}
+          <div class="cd-review__story-media" data-review-carousel>
+            <div class="cd-review__frame"><div data-review-slide><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video></div>
+            ${isFlow?'':`<figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--before':''}"><img src="${before}" alt="ภาพตัวอย่างก่อนเริ่มดูแล" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--after':''}"><img src="${after}" alt="ภาพตัวอย่างหลังติดตาม" loading="lazy"><figcaption>หลังติดตาม</figcaption></figure>`}</div>
+            ${isFlow?'':`<div class="cd-review__controls" aria-label="เลือกสื่อรีวิว"><button type="button" data-review-select="0" aria-pressed="true">วิดีโอ</button><button type="button" data-review-select="1" aria-pressed="false">ก่อน</button><button type="button" data-review-select="2" aria-pressed="false">หลัง</button><button type="button" data-review-pause aria-pressed="false" aria-label="หยุดสลับสื่ออัตโนมัติ">หยุดสลับ</button></div>`}
+          </div>
+          <p class="cd-review__quote">${isFlow?'คุยกับแพทย์ได้อย่างเป็นส่วนตัว สะดวก และไม่ต้องเดินทางไปคลินิก':'มีแพทย์ช่วยติดตามและอธิบายแผนการดูแลอย่างต่อเนื่อง'}</p>
           <p class="cd-fine"><b>ผู้ใช้ตัวอย่าง ${i+1}</b> · ${programme.title}</p>
           <p class="cd-fine">ตัวอย่างสำหรับจัดหน้า ไม่ใช่คำรับรองหรือผลการรักษาจริง</p>
         </article>`;
@@ -791,6 +792,23 @@
       if (frame) return;
       frame = requestAnimationFrame(syncDots);
     }, { passive: true });
+  });
+
+  document.querySelectorAll('[data-review-carousel]').forEach(carousel=>{
+    const slides=[...carousel.querySelectorAll('[data-review-slide]')];
+    if(slides.length<2)return;
+    const buttons=[...carousel.querySelectorAll('[data-review-select]')],video=carousel.querySelector('video'),pause=carousel.querySelector('[data-review-pause]');
+    let current=0,stopped=prefersReducedMotion.matches;
+    const show=index=>{current=index;slides.forEach((slide,i)=>slide.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));if(index!==0)video.pause();};
+    const syncPause=()=>{pause.setAttribute('aria-pressed',String(stopped));pause.textContent=stopped?'เล่นสลับ':'หยุดสลับ';pause.setAttribute('aria-label',stopped?'เริ่มสลับสื่ออัตโนมัติ':'หยุดสลับสื่ออัตโนมัติ');};
+    buttons.forEach((button,i)=>button.addEventListener('click',()=>show(i)));
+    pause.addEventListener('click',()=>{stopped=!stopped;syncPause();});syncPause();
+    window.setInterval(()=>{
+      const bounds=carousel.getBoundingClientRect();
+      if(stopped||document.hidden||bounds.bottom<0||bounds.top>innerHeight||carousel.matches(':hover')||carousel.contains(document.activeElement)||!video.paused)return;
+      show((current+1)%slides.length);
+    },5500);
+    video.addEventListener('ended',()=>{if(!stopped)show(1);});
   });
 
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
