@@ -347,3 +347,7 @@ else (client, 23 Aug):
 - With no plate to darken, a quick-menu press is answered by the item itself
   (scale and fade), and focus by an outline. An action with no visible feedback
   reads as broken — the same finding as the greyed-out pay button.
+
+## Public marketing pages (17 October 2026)
+
+Read `../design.md` for composition and `public-care.css` for public foundations before creating or redesigning a public page. `doctors-page.css` is the current team-directory example. Public doctor cards share geometry with landing; preserve image-led proportions and readable horizontal rails rather than shrinking cards to fit. These rules complement the clinical app interactions above.

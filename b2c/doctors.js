@@ -1,4 +1,14 @@
 (function () {
+  const rail=document.querySelector('.doctor-directory__viewport');
+  if(rail){
+    const previous=document.querySelector('[data-directory-prev]'),next=document.querySelector('[data-directory-next]');
+    const sync=()=>{previous.disabled=rail.scrollLeft<=2;next.disabled=rail.scrollLeft>=rail.scrollWidth-rail.clientWidth-2;};
+    const move=direction=>{const card=rail.querySelector('.doctor-directory-card');const gap=parseFloat(getComputedStyle(rail.firstElementChild).gap)||0;rail.scrollBy({left:direction*(card.offsetWidth+gap),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});};
+    previous.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
+    rail.addEventListener('scroll',sync,{passive:true});window.addEventListener('resize',sync,{passive:true});
+    rail.addEventListener('keydown',e=>{if(e.target!==rail||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();move(e.key==='ArrowRight'?1:-1);});
+    requestAnimationFrame(sync);
+  }
   const profiles = {
     "1": {name:"นพ. ไพรัช เกตุรัตนกุล ว.",role:"ผู้อำนวยการแพทย์",specialty:"อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ",education:"แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย",bio:"ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน",image:"assets/landing-573/doctors/client-doctor-phairat.png",w:954,h:1200},
     "2": {name:"พญ. กรผกา ขันติโกสุม ว.",role:"แพทย์ที่ปรึกษา Krane · เส้นผมและผิวหนัง",specialty:"ตจวิทยา (ผิวหนัง)",education:"ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",bio:"ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน",image:"assets/landing-573/doctors/client-doctor-ploy.png",w:674,h:1200},

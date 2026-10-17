@@ -10,19 +10,17 @@
 <link rel="stylesheet" href="site-header.css?v=20261010-header-consistency-v2">
 <link rel="stylesheet" href="platform-compat.css?v=20260823-cross-platform-v1">
 <link rel="stylesheet" href="detail-mobile.css?v=20261004-detail-mobile-v1">
+<link rel="stylesheet" href="public-care.css?v=20261017-doctors">
+<link rel="stylesheet" href="doctors-page.css?v=20261017-doctors">
+<script src="assets/lucide.min.js" defer></script>
+<script src="site-nav.js?v=20261011-final-brand-v274" defer></script>
+<script src="site-header.js?v=20260927-reflow-detail-v1" defer></script>
 <link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-favicon.svg">
 </head>
-<body class="doctor-detail-page">
+<body class="doctor-detail-page public-care-page">
+<header class="site-header site-header--landing" data-site-header data-site-header-render></header>
 <main class="detail-page doctor-detail-page__main">
-  <nav class="detail-nav" aria-label="หน้ารายละเอียดแพทย์">
-    <a class="detail-brand" href="krane-b2c-landing.html" aria-label="Krane Clinic หน้าหลัก">
-      <img class="detail-logo" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" alt="Krane Clinic">
-    </a>
-    <a class="detail-back" href="doctors.html#doctor-directory">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-      <span>กลับไปดูทีมแพทย์</span>
-    </a>
-  </nav>
+  <a class="public-back" href="doctors.html#doctor-directory"><i data-lucide="arrow-left" aria-hidden="true"></i>กลับไปดูทีมแพทย์</a>
 
   <section class="detail-hero" aria-labelledby="doctor-title">
     <figure class="detail-media">
@@ -153,6 +151,11 @@
   document.querySelector("[data-doctor-education]").textContent = selected.education;
   document.querySelector("[data-doctor-care]").textContent =
     "ดูแลและให้คำปรึกษาด้าน" + selected.specialty + " โดยพิจารณาจากข้อมูลสุขภาพและแบบประเมินของผู้รับบริการ";
+  if(selected.image.includes('krane-logotype')){
+    const identity=document.createElement('div');identity.className='doctor-profile-identity';
+    const initials=document.createElement('b');initials.textContent=new URLSearchParams(location.search).get('doctor')==='3'?'พส':'ชห';
+    const label=document.createElement('span');label.textContent=selected.specialty;identity.append(initials,label);image.parentElement.replaceChildren(identity);
+  }
   image.src = selected.image;
   image.alt = selected.name;
   document.title = selected.name + " | Krane Clinic";

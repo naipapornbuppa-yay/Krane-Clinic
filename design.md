@@ -1,5 +1,7 @@
 # Krane B2C Visual System
 
+Updated 17 October 2026. The rules below govern new public pages. The directory implementation is `b2c/doctors.html`; shared public tokens and primitives are `b2c/public-care.css`. Patient-app interaction rules remain in `b2c/UI-RULES.md`. A public marketing page and an in-app clinical screen share brand tokens but have different density.
+
 This document is the source of truth for public-facing Krane pages. It turns the visual language established on the landing page into reusable rules for every page reached from it.
 
 ## Design direction
@@ -21,7 +23,7 @@ The signature pattern is:
 
 | Role | Token / value | Use |
 | --- | --- | --- |
-| Page canvas | `--detail-paper: #F4F4F3` | Space between section plates |
+| Page canvas | `--public-canvas: var(--color-bg)` | Space between section plates |
 | Primary ink | `--color-ink` / `#1A1E28` | Headings, body copy, dark actions |
 | Muted ink | `--color-ink-2` | Supporting copy and metadata |
 | Brand blue | `--color-accent` / `#395AA4` | Links, focus, small trust accents |
@@ -85,7 +87,7 @@ Every major chapter is a rounded plate. Alternate among white, the concern's sof
 
 - Primary: dark ink on light surfaces, white on dark surfaces.
 - Secondary: transparent with a low-contrast border.
-- Radius: 16px for editorial CTAs; fully round only for icon-only controls.
+- Public editorial CTAs use the landing pill shape (`--radius-pill`), at least 52px tall; icon controls are 44px circles. In-app buttons continue to use `UI-RULES.md` and the app button tokens.
 - Arrow direction follows the reading/action direction and uses the shared Lucide icon.
 
 ### Responsive behavior
@@ -115,7 +117,24 @@ Every major chapter is a rounded plate. Alternate among white, the concern's sof
 - Shared public navigation: `b2c/site-header.css`
 - Landing implementation: `b2c/krane-b2c-landing.css`
 - Concern detail implementation: `b2c/condition-detail.css`
-- Doctor directory and profile implementation: `b2c/detail-pages.css`
+- Legacy public detail base: `b2c/detail-pages.css`
+- Shared public foundations and doctor geometry: `b2c/public-care.css`
+- Doctor directory and its profile preview: `b2c/doctors-page.css`
 - Concern content and tone selection: `b2c/condition-detail.js`
 
 New public pages should consume the global tokens first, then define only page-specific composition variables. Do not copy landing selectors into another page; reuse the rules in this document and keep each page stylesheet scoped to its own components.
+
+
+## Public care pages — implementation contract (17 October 2026)
+
+1. Read this file, `b2c/UI-RULES.md`, the canonical tokens and the closest approved page before creating markup. Use `public-care.css` rather than creating another palette or type scale. Reuse `site-nav.js` / `site-header.css` for the public header and final brand assets.
+2. Build a clear content hierarchy: one H1, a brief introduction, the primary content, supporting explanation, then one closing CTA. A team directory starts with people; it must not bury the doctors beneath a large decorative hero.
+3. Cool neutral canvas, quiet blue-grey care plate, white cards and near-black ink are the default. Concern-specific colours belong to concern pages. Do not alternate unrelated gradients and saturated blocks to decorate ordinary content. Large section plates have breathing room; they do not nest more section plates inside each other.
+4. Display uses `--landing-font-display`; body uses `--landing-font-body`. H1 38–66px, section H2 28–42px, card title 17–18px, supporting text 13–16px. Thai line height is at least 1.35 for headings and 1.7 for prose. Let names wrap naturally; never shrink them to fit a prescribed column count.
+5. Doctor cards share `--care-doctor-*` geometry on landing and directory: desktop 340×450px, 270px image / 180px text; mobile up to 300×420px, 240px image / 180px text. Preserve readable widths and horizontal overflow, with visible previous/next controls on the directory. Never squeeze three cards onto a phone. Real supplied photos remain intact; initials stay clearly distinct when no approved portrait exists.
+6. Image-led trust cards devote more space to the image stage than the text. Show the complete logo with `contain`; don't enlarge an empty stage while leaving the logo tiny.
+7. No nested vertical scroll in sections. Horizontal rails must preserve page scrolling and work with touch, keyboard and pointer. Do not use aggressive scroll snapping. Mobile profile previews use a bottom sheet with a grab bar; desktop previews use a centred dialog. Both have consistent close controls, Escape and backdrop dismissal, and return focus to the opener.
+8. Scope page composition in one stylesheet loaded after the legacy base. Edit the owning rule rather than append repeated contradictory overrides. Shared geometry goes in shared tokens; don't copy fixed sizes into every page.
+9. Before publishing, inspect real screenshots at desktop and 390px, check page overflow, long Thai names, image loading, rail controls, every profile, focus/close behaviour and CTA destinations. A route loading is not evidence that its actions work. Report placeholders and untested states honestly.
+
+Historical public detail pages have not all been migrated. Do not describe them as compliant merely because they link this document. Migrate each route against the above checks.
