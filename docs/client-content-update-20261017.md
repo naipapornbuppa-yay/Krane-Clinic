@@ -46,3 +46,15 @@ Supersedes the earlier "not imported" status above.
 - Updated existing Kornphaka and Phahol education text from Doctor info consistently in landing preview, directory preview and full profiles. Did not infer portrait identity or replace any other doctor.
 - English cards/titles are translated. Full supplied manuscripts are Thai-only: English detail explicitly tells readers to switch to Thai for the full source rather than presenting an invented clinical translation.
 - First contract execution found missing English coverage; fixed locale-aware article rendering plus the new public-page strings and reran the check. See final chat report for the completed result.
+
+
+## Follow-up: doctor-page source audit and navigation font
+
+- Verified native metadata for Doctor info: one tab (Sheet1), three doctor rows. Read A1:Z30 including notes, formulas and hyperlinks: no portrait mapping, activity-image links or embedded image formulas returned.
+- Verified all four tab names in each Obesity, Hair Loss and ED spreadsheet. Read the first 45 rows of catalog, specific intake and general intake tabs, including notes/formulas/hyperlinks: clinical catalog and intake content, no portrait/activity link metadata returned in these ranges. These are bounded reads, not proof that every remaining cell is empty.
+- The fourth program tabs exist, but A1:AB50 (Re:body) / A1:Z50 (re:hair, Re:flow) returned no cells. These tabs are not marked hidden by API metadata; do not describe them as hidden.
+- Native Google Docs tabs independently verified: re:body populated; re:hair and re:flow contain only an empty paragraph.
+- Product Images contains the six previously downloaded portraits. Comments on IMG_8539.png and IMG_8554-03.png are empty; the identity mapping remains undocumented. No portrait or roster changes made.
+- Inspected separate shared jpeg folder (50 filenames). First full preview is an event speaker; no visible Krane provenance or physician name. File metadata reports a 2016 modification date for that image. Do not use it as a Krane physician activity photo without source confirmation. Not all 50 full-size images have been reviewed.
+- Reproduced service navigation mismatch on doctor page: button computed Arial 13px/500 versus sibling links Prompt 13px/500. Owning shared CSS now sets font-family:inherit; local preview confirms Prompt 13px.
+- Remaining requested hero/activity/new portrait update is incomplete pending documented identity/photo provenance; no substitute imagery presented as new client photography.
