@@ -730,7 +730,7 @@
       articles.innerHTML = matches.map((article) => `
         <li><a class="cd-article" href="articles.html${article.id?'?article='+article.id:''}" target="_parent" ${article.id?'data-article-id="'+article.id+'"':''}>
           <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
-          <span class="cd-article__title">${article.title}</span>
+          <span class="cd-article__body"><em>${article.categoryLabel || 'สุขภาพ'} · อ่าน ${article.minutes || 4} นาที</em><strong class="cd-article__title">${article.title}</strong><p>${article.contentStatus === 'client-review' ? 'ต้นฉบับจาก Krane Health Library · สำหรับตรวจทาน' : 'ความรู้สุขภาพและแนวทางการดูแล'}</p></span>
         </a></li>
       `).join("");
     }
