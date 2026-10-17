@@ -34,7 +34,7 @@
       (!query || [article.title,article.summary,article.categoryLabel,...article.tags].join(' ').toLocaleLowerCase('th').includes(query)));
     feed.replaceChildren(...visible.map((sourceArticle,index) => {
       const article=localized(sourceArticle);
-      const button=el('button','article-teaser' + (index ? ' article-teaser--compact' : ''));
+      const button=el('button','article-teaser');
       button.type='button';button.dataset.go='article';button.dataset.articleId=article.id;
       const image=el('img','article-teaser__image');image.src=article.image;image.alt=article.imageAlt;image.loading='lazy';image.width=1280;image.height=800;
       const body=el('span','article-teaser__body');

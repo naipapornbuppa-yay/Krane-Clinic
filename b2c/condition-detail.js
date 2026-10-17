@@ -728,7 +728,7 @@
       articlesSection?.remove();
     } else {
       articles.innerHTML = matches.map((article) => `
-        <li><a class="cd-article" href="krane-b2c.html${article.id?'?article='+article.id+'#article':'#articles'}" target="_parent" data-route="${article.id?'article':'articles'}" ${article.id?'data-article-id="'+article.id+'"':''}>
+        <li><a class="cd-article" href="articles.html${article.id?'?article='+article.id:''}" target="_parent" ${article.id?'data-article-id="'+article.id+'"':''}>
           <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
           <span class="cd-article__title">${article.title}</span>
         </a></li>

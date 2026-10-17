@@ -76,7 +76,7 @@
     "minutes": 4,
     "title": "sildenafil คืออะไร? ใช้แล้วอันตรายไหม และต้องรู้อะไรก่อนเริ่มใช้",
     "summary": "sildenafil เป็นยาที่ช่วยให้เลือดไหลเวียนไปที่อวัยวะเพศได้ดีขึ้น",
-    "image": "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+    "image": "assets/editorial-stock-20261017/pexels-5207306.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -140,7 +140,7 @@
     "minutes": 5,
     "title": "ยารักษา ED ชนิดรับประทานมีอะไรบ้าง? คำถามที่แพทย์ต้องรู้ก่อนเลือกยาให้คุณ",
     "summary": "sildenafil และ tadalafil เป็นยาชนิดรับประทานที่ทำงานแบบเดียวกัน",
-    "image": "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+    "image": "assets/editorial-stock-20261017/pexels-5452269.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -192,7 +192,7 @@
     "minutes": 4,
     "title": "ทำไมถึงอ่อนตัวระหว่างมีเพศสัมพันธ์? สาเหตุที่พบบ่อย และเมื่อไรควรพบแพทย์",
     "summary": "การอ่อนตัวเป็นบางครั้งพบได้บ่อย และมักเกี่ยวกับความเครียด ความเหนื่อย หรือแอลกอฮอล์",
-    "image": "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+    "image": "assets/editorial-stock-20261017/pexels-6129645.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -256,7 +256,7 @@
     "minutes": 4,
     "title": "ฮอร์โมนเพศชายต่ำทำให้เกิด ED ได้ไหม? แยกความเชื่อกับความจริง",
     "summary": "ฮอร์โมนเพศชายต่ำมักทำให้ความต้องการทางเพศลดลง มากกว่าทำให้ไม่แข็งตัวโดยตรง",
-    "image": "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+    "image": "assets/editorial-stock-20261017/pexels-5452269.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -316,7 +316,7 @@
     "minutes": 4,
     "title": "ยาเพิ่มสมรรถภาพทางเพศนอกระบบ อันตรายกว่าที่คิด: 5 ข้อที่ควรเช็กก่อนใช้",
     "summary": "ยานอกระบบมักดึงดูดผู้ซื้อด้วยราคาที่ถูก และซื้อได้โดยไม่ต้องผ่านแพทย์",
-    "image": "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+    "image": "assets/editorial-stock-20261017/pexels-5207306.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
