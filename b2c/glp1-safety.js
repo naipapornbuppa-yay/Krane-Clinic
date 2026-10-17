@@ -11,7 +11,7 @@
       link.classList.toggle("is-active", active);
       if (active) {
         link.setAttribute("aria-current", "location");
-        link.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+        index.scrollTo({ left: Math.max(0, link.offsetLeft - index.clientWidth / 2 + link.offsetWidth / 2), behavior: "smooth" });
       } else {
         link.removeAttribute("aria-current");
       }

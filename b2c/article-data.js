@@ -432,7 +432,7 @@
     "minutes": 4,
     "title": "ผมบางจากพันธุกรรมคืออะไร? ทำไมผู้ชายถึงผมบางตรงหน้าผากและกลางศีรษะ",
     "summary": "ผมบางจากพันธุกรรมเกิดจากรากผมที่ไวต่อฮอร์โมน DHT ค่อย ๆ เล็กลง",
-    "image": "assets/articles/editorial-v1/finasteride-evidence.jpg",
+    "image": "assets/product-hero/hair-product-photo-v1.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -540,7 +540,7 @@
     "minutes": 4,
     "title": "แชมพู วิตามิน หรือไบโอติน ช่วยผมร่วงได้จริงไหม?",
     "summary": "แชมพูและอาหารเสริมช่วยได้เมื่อมีปัญหาหนังศีรษะหรือขาดสารอาหารจริง",
-    "image": "assets/articles/editorial-v1/finasteride-evidence.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-6129645.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -600,7 +600,7 @@
     "minutes": 4,
     "title": "ต้องใช้ยานานแค่ไหนถึงเห็นผล? และถ้าหยุดยาจะเป็นอย่างไร",
     "summary": "การดูแลผมบางอาจต้องใช้เวลาหลายเดือนกว่าจะเห็นผลชัดเจน",
-    "image": "assets/articles/editorial-v1/finasteride-evidence.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-9755382.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -736,7 +736,7 @@
     "minutes": 5,
     "title": "semaglutide หรือ tirzepatide? สองตัวนี้ต่างกันอย่างไร",
     "summary": "ทั้งสองตัวเป็นยาฉีดสัปดาห์ละครั้งในกลุ่มเดียวกัน ต่างกันที่จำนวนฮอร์โมนที่ยาทำงานผ่าน",
-    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "image": "assets/medicine/weight-sheet-v1/mounjaro-kwikpen.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -792,7 +792,7 @@
     "minutes": 5,
     "title": "ใช้ยากลุ่ม GLP-1 แล้วจะเจออะไรบ้าง? ผลข้างเคียงในแต่ละช่วง และวิธีรับมือ",
     "summary": "ผลข้างเคียงที่พบบ่อยคืออาการทางเดินอาหาร และส่วนใหญ่ไม่รุนแรง",
-    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-5452269.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -852,7 +852,7 @@
     "minutes": 4,
     "title": "5 ข้อที่ควรเช็กก่อนใช้ยาฉีดกลุ่ม GLP-1 และทำไมยาควรมาในบรรจุภัณฑ์เดิม",
     "summary": "ก่อนใช้ยา ลองเช็ก 5 ข้อนี้ ใช้เวลาไม่กี่นาที",
-    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "image": "assets/medicine/weight-sheet-v1/ozempic-pens.png",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {

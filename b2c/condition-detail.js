@@ -540,12 +540,7 @@
     document.querySelectorAll('[data-programme-price],.cd-price__chip,.cd-price>.cd-fine:not([data-pricing-note])').forEach(n=>n.hidden=true);
     const coaching=document.querySelector('[data-coaching-copy]');if(coaching){coaching.hidden=true;if(coaching.nextElementSibling)coaching.nextElementSibling.hidden=true;}
     const delivery=document.querySelector('.cd-step:nth-child(3) p');if(delivery)delivery.textContent='รับยาที่บ้าน หากแพทย์ประเมินว่าเหมาะสม';
-    const safety=document.querySelector('.cd-safety-link');
-    if(safety){
-      const note=document.createElement('aside');note.className='cd-safety-link';note.setAttribute('role','note');
-      note.append(safety.firstElementChild);safety.replaceWith(note);
-      setText('[data-safety]',data.safety||data.medicalNote);
-    }
+
 
   }
   document.title = `${data.kicker} | Krane Clinic`;
@@ -570,6 +565,8 @@
   setText("[data-products-lead]", data.productsLead);
   setText("[data-medical-note]", data.medicalNote);
   setText("[data-safety]", data.safety);
+  const programmeSafetyLink=document.querySelector('.cd-safety-link');
+  if(programmeSafetyLink) programmeSafetyLink.href='glp1-safety.html?condition='+encodeURIComponent(data.category==='hair-skin'?'hair-loss':data.category==='sexual-health'?'re-flow':'weight');
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
   const safetyLink = document.querySelector(".safety__button");
