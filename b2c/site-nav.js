@@ -133,6 +133,6 @@ function renderSiteHeader() {
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderFooterServices,{once:true});else renderFooterServices();
 
-  window.KraneSiteNav = { render: renderSiteHeader, markup: siteHeaderMarkup, drawerMarkup: siteDrawerMarkup };
+  window.KraneSiteNav = { services: SITE_NAV_SERVICES, render: renderSiteHeader, markup: siteHeaderMarkup, drawerMarkup: siteDrawerMarkup };
   renderSiteHeader();
 })();
