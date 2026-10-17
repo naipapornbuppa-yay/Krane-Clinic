@@ -13,7 +13,6 @@
   document.title = `ข้อมูลความปลอดภัย ${programme} | Krane Clinic`;
   document.querySelector('#page-title').innerHTML = `ข้อมูลความปลอดภัย<br><span>โปรแกรม ${programme}</span>`;
   document.querySelector('.safety-hero__lead').textContent = hair ? 'ข้อควรรู้เกี่ยวกับ finasteride และ minoxidil ชนิดทา ก่อนเริ่มดูแลเส้นผมกับแพทย์' : 'ข้อควรรู้เกี่ยวกับ sildenafil และ tadalafil ก่อนเริ่มดูแลสุขภาพทางเพศกับแพทย์';
-  document.querySelector('.safety-hero__review').textContent = 'สรุปจาก NHS และเอกสารกำกับยา · ทบทวน 17 ต.ค. 2569';
   const content = hair ? [
     ['overview','เริ่มจากประเมินสาเหตุผมร่วง','การเลือกยาและรูปแบบการใช้ขึ้นอยู่กับการประเมินของแพทย์ ข้อมูล minoxidil ในหน้านี้กล่าวถึงชนิดทา ไม่ใช่ชนิดรับประทาน'],
     ['avoid','ข้อจำกัดแตกต่างกันตามชนิดยา','แจ้งประวัติแพ้ยาและการตั้งครรภ์ก่อนเริ่มใช้ finasteride ไม่เหมาะสำหรับผู้ตั้งครรภ์ และไม่ควรสัมผัสยาเม็ดที่แตกหรือบด'],
