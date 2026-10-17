@@ -1512,7 +1512,19 @@
       resumeTimer = window.setTimeout(scheduleAuto, 1700);
     };
     window.addEventListener('scroll', pauseForPageScroll, { passive: true });
-    viewport.addEventListener('wheel', pauseForPageScroll, { passive: true });
+    viewport.addEventListener('wheel', (event) => {
+      pauseForPageScroll();
+      // A trackpad's small horizontal delta can latch the native carousel and
+      // swallow vertical movement. Route vertical intent to the page; retain
+      // native horizontal swipes, keyboard navigation and pinch-to-zoom.
+      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const scale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+      const top = event.deltaY * scale;
+      const root = document.scrollingElement;
+      if (!root || (top < 0 && root.scrollTop <= 0) || (top > 0 && root.scrollTop >= root.scrollHeight - root.clientHeight)) return;
+      event.preventDefault();
+      window.scrollBy({ top, behavior: 'instant' });
+    }, { passive: false });
     section.addEventListener('focusin', stopAuto);
     section.addEventListener('focusout', () => window.setTimeout(scheduleAuto, 0));
 
