@@ -119,6 +119,20 @@ function renderSiteHeader() {
 }
 
 
+  // Footer service links use the same catalogue and ordering as both nav menus.
+  function renderFooterServices(){document.querySelectorAll('footer.footer .footer__links > div:first-child').forEach(group=>{
+    const heading=group.querySelector('strong');
+    if(!heading || heading.textContent.trim()!=='บริการ')return;
+    group.replaceChildren(heading,...SITE_NAV_SERVICES.map(([href,label,route])=>{
+      const link=document.createElement('a');link.href=siteNavHref(href);link.textContent=label;
+      if(route){link.target='_parent';link.dataset.route=route;}
+      return link;
+    }));
+  });
+
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderFooterServices,{once:true});else renderFooterServices();
+
   window.KraneSiteNav = { render: renderSiteHeader, markup: siteHeaderMarkup, drawerMarkup: siteDrawerMarkup };
   renderSiteHeader();
 })();
