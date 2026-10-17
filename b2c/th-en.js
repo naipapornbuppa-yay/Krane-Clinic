@@ -13,6 +13,19 @@
    ============================================================ */
 (function () {
   var EN = {
+    "ทีมแพทย์ Krane Clinic":"Krane Clinic medical team",
+    "รู้จักแพทย์ที่ร่วมออกแบบการดูแลของคุณ ตั้งแต่ประเมินข้อมูลสุขภาพ อธิบายทางเลือก ไปจนถึงติดตามและปรับแผนอย่างเหมาะสม":"Meet the doctors who help shape your care, from assessment and treatment discussions to follow-up and plan adjustments.",
+    "ความเชี่ยวชาญที่ร่วมดูแลคุณ":"Expertise supporting your care",
+    "finasteride กับ minoxidil ต่างกันอย่างไร?":"How do finasteride and minoxidil differ?",
+    "GLP-1 คืออะไร?":"What is GLP-1?",
+    "เริ่มดูแลสุขภาพ":"Start caring for your health",
+    "กับแพทย์ของเรา":"with our doctors",
+    "เล่าเรื่องที่คุณกังวล ให้แพทย์ประเมินและแนะนำแนวทางที่เหมาะกับคุณ":"Share your concerns so a doctor can assess them and discuss suitable options.",
+    "รู้จักทีมแพทย์ของเรา":"Meet our medical team",
+    "แพทยศาสตรบัณฑิต ศิริราชพยาบาล มหาวิทยาลัยมหิดล · วุฒิบัตรตจวิทยา จุฬาลงกรณ์มหาวิทยาลัย":"MD, Siriraj Faculty of Medicine, Mahidol University; Dermatology board qualification, Chulalongkorn University",
+    "แพทยศาสตรบัณฑิต มหาวิทยาลัยรังสิต · วุฒิบัตรอายุรศาสตร์ และอนุสาขาโภชนศาสตร์คลินิก":"MD, Rangsit University; board qualifications in Internal Medicine and Clinical Nutrition",
+    "ต้นฉบับจาก Krane Health Library · สำหรับตรวจทาน":"Krane Health Library manuscript for editorial review",
+    "ต้นฉบับสำหรับตรวจทาน · ต.ค. 2569":"Editorial review manuscript · Oct 2026",
     /* Landing leftovers from the full TH/EN audit, 19 Sep. */
     /* Hair-loss condition page, updated content without English, 19 Sep. */
     "รู้สาเหตุก่อน แล้วผมจะกลับมาถูกทาง":"Know the cause first, and your hair gets back on track",
@@ -823,6 +836,9 @@
     "ดูการติดตามผล":"View follow-up"
   };
 
+  (window.KraneArticleSeed||[]).forEach(function(article){
+    if(article.en){EN[article.title]=article.en.title;EN[article.summary]=article.en.summary;}
+  });
   var pending = false, mo = null, ownsLang = false;
 
   /* Two of these pages (doctor and adviser profiles) carry no language control

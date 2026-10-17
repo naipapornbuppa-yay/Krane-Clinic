@@ -721,12 +721,14 @@
   const articles = document.querySelector("[data-articles]");
   const articlesSection = document.querySelector("[data-articles-section]");
   if (articles) {
-    const matches = ARTICLES.filter((article) => article.tags.includes(data.category));
+    const libraryCategory={'hair-skin':'hair','sexual-health':'sexual-health',weight:'weight'}[data.category];
+    const supplied=(window.KraneArticleSeed||[]).filter(article=>article.contentStatus==='client-review'&&article.category===libraryCategory);
+    const matches=supplied.length?supplied:ARTICLES.filter((article) => article.tags.includes(data.category));
     if (!matches.length) {
       articlesSection?.remove();
     } else {
       articles.innerHTML = matches.map((article) => `
-        <li><a class="cd-article" href="krane-b2c.html#articles" target="_parent" data-route="articles">
+        <li><a class="cd-article" href="krane-b2c.html${article.id?'?article='+article.id+'#article':'#articles'}" target="_parent" data-route="${article.id?'article':'articles'}" ${article.id?'data-article-id="'+article.id+'"':''}>
           <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
           <span class="cd-article__title">${article.title}</span>
         </a></li>
