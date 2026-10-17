@@ -376,7 +376,7 @@
     "minutes": 4,
     "title": "ผมร่วงวันละกี่เส้นถึงผิดปกติ? และแบบไหนควรพบแพทย์",
     "summary": "ผมร่วงหลังเครียดหรือป่วยมักดีขึ้นเอง แต่ผมที่ค่อย ๆ บางลงมักไม่หยุดเอง",
-    "image": "assets/articles/editorial-v1/finasteride-evidence.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-9755382.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -488,7 +488,7 @@
     "minutes": 5,
     "title": "finasteride กับ minoxidil ต่างกันอย่างไร? คำถามที่แพทย์ต้องรู้ก่อนเลือกยาให้คุณ",
     "summary": "ทั้งสองตัวใช้ดูแลผมบางจากพันธุกรรม แต่ทำงานคนละจุด",
-    "image": "assets/articles/editorial-v1/finasteride-evidence.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-5207306.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -668,7 +668,7 @@
     "minutes": 5,
     "title": "GLP-1 คืออะไร? ฮอร์โมนในลำไส้ที่กลายมาเป็นทางเลือกในการดูแลน้ำหนัก",
     "summary": "GLP-1 คือฮอร์โมนอิ่มที่ร่างกายสร้างเอง ยากลุ่ม GLP-1 เลียนแบบฮอร์โมนนี้ได้นานกว่ามาก",
-    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "image": "assets/editorial-stock-20261017/pexels-6550832.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
