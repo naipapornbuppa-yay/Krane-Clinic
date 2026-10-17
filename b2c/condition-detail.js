@@ -555,8 +555,8 @@
             ${isFlow?'':`<div class="cd-review__controls" aria-label="เลือกสื่อรีวิว"><button type="button" data-review-select="0" aria-pressed="true">วิดีโอ</button><button type="button" data-review-select="1" aria-pressed="false">ก่อน</button><button type="button" data-review-select="2" aria-pressed="false">หลัง</button><button type="button" data-review-pause aria-pressed="false" aria-label="หยุดสลับสื่ออัตโนมัติ">หยุดสลับ</button></div>`}
           </div>
           <p class="cd-review__quote">${isFlow?'คุยกับแพทย์ได้อย่างเป็นส่วนตัว สะดวก และไม่ต้องเดินทางไปคลินิก':'มีแพทย์ช่วยติดตามและอธิบายแผนการดูแลอย่างต่อเนื่อง'}</p>
-          <p class="cd-fine"><b>ผู้ใช้ตัวอย่าง ${i+1}</b> · ${programme.title}</p>
-          <p class="cd-fine">ตัวอย่างสำหรับจัดหน้า ไม่ใช่คำรับรองหรือผลการรักษาจริง</p>
+          <p class="cd-fine"><b>${(isFlow?['คุณ ก.','คุณ น.','คุณ พ.']:isHair?['คุณต้น','คุณนนท์','คุณภัทร']:['คุณเมย์','คุณพลอย','คุณนัท'])[i]}</b> · ${programme.title}</p>
+          <p class="cd-fine">ชื่อสมมติและสื่อจำลองสำหรับจัดหน้า ไม่ใช่คำรับรองหรือผลการรักษาจริง</p>
         </article>`;
       }).join('');
     }
