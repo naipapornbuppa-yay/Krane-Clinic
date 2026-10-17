@@ -8,12 +8,12 @@ In [`../krane-b2c.html`](../krane-b2c.html), use `intakeTemplates`, `renderIntak
 
 ## Direct category paths
 
-Entry chooses a category/condition, then uses that category's templates and permitted shared authored fallback in numerical order. `intake5` is a photo step only where `categoryNeedsPhotos()` is true.
+Entry chooses a category/condition, then uses that category's templates and permitted shared authored fallback in the order returned by `intakeStepOrder()`. `intake5` is a photo step only where `categoryNeedsPhotos()` is true.
 
 | Category key | Template key | Current question-page path | Important condition |
 |---|---|---|---|
-| `hair-skin` | `hair` | `intake1 → intake2 → intake3 → intake4 → intake5` | Photo path; authored question/answer identities stay intact |
-| `skin` | `skin` | `intake1 → intake2 → intake3 → intake4 → intake5` | Fourth page uses shared authored fallback; photo path |
+| `hair-skin` | `hair` | `intake1 → intake2 → intake3 → intake5 → intake4` | Photo path; authored question/answer identities stay intact |
+| `skin` | `skin` | `intake1 → intake2 → intake3 → intake5 → intake4` | Fourth page uses shared authored fallback; photo path |
 | `weight` | `weight` | `intake1 → intake2 → intake3` | GLP-1 exclusions are a safety sheet, not a duplicate fourth screen |
 | `sexual-health` | `sexual` | `intake1 → intake2 → intake3 → intake4` | Matching currently demonstrates no doctor available, then appointment selection |
 | `sleep-stress` | `sleep` | `intake1 → intake2 → intake3 → intake4` | Fourth page uses shared authored fallback; no photo step |
@@ -52,3 +52,11 @@ Existing QA reports document subsets of these dimensions. The route/category aud
 Client-identified `hair.scalp_symptoms`, `ed.heart_history`, and `ed.nitrate_use`, plus existing `data-flag` safety choices, use a yes/no bottom sheet with at most three questions per step. Answers are written back to the original intake controls and draft. Affirmative responses go to `ineligible` on continue. Weight exclusions retain the separately requested disabled-on-yes behavior; their four questions are split 3 + 1. Unanswered new screening choices cannot continue.
 
 The local flow document does not define the full approved clinical red-flag inventory. The client was asked for the source document to reconcile additional questions; no other clinical question is newly classified by this UI change.
+
+## Client update — 17 October 2026, safety after photographs
+
+For hair and skin, completing **or skipping** optional `intake5` photographs leads to `intake4` safety screening; only completing the safety step finishes F02. `hair.scalp_symptoms` moves from `intake3` to the start of `intake4`, ahead of the existing cycle/weight and pregnancy questions. Back and progress use the same order. Non-photo paths and partner routing remain separate.
+
+Displayed affirmative/negative labels are ใช่ / ไม่ใช่ in the authored choice questions and safety/history sheets. Stable question IDs, answer IDs, option ordering and yes/no/none values are preserved; retained uncertainty options keep their existing identities. Red-flag affirmative answers still lead to `ineligible`; GLP-1 exclusions still disable confirmation when any answer is yes. This is a presentation/order update, not a change in clinical criteria.
+
+QA for this update: desktop/mobile photo skip → safety → completion; uploaded photo retained when returning from the safety sheet; affirmative red flag → ineligible; ED clear path; GLP-1 affirmative answer disables confirmation and clear answers complete; English safety/binary copy. The broader 170-check UI suite reports four outstanding English-copy checks on other public pages (landing, doctors, programme detail and doctor profile); the intake/partner checks pass. These are not backend integration checks.

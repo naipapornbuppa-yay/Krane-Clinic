@@ -2507,6 +2507,31 @@
     "ไม่มีเวลาว่างในวันที่เลือก":"No available times on this date",
     "กรุณาเลือกเวลานัดใหม่":"Please choose a new appointment time"
   });
+  /* Client, 17 Oct: consistent binary intake wording; answer values stay unchanged. */
+  Object.assign(EN_FROM_TH, {
+  "ไม่ใช่": "No",
+  "คนในครอบครัวหรือญาติสายตรงของคุณมีอาการผมบางหรือผมร่วงใช่หรือไม่?": "Does anyone in your immediate family have hair thinning or hair loss?",
+  "คุณมีอาการคัน แสบ ปวด สะเก็ด ตุ่ม หรือรอยแดงที่หนังศีรษะร่วมด้วยใช่หรือไม่?": "Do you also have itching, burning, pain, scaling, bumps, or redness on your scalp?",
+  "คุณมีประจำเดือนมาไม่สม่ำเสมอ หรือน้ำหนักเปลี่ยนแปลงผิดปกติใช่หรือไม่?": "Do you have irregular periods or unusual weight changes?",
+  "คุณกำลังตั้งครรภ์หรือมีแผนตั้งครรภ์ใช่หรือไม่?": "Are you pregnant or planning a pregnancy?",
+  "คุณเคยเป็นโรคหัวใจ หรือมีอาการผิดปกติขณะออกแรงใช่หรือไม่?": "Have you had heart disease or unusual symptoms during physical exertion?",
+  "ปัจจุบันคุณใช้ยาอม ยาพ่น หรือยารักษาอาการเจ็บหน้าอกกลุ่ม Nitrate ใช่หรือไม่?": "Do you currently use nitrate tablets, sprays, or medicines for chest pain?",
+  "คุณเคยใช้ยากลุ่ม GLP-1 เพื่อลดน้ำหนักมาก่อนใช่หรือไม่?": "Have you used GLP-1 medicine for weight loss before?",
+  "คุณมีโรคประจำตัวใช่หรือไม่?": "Do you have any medical conditions?",
+  "คุณใช้ยาเป็นประจำใช่หรือไม่?": "Do you take any regular medicines?",
+  "ปัจจุบันคุณใช้ยาหรืออาหารเสริมอยู่ใช่หรือไม่?": "Do you currently take any medicines or supplements?",
+  "คุณมีประวัติแพ้ยาใช่หรือไม่?": "Do you have any medicine allergies?",
+  "คุณมีประวัติแพ้ยาหรืออาหารใช่หรือไม่?": "Do you have any medicine or food allergies?",
+  "เจ็บหน้าอก เป็นลม หรือหายใจลำบาก ใช่หรือไม่?": "Chest pain, fainting or shortness of breath?",
+  "ปวดรุนแรง บวม ไข้ หรือสัญญาณติดเชื้อ ใช่หรือไม่?": "Severe pain, swelling, fever or infection signs?",
+  "อาการเปลี่ยนแปลงรุนแรงเฉียบพลัน ใช่หรือไม่?": "Sudden major symptom change?"
+});
+  Object.assign(EN_FROM_TH, {
+  "คุณหรือสมาชิกในครอบครัวเคยเป็นมะเร็งไทรอยด์ชนิดเมดัลลารี (Medullary Thyroid Carcinoma) ใช่หรือไม่?": "Have you or a family member had medullary thyroid carcinoma?",
+  "คุณเคยเป็นโรคไตวายระยะสุดท้าย (ESRD) ใช่หรือไม่?": "Have you had end-stage kidney failure (ESRD)?",
+  "คุณเคยมีภาวะตับอ่อนอักเสบโดยไม่ทราบสาเหตุใช่หรือไม่?": "Have you had pancreatitis with no known cause?",
+  "คุณกำลังตั้งครรภ์หรือให้นมบุตรใช่หรือไม่?": "Are you pregnant or breastfeeding?"
+});
   var EN = {}, TH_FROM_EN = {};
   /* TH is the English-source table: English key, Thai value. Its Thai side is a
      perfectly good Thai -> English pair too, and for years it was not being used
