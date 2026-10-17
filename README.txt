@@ -27,3 +27,5 @@ Shared `krane-clinical-*.js` files are required frontend demo dependencies. They
 Install dev dependencies with `npm install`. Run `npm run check:ui` and `npm run check:strings`. Use `CHROMIUM_PATH` if testing with installed Chrome.
 
 Latest regression: [scheduled B2C QA report](b2c/handoff/QA-NIGHT-2026-10-13.md). Contract 170/170 and responsive chrome 114/114 passed. Portals remain excluded.
+
+Latest scheduled round: [17 October QA](b2c/handoff/QA-NIGHT-2026-10-17.md). Contract 170/170 and responsive 114/114 passed after retries; named regression and live smoke checks passed. No application behavior changed in this round.
