@@ -44,6 +44,45 @@
     }));
     const empty=document.querySelector('[data-article-empty]');if(empty) empty.hidden=visible.length>0;
   }
+  // Render the supplied Markdown as DOM nodes; raw HTML is deliberately text only.
+  function inline(node,text){
+    const pattern=/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+    let start=0,match;
+    while((match=pattern.exec(text))){
+      node.append(document.createTextNode(text.slice(start,match.index)));
+      const child=el(match[1]?'a':match[3]?'strong':'em','',match[1]||match[3]||match[4]);
+      if(match[1]){child.href=match[2];child.target='_blank';child.rel='noopener noreferrer';}
+      node.append(child);start=pattern.lastIndex;
+    }
+    node.append(document.createTextNode(text.slice(start)));
+  }
+  function manuscriptNodes(markdown){
+    const fragment=document.createDocumentFragment(),lines=markdown.split('\n');
+    let section=fragment;
+    const cells=line=>line.trim().replace(/^\||\|$/g,'').split('|').map(value=>value.trim());
+    for(let i=0;i<lines.length;){
+      let line=lines[i].trim();if(!line){i++;continue;}
+      const heading=line.match(/^(#{2,6})\s+(.+)$/);
+      if(heading){section=el('section','article-reading__section');fragment.append(section);const h=el(heading[1].length<=2?'h2':'h3');inline(h,heading[2]);section.append(h);i++;continue;}
+      if(line.startsWith('|')&&/^\|?[\s:|\-]+$/.test((lines[i+1]||'').trim())){
+        const wrap=el('div','article-reading__table-scroll');wrap.tabIndex=0;wrap.setAttribute('role','region');wrap.setAttribute('aria-label','ตารางประกอบบทความ เลื่อนเพื่ออ่านทุกคอลัมน์');
+        const table=el('table','article-reading__table'),head=el('thead'),header=el('tr'),body=el('tbody');
+        cells(line).forEach(value=>{const th=el('th');th.scope='col';inline(th,value);header.append(th);});head.append(header);table.append(head,body);i+=2;
+        while(i<lines.length&&lines[i].trim().startsWith('|')){const row=el('tr');cells(lines[i]).forEach(value=>{const td=el('td');inline(td,value);row.append(td);});body.append(row);i++;}
+        wrap.append(table);section.append(wrap);continue;
+      }
+      const isList=value=>/^(?:>\s*)?(?:[-*]|\d+\.)\s+/.test(value);
+      if(isList(line)){
+        const quote=line.startsWith('>'),list=el(/^\d+\./.test(line)?'ol':'ul');
+        while(i<lines.length&&isList(lines[i].trim())){const li=el('li');inline(li,lines[i].trim().replace(/^(?:>\s*)?(?:[-*]|\d+\.)\s+/,''));list.append(li);i++;}
+        if(quote){const callout=el('blockquote','article-reading__key-points');callout.append(list);section.append(callout);}else section.append(list);continue;
+      }
+      const paragraph=el('p'),parts=[line.replace(/^>\s*/,'')];i++;
+      while(i<lines.length&&lines[i].trim()&&!/^(#{2,6}\s|\||>)/.test(lines[i].trim())&&!isList(lines[i].trim()))parts.push(lines[i++].trim());
+      inline(paragraph,parts.join(' '));section.append(paragraph);
+    }
+    return fragment;
+  }
   function renderDetail(){
     const article=localized(byId[selectedId] || articles[0]);
     const screen=document.getElementById('article');if(!screen) return;
@@ -55,7 +94,8 @@
     screen.querySelector('[data-article-byline]').replaceChildren(articleAuthor(article));
     screen.querySelector('[data-article-summary]').textContent=article.summary;
     const body=screen.querySelector('[data-article-body]');
-    body.replaceChildren(...article.sections.map(section => {
+    if(article.manuscriptMarkdown && document.documentElement.lang!=='en') body.replaceChildren(manuscriptNodes(article.manuscriptMarkdown));
+    else body.replaceChildren(...article.sections.map(section => {
       const block=el('section','article-reading__section');
       block.append(el('h3','',section.heading));
       const paragraphs=section.copy.split(/\n\n+/);let table=null;
