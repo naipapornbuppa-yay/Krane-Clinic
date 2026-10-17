@@ -1516,8 +1516,10 @@
       pauseForPageScroll();
       // A trackpad's small horizontal delta can latch the native carousel and
       // swallow vertical movement. Route vertical intent to the page; retain
-      // native horizontal swipes, keyboard navigation and pinch-to-zoom.
-      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      // pure horizontal swipes, keyboard navigation and pinch-to-zoom.
+      // Even an x-dominant diagonal gesture must release the page vertically;
+      // otherwise macOS can latch the last slide and trap continued scrolling.
+      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaY) < 1) return;
       const scale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
       const top = event.deltaY * scale;
       const root = document.scrollingElement;
