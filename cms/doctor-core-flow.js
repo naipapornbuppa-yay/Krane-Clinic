@@ -189,7 +189,7 @@
   }
   function sendFrom(input, thread) {
     const text = (input.value || '').trim(); if (!text) return;
-    try { window.KraneClinical.send(text); input.value = ''; } catch { say(T('Message could not be saved. Please retry.','ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง')); }
+    try { window.KraneClinical.send(text);sessionStorage.removeItem('krane.chat-draft.'+window.KraneClinical.id()); input.value = ''; } catch { say(T('Message could not be saved. Please retry.','ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง')); }
   }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-record-chat-send]')) sendFrom($('[data-record-chat-input]'), $('[data-record-chat]'));
@@ -259,6 +259,7 @@
         li.innerHTML = '<b>' + T(FIELD_LABEL[i.dataset.pe][0], FIELD_LABEL[i.dataset.pe][1]) + '</b> ' + T('set to', 'เปลี่ยนเป็น') + ' "' + esc(next) + '"<small>' + doctorName() + ' · ' + nowStamp() + '</small>';
         log.prepend(li);
       });
+      try{window.KraneClinical.patch({clinicalContext:Object.fromEntries($$('[data-pf]').map(n=>[n.dataset.pf,n.textContent]))});}catch(error){say(error.message);return;}
       const allergy=$('[data-consult-allergies]');if(allergy)allergy.textContent=$('[data-pf=allergies]')?.textContent || T('Not recorded','ยังไม่บันทึก');
       closeModal($('[data-patient-modal]'));
       say(changed ? T('Patient details saved', 'บันทึกข้อมูลผู้ป่วยแล้ว') : T('Nothing changed', 'ไม่มีการเปลี่ยนแปลง'));
@@ -269,12 +270,16 @@
   const noteKey = () => 'krane-doctor-soap-demo-v1:' + (window.KraneClinical?.id() || patientName().replace(/\s*\(Demo\)/gi,''));
   const soapDefaults = $$('[data-soap]').map(el=>el.value);
   function restoreNotes(){
+    const follow=$('[data-golden-follow-up]');if(follow&&window.KraneClinical.id()!=='CONS-2041')follow.value=sessionStorage.getItem('krane.followup-draft.'+window.KraneClinical.id())||'';
+    const composer=$('[data-selected-message]');if(composer)composer.value=sessionStorage.getItem('krane.chat-draft.'+window.KraneClinical.id())||'';
     const summary=$('[data-patient-summary]');if(summary)summary.value=sessionStorage.getItem('krane.summary.'+window.KraneClinical.id())||'';
     let notes=null;try{notes=JSON.parse(sessionStorage.getItem(noteKey())||'null')}catch{}
     $$('[data-soap]').forEach((el,i)=>el.value=Array.isArray(notes)?notes[i]||'':(window.KraneClinical?.id()==='CONS-2041'?soapDefaults[i]:''));
     $('[data-soap-status]').textContent=notes?T('Draft restored in this browser session','กู้คืนร่างในเบราว์เซอร์นี้แล้ว'):T('Demo notes · not saved to a clinical record','บันทึกตัวอย่าง · ยังไม่บันทึกเข้าระบบเวชระเบียน');
   }
   document.addEventListener('input', e => {
+    if(e.target.matches('[data-golden-follow-up]')){try{sessionStorage.setItem('krane.followup-draft.'+window.KraneClinical.id(),e.target.value)}catch{}return;}
+    if(e.target.matches('[data-selected-message]')){try{sessionStorage.setItem('krane.chat-draft.'+window.KraneClinical.id(),e.target.value)}catch{}return;}
     if(e.target.matches('[data-patient-summary]')){try{sessionStorage.setItem('krane.summary.'+window.KraneClinical.id(),e.target.value)}catch{say('Could not save summary. Please retry.')}return;}
     if (!e.target.matches('[data-soap]')) return;
     const st=$('[data-soap-status]');
@@ -293,6 +298,7 @@
     }
     // Hang up (manual 6.2.3): leave the call; if it dropped, call the patient again.
     if (e.target.closest('[data-room-end]')) {
+      try{window.KraneClinical.patch({roomState:'disconnected'});}catch(error){say(error.message);return;}
       const rejoin = $('[data-room-rejoin]'); if (rejoin) rejoin.hidden = false;
       const body = $('[data-room-notice-body]');
       if (body) body.textContent = T('You left the call. If it dropped because of a technical problem, call the patient again. Finish the consultation when you are done.',
@@ -300,6 +306,7 @@
       return;
     }
     if (e.target.closest('[data-room-rejoin]')) {
+      try{window.KraneClinical.patch({roomState:'connected'});}catch(error){say(error.message);return;}
       const room = $('[data-room]'); room.dataset.roomMode = 'video';
       $('[data-room-notice]').hidden = true; e.target.closest('[data-room-rejoin]').hidden = true;
       say(T('Calling the patient again', 'กำลังโทรหาผู้ป่วยอีกครั้ง'));
@@ -507,10 +514,10 @@
       row.dataset.patientState = 'completed';
     }
     if (withOrder) {
-      addAuditEvent(T('Prescription signed and order created', 'ลงนามใบสั่งยาและสร้างคำสั่งซื้อ'), 'CONS-2041 / KR-10293', T('Licence 12345', 'ใบอนุญาต 12345'));
+      addAuditEvent(T('Prescription preview and order created', 'บันทึกใบสั่งยาฉบับจำลองและคำสั่งซื้อ'), window.KraneClinical.id()+' / '+window.KraneClinical.plan().id, T('Licence 12345', 'ใบอนุญาต 12345'));
       document.dispatchEvent(new CustomEvent('krane-doctor-order-created', { detail: { items: dispensed.slice(), total: rxTotal() } }));
-    } else if (referred) addAuditEvent(T('Referral and escalation saved', 'บันทึกการส่งต่อและยกระดับการดูแล'), 'CONS-2041', T('Handoff documented', 'บันทึกการส่งต่อแล้ว'));
-    else addAuditEvent(T('Consultation closed without medicine', 'ปิดการปรึกษาโดยไม่จ่ายยา'), 'CONS-2041', T('Recorded', 'บันทึกแล้ว'));
+    } else if (referred) addAuditEvent(T('Referral and escalation saved', 'บันทึกการส่งต่อและยกระดับการดูแล'), window.KraneClinical.id(), T('Handoff documented', 'บันทึกการส่งต่อแล้ว'));
+    else addAuditEvent(T('Consultation closed without medicine', 'ปิดการปรึกษาโดยไม่จ่ายยา'), window.KraneClinical.id(), T('Recorded', 'บันทึกแล้ว'));
     window.go('consult-done');
     return true;
   }

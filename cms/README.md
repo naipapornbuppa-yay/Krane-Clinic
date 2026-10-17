@@ -16,3 +16,5 @@ The consultation chat now includes a visible medicine editor above the thread. S
 Validation: `node cms/tools/qa-rx-composer.cjs` — SKU search, selection, edited instructions in chat, unconfirmed order state, empty-draft guard and responsive screenshots passed.
 
 Doctor readiness and end-to-end UX review: [DOCTOR-UX-AUDIT-2026-10-11.md](DOCTOR-UX-AUDIT-2026-10-11.md). Includes fixed defects, reproducible QA evidence and remaining backend/clinical-workflow gaps.
+
+Current browser-only workflow: [Doctor/B2C workflow review, 17 October](DOCTOR-WORKFLOW-2026-10-17.md). This iteration is excluded from BE DEV handoff. Use one browser and origin to test shared records; it does not connect a backend.

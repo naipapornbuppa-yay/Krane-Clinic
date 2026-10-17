@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="cms.css?v=20261011-final-brand-v274">
 <link rel="stylesheet" href="custom-select.css?v=20260721b">
 <script src="../krane-clinical-demo.js?v=20261012-sync"></script>
+<script src="../krane-clinical-workflow.js?v=20261017-workflow"></script>
+<link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261017-workflow">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260716a" defer></script>
 <link rel="icon" type="image/svg+xml" href="../assets/brand-final/krane-favicon.svg">
@@ -1128,7 +1130,7 @@
   const sharedPatients={};
   document.addEventListener('krane:open-clinical-case',event=>{
     const c=event.detail;sharedPatients[c.name]={id:c.patientId,age:'—',sex:'—',concern:c.category,time:c.appointmentAt||'—'};
-    loadSelectedPatient({dataset:{patient:c.name,patientState:'waiting'}});
+    loadSelectedPatient({dataset:{patient:c.name,patientState:c.status||'waiting'}});
   });
   function loadSelectedPatient(target){
     if(!target || !target.dataset.patient) return;
@@ -1137,7 +1139,7 @@
     const state = target.dataset.patientState === 'done' ? 'completed' : target.dataset.patientState || 'waiting';
     const firstName = name.split(' ')[0].replace('.','');
     const isThai = !!document.querySelector('.lang__opt[data-lng="th"].is-active');
-    const sex = isThai ? (patient.sex === 'female' ? 'หญิง' : 'ชาย') : patient.sex;
+    const sex = isThai ? (patient.sex === 'female' ? 'หญิง' : patient.sex === 'male'?'ชาย':'—') : patient.sex;
     const concernTH = {'Hair loss':'ผมร่วง','General consultation':'ปรึกษาทั่วไป','Skin concern':'ปัญหาผิว','Sleep & stress':'การนอนและความเครียด'};
     const concern = isThai ? (concernTH[patient.concern] || patient.concern) : patient.concern;
     const stateUI = {
@@ -1147,7 +1149,7 @@
       'plan-pending': isThai ? ['พบผู้ป่วยเสร็จแล้ว','รอแผนการรักษา','ข้อมูลการปรึกษาพร้อมแล้ว จัดทำและส่งแผนการรักษาให้ผู้ป่วย','จัดทำแผนการรักษา','prescribe',false] : ['Consultation completed','Plan pending','The consultation is complete. Prepare and send the treatment plan.','Prepare treatment plan','prescribe',false],
       upcoming: isThai ? ['ยังไม่ถึงเวลานัด','กำลังจะมาถึง','ตรวจแบบสอบถามไว้ก่อนได้ ระบบจะเปิดปุ่มเข้าห้องเมื่อถึงเวลานัด','นัดเวลา ' + patient.time,'preconsult',true] : ['Appointment not started','Upcoming','Review the intake now. Joining becomes available at the appointment time.','Scheduled ' + patient.time,'preconsult',true],
       completed: isThai ? ['พบผู้ป่วยเสร็จแล้ว','เสร็จสิ้น','สรุปการปรึกษาและแผนการรักษาถูกบันทึกไว้ในประวัติผู้ป่วย','บันทึกสรุปแล้ว','preconsult',true] : ['Visit completed','Completed','The consultation summary and care plan are saved in the patient history.','Summary saved','preconsult',true]
-    }[state];
+    }[({booked:"upcoming",accepted:"waiting",callback:"waiting",cancelled:"completed","no-show":"completed",reassigned:"waiting",rescheduled:"upcoming"})[state] || state] || [state,state,"","","preconsult",true];
     currentPatientSelection = {name,state};
     if(selectedName) selectedName.textContent = name;
     if(selectedSummary) selectedSummary.textContent = patient.age + ' · ' + sex + ' · ' + concern + ' · ' + (isThai ? 'นัด ' : 'matched ') + patient.time + ' · ' + (isThai ? 'รหัสผู้ป่วย ' : 'patient ID ') + patient.id;
@@ -1364,7 +1366,7 @@
   function calendarEventMarkup(event, extraClass){
     const statusClass = event[2] === 'waiting' ? ' cal-event--waiting' : event[2] === 'done' ? ' cal-event--done' : '';
     // The name sits in its own node so the language layer can translate it.
-    return '<button type="button" class="cal-event'+statusClass+(extraClass || '')+'" data-page="preconsult" data-patient="'+event[1]+'" data-patient-state="'+event[2]+'">'+event[0]+' · <span>'+event[1]+'</span></button>';
+    return '<button type="button" class="cal-event'+statusClass+(extraClass || '')+'" data-page="preconsult" data-clinical-select="'+(event[3]||'CONS-2041')+'" data-patient="'+event[1]+'" data-patient-state="'+event[2]+'">'+event[0]+' · <span>'+event[1]+'</span></button>';
   }
   function sameCalendarDay(a,b){
     return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -1383,7 +1385,7 @@
   seedCalendarEvents(26,[['13:30','Win T.','done']]);
   seedCalendarEvents(30,[['16:00','Pim R.','upcoming']]);
   function eventsForDate(date){
-    return calendarEvents[dateKey(date)] || [];
+    return window.KraneClinical.records('appointment').filter(a=>a.doctorId===window.KraneClinical.doctorId()&&dateKey(new Date(a.at))===dateKey(date)&&a.status==='booked').map(a=>[new Date(a.at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),String(window.KraneClinical.cases().find(c=>c.id===a.encounterId)?.name||a.patientId).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])),'upcoming',a.encounterId]);
   }
   function formatCalendarRange(){
     if(!rangeLabel) return;
@@ -1408,7 +1410,15 @@
   let shiftKind = 'work';
 
   function saveScheduleState(){
-    try { localStorage.setItem(scheduleStorageKey, JSON.stringify({weekly:weeklyDefault, overrides:shiftOverrides})); } catch (error) {}
+    try {
+      const config={weekly:weeklyDefault,overrides:shiftOverrides};
+      for(const appointment of (window.KraneClinical?.records('appointment')||[]).filter(a=>a.status==='booked'&&a.doctorId==='DR-01'&&Date.parse(a.at)>Date.now())){
+        const date=new Date(appointment.at),key=dateKey(date),hours=Object.hasOwn(config.overrides,key)?config.overrides[key]:config.weekly[date.getDay()];
+        const time=date.getHours()*60+date.getMinutes(),range=hours?.split('-').map(v=>v.split(':').reduce((h,m)=>h*60+Number(m),0));
+        if(!range||time<range[0]||time+15>range[1])throw Error(langTH()?'มีนัดในช่วงเวลานี้ กรุณาเลื่อนนัดก่อนเปลี่ยนเวลาทำงาน':'Reschedule existing appointments before closing these hours.');
+      }
+      localStorage.setItem(scheduleStorageKey,JSON.stringify(config));window.dispatchEvent(new Event('krane:clinical-change'));return true;
+    } catch(error){const previous=window.KraneClinical?.schedule('DR-01')||JSON.parse(localStorage.getItem(scheduleStorageKey)||'null');if(previous){weeklyDefault=previous.weekly;shiftOverrides=previous.overrides;}toast(error.message);return false;}
   }
 
   function shiftForDate(date){
@@ -1500,7 +1510,7 @@
       } else {
         shiftOverrides[key] = value;
       }
-      saveScheduleState();
+      if(!saveScheduleState()) return;
       closeShiftModal();
       renderCalendar();
       toast(shiftKind === 'off' ? (langTH() ? 'บันทึกวันหยุดแล้ว' : 'Day off saved') : (langTH() ? 'บันทึกตารางงานแล้ว' : 'Working day saved'));
@@ -1546,7 +1556,7 @@
           : status === 'done'
             ? (langTH() ? 'เสร็จสิ้น · เปิดดูสรุปได้' : 'Completed · summary available')
             : (langTH() ? 'นัดหมายถัดไป · ตรวจแบบสอบถาม' : 'Upcoming · review intake');
-        return '<button type="button" class="day-event'+cls+'" data-page="preconsult" data-patient="'+event[1]+'" data-patient-state="'+status+'"><span><b>'+event[1]+'</b><small>'+detail+'</small></span><b>'+event[0]+'</b></button>';
+        return '<button type="button" class="day-event'+cls+'" data-page="preconsult" data-clinical-select="'+(event[3]||'CONS-2041')+'" data-patient="'+event[1]+'" data-patient-state="'+status+'"><span><b>'+event[1]+'</b><small>'+detail+'</small></span><b>'+event[0]+'</b></button>';
       }).join('');
       return '<div class="day-time">'+hour+':00</div><div class="day-lane">'+eventMarkup+'</div>';
     }).join('');
@@ -1554,8 +1564,7 @@
   function renderCalendarStats(){
     const todayEvents = eventsForDate(calendarToday);
     const monthPrefix = dateKey(new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1)).slice(0,7);
-    const monthCount = Object.keys(calendarEvents).filter(key => key.slice(0,7) === monthPrefix)
-      .reduce((total,key) => total + calendarEvents[key].length, 0);
+    const monthCount=window.KraneClinical.records('appointment').filter(a=>a.doctorId===window.KraneClinical.doctorId()&&dateKey(new Date(a.at)).slice(0,7)===monthPrefix&&a.status==='booked').length;
     const values = {
       today:String(todayEvents.length),
       month:String(monthCount),
@@ -1564,6 +1573,7 @@
     };
     document.querySelectorAll('[data-calendar-stat]').forEach(node => { node.textContent = values[node.dataset.calendarStat]; });
   }
+  window.addEventListener('krane:clinical-change',()=>renderCalendar());
   function renderCalendar(){
     renderMonthCalendar(); renderDayCalendar(); formatCalendarRange(); renderCalendarStats(); reapplyLangIfTH();
   }
@@ -1599,8 +1609,8 @@
 
   window.kraneSchedule = {
     getWeekly: function(){ return Object.assign({}, weeklyDefault); },
-    setWeekly: function(nextWeekly){ weeklyDefault = Object.assign({}, nextWeekly); saveScheduleState(); renderCalendar(); },
-    removeOverride: function(key){ delete shiftOverrides[key]; saveScheduleState(); renderCalendar(); },
+    setWeekly: function(nextWeekly){ weeklyDefault = Object.assign({}, nextWeekly); const saved=saveScheduleState(); renderCalendar(); return saved; },
+    removeOverride: function(key){ delete shiftOverrides[key]; const saved=saveScheduleState(); renderCalendar(); return saved; },
     openEditor: openShiftModal
   };
 
@@ -1910,7 +1920,7 @@
       if(status) status.textContent = th() ? 'เวลาเลิกงานต้องอยู่หลังเวลาเริ่มงาน' : 'End time must be after start time';
       return;
     }
-    if(window.kraneSchedule) window.kraneSchedule.setWeekly(nextWeekly);
+    if(window.kraneSchedule && !window.kraneSchedule.setWeekly(nextWeekly)) return;
     if(status) status.textContent = (th() ? 'บันทึกแล้ว ' : 'Saved at ') + new Date().toLocaleTimeString(th() ? 'th-TH' : 'en-GB',{hour:'2-digit',minute:'2-digit'});
     toast(th() ? 'บันทึกเวลาทำงานแล้ว' : 'Working hours saved');
   });
@@ -1924,7 +1934,9 @@
   applyCmsHash();
 </script>
 
-<script src="doctor-core-flow.js?v=20261012-sync"></script>
+<script src="doctor-core-flow.js?v=20261017-workflow"></script>
 <script src="../krane-golden-doctor.js?v=20261012-sync"></script>
-<script src="doctor-workspace.js?v=20261012"></script><script src="../krane-clinical-ui.js?v=20261012-sync"></script>
-<script src="../krane-clinical-requests.js?v=20261012-sync"></script></body></html>
+<script src="doctor-workspace.js?v=20261012"></script><script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-workspace.js?v=20261017-workflow"></script>
+</body></html>

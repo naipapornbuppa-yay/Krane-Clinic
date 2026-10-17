@@ -276,8 +276,9 @@ try {
 
 /* ---- components ----------------------------------------------------------- */
 // Availability count must not depend on how close today's service is to closing.
-// Tomorrow retains the full fixture window; separate booking tests cover today.
-await app.locator('#appointment [data-appointment-day]').nth(1).evaluate(button=>button.click());
+// Use an actual working day: tomorrow may be a shared doctor day off.
+// Keep the minimum-slot contract; separate booking tests cover closed days.
+await app.evaluate(()=>{const now=new Date();const chips=[...document.querySelectorAll('#appointment [data-appointment-day]')];const chip=chips.find((_,index)=>{const d=new Date(now);d.setDate(d.getDate()+index);const date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;return window.KraneClinical.slots(date).length>=6;});if(!chip)throw Error('No working day with six available slots in booking window');chip.click();});
 for (const item of contract.components) {
   did();
   const count = await app.evaluate(sel => document.querySelectorAll(sel).length, item.selector);

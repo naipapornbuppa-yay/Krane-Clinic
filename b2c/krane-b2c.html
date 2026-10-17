@@ -69,6 +69,8 @@
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-clinical-demo.js?v=20261012-sync"></script>
+<script src="../krane-clinical-workflow.js?v=20261017-workflow"></script>
+<link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261017-workflow">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
 <script src="i18n.js?v=20261012-sync" defer></script>
@@ -8772,6 +8774,8 @@
       }
     });persistFlowState();
   }
+  document.addEventListener('krane:clinical-selected',()=>{const c=window.KraneClinical.current();if(c.id==='CONS-2041')return;flowState.sharedEncounterId=c.id;flowState.clinicalPatientId=c.patientId;persistFlowState();});
+  window.addEventListener('krane:clinical-change',()=>{const c=window.KraneClinical.current();if(flowState.sharedEncounterId!==c.id)return;const active=document.querySelector('.screen.active')?.id;if(c.status==='in-consult'&&['waitroom','queue-resume'].includes(active))show('consult');if(c.status==='completed'&&['consult','video','rx-writing'].includes(active))show('rx-plan');});
   document.addEventListener('krane:accept-plan',()=>{importClinicalPrescription(window.KraneClinical.plan());refreshMedicationCheckout();show('payment');});
   if(flowState.orderState.clinicalPrescription)importClinicalPrescription(flowState.orderState.clinicalPrescription);
 
@@ -9095,23 +9099,27 @@
   const appointmentDayIndex = () => [...document.querySelectorAll('#appointment [data-appointment-day]')]
     .findIndex(day => day.getAttribute('aria-checked')==='true');
   function appointmentSlotUnavailable(minutes,dayIndex,now){
-    const currentMinutes=now.getHours()*60+now.getMinutes();
-    if(dayIndex===0 && minutes<currentMinutes+15) return true;
-    const slotIndex=(minutes-540)/15;
-    // Deterministic sample occupancy, varied by day; no backend availability is implied.
-    return (slotIndex+dayIndex*3)%9===0 || (slotIndex+dayIndex*7)%17===0;
+    const date=new Date(now);date.setDate(date.getDate()+dayIndex);
+    const day=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    return !window.KraneClinical.slots(day).includes(appointmentTime(minutes));
   }
   window.kraneProgramSchedule={slots(date){
     const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
     const selected=new Date(date+'T00:00:00'),dayIndex=Math.round((selected-today)/86400000);
     if(!Number.isFinite(dayIndex)||dayIndex<0||dayIndex>30)return [];
-    const values=[];for(let minutes=540;minutes<1440;minutes+=15){if(!appointmentSlotUnavailable(minutes,dayIndex,now))values.push(appointmentTime(minutes));}return values;
+    return window.KraneClinical.slots(date);
   }};
   function renderAppointmentSlots(){
     const scr=document.getElementById('appointment');
     const grid=scr?.querySelector('[data-appointment-slots]');
     if(!grid) return;
     const now=new Date();
+    if(!scr.dataset.sharedSlotsInitialized){
+      scr.dataset.sharedSlotsInitialized='true';
+      const chips=[...scr.querySelectorAll('[data-appointment-day]')];
+      const first=chips.findIndex((chip,index)=>{const d=new Date(now);d.setDate(d.getDate()+index);return window.KraneClinical.slots(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`).length>0;});
+      if(first>=0)chips.forEach((chip,index)=>chip.setAttribute('aria-checked',String(index===first)));
+    }
     const dayIndex=Math.max(0,appointmentDayIndex());
     const thai=document.documentElement.lang==='th';
     if(appointmentSlot){
@@ -9120,7 +9128,7 @@
     }
     const slots=[];
     let hourRow=0,lastHour=-1,hourColumn=0;
-    for(let minutes=540;minutes<1440;minutes+=15){
+    for(let minutes=0;minutes<1440;minutes+=15){
       const unavailable=appointmentSlotUnavailable(minutes,dayIndex,now);
       if(unavailable) continue;
       const slotHour=Math.floor(minutes/60);
@@ -9132,7 +9140,7 @@
       const [hour,minute]=time.split(':');
       slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot style="grid-row:${hourRow};grid-column:${hourColumn}" data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
     }
-    grid.innerHTML=slots.join('');
+    grid.innerHTML=slots.length?slots.join(''):`<p class="hint" style="grid-column:1/-1" role="status">${thai?'วันนี้ไม่มีเวลาว่าง กรุณาเลือกวันอื่น':'No appointments available on this date. Choose another day.'}</p>`;
     syncAppointment();
   }
   function syncAppointment(){
@@ -9181,13 +9189,15 @@
     const currentMinutes=now.getHours()*60+now.getMinutes();
     // If the remaining part of today is inside the 15-minute lead time, open
     // tomorrow instead of presenting a whole day of unavailable times.
-    const defaultDayIndex=currentMinutes+15>1425 ? 1 : 0;
+    const availableDay=[0,1,2,3].find(index=>{const d=new Date(now);d.setDate(d.getDate()+index);return window.KraneClinical.slots(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`).length;});
+    const defaultDayIndex=availableDay??0;
     scr.querySelectorAll('[data-appointment-day]').forEach((day,index) =>
       day.setAttribute('aria-checked',String(index===defaultDayIndex)));
     const day=scr.querySelector('[data-appointment-day][aria-checked="true"]');
     appointmentDay=day?.dataset.dayLabel || 'วันนี้';
     renderAppointmentSlots();
   }
+  queueMicrotask(()=>resetAppointment());
   document.body.addEventListener('click', event => {
     const day=event.target.closest('#appointment [data-appointment-day]');
     if(day){
@@ -9226,6 +9236,7 @@
       scheduledAt.setDate(scheduledAt.getDate()+Math.max(0,dayIndex));
       const [hours,minutes]=appointmentSlot.split(':').map(Number);
       scheduledAt.setHours(hours,minutes,0,0);
+      if(flowState.sharedEncounterId){try{window.KraneClinical.book(scheduledAt.toISOString());}catch(error){showActionToast(error.message,'warning');renderAppointmentSlots();return;}}
       flowState.appointmentAt=scheduledAt.toISOString();
       pendingQueue=null;
       if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
@@ -10170,16 +10181,16 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(!IS_DEMO_EMBED && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
       try {
-        const answers=[...document.querySelectorAll('[id^="intake"] input,[id^="intake"] select,[id^="intake"] textarea')].filter(el=>el.type!=='file' && !['password','hidden','button','submit'].includes(el.type) && (!['checkbox','radio'].includes(el.type)||el.checked) && el.value).map(el=>({label:el.closest('label')?.textContent.trim()||document.querySelector('label[for="'+CSS.escape(el.id)+'"]')?.textContent.trim()||el.name||el.id||'คำตอบ',value:el.value}));
-        const c=window.KraneClinical.create({name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,answers,channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;persistFlowState();
-      } catch { showActionToast('บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning'); }
+        const answers=window.KraneClinical.captureIntake();
+        const c=window.KraneClinical.create({patientId:flowState.clinicalPatientId||undefined,name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,contact:{phone:flowState.partnerPhone||flowState.verifiedPhone||'',email:flowState.email||''},answers,attachments:window.KraneClinicalAssets?.attachments()||[],channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,consentRecord:consentLedger(),entitlement:flowState.partnerPaymentMethod||'',consultationPayment:flowState.consultationPaid?'paid':flowState.consultationFeeAcknowledged?'acknowledged':'pending',appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;flowState.clinicalPatientId=c.patientId;persistFlowState();
+      } catch(error) { showActionToast(error.message||'บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning');return; }
     }
     if(id==='payment-success' && flowState.orderState.clinicalPrescription){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
     if(id==='articles') window.kraneArticleMock?.renderFeed();
     if(id==='article') window.kraneArticleMock?.renderDetail();
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
-    if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
+    if(id==='tracking' || id==='activity' || id==='order-summary'){syncTrackingDelivery();if(flowState.orderState.clinicalPrescription?.id===window.KraneClinical.plan()?.id){try{window.KraneClinical.orderUpdate({deliveryStatus:orderFulfilmentStatus(),deliveryMethod:flowState.orderState.deliveryMethod,paidAmount:flowState.orderState.paidAmount||0});}catch(error){showActionToast(error.message,'warning');}}}
     if(id==='tracking' && orderFulfilmentStatus()==='Delivered' && !flowState.csatDone){
       requestAnimationFrame(()=>{if(document.querySelector('#tracking.active'))openCsatModal('tracking');});
     }
@@ -10874,6 +10885,8 @@
       ? (reduceMotion ? 400 : 4200)
       : Math.max(0,pendingQueue.startedAt+QUEUE_ADMIT_MS-Date.now());
     if(unavailable) return;
+    // Shared encounters are admitted by the doctor, never by the fixture timer.
+    if(window.KraneClinical?.id() && window.KraneClinical.id() !== 'CONS-2041') return;
     waitTimer = setTimeout(() => {
       if(!w.classList.contains('active')) return;
       clearInterval(waitCountdownTimer);
@@ -13355,6 +13368,7 @@
         doctor:csatScore('doctor'),
         note:document.getElementById('csat-note')?.value.trim() || ''
       };
+      try{window.KraneClinical.review(flowState.csat);}catch(error){showActionToast(error.message,'warning');return;}
       showActionToast('ขอบคุณสำหรับคะแนน','success');
       flowState.csatDone=true;
       syncDeliveryNotification();
@@ -14833,8 +14847,10 @@
   </defs>
 </svg>
 <script src="treatment-folders.js?v=20261011-program-resume"></script>
-<script src="treatment-pause.js?v=20261013-resume-edit"></script>
+<script src="treatment-pause.js?v=20261017-workflow"></script>
 <script src="modal-chrome.js?v=20261013-consistent"></script>
-<script src="../krane-clinical-ui.js?v=20261012-sync"></script>
-<script src="../krane-clinical-requests.js?v=20261012-sync"></script></body>
+<script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-workspace.js?v=20261017-workflow"></script>
+</body>
 </html>

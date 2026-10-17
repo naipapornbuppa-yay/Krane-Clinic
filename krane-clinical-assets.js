@@ -1,0 +1,10 @@
+/* IndexedDB keeps uploaded demo files out of the small localStorage snapshot. */
+(()=>{
+ const api=window.KraneClinical;if(!api)return;let dbPromise;
+ function db(){if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{const r=indexedDB.open('krane-clinical-files',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});return dbPromise;}
+ async function put(id,file){const d=await db();return new Promise((resolve,reject)=>{const t=d.transaction('files','readwrite');t.objectStore('files').put(file,id);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error);});}
+ async function get(id){const d=await db();return new Promise((resolve,reject)=>{const r=d.transaction('files').objectStore('files').get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+ const fields=new Map();
+ document.addEventListener('change',async e=>{const input=e.target;if(input.type!=='file'||!input.closest('section[id^="intake"]'))return;const refs=[];fields.set(input,refs);for(const file of input.files||[]){if(!['image/jpeg','image/png','image/webp','application/pdf'].includes(file.type)||file.size>10*1024*1024){input.setCustomValidity('เลือกภาพหรือ PDF ไม่เกิน 10 MB');input.reportValidity();continue;}input.setCustomValidity('');const ref={assetId:'FILE-'+crypto.randomUUID(),name:file.name,type:file.type,size:file.size,status:'pending'};refs.push(ref);try{await put(ref.assetId,file);ref.status='ready';}catch{ref.status='failed';input.setCustomValidity('บันทึกไฟล์ไม่สำเร็จ กรุณาเลือกไฟล์อีกครั้ง');input.reportValidity();}for(const c of api.cases()){if(c.attachments?.some(a=>a.assetId===ref.assetId)){api.patchCase(c.id,{attachments:c.attachments.map(a=>a.assetId===ref.assetId?{...ref}:a)});}}window.dispatchEvent(new Event('krane:assets-ready'));}},true);
+ window.KraneClinicalAssets={get,put,attachments:()=>[...fields.entries()].filter(([input])=>input.isConnected).flatMap(([,refs])=>refs).map(r=>({...r}))};
+})();

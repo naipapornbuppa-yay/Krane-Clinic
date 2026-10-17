@@ -1,8 +1,9 @@
 /* Prototype-only program pause. Production requires an authenticated case API. */
 (()=>{
- const key='krane.paused-programs.v1';
+ const storageKey=()=>window.KraneClinical?.current().id==='CONS-2041'?'krane.paused-programs.v1':'krane.paused-programs.v1.'+window.KraneClinical.current().patientId;
+ let key=storageKey();
  let paused={};try{paused=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch{}
- const isPaused=category=>Boolean(paused[category] && paused[category].state!=='active');
+ const isPaused=category=>{const shared=window.KraneClinical?.program(category);return shared?shared.state==='paused':Boolean(paused[category] && paused[category].state!=='active');};
  const hasCancelledFollowup=category=>Boolean(paused[category]);
  const appointmentFor=category=>!isPaused(category)?paused[category]?.appointmentAt:null;
  const layer=document.createElement('div');layer.className='modal-layer';layer.id='treatment-pause-modal';layer.hidden=true;layer.setAttribute('aria-hidden','true');
@@ -44,11 +45,13 @@
   if(resume&&!window.kraneProgramSchedule.slots(dateInput.value).includes(timeInput.value)){updateTimes();const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='กรุณาเลือกเวลานัดใหม่';error.hidden=false;return;}
   const appointmentAt=resume?new Date(dateInput.value+'T'+timeInput.value+':00').toISOString():null;
   const next={...paused,[category]:resume?{...paused[category],state:'active',resumedAt:new Date().toISOString(),appointmentAt}:{state:'paused',pausedAt:new Date().toISOString()}};
+  const previous=localStorage.getItem(key);
   try{localStorage.setItem(key,JSON.stringify(next));}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง';error.hidden=false;return;}
-  try{window.KraneClinical?.setProgram(category,next[category]);}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='Could not sync. Please retry.';error.hidden=false;return;}
+  try{window.KraneClinical?.setProgram(category,next[category]);}catch{try{if(previous===null)localStorage.removeItem(key);else localStorage.setItem(key,previous);}catch{}const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='Could not sync. Please retry.';error.hidden=false;return;}
   paused=next;decorate(target);sortFolders();close();document.dispatchEvent(new CustomEvent('krane:program-paused',{detail:{category:target.dataset.category}}));
  });
  document.querySelectorAll('#profile .treatment-card').forEach(decorate);
  sortFolders();
+ document.addEventListener('krane:clinical-selected',()=>{key=storageKey();try{paused=JSON.parse(localStorage.getItem(key)||'{}');}catch{paused={};}document.querySelectorAll('#profile .treatment-card').forEach(decorate);sortFolders();});
  window.kraneTreatmentPause={isPaused,hasCancelledFollowup,appointmentFor,attach};
 })();
