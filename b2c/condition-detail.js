@@ -552,7 +552,7 @@
           <div class="cd-review__story-media" data-review-carousel>
             <div class="cd-review__frame"><div data-review-slide><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video></div>
             ${isFlow?'':`<figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--before':''}"><img src="${before}" alt="ภาพตัวอย่างก่อนเริ่มดูแล" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--after':''}"><img src="${after}" alt="ภาพตัวอย่างหลังติดตาม" loading="lazy"><figcaption>หลังติดตาม</figcaption></figure>`}</div>
-            ${isFlow?'':`<div class="cd-review__controls" aria-label="เลือกสื่อรีวิว"><button type="button" data-review-select="0" aria-pressed="true">วิดีโอ</button><button type="button" data-review-select="1" aria-pressed="false">ก่อน</button><button type="button" data-review-select="2" aria-pressed="false">หลัง</button><button type="button" data-review-pause aria-pressed="false" aria-label="หยุดสลับสื่ออัตโนมัติ">หยุดสลับ</button></div>`}
+            ${isFlow?'':`<div class="cd-review__controls" aria-label="เลือกสื่อรีวิว"><div class="cd-review__dots"><button type="button" data-review-select="0" aria-pressed="true" aria-label="วิดีโอ"></button><button type="button" data-review-select="1" aria-pressed="false" aria-label="ภาพก่อน"></button><button type="button" data-review-select="2" aria-pressed="false" aria-label="ภาพหลัง"></button></div><button type="button" data-review-pause aria-pressed="false" aria-label="หยุดสลับสื่ออัตโนมัติ"><span aria-hidden="true">Ⅱ</span></button></div>`}
           </div>
           <p class="cd-review__quote">${isFlow?'คุยกับแพทย์ได้อย่างเป็นส่วนตัว สะดวก และไม่ต้องเดินทางไปคลินิก':'มีแพทย์ช่วยติดตามและอธิบายแผนการดูแลอย่างต่อเนื่อง'}</p>
           <p class="cd-fine"><b>${(isFlow?['คุณ ก.','คุณ น.','คุณ พ.']:isHair?['คุณต้น','คุณนนท์','คุณภัทร']:['คุณเมย์','คุณพลอย','คุณนัท'])[i]}</b> · ${programme.title}</p>
@@ -797,7 +797,7 @@
     const buttons=[...carousel.querySelectorAll('[data-review-select]')],video=carousel.querySelector('video'),pause=carousel.querySelector('[data-review-pause]');
     let current=0,stopped=prefersReducedMotion.matches;
     const show=index=>{current=index;slides.forEach((slide,i)=>slide.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));if(index!==0)video.pause();};
-    const syncPause=()=>{pause.setAttribute('aria-pressed',String(stopped));pause.textContent=stopped?'เล่นสลับ':'หยุดสลับ';pause.setAttribute('aria-label',stopped?'เริ่มสลับสื่ออัตโนมัติ':'หยุดสลับสื่ออัตโนมัติ');};
+    const syncPause=()=>{pause.setAttribute('aria-pressed',String(stopped));pause.querySelector('span').textContent=stopped?'▶':'Ⅱ';pause.setAttribute('aria-label',stopped?'เริ่มสลับสื่ออัตโนมัติ':'หยุดสลับสื่ออัตโนมัติ');};
     buttons.forEach((button,i)=>button.addEventListener('click',()=>show(i)));
     pause.addEventListener('click',()=>{stopped=!stopped;syncPause();});syncPause();
     window.setInterval(()=>{
