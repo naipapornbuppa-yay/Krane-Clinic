@@ -38,10 +38,10 @@ try {
     }
     for (const route of ['doctor-detail.html', 'advisor-detail.html']) {
       await page.goto(base + route, { waitUntil:'domcontentloaded' });
-      await page.locator('.detail-nav .detail-logo').waitFor();
+      await page.locator('.site-header .brand-lockup, .detail-nav .detail-logo').first().waitFor();
       results.push(await page.evaluate(({route,width}) => {
         const box = element => { const r=element.getBoundingClientRect(); return {x:Math.round(r.x*10)/10,y:Math.round(r.y*10)/10,width:Math.round(r.width*10)/10,height:Math.round(r.height*10)/10}; };
-        return {route,width,header:box(document.querySelector('.detail-nav')),logo:box(document.querySelector('.detail-logo'))};
+        return {route,width,header:box(document.querySelector('.site-header,.detail-nav')),logo:box(document.querySelector('.site-header .brand-lockup,.detail-logo'))};
       }, {route,width}));
     }
     for (const stage of ['profile','activity','notifications','settings','empty-activities','intake1','intake-concern','intake-general','partner-idcard','partner-patient-info','partner-insurance','consultpay','payment']) {

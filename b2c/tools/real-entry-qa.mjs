@@ -73,9 +73,10 @@ await step('payment choice','intake-concern');
     questions: [...modal.querySelectorAll('fieldset legend')].map(legend => legend.textContent.trim())
   }));
   if (!safety.visible || safety.title !== 'ยืนยันข้อมูลความปลอดภัย'
-      || JSON.stringify(safety.questions) !== JSON.stringify(['โรคประจำตัว','ยาที่ใช้ประจำ','ประวัติแพ้ยา'])) {
+      || JSON.stringify(safety.questions) !== JSON.stringify(['คุณมีโรคประจำตัวใช่หรือไม่?','คุณใช้ยาเป็นประจำใช่หรือไม่?','คุณมีประวัติแพ้ยาใช่หรือไม่?'])) {
     fail('partner questions', JSON.stringify(safety));
   }
+  for(const row of await p.locator('#health-history-modal fieldset').all())await row.getByRole('radio',{name:'ไม่ใช่',exact:true}).click();
   await p.locator('[data-health-history-confirm]').click();
   await step('safety answers', 'matching');
   await p.waitForSelector('#consultpay.active', { timeout: 30000*qaTimeoutFactor });

@@ -72,6 +72,7 @@ await test('modal-gallery-replaces-previous',async p=>{
  assert.equal(await p.locator('.modal-layer:not([hidden])').count(),0);
 });
 await test('pause-program-persistence',async p=>{
+ await p.addInitScript(()=>localStorage.setItem('krane-doctor-schedule-v1',JSON.stringify({weekly:Object.fromEntries([0,1,2,3,4,5,6].map(day=>[day,'09:00-17:00'])),overrides:{}})));
  for(const width of [390,890]){
  await p.setViewportSize({width,height:900});await open(p,'profile');
  await p.evaluate(()=>localStorage.removeItem('krane.paused-programs.v1'));await p.reload();
@@ -228,6 +229,7 @@ await test('address-delete-confirmation',async p=>{
  await buttons.first().click();await p.locator('[data-delete-confirm]').click();assert.equal(await buttons.count(),before-1);
 });
 await test('appointment-flat-available-slots',async p=>{
+ await p.addInitScript(()=>localStorage.setItem('krane-doctor-schedule-v1',JSON.stringify({weekly:Object.fromEntries([0,1,2,3,4,5,6].map(day=>[day,'09:00-17:00'])),overrides:{}})));
  await open(p,'appointment');await p.locator('[data-appointment-day]').nth(1).click();
  assert.equal(await p.locator('[data-appointment-period]').count(),0);
  assert.equal(await p.locator('[data-appointment-slot][aria-disabled="true"]').count(),0);
@@ -332,19 +334,19 @@ await test('red-flag-sheet-weight-pages',async p=>{
  await p.locator('#obesity-risk-modal [data-obesity-risk-choice="yes"]:visible').click();assert(await p.locator('[data-obesity-risk-confirm]').isDisabled());
 });
 await test('red-flag-sheet-ed',async p=>{
- await open(p,'conditions');await p.locator('[data-category-id="sexual-health"]').first().click();await p.evaluate(()=>location.hash='intake3');
- await p.locator('#red-flag-modal').waitFor();await p.locator('#red-flag-modal [role="radio"]').filter({hasText:/^ไม่$/}).click();await p.locator('#red-flag-modal [data-next]').click();
- await p.locator('#intake4.active').waitFor();await p.locator('#red-flag-modal').waitFor();await p.locator('#red-flag-modal [role="radio"]').filter({hasText:'ใช่'}).click();await p.locator('#red-flag-modal [data-next]').click();await p.locator('#ineligible.active').waitFor();
+ await p.goto(`${base}/b2c/krane-b2c.html?entry=direct&fresh=1&category=sexual-health#intake4`);
+ const modal=p.locator('#red-flag-modal');await modal.waitFor();assert.equal(await modal.locator('fieldset').count(),2);
+ assert(await modal.locator('[data-next]').isDisabled());
+ for(const [i,row] of (await modal.locator('fieldset').all()).entries())await row.getByRole('radio',{name:i===0?'ใช่':'ไม่ใช่',exact:true}).click();
+ await modal.locator('[data-next]').click();await p.locator('#ineligible.active').waitFor();
 });
 await test('red-flag-sheet-hair',async p=>{
- await open(p,'conditions');await p.locator('[data-category-id="hair-skin"]').first().click();
- await p.evaluate(()=>location.hash='intake3');
- await p.locator('#intake3 [data-question-id="hair.severity"] .option').first().click();
- await p.locator('#red-flag-modal').waitFor();
- assert.equal(await p.locator('#red-flag-modal fieldset').count(),1);
- assert(await p.locator('#red-flag-modal [data-next]').isDisabled());
- await p.locator('#red-flag-modal [role="radio"]').filter({hasText:'ใช่'}).click();
- await p.locator('#red-flag-modal [data-next]').click();await p.locator('#ineligible.active').waitFor();
+ await p.goto(`${base}/b2c/krane-b2c.html?entry=direct&fresh=1&category=hair-skin#intake5`);
+ assert.equal(await p.locator('#red-flag-modal').count(),0);
+ await p.locator('#intake5 [data-direct-intake-complete]').last().click();
+ const modal=p.locator('#red-flag-modal');await modal.waitFor();assert.equal(await modal.locator('fieldset').count(),3);assert(await modal.locator('[data-next]').isDisabled());
+ for(const [i,row] of (await modal.locator('fieldset').all()).entries())await row.getByRole('radio',{name:i===0?'ใช่':'ไม่ใช่',exact:true}).click();
+ await modal.locator('[data-next]').click();await p.locator('#ineligible.active').waitFor();
 });
 await test('partner-review-payment-failure-route',async p=>{await open(p,'partner-phr','partner');await p.setViewportSize({width:1440,height:900});await p.locator('.rail [data-go="consultpay-fail"]').first().evaluate(el=>{for(let n=el.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;});await p.locator('.rail [data-go="consultpay-fail"]').first().click();await p.locator('#consultpay-fail.active').waitFor();assert.equal(await p.locator('#partner-phr.active').count(),0);});
 await test('partner-review-no-doctor-route',async p=>{await open(p,'partner-phr','partner');await p.setViewportSize({width:1440,height:900});const link=p.locator('.rail [data-demo-nomatch]').first();await link.evaluate(el=>{for(let n=el.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;});await link.click();await p.locator('#matching.active').waitFor();assert.equal(await p.locator('#partner-phr.active').count(),0);await p.locator('#appointment.active').waitFor({timeout:30000*qaTimeoutFactor});});
@@ -374,7 +376,7 @@ await test('date-placeholder-and-value',async p=>{await open(p,'insurance','part
 await test('documents-toolbar-mobile',async p=>{await open(p,'my-documents');const search=await p.locator('.my-documents__search').boundingBox();const sort=await p.locator('.my-documents__toolbar .custom-select__trigger').boundingBox();assert(search&&sort);assert(Math.abs(search.y-sort.y)<2);assert(search.width>sort.width);await p.locator('[data-document-search]').fill('ZZ-no-document');assert(await p.locator('[data-document-empty]').isVisible());});
 await test('notification-button-appearance',async p=>{for(const width of [390,1440]){await p.setViewportSize({width,height:900});await open(p,'notifications');const rows=await p.locator('#notifications button.notif:visible').evaluateAll(nodes=>nodes.map(n=>{const s=getComputedStyle(n);return {appearance:s.appearance,background:s.backgroundColor,left:s.borderLeftWidth,right:s.borderRightWidth,bottom:s.borderBottomWidth,top:s.borderTopStyle}}));assert(rows.length>10);for(const row of rows){assert.equal(row.appearance,'none');assert.equal(row.background,'rgba(0, 0, 0, 0)');assert.equal(row.left,'0px');assert.equal(row.right,'0px');assert.equal(row.bottom,'0px');assert(['none','solid'].includes(row.top));}await p.screenshot({path:output+'/notifications-'+width+'.png',fullPage:true});}});
 await test('notification-review-reentry',async p=>{await p.goto(`${base}/b2c/krane-b2c.html?fresh=1&demoStage=tracking&demoStatus=Delivered#tracking`);for(let i=0;i<2;i++){await p.locator('#csat-modal:not([hidden])').waitFor();await p.locator('#csat-modal .modal-dialog__actions [data-csat-close]').click();await p.evaluate(()=>location.hash='notifications');await p.locator('[data-notif-review]:visible').click();await p.locator('#tracking.active').waitFor();}await p.locator('#csat-modal:not([hidden])').waitFor();});
-await test('article-filter-and-detail',async p=>{await open(p,'articles');await p.locator('[data-article-filter="weight"]').click();assert.equal(await p.locator('[data-article-feed] [data-article-id]').count(),1);await p.locator('[data-article-feed] [data-article-id]').click();await p.locator('#article.active').waitFor();assert(await p.locator('[data-article-body] section').count()>=7);assert(await p.locator('[data-article-byline] img').isVisible());});
+await test('article-filter-and-detail',async p=>{await open(p,'articles');await p.locator('[data-article-filter="weight"]').click();const expected=await p.evaluate(()=>KraneArticleStore.published().filter(a=>a.category==='weight').map(a=>a.id));const cards=p.locator('[data-article-feed] [data-article-id]');assert.deepEqual(await cards.evaluateAll(es=>es.map(e=>e.dataset.articleId)),expected);assert(expected.length>0);await cards.first().click();await p.locator('#article.active').waitFor();assert(await p.locator('[data-article-body]').innerText());assert.equal(await p.locator('[data-article-byline] .article-credit').count(),2);const refs=p.locator('details.article-references');assert.equal(await refs.count(),1);assert.equal(await refs.getAttribute('open'),null);await refs.locator('summary').click();assert(await refs.locator('a').count()>0);});
 await test('appointment-buttons-stationary',async p=>{await open(p,'appointment');const day=p.locator('[data-appointment-day]').first();const before=await day.boundingBox();await day.hover();await p.mouse.down();const after=await day.boundingBox();await p.mouse.up();assert.deepEqual(after,before);});
 await test('matching-choice-components',async p=>{await open(p,'intake-concern','partner');assert.equal(await p.locator('[data-partner-duration-unit="วัน"]').getAttribute('aria-selected'),'true');assert.equal(await p.locator('[data-partner-relief-value][aria-selected="true"]').count(),0);await p.locator('[data-partner-relief-value="พบแพทย์"]').click();assert.equal(await p.locator('[data-partner-relief-value][aria-selected="true"]').count(),1);const styles=await p.evaluate(()=>['#intake-concern .partner-duration-units button','#intake-concern .partner-relief-grid button'].map(selector=>{const s=getComputedStyle(document.querySelector(selector));return [document.querySelector(selector).getBoundingClientRect().height,s.borderRadius,s.fontSize,s.backgroundColor]}));assert.equal(styles[0][0],styles[1][0]);assert.equal(styles[0][1],styles[1][1]);});
 await test('all-screen-layout-inventory',async p=>{await open(p,'profile');const report=await p.evaluate(()=>{const out=[];for(const screen of document.querySelectorAll('section.screen[id]')){const previous=document.querySelector('.screen.active');previous?.classList.remove('active');screen.classList.add('active');screen.hidden=false;const box=screen.getBoundingClientRect();const logo=screen.querySelector('.intake-lockup,.checkout-brandbar__logo,.payment-topbar__logo');out.push({id:screen.id,width:box.width,scrollWidth:screen.scrollWidth,overflow:screen.scrollWidth>box.width+2,logo:logo?{width:logo.getBoundingClientRect().width,height:logo.getBoundingClientRect().height}:null});screen.classList.remove('active');previous?.classList.add('active')}return out});await writeFile(output+'/screen-layout.json',JSON.stringify(report,null,2));assert(report.length>50);assert(!report.some(row=>['history','followups','intake-edu'].includes(row.id)));});
