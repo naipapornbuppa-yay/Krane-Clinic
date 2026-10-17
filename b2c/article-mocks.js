@@ -39,9 +39,8 @@
       const image=el('img','article-teaser__image');image.src=article.image;image.alt=article.imageAlt;image.loading='lazy';image.width=1280;image.height=800;
       const body=el('span','article-teaser__body');
       body.append(el('span','article-teaser__meta',document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที'),
-        el('span','article-teaser__title',article.title),el('span','article-teaser__summary',article.summary),
-        articleReadAction());
-      body.append(articleAuthor(article));button.append(image,body);return button;
+        el('span','article-teaser__title',article.title),el('span','article-teaser__summary',article.summary));
+      const footer=el('span','article-teaser__footer');footer.append(articleAuthor(article),articleReadAction());body.append(footer);button.append(image,body);return button;
     }));
     const empty=document.querySelector('[data-article-empty]');if(empty) empty.hidden=visible.length>0;
   }
