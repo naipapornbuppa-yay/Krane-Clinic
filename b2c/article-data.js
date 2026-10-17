@@ -488,7 +488,7 @@
     "minutes": 5,
     "title": "finasteride กับ minoxidil ต่างกันอย่างไร? คำถามที่แพทย์ต้องรู้ก่อนเลือกยาให้คุณ",
     "summary": "ทั้งสองตัวใช้ดูแลผมบางจากพันธุกรรม แต่ทำงานคนละจุด",
-    "image": "assets/editorial-stock-20261017/pexels-5207306.jpg",
+    "image": "assets/articles/hair-medication-still-life.png",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
