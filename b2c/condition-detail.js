@@ -763,10 +763,7 @@
     }
   }
 
-  /* Client, 5 Oct: the six-chapter rail that used to live here only scrolled
-     the page between sections it was already showing. The design replaces it
-     with three tabs over one panel, so the middle of the page is the one part
-     the patient asked for rather than all of it at once. */
+  /* Programme chapters stay visible; the pill navigation scrolls between them. */
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (hasAlternateHero && hero && !prefersReducedMotion.matches) {
     window.setInterval(() => {
@@ -813,44 +810,33 @@
 
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
   const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));
-  const showCdPanel = (name) => {
-    cdTabs.forEach((tab) => {
-      const on = tab.dataset.cdTab === name;
-      tab.classList.toggle("is-selected", on);
-      tab.setAttribute("aria-selected", String(on));
-    });
-    cdPanels.forEach((panel) => { panel.hidden = panel.dataset.cdPanel !== name; });
-  };
-  cdTabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      showCdPanel(tab.dataset.cdTab);
-      const tabsBar = tab.closest(".cd-tabs");
-      if (!tabsBar) return;
-      const top = parseFloat(getComputedStyle(tabsBar).top) || 0;
-      const naturalTop = tabsBar.offsetTop;
-      if (window.scrollY > naturalTop - top) {
-        window.scrollTo({ top: Math.max(0, naturalTop - top), behavior: "instant" });
-      }
-    });
-    /* Arrow keys move between tabs, which is what a tablist owes a keyboard. */
-    tab.addEventListener("keydown", (event) => {
-      const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-      if (!step) return;
-      event.preventDefault();
-      const next = cdTabs[(cdTabs.indexOf(tab) + step + cdTabs.length) % cdTabs.length];
-      showCdPanel(next.dataset.cdTab);
-      next.focus();
-    });
+  cdPanels.forEach(panel=>panel.hidden=false);
+  const selectSection=name=>cdTabs.forEach(button=>{
+    const active=button.dataset.cdTab===name;
+    button.classList.toggle('is-selected',active);
+    if(active)button.setAttribute('aria-current','location');else button.removeAttribute('aria-current');
   });
-  /* A link to #pricing or #faq from the nav still has to land somewhere, and
-     the price is inside a panel now. */
-  const hashPanel = { pricing: "price", price: "price", how: "steps", overview: "overview" };
-  const openFromHash = () => {
-    const name = hashPanel[decodeURIComponent(location.hash.slice(1))];
-    if (name) showCdPanel(name);
+  const scrollToSection=name=>{
+    const panel=cdPanels.find(item=>item.dataset.cdPanel===name),bar=document.querySelector('.cd-tabs');
+    if(!panel)return;
+    const offset=(parseFloat(getComputedStyle(bar).top)||0)+bar.offsetHeight+20;
+    window.scrollTo({top:Math.max(0,window.scrollY+panel.getBoundingClientRect().top-offset),behavior:prefersReducedMotion.matches?'instant':'smooth'});
+    selectSection(name);
   };
-  openFromHash();
-  window.addEventListener("hashchange", openFromHash);
+  cdTabs.forEach(button=>button.addEventListener('click',()=>scrollToSection(button.dataset.cdTab)));
+  const hashPanel={pricing:'price',price:'price',how:'steps',steps:'steps',overview:'overview'};
+  const openFromHash=()=>{const name=hashPanel[decodeURIComponent(location.hash.slice(1))];if(name)requestAnimationFrame(()=>scrollToSection(name));};
+  openFromHash();window.addEventListener('hashchange',openFromHash);
+  let sectionFrame=0;
+  window.addEventListener('scroll',()=>{
+    if(sectionFrame)return;
+    sectionFrame=requestAnimationFrame(()=>{
+      sectionFrame=0;
+      const bar=document.querySelector('.cd-tabs'),line=(parseFloat(getComputedStyle(bar).top)||0)+bar.offsetHeight+40;
+      const current=[...cdPanels].reverse().find(panel=>panel.getBoundingClientRect().top<=line)||cdPanels[0];
+      if(current)selectSection(current.dataset.cdPanel);
+    });
+  },{passive:true});
 
   /* Motion belongs to the chapters this version actually renders. Only the
      desktop composition animates; narrow layouts and reduced-motion users
