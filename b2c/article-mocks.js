@@ -19,6 +19,19 @@
     const text=el('span','article-author__text');text.append(el('strong','',article.author.name),el('small','',article.contentStatus==='client-review'?(document.documentElement.lang==='en'?'Editorial review manuscript · Oct 2026':'ต้นฉบับสำหรับตรวจทาน · ต.ค. 2569'):'ผู้เขียนตัวอย่าง · อัปเดต ต.ค. 2569'));
     if(article.author.photo)row.append(photo);row.append(text);return row;
   }
+  function articleCredits(article){
+    const en=document.documentElement.lang==='en';
+    const card=(role,name,photo,initials,note)=>{
+      const item=el('div','article-credit'),avatar=photo?el('img','article-credit__avatar'):el('span','article-credit__avatar',initials);
+      if(photo){avatar.src=photo;avatar.alt='';avatar.width=48;avatar.height=48;}
+      const copy=el('span','article-credit__copy');copy.append(el('small','',role),el('strong','',name));if(note)copy.append(el('span','',note));item.append(avatar,copy);return item;
+    };
+    const writer=card(en?'Written by':'ผู้เขียน',article.contentStatus==='client-review'?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author.name,article.contentStatus==='client-review'?'':article.author.photo,'K',en?'Editorial team':'ทีมบรรณาธิการ');
+    // Only use named reviewers present in the supplied manuscript headers.
+    const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
+    const reviewer=hair?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Kornphaka Kantikosum':'พญ. กรผกา ขันติโกสุม','assets/landing-573/doctors/client-doctor-ploy.png','',en?'Dermatology':'ตจวิทยา (ผิวหนัง)'):weight?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Phahol Sarojvisut':'อ.นพ. พหล สโรจวิสุทธิ์','','พส',en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):card(en?'Medical / pharmacy reviewer':'ผู้ตรวจทานทางการแพทย์หรือเภสัชกรรม',en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน','','—',en?'Not specified in the manuscript':'ต้นฉบับยังไม่ได้ระบุชื่อ');
+    return [writer,reviewer];
+  }
   function articleReadAction(){
     const action=el('span','article-teaser__action','อ่านบทความ');
     const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -91,7 +104,7 @@
     screen.querySelector('[data-article-hero]').alt=article.imageAlt;
     screen.querySelector('[data-article-meta]').textContent=document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที';
     screen.querySelector('[data-article-title]').textContent=article.title;
-    screen.querySelector('[data-article-byline]').replaceChildren(articleAuthor(article));
+    screen.querySelector('[data-article-byline]').replaceChildren(...articleCredits(article));
     screen.querySelector('[data-article-summary]').textContent=article.summary;
     const body=screen.querySelector('[data-article-body]');
     if(article.manuscriptMarkdown && document.documentElement.lang!=='en') body.replaceChildren(manuscriptNodes(article.manuscriptMarkdown));
@@ -109,7 +122,13 @@
       });return block;
     }));
     const source=el('a','article-reading__source',document.documentElement.lang==='en'?'Read the supporting source':'อ่านแหล่งข้อมูลประกอบ');
-    source.href=article.source;source.target='_blank';source.rel='noopener noreferrer';body.append(source);
+    source.href=article.source;source.target='_blank';source.rel='noopener noreferrer';
+    const references=el('details','article-references'),summary=el('summary','',document.documentElement.lang==='en'?'References':'อ้างอิง'),referenceBody=el('div','article-references__body');
+    body.querySelectorAll('.article-reading__section').forEach(section=>{
+      const heading=section.querySelector('h2,h3');
+      if(heading&&/^(อ้างอิง|เอกสารอ้างอิง|แหล่งอ้างอิง|references)/i.test(heading.textContent.trim())){heading.remove();referenceBody.append(...section.childNodes);section.remove();}
+    });
+    referenceBody.append(source);references.append(summary,referenceBody);body.append(references);
     const tags=screen.querySelector('[data-article-tags]');
     tags.replaceChildren(...article.tags.map(tag => el('span','article-tags__tag',tag)));
   }
