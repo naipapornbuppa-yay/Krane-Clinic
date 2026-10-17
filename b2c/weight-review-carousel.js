@@ -12,7 +12,7 @@
     dots.forEach((dot,i)=>dot.addEventListener('click',()=>go(i)));
     section.querySelector('[data-interview-prev]').addEventListener('click',()=>go(active-1));
     section.querySelector('[data-interview-next]').addEventListener('click',()=>go(active+1));
-    const updatePause=()=>{pause.textContent=stopped?'เล่นสลับ':'หยุดสลับ';pause.setAttribute('aria-pressed',String(stopped));pause.setAttribute('aria-label',stopped?'เริ่มสลับอัตโนมัติ':'หยุดสลับอัตโนมัติ');};
+    const updatePause=()=>{pause.querySelector('span').textContent=stopped?'▶':'Ⅱ';pause.setAttribute('aria-pressed',String(stopped));pause.setAttribute('aria-label',stopped?'เริ่มสลับอัตโนมัติ':'หยุดสลับอัตโนมัติ');};
     pause.addEventListener('click',()=>{stopped=!stopped;updatePause();playVideo();schedule();});updatePause();
     viewport.addEventListener('scroll',()=>{clear();clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{select(Math.round(viewport.scrollLeft/viewport.clientWidth));schedule();},160);},{passive:true});
     viewport.addEventListener('pointerdown',()=>{dragging=true;clear();},{passive:true});
