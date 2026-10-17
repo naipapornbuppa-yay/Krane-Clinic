@@ -470,6 +470,17 @@
     data.knowledgeTitle=programme.knowledgeTitle;data.knowledge=programme.knowledge;data.knowledgeStats=programme.stats;
     setText('[data-overview-copy]',programme.overview);
     setText('[data-doctor-quote]',programme.quote);
+    const designer={
+      weight:{name:'อ.นพ. พหล สโรจวิสุทธิ์',specialty:'อายุรศาสตร์ · โภชนศาสตร์คลินิก',initials:'พส'},
+      'hair-skin':{name:'พญ. กรผกา ขันติโกสุม',specialty:'ตจวิทยา (ผิวหนัง)',image:'assets/landing-573/doctors/client-doctor-ploy.png'},
+      'sexual-health':{name:'นพ. กฤติน สกุลเชี่ยวชาญ',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',initials:'กส'}
+    }[data.category];
+    if(designer){
+      const link=document.querySelector('.programme-doctor--hero');
+      const credit=document.createElement('div');credit.className='programme-designer';
+      credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong><span>${designer.specialty}</span></span>`;
+      link?.after(credit);
+    }
     setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
     setText('[data-pricing-note]',data.category==='weight' ? 'ไม่มีค่าสมาชิกรายเดือน จ่ายตามจริงเมื่อสั่งยา แพทย์จะประเมินความเหมาะสมก่อนสั่งจ่ายทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
     document.querySelector('[data-programme-price]').hidden=data.category!=='weight';
@@ -519,7 +530,20 @@
     setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
       : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
     if(reviews){
-      reviews.innerHTML=Array.from({length:3},(_,i)=>`<article class="cd-review cd-review--video"><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video><p class="cd-fine">วิดีโอตัวอย่างสำหรับจัดหน้า</p></article>`).join('');
+      const isFlow=data.category==='sexual-health';
+      const isHair=data.category==='hair-skin';
+      reviews.innerHTML=Array.from({length:3},(_,i)=>{
+        const pair=isHair ? `assets/figma-draft-20260830/results-v2/hair-pair-${i+1}-diptych-v2.jpg` : '';
+        const before=isHair?pair:`assets/figma-draft-20260830/results-v1/weight-pair-${i+1}-before-v1.png`;
+        const after=isHair?pair:`assets/figma-draft-20260830/results-v1/weight-pair-${i+1}-after-v1.png`;
+        return `<article class="cd-review cd-review--story ${isFlow?'cd-review--private':''}">
+          <div class="cd-review__story-media"><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video>
+          ${isFlow?'<blockquote>คุยกับแพทย์ได้อย่างเป็นส่วนตัว สะดวก และไม่ต้องเดินทางไปคลินิก</blockquote>':`<div class="cd-review__comparison ${isHair?'cd-review__comparison--diptych':''}"><figure><img src="${before}" alt="ภาพตัวอย่างก่อนเริ่มดูแล" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${after}" alt="ภาพตัวอย่างหลังติดตาม" loading="lazy"><figcaption>หลังติดตาม</figcaption></figure></div>`}</div>
+          ${isFlow?'':'<p class="cd-review__quote">มีแพทย์ช่วยติดตามและอธิบายแผนการดูแลอย่างต่อเนื่อง</p>'}
+          <p class="cd-fine"><b>ผู้ใช้ตัวอย่าง ${i+1}</b> · ${programme.title}</p>
+          <p class="cd-fine">ตัวอย่างสำหรับจัดหน้า ไม่ใช่คำรับรองหรือผลการรักษาจริง</p>
+        </article>`;
+      }).join('');
     }
   }
 
