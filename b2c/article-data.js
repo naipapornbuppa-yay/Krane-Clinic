@@ -668,7 +668,7 @@
     "minutes": 5,
     "title": "GLP-1 คืออะไร? ฮอร์โมนในลำไส้ที่กลายมาเป็นทางเลือกในการดูแลน้ำหนัก",
     "summary": "GLP-1 คือฮอร์โมนอิ่มที่ร่างกายสร้างเอง ยากลุ่ม GLP-1 เลียนแบบฮอร์โมนนี้ได้นานกว่ามาก",
-    "image": "assets/editorial-stock-20261017/pexels-6550832.jpg",
+    "image": "assets/product-hero/weight-care-pens-redacted-hires-v2.png",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {

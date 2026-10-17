@@ -153,7 +153,7 @@
     "re-flow": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/flow-hands-refined-v5.png",
+      image: "assets/product-hero/flow-hands-peach-v6.png",
       kicker: "โปรแกรม re:flow",
       hook: "กลับมามั่นใจ ในจังหวะของคุณ",
       lead: "เริ่มจากการประเมินสุขภาพกับแพทย์อย่างเป็นส่วนตัว เพื่อหาสาเหตุและวางแผนการดูแลที่ปลอดภัยสำหรับคุณ",
@@ -519,28 +519,7 @@
     setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
       : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
     if(reviews){
-      const privateStory=data.category==='sexual-health';
-      reviews.innerHTML=Array.from({length:3},()=>privateStory ? `
-        <article class="cd-review cd-review--quote">
-          <p class="cd-review__quote">“[คำรีวิวสั้น — เน้นประสบการณ์การดูแล เช่น หมอติดตามใกล้ชิด สะดวก]”</p>
-          <span class="cd-fine"><b>[ชื่อย่อ]</b> · ผู้ใช้ ${programme.title}</span>
-          <p class="cd-fine">เรื่องเล่าจากผู้ใช้ที่ยินยอมให้เผยแพร่ ไม่เปิดเผยตัวตน และไม่ใช้ภาพประกอบเพื่อความเป็นส่วนตัว</p>
-        </article>` : `
-        <article class="cd-review">
-          <div class="cd-review__media" data-cd-carousel>
-            <div class="cd-review__track" data-cd-track tabindex="0" role="group" aria-label="คลิปและภาพก่อนหลัง เลื่อนเพื่อดู">
-              <span class="cd-ph cd-review__slide">[วิดีโอสั้น 9:16]<b class="cd-review__play" aria-hidden="true"><i data-lucide="play"></i></b><em class="cd-review__time">0:30</em></span>
-              <span class="cd-ph cd-review__slide">[ภาพก่อน]<em class="cd-review__tag">ก่อน</em></span>
-              <span class="cd-ph cd-review__slide">[ภาพหลัง]<em class="cd-review__tag cd-review__tag--after">หลัง [ระยะเวลา]</em></span>
-            </div>
-            <div class="cd-review__dots" data-cd-dots aria-hidden="true"><i class="is-on"></i><i></i><i></i></div>
-          </div>
-          <div class="cd-review__copy">
-            <p class="cd-review__quote">“[คำรีวิวสั้น — เน้นประสบการณ์การดูแล เช่น หมอติดตามใกล้ชิด สะดวก]”</p>
-            <span class="cd-fine"><b>[ชื่อย่อ]</b> · ผู้ใช้ ${programme.title}</span>
-            <p class="cd-fine">ใช้เป็นตัวอย่าง ผลจากการเข้ารับการรักษาแตกต่างกันในแต่ละบุคคล</p>
-          </div>
-        </article>`).join('');
+      reviews.innerHTML=Array.from({length:3},(_,i)=>`<article class="cd-review cd-review--video"><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video><p class="cd-fine">วิดีโอตัวอย่างสำหรับจัดหน้า</p></article>`).join('');
     }
   }
 
@@ -626,6 +605,10 @@
   const consultList = document.querySelector("[data-consult-list]");
   if (consultList) consultList.innerHTML = supporting.consult.map((item) => `<li>${item}</li>`).join("");
 
+  if (supporting.faqs.length < 5) supporting.faqs.push(
+    ['เริ่มต้นใช้งานอย่างไร','<p>เลือกโปรแกรม ทำแบบประเมินสุขภาพ แล้วเริ่มปรึกษาแพทย์ผ่านระบบออนไลน์</p>'],
+    ['ตรวจสอบรายการก่อนชำระเงินได้ไหม','<p>ระบบแสดงรายการค่าบริการให้ตรวจสอบก่อนยืนยันชำระเงิน</p>']
+  );
   const faqList = document.querySelector("[data-faq-list]");
   if (faqList) faqList.innerHTML = supporting.faqs.map(([question, answer], index) => `
     <details class="faq-item"${index === 0 ? " open" : ""}>
@@ -633,6 +616,12 @@
       <div class="cd-faq__answer">${answer}</div>
     </details>
   `).join("");
+
+  faqList?.addEventListener('toggle', (event) => {
+    const current=event.target;
+    if (current.tagName !== 'DETAILS' || !current.open) return;
+    faqList.querySelectorAll('details[open]').forEach(item=>{if(item!==current)item.open=false;});
+  }, true);
 
   const products = document.querySelector("[data-products]");
   /* The sixth field is how the medicine is used over time — continuous, as
@@ -730,7 +719,7 @@
       articles.innerHTML = matches.map((article) => `
         <li><a class="cd-article" href="articles.html${article.id?'?article='+article.id:''}" target="_parent" ${article.id?'data-article-id="'+article.id+'"':''}>
           <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
-          <span class="cd-article__body"><em>${article.categoryLabel || 'สุขภาพ'} · อ่าน ${article.minutes || 4} นาที</em><strong class="cd-article__title">${article.title}</strong><p>${article.contentStatus === 'client-review' ? 'ต้นฉบับจาก Krane Health Library · สำหรับตรวจทาน' : 'ความรู้สุขภาพและแนวทางการดูแล'}</p></span>
+          <span class="cd-article__body"><em>${article.categoryLabel || 'สุขภาพ'} · อ่าน ${article.minutes || 4} นาที</em><strong class="cd-article__title">${article.title}</strong><span class="cd-article__read">อ่านต่อ →</span></span>
         </a></li>
       `).join("");
     }
