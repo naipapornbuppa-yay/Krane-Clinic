@@ -15,7 +15,7 @@ Entry chooses a category/condition, then uses that category's templates and perm
 | `hair-skin` | `hair` | `intake1 → intake2 → intake3 → intake5 → intake4` | Photo path; authored question/answer identities stay intact |
 | `skin` | `skin` | `intake1 → intake2 → intake3 → intake5 → intake4` | Fourth page uses shared authored fallback; photo path |
 | `weight` | `weight` | `intake1 → intake2 → intake3` | GLP-1 exclusions are a safety sheet, not a duplicate fourth screen |
-| `sexual-health` | `sexual` | `intake1 → intake2 → intake3 → intake4` | Matching currently demonstrates no doctor available, then appointment selection |
+| `sexual-health` | `sexual` | `intake1 → intake2 → intake4` | Heart-history and nitrate-use checks share one safety sheet; matching currently demonstrates no doctor available, then appointment selection |
 | `sleep-stress` | `sleep` | `intake1 → intake2 → intake3 → intake4` | Fourth page uses shared authored fallback; no photo step |
 | `hormone` | `hormone` | `intake1 → intake2 → intake3 → intake4` | Fourth page uses shared authored fallback; route availability still follows condition picker status; do not expose “Soon” choices merely because templates exist |
 | `general` / category marked `general` | `general` | `intake1` | Compact general questionnaire; later category pages and photo step are skipped |
@@ -60,3 +60,7 @@ For hair and skin, completing **or skipping** optional `intake5` photographs lea
 Displayed affirmative/negative labels are ใช่ / ไม่ใช่ in the authored choice questions and safety/history sheets. Stable question IDs, answer IDs, option ordering and yes/no/none values are preserved; retained uncertainty options keep their existing identities. Red-flag affirmative answers still lead to `ineligible`; GLP-1 exclusions still disable confirmation when any answer is yes. This is a presentation/order update, not a change in clinical criteria.
 
 QA for this update: desktop/mobile photo skip → safety → completion; uploaded photo retained when returning from the safety sheet; affirmative red flag → ineligible; ED clear path; GLP-1 affirmative answer disables confirmation and clear answers complete; English safety/binary copy. The broader 170-check UI suite reports four outstanding English-copy checks on other public pages (landing, doctors, programme detail and doctor profile); the intake/partner checks pass. These are not backend integration checks.
+
+## Client update — 17 October 2026, group safety questions
+
+Safety sheets collect consecutive binary/safety questions, at most three per sheet page. ED heart-history and nitrate-use now live together in `intake4`; its empty `intake3` is skipped. Hair scalp, cycle/weight and pregnancy questions share a single three-question sheet after photographs. Every visible row must be answered before continuing. Each answer updates its own original question/answer IDs. Only the existing red-flag predicates stop care; batching does not turn other binary questions into new contraindications. More than three rows paginate (GLP-1 exclusions remain 3 + 1).

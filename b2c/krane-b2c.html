@@ -6403,15 +6403,13 @@
           multiple:true,
           options:['อยากมั่นใจขึ้นกว่าเดิม','ต้องการทางเลือกในการรักษาที่ดีขึ้น','อาการเริ่มเกิดบ่อยขึ้นและรบกวนมากขึ้น','กังวลว่าอาการนี้อาจเกี่ยวข้องกับเรื่องสุขภาพด้านอื่น','อื่น ๆ']
         })}`,
-      intake3:`
+      intake4:`
         <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
         ${intakeChoiceQuestion({
           id:'ed.heart_history',
           title:'คุณเคยเป็นโรคหัวใจ หรือมีอาการผิดปกติขณะออกแรงใช่หรือไม่?',
           options:['มี','ไม่มี','ไม่แน่ใจ']
-        })}`,
-      intake4:`
-        <div><h2 class="h1">แบบประเมินสุขภาพเพศชาย</h2></div>
+        })}
         ${intakeChoiceQuestion({
           id:'ed.nitrate_use',
           title:'ปัจจุบันคุณใช้ยาอม ยาพ่น หรือยารักษาอาการเจ็บหน้าอกกลุ่ม Nitrate ใช่หรือไม่?',
@@ -6522,36 +6520,52 @@
   function redFlagSource(question){
     return question && (['hair.scalp_symptoms','ed.heart_history','ed.nitrate_use'].includes(question.dataset.questionId) || question.querySelector('[data-flag]'));
   }
+  function safetySheetQuestion(question){
+    if(redFlagSource(question))return true;
+    const options=[...question.querySelectorAll('.option[data-select]')];
+    return options.length>=2 && ['ใช่','มี','Yes'].includes(options[0].textContent.trim()) && ['ไม่ใช่','ไม่มี','No'].includes(options[1].textContent.trim());
+  }
   function openRedFlagSheet(screen,index){
     const state=intakeQuestionPageState(screen);
     const source=state.questions[index];
     if(!redFlagSource(source)) return;
     document.getElementById('red-flag-modal')?.remove();
-    const flaggedOptions=[...source.querySelectorAll('[data-flag]')];
-    const entries=flaggedOptions.length ? flaggedOptions.map(option=>({title:option.textContent.trim(),yes:option,no:null})) : [{title:source.querySelector('.section-label').textContent.trim(),yes:source.querySelectorAll('.option')[0],no:source.querySelectorAll('.option')[1]}];
+    // Batch consecutive safety/binary questions in the same sheet, three per page.
+    const sources=[];
+    for(let i=index;i<state.questions.length;i++){
+      const question=state.questions[i];
+      if(!safetySheetQuestion(question))break;
+      sources.push(question);
+    }
+    const lastIndex=index+sources.length-1;
+    const entries=sources.flatMap(question=>{
+      const flagged=[...question.querySelectorAll('[data-flag]')];
+      return flagged.length?flagged.map(option=>({title:option.textContent.trim(),yes:option,no:null,source:question,stopsCare:true})):[{title:question.querySelector('.section-label').textContent.trim(),yes:question.querySelectorAll('.option')[0],no:question.querySelectorAll('.option')[1],source:question,stopsCare:Boolean(redFlagSource(question))}];
+    });
     const answers=entries.map(entry=>entry.yes.getAttribute('aria-selected')==='true'?'yes':entry.no?.getAttribute('aria-selected')==='true'?'no':null);
     let step=0;
     const modal=document.createElement('div');modal.id='red-flag-modal';modal.className='modal-layer';
     modal.innerHTML='<button class="modal-layer__scrim" type="button" aria-label="ย้อนกลับ"></button><section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="red-flag-title"><h2 id="red-flag-title">ยืนยันข้อมูลความปลอดภัย</h2><p class="hint" data-step></p><div data-questions></div><div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-next>ถัดไป</button><button class="btn btn--ghost" type="button" data-prev>ย้อนกลับ</button></div></section>';
     document.body.append(modal);document.body.classList.add('modal-open');
     const close=()=>{modal.remove();document.body.classList.remove('modal-open');};
-    const back=()=>{if(step){step--;render();}else{close();if(index>0)activateIntakeQuestionPage(screen,index-1);else screen.querySelector('[data-back]')?.click();}};
+    const back=()=>{if(step){step--;render();}else{close();state.body.dataset.intakeQuestionIndex=String(index);if(index>0)activateIntakeQuestionPage(screen,index-1);else screen.querySelector('[data-back]')?.click();}};
     function render(){
       modal.querySelector('[data-step]').textContent=entries.length>3?`${step+1} / ${Math.ceil(entries.length/3)}`:'';
       const host=modal.querySelector('[data-questions]');host.replaceChildren();
       entries.slice(step*3,step*3+3).forEach((entry,offset)=>{
-        const i=step*3+offset,field=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent=/[?？]$/.test(entry.title)?entry.title:entry.title+(document.documentElement.lang==='en'?'?':' ใช่หรือไม่?');field.append(legend);
+        const i=step*3+offset,field=document.createElement('fieldset'),legend=document.createElement('legend');field.dataset.questionId=entry.source.dataset.questionId||'';legend.textContent=/[?？]$/.test(entry.title)?entry.title:entry.title+(document.documentElement.lang==='en'?'?':' ใช่หรือไม่?');field.append(legend);
         const options=document.createElement('div');options.className='partner-binary';options.setAttribute('role','radiogroup');options.setAttribute('aria-label',entry.title);
-        ['no','yes'].forEach(value=>{const button=document.createElement('button');button.type='button';button.className='partner-binary__option';button.setAttribute('role','radio');button.setAttribute('aria-checked',String(answers[i]===value));button.textContent=value==='yes'?'ใช่':'ไม่ใช่';button.onclick=()=>{answers[i]=value;if(entry.no)source.querySelectorAll('.option').forEach(option=>option.setAttribute('aria-selected','false'));entry.yes.setAttribute('aria-selected',String(value==='yes'));entry.no?.setAttribute('aria-selected',String(value==='no'));saveIntakeDraft();render();};options.append(button);});field.append(options);host.append(field);
+        ['no','yes'].forEach(value=>{const button=document.createElement('button');button.type='button';button.className='partner-binary__option';button.setAttribute('role','radio');button.setAttribute('aria-checked',String(answers[i]===value));button.textContent=value==='yes'?'ใช่':'ไม่ใช่';button.onclick=()=>{answers[i]=value;if(entry.no)entry.source.querySelectorAll('.option').forEach(option=>option.setAttribute('aria-selected','false'));entry.yes.setAttribute('aria-selected',String(value==='yes'));entry.no?.setAttribute('aria-selected',String(value==='no'));saveIntakeDraft();render();};options.append(button);});field.append(options);host.append(field);
       });
       modal.querySelector('[data-next]').disabled=answers.slice(step*3,step*3+3).some(value=>value===null);
     }
     modal.querySelector('[data-prev]').onclick=back;modal.querySelector('.modal-layer__scrim').onclick=back;
     modal.onkeydown=event=>{if(event.key==='Escape'){event.stopPropagation();back();}};
     modal.querySelector('[data-next]').onclick=()=>{
-      if(answers.includes('yes')){close();document.querySelector('#ineligible .btn--ghost').dataset.go=screen.id;show('ineligible');return;}
+      if(answers.some((value,i)=>value==='yes'&&entries[i].stopsCare)){close();document.querySelector('#ineligible .btn--ghost').dataset.go=screen.id;show('ineligible');return;}
       if((step+1)*3<entries.length){step++;render();return;}
-      if(flaggedOptions.length){source.querySelectorAll(".option:not([data-flag])").forEach(option=>option.setAttribute("aria-selected","true"));}
+      sources.filter(question=>question.querySelector('[data-flag]')).forEach(question=>question.querySelectorAll(".option:not([data-flag])").forEach(option=>option.setAttribute('aria-selected','true')));
+      state.body.dataset.intakeQuestionIndex=String(lastIndex);
       saveIntakeDraft();close();syncIntakeDropdownContinue(screen);
       if(!advanceIntakeQuestionPage(screen))screen.querySelector('.screen__footer .btn--primary[data-go]')?.click();
     };
@@ -6599,7 +6613,12 @@
         : (nextIndex<state.total-1 ? 'Continue' : continueButton.dataset.intakeFinalLabel);
     }
     state.body.scrollTop=0;
-    requestAnimationFrame(()=>{if(state.screen.classList.contains("active") && redFlagSource(activeQuestion))openRedFlagSheet(state.screen,nextIndex);});
+    requestAnimationFrame(()=>{
+      if(!state.screen.classList.contains('active') || !(redFlagSource(activeQuestion) || (state.screen.id==='intake4' && safetySheetQuestion(activeQuestion))))return;
+      let first=nextIndex;
+      while(first>0 && safetySheetQuestion(state.questions[first-1]))first--;
+      openRedFlagSheet(state.screen,first);
+    });
     syncIntakeDropdownContinue(state.screen);
     return true;
   }
