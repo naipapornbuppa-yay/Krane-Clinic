@@ -778,7 +778,16 @@
     cdPanels.forEach((panel) => { panel.hidden = panel.dataset.cdPanel !== name; });
   };
   cdTabs.forEach((tab) => {
-    tab.addEventListener("click", () => showCdPanel(tab.dataset.cdTab));
+    tab.addEventListener("click", () => {
+      showCdPanel(tab.dataset.cdTab);
+      const tabsBar = tab.closest(".cd-tabs");
+      if (!tabsBar) return;
+      const top = parseFloat(getComputedStyle(tabsBar).top) || 0;
+      const naturalTop = tabsBar.offsetTop;
+      if (window.scrollY > naturalTop - top) {
+        window.scrollTo({ top: Math.max(0, naturalTop - top), behavior: "instant" });
+      }
+    });
     /* Arrow keys move between tabs, which is what a tablist owes a keyboard. */
     tab.addEventListener("keydown", (event) => {
       const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
@@ -805,7 +814,7 @@
   if (window.matchMedia("(min-width: 1000px)").matches &&
       !prefersReducedMotion.matches && "IntersectionObserver" in window) {
     const revealTargets = document.querySelectorAll(
-      ".cd-reviews .cd-section-head, .cd-reviews .cd-review, .cd-panels, .cd-faq, .cd-articles, .cd-safety-link"
+      ".cd-reviews .cd-section-head, .cd-reviews .cd-review, .cd-faq, .cd-articles, .cd-safety-link"
     );
     document.documentElement.classList.add("desktop-motion-ready");
     revealTargets.forEach((target, index) => {
