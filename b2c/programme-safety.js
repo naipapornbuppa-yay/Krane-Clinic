@@ -30,7 +30,7 @@
   ];
   content.forEach(([id,title,text],i)=>{
     const section=document.getElementById(id);
-    section.innerHTML=`<p class="eyebrow">0${i+1} / ${['ภาพรวม','ใครไม่ควรใช้','แจ้งแพทย์ก่อนเริ่ม','ผลข้างเคียง','สัญญาณอันตราย','ใช้อย่างปลอดภัย'][i]}</p><h2 id="${id}-title">${title}</h2><p>${text}</p>`;
+    section.innerHTML=`<p class="eyebrow">${['ภาพรวม','ใครไม่ควรใช้','แจ้งแพทย์ก่อนเริ่ม','ผลข้างเคียง','สัญญาณอันตราย','ใช้อย่างปลอดภัย'][i]}</p><h2 id="${id}-title">${title}</h2><p>${text}</p>`;
   });
   const sources=hair ? [
     ['NHS: finasteride','https://www.nhs.uk/medicines/finasteride/'],
