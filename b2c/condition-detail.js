@@ -483,7 +483,21 @@
     }
     setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
     setText('[data-pricing-note]',data.category==='weight' ? 'ไม่มีค่าสมาชิกรายเดือน จ่ายตามจริงเมื่อสั่งยา แพทย์จะประเมินความเหมาะสมก่อนสั่งจ่ายทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
-    document.querySelector('[data-programme-price]').hidden=data.category!=='weight';
+    const priceAmount=document.querySelector('[data-programme-price]');
+    const priceSummary=document.querySelector('.cd-price__chip');
+    const priced=data.category==='weight'||data.category==='hair-skin';
+    priceAmount.hidden=false;
+    priceAmount.innerHTML=priced ? `<small>เริ่มต้น</small> <b>${data.category==='weight'?'9,999':'270'}</b> <span>บาท / ครั้ง</span>` : '<b>ตามแผนการดูแล</b>';
+    setText('[data-pricing-title]','ราคา');
+    if(priceSummary){
+      priceSummary.hidden=!priced;
+      priceSummary.className='cd-price__chip cd-price__summary';
+      priceSummary.innerHTML=(data.category==='weight' ? [
+        ['ได้รับ','ยาฉีดขนาดเริ่มต้น สำหรับ 1 เดือน'],['วิธีใช้','ฉีดใต้ผิวหนัง'],['ความถี่','สัปดาห์ละ 1 ครั้ง'],['ระยะเวลา','1 เดือน']
+      ] : [['ได้รับ','ยาเม็ดรับประทาน 1 ขวด (30 เม็ด)'],['วิธีใช้','รับประทาน'],['ความถี่','ตามใบสั่งแพทย์'],['ระยะเวลา','1 เดือน']]).map(([label,value])=>`<span><em>${label}</em><strong>${value}</strong></span>`).join('');
+    }
+    const priceFine=document.querySelector('.cd-price>.cd-fine:not([data-pricing-note])');
+    if(priceFine)priceFine.textContent=priced?'ราคาเริ่มต้นตามตัวอย่างโปรแกรม ไม่รวมค่าจัดส่ง ยาและวิธีใช้จริงขึ้นอยู่กับการประเมินของแพทย์':'แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ตรวจสอบก่อนยืนยัน';
     if(data.category==='weight') {
       setText('[data-coaching-copy]','1:1 health coaching ปรับนิสัยการกินและเรียนรู้การนับแคลอรี');
       setText('.condition-hero__note','ระบบจะค้นหาแพทย์ประจำตัวที่พร้อมดูแลคุณ หลังทำแบบประเมินเสร็จ');
@@ -559,9 +573,11 @@
     const reviews=document.querySelector('.cd-reviews');if(reviews)reviews.hidden=true;
   }
   if(data.category!=='weight'){
+    if(!programme){
     setText('[data-pricing-title]','ค่าใช้จ่ายตามแผนการดูแล');
     setText('[data-pricing-note]','ค่าปรึกษา ค่ายา และค่าจัดส่งจะแสดงแยกรายการให้ตรวจสอบก่อนยืนยัน ไม่มีการสั่งยาโดยอัตโนมัติ');
     document.querySelectorAll('[data-programme-price],.cd-price__chip,.cd-price>.cd-fine:not([data-pricing-note])').forEach(n=>n.hidden=true);
+    }
     const coaching=document.querySelector('[data-coaching-copy]');if(coaching){coaching.hidden=true;if(coaching.nextElementSibling)coaching.nextElementSibling.hidden=true;}
     const delivery=document.querySelector('.cd-step:nth-child(3) p');if(delivery)delivery.textContent='รับยาที่บ้าน หากแพทย์ประเมินว่าเหมาะสม';
 
