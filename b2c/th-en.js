@@ -13,6 +13,8 @@
    ============================================================ */
 (function () {
   var EN = {
+    "มิติใหม่":"A new approach",
+    "ในการลดน้ำหนัก":"to weight loss",
     "บริการแพทย์ทางไกล":"Telemedicine services",
     "ดูแลข้อมูลส่วนบุคคล":"Personal data protection",
     "ความปลอดภัยข้อมูล · INET":"Information security · INET",
