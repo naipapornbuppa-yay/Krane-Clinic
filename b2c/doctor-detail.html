@@ -143,6 +143,7 @@
       image: "../assets/brand-final/krane-logotype.svg"
     }
   };
+  Object.assign(doctors,{"preview-a": {"name": "แพทย์ตัวอย่าง A", "role": "ชื่อสมมติสำหรับจัดหน้า", "specialty": "รอยืนยันข้อมูล", "education": "รอยืนยันข้อมูลการศึกษาและประวัติ", "bio": "โปรไฟล์ตัวอย่างสำหรับตรวจดีไซน์ ยังไม่ได้ยืนยันชื่อและประวัติของบุคคลในภาพ", "image": "assets/doctors/client-20261017/IMG_8539.png", "w": 1200, "h": 1600, "preview": true}, "preview-b": {"name": "แพทย์ตัวอย่าง B", "role": "ชื่อสมมติสำหรับจัดหน้า", "specialty": "รอยืนยันข้อมูล", "education": "รอยืนยันข้อมูลการศึกษาและประวัติ", "bio": "โปรไฟล์ตัวอย่างสำหรับตรวจดีไซน์ ยังไม่ได้ยืนยันชื่อและประวัติของบุคคลในภาพ", "image": "assets/doctors/client-20261017/IMG_8554-03.png", "w": 1200, "h": 1600, "preview": true}});
   const selected = doctors[new URLSearchParams(location.search).get("doctor")] || doctors["2"];
   const image = document.querySelector("[data-doctor-image]");
   document.querySelector("[data-doctor-name]").textContent = selected.name;
@@ -155,6 +156,11 @@
     const identity=document.createElement('div');identity.className='doctor-profile-identity';
     const initials=document.createElement('b');initials.textContent=new URLSearchParams(location.search).get('doctor')==='3'?'พส':'ชห';
     const label=document.createElement('span');label.textContent=selected.specialty;identity.append(initials,label);image.parentElement.replaceChildren(identity);
+  }
+  if(selected.preview){
+    document.querySelector('[data-doctor-care]').textContent=selected.bio;
+    document.querySelectorAll('.detail-grid,.doctor-work,.detail-note').forEach(e=>e.remove());
+    const cta=document.querySelector('.detail-cta');cta.href='doctors.html';cta.querySelector('span').textContent='กลับไปดูทีมแพทย์';
   }
   image.src = selected.image;
   image.alt = selected.name;
