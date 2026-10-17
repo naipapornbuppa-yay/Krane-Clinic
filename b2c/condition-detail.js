@@ -471,9 +471,12 @@
     setText('[data-overview-copy]',programme.overview);
     setText('[data-doctor-quote]',programme.quote);
     setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
-    setText('[data-pricing-note]',data.category==='weight' ? 'ราคาที่แจ้งรวมค่ายาแล้วในโปรแกรม ขึ้นอยู่กับแผนการรักษา แพทย์จะประเมินความเหมาะสมก่อนสั่งยาทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
+    setText('[data-pricing-note]',data.category==='weight' ? 'ไม่มีค่าสมาชิกรายเดือน จ่ายตามจริงเมื่อสั่งยา แพทย์จะประเมินความเหมาะสมก่อนสั่งจ่ายทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
     document.querySelector('[data-programme-price]').hidden=data.category!=='weight';
-    if(data.category==='weight') setText('[data-coaching-copy]','1:1 health coaching');
+    if(data.category==='weight') {
+      setText('[data-coaching-copy]','1:1 health coaching ปรับนิสัยการกินและเรียนรู้การนับแคลอรี');
+      setText('.condition-hero__note','ระบบจะค้นหาแพทย์ประจำตัวที่พร้อมดูแลคุณ หลังทำแบบประเมินเสร็จ');
+    }
     /* The five questions and their answers are the design's, verbatim. They
        answer what the old three did and then the three the patient asks next
        — insurance, which medicine, and how much weight. */
