@@ -13,6 +13,12 @@
    ============================================================ */
 (function () {
   var EN = {
+    "วิดีโอสต็อก":"Stock footage",
+    "เลื่อนดูวิดีโอและคำรีวิว":"Browse video and review quotes",
+    "คำรีวิวที่ 2":"Review quote 2",
+    "คำรีวิวที่ 3":"Review quote 3",
+    "“ได้คุยเป็นส่วนตัวจริง ๆ เลยตัดสินใจจากข้อมูลแทนการเดาเอง”":"“Speaking privately helped me make an informed decision instead of guessing.”",
+    "“พอมีการติดตามผล ก็รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”":"“Follow-up helped me understand how to continue my care without trial and error.”",
     "คุกกี้และข้อมูลในเบราว์เซอร์":"Cookies and browser storage",
     "มาตรฐานและพันธมิตรที่ดูแลคุณ":"Standards and partners supporting your care",
     "มาตรฐานและพันธมิตร เลื่อนดูได้":"Standards and partners; scroll to explore",
