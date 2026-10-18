@@ -2530,3 +2530,50 @@
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
   }
 })();
+
+/* New's supplied badge content stays a single accessible list. A decorative
+   duplicate is added only for the continuous loop; manual/reduced-motion views
+   expose the original list with native horizontal scrolling. */
+(() => {
+  const rail = document.querySelector('#trust-badges-rail');
+  const toggle = document.querySelector('.trust-badges__toggle');
+  if (!rail || !toggle) return;
+  const group = rail.querySelector('.trust-logo-marquee__group');
+  const clone = group.cloneNode(true);
+  clone.setAttribute('aria-hidden', 'true');
+  clone.setAttribute('inert', '');
+  clone.querySelectorAll('img').forEach(img => { img.alt = ''; });
+  rail.querySelector('.trust-logo-marquee__track').append(clone);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let paused = false;
+  const render = () => {
+    const en = document.documentElement.lang === 'en';
+    toggle.hidden = reducedMotion.matches;
+    toggle.setAttribute('aria-pressed', String(paused));
+    toggle.textContent = paused
+      ? (en ? 'Resume automatic scrolling' : 'เริ่มการเลื่อนอัตโนมัติ')
+      : (en ? 'Pause automatic scrolling' : 'หยุดการเลื่อนอัตโนมัติ');
+    rail.classList.toggle('is-animated', !paused && !reducedMotion.matches);
+    group.querySelectorAll('img').forEach(img => {
+      img.alt = en ? img.dataset.badgeAltEn : img.dataset.badgeAltTh;
+    });
+  };
+  const pauseForManualScroll = () => {
+    if (!paused) { paused = true; render(); }
+  };
+  toggle.addEventListener('click', () => {
+    paused = !paused;
+    rail.scrollLeft = 0;
+    render();
+  });
+  rail.addEventListener('pointerdown', pauseForManualScroll, { passive:true });
+  rail.addEventListener('keydown', event => {
+    if (['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) pauseForManualScroll();
+  });
+  rail.addEventListener('wheel', event => {
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) pauseForManualScroll();
+  }, { passive:true });
+  reducedMotion.addEventListener('change', render);
+  document.addEventListener('krane:languagechange', render);
+  render();
+})();

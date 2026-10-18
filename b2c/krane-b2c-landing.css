@@ -8805,22 +8805,44 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .trust-section--figma .trust-card{scroll-snap-align:center}
 }
 
-/* One unboxed logo marquee; repeated groups create an exact seamless loop. */
-.trust-logo-marquee{width:100%;margin-top:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
-.trust-logo-marquee::-webkit-scrollbar{display:none}
-.trust-logo-marquee__track{display:flex;width:max-content;animation:trust-logo-loop 48s linear infinite;will-change:transform}
-.trust-logo-marquee__group{display:flex;gap:56px;padding:12px 56px 16px 0;flex:none}
-.trust-mark{flex:0 0 220px;width:220px;text-align:center;border:0;background:transparent;box-shadow:none}
-.trust-mark__logo{background:var(--landing-canvas,#f7f7f7);height:140px;display:grid;place-items:center;margin-bottom:18px}
-.trust-mark__logo img{width:auto;height:auto;max-width:190px;max-height:120px;object-fit:contain;mix-blend-mode:multiply}
-.trust-mark:nth-child(3) .trust-mark__logo img{transform:scale(1.45)}
-.trust-mark h3{font-size:17px;font-weight:500;line-height:1.5;margin:0;color:var(--draft-blue,var(--color-accent))}
-.trust-mark p{font-size:13px;line-height:1.7;margin:8px 0 0;color:var(--color-ink-2)}
+/* New's seven approved badges. One source list; the script adds an inert loop copy. */
+.landing-figma-draft .trust-section--badges{padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--color-ink);min-height:0;height:auto;overflow:hidden}
+.trust-badges__header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px clamp(20px,4vw,64px);border:0;background:transparent;box-shadow:none}
+.trust-badges__header h2{margin:0;font:500 14px/1.6 var(--landing-font-body);color:var(--color-ink)}
+.trust-badges__toggle{flex:none;min-height:44px;padding:8px 12px;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--color-accent);font:500 12px/1.5 var(--landing-font-body);cursor:pointer}
+.trust-badges__toggle[hidden]{display:none}
+.trust-badges__toggle:hover{background:transparent;text-decoration:underline}
+.trust-badges__toggle:focus-visible,.trust-logo-marquee:focus-visible{outline:2px solid var(--color-accent);outline-offset:-3px}
+.trust-logo-marquee{width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;overscroll-behavior-x:contain;border:0;border-radius:0;box-shadow:none;background:transparent}
+.trust-logo-marquee__track{display:flex;width:max-content}
+.trust-logo-marquee.is-animated .trust-logo-marquee__track{animation:trust-logo-loop 60s linear infinite;will-change:transform}
+.trust-logo-marquee__group{display:flex;align-items:flex-start;gap:40px;padding:28px 40px 28px 0;margin:0;list-style:none;flex:none}
+.trust-mark{display:flex;flex-direction:column;align-items:center;flex:0 0 240px;width:240px;text-align:center;border:0;background:transparent;box-shadow:none}
+.trust-mark__logo{background:transparent;border:0;border-radius:0;box-shadow:none;height:84px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.trust-mark__logo img{display:block;width:auto;height:auto;max-width:196px;max-height:84px;object-fit:contain}
+.trust-mark--licence .trust-mark__logo img{width:163px}
+.trust-mark--ministry .trust-mark__logo img{height:82px}
+.trust-mark--fascino .trust-mark__logo img{height:47px}
+.trust-mark--pdpa .trust-mark__logo img{height:40px}
+.trust-mark--inet .trust-mark__logo img{height:62px;transform:translateY(-12.5%)}
+.trust-mark--iso27017 .trust-mark__logo img{width:193px}
+.trust-mark p{max-width:220px;font:400 13px/1.6 var(--landing-font-body);margin:0;color:#626262;text-wrap:balance}
+.trust-mark__powered{display:block;margin-top:2px;color:#626262;font:400 11px/1.5 var(--landing-font-body)}
 .trust-logo-marquee:hover .trust-logo-marquee__track,.trust-logo-marquee:focus-within .trust-logo-marquee__track{animation-play-state:paused}
-.trust-logo-marquee:focus-visible{outline:2px solid var(--color-accent);outline-offset:6px;border-radius:8px}
+.trust-logo-marquee:not(.is-animated) .trust-logo-marquee__group[aria-hidden="true"]{display:none}
 @keyframes trust-logo-loop{to{transform:translate3d(-50%,0,0)}}
-@media(max-width:760px){.trust-logo-marquee{margin-top:0}.trust-logo-marquee__group{gap:28px;padding-right:28px}.trust-mark{width:190px;flex-basis:190px}.trust-mark__logo{height:120px}.trust-mark__logo img{max-width:160px;max-height:104px}.trust-mark h3{font-size:15px}.trust-mark p{font-size:12px}.trust-logo-marquee__track{animation-duration:42s}}
-@media(prefers-reduced-motion:reduce){.trust-logo-marquee__track{animation:none;will-change:auto}.trust-logo-marquee__group[aria-hidden="true"]{display:none}.trust-logo-marquee{-webkit-mask-image:none;mask-image:none}}
+@media(max-width:760px){
+  .trust-badges__header{padding:12px 16px;gap:8px;align-items:flex-start}
+  .trust-badges__header h2{font-size:13px;max-width:190px;padding-block:10px}
+  .trust-badges__toggle{max-width:138px;font-size:11px}
+  .trust-logo-marquee__group{gap:24px;padding:24px 24px 24px 0}
+  .trust-mark{width:208px;flex-basis:208px}
+  .trust-mark p{max-width:200px}
+}
+@media(prefers-reduced-motion:reduce){
+  .trust-logo-marquee.is-animated .trust-logo-marquee__track{animation:none;will-change:auto}
+  .trust-logo-marquee__group[aria-hidden="true"],.trust-badges__toggle{display:none}
+}
 
 /* The positioning statement reads as it is scrolled: each word carries its own
    colour and lifts out of the page as the section crosses the viewport. Until

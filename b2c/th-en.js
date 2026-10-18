@@ -13,6 +13,18 @@
    ============================================================ */
 (function () {
   var EN = {
+    "มาตรฐานและพันธมิตรที่ดูแลคุณ":"Standards and partners supporting your care",
+    "มาตรฐานและพันธมิตร เลื่อนดูได้":"Standards and partners; scroll to explore",
+    "สถานพยาบาลได้รับอนุญาต":"Licensed healthcare facility",
+    "ได้รับอนุญาตให้บริการการแพทย์ทางไกล":"Authorised to provide telemedicine services",
+    "ร้านขายยาพันธมิตร":"Pharmacy partner",
+    "คุ้มครองข้อมูลตาม PDPA":"Data protection under the PDPA",
+    "ระบบและข้อมูลจัดเก็บในประเทศไทย":"Systems and data hosted in Thailand",
+    "มาตรฐานความปลอดภัยข้อมูล":"Information security standard",
+    "มาตรฐานระบบคลาวด์":"Cloud security standard",
+    "หยุดการเลื่อนอัตโนมัติ":"Pause automatic scrolling",
+    "เริ่มการเลื่อนอัตโนมัติ":"Resume automatic scrolling",
+
     "มิติใหม่":"A new approach",
     "ในการลดน้ำหนัก":"to weight loss",
     "บริการแพทย์ทางไกล":"Telemedicine services",
