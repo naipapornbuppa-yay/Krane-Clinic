@@ -2537,7 +2537,7 @@
 (() => {
   const rail = document.querySelector('#trust-badges-rail');
   const toggle = document.querySelector('.trust-badges__toggle');
-  if (!rail || !toggle) return;
+  if (!rail) return;
   const group = rail.querySelector('.trust-logo-marquee__group');
   const clone = group.cloneNode(true);
   clone.setAttribute('aria-hidden', 'true');
@@ -2548,11 +2548,13 @@
   let paused = false;
   const render = () => {
     const en = document.documentElement.lang === 'en';
+    if (toggle) {
     toggle.hidden = reducedMotion.matches;
     toggle.setAttribute('aria-pressed', String(paused));
     toggle.textContent = paused
       ? (en ? 'Resume automatic scrolling' : 'เริ่มการเลื่อนอัตโนมัติ')
       : (en ? 'Pause automatic scrolling' : 'หยุดการเลื่อนอัตโนมัติ');
+    }
     rail.classList.toggle('is-animated', !paused && !reducedMotion.matches);
     group.querySelectorAll('img').forEach(img => {
       img.alt = en ? img.dataset.badgeAltEn : img.dataset.badgeAltTh;
@@ -2561,7 +2563,7 @@
   const pauseForManualScroll = () => {
     if (!paused) { paused = true; render(); }
   };
-  toggle.addEventListener('click', () => {
+  if (toggle) toggle.addEventListener('click', () => {
     paused = !paused;
     rail.scrollLeft = 0;
     render();
