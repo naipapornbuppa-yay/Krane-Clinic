@@ -30,7 +30,11 @@
     // Only use named reviewers present in the supplied manuscript headers.
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
     const reviewer=hair?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Kornphaka Kantikosum':'พญ. กรผกา ขันติโกสุม','assets/landing-573/doctors/client-doctor-ploy.png','',en?'Dermatology':'ตจวิทยา (ผิวหนัง)'):weight?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Phahol Sarojvisut':'อ.นพ. พหล สโรจวิสุทธิ์','','พส',en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):card(en?'Medical / pharmacy reviewer':'ผู้ตรวจทานทางการแพทย์หรือเภสัชกรรม',en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน','','—',en?'Not specified in the manuscript':'ต้นฉบับยังไม่ได้ระบุชื่อ');
-    return [writer,reviewer];
+    if(!article.editorialReview)return [writer,reviewer];
+    const review=article.editorialReview;
+    const pharmacist=card(en?'Pharmacy review':'ผู้ตรวจทานข้อมูลยา',en?'Reviewer not yet confirmed':'รอยืนยันชื่อเภสัชกร','','—',en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน');
+    const physician=card(en?'Medical review':'ผู้ตรวจทานทางการแพทย์',review.physician?(en?review.physician.en:review.physician.th):(en?'Reviewer not yet confirmed':'รอยืนยันชื่อแพทย์'),hair?'assets/landing-573/doctors/client-doctor-ploy.png':'',review.physician?'พส':'—',review.medicalStatus==='reviewed'?(en?'Manuscript reviewed · 18 Oct 2026':'ต้นฉบับตรวจแล้ว · 18 ต.ค. 2569'):(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทานครบถ้วน'));
+    return [writer,pharmacist,physician];
   }
   function articleReadAction(){
     const action=el('span','article-teaser__action','อ่านบทความ');
@@ -59,24 +63,35 @@
   }
   // Render the supplied Markdown as DOM nodes; raw HTML is deliberately text only.
   function inline(node,text){
-    const pattern=/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
-    let start=0,match;
-    while((match=pattern.exec(text))){
-      node.append(document.createTextNode(text.slice(start,match.index)));
-      const child=el(match[1]?'a':match[3]?'strong':'em','',match[1]||match[3]||match[4]);
-      if(match[1]){child.href=match[2];child.target='_blank';child.rel='noopener noreferrer';}
-      node.append(child);start=pattern.lastIndex;
+    let buffer='';const flush=()=>{if(buffer)node.append(document.createTextNode(buffer));buffer='';};
+    for(let i=0;i<text.length;){
+      if(text[i]==='\\'&&/[\\`*{}\[\]()#+\-.!_>]/.test(text[i+1]||'')){buffer+=text[i+1];i+=2;continue;}
+      if(text[i]==='['){
+        const labelEnd=text.indexOf('](',i+1);
+        if(labelEnd!==-1&&/^https?:\/\//.test(text.slice(labelEnd+2))){
+          let end=labelEnd+2,depth=1;
+          for(;end<text.length&&depth;end++){if(text[end]==='(')depth++;else if(text[end]===')')depth--;}
+          if(depth===0){flush();const link=el('a');inline(link,text.slice(i+1,labelEnd));link.href=text.slice(labelEnd+2,end-1).replace(/\\([()])/g,'$1');link.target='_blank';link.rel='noopener noreferrer';node.append(link);i=end;continue;}
+        }
+      }
+      if(text[i]==='*'){
+        const marker=text.startsWith('**',i)?'**':'*',end=text.indexOf(marker,i+marker.length);
+        if(end>i+marker.length){flush();const emphasis=el(marker==='**'?'strong':'em');inline(emphasis,text.slice(i+marker.length,end));node.append(emphasis);i=end+marker.length;continue;}
+      }
+      buffer+=text[i++];
     }
-    node.append(document.createTextNode(text.slice(start)));
+    flush();
   }
   function manuscriptNodes(markdown){
     const fragment=document.createDocumentFragment(),lines=markdown.split('\n');
     let section=fragment;
+    const contentHeadings=lines.filter(line=>/^#{2,6}\s/.test(line)&&!/(อ้างอิง|references)/i.test(line));
+    const baseLevel=Math.min(...contentHeadings.map(line=>line.match(/^#+/)[0].length),3);
     const cells=line=>line.trim().replace(/^\||\|$/g,'').split('|').map(value=>value.trim());
     for(let i=0;i<lines.length;){
       let line=lines[i].trim();if(!line){i++;continue;}
-      const heading=line.match(/^(#{2,6})\s+(.+)$/);
-      if(heading){section=el('section','article-reading__section');fragment.append(section);const h=el(heading[1].length<=2?'h2':'h3');inline(h,heading[2]);section.append(h);i++;continue;}
+      const heading=line.match(/^(#{2,6})\s+(.+)$/)||(/^\*\*ประเด็นสำคัญ\*\*$/.test(line)?['','##','ประเด็นสำคัญ']:null);
+      if(heading){section=el('section','article-reading__section');fragment.append(section);const h=el(heading[1].length<=baseLevel?'h2':'h3');inline(h,heading[2]);section.append(h);i++;continue;}
       if(line.startsWith('|')&&/^\|?[\s:|\-]+$/.test((lines[i+1]||'').trim())){
         const wrap=el('div','article-reading__table-scroll');wrap.tabIndex=0;wrap.setAttribute('role','region');wrap.setAttribute('aria-label','ตารางประกอบบทความ เลื่อนเพื่ออ่านทุกคอลัมน์');
         const table=el('table','article-reading__table'),head=el('thead'),header=el('tr'),body=el('tbody');
@@ -86,7 +101,7 @@
       }
       const isList=value=>/^(?:>\s*)?(?:[-*]|\d+\.)\s+/.test(value);
       if(isList(line)){
-        const quote=line.startsWith('>'),list=el(/^\d+\./.test(line)?'ol':'ul');
+        const quote=line.startsWith('>'),list=el(/^\d+\./.test(line.replace(/^>\s*/,''))?'ol':'ul');
         while(i<lines.length&&isList(lines[i].trim())){const li=el('li');inline(li,lines[i].trim().replace(/^(?:>\s*)?(?:[-*]|\d+\.)\s+/,''));list.append(li);i++;}
         if(quote){const callout=el('blockquote','article-reading__key-points');callout.append(list);section.append(callout);}else section.append(list);continue;
       }
@@ -129,6 +144,14 @@
       if(heading&&/^(อ้างอิง|เอกสารอ้างอิง|แหล่งอ้างอิง|references)/i.test(heading.textContent.trim())){heading.remove();referenceBody.append(...section.childNodes);section.remove();}
     });
     referenceBody.append(source);references.append(summary,referenceBody);body.append(references);
+    if(article.editorialReview&&document.documentElement.lang!=='en'){
+      const headings=[...body.querySelectorAll('.article-reading__section>h2')].filter(h=>h.textContent.trim()!=='ประเด็นสำคัญ');
+      if(headings.length){
+        const toc=el('details','article-toc'),label=el('summary','','ในบทความนี้'),nav=el('nav'),list=el('ol');nav.setAttribute('aria-label','สารบัญบทความ');
+        headings.forEach((heading,index)=>{heading.id=article.id+'-section-'+(index+1);heading.tabIndex=-1;const item=el('li'),link=el('a','',heading.textContent);link.href='#'+heading.id;link.addEventListener('click',event=>{event.preventDefault();heading.focus({preventScroll:true});heading.scrollIntoView({block:'start',behavior:'instant'});});item.append(link);list.append(item);});
+        nav.append(list);toc.append(label,nav);body.prepend(toc);
+      }
+    }
     const tags=screen.querySelector('[data-article-tags]');
     tags.replaceChildren(...article.tags.map(tag => el('span','article-tags__tag',tag)));
   }

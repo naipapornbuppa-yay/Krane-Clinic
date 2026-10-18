@@ -13,6 +13,7 @@
    ============================================================ */
 (function () {
   var EN = {
+    "คุกกี้และข้อมูลในเบราว์เซอร์":"Cookies and browser storage",
     "มาตรฐานและพันธมิตรที่ดูแลคุณ":"Standards and partners supporting your care",
     "มาตรฐานและพันธมิตร เลื่อนดูได้":"Standards and partners; scroll to explore",
     "สถานพยาบาลได้รับอนุญาต":"Licensed healthcare facility",
