@@ -20,6 +20,7 @@
     "“ได้คุยเป็นส่วนตัวจริง ๆ เลยตัดสินใจจากข้อมูลแทนการเดาเอง”":"“Speaking privately helped me make an informed decision instead of guessing.”",
     "“พอมีการติดตามผล ก็รู้ว่าควรดูแลต่ออย่างไรโดยไม่ต้องลองผิดลองถูก”":"“Follow-up helped me understand how to continue my care without trial and error.”",
     "คุกกี้และข้อมูลในเบราว์เซอร์":"Cookies and browser storage",
+    "มาตรฐานและพันธมิตร":"Standards and partners",
     "มาตรฐานและพันธมิตรที่ดูแลคุณ":"Standards and partners supporting your care",
     "มาตรฐานและพันธมิตร เลื่อนดูได้":"Standards and partners; scroll to explore",
     "สถานพยาบาลได้รับอนุญาต":"Licensed healthcare facility",
