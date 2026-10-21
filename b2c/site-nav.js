@@ -38,6 +38,7 @@ const SITE_NAV_SERVICES = [
 const SITE_NAV_LINKS = [
   ["krane-b2c-landing.html#how", "วิธีใช้งาน"],
   ["doctors.html", "ทีมแพทย์ของเรา"],
+  ["pricing.html", "ราคา"],
   ["articles.html", "บทความสุขภาพ"]
 ];
 const SITE_NAV_HOME = "krane-b2c-landing.html#top";

@@ -943,6 +943,8 @@
     "ดูการติดตามผล":"View follow-up"
   };
 
+  Object.assign(EN, window.KranePricingTranslations || {});
+
   (window.KraneArticleSeed||[]).forEach(function(article){
     if(article.en){EN[article.title]=article.en.title;EN[article.summary]=article.en.summary;}
   });
