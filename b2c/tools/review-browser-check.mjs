@@ -14,7 +14,7 @@ const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'
 p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&new URL(r.url()).origin===new URL(base).origin)missing.push({url:r.url(),status:r.status()});});p.on('request',r=>{if(/smiling-man-office|pexels-6602739/.test(r.url()))stock.push(r.url());});
 try{
 const path=condition==='landing'?`krane-b2c-landing.html?lang=${lang}`:`condition-detail.html?condition=${condition}&lang=${lang}`;
-await p.goto(`${base}/b2c/${path}`,{waitUntil:'domcontentloaded'});await p.evaluate(()=>document.fonts.ready);
+await p.goto(`${base}/b2c/${path}`,{waitUntil:'load'});await p.evaluate(()=>document.fonts.ready);await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const expected=1;
 assert.equal(await p.locator('.review-video video').count(),expected,'Exactly one supplied review on relevant surfaces');
 assert.equal(await p.locator('[data-review-open],.cd-review--story').count(),0,'No fabricated reviewer cards');
@@ -29,7 +29,7 @@ if(expected){
  await root.locator('.review-video__play').click();await p.waitForFunction(()=>{const v=document.querySelector('.review-video video');return !v.paused&&v.currentTime>.2});
  assert.equal(await v.evaluate(x=>x.controls),true);const info=await v.evaluate(x=>({duration:x.duration,width:x.videoWidth,height:x.videoHeight,error:x.error&&x.error.code}));assert.ok(Math.abs(info.duration-37.135)<.1);assert.equal(info.width,540);assert.equal(info.height,960);assert.equal(info.error,null);
  await root.locator('.review-video__play').waitFor({state:'hidden'});
- await v.press('Space');await p.waitForFunction(()=>document.querySelector('.review-video video').paused);await root.locator('.review-video__play').waitFor({state:'visible'});await p.waitForFunction(()=>{const v=document.querySelector('.review-video video');return v.seekable.length&&v.seekable.end(0)>5});await v.evaluate(x=>{x.currentTime=10;});await p.waitForFunction(()=>document.querySelector('.review-video video').currentTime>=10);assert.equal(await p.locator('.cd-stickybar:visible,.mobile-cta:visible').count(),0,'Floating CTA does not cover playback controls');
+ await v.press('Space');await p.waitForFunction(()=>document.querySelector('.review-video video').paused);await root.locator('.review-video__play').waitFor({state:'visible'});await p.waitForFunction(()=>{const v=document.querySelector('.review-video video');return v.seekable.length&&v.seekable.end(0)>5});await v.evaluate(x=>{x.currentTime=10;});await p.waitForFunction(()=>document.querySelector('.review-video video').currentTime>=10);await v.scrollIntoViewIfNeeded();await p.waitForFunction(()=>document.body.classList.contains('is-review-in-view'));assert.equal(await p.locator('.cd-stickybar:visible,.mobile-cta:visible').count(),0,'Floating CTA does not cover playback controls');
  await root.locator('.review-video__play').press('Enter');await p.waitForFunction(()=>!document.querySelector('.review-video video').paused);await v.press('Space');
 }
 assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Horizontal overflow');assert.deepEqual(stock,[]);assert.deepEqual(missing,[]);assert.deepEqual(errors,[]);
