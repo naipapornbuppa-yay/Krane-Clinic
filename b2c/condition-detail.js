@@ -262,6 +262,7 @@
         ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral", "ใช้ต่อเนื่อง"],
         ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical", "ใช้เสริม"]
       ],
+      safety: "ข้อมูลความปลอดภัยสำหรับโปรแกรมดูแลเส้นผม",
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุ ระยะเวลา และความต่อเนื่องในการรักษา"
     },
     skin: {
@@ -541,7 +542,10 @@
     const reviews=document.querySelector('[data-programme-reviews]');
     setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
       : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
-    if(reviews){
+    // The fixture renderer below is retained only for future source reference.
+    // Replace stock media/fictional attribution and record consent before approval.
+    if(reviews) reviews.closest('.cd-reviews').hidden=programme.reviewsApproved!==true;
+    if(reviews && programme.reviewsApproved===true){
       const isFlow=data.category==='sexual-health';
       const isHair=data.category==='hair-skin';
       reviews.innerHTML=Array.from({length:3},(_,i)=>{

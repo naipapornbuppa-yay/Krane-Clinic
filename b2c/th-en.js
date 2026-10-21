@@ -832,6 +832,7 @@
     "ไม่แน่ใจ? ปรึกษาแพทย์เพื่อประเมินก่อนได้ บัญชีใหม่ปรึกษาครั้งแรกฟรี":"Not sure? Talk to a doctor for an assessment first — the first consultation is free on a new account.",
     "แพทย์จะนัดติดตามผลและอาการข้างเคียงเป็นระยะ แล้วปรับแผนให้เหมาะกับคุณ ประวัติและแผนการรักษาอยู่ในบัญชีของคุณ":"The doctor books regular follow-ups on your results and any side effects, then adjusts the plan to suit you. Your history and treatment plan stay in your account.",
     "ข้อควรระวังสำคัญ":"Important precautions",
+    "ข้อมูลความปลอดภัยสำหรับโปรแกรมดูแลเส้นผม":"Safety information for the hair care programme",
     "ปรึกษาแพทย์ครั้งแรก":"First consultation",
     "ฟรี":"Free",
     "สำหรับบัญชีใหม่":"For new accounts",
