@@ -1,0 +1,112 @@
+<section class="screen" id="address" data-screen-code="SCR-013" data-address-mode="list">
+    <div class="screen__top checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="checkout-brandbar__logo" src="../assets/brand-final/krane-lockup-blue.svg" width="473" height="72" alt="Krane Clinic"></div>
+    <div class="screen__body address-body stack-4">
+      <!-- Client, 5 Oct: the address page opens on the list of saved
+           addresses, not on the form. A returning patient picks one and
+           confirms; a first-time patient gets the empty state and one way out
+           of it. The form is the state behind "เพิ่มที่อยู่ใหม่" and "แก้ไข",
+           which is what it was always for. The controls inside it are
+           unchanged — this is the flow around them. -->
+      <div class="address-list-view" data-address-list-view hidden>
+        <h2 class="address-page-title">ที่อยู่จัดส่ง</h2>
+        <div class="address-list-empty" data-address-list-empty hidden>
+          <span class="address-list-empty__icon" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+          <strong>ยังไม่มีที่อยู่จัดส่ง</strong>
+          <p>เพิ่มที่อยู่เพื่อให้เราจัดส่งยาถึงคุณ<br>แพ็กเกจปิดมิดชิด ไม่ระบุชื่อสินค้า</p>
+          <button class="btn btn--primary" type="button" data-address-new><i data-lucide="plus" class="ui-icon" aria-hidden="true"></i> เพิ่มที่อยู่ใหม่</button>
+        </div>
+        <div class="address-list" data-address-list role="radiogroup" aria-label="ที่อยู่จัดส่งที่บันทึกไว้"></div>
+        <button class="address-list__add" type="button" data-address-new hidden><i data-lucide="plus" class="ui-icon" aria-hidden="true"></i> เพิ่มที่อยู่ใหม่</button>
+      </div>
+      <div class="address-editor-view stack-4" data-address-editor-view>
+      <div class="address-page-head">
+        <h2 class="address-page-title" data-address-editor-title>เพิ่มที่อยู่ใหม่</h2>
+      </div>
+      <section class="form-group address-location" aria-label="ตำแหน่งที่จัดส่ง">
+        <!-- Client, 5 Oct: typing the place is how most people give an address;
+             the map is for when they cannot name it. The search was moved off
+             this page to the map screen, which put two taps between opening the
+             form and typing. It is back above the pin it fills. -->
+        <div class="address-search" data-address-search-wrap>
+          <label class="sr-only" for="addrSearch">ค้นหาที่อยู่</label>
+          <div class="field address-search__field">
+            <span class="address-search__icon" aria-hidden="true"><i data-lucide="search" class="ui-icon"></i></span>
+            <input class="input" id="addrSearch" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="addrSuggestions" placeholder="ค้นหาที่อยู่ คอนโด หรือสถานที่" data-address-search>
+          </div>
+          <ul class="address-suggestions" id="addrSuggestions" role="listbox" aria-label="ผลการค้นหาที่อยู่" data-address-suggestions hidden></ul>
+        </div>
+        <div class="address-pin__card">
+          <div class="address-pin__map" data-address-pin-map>
+            <div class="sim-map__plane address-pin__grid" aria-hidden="true"></div>
+            <div class="address-pin__tiles" data-address-pin-tiles aria-hidden="true"></div>
+            <span class="address-pin__marker" aria-hidden="true"><i data-lucide="map-pin" class="ui-icon"></i></span>
+        <button class="btn btn--primary btn--pill address-current-location" type="button" data-address-picker-open><i data-lucide="locate-fixed" class="ui-icon" aria-hidden="true"></i> ใช้ที่อยู่ปัจจุบัน</button>
+          </div>
+          <p class="address-pin__summary" data-address-preview-detail>เลือกตำแหน่งจากแผนที่เพื่อระบุที่อยู่จัดส่ง</p>
+        </div>
+      </section>
+
+      <!-- Client, 5 Oct: the address itself was behind "แก้ไขที่อยู่", on a
+           screen of its own. Searching and picking a pin are the fast paths,
+           but neither finds every soi, so the fields they fill are on the page
+           they fill — under a line that says so, rather than a tap away. -->
+      <section class="address-essential-fields stack-3" aria-labelledby="address-manual-title">
+        <div class="address-manual-head">
+          <h3 class="form-group__title" id="address-manual-title">หรือกรอกที่อยู่เอง</h3>
+          <p class="hint">ค้นหาไม่เจอ? กรอกที่อยู่ในช่องด้านล่างได้เลย</p>
+        </div>
+        <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addressMapQuery" rows="1" placeholder=" "></textarea><label for="addressMapQuery">บ้านเลขที่ หมู่บ้าน อาคาร ซอย ถนน</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapProvince" data-searchable-select><option value=""></option><option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option><option value="นนทบุรี">นนทบุรี</option><option value="สมุทรปราการ">สมุทรปราการ</option></select><label for="addressMapProvince">จังหวัด</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapDistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapDistrict">เขต/อำเภอ</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapSubdistrict" data-searchable-select disabled><option value=""></option></select><label for="addressMapSubdistrict">แขวง/ตำบล</label></span></div></div>
+        <div class="field float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="addressMapPostcode" data-searchable-select disabled><option value=""></option></select><label for="addressMapPostcode">รหัสไปรษณีย์</label></span></div></div>
+        <div class="field float-field float-field--note"><div class="float-field__box"><span class="float-field__slot"><textarea class="textarea" id="addrNote" rows="2" autocomplete="off" placeholder=" "></textarea><label for="addrNote">หมายเหตุถึงคนส่ง (ไม่บังคับ)</label></span></div></div>
+      </section>
+
+      <section class="form-group address-recipient-editor" data-address-recipient-editor>
+        <div class="address-page-head">
+          <h3 class="form-group__title">ข้อมูลผู้รับยา</h3>
+          <button class="address-clear-all" type="button" data-clear-recipient hidden>ล้างทั้งหมด</button>
+        </div>
+        <div class="form-group__surface">
+        <div class="field-row">
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientFirstName" autocomplete="given-name" placeholder=" " required><label for="recipientFirstName">ชื่อ</label></span></div></div>
+          <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="recipientLastName" autocomplete="family-name" placeholder=" " required><label for="recipientLastName">นามสกุล</label></span></div></div>
+        </div>
+        <div class="field float-field"><div class="float-field__box phone-field" data-phone-field><span class="float-field__slot"><input class="input phone-field__input" id="recipientPhone" type="tel" inputmode="numeric" maxlength="12" autocomplete="tel" placeholder=" " pattern="0[0-9]{2}-[0-9]{3}-[0-9]{4}" required><label for="recipientPhone">เบอร์โทรศัพท์</label></span></div></div>
+        </div>
+      </section>
+
+      <section class="address-label-field" data-address-label-field>
+        <h3 class="form-group__title">บันทึกที่อยู่นี้เป็น</h3>
+        <div class="address-label-chips" role="group" aria-label="บันทึกที่อยู่นี้เป็น">
+          <button class="address-label-chip" type="button" data-address-label="บ้าน">บ้าน</button>
+          <button class="address-label-chip" type="button" data-address-label="ที่ทำงาน">ที่ทำงาน</button>
+          <button class="address-label-chip" type="button" data-address-label="">อื่นๆ</button>
+        </div>
+        <div class="field float-field" data-address-label-custom hidden><div class="float-field__box"><span class="float-field__slot"><input class="input" id="addrLabel" autocomplete="off" placeholder=" "><label for="addrLabel">ชื่อที่อยู่</label></span></div></div>
+      </section>
+
+      <p class="address-privacy-note"><i data-lucide="lock" class="ui-icon" aria-hidden="true"></i><span>จัดส่งในกล่องปิดมิดชิด ไม่ระบุชื่อสินค้าหรือคลินิก</span></p>
+
+      <div class="address-data-fields" hidden aria-hidden="true">
+        <input id="addrFloor" type="hidden">
+        <input id="addrBuilding" type="hidden">
+        <input id="addrLine" type="hidden">
+        <input id="addrSubdistrict" type="hidden">
+        <input id="addrDistrictName" type="hidden">
+        <input id="addrProvince" type="hidden">
+        <input id="addrPostcode" type="hidden">
+        <input id="addrDistrict" type="hidden">
+      </div>
+
+      <input type="radio" name="dropoffMethod" value="hand" checked hidden>
+      </div>
+    </div>
+    <div class="screen__footer address-footer" data-address-list-footer hidden>
+      <button class="btn btn--primary" type="button" data-address-list-confirm>ยืนยันที่อยู่จัดส่ง</button>
+    </div>
+    <div class="screen__footer address-footer" data-address-editor-footer>
+      <button class="btn btn--primary" type="button" data-address-save>บันทึกและใช้ที่อยู่นี้</button>
+    </div>
+  </section>

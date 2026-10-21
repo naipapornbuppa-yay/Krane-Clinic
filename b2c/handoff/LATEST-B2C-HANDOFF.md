@@ -1,5 +1,8 @@
 # Latest B2C handoff addendum
 
+> **21 October 2026 — page source handoff for Tin:** Use [developer-handoff/README.md](../../developer-handoff/README.md) for the new editable per-page HTML/JS/CSS and shared libraries. This is regenerated from this branch's own baseline `3beddab450c9a6da9649c75dddce402dbc9cd39d`, not the newer live `gh-pages` app. The original app and styles remain unchanged. Hair scalp screening stays before photos; ED heart and nitrate screening stay in separate steps. Pricing/navigation updates on `gh-pages` are a separate delivery. All screens still mount together in the compatibility runtime; these are not independently mounted production routes. B2C-only scope and the existing backend limitations remain.
+
+
 ## Latest patient-app changes — 11 October evening
 
 - Program cards use the shared translucent folder design on home and refill. Refill cards use their own measured SVG clipping path rather than reusing home dimensions, and omit the extra front badge. Paper count is capped at four while complete consultation history is retained. Front cover remains still; paper movement respects reduced-motion preferences. History currently includes the selected consultation and labels each row “ปรึกษาวันที่ …” with the date beside the title; excluding the current record was proposed but not implemented.

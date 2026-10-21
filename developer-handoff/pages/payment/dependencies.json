@@ -1,0 +1,255 @@
+{
+  "screen": "payment",
+  "template": "pages/payment/index.html",
+  "script": "pages/payment/page.js",
+  "styles": "pages/payment/page.css",
+  "lifecycle": {
+    "mount": "Build-time composition into shared/shell.html, before scripts execute.",
+    "initialize": "Page-owned kraneInit_* routines are called once by shared/runtime.js in dependency order. Do not call again on each route change.",
+    "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
+    "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
+  },
+  "functions": [
+    "syncPaymentFooterSavings",
+    "enforceCheckoutSequence",
+    "syncOrderCheckout",
+    "confirmListAddress",
+    "startRefill",
+    "flagCheckoutBlocker",
+    "syncCheckoutReadiness",
+    "refreshMedicationCheckout",
+    "renderPromo"
+  ],
+  "orderedInitializers": [
+    "kraneInit_payment_400",
+    "kraneInit_payment_537",
+    "kraneInit_payment_owned_273",
+    "kraneInit_payment_owned_277"
+  ],
+  "dependencies": [
+    {
+      "name": "ADDON_PRICES",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "CHECKOUT_BLOCKERS",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "MEDICINE_PRICES",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "REFILL_PRESCRIPTIONS",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "activateGatewayMethod",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "addressListSelected",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "appliedPromo",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "availableRefillKeys",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "baht",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "checkoutActionState",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "checkoutBlockerTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "closePaymentMethodModal",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "closeRefillSheet",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "consultationBalanceDue",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "currentMedicationDue",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "deliveryAddressSummary",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "deliveryFeeFor",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "deliveryMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "firstConsultationDiscount",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "focusCheckoutDelivery",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "hasFulfillableItems",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "importClinicalPrescription",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "invalidateFulfillmentQuote",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "medicineSubtotal",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "openPaymentItemSheet",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "openPaymentMethodModal",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "openPromoModal",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "partnerMedicineCoverageCredit",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "paymentConsultationDiscount",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentCredit",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentDeadlineExpired",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "paymentDue",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentMethodModal",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentMethodNames",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "pendingPaymentMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistAddressBook",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "reduceMotion",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "rememberDeliveryAddress",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "replaceCurrent",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "resetGatewayAttempt",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "resetOptionalAddOns",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "savedAddresses",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "selectedAddOnTotal",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "setPaymentContext",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "startInlineDeliveryQuote",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "syncDeliveryAddress",
+      "source": "pages/address/page.js"
+    },
+    {
+      "name": "syncMedicationFailureAmount",
+      "source": "pages/payfail/page.js"
+    },
+    {
+      "name": "syncPaymentMethodOptions",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "syncPaymentOutcome",
+      "source": "pages/payment-success/page.js"
+    },
+    {
+      "name": "syncPickupBranch",
+      "source": "shared/lib/ui.js"
+    }
+  ],
+  "externalDependencies": [
+    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+  ],
+  "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
+}

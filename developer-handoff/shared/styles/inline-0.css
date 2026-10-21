@@ -1,0 +1,196 @@
+
+  /* prototype chrome only (not part of the product) */
+  html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
+  html::-webkit-scrollbar{display:none}
+  /* Keep the document canvas on the app surface so translucent browser chrome
+     at the bottom stays light. The landing notch is painted separately below. */
+  body{width:100vw;max-width:none;height:100%;overflow:hidden;background:var(--surface-page)}
+  /* Chrome on iOS paints its status area from the body's rendered canvas, not
+     from theme-color. Keep the canvas blue only at the top and app-light at
+     the bottom so the floating browser toolbar retains its existing colour. */
+  html[data-landing-canvas="true"] body{
+    --landing-notch-stop:max(env(safe-area-inset-top, 0px), 64px);
+    background-color:#5871B5;
+    background-image:linear-gradient(to bottom,
+      #5871B5 0,
+      #5871B5 var(--landing-notch-stop),
+      #F7F7F7 var(--landing-notch-stop),
+      #F7F7F7 100%);
+    background-attachment:fixed;
+  }
+  /* Paint only the top safe area on the landing route. The page canvas stays
+     on the app surface so a translucent mobile browser toolbar remains light. */
+  html[data-landing-canvas="true"] body::before{
+    content:"";
+    position:fixed;
+    z-index:2147483647;
+    top:0;
+    right:0;
+    left:0;
+    height:max(env(safe-area-inset-top, 0px), 1px);
+    background:#5871B5;
+    pointer-events:none;
+  }
+  .proto{display:flex;width:100%;max-width:100%;min-height:100vh;height:100dvh;overflow:hidden}
+  .rail{display:none;width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
+  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
+  .rail-head .logo{display:flex;align-items:center;margin:0}
+  .rail-logo{display:block;width:96px;height:auto;max-height:25px;object-fit:contain;object-position:left center}
+  .rail-head__label{font-size:11px;font-weight:var(--fw-semibold);color:var(--color-ink-3);text-transform:uppercase;letter-spacing:0}
+  .rail-toggle{position:absolute;top:50%;right:4px;width:30px;height:30px;display:grid;place-items:center;padding:0;border:1px solid var(--color-line);border-radius:10px;background:var(--color-surface);color:var(--color-ink);cursor:pointer;transform:translateY(-50%);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .rail-toggle:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
+  .rail-toggle:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+  .rail-toggle__icon{width:8px;height:8px;border-left:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg);transition:transform .22s ease}
+  .rail details,.rail details>summary,.rail-group__body,.rail a{max-width:100%;min-width:0}
+  .rail details>summary{list-style:none;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
+  .rail details>summary::-webkit-details-marker{display:none}
+  .rail-group{border-bottom:1px solid var(--color-line)}
+  .rail-group>summary{display:grid;grid-template-columns:27px minmax(0,1fr) 14px;align-items:center;gap:var(--sp-2);padding:12px 8px;cursor:pointer;color:var(--color-ink);font-size:13px;font-weight:var(--fw-semibold)}
+  .rail-group>summary::after{content:"";justify-self:end;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;color:var(--color-ink-3);transform:rotate(45deg);transition:transform .16s ease}
+  .rail-group:not([open])>summary::after{transform:rotate(-45deg)}
+  .rail-step{font-size:10px;font-weight:var(--fw-semibold);color:var(--color-ink-3);font-variant-numeric:tabular-nums}
+  .rail-group__body{padding:0 0 10px}
+  .rail a{display:block;margin:1px 0;padding:7px 10px 7px 37px;border-radius:var(--radius-xs);color:var(--color-ink-2);text-decoration:none;font-size:12.5px;line-height:1.35;overflow-wrap:anywhere;cursor:pointer}
+  .rail a:hover{background:var(--color-bg-2);color:var(--color-ink)}
+  .rail a.is-key-route{background:var(--color-blue-soft);color:var(--color-blue);font-weight:var(--fw-semibold)}
+  .rail a.is-key-route:hover{background:var(--color-info-soft);color:var(--color-blue-hover)}
+  /* Client, 6 Oct: the current item is a light highlight with a bar in its
+     own colour, not a near-black pill. The pill only ever set white text for
+     two of the four link states, so an eligibility or alternative screen kept
+     its blue or grey text on black and could not be read. Keeping each state's
+     colour and changing only the surface means every state is legible and the
+     inventory still says at a glance which kind of screen each one is. */
+  .rail a.current{background:var(--color-bg-2);box-shadow:inset 3px 0 0 currentColor;font-weight:var(--fw-semibold)}
+  .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
+  .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
+  .rail a.current .rail-screen-id{color:inherit;opacity:.68}
+  .rail-legend{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
+  .rail-legend span{display:inline-flex;align-items:center;gap:5px}
+  .rail-legend .rail-legend__screen-id{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;opacity:.82}
+  .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
+  .rail-legend .is-error{color:var(--color-danger-ink)}
+  .rail-legend .is-error i{background:var(--color-danger-ink)}
+  .rail-error-menu{margin:5px 8px 4px 30px;padding:6px 0 2px;border-left:1px solid var(--color-danger-ink)}
+  .rail-error-menu a{margin:0;padding:6px 8px 6px 14px;font-size:11.5px}
+  .rail-error-tag{display:inline-block;margin-right:4px;font-size:10px;font-weight:var(--fw-semibold);letter-spacing:.02em;text-transform:uppercase}
+  /* Error and empty-state screens read in dark red so they are distinguishable
+     from happy-path entries at a glance. Colour comes from the token library
+     (--color-danger-ink), never a literal. Applies to the link and its inline
+     state caption; the active state keeps the dark chip so it stays legible. */
+  .rail a.is-exception,.rail-sub a.is-exception{color:var(--color-danger-ink);font-weight:var(--fw-medium)}
+  .rail a.is-exception .rail-state{color:inherit;opacity:.82}
+  .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
+  .rail a.is-exception.current{background:var(--color-danger-soft);color:var(--color-danger-ink)}
+  .rail a.is-exception.current .rail-state{color:inherit}
+  .rail a.is-key-route.current{background:var(--color-blue-soft);color:var(--color-blue)}
+  .rail a.is-eligibility.current{background:var(--color-blue-soft);color:var(--color-blue)}
+  .rail a.is-alternative.current{background:var(--color-bg-2);color:var(--color-ink-2)}
+  .rail a.is-eligibility{color:var(--color-blue);font-weight:var(--fw-medium)}
+  .rail a.is-eligibility:hover{background:var(--color-blue-soft);color:var(--color-blue-hover)}
+  .rail a.is-alternative{color:var(--color-ink-3)}
+  .stage{width:100%;min-width:0;max-width:100vw;height:100vh;height:100dvh;flex:1;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden;padding:0;background:var(--color-surface);transition:width .22s ease,max-width .22s ease}
+  html.review-tools-enabled .rail{display:block}
+  html.review-tools-enabled .stage{width:calc(100% - 286px);max-width:calc(100vw - 286px)}
+  html.review-tools-enabled body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
+  html.review-tools-enabled body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
+  html.review-tools-enabled body.rail-is-collapsed .rail-head .logo,
+  html.review-tools-enabled body.rail-is-collapsed .rail-head__label,
+  html.review-tools-enabled body.rail-is-collapsed .rail-legend,
+  html.review-tools-enabled body.rail-is-collapsed .rail>.rail-group{display:none}
+  html.review-tools-enabled body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
+  html.review-tools-enabled body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
+  html.review-tools-enabled body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
+  .screen{display:none;min-width:0}
+  .screen.active{display:flex}
+  /* The web landing is an embedded full-bleed surface, not a phone card. Keep
+     both the screen and iframe on the stage's flex width so an older cached
+     capped-screen rule cannot leave an unused strip on the right. */
+  .stage>.screen--web{
+    width:100%!important;max-width:none!important;min-width:0!important;
+    flex:1 1 auto;align-self:stretch;
+  }
+  .stage>.screen--web>iframe{
+    width:100%!important;max-width:none!important;min-width:0!important;
+    height:100%;flex:1 1 100%;
+  }
+  .note-bar{display:none}
+  @media(max-width:780px){
+    .rail,html.review-tools-enabled .rail{display:none}.note-bar{left:0}
+    .proto{width:100%;min-height:100dvh;height:100dvh;overflow:hidden}
+    .stage,html.review-tools-enabled .stage,html.review-tools-enabled body.rail-is-collapsed .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
+    .stage .screen{width:100%;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none}
+    html,body,.proto,.stage,.stage>.screen--web,.stage>.screen--web>iframe{
+      width:100%!important;max-width:100%!important;min-width:0!important;
+    }
+  }
+  /* ── Feature annotation strip (prototype chrome only, not product UI) ── */
+  .feat-strip{width:100%;background:var(--color-accent-soft-2);border:1px solid var(--color-accent-soft);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;font-size:11px;line-height:1.4;font-family:var(--font-base)}
+  /* feature tag = review aid, shown as a floating toast on top (toggle in toolbar; off by default) */
+  #featToast{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:60;width:max-content;max-width:min(680px,92vw);margin:0;box-shadow:var(--shadow-lg);pointer-events:none}
+  body.hide-feat #featToast{display:none}
+  .feat-strip .fs-id{display:inline-block;background:var(--color-accent);color:#fff;border-radius:var(--radius-pill);padding:1px 6px;font-size:10px;font-weight:700;letter-spacing:.04em;margin-right:6px}
+  .feat-strip .fs-name{font-weight:600;color:var(--color-accent-ink)}
+  .feat-strip .fs-stories{margin-top:5px;color:var(--color-ink-2);font-size:10px}
+  .feat-strip .fs-stories li{margin:0;padding:0;list-style:none;padding-left:12px;text-indent:-12px}
+  .feat-strip .fs-stories li::before{content:"▸ ";color:var(--color-accent)}
+  /* ── F02 language toggle (product UI) ── */
+  .lang{display:inline-flex;align-items:center;border:1px solid var(--color-line);border-radius:var(--radius-sm);overflow:hidden;margin-right:var(--sp-2)}
+  .lang__opt{appearance:none;border:0;background:transparent;color:var(--color-ink-3);font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:.06em;padding:5px 11px;cursor:pointer}
+  .lang__opt.is-active{background:var(--color-ink);color:#fff}
+  .auth-identity{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-bg-soft)}
+  .auth-identity strong{font-weight:var(--fw-semibold)}
+  .auth-provider{width:42px;height:42px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--color-bg-2);flex:none}
+  .auth-provider svg{width:24px;height:24px}
+  /* No tinted box behind the confirmation, and the check centred on its text (client, 17 Sep). */
+  .auth-check{display:flex;align-items:center;gap:var(--sp-3);padding:0;border-radius:0;background:none;color:var(--color-ink-2)}
+  .auth-check .check{margin-top:0}
+  .identity-upload{position:relative;transition:background var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+  .identity-upload:hover{background:var(--color-bg-soft);border-color:var(--color-accent)!important}
+  .identity-upload:focus-within{outline:3px solid var(--color-focus);outline-offset:3px}
+  .identity-upload.is-complete{border:1px solid var(--color-accent)!important;background:var(--color-accent-soft-2)}
+  .identity-upload.is-complete [data-identity-status]{color:var(--color-accent-ink);font-weight:var(--fw-semibold)}
+  /* Six boxes for six digits, so they keep a digit's proportions and sit in the
+     middle rather than stretching to whatever width the screen happens to be:
+     on a desktop each cell was as wide as a card (client, 10 Sep). */
+  .otp-entry{position:relative;width:fit-content;max-width:100%;margin-inline:auto}
+  .otp-entry__input{position:absolute;z-index:2;inset:0;width:100%;height:100%;margin:0;border:0;opacity:0;cursor:text}
+  .otp-entry__cells{display:grid;grid-template-columns:repeat(6,minmax(0,56px));justify-content:center;gap:var(--sp-2)}
+  .otp-entry__cell{display:grid;place-items:center;min-width:0;width:56px;height:64px;border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-ink);font-size:var(--fs-lg);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;transition:border-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+  .otp-entry__cell.is-filled{background:var(--color-bg-soft)}
+  .otp-entry:focus-within .otp-entry__cell.is-current{border-color:var(--color-blue);box-shadow:0 0 0 3px var(--color-focus)}
+  @media(max-width:420px){
+    .otp-entry__cells{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+    .otp-entry__cell{width:auto;height:58px;border-radius:12px;font-size:24px}
+    .otp-entry{width:100%}
+  }
+    #obesity-risk-modal [data-obesity-risk-warning]{margin-top:20px;padding:16px;gap:12px}
+    #obesity-risk-modal .modal-dialog__actions{margin-top:24px}
+
+    #red-flag-modal,#obesity-risk-modal{align-items:end;padding-bottom:0}
+    #red-flag-modal .modal-dialog,#obesity-risk-modal .modal-dialog{border-radius:24px 24px 0 0;max-height:90dvh;overflow:auto;margin-bottom:0}
+    #red-flag-modal fieldset{border:0;padding:0;margin:0 0 20px;min-width:0}
+    #red-flag-modal legend{font-weight:600;line-height:1.5;margin-bottom:12px}
+    #csat-modal .csat-dialog{scrollbar-width:none;-ms-overflow-style:none}
+    #csat-modal .csat-dialog::-webkit-scrollbar{display:none;width:0;height:0}
+
+/* @krane-css-include profile css-0001 *//* @krane-css-include profile css-0002 *//* @krane-css-include profile css-0003 *//* @krane-css-include profile css-0004 */.treatment-folder__sheet{position:absolute;inset:30px calc(var(--layer)*5px) calc(var(--layer)*-5px);background:#e9edf3;border:1px solid #dce1e9;border-radius:24px;z-index:-1}
+.treatment-folder__upcoming{padding:28px;background:white;border-radius:0 24px 24px 24px;min-height:150px;box-shadow:0 8px 24px #2026330a}
+/* @krane-css-include profile css-0005 *//* @krane-css-include notifications css-0006 */#address-delete-confirm{width:min(440px,calc(100% - 32px));border:0;border-radius:24px;padding:28px;color:var(--color-ink);background:white;box-shadow:0 24px 80px #17233333}
+#address-delete-confirm::backdrop{background:rgba(30,45,50,.45)}
+#address-delete-confirm p{margin:16px 0 24px;overflow-wrap:anywhere}
+.address-delete-actions{display:flex;gap:12px}.address-delete-actions .btn{flex:1}
+.review-modal-preview{width:min(600px,calc(100% - 32px));max-height:90dvh;overflow:auto;border:0;border-radius:24px;padding:24px;background:white;color:var(--color-ink)}
+.review-modal-preview::backdrop{background:#26363888}
+.review-modal-preview__close{display:block;margin-left:auto;border:0;border-radius:12px;padding:10px 16px;background:#e7eefb;color:#395aa4;cursor:pointer}
+.treatment-folder__tabs{position:relative;min-height:calc(30px + var(--folder-depth,0)*5px);overflow:visible!important;pointer-events:none}
+.treatment-folder__spine{position:absolute;bottom:calc(var(--spine)*5px);left:calc(var(--spine)*20px);width:124px;height:28px;border:1px solid #d6dfed;border-bottom:0;border-radius:12px 12px 0 0;background:#e5ebf5;z-index:calc(10 - var(--spine))}
+.treatment-folder__label{position:relative;align-self:flex-end;z-index:11;background:white;color:#395aa4;border-radius:12px 12px 0 0;padding:6px 14px;font-size:12px}
+.treatment-folder__tabs{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none}
+.treatment-folder__tabs button{border:0;flex:none;padding:6px 14px;border-radius:12px 12px 0 0;background:#e9edf3;color:#626b7c;font:inherit;font-size:12px;cursor:pointer}
+.treatment-folder__tabs button[aria-selected="true"]{background:white;color:#395AA4;font-weight:600}
+.treatment-folder__tabs button:focus-visible{outline:2px solid #395AA4;outline-offset:-3px}
+
+/* @krane-css-include treatment-detail css-0007 *//* @krane-css-include treatment-detail css-0008 *//* @krane-css-include treatment-detail css-0009 */#treatment-visit-history{margin-top:24px;border-top:1px solid #e1e5ec;padding-top:20px}
+#treatment-visit-history summary{cursor:pointer;font-weight:600;padding:8px 0}
+#treatment-visit-history .doc-row{width:100%;margin-top:12px;border:1px solid #d7deec;text-align:left;padding:16px;color:var(--color-ink);background:white}
+    [data-shared-identity-fields] .between:has([data-phone-note]){display:none}
