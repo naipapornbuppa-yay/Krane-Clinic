@@ -8,19 +8,19 @@
   if (steps.length !== 5) return;
   const labels = ['ประเมินสุขภาพ', 'แผนจากแพทย์', 'รับยาที่บ้าน', 'ติดตามผล', 'เติมยา'];
   const icons = ['clipboard-list', 'file-check-2', 'package', 'calendar-check', 'repeat-2'];
-  const drawings = [
-    '<div class="journey-form"><i data-lucide="clipboard-list"></i><span></span><span></span><span></span><b><i data-lucide="video"></i></b></div>',
-    '<div class="journey-document"><i data-lucide="file-check-2"></i><span></span><span></span><span></span><b><i data-lucide="pill"></i></b></div>',
-    '<div class="journey-delivery"><i data-lucide="package"></i><span></span><i data-lucide="house"></i><b><i data-lucide="truck"></i></b></div>',
-    '<div class="journey-calendar"><i data-lucide="calendar-check"></i><div>' + '<span></span>'.repeat(14) + '</div><b><i data-lucide="messages-square"></i></b></div>',
-    '<div class="journey-refill"><i data-lucide="repeat-2"></i><b><i data-lucide="pill"></i></b></div>'
+  const visuals = [
+    '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
+    '<img src="assets/editorial-stock-20261017/pexels-5452269.jpg" alt="" loading="lazy">',
+    '<i data-lucide="package-check"></i>',
+    '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
+    '<i data-lucide="repeat-2"></i>'
   ];
   const root = document.createElement('div');
   root.className = 'programme-journey';
   root.innerHTML = '<p class="journey-hint">เลือกแต่ละขั้นตอนเพื่อดูรายละเอียด</p>' +
     '<div class="journey-layout"><div class="journey-tabs" role="tablist" aria-label="ขั้นตอนการดูแล"></div>' +
     '<div class="journey-panels"></div></div>' +
-    '<div class="journey-footer"><p>ภาพประกอบเส้นทางการดูแล</p><div><button type="button" data-journey-prev aria-label="ขั้นตอนก่อนหน้า"><i data-lucide="arrow-left"></i></button>' +
+    '<div class="journey-footer"><p>ขั้นตอนการดูแลของคุณ</p><div><button type="button" data-journey-prev aria-label="ขั้นตอนก่อนหน้า"><i data-lucide="arrow-left"></i></button>' +
     '<span data-journey-count>1 / 5</span><button type="button" data-journey-next aria-label="ขั้นตอนถัดไป"><i data-lucide="arrow-right"></i></button></div></div>';
   const tablist = root.querySelector('.journey-tabs');
   const panels = root.querySelector('.journey-panels');
@@ -40,7 +40,7 @@
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', button.id);
     panel.tabIndex = 0;
-    panel.innerHTML = `<div class="journey-illustration" aria-hidden="true">${drawings[index]}</div><div class="journey-copy"><h4></h4><p></p></div>`;
+    panel.innerHTML = `<div class="journey-visual" aria-hidden="true">${visuals[index]}</div><div class="journey-copy"><h4></h4><p></p></div>`;
     panel.querySelector('h4').textContent = step.querySelector('strong').textContent;
     panel.querySelector('p').textContent = step.querySelector('p').textContent;
     panels.append(panel);
