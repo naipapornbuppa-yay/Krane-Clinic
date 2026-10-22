@@ -13,6 +13,10 @@
    ============================================================ */
 (function () {
   var EN = {
+    "“เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ”":"“Start with an assessment by a licensed doctor, then build a plan that fits your life.”",
+    "แนวทางการดูแลของ Krane · ภาพประกอบจากวิดีโอสต็อก":"Krane's approach to care · Illustrated with stock footage",
+    "ภาพประกอบคนสนทนา วิดีโอสต็อก":"Illustration of a conversation using stock footage",
+    "วิดีโอแนะนำแนวทางการดูแล":"Care approach introduction video",
     "เสียงจากผู้ใช้":"Voices from our users",
     "ประสบการณ์จากผู้ใช้บริการ":"A patient's experience",
     "วิดีโอประสบการณ์การปรึกษาแพทย์":"A video about the consultation experience",
