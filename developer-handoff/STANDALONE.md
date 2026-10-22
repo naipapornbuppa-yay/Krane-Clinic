@@ -25,7 +25,7 @@ Run `npm ci --prefix developer-handoff` once, then `npm run build --prefix devel
 
 ## Behavior retained across documents
 
-The client validation, fictional OTP/password flow, intake questions and safety routing, consent, partner entry, matching, prescription/order demo state and article/treatment navigation continue to use the existing logic. Navigation now opens the destination document and the browser unloads the previous screen and timers. Native document navigation adds history entries; hash links are translated with replacement to avoid duplicate history steps.
+The client validation, fictional OTP/password flow, intake questions and safety routing, consent, partner entry, matching, prescription/order demo state and article/treatment navigation continue to use the existing logic. Navigation now opens the destination document and the browser unloads the previous screen and timers. Internal document navigation keeps a resumed queue active; an actual reload or departure still suspends it, as in the baseline. The queue action initializer is an explicit shared dependency of waitroom and queue-resume. Native document navigation adds history entries; hash links are translated with replacement to avoid duplicate history steps.
 
 The existing flow/consent/draft stores remain authoritative. Session continuity carries route history, current category and form selections between documents. Passwords, OTP codes and file bytes are never serialized by the page-state helper. Intake drafts merge fields from prior documents instead of deleting answers from screens no longer mounted. Treatment selection and article selection are explicit data transfers, not references to another page's DOM.
 

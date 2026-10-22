@@ -11,7 +11,7 @@ function show(id, push=true){
     // Legacy "new consultation" links now start the general intake directly.
     id=normalizeScreenTarget(id);
     if(id==='waitroom' && flowState.appointmentWhen && (!flowState.appointmentAt || Date.parse(flowState.appointmentAt)>Date.now())) id='appointment-booked';
-    if(!queueDismissOnce && pendingQueue?.suspended && ['landing','intake1','conditions','matching','waitroom'].includes(id)) id='queue-resume';
+    if(kraneEntryPermit!==id && !queueDismissOnce && pendingQueue?.suspended && ['landing','intake1','conditions','matching','waitroom'].includes(id)) id='queue-resume';
     queueDismissOnce=false;
     const requested=id;
     id=normalizeScreenTarget(kraneEntryPermit===id ? (kraneEntryPermit=null,id) : requiredRouteFor(id));

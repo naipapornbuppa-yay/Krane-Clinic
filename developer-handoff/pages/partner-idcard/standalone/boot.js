@@ -1,4 +1,4 @@
-let kraneHashNavigation=false;
+let kraneHashNavigation=false,kraneDocumentNavigation=false;
 let kraneEntryPermit=sessionStorage.getItem('krane-standalone-entry-permit');sessionStorage.removeItem('krane-standalone-entry-permit');
 if(!location.hash && new URLSearchParams(location.search).get('entry')==='partner'){const u=new URL(location.href);u.hash='consent-terms';u.searchParams.set('fresh','1');window.history.replaceState(null,'',u); }
 window.kraneDemoStage=new URLSearchParams(location.search).get('demoStage')||undefined;
@@ -693,7 +693,7 @@ const DIRECT_PRE_DOCTOR_GATE_TARGETS = new Set(['matching','appointment',
 document.addEventListener('input',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
 document.addEventListener('change',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
 document.addEventListener('focusout',event => syncFloatingFieldState(event.target.closest?.('.float-field')));
-window.addEventListener('pagehide',()=>{if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}});
+window.addEventListener('pagehide',()=>{if(pendingQueue && !kraneDocumentNavigation){pendingQueue.suspended=true;savePendingQueue()}});
 let waitEntryTimer = null;
 const waitroomExpiredModal = () => document.getElementById('waitroom-expired-modal');
 let freshDeepLinkConsumed=false;
@@ -1116,7 +1116,7 @@ restorePartnerFields();
 enhancePatientDateFields();
 syncPartnerScreening();
 restoreAuthenticatedAccount();
-function kraneNavigateDocument(id){sessionStorage.setItem('krane-standalone-entry-permit',id);kraneSavePageForm();if(window.kraneArticleState)sessionStorage.setItem('krane-article-selection',JSON.stringify({selectedId:window.kraneArticleState.selectedId,filter:window.kraneArticleState.filter}));persistFlowState();sessionStorage.setItem('krane-standalone-state',JSON.stringify({history,selectedCategoryId,selectedConditionId,isAuthenticated,journeyActive,hasActiveCase,postAuthNext,patientInfoNext,doctorAvailable,insuranceEntry,authNext,socialCompletesAuth,appointmentDay,appointmentSlot,pharmacyRetryCount,pharmacyForceDecline,deliveryMethod,paymentMethod,paymentDue,paymentCredit,paymentConsultationDiscount,appliedPromo,obesityRiskStep}));const url=new URL('../developer-handoff/pages/'+id+'/index.html',document.baseURI);url.search=location.search;url.searchParams.delete('fresh');url.searchParams.set('category',selectedCategoryId);url.hash=id;if(kraneHashNavigation)location.replace(url);else location.assign(url);}
+function kraneNavigateDocument(id){sessionStorage.setItem('krane-standalone-entry-permit',id);kraneSavePageForm();if(window.kraneArticleState)sessionStorage.setItem('krane-article-selection',JSON.stringify({selectedId:window.kraneArticleState.selectedId,filter:window.kraneArticleState.filter}));persistFlowState();sessionStorage.setItem('krane-standalone-state',JSON.stringify({history,selectedCategoryId,selectedConditionId,isAuthenticated,journeyActive,hasActiveCase,postAuthNext,patientInfoNext,doctorAvailable,insuranceEntry,authNext,socialCompletesAuth,appointmentDay,appointmentSlot,pharmacyRetryCount,pharmacyForceDecline,deliveryMethod,paymentMethod,paymentDue,paymentCredit,paymentConsultationDiscount,appliedPromo,obesityRiskStep}));const url=new URL('../developer-handoff/pages/'+id+'/index.html',document.baseURI);url.search=location.search;url.searchParams.delete('fresh');url.searchParams.set('category',selectedCategoryId);url.hash=id;kraneDocumentNavigation=true;if(kraneHashNavigation)location.replace(url);else location.assign(url);}
 if(KRANE_PAGE_ID==='login'&&!Object.hasOwn(kraneSaved,'postAuthNext'))postAuthNext='profile';
 if(flowConfig.get('category'))setSelectedCategory(flowConfig.get('category'));
 if(window.kraneDemoStage){seedPartnerStage(window.kraneDemoStage);seedClinicalDemoStage(window.kraneDemoStage); }
