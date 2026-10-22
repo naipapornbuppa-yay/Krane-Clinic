@@ -25,13 +25,12 @@
   const bio=document.querySelector("[data-doctor-dialog-bio]");
   const specialty=document.querySelector("[data-doctor-dialog-specialty]");
   const education=document.querySelector("[data-doctor-dialog-education]");
-  const fullLink=document.querySelector("[data-doctor-dialog-link]");
   let returnFocus=null;
   function renderMedia(profile){
     if(profile.image){const image=document.createElement("img");image.src=profile.image;image.alt=profile.name;image.width=profile.w||674;image.height=profile.h||1200;media.replaceChildren(image);media.classList.remove("doctor-profile-dialog__media--identity");return;}
     const identity=document.createElement("span");identity.className="doctor-profile-dialog__identity";const initials=document.createElement("b");initials.textContent=profile.initials;const label=document.createElement("small");label.textContent=profile.specialty;identity.append(initials,label);media.replaceChildren(identity);media.classList.add("doctor-profile-dialog__media--identity");
   }
-  function openProfile(trigger){if(!dialog||typeof dialog.showModal!=="function")return;const profile=profiles[trigger.dataset.doctorId];if(!profile)return;returnFocus=trigger;renderMedia(profile);name.textContent=profile.name;role.textContent=profile.role;bio.textContent=profile.bio;specialty.textContent=profile.specialty;education.textContent=profile.education;education.closest('div').style.display=profile.education?'':'none';bio.style.display=profile.bio?'':'none';if(fullLink){fullLink.href="doctor-detail.html?doctor="+trigger.dataset.doctorId;fullLink.hidden=trigger.dataset.doctorId==='5';fullLink.style.display=fullLink.hidden?'none':'';}document.body.classList.add("doctor-dialog-open");dialog.showModal();requestAnimationFrame(()=>closeButton?.focus());}
+  function openProfile(trigger){if(!dialog||typeof dialog.showModal!=="function")return;const profile=profiles[trigger.dataset.doctorId];if(!profile)return;returnFocus=trigger;renderMedia(profile);name.textContent=profile.name;role.textContent=profile.role;bio.textContent=profile.bio;specialty.textContent=profile.specialty;education.textContent=profile.education;education.closest('div').style.display=profile.education?'':'none';bio.style.display=profile.bio?'':'none';document.body.classList.add("doctor-dialog-open");dialog.showModal();requestAnimationFrame(()=>closeButton?.focus());}
   document.querySelectorAll("[data-doctor-open]").forEach((trigger)=>{trigger.addEventListener("click",(event)=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(!dialog||typeof dialog.showModal!=="function")return;event.preventDefault();openProfile(trigger);});});
   const requestedDoctor=new URLSearchParams(location.search).get('doctor');
   if(requestedDoctor && Object.hasOwn(profiles,requestedDoctor)){
