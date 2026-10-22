@@ -81,6 +81,29 @@
     }
     flush();
   }
+  const safeMediaURL=value=>typeof value==='string'&&/^(https:\/\/|assets\/)[^\s<>]+$/.test(value);
+  function articleFigure(media){
+    if(!media||!safeMediaURL(media.src)||!media.alt?.trim())return null;
+    const figure=el('figure','article-reading__figure'),image=el('img');
+    image.src=media.src;image.alt=media.alt;image.loading='lazy';image.decoding='async';image.width=1200;image.height=800;figure.append(image);
+    if(media.caption)figure.append(el('figcaption','',media.caption));return figure;
+  }
+  const headingKey=value=>(value||'').replace(/[*_`]/g,'').replace(/^\s*\d+[.)]\s*/,'').trim().toLocaleLowerCase();
+  function prepareReading(body,article){
+    body.querySelectorAll('.article-reading__section').forEach(section=>{
+      const heading=section.querySelector('h2,h3');if(!heading)return;
+      const key=headingKey(heading.textContent),config=article.sections.find(s=>headingKey(s.heading)===key);
+      if(/^(ประเด็นสำคัญ|key (?:points|takeaways))$/i.test(key))section.classList.add('article-reading__section--summary');
+      if(/^(สรุป|summary|conclusion)$/i.test(key))section.classList.add('article-reading__section--conclusion');
+      if(config&&['callout','steps','comparison'].includes(config.presentation))section.classList.add('article-reading__section--'+config.presentation);
+      const figure=articleFigure(config?.media);if(figure)heading.after(figure);
+      section.querySelectorAll('table').forEach(table=>{
+        table.setAttribute('role','table');table.querySelectorAll('tr').forEach(row=>row.setAttribute('role','row'));table.querySelectorAll('th').forEach(cell=>cell.setAttribute('role','columnheader'));table.querySelectorAll('td').forEach(cell=>cell.setAttribute('role','cell'));
+        const labels=[...table.querySelectorAll('thead th')].map(th=>th.textContent);
+        table.querySelectorAll('tbody tr').forEach(row=>[...row.children].forEach((cell,i)=>cell.dataset.label=labels[i]||''));
+      });
+    });
+  }
   function manuscriptNodes(markdown){
     const fragment=document.createDocumentFragment(),lines=markdown.split('\n');
     let section=fragment;
@@ -89,6 +112,8 @@
     const cells=line=>line.trim().replace(/^\||\|$/g,'').split('|').map(value=>value.trim());
     for(let i=0;i<lines.length;){
       let line=lines[i].trim();if(!line){i++;continue;}
+      const image=line.match(/^!\[([^\]]*)\]\((https:\/\/[^\s]+|assets\/[^\s]+?)(?:\s+"([^"]*)")?\)$/);
+      if(image){const figure=articleFigure({src:image[2],alt:image[1],caption:image[3]||''});if(figure)section.append(figure);i++;continue;}
       const heading=line.match(/^(#{2,6})\s+(.+)$/)||(/^\*\*ประเด็นสำคัญ\*\*$/.test(line)?['','##','ประเด็นสำคัญ']:null);
       if(heading){section=el('section','article-reading__section');fragment.append(section);const h=el(heading[1].length<=baseLevel?'h2':'h3');inline(h,heading[2]);section.append(h);i++;continue;}
       if(line.startsWith('|')&&/^\|?[\s:|\-]+$/.test((lines[i+1]||'').trim())){
@@ -122,19 +147,7 @@
     screen.querySelector('[data-article-summary]').textContent=article.summary;
     const body=screen.querySelector('[data-article-body]');
     if(article.manuscriptMarkdown && document.documentElement.lang!=='en') body.replaceChildren(manuscriptNodes(article.manuscriptMarkdown));
-    else body.replaceChildren(...article.sections.map(section => {
-      const block=el('section','article-reading__section');
-      block.append(el('h3','',section.heading));
-      const paragraphs=section.copy.split(/\n\n+/);let table=null;
-      paragraphs.forEach(copy=>{
-        if(copy.startsWith('|')){
-          if(/^\|[\s:|\-]+$/.test(copy))return;
-          if(!table){table=el('table','article-reading__table');table.style.width='100%';table.style.tableLayout='fixed';block.append(table);}
-          const row=el('tr');copy.split('|').slice(1,-1).forEach(value=>{const cell=el('td','',value.trim());cell.style.padding='10px';cell.style.borderBottom='1px solid var(--color-line)';cell.style.overflowWrap='anywhere';row.append(cell);});table.append(row);return;
-        }
-        table=null;const paragraph=el('p','',copy);paragraph.style.whiteSpace='pre-line';paragraph.style.overflowWrap='anywhere';paragraph.style.marginBottom='16px';block.append(paragraph);
-      });return block;
-    }));
+    else body.replaceChildren(...article.sections.map(section=>manuscriptNodes('## '+section.heading+'\n\n'+section.copy.replace(/\n\n(?=\|)/g,'\n'))));
     const source=el('a','article-reading__source',document.documentElement.lang==='en'?'Read the supporting source':'อ่านแหล่งข้อมูลประกอบ');
     source.href=article.source;source.target='_blank';source.rel='noopener noreferrer';
     const references=el('details','article-references'),summary=el('summary','',document.documentElement.lang==='en'?'References':'อ้างอิง'),referenceBody=el('div','article-references__body');
@@ -143,10 +156,11 @@
       if(heading&&/^(อ้างอิง|เอกสารอ้างอิง|แหล่งอ้างอิง|references)/i.test(heading.textContent.trim())){heading.remove();referenceBody.append(...section.childNodes);section.remove();}
     });
     referenceBody.append(source);references.append(summary,referenceBody);body.append(references);
-    if(article.editorialReview&&document.documentElement.lang!=='en'){
-      const headings=[...body.querySelectorAll('.article-reading__section>h2')].filter(h=>h.textContent.trim()!=='ประเด็นสำคัญ');
+    prepareReading(body,article);
+    {
+      const headings=[...body.querySelectorAll('.article-reading__section>h2,.article-reading__section>h3')].filter(h=>!/^(ประเด็นสำคัญ|key (?:points|takeaways))$/i.test(h.textContent.trim()));
       if(headings.length){
-        const toc=el('details','article-toc'),label=el('summary','','ในบทความนี้'),nav=el('nav'),list=el('ol');nav.setAttribute('aria-label','สารบัญบทความ');
+        const toc=el('details','article-toc'),label=el('summary','',document.documentElement.lang==='en'?'On this page':'ในบทความนี้'),nav=el('nav'),list=el('ol');nav.setAttribute('aria-label',document.documentElement.lang==='en'?'Article contents':'สารบัญบทความ');toc.open=matchMedia('(min-width:1100px)').matches;
         headings.forEach((heading,index)=>{heading.id=article.id+'-section-'+(index+1);heading.tabIndex=-1;const item=el('li'),link=el('a','',heading.textContent);link.href='#'+heading.id;link.addEventListener('click',event=>{event.preventDefault();heading.focus({preventScroll:true});heading.scrollIntoView({block:'start',behavior:'instant'});});item.append(link);list.append(item);});
         nav.append(list);toc.append(label,nav);body.prepend(toc);
       }
