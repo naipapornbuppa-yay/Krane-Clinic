@@ -10036,6 +10036,9 @@
     return flowState.entryChannel !== 'direct';
   }
   function requiredRouteFor(target){
+    // Reading the prescription upload form does not start a new consultation.
+    // Account and checkout guards still apply to subsequent submission steps.
+    if(target==='upload-rx') return target;
     if(intakeSkipped(target)){
       const forward = skipForwardFrom(target);
       // Deep link into a screen this route never asks: the questionnaire is
