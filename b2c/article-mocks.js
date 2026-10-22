@@ -26,15 +26,14 @@
       if(photo){avatar.src=photo;avatar.alt='';avatar.width=48;avatar.height=48;}
       const copy=el('span','article-credit__copy');copy.append(el('small','',role),el('strong','',name));if(note)copy.append(el('span','',note));item.append(avatar,copy);return item;
     };
-    const writer=card(en?'Written by':'ผู้เขียน',article.contentStatus==='client-review'?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author.name,article.contentStatus==='client-review'?'':article.author.photo,'K',en?'Editorial team':'ทีมบรรณาธิการ');
+    const writer=card(en?'Written by':'ผู้เขียน',article.contentStatus==='client-review'?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author.name,article.contentStatus==='client-review'?'../assets/brand-final/krane-logomark.svg':article.author.photo,'K',en?'Editorial team':'ทีมบรรณาธิการ');
+    if(article.contentStatus==='client-review')writer.querySelector('img')?.classList.add('article-credit__avatar--brand');
     // Only use named reviewers present in the supplied manuscript headers.
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
     const reviewer=hair?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Kornphaka Kantikosum':'พญ. กรผกา ขันติโกสุม','assets/landing-573/doctors/client-doctor-ploy.png','',en?'Dermatology':'ตจวิทยา (ผิวหนัง)'):weight?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Phahol Sarojvisut':'อ.นพ. พหล สโรจวิสุทธิ์','','พส',en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):card(en?'Medical / pharmacy reviewer':'ผู้ตรวจทานทางการแพทย์หรือเภสัชกรรม',en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน','','—',en?'Not specified in the manuscript':'ต้นฉบับยังไม่ได้ระบุชื่อ');
     if(!article.editorialReview)return [writer,reviewer];
-    const review=article.editorialReview;
     const pharmacist=card(en?'Pharmacy review':'ผู้ตรวจทานข้อมูลยา',en?'Reviewer not yet confirmed':'รอยืนยันชื่อเภสัชกร','','—',en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน');
-    const physician=card(en?'Medical review':'ผู้ตรวจทานทางการแพทย์',review.physician?(en?review.physician.en:review.physician.th):(en?'Reviewer not yet confirmed':'รอยืนยันชื่อแพทย์'),hair?'assets/landing-573/doctors/client-doctor-ploy.png':'',review.physician?'พส':'—',review.medicalStatus==='reviewed'?(en?'Manuscript reviewed · 18 Oct 2026':'ต้นฉบับตรวจแล้ว · 18 ต.ค. 2569'):(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทานครบถ้วน'));
-    return [writer,pharmacist,physician];
+    return [writer,pharmacist];
   }
   function articleReadAction(){
     const action=el('span','article-teaser__action','อ่านบทความ');
