@@ -20,7 +20,7 @@
   root.innerHTML = '<p class="journey-hint">เลือกแต่ละขั้นตอนเพื่อดูรายละเอียด</p>' +
     '<div class="journey-layout"><div class="journey-tabs" role="tablist" aria-label="ขั้นตอนการดูแล"></div>' +
     '<div class="journey-panels"></div></div>' +
-    '<div class="journey-footer"><p>ขั้นตอนการดูแลของคุณ</p><div><button type="button" data-journey-prev aria-label="ขั้นตอนก่อนหน้า"><i data-lucide="arrow-left"></i></button>' +
+    '<div class="journey-footer"><div><button type="button" data-journey-prev aria-label="ขั้นตอนก่อนหน้า"><i data-lucide="arrow-left"></i></button>' +
     '<span data-journey-count>1 / 5</span><button type="button" data-journey-next aria-label="ขั้นตอนถัดไป"><i data-lucide="arrow-right"></i></button></div></div>';
   const tablist = root.querySelector('.journey-tabs');
   const panels = root.querySelector('.journey-panels');
