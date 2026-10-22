@@ -2494,8 +2494,8 @@
     if (!block) return;
     const phrases = [...block.querySelectorAll("[data-phrase]")];
     if (!phrases.length) return;
-    // A screen per phrase, plus one screen for the last one to hold on.
-    block.style.setProperty("--phrase-track", (phrases.length + 1) * 100 + "svh");
+    // Keep each phrase readable without a full empty screen between sections.
+    block.style.setProperty("--phrase-track", (phrases.length * 65 + 35) + "svh");
     block.classList.add("is-phrase-ready");
     if (reducedMotionQuery.matches) return;
 
@@ -2516,7 +2516,7 @@
 
       phrases.forEach((phrase, index) => {
         const from = index * slice;
-        const inAmt = ease(clamp01((progress - from) / edge));
+        const inAmt = index === 0 ? 1 : ease(clamp01((progress - from) / edge));
         const last = index === phrases.length - 1;
         const outAmt = last ? 0 : ease(clamp01((progress - (from + slice - edge)) / edge));
         const shown = inAmt * (1 - outAmt);
