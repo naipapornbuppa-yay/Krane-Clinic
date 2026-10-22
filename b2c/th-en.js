@@ -532,6 +532,7 @@
     "เริ่มการดูแล":"Start care",
     "ก่อนและหลังการดูแล":"Before and after care",
     "ภาพติดตามผลถ่ายในมุมและระยะเดิมทุกครั้ง แพทย์เป็นผู้ประเมินความคืบหน้าร่วมกับคุณ":"Follow-up photos are taken at the same angle and distance every time. Your doctor assesses progress with you.",
+    "ภาพก่อนและหลัง":"Before and after photos",
     "ก่อน":"Before",
     "หลัง":"After",
     "ผมร่วง · ติดตามผล 6 เดือน":"Hair loss · 6-month follow-up",
