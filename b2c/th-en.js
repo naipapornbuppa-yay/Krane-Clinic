@@ -13,6 +13,7 @@
    ============================================================ */
 (function () {
   var EN = {
+    "เสียงจากผู้ใช้":"Voices from our users",
     "ประสบการณ์จากผู้ใช้บริการ":"A patient's experience",
     "วิดีโอประสบการณ์การปรึกษาแพทย์":"A video about the consultation experience",
     "ประสบการณ์การใช้บริการ ไม่ใช่การรับรองผลลัพธ์ของโปรแกรมนี้":"A service experience, not an endorsement of this programme's results",
@@ -21,7 +22,12 @@
     "วิดีโอรีวิวจากผู้ใช้บริการ":"Patient video review",
     "เปิดวิดีโอรีวิว":"Open video review",
     "เล่นวิดีโอรีวิว":"Play video review",
-    "เสียงภาษาไทย · 37 วินาที":"Thai audio · 37 seconds",
+    "ผู้ใช้บริการ Krane":"Krane service user",
+    "หยุดวิดีโอรีวิว":"Pause video review",
+    "แนวทางการดูแลของ Krane":"Krane's approach to care",
+    "เลือกแนวทางการดูแล":"Choose a care perspective",
+    "แนวทางการดูแลที่ 1":"Care perspective 1",
+    "แนวทางการดูแลที่ 2":"Care perspective 2",
     "เลือกแต่ละขั้นตอนเพื่อดูรายละเอียด":"Select a step to explore the journey",
     "ขั้นตอนการดูแล":"Care journey steps",
     "ประเมินสุขภาพ":"Health assessment",

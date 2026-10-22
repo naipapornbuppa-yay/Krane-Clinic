@@ -14,7 +14,7 @@ const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'r
 p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&new URL(r.url()).origin===new URL(base).origin)missing.push({url:r.url(),status:r.status()});});p.on('request',r=>{if(r.url().includes('smiling-man-office.mp4'))mockRequests.push(r.url());});
 try{
 await p.goto(`${base}/b2c/condition-detail.html?condition=${condition}&lang=${lang}`,{waitUntil:'domcontentloaded'});await p.locator('[data-title]').waitFor();await p.evaluate(()=>document.fonts.ready);
-assert.equal(await p.locator('#reviews .review-video').count(),1,'Only the single authorized review is mounted');assert.equal(await p.locator('[data-programme-reviews] .cd-review').count(),0,'Mock cards must not be mounted');assert.equal(await p.locator('a.cd-seeall[href="#reviews"]').count(),0,'Dead review CTA must be absent');assert.equal(mockRequests.length,0,'Mock testimonial video must not be requested');
+assert.equal(await p.locator('#reviews .review-video').count(),1,'Only the single authorized review is mounted');assert.equal(await p.locator('[data-programme-reviews] .cd-review:not(.review-video)').count(),0,'Mock cards must not be mounted');assert.equal(await p.locator('a.cd-seeall[href="#reviews"]').count(),0,'Dead review CTA must be absent');assert.equal(mockRequests.length,0,'Mock testimonial video must not be requested');
 assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Horizontal overflow');
 await p.locator('[data-cd-tab="steps"]').click();
 const tabs=p.locator('.journey-tab');
