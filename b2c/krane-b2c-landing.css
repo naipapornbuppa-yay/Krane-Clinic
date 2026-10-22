@@ -3583,7 +3583,7 @@ body.expert-open{overflow:hidden}
 .experts .expert-card h3{min-height:0;font-size:22px;font-weight:600;line-height:1.45}
 .experts .expert-card strong{display:block;min-height:0;margin-top:3px;color:#252d3b;font-size:14px;font-weight:500;line-height:1.5}
 .experts .expert-card p{display:block;min-height:0;margin-top:10px;color:#505c70;font-size:14px;line-height:1.6}
-.expert-card__bio-link{display:inline-block;margin-top:16px;border-bottom:1px solid currentColor;font-size:14px;font-weight:600;line-height:1.8;text-decoration:none}
+.expert-card__bio-link{display:inline-block;margin-top:16px;border-bottom:0;font-size:14px;font-weight:600;line-height:1.8;text-decoration:none}
 
 /* Shell comes from .drawer in site-header.css; only content styles below. */
 .expert-dialog__media{height:min(50vh,500px);overflow:hidden;background:#e9e5df}
@@ -7528,8 +7528,8 @@ html[lang="en"] .landing-figma-draft #ed-title{
   padding-top:14px;
   font-size:13px;
   font-weight:600;
-  text-decoration:underline;
-  text-underline-offset:4px;
+  text-decoration:none;
+  border-bottom:0;
 }
 .landing-figma-draft .experts--figma .expert-card__bio-link svg{width:15px;height:15px}
 /* Reviews use one legible story introduction followed by one consistent rail.
@@ -7560,9 +7560,11 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .landing-figma-draft .reviews--figma .reviews__copy h2{
   margin-top:18px!important;
   color:#fff!important;
-  font-size:clamp(42px,4.3vw,62px)!important;
-  line-height:1.08!important;
+  font-size:clamp(24px,4.3vw,62px)!important;
+  white-space:nowrap;
+  line-height:1.2!important;
 }
+html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:clamp(16px,4.6vw,62px)!important}
 .landing-figma-draft .reviews--figma .reviews__copy blockquote{
   max-width:none!important;
   margin-top:24px!important;
@@ -7652,25 +7654,13 @@ html[lang="en"] .landing-figma-draft #ed-title{
   -webkit-line-clamp:2;
   font-size:18px!important;
 }
-.articles-carousel__dots{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  margin-top:16px;
-}
-.articles-carousel__dots button{
-  width:7px;
-  height:7px;
-  padding:0;
-  border:0;
-  border-radius:999px;
-  background:#aeb8c6;
-  cursor:pointer;
-  transition:width .24s ease,background-color .24s ease;
-}
-.articles-carousel__dots button.is-current{width:28px;background:var(--draft-blue)}
-.articles-carousel__dots button:focus-visible{outline:2px solid var(--draft-blue);outline-offset:4px}
+.articles-carousel__dots,.expert-dots{display:flex;align-items:center;justify-content:center;gap:0;margin:0}
+.articles-carousel__dots[hidden],.expert-dots[hidden]{display:none}
+.articles-carousel__dots button,.expert-dots button{display:grid;place-items:center;min-width:28px;height:44px;padding:0 8px;border:0;border-radius:999px;background:transparent;box-shadow:none;cursor:pointer}
+.articles-carousel__dots button::before,.expert-dots button::before{content:"";display:block;width:8px;height:8px;border-radius:999px;background:#aeb8c8;transition:width .2s,background-color .2s}
+.articles-carousel__dots button.is-current::before,.expert-dots button.is-current::before{width:28px;background:var(--color-accent,#395aa4)}
+.articles-carousel__dots button:focus-visible,.expert-dots button:focus-visible{outline:2px solid var(--color-accent,#395aa4);outline-offset:-4px}
+
 
 /* Keep each how-it-works step as one clean, full viewport frame. The track
    remains swipeable, but adjacent slides are paint-contained and every layer
@@ -7883,7 +7873,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
   .landing-figma-draft .experts--figma .expert-card__media{height:250px!important}
   .landing-figma-draft .experts--figma .expert-card__body{min-height:184px}
   .landing-figma-draft .reviews--figma{padding:52px 18px 30px!important}
-  .landing-figma-draft .reviews--figma .reviews__copy h2{font-size:clamp(38px,11vw,46px)!important}
+  .landing-figma-draft .reviews--figma .reviews__copy h2{font-size:clamp(22px,6.4vw,46px)!important}
   .landing-figma-draft .reviews--figma .reviews__trust{font-size:13px}
   .landing-figma-draft .reviews--figma .review-collage{gap:12px!important;margin-top:30px}
   .landing-figma-draft .reviews--figma .review-column figure{
@@ -9299,7 +9289,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 }
 /* Stable card proportions: allow the rail to overflow instead of shrinking faces. */
 .landing-figma-draft .experts--figma .expert-viewport{
-  container-type:inline-size;height:490px!important;max-height:none!important;
+  container-type:inline-size;height:470px!important;max-height:none!important;
   overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-x:auto;
   scroll-snap-type:x proximity;
 }
@@ -9320,7 +9310,7 @@ html[lang="en"] .landing-figma-draft #ed-title{
 .landing-figma-draft .experts--figma .expert-card p{margin-top:6px!important;font-size:13px!important;line-height:1.6!important}
 .landing-figma-draft .experts--figma .expert-card__bio-link{padding-top:8px;margin-top:auto!important;font-size:13px!important}
 @media(max-width:760px){
-  .landing-figma-draft .experts--figma .expert-viewport{height:460px!important;max-height:none!important}
+  .landing-figma-draft .experts--figma .expert-viewport{height:440px!important;max-height:none!important}
   .landing-figma-draft .experts--figma .expert-track{grid-auto-columns:max(300px,var(--care-doctor-width))!important;grid-auto-rows:420px;gap:16px!important}
   .landing-figma-draft .experts--figma .expert-card{width:100%!important;height:var(--care-doctor-height)!important}
   .landing-figma-draft .experts--figma .expert-card__media{height:var(--care-doctor-photo)!important}
@@ -9943,5 +9933,3 @@ html[lang="en"] .landing-figma-draft #ed-title{
 
 /* Article previews share the full library card, in the landing rail. */
 .landing-figma-draft .articles-row .article-teaser{height:100%;min-height:540px;text-decoration:none;box-shadow:0 6px 20px rgb(26 30 40 / 9%)}.landing-figma-draft .articles-row>li{display:flex}.landing-figma-draft .articles-row .article-teaser__title{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.landing-figma-draft .articles-row .article-teaser__summary{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-.expert-dots{display:flex;justify-content:center;align-items:center;gap:0;margin:16px 0 0}.expert-dots[hidden]{display:none}.expert-dots button{display:grid;place-items:center;min-width:36px;height:44px;padding:0 8px;border:0;background:transparent;box-shadow:none;cursor:pointer}.expert-dots button::before{content:"";display:block;width:8px;height:8px;border-radius:999px;background:#aeb8c8;transition:width .2s,background-color .2s}.expert-dots button.is-current::before{width:28px;background:var(--draft-blue,#5871b5)}.expert-dots button:focus-visible{outline:2px solid var(--draft-blue,#5871b5);outline-offset:-4px;border-radius:999px}

@@ -13,6 +13,7 @@
    ============================================================ */
 (function () {
   var EN = {
+    "เรื่องจริงจากผู้ใช้งาน":"Real stories from our members",
     "โปรแกรมลดน้ำหนักออนไลน์ด้วย GLP-1 ประเมินและดูแลโดยคุณหมอประจำตัวอย่างใกล้ชิด":"An online GLP-1 weight-management programme, assessed and closely followed by your own doctor.",
     "อ.นพ. พหล สโรจวิสุทธิ์":"Dr. Phahol Sarojvisut",
     "ลดน้ำหนักอย่างมีคุณภาพ":"Manage weight with your health in mind",
