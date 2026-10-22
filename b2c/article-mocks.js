@@ -160,7 +160,7 @@
     {
       const headings=[...body.querySelectorAll('.article-reading__section>h2,.article-reading__section>h3')].filter(h=>!/^(ประเด็นสำคัญ|key (?:points|takeaways))$/i.test(h.textContent.trim()));
       if(headings.length){
-        const toc=el('details','article-toc'),label=el('summary','',document.documentElement.lang==='en'?'On this page':'ในบทความนี้'),nav=el('nav'),list=el('ol');nav.setAttribute('aria-label',document.documentElement.lang==='en'?'Article contents':'สารบัญบทความ');toc.open=matchMedia('(min-width:1100px)').matches;
+        const toc=el('details','article-toc'),label=el('summary','',document.documentElement.lang==='en'?'Contents':'สารบัญ'),nav=el('nav'),list=el('ol');nav.setAttribute('aria-label',document.documentElement.lang==='en'?'Article contents':'สารบัญบทความ');toc.open=true;
         headings.forEach((heading,index)=>{heading.id=article.id+'-section-'+(index+1);heading.tabIndex=-1;const item=el('li'),link=el('a','',heading.textContent);link.href='#'+heading.id;link.addEventListener('click',event=>{event.preventDefault();heading.focus({preventScroll:true});heading.scrollIntoView({block:'start',behavior:'instant'});});item.append(link);list.append(item);});
         nav.append(list);toc.append(label,nav);body.prepend(toc);
       }
