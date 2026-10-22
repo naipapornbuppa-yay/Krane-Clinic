@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* waitroom: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function resetWaitroom(){
     const w = document.getElementById('waitroom'); if(!w) return;
@@ -115,3 +117,59 @@ if(waitroomExpiredModal()){
     });
   }
 }
+
+function stopWaitroomEntryWindow(){
+    clearInterval(waitEntryTimer);
+    waitEntryTimer = null;
+  }
+
+function startWaitroomEntryWindow(screen,timer){
+    stopWaitroomEntryWindow();
+    const deadline=(pendingQueue?.readyAt || Date.now())+WAITROOM_ENTRY_WINDOW*1000;
+    let remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
+    const paint = () => {
+      if(!timer) return;
+      const mm=String(Math.floor(remaining/60)).padStart(2,'0');
+      const ss=String(remaining%60).padStart(2,'0');
+      timer.textContent = `${mm}:${ss}`;
+      timer.setAttribute('aria-label',document.documentElement.lang==='th'
+        ? `เข้าห้องภายใน ${mm}:${ss}`
+        : `Enter within ${mm}:${ss}`);
+      timer.classList.toggle('waitroom-entry-cta__timer--urgent', remaining <= 60);
+    };
+    paint();
+    if(remaining===0){
+      screen.querySelector('[data-wait-enter]').hidden=true;
+      openWaitroomExpiredModal();
+      return;
+    }
+    waitEntryTimer = setInterval(() => {
+      if(!screen.classList.contains('active')){ stopWaitroomEntryWindow(); return; }
+      remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
+      paint();
+      if(remaining === 0){
+        stopWaitroomEntryWindow();
+        if(timer) timer.textContent = '';
+        screen.querySelector('[data-wait-enter]').hidden=true;
+        openWaitroomExpiredModal();
+      }
+    }, 1000);
+  }
+
+function openWaitroomExpiredModal(){
+    const modal = waitroomExpiredModal();
+    if(!modal) return;
+    fillDoctorName(modal);
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    modal.querySelector('.waitroom-expired-dialog')?.focus({preventScroll:true});
+  }
+
+function closeWaitroomExpiredModal(){
+    const modal = waitroomExpiredModal();
+    if(!modal || modal.hidden) return;
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }

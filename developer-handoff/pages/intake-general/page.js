@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* intake-general: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 
   function beginAssignedDoctorFlow(category){
@@ -208,4 +210,9 @@ function kraneHandle_intake_general_submit(e, intakeComplete) {
       return true;
 
   return false;
+}
+
+/** Ordered activation hook, invoked by navigation. */
+function kraneGeneralHealthArrival(id){
+if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
 }

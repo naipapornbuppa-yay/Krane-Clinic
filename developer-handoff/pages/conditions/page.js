@@ -1,4 +1,6 @@
-/* pages/conditions/page.js: page-owned behavior; shared state and router remain central. */
+/* conditions: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_conditions_category(e, catCard) {
@@ -30,3 +32,47 @@ function kraneHandle_conditions_category(e, catCard) {
 function kraneHandle_conditions_condition(e, conditionCard) {selectedConditionId = conditionCard.dataset.conditionId;
   return false;
 }
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_conditions_lifecycle_8(){
+
+      conditionListRevealed=false;
+      renderConditionList();
+
+return false;
+}
+
+function renderConsultationCatalog(){
+    const categoryList = document.querySelector('[data-category-list]');
+    if(categoryList){
+      // One programme card per service. Keep the visible hierarchy to two plain
+      // text lines: programme name, then clinical category. Longer catalogue
+      // descriptions remain data for handoff/other screens, not a third card row.
+      const cards = liveCategories().map(cat => {
+        const soon = cat.status === 'Soon';
+        return `
+        <button class="choice-card${soon ? ' choice-card--soon' : ''}" data-category-card data-category-id="${cat.id}" ${soon ? 'disabled aria-disabled="true"' : `data-go="${cat.next || 'conditions'}"`}>
+          <span class="cc-icon">${iconSvg(cat.icon)}</span>
+          <span class="cc-body">
+            <span class="cc-title-row"><span class="cc-title">${cat.programTitle || cat.title}</span>${soon ? '<span class="cc-soon">Soon</span>' : ''}</span>
+            <span class="cc-category">${cat.title}</span>
+          </span>
+          <span class="cc-chev" aria-hidden="true"></span>
+        </button>
+      `}).join('');
+      const general = consultationCatalog.find(cat => cat.general);
+      const generalCard = general ? `
+        <button class="choice-card choice-card--wide" data-category-card data-category-id="${general.id}" data-go="${general.next || 'intake1'}">
+          <span class="cc-icon">${iconSvg(general.icon)}</span>
+          <span class="cc-body">
+            <span class="cc-title-row"><span class="cc-title">${general.programTitle || general.title}</span></span>
+            <span class="cc-category">${general.title}</span>
+          </span>
+          <span class="cc-chev" aria-hidden="true"></span>
+        </button>
+      ` : '';
+      categoryList.innerHTML = cards + generalCard;
+      categoryList.className = 'choice-grid';
+    }
+    renderConditionList();
+  }

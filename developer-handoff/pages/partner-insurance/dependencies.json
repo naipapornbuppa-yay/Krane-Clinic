@@ -1,5 +1,7 @@
 {
   "screen": "partner-insurance",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/partner-insurance/index.html",
   "script": "pages/partner-insurance/page.js",
   "styles": "pages/partner-insurance/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/partner-insurance/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -26,8 +31,18 @@
       "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "named-function",
+      "name": "syncPartnerPolicySummary",
+      "from": "shared/lib/intake.js",
+      "owner": "pages/partner-insurance/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
-    "kraneHandle_partner_insurance_paymentChoice"
+    "kraneHandle_partner_insurance_paymentChoice",
+    "syncPartnerPolicySummary"
   ],
   "orderedInitializers": [
     "kraneInit_partner_insurance_owned_220"
@@ -56,14 +71,10 @@
     {
       "name": "show",
       "source": "shared/lib/navigation.js"
-    },
-    {
-      "name": "syncPartnerPolicySummary",
-      "source": "shared/lib/intake.js"
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

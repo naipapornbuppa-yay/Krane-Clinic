@@ -14,7 +14,9 @@
     "shared/lib/navigation.js",
     "shared/lib/orders.js",
     "shared/lib/ui.js",
-    "shared/lib/intake-templates.js"
+    "shared/lib/intake-templates.js",
+    "shared/lib/articles.js",
+    "shared/lib/program-state.js"
   ],
   "pages": [
     {
@@ -41,12 +43,17 @@
       "css": "pages/conditions/page.css",
       "functions": [
         "kraneHandle_conditions_category",
-        "kraneHandle_conditions_condition"
+        "kraneHandle_conditions_condition",
+        "kraneHandle_conditions_lifecycle_8",
+        "renderConsultationCatalog"
       ],
       "initializers": [],
       "dependencies": [
         "conditionListRevealed",
+        "consultationCatalog",
         "flowState",
+        "iconSvg",
+        "liveCategories",
         "persistFlowState",
         "renderConditionList",
         "selectedCategory",
@@ -65,9 +72,17 @@
       "html": "pages/articles/index.html",
       "js": "pages/articles/page.js",
       "css": "pages/articles/page.css",
-      "functions": [],
+      "functions": [
+        "kraneRenderArticles",
+        "kraneArticleCapture",
+        "kraneInitArticlesAdapter"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "kraneArticleAuthor",
+        "kraneArticleElement",
+        "kraneArticleReadAction"
+      ],
       "cssBlocks": [],
       "sourceLine": 1268
     },
@@ -76,9 +91,14 @@
       "html": "pages/article/index.html",
       "js": "pages/article/page.js",
       "css": "pages/article/page.css",
-      "functions": [],
+      "functions": [
+        "kraneRenderArticle"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "kraneArticleAuthor",
+        "kraneArticleElement"
+      ],
       "cssBlocks": [],
       "sourceLine": 1286
     },
@@ -241,7 +261,8 @@
         "completeSharedHealthIntake",
         "kraneHandle_intake_general_partnerHistory",
         "kraneHandle_intake_general_screening",
-        "kraneHandle_intake_general_submit"
+        "kraneHandle_intake_general_submit",
+        "kraneGeneralHealthArrival"
       ],
       "initializers": [
         "kraneInit_intake_general_owned_302"
@@ -269,6 +290,7 @@
         "show",
         "showActionToast",
         "signedIn",
+        "syncFrequencySliders",
         "syncPartnerScreening"
       ],
       "cssBlocks": [
@@ -319,7 +341,8 @@
         "syncSignupPassword",
         "syncSignupSubmit",
         "kraneHandle_signup_submit",
-        "kraneHandle_signup_newAccount"
+        "kraneHandle_signup_newAccount",
+        "kraneSignupArrivalToast"
       ],
       "initializers": [
         "kraneInit_signup_98",
@@ -351,7 +374,8 @@
       "css": "pages/login/page.css",
       "functions": [
         "kraneHandle_login_submit",
-        "kraneHandle_login_forgot"
+        "kraneHandle_login_forgot",
+        "kraneRoute_login_5"
       ],
       "initializers": [],
       "dependencies": [
@@ -362,6 +386,7 @@
         "nextAfterAuthentication",
         "normalizePhone",
         "persistFlowState",
+        "postAuthNext",
         "show",
         "showActionToast",
         "submitOnce"
@@ -376,7 +401,8 @@
       "css": "pages/set-password/page.css",
       "functions": [
         "syncPasswordValidity",
-        "kraneHandle_set_password_submit"
+        "kraneHandle_set_password_submit",
+        "syncPasswordScreen"
       ],
       "initializers": [
         "kraneInit_set_password_531"
@@ -430,7 +456,10 @@
       "js": "pages/patient-info/page.js",
       "css": "pages/patient-info/page.css",
       "functions": [
-        "kraneHandle_patient_info_continue"
+        "kraneHandle_patient_info_continue",
+        "kraneHandle_patient_info_lifecycle_10",
+        "patientNameValue",
+        "syncPatientInfoPrefill"
       ],
       "initializers": [
         "kraneInit_patient_info_restorePhone",
@@ -444,13 +473,13 @@
         "isGeneralPath",
         "isValidThaiMobile",
         "normalizePhone",
-        "patientNameValue",
         "persistFlowState",
         "restoredFirstName",
         "restoredLastName",
         "restoredPatientPhone",
         "show",
         "showActionToast",
+        "splitRecipientName",
         "submitOnce"
       ],
       "cssBlocks": [],
@@ -475,13 +504,18 @@
       "functions": [
         "directClinicalStartTarget",
         "partnerClinicalStartTarget",
-        "kraneHandle_matching_demoNoMatch"
+        "kraneHandle_matching_demoNoMatch",
+        "kraneRoute_matching_1"
       ],
       "initializers": [],
       "dependencies": [
         "doctorAvailable",
         "history",
+        "matchCountdownTimer",
+        "matchTimer",
         "needsAppointment",
+        "paintElapsedTimer",
+        "replaceCurrent",
         "seedClinicalDemoStage",
         "seededHistory",
         "show"
@@ -531,9 +565,13 @@
       "html": "pages/appointment-booked/index.html",
       "js": "pages/appointment-booked/page.js",
       "css": "pages/appointment-booked/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_appointment_booked_lifecycle_14"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "flowState"
+      ],
       "cssBlocks": [],
       "sourceLine": 1810
     },
@@ -609,7 +647,11 @@
       "js": "pages/waitroom/page.js",
       "css": "pages/waitroom/page.css",
       "functions": [
-        "resetWaitroom"
+        "resetWaitroom",
+        "stopWaitroomEntryWindow",
+        "startWaitroomEntryWindow",
+        "openWaitroomExpiredModal",
+        "closeWaitroomExpiredModal"
       ],
       "initializers": [
         "kraneInit_waitroom_expiredDialog"
@@ -618,7 +660,8 @@
         "DOCTOR_NAME",
         "QUEUE_ADMIT_MS",
         "QUEUE_KEY",
-        "closeWaitroomExpiredModal",
+        "WAITROOM_ENTRY_WINDOW",
+        "fillDoctorName",
         "flowConfig",
         "flowState",
         "paintElapsedTimer",
@@ -627,8 +670,8 @@
         "reduceMotion",
         "savePendingQueue",
         "show",
-        "startWaitroomEntryWindow",
         "waitCountdownTimer",
+        "waitEntryTimer",
         "waitTimer",
         "waitroomExpiredModal"
       ],
@@ -672,7 +715,9 @@
       "functions": [
         "revealConsultationSummary",
         "scheduleConsultationSummary",
-        "kraneHandle_consult_sendChat"
+        "kraneHandle_consult_sendChat",
+        "kraneHandle_consult_lifecycle_19",
+        "kraneRenderClinicalMessages"
       ],
       "initializers": [
         "kraneInit_consult_675",
@@ -680,6 +725,8 @@
       ],
       "dependencies": [
         "INTAKE_ONE_QUESTION_SCREENS",
+        "callActive",
+        "lastCall",
         "normalizeScreenTarget",
         "reduceMotion",
         "requiredRouteFor",
@@ -728,13 +775,16 @@
         "kraneHandle_video_endCall",
         "kraneHandle_video_cancelEndCall",
         "kraneHandle_video_confirmEndCall",
-        "kraneHandle_video_callControl"
+        "kraneHandle_video_callControl",
+        "kraneHandle_video_lifecycle_18"
       ],
       "initializers": [],
       "dependencies": [
         "callActive",
         "fillDoctorName",
         "isEnglishUi",
+        "lastCall",
+        "scheduleConsultationSummary",
         "show"
       ],
       "cssBlocks": [
@@ -765,9 +815,18 @@
       "html": "pages/rx-writing/index.html",
       "js": "pages/rx-writing/page.js",
       "css": "pages/rx-writing/page.css",
-      "functions": [],
+      "functions": [
+        "kraneRoute_rx_writing_4"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "paintElapsedTimer",
+        "reduceMotion",
+        "refreshMedicationCheckout",
+        "replaceCurrent",
+        "rxCountdownTimer",
+        "rxTimer"
+      ],
       "cssBlocks": [],
       "sourceLine": 2070
     },
@@ -780,7 +839,8 @@
         "kraneHandle_rx_plan_restoreMedicine",
         "kraneHandle_rx_plan_acceptPlan",
         "kraneHandle_rx_plan_cancelPlan",
-        "kraneHandle_rx_plan_confirmPlan"
+        "kraneHandle_rx_plan_confirmPlan",
+        "kraneAppendAcceptPlanAction"
       ],
       "initializers": [],
       "dependencies": [
@@ -831,7 +891,16 @@
         "kraneHandle_address_locate",
         "kraneHandle_address_confirmMap",
         "kraneHandle_address_save",
-        "kraneHandle_address_recipientEdit"
+        "kraneHandle_address_recipientEdit",
+        "kraneHandle_address_lifecycle_12",
+        "kraneHandle_address_lifecycle_13",
+        "kraneHandle_address_lifecycle_20",
+        "renderAddressList",
+        "confirmDeleteSavedAddress",
+        "renderAddressPinPreview",
+        "activeAddressSearch",
+        "closeAddressSuggestions",
+        "setupAddressSearch"
       ],
       "initializers": [
         "kraneInit_address_155",
@@ -859,10 +928,15 @@
         "ADDRESS_FIELD_KEYS",
         "ADDRESS_MAP_CASCADE_IDS",
         "ADDRESS_MAP_GEOGRAPHY",
+        "OSM_TILES",
+        "OSM_TILE_SIZE",
         "SIM_PLACES",
         "addrSearch",
         "addrSuggest",
+        "addressBookFullLine",
         "addressBookKey",
+        "addressBookName",
+        "addressBookRecipientLine",
         "addressEditingSavedIndex",
         "addressFormIntent",
         "addressLabelCustom",
@@ -881,25 +955,28 @@
         "clearFieldError",
         "clearRecipientFields",
         "closeAddressPicker",
-        "closeAddressSuggestions",
         "closePickupBranchModal",
         "composeDistrict",
         "confirmAddressPicker",
-        "confirmDeleteSavedAddress",
         "confirmListAddress",
+        "deleteSavedAddress",
         "deliveryAddressDraft",
         "deliveryAddressScreen",
         "deliveryAddressSummary",
         "editSavedAddress",
+        "escapeAddressText",
         "flowState",
         "focusCheckoutDelivery",
         "formatPhoneForDisplay",
         "hasClearableFieldValue",
         "invalidateFulfillmentQuote",
+        "lastUsedAddressIndex",
         "manualMapRequest",
         "normalizePhone",
         "openAddressPicker",
         "openPickupBranchModal",
+        "osmLatToY",
+        "osmLonToX",
         "osmReverseTimer",
         "osmReverseToken",
         "osmView",
@@ -915,8 +992,6 @@
         "reduceMotion",
         "refreshMedicationCheckout",
         "rememberDeliveryAddress",
-        "renderAddressList",
-        "renderAddressPinPreview",
         "replaceAddressMapOptions",
         "replaceCurrent",
         "savedAddresses",
@@ -1014,9 +1089,27 @@
       "html": "pages/delivery-quote/index.html",
       "js": "pages/delivery-quote/page.js",
       "css": "pages/delivery-quote/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_delivery_quote_lifecycle_15"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "DELIVERY_QUOTE_SECONDS",
+        "calculatedSameDayDeliveryFee",
+        "deliveryMethod",
+        "deliveryQuoteCountdownTimer",
+        "deliveryQuoteTimer",
+        "ensurePaymentDeadline",
+        "flowState",
+        "focusCheckoutDelivery",
+        "hasFulfillableItems",
+        "invalidateFulfillmentQuote",
+        "paintElapsedTimer",
+        "persistFlowState",
+        "reduceMotion",
+        "refreshMedicationCheckout",
+        "replaceCurrent"
+      ],
       "cssBlocks": [],
       "sourceLine": 2256
     },
@@ -1026,15 +1119,31 @@
       "js": "pages/pharmacy-search/page.js",
       "css": "pages/pharmacy-search/page.css",
       "functions": [
-        "kraneHandle_pharmacy_search_demoNoStock"
+        "kraneHandle_pharmacy_search_demoNoStock",
+        "kraneRoute_pharmacy_search_2"
       ],
       "initializers": [],
       "dependencies": [
+        "PAYMENT_WINDOW_MS",
+        "calculatedSameDayDeliveryFee",
+        "deliveryMethod",
+        "flowState",
         "history",
+        "paintElapsedTimer",
+        "persistFlowState",
+        "phCountdownTimer",
+        "phFailTimer",
+        "phStageTimer",
+        "phTimer",
         "pharmacyForceDecline",
+        "pharmacyRetryCount",
+        "reduceMotion",
+        "refreshMedicationCheckout",
+        "replaceCurrent",
         "seedClinicalDemoStage",
         "seededHistory",
-        "show"
+        "show",
+        "showActionToast"
       ],
       "cssBlocks": [
         "css-0092",
@@ -1074,7 +1183,12 @@
         "kraneHandle_payment_editAddon",
         "kraneHandle_payment_removeAddon",
         "kraneHandle_payment_addAddon",
-        "kraneHandle_payment_deadlineRetry"
+        "kraneHandle_payment_deadlineRetry",
+        "kraneHandle_payment_lifecycle_16",
+        "closePaymentMethodModal",
+        "closePromoModal",
+        "syncPickupBranch",
+        "closePickupBranchModal"
       ],
       "initializers": [
         "kraneInit_payment_400",
@@ -1098,8 +1212,6 @@
         "checkoutActionState",
         "checkoutBlockerTimer",
         "closePaymentItemSheet",
-        "closePaymentMethodModal",
-        "closePromoModal",
         "closeRefillSheet",
         "commitPaymentItemQuantity",
         "consultationBalanceDue",
@@ -1131,6 +1243,9 @@
         "pendingPromoCode",
         "persistAddressBook",
         "persistFlowState",
+        "pickupBranchForCurrentLocation",
+        "pickupBranchModal",
+        "pickupLocationConfirmed",
         "promoModal",
         "reduceMotion",
         "rememberDeliveryAddress",
@@ -1147,8 +1262,7 @@
         "syncMedicationFailureAmount",
         "syncPaymentItemDraft",
         "syncPaymentMethodOptions",
-        "syncPaymentOutcome",
-        "syncPickupBranch"
+        "syncPaymentOutcome"
       ],
       "cssBlocks": [
         "css-0095",
@@ -1312,7 +1426,8 @@
       "css": "pages/payment-success/page.css",
       "functions": [
         "syncPaymentOutcome",
-        "kraneHandle_payment_success_tracking"
+        "kraneHandle_payment_success_tracking",
+        "kraneHandle_payment_success_lifecycle_6"
       ],
       "initializers": [],
       "dependencies": [
@@ -1323,7 +1438,8 @@
         "flowState",
         "hasFulfillableItems",
         "paymentMethod",
-        "persistFlowState"
+        "persistFlowState",
+        "showActionToast"
       ],
       "cssBlocks": [
         "css-0314"
@@ -1338,7 +1454,8 @@
       "functions": [
         "kraneHandle_insurance_entry",
         "kraneHandle_insurance_confirm",
-        "kraneHandle_insurance_documentType"
+        "kraneHandle_insurance_documentType",
+        "kraneHandle_insurance_lifecycle_11"
       ],
       "initializers": [],
       "dependencies": [
@@ -1388,9 +1505,16 @@
       "html": "pages/pharmacypending/index.html",
       "js": "pages/pharmacypending/page.js",
       "css": "pages/pharmacypending/page.css",
-      "functions": [],
+      "functions": [
+        "kraneRoute_pharmacypending_3"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "phPreparedTimer",
+        "prepCountdownTimer",
+        "reduceMotion",
+        "replaceCurrent"
+      ],
       "cssBlocks": [],
       "sourceLine": 2698
     },
@@ -1404,7 +1528,8 @@
         "startTrackingDemoWalk",
         "kraneHandle_tracking_riderLocate",
         "kraneHandle_tracking_confirmDelivery",
-        "kraneHandle_tracking_demoStatus"
+        "kraneHandle_tracking_demoStatus",
+        "kraneHandle_tracking_lifecycle_7"
       ],
       "initializers": [],
       "dependencies": [
@@ -1491,7 +1616,9 @@
         "kraneHandle_profile_treatmentOpen",
         "kraneHandle_profile_followUp",
         "kraneHandle_profile_referral",
-        "kraneHandle_profile_newAppointment"
+        "kraneHandle_profile_newAppointment",
+        "kraneInitProfileTreatmentFolders",
+        "kraneCreateProfileProgramPresentation"
       ],
       "initializers": [
         "kraneInit_profile_320",
@@ -1509,6 +1636,7 @@
         "formatFollowUpPill",
         "formatFollowUpTime",
         "journeyActive",
+        "kraneRenderTreatmentVisitHistory",
         "openTreatmentDetail",
         "persistFlowState",
         "refillCardFor",
@@ -1601,13 +1729,18 @@
         "setTreatmentDetailTab",
         "openTreatmentDetail",
         "kraneHandle_treatment_detail_tab",
-        "kraneHandle_treatment_detail_editSymptoms"
+        "kraneHandle_treatment_detail_editSymptoms",
+        "kraneRenderTreatmentVisitHistory",
+        "kraneInitTreatmentPause"
       ],
       "initializers": [
         "kraneInit_treatment_detail_refill"
       ],
       "dependencies": [
         "closeRefillSheet",
+        "history",
+        "kraneCreateProfileProgramPresentation",
+        "kraneCreateProgramPauseState",
         "openRefillSheet",
         "selectedCategoryId",
         "setSelectedCategory",
@@ -1630,7 +1763,8 @@
       "functions": [
         "refreshMyDocuments",
         "kraneHandle_my_documents_open",
-        "kraneHandle_my_documents_tab"
+        "kraneHandle_my_documents_tab",
+        "kraneAppendPrescriptionDownload"
       ],
       "initializers": [
         "kraneInit_my_documents_owned_124",
@@ -1665,10 +1799,15 @@
       "js": "pages/notifications/page.js",
       "css": "pages/notifications/page.css",
       "functions": [
-        "kraneHandle_notifications_markRead"
+        "kraneHandle_notifications_markRead",
+        "syncDeliveryNotification",
+        "kraneRenderClinicalRequests"
       ],
       "initializers": [],
       "dependencies": [
+        "flowState",
+        "orderFulfilmentStatus",
+        "persistFlowState",
         "showActionToast"
       ],
       "cssBlocks": [
@@ -1738,7 +1877,8 @@
       "css": "pages/consent-terms/page.css",
       "functions": [
         "unlockConsentBundleAfterDelay",
-        "kraneHandle_consent_terms_submit"
+        "kraneHandle_consent_terms_submit",
+        "kraneHandle_consent_terms_lifecycle_9"
       ],
       "initializers": [
         "kraneInit_consent_terms_owned_79",
@@ -1827,7 +1967,9 @@
         "returnFromPhoneOtp",
         "prepareFreshOtpChallenge",
         "renderOtpCells",
-        "kraneHandle_otp_submit"
+        "kraneHandle_otp_submit",
+        "kraneHandle_otp_lifecycle_21",
+        "kraneHandle_otp_lifecycle_22"
       ],
       "initializers": [
         "kraneInit_otp_366"
@@ -1841,6 +1983,7 @@
         "formatPhoneForDisplay",
         "history",
         "persistFlowState",
+        "restorePartnerFields",
         "show",
         "showActionToast",
         "submitOnce",
@@ -1854,7 +1997,9 @@
       "html": "pages/upload-rx/index.html",
       "js": "pages/upload-rx/page.js",
       "css": "pages/upload-rx/page.css",
-      "functions": [],
+      "functions": [
+        "kraneInitPrescriptionUpload"
+      ],
       "initializers": [],
       "dependencies": [],
       "cssBlocks": [],
@@ -1932,7 +2077,8 @@
       "js": "pages/partner-insurance/page.js",
       "css": "pages/partner-insurance/page.css",
       "functions": [
-        "kraneHandle_partner_insurance_paymentChoice"
+        "kraneHandle_partner_insurance_paymentChoice",
+        "syncPartnerPolicySummary"
       ],
       "initializers": [
         "kraneInit_partner_insurance_owned_220"
@@ -1943,8 +2089,7 @@
         "paymentMethod",
         "persistFlowState",
         "setSelectedCategory",
-        "show",
-        "syncPartnerPolicySummary"
+        "show"
       ],
       "cssBlocks": [],
       "sourceLine": 3501
@@ -1955,7 +2100,8 @@
       "js": "pages/partner-phr/page.js",
       "css": "pages/partner-phr/page.css",
       "functions": [
-        "kraneHandle_partner_phr_complete"
+        "kraneHandle_partner_phr_complete",
+        "syncPartnerReview"
       ],
       "initializers": [],
       "dependencies": [
@@ -1974,12 +2120,17 @@
       "html": "pages/preloader/index.html",
       "js": "pages/preloader/page.js",
       "css": "pages/preloader/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_preloader_lifecycle_17"
+      ],
       "initializers": [
         "kraneInit_preloader_owned_228"
       ],
       "dependencies": [
-        "craneImage"
+        "craneImage",
+        "preloaderTimer",
+        "reduceMotion",
+        "replaceCurrent"
       ],
       "cssBlocks": [
         "css-0388"
@@ -7409,5 +7560,9 @@
       "migration": "ownership-refinement"
     }
   ],
-  "refinementVersion": 1
+  "refinementVersion": 1,
+  "lifecycleOwnershipVersion": 1,
+  "preRuntimeScripts": [
+    "shared/adapters/articles.js"
+  ]
 }

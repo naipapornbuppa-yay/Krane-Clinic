@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* signup: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 
   /* Client, 20 Sep: consent is no longer collected on the sign-up page. The
@@ -106,4 +108,11 @@ if(signupDoneModal){
       show(signupDoneTarget || 'patient-info');
     });
   }
+}
+
+/** Ordered activation hook, invoked by navigation. */
+function kraneSignupArrivalToast(shouldShowSignupIntakeToast){
+if(shouldShowSignupIntakeToast){
+      window.requestAnimationFrame(() => showActionToast('ทำแบบประเมินเรียบร้อยแล้ว','success'));
+    }
 }

@@ -405,14 +405,7 @@
     if(selected) selected.focus();
   }
 
-  function closePaymentMethodModal(){
-    if(!paymentMethodModal) return;
-    paymentMethodModal.hidden = true;
-    paymentMethodModal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-    const trigger = document.querySelector('[data-open-methods]');
-    if(trigger) trigger.focus();
-  }
+
 
   function openPromoModal(){
     if(!promoModal) return;
@@ -430,14 +423,7 @@
     if(input) input.focus();
   }
 
-  function closePromoModal(){
-    if(!promoModal) return;
-    promoModal.hidden = true;
-    promoModal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-    const trigger = document.querySelector('[data-open-promo]');
-    if(trigger) trigger.focus();
-  }
+
 
   function applyPromoCode(rawCode){
     const status = promoModal && promoModal.querySelector('[data-promo-status]');
@@ -460,14 +446,7 @@
     syncDeliveryNotification();
   }
 
-  function syncDeliveryNotification(){
-    if(orderFulfilmentStatus()==='Delivered' && !flowState.deliveryNotified){flowState.deliveryNotified=true;persistFlowState();}
-    const notif=document.querySelector('[data-notif-delivered]');
-    if(notif) notif.hidden=!flowState.deliveryNotified;
-    const review=document.querySelector('[data-notif-review]');
-    const preview=new URLSearchParams(location.search).get('screens')==='1';
-    if(review) review.hidden=!!flowState.csatDone || !(flowState.deliveryNotified || preview);
-  }
+
 
 
   /* Tracking marks the order received; the review is asked once, after

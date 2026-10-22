@@ -1,5 +1,7 @@
 {
   "screen": "article",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/article/index.html",
   "script": "pages/article/page.js",
   "styles": "pages/article/page.css",
@@ -10,18 +12,35 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Detail rendering is supplied by the same editorial adapter as articles. Shared router invokes its renderer; no duplicate per-page store.",
+    "note": "Owns article-detail rendering. kraneRenderArticle() reads window.kraneArticleState and shared editorial DOM helpers. Router retains the kraneArticleMock.renderDetail compatibility interface.",
     "sources": [
-      "../b2c/article-mocks.js",
+      "pages/article/page.js",
       "shared/lib/navigation.js"
     ]
   },
   "eventHandlers": [],
-  "functions": [],
+  "routeHooks": [],
+  "interfaces": [
+    "window.kraneArticleState: shared articles/byId/selectedId/filter",
+    "window.kraneArticleMock: renderFeed(), renderDetail(), select(id), articles",
+    "window.KraneArticleStore: published() and krane-articles-changed event"
+  ],
+  "functions": [
+    "kraneRenderArticle"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "kraneArticleAuthor",
+      "source": "shared/lib/articles.js"
+    },
+    {
+      "name": "kraneArticleElement",
+      "source": "shared/lib/articles.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

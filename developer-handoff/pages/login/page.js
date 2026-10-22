@@ -1,4 +1,6 @@
-/* pages/login/page.js: page-owned behavior; shared state and router remain central. */
+/* login: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_login_submit(e, loginSubmit) {
@@ -41,4 +43,16 @@ function kraneHandle_login_forgot(e, loginForgot) {
       return true;
 
   return false;
+}
+
+/** Route lifecycle, including cleanup on exit/re-entry. Invoked at the original router position. */
+function kraneRoute_login_5(id){
+const loginIntakeNotice=document.querySelector('[data-login-intake-notice]');
+    if(loginIntakeNotice && id==='login'){
+      // A saved intake draft plus a clinical destination means this login was
+      // opened from the assessment, not from the ordinary landing/profile nav.
+      // Keep the message contextual so a cold login never implies treatment has
+      // already started.
+      loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
+    }
 }

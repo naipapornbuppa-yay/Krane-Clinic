@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* video: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   // Video and chat are two views of one consultation. The doctor can send the
   // medication summary while the patient stays on video, so keep this timer
@@ -76,4 +78,16 @@ function kraneHandle_video_callControl(e, press) {
       }
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_video_lifecycle_18(id){
+
+      callActive = true; lastCall = id;
+      // Every fresh call starts on camera, whatever state a previous call ended in.
+      const camBtn = document.querySelector('#video [data-camera-toggle]');
+      if(camBtn && camBtn.getAttribute('aria-pressed') === 'true') camBtn.click();
+      scheduleConsultationSummary();
+
+return false;
 }

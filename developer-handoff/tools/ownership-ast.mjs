@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 // immutable original app. This does not erase arbitrary changes in a handler.
 export function expandOwnedBranches(node, functions, ownership) {
   const branches = new Map(ownership.handlers.filter(h => h.kind === 'branch').map(h => [h.name, h]));
+  const statements = new Map((ownership.records || []).filter(h => h.kind === 'statements').map(h => [h.name,h]));
   function restoreReturns(n) {
     if (!n || typeof n !== 'object') return n;
     if (Array.isArray(n)) return n.map(restoreReturns);
@@ -17,7 +18,16 @@ export function expandOwnedBranches(node, functions, ownership) {
   }
   function expand(n) {
     if (!n || typeof n !== 'object') return n;
-    if (Array.isArray(n)) return n.map(expand);
+    if (Array.isArray(n)) return n.flatMap(item => {
+      const call=item?.type==='ExpressionStatement' && item.expression?.type==='CallExpression' ? item.expression : null;
+      const record=call && statements.get(call.callee?.name);
+      if(!record)return [expand(item)];
+      const fn=functions.get(record.name);
+      assert.ok(fn,`Missing lifecycle hook ${record.name}`);
+      assert.deepEqual(fn.params.map(p=>p.name),record.params);
+      assert.deepEqual(call.arguments.map(p=>p.name),record.params);
+      return expand(fn.body.body);
+    });
     const wrapper = n.type === 'IfStatement' && n.consequent?.type === 'BlockStatement'
       && n.consequent.body.length === 1 ? n.consequent.body[0] : null;
     const call = wrapper?.type === 'IfStatement' && wrapper.test?.type === 'CallExpression' ? wrapper.test : null;

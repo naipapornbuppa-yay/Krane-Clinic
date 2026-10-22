@@ -1,4 +1,6 @@
-/* pages/account/page.js: page-owned behavior; shared state and router remain central. */
+/* account: Owns ID/passport switching and restores the separate typed values. Shared field formatting and routing remain central. Baseline Save changes/Cancel only navigate to settings; persistent saving, required-field enforcement and an audit trail are not implemented by this prototype.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_account_documentType(e, tog) {

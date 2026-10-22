@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* intake1: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function intakeRequirementState(screenOrId){
     const screen = typeof screenOrId === 'string' ? document.getElementById(screenOrId) : screenOrId;

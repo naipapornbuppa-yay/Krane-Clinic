@@ -1,5 +1,7 @@
 {
   "screen": "waitroom",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/waitroom/index.html",
   "script": "pages/waitroom/page.js",
   "styles": "pages/waitroom/page.css",
@@ -10,12 +12,46 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/waitroom/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [],
+  "routeHooks": [
+    {
+      "kind": "named-function",
+      "name": "stopWaitroomEntryWindow",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/waitroom/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "startWaitroomEntryWindow",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/waitroom/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "openWaitroomExpiredModal",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/waitroom/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "closeWaitroomExpiredModal",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/waitroom/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
-    "resetWaitroom"
+    "resetWaitroom",
+    "stopWaitroomEntryWindow",
+    "startWaitroomEntryWindow",
+    "openWaitroomExpiredModal",
+    "closeWaitroomExpiredModal"
   ],
   "orderedInitializers": [
     "kraneInit_waitroom_expiredDialog"
@@ -34,8 +70,12 @@
       "source": "shared/runtime.js"
     },
     {
-      "name": "closeWaitroomExpiredModal",
-      "source": "shared/lib/ui.js"
+      "name": "WAITROOM_ENTRY_WINDOW",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "fillDoctorName",
+      "source": "shared/lib/clinical.js"
     },
     {
       "name": "flowConfig",
@@ -70,11 +110,11 @@
       "source": "shared/lib/navigation.js"
     },
     {
-      "name": "startWaitroomEntryWindow",
-      "source": "shared/lib/ui.js"
+      "name": "waitCountdownTimer",
+      "source": "shared/runtime.js"
     },
     {
-      "name": "waitCountdownTimer",
+      "name": "waitEntryTimer",
       "source": "shared/runtime.js"
     },
     {
@@ -87,7 +127,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

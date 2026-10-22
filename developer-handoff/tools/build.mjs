@@ -17,7 +17,7 @@ for(const p of manifest.pages){const marker=`<!-- @krane-page ${p.id} -->`;if(ht
 for(const p of manifest.pages){const markup=await read(p.html);html=html.replace(`<!-- @krane-page ${p.id} -->`,()=>markup);}
 for(const item of manifest.cssSources){const css=composeCss(await read(item.template));if(item.output)outputs.set(item.output,css);else html=html.replace(`/* @krane-style ${item.template} */`,()=>css);}
 if(consumedCss.size!==cssBlocks.size)throw new Error('An orphan CSS block would be omitted from the build');
-const scripts=[...manifest.libraries,...manifest.pages.map(p=>p.js),'shared/runtime.js'];
+const scripts=[...manifest.libraries,...manifest.pages.map(p=>p.js),...(manifest.preRuntimeScripts||[]),'shared/runtime.js'];
 outputs.set('b2c/krane-handoff-pages.css',pageAdditions.join('\n\n')+'\n');
 html=html.replace('<!-- @krane-scripts -->',()=>'<link rel="stylesheet" href="krane-handoff-pages.css">\n'+scripts.map(src=>`<script src="../developer-handoff/${src}"></script>`).join('\n'));
 if(/@krane-(?:page|scripts|style|css-include)\b/.test(html))throw new Error('Unresolved source marker');

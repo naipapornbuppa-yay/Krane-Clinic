@@ -1,4 +1,6 @@
-/* pages/patient-info/page.js: page-owned behavior; shared state and router remain central. */
+/* patient-info: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_patient_info_continue(e, patientInfoContinue) {
@@ -71,3 +73,37 @@ if(restoredFirstName && restoredLastName){
     }));
   }
 }
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_patient_info_lifecycle_10(){
+
+      // Direct Krane visitors self-pay by default. Keep an explicit insurance
+      // choice if the patient already made one; partner entry uses its own state.
+      if(flowState.entryChannel==='direct' && !flowState.paymentPreference){
+        flowState.paymentPreference='self-pay';
+        persistFlowState();
+      }
+      document.querySelectorAll('#patient-info [data-patient-payment-choice-value]').forEach(option => {
+        option.setAttribute('aria-selected',String(option.dataset.patientPaymentChoiceValue===flowState.paymentPreference));
+      });
+
+return false;
+}
+
+function patientNameValue(){
+    const first=document.getElementById('patient-first-name')?.value.trim() || '';
+    const last=document.getElementById('patient-last-name')?.value.trim() || '';
+    return [first,last].filter(Boolean).join(' ');
+  }
+
+function syncPatientInfoPrefill(){
+    // A new phone signup has only a verified phone. Names appear here only
+    // after a previous identity step or an authenticated provider supplied them.
+    const saved=splitRecipientName(flowState.patientName);
+    const first=document.getElementById('patient-first-name');
+    const last=document.getElementById('patient-last-name');
+    const phone=document.getElementById('patient-phone');
+    if(first) first.value=saved.firstName;
+    if(last) last.value=saved.lastName;
+    if(phone) phone.value=flowState.verifiedPhone ? formatPhoneForDisplay(flowState.verifiedPhone) : '';
+  }

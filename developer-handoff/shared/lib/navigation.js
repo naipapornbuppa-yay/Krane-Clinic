@@ -201,15 +201,13 @@
         const c=window.KraneClinical.create({name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,answers,channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;persistFlowState();
       } catch { showActionToast('บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning'); }
     }
-    if(id==='payment-success' && flowState.orderState.clinicalPrescription){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
+    if(id==='payment-success' && flowState.orderState.clinicalPrescription){ if (kraneHandle_payment_success_lifecycle_6()) return; }
     if(id==='articles') window.kraneArticleMock?.renderFeed();
     if(id==='article') window.kraneArticleMock?.renderDetail();
     ensureAppBarLockup(id);
-    if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
+    kraneGeneralHealthArrival(id);
     if(id==='tracking' || id==='activity' || id==='order-summary') syncTrackingDelivery();
-    if(id==='tracking' && orderFulfilmentStatus()==='Delivered' && !flowState.csatDone){
-      requestAnimationFrame(()=>{if(document.querySelector('#tracking.active'))openCsatModal('tracking');});
-    }
+    if(id==='tracking' && orderFulfilmentStatus()==='Delivered' && !flowState.csatDone){ if (kraneHandle_tracking_lifecycle_7()) return; }
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
     if(id==='my-documents') refreshMyDocuments();
@@ -221,10 +219,7 @@
     // Decide whether the care stepper applies, based on where the user came from.
     const prevId = (document.querySelector('.screen.active') || {}).id;
     // Arriving at the picker fresh shows categories only; step two is a tap away.
-    if(id==='conditions' && prevId!=='conditions'){
-      conditionListRevealed=false;
-      renderConditionList();
-    }
+    if(id==='conditions' && prevId!=='conditions'){ if (kraneHandle_conditions_lifecycle_8()) return; }
     if(PARTNER_SCREENS.includes(id) || (id==='consent-terms' && flowState.entryChannel==='partner')){
       // Partner access runs its own sequence and skips stage 1, so the five-step
       // B2C care stepper would mis-number it. Keep it off until the flow rejoins
@@ -237,14 +232,7 @@
       // entering Log in cold (nav, followup care, home) turns it off
       if(!JOURNEY_INTAKE.includes(prevId) && !JOURNEY_AUTH.includes(prevId)) journeyActive = false;
     }
-    const loginIntakeNotice=document.querySelector('[data-login-intake-notice]');
-    if(loginIntakeNotice && id==='login'){
-      // A saved intake draft plus a clinical destination means this login was
-      // opened from the assessment, not from the ordinary landing/profile nav.
-      // Keep the message contextual so a cold login never implies treatment has
-      // already started.
-      loginIntakeNotice.hidden=!(flowState.draftReady && postAuthNext!=='profile');
-    }
+    kraneRoute_login_5(id);
     // A completed assessment is transient context, not page content. Show it
     // once as a toast after the sign-up screen becomes active, above its CTA.
     const shouldShowSignupIntakeToast=id==='signup'
@@ -277,9 +265,7 @@
     syncPatientDateFields();
     if(id === 'otp') prepareFreshOtpChallenge();
     placeActionToast();
-    if(shouldShowSignupIntakeToast){
-      window.requestAnimationFrame(() => showActionToast('ทำแบบประเมินเรียบร้อยแล้ว','success'));
-    }
+    kraneSignupArrivalToast(shouldShowSignupIntakeToast);
     railLinks.forEach(a => a.classList.toggle('current', a.dataset.go === id));
     try { window.history.replaceState(null,'','#'+id); } catch(error) {}
     syncRailPath(id);
@@ -306,54 +292,15 @@
       clearTimeout(enterTimer);
       enterTimer = setTimeout(() => scr.classList.remove('is-entering'), 1600);
     }
-    if(id === 'consent-terms'){
-      // Client (16 Aug): every visit requires a fresh scroll-through, never a
-      // continue button that's already enabled from a previous pass.
-      consentRead.pdpa = false; consentRead.telemedicine = false;
-      consentChecked.pdpa = false; consentChecked.telemedicine = false; consentChecked.marketing = false;
-      flowState.consentRead = Object.assign({},consentRead);
-      flowState.consentChecked = Object.assign({},consentChecked);
-      persistFlowState();
-      consentChecks.forEach(input => renderConsentReadState(input.dataset.consentType));
-      syncConsentContinue();
-      const cue=document.querySelector('[data-consent-scroll-cue]');
-      if(cue) cue.hidden=false;
-      const scrollBox=document.querySelector('[data-consent-page-scroll]');
-      if(scrollBox) scrollBox.scrollTop=0;
-    }
-    if(id === 'patient-info'){
-      // Direct Krane visitors self-pay by default. Keep an explicit insurance
-      // choice if the patient already made one; partner entry uses its own state.
-      if(flowState.entryChannel==='direct' && !flowState.paymentPreference){
-        flowState.paymentPreference='self-pay';
-        persistFlowState();
-      }
-      document.querySelectorAll('#patient-info [data-patient-payment-choice-value]').forEach(option => {
-        option.setAttribute('aria-selected',String(option.dataset.patientPaymentChoiceValue===flowState.paymentPreference));
-      });
-    }
+    if(id === 'consent-terms'){ if (kraneHandle_consent_terms_lifecycle_9()) return; }
+    if(id === 'patient-info'){ if (kraneHandle_patient_info_lifecycle_10()) return; }
     if(id === 'conditions') renderConditionList();
     if(JOURNEY_INTAKE.includes(id) || JOURNEY_AUTH.includes(id)){
       flowState.lastRequiredScreen=id;
       persistFlowState();
     }
     applyInsuranceVisibility();
-    if(id === 'insurance'){
-      const isProfile = insuranceEntry === 'profile';
-      const isPartner = insuranceEntry === 'partner';
-      const isSetup = isProfile || isPartner;
-      document.getElementById('insurance')?.setAttribute('data-insurance-context',isSetup ? 'setup' : 'checkout');
-      const order = document.querySelector('#insurance [data-insurance-order]');
-      const setupTitle = document.querySelector('#insurance [data-insurance-setup-title]');
-      const profileHint = document.querySelector('#insurance [data-insurance-profile-hint]');
-      const orderActions = document.querySelectorAll('#insurance [data-insurance-order-action]');
-      const confirmBtn = document.querySelector('#insurance [data-insurance-confirm]');
-      if(order) order.hidden = isSetup;
-      if(setupTitle) setupTitle.hidden = !isSetup;
-      if(profileHint) profileHint.hidden = !isSetup;
-      orderActions.forEach(btn => { btn.hidden = isSetup; });
-      if(confirmBtn) confirmBtn.textContent = isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์';
-    }
+    if(id === 'insurance'){ if (kraneHandle_insurance_lifecycle_11()) return; }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
     syncThemeColor(id);
     if(id==='address') syncFieldClearButtons();
@@ -362,109 +309,23 @@
     // or an order placed. Merely opening the profile is not a case, so a first-time user
     // is never blocked by the "you already have a case" guard.
     if(['address','delivery-quote','pharmacy-search','pharmacypending','payment-items','payment','payment-processing','payment-success','tracking','order-summary'].includes(id)) hasActiveCase = true;
-    if(id==='address'){
-      const recipientEditor=document.querySelector('[data-address-recipient-editor]');
-      if(recipientEditor) recipientEditor.hidden=false;
-      // Restore the editor draft once. Delayed hydration must not erase typing.
-      syncDeliveryAddress({hydrateForm:true});
-      /* The manual fields are the address; an edit has to arrive with them
-         filled in, the same way the map screen used to get them. */
-      hydrateAddressMapSearch();
-      syncAddressLabelChips();
-      if(!addressFormIntent) addressPageMode='list';
-      addressFormIntent=false;
-      setAddressPageMode(addressPageMode);
-
-    }
+    if(id==='address'){ if (kraneHandle_address_lifecycle_12()) return; }
     if(id==='consultpay'){ applyCoverageFlag(); syncConsultationAppointmentSummary(); }
     if(id==='plan') syncDeclinedMedicines();
     /* What is on the form is a still of the pin — the pannable map is the
        current-location dialog — so there is nothing here to bind panning to. */
-    if(id==='address'){ renderAddressPinPreview(); }
+    if(id==='address'){ if (kraneHandle_address_lifecycle_13()) return; }
     fillDoctorName();
     if(id==='profile') syncHomeFollowUpCta();
     if(id==='appointment'){ syncAppointmentDays(); resetAppointment(); }
-    if(id==='appointment-booked'){
-      const when=document.querySelector('#appointment-booked [data-appointment-when]');
-      if(when) when.textContent=flowState.appointmentWhen || '';
-    }
+    if(id==='appointment-booked'){ if (kraneHandle_appointment_booked_lifecycle_14()) return; }
     /* Client, 22 Sep: this used to raise a toast on arrival saying the fee is
        settled with the medicine. The notice above the pay button says the same
        thing and stays on the page, so the toast was the second of two. Removed;
        the footer notice carries it. */
-    if(id==='delivery-quote'){
-      clearTimeout(deliveryQuoteTimer);
-      clearInterval(deliveryQuoteCountdownTimer);
-      /* SCR-013B confirms the delivery method and shows only an estimate. The
-         next SCR-014 owns pharmacy acceptance, stock and final pricing. Keeping
-         those responsibilities separate prevents checkout opening too early. */
-      const quoteScreen=document.getElementById('delivery-quote');
-      const title=quoteScreen?.querySelector('[data-delivery-quote-title]');
-      const copy=quoteScreen?.querySelector('[data-delivery-quote-copy]');
-      if(!hasFulfillableItems()){
-        replaceCurrent('payment');
-        return;
-      }
-      invalidateFulfillmentQuote();
-      persistFlowState();
-      /* One state, not two (client, 23 Aug): title, one line, counter — the
-         same shape as every other loading screen. The old version changed its
-         own heading halfway through, which read as two pages in five seconds. */
-      quoteScreen.dataset.quoteState='estimating';
-      const pickup=flowState.orderState.fulfillmentMode==='pickup';
-      if(title) title.textContent=pickup ? 'กำลังค้นหาสาขารับยา' : 'กำลังคำนวณค่าจัดส่ง';
-      if(copy) copy.textContent=pickup ? 'ตรวจสอบสาขาใกล้คุณและเวลารับยา' : 'ตรวจสอบพื้นที่จัดส่งและค่าจัดส่งโดยประมาณ';
-      const quoteCountdown=quoteScreen.querySelector('[data-delivery-quote-timer]');
-      let quoteElapsedSeconds=0;
-      paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
-      clearInterval(deliveryQuoteCountdownTimer);
-      deliveryQuoteCountdownTimer=setInterval(() => {
-        quoteElapsedSeconds+=1;
-        paintElapsedTimer(quoteCountdown,quoteElapsedSeconds);
-        if(quoteElapsedSeconds>=DELIVERY_QUOTE_SECONDS) clearInterval(deliveryQuoteCountdownTimer);
-      },1000);
-      deliveryQuoteTimer=setTimeout(() => {
-        clearInterval(deliveryQuoteCountdownTimer);
-        if(!quoteScreen?.classList.contains('active')) return;
-        const sameDay=!pickup && flowState.orderState.deliveryMethod==='same-day';
-        const estimate=sameDay ? calculatedSameDayDeliveryFee() : 0;
-        quoteScreen.dataset.quoteState='estimated';
-        /* The quote is the last thing checkout was waiting on, so it is banked
-           here and the patient is put back where they were — on the delivery
-           section they just filled in. */
-        flowState.orderState.deliveryQuoteStatus='accepted';
-        flowState.orderState.deliveryQuoteAmount=pickup ? 0 : estimate;
-        ensurePaymentDeadline();
-        persistFlowState();
-        refreshMedicationCheckout();
-        focusCheckoutDelivery=true;
-        replaceCurrent('payment');
-      }, reduceMotion ? 600 : DELIVERY_QUOTE_SECONDS*1000);
-    }
+    if(id==='delivery-quote'){ if (kraneHandle_delivery_quote_lifecycle_15()) return; }
     if(id==='payment-items') syncOrderCheckout();
-    if(id==='payment'){
-      syncDeliveryAddress();
-      refreshMedicationCheckout();
-      if(focusCheckoutDelivery){
-        focusCheckoutDelivery=false;
-        /* Coming back from the quote, the answer the patient is looking for is
-           the address they just entered, not the top of the page. Measured off
-           the rendered rects rather than offsetTop, which still reads the
-           mid-transition offset while the screen is sliding in. */
-        setTimeout(() => {
-          const row=document.querySelector('#payment [data-payment-address-row]');
-          const body=document.querySelector('#payment .screen__body');
-          if(!row || !body) return;
-          /* Scroll to the section, not the row, so the "การจัดส่ง" label above
-             it stays on screen and the row still reads as part of something. */
-          const block=row.closest('.stack-2') || row;
-          const top=body.scrollTop + (block.getBoundingClientRect().top - body.getBoundingClientRect().top) - 12;
-          body.scrollTo({top:Math.max(0,top), behavior:reduceMotion ? 'auto' : 'smooth'});
-          row.classList.add('is-just-set');
-          setTimeout(() => row.classList.remove('is-just-set'), 1800);
-        }, reduceMotion ? 0 : 260);
-      }
-    }
+    if(id==='payment'){ if (kraneHandle_payment_lifecycle_16()) return; }
     if(id==='payment' || id==='payment-gw') startPaymentDeadlineTimer();
     else stopPaymentDeadlineTimer();
     if(['payfail','payment-processing','payment-success','pharmacypending','tracking','order-summary'].includes(id)) syncPaymentOutcome();
@@ -474,211 +335,19 @@
        their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
     clearTimeout(preloaderTimer);
-    if(id==='preloader' && !window.KraneReviewTools?.enabled){
-      preloaderTimer=setTimeout(() => {
-        if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
-      },reduceMotion ? 350 : 1800);
-    }
+    if(id==='preloader' && !window.KraneReviewTools?.enabled){ if (kraneHandle_preloader_lifecycle_17()) return; }
     clearTimeout(connectTimer);
     // F13: entering a call marks it active; the chat screen then shows the return bar
-    if(id === 'video'){
-      callActive = true; lastCall = id;
-      // Every fresh call starts on camera, whatever state a previous call ended in.
-      const camBtn = document.querySelector('#video [data-camera-toggle]');
-      if(camBtn && camBtn.getAttribute('aria-pressed') === 'true') camBtn.click();
-      scheduleConsultationSummary();
-    }
-    if(id === 'consult'){
-      const pill = document.querySelector('#consult [data-live-pill]');
-      if(pill){ pill.hidden = !callActive; pill.dataset.go = lastCall; }
-      syncConsultationSummaryUnread(false);
-      const plan=document.querySelector('#consult [data-plan-card]');
-      /* The plan has to arrive in front of the patient: the doctor types, then
-         the list appears. When it was revealed while the patient was still on
-         video, opening the chat replays that moment once instead of showing a
-         list that was already sitting there (client, 19 Aug). */
-      if(plan?.dataset.shown && plan.dataset.seenInChat){
-        const typing=document.querySelector('#consult [data-typing]');
-        const status=document.querySelector('#consult [data-rx-bar]');
-        if(typing) typing.style.display='none';
-        if(status) status.style.display='none';
-        plan.removeAttribute('data-wait-hidden');
-      }else{
-        if(plan?.dataset.shown){
-          delete plan.dataset.shown;
-          plan.classList.remove('reveal-in');
-          plan.setAttribute('data-wait-hidden','');
-          const typing=document.querySelector('#consult [data-typing]');
-          const status=document.querySelector('#consult [data-rx-bar]');
-          if(typing) typing.style.display='';
-          if(status) status.style.display='';
-        }
-        if(plan) plan.dataset.seenInChat='1';
-        scheduleConsultationSummary();
-      }
-    }
+    if(id === 'video'){ if (kraneHandle_video_lifecycle_18(id)) return; }
+    if(id === 'consult'){ if (kraneHandle_consult_lifecycle_19()) return; }
     // UT-18: loading states show elapsed time. A count-up clock communicates
     // that work is progressing without promising a completion time we cannot guarantee.
-    clearTimeout(matchTimer);
-    clearInterval(matchCountdownTimer);
-    const mScr = document.getElementById('matching');
-    if(id === 'matching' && mScr){
-      const countdown=mScr.querySelector('[data-matching-countdown]');
-      let elapsedSeconds=0;
-      const syncMatchingTimer=() => {
-        paintElapsedTimer(countdown,elapsedSeconds);
-        if(countdown) countdown.setAttribute('aria-label',document.documentElement.lang==='th'
-          ? `ผ่านไป ${elapsedSeconds} วินาที`
-          : `${elapsedSeconds} seconds elapsed`);
-      };
-      syncMatchingTimer();
-      matchCountdownTimer=setInterval(() => {
-        if(!mScr.classList.contains('active')){
-          clearInterval(matchCountdownTimer);
-          return;
-        }
-        elapsedSeconds+=1;
-        syncMatchingTimer();
-        if(elapsedSeconds>=10) clearInterval(matchCountdownTimer);
-      },1000);
-      // Available? YES -> apply the consultation balance gate. Fully covered partner
-      // consultations enter the waiting room; self-pay or any excess opens checkout.
-      // NO -> availability page to pick a slot, where the same gate runs on continue.
-      matchTimer = setTimeout(() => {
-        if(!mScr.classList.contains('active')) return;
-        /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
-           matching, including when insurance covers it and the balance is 0.
-           consultationHandoffTarget() skipped straight to the waiting room in
-           that case, which is what hid the fee summary. */
-        /* needsAppointment() is re-read here rather than trusted from the
-           doctorAvailable set at route entry, so a deep link straight to
-           #matching fails to match for sexual health too. */
-        replaceCurrent(doctorAvailable && !needsAppointment() ? 'consultpay' : 'appointment');
-      }, 10000);
-    }
+    kraneRoute_matching_1(id);
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
-    clearTimeout(phTimer); clearTimeout(phFailTimer); clearTimeout(phStageTimer); clearInterval(phCountdownTimer);
-    const pScr = document.getElementById('pharmacy-search');
-    if(id === 'pharmacy-search' && pScr){
-      const thai=document.documentElement.lang==='th';
-      const heading = pScr.querySelector('[data-ph-heading] .h1');
-      const hint = pScr.querySelector('[data-ph-heading] .muted');
-      const graphic = pScr.querySelector('[data-ph-graphic]');
-      const phCountdown = pScr.querySelector('[data-ph-countdown]');
-      if(graphic){
-        graphic.classList.remove('state-view__visual--danger');
-        graphic.classList.add('state-view__visual--loading');
-      }
-      /* Two named stages on one clock: finding a pharmacy, then the pharmacist
-         checking the order (client, 19 Aug). A retry re-enters at stage one. */
-      const phHeadings = thai
-        ? ['กำลังค้นหาร้านยาใกล้คุณ','กำลังตรวจสอบร้านยาอื่น','กำลังตรวจสอบร้านยาอื่น']
-        : ['Finding a pharmacy near you','Checking another pharmacy','Checking another pharmacy'];
-      if(heading) heading.textContent = phHeadings[Math.min(pharmacyRetryCount, 2)];
-      if(hint) hint.textContent = pharmacyRetryCount
-        ? (thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.')
-        : (thai ? 'ส่งรายการให้ร้านยาที่ใกล้ที่สุดก่อนเปิดการชำระเงิน' : 'Sending the order to the nearest pharmacy before payment opens.');
-      if(!pharmacyRetryCount){
-        phStageTimer=setTimeout(() => {
-          if(!pScr.classList.contains('active')) return;
-          if(heading) heading.textContent = thai ? 'เภสัชกรกำลังตรวจสอบรายการ' : 'Pharmacist checking your order';
-          if(hint) hint.textContent = thai
-            ? 'ตรวจใบสั่งยา สต็อก และราคาสุทธิก่อนชำระเงิน'
-            : 'Checking the prescription, stock and final price before payment.';
-        }, reduceMotion ? 600 : 4200);
-      }
-      let phElapsedSeconds=0;
-      paintElapsedTimer(phCountdown,phElapsedSeconds);
-      phCountdownTimer=setInterval(() => {
-        if(!pScr.classList.contains('active')){ clearInterval(phCountdownTimer); return; }
-        phElapsedSeconds+=1;
-        paintElapsedTimer(phCountdown,phElapsedSeconds);
-      },1000);
-      phTimer = setTimeout(() => {
-        if(!pScr.classList.contains('active')) return;
-        if(pharmacyForceDecline){
-          pharmacyForceDecline = false; // one-shot demo trigger
-          // Failed state: shown automatically, no action required from the patient.
-          if(heading) heading.textContent = thai ? 'กำลังตรวจสอบร้านยาอื่น' : 'Checking another pharmacy';
-          if(hint) hint.textContent = thai ? 'ร้านก่อนหน้านี้มีสินค้าไม่ครบ กำลังหาร้านใหม่ก่อนเปิดการชำระเงิน' : 'The previous pharmacy did not have every item. Checking another branch before payment.';
-          if(graphic){
-            graphic.classList.remove('state-view__visual--loading');
-            graphic.classList.add('state-view__visual--danger');
-          }
-          phFailTimer = setTimeout(() => {
-            if(!pScr.classList.contains('active')) return;
-            pharmacyRetryCount += 1;
-            if(pharmacyRetryCount >= 3){
-              /* Client, 5 Oct: this used to be a screen of its own that said
-                 no branch could deliver today and offered one button, which
-                 was the button the patient had already pressed on checkout.
-                 The checkout says it instead: same-day and priority come off
-                 the list, the order falls back to standard post, and a toast
-                 says why. Nothing else about the page changes. */
-              deliveryMethod = 'postal';
-              flowState.orderState.deliveryMethod='postal';
-              flowState.orderState.fulfillmentMode='delivery';
-              flowState.orderState.sameDayUnavailable=true;
-              flowState.orderState.deliveryQuoteStatus='accepted';
-              flowState.orderState.deliveryQuoteAmount=0;
-              flowState.orderState.stockLocked=true;
-              flowState.orderState.pharmacyAccepted=true;
-              flowState.orderState.pharmacyPrepared=false;
-              flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
-              persistFlowState();
-              pharmacyRetryCount = 0;
-              pharmacyForceDecline = false;
-              refreshMedicationCheckout();
-              replaceCurrent('payment');
-              showActionToast('ไม่มีร้านที่ส่งได้ภายในวัน เปลี่ยนเป็นจัดส่งมาตรฐาน 1 ถึง 3 วัน ไม่มีค่าใช้จ่ายเพิ่ม','warning');
-              return;
-            }
-            show('pharmacy-search', false);
-          }, 1400);
-          return;
-        }
-        pharmacyRetryCount = 0;
-        if(window.KraneGoldenDemo) window.KraneGoldenDemo.advanceFulfilment('Pharmacy accepted');
-        const lockedDeliveryFee=flowState.orderState.fulfillmentMode==='pickup' ? 0 : (flowState.orderState.deliveryMethod==='same-day' ? calculatedSameDayDeliveryFee() : 0);
-        flowState.orderState.deliveryQuoteStatus='accepted';
-        flowState.orderState.deliveryQuoteAmount=lockedDeliveryFee;
-        flowState.orderState.stockLocked=true;
-        flowState.orderState.pharmacyAccepted=true;
-        flowState.orderState.pharmacyPrepared=false;
-        flowState.orderState.paymentExpiresAt=Date.now()+PAYMENT_WINDOW_MS;
-        persistFlowState();
-        /* Stock recheck is a pre-payment detour, not fulfilment. Return to the
-           same checkout with the refreshed quote; no payment or tracking state
-           is created here. */
-        replaceCurrent('payment');
-        showActionToast('ร้านยายืนยันสต็อกและอัปเดตยอดแล้ว','success');
-      }, 10000);
-    }
+    kraneRoute_pharmacy_search_2(id);
     // waiting room: the patient cannot enter until the doctor admits them (client v3)
-    clearInterval(prepCountdownTimer);
-    /* Legacy/direct links may still open this transition screen. It is only a
-       stock-confirmation handoff before payment and must never create a paid or
-       dispatched order. */
-    clearTimeout(phPreparedTimer);
-    if(id === 'pharmacypending'){
-      const scr=document.getElementById('pharmacypending');
-      const thai=document.documentElement.lang==='th';
-      const prepEl=scr.querySelector('[data-prep-countdown]');
-      const title=scr.querySelector('[data-prep-title]');
-      const copy=scr.querySelector('[data-prep-copy]');
-      const badge=scr.querySelector('[data-prep-badge]');
-      scr.dataset.prepStage='confirmed';
-      if(title) title.textContent=thai ? 'ร้านยายืนยันสต็อกแล้ว' : 'Pharmacy stock confirmed';
-      if(copy) copy.textContent=thai ? 'อัปเดตสต็อกและยอดเรียบร้อย กำลังกลับไปหน้าชำระเงิน' : 'Stock and total updated. Returning to checkout.';
-      if(prepEl) prepEl.textContent='';
-      if(badge) badge.setAttribute('data-lucide','package-check');
-      window.lucide?.createIcons({attrs:{'stroke-width':1.8}});
-      phPreparedTimer=setTimeout(() => {
-        if(!scr.classList.contains('active')) return;
-        replaceCurrent('payment');
-      }, reduceMotion ? 300 : 900);
-    }
+    kraneRoute_pharmacypending_3(id);
     clearTimeout(waitTimer);
     if(id === 'waitroom') resetWaitroom();
     else { stopWaitroomEntryWindow(); closeWaitroomExpiredModal(); }
@@ -689,30 +358,7 @@
       typingTimer=null;
       syncConsultationSummaryUnread(false);
     }
-    clearTimeout(rxTimer);
-    clearInterval(rxCountdownTimer);
-    if(id==='rx-writing'){
-      const rxScr=document.getElementById('rx-writing');
-      const rxTimerEl=rxScr?.querySelector('[data-rx-timer]');
-      let rxElapsedSeconds=0;
-      paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
-      rxCountdownTimer=setInterval(() => {
-        if(!rxScr?.classList.contains('active')){ clearInterval(rxCountdownTimer); return; }
-        rxElapsedSeconds+=1;
-        paintElapsedTimer(rxTimerEl,rxElapsedSeconds);
-      },1000);
-      rxTimer=setTimeout(() => {
-        if(!rxScr?.classList.contains('active')) return;
-        clearInterval(rxCountdownTimer);
-        if(document.getElementById('rx-writing')?.classList.contains('active')){
-          refreshMedicationCheckout();
-          /* Client, 1 Sep: hand over to the plan, not to checkout. This used to
-             drop the patient into payment without ever showing what the doctor
-             had written or asking them to agree to it. */
-          replaceCurrent('rx-plan');
-        }
-      },reduceMotion ? 500 : 3400);
-    }
+    kraneRoute_rx_writing_4(id);
     updateFeatToast(id);
   }
 

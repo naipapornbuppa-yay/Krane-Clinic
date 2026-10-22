@@ -2112,40 +2112,9 @@ kraneInit_payment_537();
       if(backScreen && retreatIntakeQuestionPage(backScreen)) return;
       /* The form is a step inside the address page, so back leaves the form
          rather than the page — unless there is no list to go back to. */
-      if(backScreen?.id==='address' && addressPageMode!=='list' && savedAddresses().length){
-        addressEditingSavedIndex=-1;
-        setAddressPageMode('list');
-        return;
-      }
-      if(backScreen?.id==='otp' && flowState.partnerPhoneOtpPending){
-        flowState.partnerInfoContinueAfterOtp=false;
-        flowState.partnerPhoneOtpPending=false;
-        flowState.partnerPendingPhone='';
-        flowState.partnerPhoneVerified=Boolean(flowState.partnerPhone);
-        persistFlowState();
-        restorePartnerFields();
-        returnFromPhoneOtp('partner-patient-info');
-        return;
-      }
-      if(backScreen?.id==='otp' && flowState.phoneOtpPending){
-        const returnTarget=flowState.phoneOtpReturn || 'patient-info';
-        clearPhoneOtpContext();
-        persistFlowState();
-        if(returnTarget==='patient-info'){
-          const phone=document.getElementById('patient-phone');
-          const note=document.querySelector('#patient-info [data-phone-note]');
-          const edit=document.querySelector('#patient-info [data-phone-edit]');
-          if(phone){
-            phone.value=formatPhoneForDisplay(flowState.verifiedPhone);
-            phone.readOnly=true;
-            phone.setAttribute('aria-readonly','true');
-          }
-          if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
-          if(edit) edit.textContent='เปลี่ยนเบอร์';
-        }
-        returnFromPhoneOtp(returnTarget);
-        return;
-      }
+      if(backScreen?.id==='address' && addressPageMode!=='list' && savedAddresses().length){ if (kraneHandle_address_lifecycle_20()) return; }
+      if(backScreen?.id==='otp' && flowState.partnerPhoneOtpPending){ if (kraneHandle_otp_lifecycle_21()) return; }
+      if(backScreen?.id==='otp' && flowState.phoneOtpPending){ if (kraneHandle_otp_lifecycle_22()) return; }
       if(history.length > 1){ history.pop(); show(history[history.length-1], false); }
       else {
         // opened directly (rail/deep link): send back somewhere sensible, never a dead button

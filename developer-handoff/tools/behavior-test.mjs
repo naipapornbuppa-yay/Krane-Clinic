@@ -49,6 +49,36 @@ async function snapshot(p){return p.evaluate(()=>{const screen=document.querySel
 async function run(app,width,name,fn){if(filter&&!name.includes(filter))return;const context=await browser.newContext({viewport:{width,height:844},isMobile:width<600,hasTouch:width<600,reducedMotion:'reduce'});context.setDefaultTimeout(12000);context.setDefaultNavigationTimeout(30000);await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));const tag=app.includes('-handoff')?'handoff':'original';const observation=[];const capture=async(label)=>{const data=await snapshot(p);assert.equal(data.overflow,false,`${label}: horizontal document overflow`);observation.push({label,...data});await p.screenshot({path:`${output}/${tag}-${width}-${name}-${label}.png`,fullPage:false});};const open=async(params='',hash='intake1')=>{await p.goto(`${base}/${app}${params?'?'+params:''}${hash?'#'+hash:''}`,{waitUntil:'domcontentloaded'});await p.locator('.screen.active').waitFor();};try{await fn(p,open,capture,observation);assert.deepEqual(errors,[],'uncaught browser errors');results.push({app,width,name,status:'pass',observation});console.log('PASS',tag,width,name);}catch(e){await p.screenshot({path:`${output}/${tag}-${width}-${name}-FAILED.png`}).catch(()=>{});results.push({app,width,name,status:'fail',error:e.stack,observation,errors});console.error('FAIL',tag,width,name,e.message);}finally{await context.close();}}
 try{
 for(const app of apps)for(const width of widths){
+await run(app,width,'ownership-articles-search-filter-detail-back',async(p,open,capture)=>{
+ await open('public=1','articles');await step(p,'articles');
+ const cards=p.locator('[data-article-feed] [data-article-id]');assert(await cards.count()>1);
+ const title=await cards.nth(1).locator('.article-teaser__title').textContent();
+ await p.locator('[data-article-search]').fill(title);assert.equal(await cards.count(),1);
+ const id=await cards.first().getAttribute('data-article-id');await cards.first().click();await step(p,'article');
+ assert.equal(await p.locator('#article').getAttribute('data-article-id'),id);assert.equal(await p.locator('[data-article-title]').textContent(),title);await capture('article-detail');
+ await p.locator('#article [data-back]').click();await step(p,'articles');assert.equal(await cards.count(),1);
+ await p.locator('[data-article-search]').fill('no-such-article-QA-70931');assert.equal(await cards.count(),0);assert(await p.locator('[data-article-empty]').isVisible());
+ await p.locator('[data-article-search]').fill('');const filter=p.locator('[data-article-filter]:not([data-article-filter="all"])').first();await filter.click();assert.equal(await filter.getAttribute('aria-pressed'),'true');await capture('filtered-feed');
+});
+await run(app,width,'ownership-treatment-history-and-upload-validation',async(p,open,capture)=>{
+ await open('public=1','login');await p.evaluate(()=>{seedClinicalDemoStage('payment');show('profile')});await step(p,'profile');
+ const card=p.locator('#profile .treatment-card').first();await card.click();await step(p,'treatment-detail');
+ await p.locator('#treatment-visit-history summary').click();assert(await p.locator('#treatment-visit-history .doc-row').count()>0);await capture('treatment-history');
+ await p.locator('#treatment-pause-action').click();assert(await p.locator('#treatment-pause-modal').isVisible());await p.locator('#treatment-pause-modal [data-treatment-pause-close]').last().click();assert(await p.locator('#treatment-pause-modal').isHidden());
+ await p.evaluate(()=>show('upload-rx'));await step(p,'upload-rx');const input=p.locator('#upload-rx input[type="file"]');assert.equal(await input.count(),1);
+ await p.locator('#upload-rx .screen__footer button').click();assert.equal(await input.evaluate(n=>n.validity.customError),true);
+ await input.setInputFiles({name:'qa-invalid.txt',mimeType:'text/plain',buffer:Buffer.from('Fictional QA fixture')});await p.locator('#upload-rx .screen__footer button').click();assert.equal(await input.evaluate(n=>n.validity.customError),true);await capture('upload-validation');
+});
+await run(app,width,'ownership-matching-and-otp-back',async(p,open,capture)=>{
+ await open('public=1','login');
+ await p.clock.install();
+ await p.evaluate(()=>{seedClinicalDemoStage('payment');show('matching')});await step(p,'matching');await p.clock.runFor(1000);assert(/01/.test(await p.locator('[data-matching-countdown]').textContent()));
+ await p.evaluate(()=>show('profile'));await p.clock.runFor(10000);await step(p,'profile');
+ await p.evaluate(()=>show('matching'));await p.clock.runFor(10000);assert(['consultpay','appointment'].includes(await active(p)));await capture('matching-result');
+ await p.evaluate(()=>{seedClinicalDemoStage('payment');flowState.phoneOtpPending=true;flowState.phoneOtpReturn='patient-info';flowState.verifiedPhone='0812345678';show('otp')});await step(p,'otp');
+ await p.locator('#otp [data-back]').click();await step(p,'patient-info');assert.equal(await p.locator('#patient-phone').evaluate(n=>n.readOnly),true);await capture('otp-back');
+});
+
 await run(app,width,'owned-account-login-and-reentry',async(p,open,capture)=>{
  await open('public=1','login');await step(p,'login');
  // A matched invalid submit must consume, even if a generic route is also present.

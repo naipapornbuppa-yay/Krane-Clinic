@@ -1,5 +1,7 @@
 {
   "screen": "otp",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/otp/index.html",
   "script": "pages/otp/page.js",
   "styles": "pages/otp/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/otp/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -28,13 +33,58 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_otp_lifecycle_21",
+      "condition": "backScreen?.id==='otp' && flowState.partnerPhoneOtpPending",
+      "selectors": [],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_otp_lifecycle_22",
+      "condition": "backScreen?.id==='otp' && flowState.phoneOtpPending",
+      "selectors": [],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_otp_lifecycle_21",
+      "owner": "pages/otp/page.js",
+      "dispatch": "shared/runtime.js",
+      "sourceLine": 2120,
+      "condition": "backScreen?.id==='otp' && flowState.partnerPhoneOtpPending",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "branch",
+      "name": "kraneHandle_otp_lifecycle_22",
+      "owner": "pages/otp/page.js",
+      "dispatch": "shared/runtime.js",
+      "sourceLine": 2130,
+      "condition": "backScreen?.id==='otp' && flowState.phoneOtpPending",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "returnFromPhoneOtp",
     "prepareFreshOtpChallenge",
     "renderOtpCells",
-    "kraneHandle_otp_submit"
+    "kraneHandle_otp_submit",
+    "kraneHandle_otp_lifecycle_21",
+    "kraneHandle_otp_lifecycle_22"
   ],
   "orderedInitializers": [
     "kraneInit_otp_366"
@@ -73,6 +123,10 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "restorePartnerFields",
+      "source": "shared/lib/intake.js"
+    },
+    {
       "name": "show",
       "source": "shared/lib/navigation.js"
     },
@@ -86,11 +140,11 @@
     },
     {
       "name": "syncPasswordScreen",
-      "source": "shared/lib/identity.js"
+      "source": "pages/set-password/page.js"
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

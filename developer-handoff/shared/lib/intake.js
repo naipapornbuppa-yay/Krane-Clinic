@@ -602,12 +602,7 @@
     syncPartnerHistoryFields();
   }
 
-  function syncPartnerReview(){
-    const phrName=document.querySelector('[data-partner-phr-name]');
-    if(phrName) phrName.textContent=flowState.partnerName || flowState.patientName || '—';
-    const phrPayment=document.querySelector('[data-partner-phr-payment]');
-    if(phrPayment) phrPayment.textContent=flowState.partnerPaymentMethod==='self-pay' ? 'ชำระเงินเอง' : 'ใช้สิทธิ์ประกันสุขภาพ';
-  }
+
 
   function seedPartnerStage(target){
     const order=['consent-terms','partner-idcard','partner-patient-info','partner-insurance','intake-concern','intake-general','partner-phr','matching'];
@@ -681,31 +676,7 @@
     row.hidden=!ready;
   }
 
-  function syncPartnerPolicySummary(){
-    const select=document.querySelector('[data-partner-policy-select]');
-    if(!select) return null;
-    const option=select.selectedOptions?.[0] || select.options?.[select.selectedIndex];
-    if(!option) return null;
-    const bind=(selector,value) => {
-      const node=document.querySelector(selector);
-      if(node) node.textContent=value || '';
-    };
-    bind('[data-partner-policy-product]',option.dataset.product);
-    bind('[data-partner-policy-holder]',flowState.partnerName || flowState.patientName || '—');
-    bind('[data-partner-policy-number]',option.dataset.policyNumber);
-    bind('[data-partner-policy-start]',option.dataset.startDate);
-    bind('[data-partner-policy-end]',option.dataset.endDate);
-    bind('[data-partner-policy-balance]',option.dataset.balance);
-    bind('[data-partner-policy-visits]',option.dataset.visits);
-    bind('[data-partner-policy-consult]',option.dataset.consult);
-    bind('[data-partner-policy-medicine]',option.dataset.medicine);
-    bind('[data-partner-policy-delivery]',option.dataset.delivery);
-    flowState.partnerPolicyId=option.value;
-    flowState.partnerPolicyProvider=option.dataset.product || '';
-    flowState.partnerPolicyMedicineCredit=Number(option.dataset.medicineCredit || 0);
-    persistFlowState();
-    return option;
-  }
+
 
   function syncPaymentItemDraft(){
     if(!paymentItemSheet || !paymentItemDraft) return;

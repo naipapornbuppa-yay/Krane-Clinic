@@ -924,61 +924,13 @@
       : `${safeElapsed} seconds elapsed`);
   }
 
-  function stopWaitroomEntryWindow(){
-    clearInterval(waitEntryTimer);
-    waitEntryTimer = null;
-  }
 
-  function startWaitroomEntryWindow(screen,timer){
-    stopWaitroomEntryWindow();
-    const deadline=(pendingQueue?.readyAt || Date.now())+WAITROOM_ENTRY_WINDOW*1000;
-    let remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
-    const paint = () => {
-      if(!timer) return;
-      const mm=String(Math.floor(remaining/60)).padStart(2,'0');
-      const ss=String(remaining%60).padStart(2,'0');
-      timer.textContent = `${mm}:${ss}`;
-      timer.setAttribute('aria-label',document.documentElement.lang==='th'
-        ? `เข้าห้องภายใน ${mm}:${ss}`
-        : `Enter within ${mm}:${ss}`);
-      timer.classList.toggle('waitroom-entry-cta__timer--urgent', remaining <= 60);
-    };
-    paint();
-    if(remaining===0){
-      screen.querySelector('[data-wait-enter]').hidden=true;
-      openWaitroomExpiredModal();
-      return;
-    }
-    waitEntryTimer = setInterval(() => {
-      if(!screen.classList.contains('active')){ stopWaitroomEntryWindow(); return; }
-      remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
-      paint();
-      if(remaining === 0){
-        stopWaitroomEntryWindow();
-        if(timer) timer.textContent = '';
-        screen.querySelector('[data-wait-enter]').hidden=true;
-        openWaitroomExpiredModal();
-      }
-    }, 1000);
-  }
 
-  function openWaitroomExpiredModal(){
-    const modal = waitroomExpiredModal();
-    if(!modal) return;
-    fillDoctorName(modal);
-    modal.hidden = false;
-    modal.setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-    modal.querySelector('.waitroom-expired-dialog')?.focus({preventScroll:true});
-  }
 
-  function closeWaitroomExpiredModal(){
-    const modal = waitroomExpiredModal();
-    if(!modal || modal.hidden) return;
-    modal.hidden = true;
-    modal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-  }
+
+
+
+
 
   function submitOnce(key,button,action){
     if(submissionLocks.has(key)) return;
@@ -1004,23 +956,9 @@
 
   /* The patient record keeps a first and a last name (client, 20 Sep); the rest
      of the flow, and the pharmacy label, want one line. */
-  function patientNameValue(){
-    const first=document.getElementById('patient-first-name')?.value.trim() || '';
-    const last=document.getElementById('patient-last-name')?.value.trim() || '';
-    return [first,last].filter(Boolean).join(' ');
-  }
 
-  function syncPatientInfoPrefill(){
-    // A new phone signup has only a verified phone. Names appear here only
-    // after a previous identity step or an authenticated provider supplied them.
-    const saved=splitRecipientName(flowState.patientName);
-    const first=document.getElementById('patient-first-name');
-    const last=document.getElementById('patient-last-name');
-    const phone=document.getElementById('patient-phone');
-    if(first) first.value=saved.firstName;
-    if(last) last.value=saved.lastName;
-    if(phone) phone.value=flowState.verifiedPhone ? formatPhoneForDisplay(flowState.verifiedPhone) : '';
-  }
+
+
 
   function syncFrequencySlider(slider){
     const labels=(slider.dataset.frequencyLabels || '').split('|');
@@ -1115,22 +1053,7 @@
     return branch.locationKey===pickupLocationKey() ? branch : null;
   }
 
-  function syncPickupBranch(){
-    const locationReady=pickupLocationConfirmed();
-    const chosen=pickupBranchForCurrentLocation();
-    const row = document.querySelector('[data-pickup-branch]');
-    const trigger=document.querySelector('[data-open-branch]');
-    if(row) row.textContent = !locationReady
-      ? 'เลือกตำแหน่งเพื่อค้นหาร้านยา'
-      : (chosen?.name || 'เลือกร้านยาใกล้คุณ');
-    if(trigger) trigger.setAttribute('aria-label',!locationReady
-      ? 'เลือกตำแหน่งของคุณก่อนค้นหาร้านยา'
-      : (chosen ? `เปลี่ยนสาขารับยา ปัจจุบัน ${chosen.name}` : 'เลือกร้านยาใกล้ตำแหน่งของคุณ'));
-    pickupBranchModal?.querySelectorAll('[data-branch-option]').forEach(option => {
-      const selected = Boolean(chosen && option.dataset.branchOption === chosen.id);
-      option.setAttribute('aria-selected', String(selected));
-    });
-  }
+
 
   function openPickupBranchModal(){
     if(!pickupBranchModal) return;
@@ -1155,13 +1078,7 @@
     focusTarget?.focus();
   }
 
-  function closePickupBranchModal(){
-    if(!pickupBranchModal) return;
-    pickupBranchModal.hidden = true;
-    pickupBranchModal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-    document.querySelector('[data-open-branch]')?.focus();
-  }
+
    // client, 22 Sep: show five, then "+n"
   function setPostpayText(selector,value){
     document.querySelectorAll(selector).forEach(node => { node.textContent=value; });

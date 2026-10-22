@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* consent-terms: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   /* PDPA and telemedicine consent read as one continuous page. Reaching the end
      marks both records read and ticks all three choices. Marketing remains
@@ -187,4 +189,24 @@ function kraneHandle_consent_terms_submit(e, consentSubmit) {
 // Called once at the original bootstrap position.
 function kraneInit_consent_terms_initialContinue() {
 syncConsentContinue();
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_consent_terms_lifecycle_9(){
+
+      // Client (16 Aug): every visit requires a fresh scroll-through, never a
+      // continue button that's already enabled from a previous pass.
+      consentRead.pdpa = false; consentRead.telemedicine = false;
+      consentChecked.pdpa = false; consentChecked.telemedicine = false; consentChecked.marketing = false;
+      flowState.consentRead = Object.assign({},consentRead);
+      flowState.consentChecked = Object.assign({},consentChecked);
+      persistFlowState();
+      consentChecks.forEach(input => renderConsentReadState(input.dataset.consentType));
+      syncConsentContinue();
+      const cue=document.querySelector('[data-consent-scroll-cue]');
+      if(cue) cue.hidden=false;
+      const scrollBox=document.querySelector('[data-consent-page-scroll]');
+      if(scrollBox) scrollBox.scrollTop=0;
+
+return false;
 }

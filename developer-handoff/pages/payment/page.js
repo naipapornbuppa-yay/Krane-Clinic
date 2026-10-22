@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* payment: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function syncPaymentFooterSavings(){
     const payment=document.getElementById('payment');
@@ -590,3 +592,74 @@ if(promoModal){
     });
   }
 }
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_payment_lifecycle_16(){
+
+      syncDeliveryAddress();
+      refreshMedicationCheckout();
+      if(focusCheckoutDelivery){
+        focusCheckoutDelivery=false;
+        /* Coming back from the quote, the answer the patient is looking for is
+           the address they just entered, not the top of the page. Measured off
+           the rendered rects rather than offsetTop, which still reads the
+           mid-transition offset while the screen is sliding in. */
+        setTimeout(() => {
+          const row=document.querySelector('#payment [data-payment-address-row]');
+          const body=document.querySelector('#payment .screen__body');
+          if(!row || !body) return;
+          /* Scroll to the section, not the row, so the "การจัดส่ง" label above
+             it stays on screen and the row still reads as part of something. */
+          const block=row.closest('.stack-2') || row;
+          const top=body.scrollTop + (block.getBoundingClientRect().top - body.getBoundingClientRect().top) - 12;
+          body.scrollTo({top:Math.max(0,top), behavior:reduceMotion ? 'auto' : 'smooth'});
+          row.classList.add('is-just-set');
+          setTimeout(() => row.classList.remove('is-just-set'), 1800);
+        }, reduceMotion ? 0 : 260);
+      }
+
+return false;
+}
+
+function closePaymentMethodModal(){
+    if(!paymentMethodModal) return;
+    paymentMethodModal.hidden = true;
+    paymentMethodModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    const trigger = document.querySelector('[data-open-methods]');
+    if(trigger) trigger.focus();
+  }
+
+function closePromoModal(){
+    if(!promoModal) return;
+    promoModal.hidden = true;
+    promoModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    const trigger = document.querySelector('[data-open-promo]');
+    if(trigger) trigger.focus();
+  }
+
+function syncPickupBranch(){
+    const locationReady=pickupLocationConfirmed();
+    const chosen=pickupBranchForCurrentLocation();
+    const row = document.querySelector('[data-pickup-branch]');
+    const trigger=document.querySelector('[data-open-branch]');
+    if(row) row.textContent = !locationReady
+      ? 'เลือกตำแหน่งเพื่อค้นหาร้านยา'
+      : (chosen?.name || 'เลือกร้านยาใกล้คุณ');
+    if(trigger) trigger.setAttribute('aria-label',!locationReady
+      ? 'เลือกตำแหน่งของคุณก่อนค้นหาร้านยา'
+      : (chosen ? `เปลี่ยนสาขารับยา ปัจจุบัน ${chosen.name}` : 'เลือกร้านยาใกล้ตำแหน่งของคุณ'));
+    pickupBranchModal?.querySelectorAll('[data-branch-option]').forEach(option => {
+      const selected = Boolean(chosen && option.dataset.branchOption === chosen.id);
+      option.setAttribute('aria-selected', String(selected));
+    });
+  }
+
+function closePickupBranchModal(){
+    if(!pickupBranchModal) return;
+    pickupBranchModal.hidden = true;
+    pickupBranchModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    document.querySelector('[data-open-branch]')?.focus();
+  }

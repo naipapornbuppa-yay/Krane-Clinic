@@ -1,4 +1,6 @@
-/* pages/rx-plan/page.js: page-owned behavior; shared state and router remain central. */
+/* rx-plan: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_rx_plan_restoreMedicine(e, restore) {
@@ -57,3 +59,6 @@ function kraneHandle_rx_plan_confirmPlan(e) {
 }
 
 // Matched branch returns true when it consumes the original delegated event.
+
+/** Page-specific clinical action; common plan summary is shared. */
+function kraneAppendAcceptPlanAction(el,node,c,plan){const button=node('button','ตรวจรายการยาและดำเนินการต่อ','btn btn--primary');button.type='button';button.onclick=()=>document.dispatchEvent(new Event('krane:accept-plan'));el.append(button);}

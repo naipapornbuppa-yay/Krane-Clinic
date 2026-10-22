@@ -1,5 +1,7 @@
 {
   "screen": "conditions",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/conditions/index.html",
   "script": "pages/conditions/page.js",
   "styles": "pages/conditions/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/conditions/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -33,11 +38,42 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_conditions_lifecycle_8",
+      "condition": "id==='conditions' && prevId!=='conditions'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_conditions_lifecycle_8",
+      "owner": "pages/conditions/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 224,
+      "condition": "id==='conditions' && prevId!=='conditions'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "named-function",
+      "name": "renderConsultationCatalog",
+      "from": "shared/lib/clinical.js",
+      "owner": "pages/conditions/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "kraneHandle_conditions_category",
-    "kraneHandle_conditions_condition"
+    "kraneHandle_conditions_condition",
+    "kraneHandle_conditions_lifecycle_8",
+    "renderConsultationCatalog"
   ],
   "orderedInitializers": [],
   "dependencies": [
@@ -46,8 +82,20 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "consultationCatalog",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "flowState",
       "source": "shared/runtime.js"
+    },
+    {
+      "name": "iconSvg",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "liveCategories",
+      "source": "shared/lib/ui.js"
     },
     {
       "name": "persistFlowState",
@@ -75,7 +123,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

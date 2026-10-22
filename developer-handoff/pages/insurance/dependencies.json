@@ -1,5 +1,7 @@
 {
   "screen": "insurance",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/insurance/index.html",
   "script": "pages/insurance/page.js",
   "styles": "pages/insurance/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/insurance/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -47,12 +52,36 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_insurance_lifecycle_11",
+      "condition": "id === 'insurance'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_insurance_lifecycle_11",
+      "owner": "pages/insurance/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 341,
+      "condition": "id === 'insurance'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "kraneHandle_insurance_entry",
     "kraneHandle_insurance_confirm",
-    "kraneHandle_insurance_documentType"
+    "kraneHandle_insurance_documentType",
+    "kraneHandle_insurance_lifecycle_11"
   ],
   "orderedInitializers": [],
   "dependencies": [
@@ -94,7 +123,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

@@ -122,44 +122,7 @@
     return at;
   }
 
-  function renderAddressList(){
-    const list=document.querySelector('[data-address-list]');
-    const empty=document.querySelector('[data-address-list-empty]');
-    const add=document.querySelector('.address-list__add');
-    const footer=document.querySelector('[data-address-list-footer]');
-    if(!list || !empty) return;
-    const book=savedAddresses();
-    empty.hidden=book.length>0;
-    list.hidden=book.length<1;
-    if(add) add.hidden=book.length<1;
-    if(footer) footer.hidden=book.length<1 || addressPageMode!=='list';
-    if(!book.length){ list.innerHTML=''; return; }
-    if(addressListSelected<0 || addressListSelected>=book.length){
-      const currentKey=addressBookKey(flowState.orderState.address || {});
-      const matching=book.findIndex(entry => addressBookKey(entry)===currentKey);
-      addressListSelected=matching>=0 ? matching : Math.max(0,lastUsedAddressIndex());
-    }
-    const lastUsed=lastUsedAddressIndex();
-    list.innerHTML=book.map((entry,index) => {
-      const selected=index===addressListSelected;
-      const badge=index===lastUsed && book.length>1
-        ? '<span class="badge address-select-card__badge">ใช้ล่าสุด</span>' : '';
-      return `<article class="address-select-card${selected ? ' is-selected' : ''}">
-        <button class="address-select-card__choice" type="button" role="radio" aria-checked="${selected}" data-address-list-pick="${index}">
-          <span class="address-select-card__radio" aria-hidden="true"></span>
-          <span class="address-select-card__content">
-            <span class="address-select-card__heading"><strong class="address-select-card__label">${escapeAddressText(addressBookName(entry))}</strong>${badge}</span>
-            <span class="address-select-card__recipient">${escapeAddressText(addressBookRecipientLine(entry))}</span>
-            <span class="address-select-card__address">${escapeAddressText(addressBookFullLine(entry))}</span>
-          </span>
-        </button>
-        <span class="address-select-card__actions">
-          <button class="address-select-card__edit" type="button" data-address-edit="${index}" aria-label="แก้ไข ${escapeAddressText(addressBookName(entry))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z M14 5l5 5"/></svg></button>
-          <button class="address-select-card__delete" type="button" data-address-delete="${index}" aria-label="ลบ ${escapeAddressText(addressBookName(entry))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M9 6V3h6v3 M5 6l1 15h12l1-15 M10 10v7 M14 10v7"/></svg></button>
-        </span>
-      </article>`;
-    }).join('');
-  }
+
 
   function selectListAddress(index){
     if(!savedAddresses()[index]) return;
@@ -167,25 +130,7 @@
     renderAddressList();
   }
 
-  function confirmDeleteSavedAddress(index,trigger){
-    const entry=savedAddresses()[index];
-    if(!entry)return;
-    const key=addressBookKey(entry);
-    const dialog=document.createElement('dialog');
-    dialog.id='address-delete-confirm';
-    dialog.setAttribute('aria-labelledby','address-delete-title');
-    dialog.setAttribute('aria-describedby','address-delete-description');
-    dialog.innerHTML='<h2 id="address-delete-title" class="h2">ต้องการลบที่อยู่นี้ใช่ไหม?</h2><p id="address-delete-description"></p><div class="address-delete-actions"><button type="button" class="btn btn--ghost" data-delete-cancel autofocus>ยกเลิก</button><button type="button" class="btn btn--primary" data-delete-confirm>ลบที่อยู่</button></div>';
-    dialog.querySelector('p').textContent=addressBookName(entry);
-    dialog.querySelector('[data-delete-cancel]').onclick=()=>dialog.close();
-    dialog.querySelector('[data-delete-confirm]').onclick=()=>{
-      const current=savedAddresses().findIndex(item=>addressBookKey(item)===key);
-      if(current>=0)deleteSavedAddress(current);
-      dialog.close();
-    };
-    dialog.addEventListener('close',()=>{dialog.remove();if(trigger.isConnected)trigger.focus();else document.querySelector('[data-address-new]')?.focus();},{once:true});
-    document.body.append(dialog);dialog.showModal();
-  }
+
 
   function deleteSavedAddress(index){
     const book=savedAddresses();
@@ -367,33 +312,7 @@
      is plain <img> tiles with no state of its own. The CSS street grid sits
      behind them, so a blocked or slow tile server leaves something that still
      reads as a map rather than an empty rectangle. */
-  function renderAddressPinPreview(){
-    document.querySelectorAll('[data-address-pin-map]').forEach(host => {
-      const plane=host.querySelector('[data-address-pin-tiles]');
-      if(!plane) return;
-      if(osmView.failed){ plane.innerHTML=''; return; }
-      const width=host.clientWidth, height=host.clientHeight;
-      if(!width || !height)return;
-      const z=osmView.zoom, scale=Math.pow(2,z);
-      const originX=osmLonToX(osmView.lon,z)*OSM_TILE_SIZE - width/2;
-      const originY=osmLatToY(osmView.lat,z)*OSM_TILE_SIZE - height/2;
-      const firstX=Math.floor(originX/OSM_TILE_SIZE), lastX=Math.floor((originX+width)/OSM_TILE_SIZE);
-      const firstY=Math.floor(originY/OSM_TILE_SIZE), lastY=Math.floor((originY+height)/OSM_TILE_SIZE);
-      const tiles=[];
-      for(let y=firstY;y<=lastY;y++){
-        if(y<0 || y>=scale) continue;
-        for(let x=firstX;x<=lastX;x++){
-          const wrapped=((x%scale)+scale)%scale;
-          tiles.push(`<img class="osm-map__tile" alt="" aria-hidden="true" loading="eager" src="${OSM_TILES}/${z}/${wrapped}/${y}.png"
-            style="left:${Math.round(x*OSM_TILE_SIZE-originX)}px;top:${Math.round(y*OSM_TILE_SIZE-originY)}px">`);
-        }
-      }
-      plane.innerHTML=tiles.join('');
-      plane.querySelectorAll('img').forEach(img => {
-        img.addEventListener('error',() => { plane.innerHTML=''; },{once:true});
-      });
-    });
-  }
+
 
 
   function osmDisable(){
@@ -500,12 +419,7 @@
   /* The form and the map screen each carry one of these, so a plain
      document.querySelector would answer for whichever comes first in the
      markup rather than for the one the patient is typing into. */
-  function activeAddressSearch(){
-    const wraps=[...document.querySelectorAll('[data-address-search-wrap]')];
-    const wrap=wraps.find(node => node.closest('.screen')?.classList.contains('active')) || wraps[0];
-    return {input:wrap?.querySelector('[data-address-search]') || null,
-            list:wrap?.querySelector('[data-address-suggestions]') || null};
-  }
+
 
   function renderAddressSuggestions(matches,{allowEmptyMessage=false}={}){
     const {input,list}=activeAddressSearch();
@@ -531,10 +445,7 @@
     if(window.krane_normalizeIcons) window.krane_normalizeIcons();
   }
 
-  function closeAddressSuggestions(){
-    document.querySelectorAll('[data-address-suggestions]').forEach(list => { list.hidden=true; });
-    document.querySelectorAll('[data-address-search]').forEach(input => { input.setAttribute('aria-expanded','false'); });
-  }
+
 
   function scheduleAddressSearch(query){
     window.clearTimeout(addressSearchTimer);
@@ -549,11 +460,4 @@
       if(!input || input.value.trim()!==text) return;
       renderAddressSuggestions(remote && remote.length ? remote : addressSuggestionsFor(text),{allowEmptyMessage:true});
     },180);
-  }
-
-  function setupAddressSearch(){
-    document.querySelectorAll('[data-address-search-wrap]').forEach(bindAddressSearch);
-    document.addEventListener('click',event => {
-      if(!event.target.closest('[data-address-search-wrap]')) closeAddressSuggestions();
-    });
   }

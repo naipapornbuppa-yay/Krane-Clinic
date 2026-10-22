@@ -1,0 +1,11 @@
+import fs from'node:fs';import path from'node:path';import{fileURLToPath}from'node:url';import{parse}from'acorn';import assert from'node:assert/strict';
+const dir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),read=f=>fs.readFileSync(path.join(dir,f),'utf8'),write=(f,s)=>fs.writeFileSync(path.join(dir,f),s),records=JSON.parse(read('lifecycle-ownership.json'));
+assert.ok(!records.records.some(r=>r.name==='kraneSignupArrivalToast'));
+let source=read('shared/lib/ui.js'),edits=[];
+for(const n of parse(source,{ecmaVersion:'latest'}).body)if(['patientNameValue','syncPatientInfoPrefill'].includes(n.id?.name)){fs.appendFileSync(path.join(dir,'pages/patient-info/page.js'),'\n'+source.slice(n.start,n.end)+'\n');edits.push(n);records.records.push({kind:'named-function',name:n.id.name,from:'shared/lib/ui.js',owner:'pages/patient-info/page.js'});}
+for(const n of edits.sort((a,b)=>b.start-a.start))source=source.slice(0,n.start)+source.slice(n.end);write('shared/lib/ui.js',source);
+source=read('shared/lib/navigation.js');const show=parse(source,{ecmaVersion:'latest',locations:true}).body.find(n=>n.id?.name==='show');
+for(const [match,name,id] of [['if(shouldShowSignupIntakeToast)','kraneSignupArrivalToast','signup'],["if(id==='intake-general') window.setTimeout",'kraneGeneralHealthArrival','intake-general']]){
+const n=show.body.body.find(n=>source.slice(n.start,n.end).startsWith(match));assert(n,match);const code=source.slice(n.start,n.end);fs.appendFileSync(path.join(dir,`pages/${id}/page.js`),`\n/** Ordered activation hook, invoked by navigation. */\nfunction ${name}(${id==='signup'?'shouldShowSignupIntakeToast':'id'}){\n${code}\n}\n`);
+records.records.push({kind:'statements',name,owner:`pages/${id}/page.js`,dispatch:'shared/lib/navigation.js',params:[id==='signup'?'shouldShowSignupIntakeToast':'id'],sourceLine:n.loc.start.line});edits.push({start:n.start,end:n.end,text:`${name}(${id==='signup'?'shouldShowSignupIntakeToast':'id'});`});}
+for(const e of edits.filter(e=>e.text).sort((a,b)=>b.start-a.start))source=source.slice(0,e.start)+e.text+source.slice(e.end);write('shared/lib/navigation.js',source);write('lifecycle-ownership.json',JSON.stringify(records,null,2)+'\n');

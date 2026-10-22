@@ -1,5 +1,7 @@
 {
   "screen": "upload-rx",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/upload-rx/index.html",
   "script": "pages/upload-rx/page.js",
   "styles": "pages/upload-rx/page.css",
@@ -10,17 +12,22 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Baseline visual upload placeholder and shared navigation only; no prescription upload service or page-specific upload handler is implemented.",
+    "note": "Owns baseline file type/4 MB validation and browser-local clinical request submission. This behavior was already injected by the original external adapter; it is not a new upload feature. No production upload backend is provided.",
     "sources": [
+      "pages/upload-rx/page.js",
       "shared/lib/navigation.js"
     ]
   },
   "eventHandlers": [],
-  "functions": [],
+  "routeHooks": [],
+  "interfaces": [],
+  "functions": [
+    "kraneInitPrescriptionUpload"
+  ],
   "orderedInitializers": [],
   "dependencies": [],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

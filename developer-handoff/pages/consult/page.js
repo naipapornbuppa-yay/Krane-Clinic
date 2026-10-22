@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* consult: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function revealConsultationSummary(){
     typingTimer=null;
@@ -154,4 +156,48 @@ function kraneHandle_consult_sendChat(e, chatSend) {
       return true;
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_consult_lifecycle_19(){
+
+      const pill = document.querySelector('#consult [data-live-pill]');
+      if(pill){ pill.hidden = !callActive; pill.dataset.go = lastCall; }
+      syncConsultationSummaryUnread(false);
+      const plan=document.querySelector('#consult [data-plan-card]');
+      /* The plan has to arrive in front of the patient: the doctor types, then
+         the list appears. When it was revealed while the patient was still on
+         video, opening the chat replays that moment once instead of showing a
+         list that was already sitting there (client, 19 Aug). */
+      if(plan?.dataset.shown && plan.dataset.seenInChat){
+        const typing=document.querySelector('#consult [data-typing]');
+        const status=document.querySelector('#consult [data-rx-bar]');
+        if(typing) typing.style.display='none';
+        if(status) status.style.display='none';
+        plan.removeAttribute('data-wait-hidden');
+      }else{
+        if(plan?.dataset.shown){
+          delete plan.dataset.shown;
+          plan.classList.remove('reveal-in');
+          plan.setAttribute('data-wait-hidden','');
+          const typing=document.querySelector('#consult [data-typing]');
+          const status=document.querySelector('#consult [data-rx-bar]');
+          if(typing) typing.style.display='';
+          if(status) status.style.display='';
+        }
+        if(plan) plan.dataset.seenInChat='1';
+        scheduleConsultationSummary();
+      }
+
+return false;
+}
+
+/** Consultation message rendering; shared clinical store remains central. */
+function kraneRenderClinicalMessages(api,doctor,node,c,messages){
+const thread=document.querySelector(doctor?'#consult .chat__thread':'#consult .chat-body');
+  if(thread){thread.querySelectorAll('[data-clinical-message]').forEach(n=>n.remove());if(c.id!=='CONS-2041')thread.querySelectorAll('.bubble:not([data-clinical-message])').forEach(n=>n.hidden=true);
+   messages.forEach(m=>{const b=node('div',undefined,'bubble '+(m.role===api.role?'bubble--out':'bubble--in'));b.dataset.clinicalMessage=m.id;
+    if(m.items){const card=node('div',undefined,'rx-card');card.append(node('b','ใบสั่งยา (ร่าง)'));m.items.forEach(d=>{const row=node('div',undefined,'rx-card__row');row.append(node('b',d.name),node('div',d.directions||d.dirTH||d.dir||''),node('small','จำนวน: '+d.qty));card.append(row);});card.append(node('small','ตัวอย่างสำหรับปรึกษา ยังไม่ใช่คำสั่งซื้อ'));b.append(card);}else b.textContent=m.text;
+    thread.append(b);});
+  }
 }

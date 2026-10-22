@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* my-documents: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function refreshMyDocuments(){
     const screen=document.getElementById('my-documents');
@@ -50,3 +52,6 @@ function kraneHandle_my_documents_tab(e, tog) {
 
   return false;
 }
+
+/** Page-specific clinical action; common plan summary is shared. */
+function kraneAppendPrescriptionDownload(el,node,c,plan){const button=node('button','Download prescription preview','btn btn--secondary');button.type='button';button.onclick=()=>{const doc=document.implementation.createHTMLDocument('Prescription preview');doc.body.append(node('h1','Krane Clinic'),node('p','Frontend preview - not a signed medical document'),node('p',c.name+' / '+c.patientId+' / '+plan.id));plan.items.forEach(d=>doc.body.append(node('p',d.name+' / '+(d.directions||d.dirTH||d.dir)+' / '+d.qty)));const url=URL.createObjectURL(new Blob(['<!doctype html>'+doc.documentElement.outerHTML],{type:'text/html;charset=utf-8'}));const a=node('a');a.href=url;a.download=plan.id+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};el.append(button);}

@@ -1,16 +1,498 @@
 {
-  "account": {"note":"Owns ID/passport switching and restores the separate typed values. Shared field formatting and routing remain central. Baseline Save changes/Cancel only navigate to settings; persistent saving, required-field enforcement and an audit trail are not implemented by this prototype."},
-  "articles": {"note":"Interactive feed/search/filter is supplied by the existing two-screen editorial adapter, not a passive page.","sources":["../b2c/article-mocks.js","../b2c/article-store.js","../b2c/article-data.js"]},
-  "article": {"note":"Detail rendering is supplied by the same editorial adapter as articles. Shared router invokes its renderer; no duplicate per-page store.","sources":["../b2c/article-mocks.js","shared/lib/navigation.js"]},
-  "insurance-result": {"note":"Result markup plus shared navigation; insurance confirmation belongs to pages/insurance/page.js.","sources":["pages/insurance/page.js","shared/lib/navigation.js"]},
-  "appointment-booked": {"note":"Confirmation markup rendered by the appointment flow and shared route synchronization.","sources":["pages/appointment/page.js","shared/lib/navigation.js"]},
-  "rx-writing": {"note":"Waiting state coordinated by shared clinical/router timers; no additional page-local input handler.","sources":["shared/lib/clinical.js","shared/lib/navigation.js"]},
-  "delivery-quote": {"note":"Delivery quote view uses the shared order/fulfilment state machine.","sources":["shared/lib/orders.js","shared/lib/navigation.js"]},
-  "payment-items": {"note":"Interactive quantity controls reuse the reduce-only order handler shared with rx-plan; not a passive page.","sources":["shared/lib/orders.js","pages/payment/page.js","shared/lib/navigation.js"]},
-  "pharmacypending": {"note":"Pharmacy waiting state uses shared clinical/router synchronization and timers.","sources":["shared/lib/clinical.js","shared/lib/navigation.js"]},
-  "feedbackdone": {"note":"Confirmation markup and generic navigation only; feedback modal is shared across clinical/order screens.","sources":["shared/lib/clinical.js","shared/lib/navigation.js"]},
-  "settings": {"note":"Shared route links, localization selector and prototype toast actions. No separate settings service is implemented.","sources":["shared/lib/navigation.js","shared/lib/ui.js","../b2c/i18n.js"]},
-  "empty-activities": {"note":"Empty-state markup and shared navigation only.","sources":["shared/lib/navigation.js"]},
-  "empty-history": {"note":"Empty-state markup and shared navigation only.","sources":["shared/lib/navigation.js"]},
-  "upload-rx": {"note":"Baseline visual upload placeholder and shared navigation only; no prescription upload service or page-specific upload handler is implemented.","sources":["shared/lib/navigation.js"]}
+  "account": {
+    "note": "Owns ID/passport switching and restores the separate typed values. Shared field formatting and routing remain central. Baseline Save changes/Cancel only navigate to settings; persistent saving, required-field enforcement and an audit trail are not implemented by this prototype.",
+    "classification": "owned",
+    "sources": [
+      "pages/account/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "articles": {
+    "note": "Owns feed rendering, search/filter, empty state and capture-phase card selection. Shared article data/store and update coordination remain central.",
+    "sources": [
+      "pages/articles/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "article": {
+    "note": "Owns article-detail rendering. kraneRenderArticle() reads window.kraneArticleState and shared editorial DOM helpers. Router retains the kraneArticleMock.renderDetail compatibility interface.",
+    "sources": [
+      "pages/article/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "insurance-result": {
+    "note": "Result markup plus shared navigation; insurance confirmation belongs to pages/insurance/page.js.",
+    "sources": [
+      "pages/insurance/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "unimplemented-prototype"
+  },
+  "appointment-booked": {
+    "note": "Owns appointment confirmation time activation; routing and appointment state are shared.",
+    "sources": [
+      "pages/appointment-booked/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "rx-writing": {
+    "note": "Owns count-up display, transition timer, exit/re-entry cleanup and next-view guard.",
+    "sources": [
+      "pages/rx-writing/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "delivery-quote": {
+    "note": "Owns quote display, count-up and delayed transition. Shared fulfilment pricing/state remain central. Baseline exit guard prevents navigation; re-entry resets the timers.",
+    "sources": [
+      "pages/delivery-quote/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "payment-items": {
+    "note": "Interactive quantity controls reuse the reduce-only order handler shared with rx-plan; not a passive page.",
+    "sources": [
+      "shared/lib/orders.js",
+      "pages/payment/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "shared-static"
+  },
+  "pharmacypending": {
+    "note": "Owns stock-confirmation display and guarded return-to-checkout timer.",
+    "sources": [
+      "pages/pharmacypending/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "feedbackdone": {
+    "note": "Confirmation markup and generic navigation only; feedback modal is shared across clinical/order screens.",
+    "sources": [
+      "shared/lib/clinical.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "shared-static"
+  },
+  "settings": {
+    "note": "Shared route links, localization selector and prototype toast actions. No separate settings service is implemented.",
+    "sources": [
+      "shared/lib/navigation.js",
+      "shared/lib/ui.js",
+      "../b2c/i18n.js"
+    ],
+    "classification": "unimplemented-prototype"
+  },
+  "empty-activities": {
+    "note": "Empty-state markup and shared navigation only.",
+    "sources": [
+      "shared/lib/navigation.js"
+    ],
+    "classification": "shared-static"
+  },
+  "empty-history": {
+    "note": "Empty-state markup and shared navigation only.",
+    "sources": [
+      "shared/lib/navigation.js"
+    ],
+    "classification": "shared-static"
+  },
+  "upload-rx": {
+    "note": "Owns baseline file type/4 MB validation and browser-local clinical request submission. This behavior was already injected by the original external adapter; it is not a new upload feature. No production upload backend is provided.",
+    "sources": [
+      "pages/upload-rx/page.js",
+      "shared/lib/navigation.js"
+    ],
+    "classification": "owned"
+  },
+  "landing": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/landing/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "conditions": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/conditions/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake1": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake1/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake2": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake2/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake3": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake3/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake4": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake4/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake5": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake5/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake-concern": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake-concern/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "intake-general": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/intake-general/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "ineligible": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/ineligible/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "signup": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/signup/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "login": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/login/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "set-password": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/set-password/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "social-confirm": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/social-confirm/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "patient-info": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/patient-info/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "matching": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/matching/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "appointment": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/appointment/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "consultpay": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consultpay/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "consultpay-gw": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consultpay-gw/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "consultpay-fail": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consultpay-fail/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "waitroom": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/waitroom/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "queue-resume": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/queue-resume/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "consult": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consult/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "video": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/video/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "rx-plan": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/rx-plan/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "address": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/address/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "pharmacy-search": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/pharmacy-search/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "payment": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/payment/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "payment-gw": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/payment-gw/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "payment-success": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/payment-success/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "insurance": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/insurance/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "payfail": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/payfail/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "tracking": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/tracking/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "order-summary": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/order-summary/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "profile": {
+    "classification": "owned",
+    "note": "Owns treatment-folder rendering, capture animation, re-entry selection and paused-program folder status/order. Shared program store/schedule remain central.",
+    "sources": [
+      "pages/profile/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "treatment-detail": {
+    "classification": "owned",
+    "note": "Owns treatment record and visit-history rendering, pause/resume dialog and schedule form. Shared program/clinical data stay central.",
+    "sources": [
+      "pages/treatment-detail/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "my-documents": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/my-documents/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "activity": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/activity/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "notifications": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/notifications/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "consent-terms": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consent-terms/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "identity": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/identity/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "otp": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/otp/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "referral": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/referral/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "partner-idcard": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/partner-idcard/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "partner-patient-info": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/partner-patient-info/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "partner-insurance": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/partner-insurance/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "partner-phr": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/partner-phr/page.js",
+      "shared/lib/navigation.js"
+    ]
+  },
+  "preloader": {
+    "classification": "owned",
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/preloader/page.js",
+      "shared/lib/navigation.js"
+    ]
+  }
 }

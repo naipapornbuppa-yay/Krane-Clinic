@@ -1,39 +1,6 @@
 /* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
 
-  function renderConsultationCatalog(){
-    const categoryList = document.querySelector('[data-category-list]');
-    if(categoryList){
-      // One programme card per service. Keep the visible hierarchy to two plain
-      // text lines: programme name, then clinical category. Longer catalogue
-      // descriptions remain data for handoff/other screens, not a third card row.
-      const cards = liveCategories().map(cat => {
-        const soon = cat.status === 'Soon';
-        return `
-        <button class="choice-card${soon ? ' choice-card--soon' : ''}" data-category-card data-category-id="${cat.id}" ${soon ? 'disabled aria-disabled="true"' : `data-go="${cat.next || 'conditions'}"`}>
-          <span class="cc-icon">${iconSvg(cat.icon)}</span>
-          <span class="cc-body">
-            <span class="cc-title-row"><span class="cc-title">${cat.programTitle || cat.title}</span>${soon ? '<span class="cc-soon">Soon</span>' : ''}</span>
-            <span class="cc-category">${cat.title}</span>
-          </span>
-          <span class="cc-chev" aria-hidden="true"></span>
-        </button>
-      `}).join('');
-      const general = consultationCatalog.find(cat => cat.general);
-      const generalCard = general ? `
-        <button class="choice-card choice-card--wide" data-category-card data-category-id="${general.id}" data-go="${general.next || 'intake1'}">
-          <span class="cc-icon">${iconSvg(general.icon)}</span>
-          <span class="cc-body">
-            <span class="cc-title-row"><span class="cc-title">${general.programTitle || general.title}</span></span>
-            <span class="cc-category">${general.title}</span>
-          </span>
-          <span class="cc-chev" aria-hidden="true"></span>
-        </button>
-      ` : '';
-      categoryList.innerHTML = cards + generalCard;
-      categoryList.className = 'choice-grid';
-    }
-    renderConditionList();
-  }
+
 
   function fillDoctorName(root){
     (root || document).querySelectorAll('[data-doctor-name]').forEach(el => { el.textContent = DOCTOR_NAME; });

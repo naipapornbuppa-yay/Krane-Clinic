@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* appointment: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function renderAppointmentSlots(){
     const scr=document.getElementById('appointment');
@@ -127,4 +129,3 @@ function kraneInit_appointment_443(){
     }
   });
 }
-

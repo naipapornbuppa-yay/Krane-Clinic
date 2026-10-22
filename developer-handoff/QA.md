@@ -1,6 +1,23 @@
 # Handoff verification — 21 October 2026
 
-## 22 October: page JavaScript ownership correction
+## 22 October: full page ownership re-audit after 52d8aac
+
+The earlier handler-only correction was incomplete. This pass audited all 62 templates and every loaded script, then moved remaining page-specific render/lifecycle bodies, including article feed/detail, matching/pharmacy/rx timers, OTP Back, treatment folder/history/pause UI and the existing prescription upload behavior. The original app and original external scripts remain unchanged.
+
+Final local evidence:
+
+- 1,346 main-script structural checks: 353 original functions recover the same AST after declared wrapper expansion; equivalent DOM and byte-identical CSS.
+- 1,450 ownership checks and an independent inventory of 62 pages, 430 authored controls, 11 justified shared-component exceptions and 19 loaded external scripts. Classification: 56 owned, four shared/static, two unimplemented prototype states. This source census is not a complete dynamic call graph or proof of persistence.
+- Nine external renderer/event bodies match the original AST after declared state/identifier mapping.
+- 48/48 real Chrome executions at 390px and 1440px, 24/24 original/modular parity comparisons. Added article search/filter/empty/detail/Back, treatment history/dialog, invalid upload, matching exit/re-entry and phone OTP Back. Existing account, auth, clinical intake, safety order, partner and navigation cases remain passing.
+- 20/20 full DOM executions, 10/10 parity comparisons, plus two pause/resume executions and one parity comparison. Controlled timers test delivery-quote exit/re-entry, pharmacy retry/fallback and prescription-wait exit/re-entry without waiting for real providers.
+- Source-edit propagation: 5/5. No real files, patient data, provider messages or payments submitted. Upload QA used an invalid fictional text fixture only.
+
+Evidence: [browser](qa/full-ownership-browser.json), [DOM](qa/full-ownership-dom.json), [pause/resume](qa/full-ownership-pause.json), [mobile article](qa/full-ownership-article-390.png), [desktop article](qa/full-ownership-article-1440.png), [independent inventory](page-ownership-inventory.json).
+
+The inventory corrected a previous documentation mistake: `upload-rx` already had file validation and browser-local request submission in an external adapter; it was not purely a placeholder. Account Save still only navigates. Settings persistence and live insurance eligibility remain unimplemented. All pages still mount together and share the classic-script state; this is not production backend acceptance or independent route mounting.
+
+## Historical 52d8aac handler correction
 
 The original `045088c` preview was built before repair and captured on desktop/mobile for landing, signup and intake. All six visible-text comparisons matched the original app, with no missing local assets or browser errors. That unchanged preview remains separate from the repaired checkout.
 

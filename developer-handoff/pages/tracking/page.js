@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* tracking: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function openCsatModal(target,{replace=false,preview=false}={}){
     csatTarget = target || 'tracking';
@@ -66,4 +68,12 @@ function kraneHandle_tracking_demoStatus(e, mockDelivery) {
       persistFlowState();
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_tracking_lifecycle_7(){
+
+      requestAnimationFrame(()=>{if(document.querySelector('#tracking.active'))openCsatModal('tracking');});
+
+return false;
 }

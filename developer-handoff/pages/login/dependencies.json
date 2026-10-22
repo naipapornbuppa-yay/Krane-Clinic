@@ -1,5 +1,7 @@
 {
   "screen": "login",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/login/index.html",
   "script": "pages/login/page.js",
   "styles": "pages/login/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/login/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -35,9 +40,24 @@
       "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "statements",
+      "name": "kraneRoute_login_5",
+      "owner": "pages/login/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "params": [
+        "id"
+      ],
+      "sourceLine": 240,
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "kraneHandle_login_submit",
-    "kraneHandle_login_forgot"
+    "kraneHandle_login_forgot",
+    "kraneRoute_login_5"
   ],
   "orderedInitializers": [],
   "dependencies": [
@@ -70,6 +90,10 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "postAuthNext",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "show",
       "source": "shared/lib/navigation.js"
     },
@@ -83,7 +107,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

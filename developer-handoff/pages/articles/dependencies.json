@@ -1,5 +1,7 @@
 {
   "screen": "articles",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/articles/index.html",
   "script": "pages/articles/page.js",
   "styles": "pages/articles/page.css",
@@ -10,19 +12,41 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Interactive feed/search/filter is supplied by the existing two-screen editorial adapter, not a passive page.",
+    "note": "Owns feed rendering, search/filter, empty state and capture-phase card selection. Shared article data/store and update coordination remain central.",
     "sources": [
-      "../b2c/article-mocks.js",
-      "../b2c/article-store.js",
-      "../b2c/article-data.js"
+      "pages/articles/page.js",
+      "shared/lib/navigation.js"
     ]
   },
   "eventHandlers": [],
-  "functions": [],
+  "routeHooks": [],
+  "interfaces": [
+    "window.kraneArticleState: shared articles/byId/selectedId/filter",
+    "window.kraneArticleMock: renderFeed(), renderDetail(), select(id), articles",
+    "window.KraneArticleStore: published() and krane-articles-changed event"
+  ],
+  "functions": [
+    "kraneRenderArticles",
+    "kraneArticleCapture",
+    "kraneInitArticlesAdapter"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "kraneArticleAuthor",
+      "source": "shared/lib/articles.js"
+    },
+    {
+      "name": "kraneArticleElement",
+      "source": "shared/lib/articles.js"
+    },
+    {
+      "name": "kraneArticleReadAction",
+      "source": "shared/lib/articles.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

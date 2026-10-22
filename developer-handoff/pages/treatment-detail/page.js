@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* treatment-detail: Owns treatment record and visit-history rendering, pause/resume dialog and schedule form. Shared program/clinical data stay central.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function setTreatmentDetailTab(name='plan'){
     const detail=document.getElementById('treatment-detail');
@@ -214,4 +216,72 @@ document.body.addEventListener('click', event => {
     const choice=event.target.closest('#refill-sheet [data-refill-choice]');
     if(choice) startRefill(choice.dataset.refillChoice);
   });
+}
+
+/** Renders visit history when a profile treatment record opens. */
+function kraneRenderTreatmentVisitHistory(card,visits,select){
+   const certificate=document.querySelector('#treatment-detail .treatment-record__certificate-card');
+   if(!certificate)return;
+   document.getElementById('treatment-visit-history')?.remove();
+   const history=document.createElement('details');history.id='treatment-visit-history';
+   const summary=document.createElement('summary');summary.innerHTML='<span>ประวัติการปรึกษา</span>'+window.kraneIcon('chevron-down','ui-icon--sm');history.append(summary);
+   const current=Number(card.dataset.consultationNumber);
+   const other=visits.map((visit,index)=>({visit,index})).reverse();
+   if(!other.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='ยังไม่มีการปรึกษาครั้งก่อน';history.append(empty);}
+   other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row treatment-record__certificate-card';const title=document.createElement('strong');title.textContent='ปรึกษาวันที่ '+(visit.treatmentDate||'');button.append(title);button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
+   certificate.after(history);
+   window.kraneTreatmentPause?.attach(card,history);
+  }
+
+
+/** Once-only treatment detail pause/resume dialog and schedule UI. */
+function kraneInitTreatmentPause(){
+const programState=kraneCreateProgramPauseState();
+const {key,isPaused,hasCancelledFollowup,appointmentFor}=programState;
+
+
+
+
+
+
+ const layer=document.createElement('div');layer.className='modal-layer';layer.id='treatment-pause-modal';layer.hidden=true;layer.setAttribute('aria-hidden','true');
+ layer.innerHTML=`<button class="modal-layer__scrim" type="button" data-treatment-pause-close aria-label="ปิดหน้าต่าง"></button><section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="treatment-pause-title" aria-describedby="treatment-pause-description" tabindex="-1"><div class="program-resume-art" aria-hidden="true" hidden><img src="assets/state-editorial-v5-ink/enter-consultation-room-same-patient-v5.png" alt="" width="1024" height="1600"></div><h2 id="treatment-pause-title">พักโปรแกรมการรักษา?</h2><p id="treatment-pause-description">เมื่อพักโปรแกรม นัดติดตามครั้งถัดไปจะถูกยกเลิก</p><p class="hint" data-pause-note>การพักโปรแกรมไม่ได้เปลี่ยนคำสั่งใช้ยาของแพทย์</p><p class="hint" data-treatment-pause-error hidden></p><div class="modal-dialog__actions"><button type="button" class="btn btn--primary" data-treatment-pause-confirm>ยืนยันพักโปรแกรม</button><button type="button" class="btn btn--ghost" data-treatment-pause-close>กลับไป</button></div></section>`;
+ const schedule=document.createElement('div');schedule.hidden=true;schedule.className='program-resume-schedule';
+ schedule.innerHTML='<div class="program-resume-appointment"><span class="program-resume-calendar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 11h18m-13 5 2 2 4-4"/></svg></span><div><p data-resume-doctor></p><p><strong data-resume-suggested></strong></p></div><button type="button" class="program-resume-edit" data-resume-change aria-label="แก้ไขวันและเวลานัด" aria-expanded="false" aria-controls="resume-program-fields"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15v5Z"/></svg></button></div><div id="resume-program-fields" data-resume-fields hidden><label for="resume-program-date">เลือกวัน</label><select class="input" id="resume-program-date"></select><label for="resume-program-time">เลือกเวลา</label><select class="input" id="resume-program-time"></select></div>';
+ layer.querySelector('.modal-dialog__actions').before(schedule);
+ const dateInput=schedule.querySelector('#resume-program-date'),timeInput=schedule.querySelector('#resume-program-time');
+ const dateKey=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+ function updateTimes(){const slots=window.kraneProgramSchedule.slots(dateInput.value);timeInput.replaceChildren(...slots.map(time=>new Option(time,time)));window.kraneRefreshSelectOptions?.(timeInput);updateSuggested();}
+ function updateSuggested(){const valid=Boolean(timeInput.value);layer.querySelector('[data-treatment-pause-confirm]').disabled=!valid;schedule.querySelector('[data-resume-suggested]').textContent=valid?`${dateInput.value.split('-').reverse().join('/')} · ${timeInput.value}`:'ไม่มีเวลาว่างในวันที่เลือก';}
+ dateInput.onchange=updateTimes;timeInput.onchange=updateSuggested;
+ schedule.querySelector('[data-resume-change]').onclick=()=>{const fields=schedule.querySelector('[data-resume-fields]');fields.hidden=!fields.hidden;schedule.querySelector('[data-resume-change]').setAttribute('aria-expanded',String(!fields.hidden));if(!fields.hidden){window.kraneSyncSelects?.(fields);fields.querySelector('.custom-select__trigger')?.focus();}};
+ function prepareSchedule(card){const today=new Date();dateInput.replaceChildren(...Array.from({length:31},(_,day)=>{const date=new Date(today);date.setDate(today.getDate()+day);return new Option(dateKey(date).split('-').reverse().join('/'),dateKey(date));}));window.kraneRefreshSelectOptions?.(dateInput);schedule.querySelector('[data-resume-change]').setAttribute('aria-expanded','false');schedule.querySelector('[data-resume-fields]').hidden=true;schedule.querySelector('[data-resume-doctor]').textContent=card.querySelector('.followup-row strong')?.textContent||'';
+ for(let day=0;day<=30;day++){const date=new Date(today);date.setDate(today.getDate()+day);dateInput.value=dateKey(date);if(window.kraneProgramSchedule.slots(dateInput.value).length)break;}window.kraneRefreshSelectOptions?.(dateInput);updateTimes();}
+ document.body.append(layer);
+ let target=null,opener=null;
+ window.kraneTreatmentFolders?.init();
+ const {sortFolders,decorate}=kraneCreateProfileProgramPresentation(isPaused,appointmentFor);
+
+ function close(){layer.hidden=true;layer.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');opener?.focus({preventScroll:true});}
+
+ function attach(card,history){
+  document.getElementById('treatment-pause-action')?.remove();
+  const button=document.createElement('button');button.type='button';button.id='treatment-pause-action';button.className='textlink treatment-pause-action';button.textContent=isPaused(card.dataset.category)?'กลับมารักษาต่อ':'พักโปรแกรมการรักษา';button.classList.toggle('is-resume',isPaused(card.dataset.category));document.querySelector('#treatment-detail > .screen__body').append(button);
+  button.onclick=()=>{target=card;opener=button;const resume=isPaused(card.dataset.category);schedule.hidden=!resume;layer.classList.toggle('is-resuming',resume);layer.querySelector('.program-resume-art').hidden=!resume;layer.querySelector('[data-pause-note]').hidden=resume;layer.querySelector('[data-treatment-pause-confirm]').disabled=false;if(resume)prepareSchedule(card);layer.querySelector('h2').textContent=resume?'กลับมารักษาต่อ?':'พักโปรแกรมการรักษา?';layer.querySelector('#treatment-pause-description').textContent=resume?'ยืนยันนัดติดตามกับแพทย์เจ้าของเคสเพื่อกลับมารักษาต่อ':'เมื่อพักโปรแกรม นัดติดตามครั้งถัดไปจะถูกยกเลิก';layer.querySelector('[data-treatment-pause-confirm]').textContent=resume?'ยืนยันนัด':'ยืนยันพักโปรแกรม';layer.querySelector('[data-treatment-pause-error]').hidden=true;layer.hidden=false;layer.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');layer.querySelector('.modal-dialog').focus();};
+ }
+ layer.addEventListener('click',event=>{
+  if(event.target.closest('[data-treatment-pause-close]')){close();return;}
+  if(!event.target.closest('[data-treatment-pause-confirm]')||!target)return;
+  const category=target.dataset.category;const resume=isPaused(category);
+  if(resume&&!window.kraneProgramSchedule.slots(dateInput.value).includes(timeInput.value)){updateTimes();const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='กรุณาเลือกเวลานัดใหม่';error.hidden=false;return;}
+  const appointmentAt=resume?new Date(dateInput.value+'T'+timeInput.value+':00').toISOString():null;
+  const next={...programState.paused,[category]:resume?{...programState.paused[category],state:'active',resumedAt:new Date().toISOString(),appointmentAt}:{state:'paused',pausedAt:new Date().toISOString()}};
+  try{localStorage.setItem(key,JSON.stringify(next));}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง';error.hidden=false;return;}
+  try{window.KraneClinical?.setProgram(category,next[category]);}catch{const error=layer.querySelector('[data-treatment-pause-error]');error.textContent='Could not sync. Please retry.';error.hidden=false;return;}
+  programState.paused=next;decorate(target);sortFolders();close();document.dispatchEvent(new CustomEvent('krane:program-paused',{detail:{category:target.dataset.category}}));
+ });
+ document.querySelectorAll('#profile .treatment-card').forEach(decorate);
+ sortFolders();
+ window.kraneTreatmentPause={isPaused,hasCancelledFollowup,appointmentFor,attach};
+
 }

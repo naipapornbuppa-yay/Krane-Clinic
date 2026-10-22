@@ -20,7 +20,7 @@ for(const file of [...manifest.libraries,...manifest.pages.map(p=>p.js)]){
 }
 for(const item of ownership.handlers){
   check(definitions.get(item.name)?.file===item.owner,'Incorrect ownership: '+item.name);
-  check(runtime.split(item.name+'(').length===2,'Exactly one ordered dispatch/setup call: '+item.name);
+  check((await read(item.dispatch||'shared/runtime.js')).split(item.name+'(').length===2,'Exactly one ordered dispatch/setup call: '+item.name);
 }
 for(const page of manifest.pages){
   const contract=JSON.parse(await read(`pages/${page.id}/dependencies.json`));
@@ -45,4 +45,4 @@ for(const [source,expected] of [[login,'กรุณากรอกเบอร�
 const output=await fs.readFile(path.join(dir,'..',manifest.output),'utf8');
 check(output.split('src="../developer-handoff/pages/login/page.js"').length===2,'Build loads editable login file exactly once');
 const owned=manifest.pages.filter(p=>p.functions.length+p.initializers.length).length;
-console.log(JSON.stringify({result:'pass',checks,pagesWithOwnedCode:owned,pagesUsingOnlySharedOrExternalBehavior:manifest.pages.length-owned,branches:ownership.handlers.filter(h=>h.kind==='branch').length,newInitializers:ownership.handlers.filter(h=>h.kind==='initializer').length},null,2));
+console.log(JSON.stringify({result:'pass',checks,pagesWithOwnedCode:owned,pagesUsingSharedStaticOrPrototypeBehavior:manifest.pages.length-owned,branches:ownership.handlers.filter(h=>h.kind==='branch').length,newInitializers:ownership.handlers.filter(h=>h.kind==='initializer').length},null,2));

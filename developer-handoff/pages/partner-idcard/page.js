@@ -1,4 +1,6 @@
-/* Partner ID-card preview and manual-entry actions. Demo only: no OCR service. */
+/* partner-idcard: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 function kraneInit_partner_idcard_upload(){
   // SCR-002A. The card is read for one field only: the name, which lands on the
   // next screen where it stays editable. Nothing is uploaded; the preview is a

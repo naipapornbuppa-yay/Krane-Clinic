@@ -1,5 +1,7 @@
 {
   "screen": "rx-writing",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/rx-writing/index.html",
   "script": "pages/rx-writing/page.js",
   "styles": "pages/rx-writing/page.css",
@@ -10,18 +12,59 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Waiting state coordinated by shared clinical/router timers; no additional page-local input handler.",
+    "note": "Owns count-up display, transition timer, exit/re-entry cleanup and next-view guard.",
     "sources": [
-      "shared/lib/clinical.js",
+      "pages/rx-writing/page.js",
       "shared/lib/navigation.js"
     ]
   },
   "eventHandlers": [],
-  "functions": [],
+  "routeHooks": [
+    {
+      "kind": "statements",
+      "name": "kraneRoute_rx_writing_4",
+      "owner": "pages/rx-writing/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "params": [
+        "id"
+      ],
+      "sourceLine": 692,
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
+  "functions": [
+    "kraneRoute_rx_writing_4"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "paintElapsedTimer",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "reduceMotion",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "refreshMedicationCheckout",
+      "source": "pages/payment/page.js"
+    },
+    {
+      "name": "replaceCurrent",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "rxCountdownTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "rxTimer",
+      "source": "shared/runtime.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

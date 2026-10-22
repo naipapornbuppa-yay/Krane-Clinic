@@ -1,5 +1,7 @@
 {
   "screen": "pharmacypending",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/pharmacypending/index.html",
   "script": "pages/pharmacypending/page.js",
   "styles": "pages/pharmacypending/page.css",
@@ -10,18 +12,51 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Pharmacy waiting state uses shared clinical/router synchronization and timers.",
+    "note": "Owns stock-confirmation display and guarded return-to-checkout timer.",
     "sources": [
-      "shared/lib/clinical.js",
+      "pages/pharmacypending/page.js",
       "shared/lib/navigation.js"
     ]
   },
   "eventHandlers": [],
-  "functions": [],
+  "routeHooks": [
+    {
+      "kind": "statements",
+      "name": "kraneRoute_pharmacypending_3",
+      "owner": "pages/pharmacypending/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "params": [
+        "id"
+      ],
+      "sourceLine": 659,
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
+  "functions": [
+    "kraneRoute_pharmacypending_3"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "phPreparedTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "prepCountdownTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "reduceMotion",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "replaceCurrent",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

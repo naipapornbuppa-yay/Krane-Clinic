@@ -1,5 +1,5 @@
-/* partner-insurance: behavior is supplied by shared libraries. No duplicate per-page implementation.
- * Add page-owned functions here; shared/runtime.js owns ordered initialization.
+/* partner-insurance: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
  */
 
 /** Page-owned initialization; invoked once at its original position by shared/runtime.js. */
@@ -35,3 +35,29 @@ function kraneHandle_partner_insurance_paymentChoice(e, partnerPayment) {
 
   return false;
 }
+
+function syncPartnerPolicySummary(){
+    const select=document.querySelector('[data-partner-policy-select]');
+    if(!select) return null;
+    const option=select.selectedOptions?.[0] || select.options?.[select.selectedIndex];
+    if(!option) return null;
+    const bind=(selector,value) => {
+      const node=document.querySelector(selector);
+      if(node) node.textContent=value || '';
+    };
+    bind('[data-partner-policy-product]',option.dataset.product);
+    bind('[data-partner-policy-holder]',flowState.partnerName || flowState.patientName || '—');
+    bind('[data-partner-policy-number]',option.dataset.policyNumber);
+    bind('[data-partner-policy-start]',option.dataset.startDate);
+    bind('[data-partner-policy-end]',option.dataset.endDate);
+    bind('[data-partner-policy-balance]',option.dataset.balance);
+    bind('[data-partner-policy-visits]',option.dataset.visits);
+    bind('[data-partner-policy-consult]',option.dataset.consult);
+    bind('[data-partner-policy-medicine]',option.dataset.medicine);
+    bind('[data-partner-policy-delivery]',option.dataset.delivery);
+    flowState.partnerPolicyId=option.value;
+    flowState.partnerPolicyProvider=option.dataset.product || '';
+    flowState.partnerPolicyMedicineCredit=Number(option.dataset.medicineCredit || 0);
+    persistFlowState();
+    return option;
+  }

@@ -57,6 +57,54 @@ async function load(app,params='entry=direct&fresh=1&category=hair-skin',hash='i
 }
 async function run(app,name,params,hash,fn){if(filter&&!name.includes(filter))return;let env;try{env=await load(app,params,hash);assert.deepEqual(env.errors,[],'initialization errors');const observations=await fn(env);assert.deepEqual(env.errors,[],'runtime errors');results.push({app,name,status:'pass',observations,unsupported:[...new Set(env.unsupported)]});console.log('PASS',app,name);}catch(error){results.push({app,name,status:'fail',error:error.stack,errors:env?.errors,unsupported:env?.unsupported});console.error('FAIL',app,name,error.message);}finally{env?.close();}}
 for(const app of apps){
+await run(app,'ownership-program-pause-resume','public=1','login',async e=>{
+ e.w.eval("seedClinicalDemoStage('payment');show('profile')");const card=e.q('#profile .treatment-card');e.click(card);await e.step('treatment-detail');
+ e.click('#treatment-pause-action');e.click('[data-treatment-pause-confirm]');assert.equal(e.w.kraneTreatmentPause.isPaused(card.dataset.category),true);assert.equal(card.dataset.programState,'paused');
+ e.click(card);await e.step('treatment-detail');e.click('#treatment-pause-action');assert.equal(e.q('.program-resume-schedule').hidden,false);assert(e.q('#resume-program-time').value);e.click('[data-treatment-pause-confirm]');
+ assert.equal(e.w.kraneTreatmentPause.isPaused(card.dataset.category),false);assert.equal(card.dataset.programState,'active');assert(e.w.kraneTreatmentPause.appointmentFor(card.dataset.category));
+ return [{category:card.dataset.category,state:card.dataset.programState,paused:e.w.kraneTreatmentPause.isPaused(card.dataset.category),hasAppointment:Boolean(e.w.kraneTreatmentPause.appointmentFor(card.dataset.category))}];
+});
+
+await run(app,'ownership-articles-search-filter-detail-back','public=1','articles',async e=>{
+ const out=[];await e.step('articles');
+ const cards=()=>[...e.d.querySelectorAll('[data-article-feed] [data-article-id]')];
+ const initial=cards().map(n=>n.dataset.articleId);assert(initial.length>1);
+ const title=cards()[1].querySelector('.article-teaser__title').textContent;
+ e.fill('[data-article-search]',title);assert.equal(cards().length,1);
+ const id=cards()[0].dataset.articleId;e.click(cards()[0]);await e.step('article');
+ assert.equal(e.q('#article').dataset.articleId,id);assert.equal(e.q('[data-article-title]').textContent,title);
+ assert(e.q('[data-article-body]').children.length>1);out.push({stage:'detail',id,title});
+ e.click('#article [data-back]');await e.step('articles');assert.equal(cards().length,1);
+ e.fill('[data-article-search]','no-such-article-QA-70931');assert.equal(cards().length,0);assert.equal(e.q('[data-article-empty]').hidden,false);
+ e.fill('[data-article-search]','');const choice=[...e.d.querySelectorAll('[data-article-filter]')].find(n=>n.dataset.articleFilter!=='all');e.click(choice);assert.equal(choice.getAttribute('aria-pressed'),'true');
+ const expected=e.w.KraneArticleStore.published().filter(a=>a.category===choice.dataset.articleFilter).map(a=>a.id);assert.deepEqual(cards().map(n=>n.dataset.articleId),Array.from(expected));
+ out.push({stage:'filter',ids:cards().map(n=>n.dataset.articleId)});return out;
+});
+await run(app,'ownership-lifecycle-timers-and-otp-back','public=1','login',async e=>{
+ const out=[];
+ // Controlled timers exercise the exact scheduled callbacks without a ten-second
+ // wall-clock sleep, provider calls or patient data. Routing/guards stay real.
+ e.w.eval(`var qaClock={next:100000,jobs:new Map()};
+ setTimeout=(fn,ms)=>{const id=qaClock.next++;qaClock.jobs.set(id,{fn,ms,interval:false});return id};
+ setInterval=(fn,ms)=>{const id=qaClock.next++;qaClock.jobs.set(id,{fn,ms,interval:true});return id};
+ clearTimeout=clearInterval=id=>qaClock.jobs.delete(id);
+ qaClock.fire=ms=>{const entry=[...qaClock.jobs].find(([,j])=>j.ms===ms);if(!entry)throw Error('Missing timer '+ms);if(!entry[1].interval)qaClock.jobs.delete(entry[0]);entry[1].fn();};
+ seedClinicalDemoStage('payment');show('matching');`);
+ assert.equal(e.active(),'matching');e.w.eval('qaClock.fire(1000)');assert(/01/.test(e.q('[data-matching-countdown]').textContent));
+ e.w.eval("show('profile')");assert.equal(e.w.eval('qaClock.jobs.has(matchTimer)'),false);
+ e.w.eval("show('matching');qaClock.fire(10000)");assert(['consultpay','appointment'].includes(e.active()));out.push({stage:'matching',active:e.active()});
+ e.w.eval("seedClinicalDemoStage('payment');show('delivery-quote');show('profile');qaClock.fire(600)");assert.equal(e.active(),'profile');
+ e.w.eval("show('delivery-quote');qaClock.fire(600)");assert.equal(e.active(),'payment');assert.equal(e.w.eval('flowState.orderState.deliveryQuoteStatus'),'accepted');out.push({stage:'quote',active:e.active()});
+ e.w.eval("show('pharmacy-search');show('profile')");assert.equal(e.w.eval('qaClock.jobs.has(phTimer)'),false);
+ e.w.eval("pharmacyForceDecline=true;pharmacyRetryCount=0;show('pharmacy-search');qaClock.fire(10000);qaClock.fire(1400)");assert.equal(e.active(),'pharmacy-search');assert.equal(e.w.eval('pharmacyRetryCount'),1);
+ e.w.eval("pharmacyForceDecline=true;pharmacyRetryCount=2;show('pharmacy-search');qaClock.fire(10000);qaClock.fire(1400)");assert.equal(e.active(),'payment');assert.equal(e.w.eval('flowState.orderState.deliveryMethod'),'postal');out.push({stage:'pharmacy-retry',active:e.active(),method:e.w.eval('flowState.orderState.deliveryMethod')});
+ e.w.eval("show('rx-writing');show('profile')");assert.equal(e.w.eval('qaClock.jobs.has(rxTimer)'),false);
+ e.w.eval("show('rx-writing');qaClock.fire(500)");assert.equal(e.active(),'rx-plan');out.push({stage:'rx-writing',active:e.active()});
+ e.w.eval("seedClinicalDemoStage('payment');flowState.phoneOtpPending=true;flowState.phoneOtpReturn='patient-info';flowState.verifiedPhone='0812345678';show('otp')");
+ e.click('#otp [data-back]');assert.equal(e.active(),'patient-info');assert.equal(e.w.eval('flowState.phoneOtpPending'),false);assert(e.q('#patient-phone').readOnly);out.push({stage:'otp-back',active:e.active(),phone:e.q('#patient-phone').value});
+ return out;
+});
+
 await run(app,'owned-payment-deadline-and-submit','public=1','login',async e=>{
  // Seed only isolated prototype state. No provider requests or real payment.
  e.w.eval("seedClinicalDemoStage('payment'); show('payment-gw'); flowState.orderState.paymentExpiresAt=Date.now()-1000;");

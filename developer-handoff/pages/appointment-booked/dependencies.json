@@ -1,5 +1,7 @@
 {
   "screen": "appointment-booked",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/appointment-booked/index.html",
   "script": "pages/appointment-booked/page.js",
   "styles": "pages/appointment-booked/page.css",
@@ -10,18 +12,49 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Confirmation markup rendered by the appointment flow and shared route synchronization.",
+    "note": "Owns appointment confirmation time activation; routing and appointment state are shared.",
     "sources": [
-      "pages/appointment/page.js",
+      "pages/appointment-booked/page.js",
       "shared/lib/navigation.js"
     ]
   },
-  "eventHandlers": [],
-  "functions": [],
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_appointment_booked_lifecycle_14",
+      "condition": "id==='appointment-booked'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_appointment_booked_lifecycle_14",
+      "owner": "pages/appointment-booked/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 387,
+      "condition": "id==='appointment-booked'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
+  "functions": [
+    "kraneHandle_appointment_booked_lifecycle_14"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

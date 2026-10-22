@@ -163,20 +163,7 @@
     return Object.entries(PASSWORD_RULES).map(([name,test]) => [name,test(value)]);
   }
 
-  function syncPasswordScreen(){
-    const reset=Boolean(flowState.passwordResetPending);
-    const heading=document.querySelector('[data-password-heading]');
-    const title=document.querySelector('[data-password-title]');
-    const lead=document.querySelector('[data-password-lead]');
-    const save=document.querySelector('[data-password-save]');
-    if(heading) heading.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
-    if(title) title.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
-    if(lead) lead.textContent=reset
-      ? 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านใหม่เพื่อเข้าสู่ระบบ'
-      : 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านไว้เข้าสู่ระบบครั้งต่อไปได้เลย';
-    if(save) save.textContent=reset ? 'บันทึกรหัสผ่านใหม่' : 'บันทึกรหัสผ่านและไปต่อ';
-    syncPasswordValidity();
-  }
+
 
 
   function completeAuthentication(destination){

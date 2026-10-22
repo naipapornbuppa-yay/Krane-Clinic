@@ -1,5 +1,7 @@
 {
   "screen": "notifications",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/notifications/index.html",
   "script": "pages/notifications/page.js",
   "styles": "pages/notifications/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/notifications/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -26,18 +31,41 @@
       "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "named-function",
+      "name": "syncDeliveryNotification",
+      "from": "shared/lib/orders.js",
+      "owner": "pages/notifications/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
-    "kraneHandle_notifications_markRead"
+    "kraneHandle_notifications_markRead",
+    "syncDeliveryNotification",
+    "kraneRenderClinicalRequests"
   ],
   "orderedInitializers": [],
   "dependencies": [
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "orderFulfilmentStatus",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
     {
       "name": "showActionToast",
       "source": "shared/lib/ui.js"
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* intake4: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function intakeSkipped(id){
     if(intakeConcernKey()==='general' && GENERAL_COMPACT_SKIPPED_SCREENS.includes(id)) return true;

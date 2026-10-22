@@ -1,5 +1,7 @@
 {
   "screen": "delivery-quote",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/delivery-quote/index.html",
   "script": "pages/delivery-quote/page.js",
   "styles": "pages/delivery-quote/page.css",
@@ -10,18 +12,105 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Delivery quote view uses the shared order/fulfilment state machine.",
+    "note": "Owns quote display, count-up and delayed transition. Shared fulfilment pricing/state remain central. Baseline exit guard prevents navigation; re-entry resets the timers.",
     "sources": [
-      "shared/lib/orders.js",
+      "pages/delivery-quote/page.js",
       "shared/lib/navigation.js"
     ]
   },
-  "eventHandlers": [],
-  "functions": [],
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_delivery_quote_lifecycle_15",
+      "condition": "id==='delivery-quote'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_delivery_quote_lifecycle_15",
+      "owner": "pages/delivery-quote/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 395,
+      "condition": "id==='delivery-quote'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
+  "functions": [
+    "kraneHandle_delivery_quote_lifecycle_15"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "DELIVERY_QUOTE_SECONDS",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "calculatedSameDayDeliveryFee",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "deliveryMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "deliveryQuoteCountdownTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "deliveryQuoteTimer",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "ensurePaymentDeadline",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "focusCheckoutDelivery",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "hasFulfillableItems",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "invalidateFulfillmentQuote",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "paintElapsedTimer",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "reduceMotion",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "refreshMedicationCheckout",
+      "source": "pages/payment/page.js"
+    },
+    {
+      "name": "replaceCurrent",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

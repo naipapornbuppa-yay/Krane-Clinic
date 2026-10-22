@@ -1,5 +1,7 @@
 {
   "screen": "payment",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/payment/index.html",
   "script": "pages/payment/page.js",
   "styles": "pages/payment/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/payment/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -74,8 +79,55 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_lifecycle_16",
+      "condition": "id==='payment'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_payment_lifecycle_16",
+      "owner": "pages/payment/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 445,
+      "condition": "id==='payment'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "named-function",
+      "name": "closePaymentMethodModal",
+      "from": "shared/lib/orders.js",
+      "owner": "pages/payment/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "closePromoModal",
+      "from": "shared/lib/orders.js",
+      "owner": "pages/payment/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "syncPickupBranch",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/payment/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "closePickupBranchModal",
+      "from": "shared/lib/ui.js",
+      "owner": "pages/payment/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "syncPaymentFooterSavings",
     "enforceCheckoutSequence",
@@ -91,7 +143,12 @@
     "kraneHandle_payment_editAddon",
     "kraneHandle_payment_removeAddon",
     "kraneHandle_payment_addAddon",
-    "kraneHandle_payment_deadlineRetry"
+    "kraneHandle_payment_deadlineRetry",
+    "kraneHandle_payment_lifecycle_16",
+    "closePaymentMethodModal",
+    "closePromoModal",
+    "syncPickupBranch",
+    "closePickupBranchModal"
   ],
   "orderedInitializers": [
     "kraneInit_payment_400",
@@ -152,14 +209,6 @@
     },
     {
       "name": "closePaymentItemSheet",
-      "source": "shared/lib/orders.js"
-    },
-    {
-      "name": "closePaymentMethodModal",
-      "source": "shared/lib/orders.js"
-    },
-    {
-      "name": "closePromoModal",
       "source": "shared/lib/orders.js"
     },
     {
@@ -287,6 +336,18 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "pickupBranchForCurrentLocation",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "pickupBranchModal",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "pickupLocationConfirmed",
+      "source": "shared/lib/ui.js"
+    },
+    {
       "name": "promoModal",
       "source": "shared/runtime.js"
     },
@@ -353,14 +414,10 @@
     {
       "name": "syncPaymentOutcome",
       "source": "pages/payment-success/page.js"
-    },
-    {
-      "name": "syncPickupBranch",
-      "source": "shared/lib/ui.js"
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

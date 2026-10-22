@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* otp: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function returnFromPhoneOtp(target){
     if(history[history.length-1]==='otp') history.pop();
@@ -132,4 +134,43 @@ function kraneHandle_otp_submit(e, authComplete) {
       return true;
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/runtime.js. */
+function kraneHandle_otp_lifecycle_21(){
+
+        flowState.partnerInfoContinueAfterOtp=false;
+        flowState.partnerPhoneOtpPending=false;
+        flowState.partnerPendingPhone='';
+        flowState.partnerPhoneVerified=Boolean(flowState.partnerPhone);
+        persistFlowState();
+        restorePartnerFields();
+        returnFromPhoneOtp('partner-patient-info');
+        return true;
+
+return false;
+}
+
+/** Activation/event branch; called in its original order by shared/runtime.js. */
+function kraneHandle_otp_lifecycle_22(){
+
+        const returnTarget=flowState.phoneOtpReturn || 'patient-info';
+        clearPhoneOtpContext();
+        persistFlowState();
+        if(returnTarget==='patient-info'){
+          const phone=document.getElementById('patient-phone');
+          const note=document.querySelector('#patient-info [data-phone-note]');
+          const edit=document.querySelector('#patient-info [data-phone-edit]');
+          if(phone){
+            phone.value=formatPhoneForDisplay(flowState.verifiedPhone);
+            phone.readOnly=true;
+            phone.setAttribute('aria-readonly','true');
+          }
+          if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
+          if(edit) edit.textContent='เปลี่ยนเบอร์';
+        }
+        returnFromPhoneOtp(returnTarget);
+        return true;
+
+return false;
 }

@@ -1,5 +1,7 @@
 {
   "screen": "treatment-detail",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/treatment-detail/index.html",
   "script": "pages/treatment-detail/page.js",
   "styles": "pages/treatment-detail/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Owns treatment record and visit-history rendering, pause/resume dialog and schedule form. Shared program/clinical data stay central.",
+    "sources": [
+      "pages/treatment-detail/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -35,11 +40,15 @@
       "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [],
+  "interfaces": [],
   "functions": [
     "setTreatmentDetailTab",
     "openTreatmentDetail",
     "kraneHandle_treatment_detail_tab",
-    "kraneHandle_treatment_detail_editSymptoms"
+    "kraneHandle_treatment_detail_editSymptoms",
+    "kraneRenderTreatmentVisitHistory",
+    "kraneInitTreatmentPause"
   ],
   "orderedInitializers": [
     "kraneInit_treatment_detail_refill"
@@ -48,6 +57,18 @@
     {
       "name": "closeRefillSheet",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "history",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "kraneCreateProfileProgramPresentation",
+      "source": "pages/profile/page.js"
+    },
+    {
+      "name": "kraneCreateProgramPauseState",
+      "source": "shared/lib/program-state.js"
     },
     {
       "name": "openRefillSheet",
@@ -75,7 +96,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

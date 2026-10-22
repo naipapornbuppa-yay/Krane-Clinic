@@ -1,5 +1,7 @@
 {
   "screen": "address",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/address/index.html",
   "script": "pages/address/page.js",
   "styles": "pages/address/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/address/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -100,8 +105,107 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_lifecycle_12",
+      "condition": "id==='address'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_lifecycle_13",
+      "condition": "id==='address'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_lifecycle_20",
+      "condition": "backScreen?.id==='address' && addressPageMode!=='list' && savedAddresses().length",
+      "selectors": [],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_address_lifecycle_12",
+      "owner": "pages/address/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 365,
+      "condition": "id==='address'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "branch",
+      "name": "kraneHandle_address_lifecycle_13",
+      "owner": "pages/address/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 383,
+      "condition": "id==='address'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "branch",
+      "name": "kraneHandle_address_lifecycle_20",
+      "owner": "pages/address/page.js",
+      "dispatch": "shared/runtime.js",
+      "sourceLine": 2115,
+      "condition": "backScreen?.id==='address' && addressPageMode!=='list' && savedAddresses().length",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    },
+    {
+      "kind": "named-function",
+      "name": "renderAddressList",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "confirmDeleteSavedAddress",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "renderAddressPinPreview",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "activeAddressSearch",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "closeAddressSuggestions",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    },
+    {
+      "kind": "named-function",
+      "name": "setupAddressSearch",
+      "from": "shared/lib/address.js",
+      "owner": "pages/address/page.js"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "syncFieldClearButtons",
     "setupClearableFields",
@@ -131,7 +235,16 @@
     "kraneHandle_address_locate",
     "kraneHandle_address_confirmMap",
     "kraneHandle_address_save",
-    "kraneHandle_address_recipientEdit"
+    "kraneHandle_address_recipientEdit",
+    "kraneHandle_address_lifecycle_12",
+    "kraneHandle_address_lifecycle_13",
+    "kraneHandle_address_lifecycle_20",
+    "renderAddressList",
+    "confirmDeleteSavedAddress",
+    "renderAddressPinPreview",
+    "activeAddressSearch",
+    "closeAddressSuggestions",
+    "setupAddressSearch"
   ],
   "orderedInitializers": [
     "kraneInit_address_155",
@@ -169,6 +282,14 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "OSM_TILES",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "OSM_TILE_SIZE",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "SIM_PLACES",
       "source": "shared/runtime.js"
     },
@@ -181,7 +302,19 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "addressBookFullLine",
+      "source": "shared/lib/address.js"
+    },
+    {
       "name": "addressBookKey",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "addressBookName",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "addressBookRecipientLine",
       "source": "shared/lib/address.js"
     },
     {
@@ -257,12 +390,8 @@
       "source": "shared/lib/address.js"
     },
     {
-      "name": "closeAddressSuggestions",
-      "source": "shared/lib/address.js"
-    },
-    {
       "name": "closePickupBranchModal",
-      "source": "shared/lib/ui.js"
+      "source": "pages/payment/page.js"
     },
     {
       "name": "composeDistrict",
@@ -273,12 +402,12 @@
       "source": "shared/lib/address.js"
     },
     {
-      "name": "confirmDeleteSavedAddress",
-      "source": "shared/lib/address.js"
-    },
-    {
       "name": "confirmListAddress",
       "source": "pages/payment/page.js"
+    },
+    {
+      "name": "deleteSavedAddress",
+      "source": "shared/lib/address.js"
     },
     {
       "name": "deliveryAddressDraft",
@@ -294,6 +423,10 @@
     },
     {
       "name": "editSavedAddress",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "escapeAddressText",
       "source": "shared/lib/address.js"
     },
     {
@@ -317,6 +450,10 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "lastUsedAddressIndex",
+      "source": "shared/lib/address.js"
+    },
+    {
       "name": "manualMapRequest",
       "source": "shared/runtime.js"
     },
@@ -331,6 +468,14 @@
     {
       "name": "openPickupBranchModal",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "osmLatToY",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "osmLonToX",
+      "source": "shared/runtime.js"
     },
     {
       "name": "osmReverseTimer",
@@ -390,14 +535,6 @@
     },
     {
       "name": "rememberDeliveryAddress",
-      "source": "shared/lib/address.js"
-    },
-    {
-      "name": "renderAddressList",
-      "source": "shared/lib/address.js"
-    },
-    {
-      "name": "renderAddressPinPreview",
       "source": "shared/lib/address.js"
     },
     {
@@ -470,7 +607,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

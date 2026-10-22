@@ -1,5 +1,7 @@
 {
   "screen": "profile",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/profile/index.html",
   "script": "pages/profile/page.js",
   "styles": "pages/profile/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Owns treatment-folder rendering, capture animation, re-entry selection and paused-program folder status/order. Shared program store/schedule remain central.",
+    "sources": [
+      "pages/profile/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -76,6 +81,8 @@
       "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [],
+  "interfaces": [],
   "functions": [
     "syncTreatmentStatus",
     "syncHomeFollowUpCta",
@@ -85,7 +92,9 @@
     "kraneHandle_profile_treatmentOpen",
     "kraneHandle_profile_followUp",
     "kraneHandle_profile_referral",
-    "kraneHandle_profile_newAppointment"
+    "kraneHandle_profile_newAppointment",
+    "kraneInitProfileTreatmentFolders",
+    "kraneCreateProfileProgramPresentation"
   ],
   "orderedInitializers": [
     "kraneInit_profile_320",
@@ -137,6 +146,10 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "kraneRenderTreatmentVisitHistory",
+      "source": "pages/treatment-detail/page.js"
+    },
+    {
       "name": "openTreatmentDetail",
       "source": "pages/treatment-detail/page.js"
     },
@@ -170,7 +183,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }

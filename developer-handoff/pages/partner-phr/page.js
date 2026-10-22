@@ -1,4 +1,6 @@
-/* pages/partner-phr/page.js: page-owned behavior; shared state and router remain central. */
+/* partner-phr: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_partner_phr_complete(e, partnerComplete) {
@@ -21,3 +23,10 @@ function kraneHandle_partner_phr_complete(e, partnerComplete) {
 
   return false;
 }
+
+function syncPartnerReview(){
+    const phrName=document.querySelector('[data-partner-phr-name]');
+    if(phrName) phrName.textContent=flowState.partnerName || flowState.patientName || '—';
+    const phrPayment=document.querySelector('[data-partner-phr-payment]');
+    if(phrPayment) phrPayment.textContent=flowState.partnerPaymentMethod==='self-pay' ? 'ชำระเงินเอง' : 'ใช้สิทธิ์ประกันสุขภาพ';
+  }

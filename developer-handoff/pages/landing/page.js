@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* landing: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   function resetLandingViewport(){
     const frame=document.querySelector('#landing iframe');
@@ -17,4 +19,3 @@
 function kraneInit_landing_678(){
   updateFeatToast((document.querySelector('.screen.active') || {}).id || 'landing');
 }
-

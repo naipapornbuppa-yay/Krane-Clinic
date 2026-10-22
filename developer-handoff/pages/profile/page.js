@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* profile: Owns treatment-folder rendering, capture animation, re-entry selection and paused-program folder status/order. Shared program store/schedule remain central.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
   /* Appointment urgency belongs to the countdown banner. Treatment cards keep
      describing the course itself, so an upcoming visit never changes an active
@@ -147,4 +149,85 @@ function kraneHandle_profile_newAppointment(e, profileNewAppointment) {
       return true;
 
   return false;
+}
+
+/** Once-only profile folder UI, capture listener, animation and re-entry observer. */
+function kraneInitProfileTreatmentFolders(){
+ let outlineSequence=0;
+ function outline(card,folder){
+  const outlineId='folder-outline-'+(++outlineSequence);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width','0');svg.setAttribute('height','0');svg.style.position='absolute';svg.setAttribute('aria-hidden','true');
+  svg.innerHTML='<defs><clipPath id="'+outlineId+'" clipPathUnits="userSpaceOnUse"><path/></clipPath></defs>';folder.append(svg);
+  card.style.setProperty('--pocket-outline','url(#'+outlineId+')');
+  const redraw=()=>{const w=card.offsetWidth,h=card.offsetHeight+14,r=22,t=Math.min(100,w*.24),y=14;
+   svg.querySelector('path').setAttribute('d',`M0 ${r} Q0 0 ${r} 0 H${t-20} C${t} 0 ${t} ${y} ${t+20} ${y} H${w-r} Q${w} ${y} ${w} ${y+r} V${h-r} Q${w} ${h} ${w-r} ${h} H${r} Q0 ${h} 0 ${h-r} Z`);};
+  new ResizeObserver(redraw).observe(card);redraw();
+ }
+ function mount(card){
+  if(card.closest('.treatment-folder'))return;
+  let visits;try{visits=JSON.parse(card.dataset.consultations||'null')}catch{}
+  if(!Array.isArray(visits)||!visits.length){
+   const count=({'weight':6,'hair-skin':4,'sexual-health':2,'general':1})[card.dataset.category]||1;
+   const base={...card.dataset};
+   visits=Array.from({length:count},(_,i)=>({...base,number:i+1,treatmentDate:i===count-1?base.treatmentDate:`${String(1+i*3).padStart(2,'0')}/05/2026`,treatmentRx:i===count-1?base.treatmentRx:`RX-DEMO-${card.dataset.category}-${i+1}`}));
+  }
+  // Records may arrive out of order; visit number is the stable chronology.
+  visits=visits.map((v,i)=>({...v,number:Number(v.number)||i+1})).sort((a,b)=>a.number-b.number);
+  const folder=document.createElement('div');folder.className='treatment-folder';
+  const tabs=document.createElement('div');tabs.className='treatment-folder__tabs';
+  tabs.setAttribute('aria-hidden','true');
+  card.before(folder);folder.append(tabs,card);card.id='treatment-folder-'+card.dataset.category;
+  folder.dataset.visitCount=visits.length;
+  outline(card,folder);
+
+  const depth=Math.min(visits.length,4);
+  folder.style.setProperty('--folder-depth',depth);
+  for(let layer=depth;layer>0;layer--){const sheet=document.createElement('i');sheet.className='treatment-folder__sheet';sheet.style.setProperty('--layer',layer);sheet.setAttribute('aria-hidden','true');folder.prepend(sheet);}
+  visits.slice(0,4).forEach((visit,i)=>{const spine=document.createElement('span');spine.className='treatment-folder__spine';spine.style.setProperty('--spine',i);spine.setAttribute('aria-hidden','true');tabs.append(spine);});
+  const label=document.createElement('span');label.className='treatment-folder__label';label.setAttribute('aria-hidden','true');tabs.append(label);
+  function select(index){
+   const visit=visits[index];
+   Object.keys(card.dataset).filter(k=>k.startsWith('treatment')).forEach(k=>delete card.dataset[k]);
+   Object.entries(visit).forEach(([key,value])=>{if(key.startsWith('treatment'))card.dataset[key]=value;});
+   card.setAttribute('data-treatment-open','');card.dataset.consultationNumber=visit.number;
+   if(visit.doctor)card.querySelector('.followup-row strong').textContent=visit.doctor;
+   if(visit.followup){const row=card.querySelector('.followup-row:last-child strong');row.textContent=visit.followup;}
+  }
+  card.addEventListener('treatment-record-open',()=>{ kraneRenderTreatmentVisitHistory(card,visits,select); });
+  let opening=false, replay=false;
+  card.addEventListener('click',event=>{
+   if(replay || !document.querySelector('#profile.active') || matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+   event.preventDefault();event.stopImmediatePropagation();
+   if(opening)return;
+   opening=true;folder.classList.add('is-opening');card.setAttribute('aria-busy','true');
+   setTimeout(()=>{
+    folder.classList.remove('is-opening');card.removeAttribute('aria-busy');opening=false;
+    if(!document.querySelector('#profile.active'))return;
+    replay=true;card.click();replay=false;
+   },480);
+  },true);
+  folder.selectLatest=()=>select(visits.length-1);
+  select(visits.length-1);
+ }
+ function init(){document.querySelectorAll('#profile .treatment-card').forEach(mount);}
+ new MutationObserver(()=>{if(document.querySelector('#profile.active'))document.querySelectorAll('.treatment-folder').forEach(folder=>folder.selectLatest?.());}).observe(document.getElementById('profile'),{attributes:true,attributeFilter:['class']});
+ window.kraneTreatmentFolders={mount,init,outline};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+
+}
+
+/** Shared pause state is passed in; folder ordering/status belongs to profile. */
+function kraneCreateProfileProgramPresentation(isPaused,appointmentFor){
+const originalFolders=[...document.querySelectorAll('#profile .treatment-folder')];
+function sortFolders(){const anchor=document.querySelector('#profile .care-team-note');if(!anchor)return;originalFolders.slice().sort((a,b)=>Number(a.classList.contains('is-paused'))-Number(b.classList.contains('is-paused'))).forEach(folder=>anchor.before(folder));}
+function decorate(card){
+  const inactive=isPaused(card.dataset.category);card.dataset.programState=inactive?'paused':'active';
+  card.closest('.treatment-folder')?.classList.toggle('is-paused',inactive);
+  let label=card.querySelector('.treatment-pause-status');
+  if(inactive&&!label){label=document.createElement('span');label.className='treatment-pause-status';label.textContent='พักโปรแกรม';card.querySelector('.treatment-card__title')?.append(label);}
+  if(label)label.hidden=!inactive;
+  if(appointmentFor(card.dataset.category)&&!card.querySelector('[data-followup-date]')){const node=document.createElement('span');node.dataset.followupDate='';node.dataset.followupCase=card.dataset.category;node.dataset.followupOffset='0';card.querySelector('.followup-row:last-child strong')?.replaceChildren(node);}
+ }
+return {sortFolders,decorate};
 }

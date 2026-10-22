@@ -1,5 +1,5 @@
-/* intake3: behavior is supplied by shared libraries. No duplicate per-page implementation.
- * Add page-owned functions here; shared/runtime.js owns ordered initialization.
+/* intake3: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
  */
 
 /** Page-owned initialization; invoked once at its original position by shared/runtime.js. */

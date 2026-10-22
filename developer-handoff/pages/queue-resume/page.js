@@ -1,4 +1,6 @@
-/* pages/queue-resume/page.js: page-owned behavior; shared state and router remain central. */
+/* queue-resume: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Called once at the original bootstrap position.
 function kraneInit_queue_resume_queueActions() {

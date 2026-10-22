@@ -1,4 +1,6 @@
-/* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
+/* payment-success: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 
   function syncPaymentOutcome(){
@@ -46,4 +48,10 @@ function kraneHandle_payment_success_tracking(e, paidTracking) {
       persistFlowState();
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_payment_success_lifecycle_6(){
+try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}
+return false;
 }

@@ -1,4 +1,6 @@
-/* pages/insurance/page.js: page-owned behavior; shared state and router remain central. */
+/* insurance: Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.
+ * Source references in dependencies.json are relative to developer-handoff/.
+ */
 
 // Matched branch returns true when it consumes the original delegated event.
 function kraneHandle_insurance_entry(e, goInsurance) {
@@ -69,4 +71,25 @@ function kraneHandle_insurance_documentType(e, tog) {
         }
 
   return false;
+}
+
+/** Activation/event branch; called in its original order by shared/lib/navigation.js. */
+function kraneHandle_insurance_lifecycle_11(){
+
+      const isProfile = insuranceEntry === 'profile';
+      const isPartner = insuranceEntry === 'partner';
+      const isSetup = isProfile || isPartner;
+      document.getElementById('insurance')?.setAttribute('data-insurance-context',isSetup ? 'setup' : 'checkout');
+      const order = document.querySelector('#insurance [data-insurance-order]');
+      const setupTitle = document.querySelector('#insurance [data-insurance-setup-title]');
+      const profileHint = document.querySelector('#insurance [data-insurance-profile-hint]');
+      const orderActions = document.querySelectorAll('#insurance [data-insurance-order-action]');
+      const confirmBtn = document.querySelector('#insurance [data-insurance-confirm]');
+      if(order) order.hidden = isSetup;
+      if(setupTitle) setupTitle.hidden = !isSetup;
+      if(profileHint) profileHint.hidden = !isSetup;
+      orderActions.forEach(btn => { btn.hidden = isSetup; });
+      if(confirmBtn) confirmBtn.textContent = isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์';
+
+return false;
 }

@@ -1,5 +1,7 @@
 {
   "screen": "consent-terms",
+  "pathsRelativeTo": "developer-handoff/",
+  "classification": "owned",
   "template": "pages/consent-terms/index.html",
   "script": "pages/consent-terms/page.js",
   "styles": "pages/consent-terms/page.css",
@@ -10,8 +12,11 @@
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
   "behavior": {
-    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
-    "sources": []
+    "note": "Page-specific functions, rendering and lifecycle are in page.js; cross-page state/services and generic components remain shared.",
+    "sources": [
+      "pages/consent-terms/page.js",
+      "shared/lib/navigation.js"
+    ]
   },
   "eventHandlers": [
     {
@@ -23,11 +28,35 @@
       "dispatch": "shared/runtime.js",
       "consumesOn": "true (including failed validation)",
       "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_consent_terms_lifecycle_9",
+      "condition": "id === 'consent-terms'",
+      "selectors": [],
+      "dispatch": "shared/lib/navigation.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
     }
   ],
+  "routeHooks": [
+    {
+      "kind": "branch",
+      "name": "kraneHandle_consent_terms_lifecycle_9",
+      "owner": "pages/consent-terms/page.js",
+      "dispatch": "shared/lib/navigation.js",
+      "sourceLine": 309,
+      "condition": "id === 'consent-terms'",
+      "params": [],
+      "originalBodyType": "BlockStatement",
+      "selectors": [],
+      "baseline": "52d8aac"
+    }
+  ],
+  "interfaces": [],
   "functions": [
     "unlockConsentBundleAfterDelay",
-    "kraneHandle_consent_terms_submit"
+    "kraneHandle_consent_terms_submit",
+    "kraneHandle_consent_terms_lifecycle_9"
   ],
   "orderedInitializers": [
     "kraneInit_consent_terms_owned_79",
@@ -124,7 +153,7 @@
     }
   ],
   "externalDependencies": [
-    "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
+    "Shared CSS, icons, select enhancement, i18n and store adapters; see shared/shell.html and page-ownership-inventory.json. Page-specific external renderers are now page-owned."
   ],
   "productionBoundary": "Prototype auth/storage/payment are demonstrations. Replace via agreed backend contracts; do not accept browser flags as authorization."
 }
