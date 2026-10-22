@@ -14,10 +14,9 @@
         </video></div>
       </div>
       <div class="review-video__copy">
-        <p class="cd-review__quote">วิดีโอประสบการณ์การปรึกษาแพทย์</p>
+        <p class="cd-review__quote">“ตอนนี้ก็มั่นใจขึ้นเยอะ คิดว่าเรามาถูกทางแล้ว”</p>
         <p class="cd-fine"><b>ผู้ใช้บริการ Krane</b></p>
-        ${host.dataset.realReview === 'programme' ? '<p class="cd-fine review-video__context">ประสบการณ์การใช้บริการ ไม่ใช่การรับรองผลลัพธ์ของโปรแกรมนี้</p>' : ''}
-        <p class="cd-fine review-video__note" id="review-video-note">ประสบการณ์เฉพาะบุคคล ผลลัพธ์และความเหมาะสมของการรักษาอาจแตกต่างกัน</p>
+        <p class="cd-fine review-video__note" id="review-video-note">ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน</p>
       </div>
     </article>`;
     host.hidden = false;
