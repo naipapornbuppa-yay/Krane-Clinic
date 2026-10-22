@@ -24,7 +24,7 @@
     const card=(role,name,photo,initials,note)=>{
       const item=el('div','article-credit'),avatar=photo?el('img','article-credit__avatar'):el('span','article-credit__avatar',initials);
       if(photo){avatar.src=photo;avatar.alt='';avatar.width=48;avatar.height=48;}
-      const copy=el('span','article-credit__copy');copy.append(el('small','',role),el('strong','',name));if(note)copy.append(el('span','',note));item.append(avatar,copy);return item;
+      const copy=el('span','article-credit__copy');copy.append(el('small','',role),el('strong','',name));item.append(avatar,copy);return item;
     };
     const writer=card(en?'Written by':'ผู้เขียน',article.contentStatus==='client-review'?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author.name,article.contentStatus==='client-review'?'../assets/brand-final/krane-logomark.svg':article.author.photo,'K',en?'Editorial team':'ทีมบรรณาธิการ');
     if(article.contentStatus==='client-review')writer.querySelector('img')?.classList.add('article-credit__avatar--brand');
