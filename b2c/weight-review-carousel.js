@@ -18,8 +18,8 @@
     dots.forEach((dot,i)=>dot.addEventListener('click',()=>go(i)));
     section.querySelector('[data-interview-prev]').addEventListener('click',()=>go(active-1));
     section.querySelector('[data-interview-next]').addEventListener('click',()=>go(active+1));
-    const updatePause=()=>{pause.querySelector('span').textContent=stopped?'▶':'Ⅱ';pause.setAttribute('aria-pressed',String(stopped));pause.setAttribute('aria-label',stopped?'เริ่มสลับอัตโนมัติ':'หยุดสลับอัตโนมัติ');};
-    pause.addEventListener('click',()=>{stopped=!stopped;updatePause();playVideo();schedule();});updatePause();
+    const updatePause=()=>{if(!pause)return;pause.querySelector('span').textContent=stopped?'▶':'Ⅱ';pause.setAttribute('aria-pressed',String(stopped));pause.setAttribute('aria-label',stopped?'เริ่มสลับอัตโนมัติ':'หยุดสลับอัตโนมัติ');};
+    pause?.addEventListener('click',()=>{stopped=!stopped;updatePause();playVideo();schedule();});updatePause();
     viewport.addEventListener('scroll',()=>{clear();clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{const physical=Math.round(viewport.scrollLeft/viewport.clientWidth);select(physical-1);if(physical===0||physical===slides.length+1)jump((active+1)*viewport.clientWidth);moving=false;schedule();},160);},{passive:true});
     viewport.addEventListener('pointerdown',()=>{dragging=true;clear();},{passive:true});
     const release=()=>{dragging=false;schedule();};viewport.addEventListener('pointerup',release,{passive:true});viewport.addEventListener('pointercancel',release,{passive:true});
