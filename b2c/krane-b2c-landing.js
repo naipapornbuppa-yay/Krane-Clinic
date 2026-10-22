@@ -2596,5 +2596,27 @@
  rail.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(sync)},{passive:true});new ResizeObserver(measure).observe(rail);measure();
 })();
 
-/* Original landing story rails, now playing the supplied footage in place. */
-(()=>{const videos=[...document.querySelectorAll('.reviews--figma video')];if(!videos.length)return;const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{target.muted=true;if(isIntersecting&&!document.hidden)target.play().catch(()=>{});else target.pause()})},{threshold:.1});videos.forEach(v=>observer.observe(v));document.addEventListener('visibilitychange',()=>{if(document.hidden)videos.forEach(v=>v.pause());else videos.forEach(v=>{const b=v.getBoundingClientRect();if(b.bottom>0&&b.top<innerHeight&&b.right>0&&b.left<innerWidth)v.play().catch(()=>{})})})})();
+/* Native controls on every landing review; manual pause and sound survive visibility changes. */
+(()=>{
+ const videos=[...document.querySelectorAll('.reviews--figma video')];if(!videos.length)return;
+ const collage=document.querySelector('.review-collage'),states=new Map();
+ const update=video=>{const state=states.get(video);if(state.visible&&!document.hidden&&!state.userPaused)video.play().catch(()=>{});else if(!video.paused){state.visibilityPause=true;video.pause()}};
+ videos.forEach(video=>{
+  const state={visible:false,userPaused:false,visibilityPause:false};states.set(video,state);
+  video.controls=true;video.muted=true;video.defaultMuted=true;video.tabIndex=video.closest('[aria-hidden="true"]')?-1:0;
+  video.addEventListener('play',()=>{state.userPaused=false;state.visibilityPause=false});
+  video.addEventListener('pause',()=>{if(state.visibilityPause){state.visibilityPause=false;return}if(!document.hidden)state.userPaused=true});
+  video.addEventListener('click',event=>{
+   // Leave the native transport, timeline and sound controls to the browser.
+   const rect=video.getBoundingClientRect();if(event.clientY>=rect.bottom-54)return;
+   event.preventDefault();state.userPaused=!video.paused;
+   if(video.paused)video.play().catch(()=>{});else video.pause();
+  });
+  video.addEventListener('pointerdown',()=>collage?.classList.add('is-review-interacting'));
+  video.addEventListener('keydown',event=>{if(event.target!==video||![' ','k','K'].includes(event.key))return;event.preventDefault();if(video.paused)video.play().catch(()=>{});else video.pause()});
+  video.addEventListener('volumechange',()=>{if(!video.muted&&video.volume>0)videos.forEach(other=>{if(other!==video)other.muted=true})});
+ });
+ const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{states.get(target).visible=isIntersecting;update(target)})},{threshold:.1});videos.forEach(video=>observer.observe(video));
+ document.addEventListener('visibilitychange',()=>videos.forEach(update));
+ document.addEventListener('pointerdown',event=>{if(!event.target.closest('.review-collage video'))collage?.classList.remove('is-review-interacting')});
+})();
