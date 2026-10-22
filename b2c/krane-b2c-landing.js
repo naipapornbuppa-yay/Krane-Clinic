@@ -1398,6 +1398,9 @@
     let settleTimer = 0;
     let isVisible = false;
     let isPointerDown = false;
+    let keyboardFocus = false;
+    document.addEventListener("keydown", event => { if (event.key === "Tab") keyboardFocus = true; });
+    section.addEventListener("pointerdown", () => { keyboardFocus = false; }, { passive:true });
     let resumeTimer = 0;
     let pageScrollUntil = 0;
     let measuredWidth = viewport.clientWidth;
@@ -1416,7 +1419,7 @@
     }
 
     function canAutoPlay() {
-      return performance.now() >= pageScrollUntil && isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
+      return performance.now() >= pageScrollUntil && isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !(keyboardFocus && section.contains(document.activeElement));
     }
 
     function scheduleAuto(delay = AUTO_DELAY) {
@@ -1527,7 +1530,9 @@
       event.preventDefault();
       window.scrollBy({ top, behavior: 'instant' });
     }, { passive: false });
-    section.addEventListener('focusin', stopAuto);
+    section.addEventListener('focusin', () => {
+      if (keyboardFocus) stopAuto();
+    });
     section.addEventListener('focusout', () => window.setTimeout(scheduleAuto, 0));
 
     if ('IntersectionObserver' in window) {
