@@ -479,7 +479,7 @@
     if(designer){
       const link=document.querySelector('.programme-doctor--hero');
       const credit=document.createElement('div');credit.className='programme-designer';
-      credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong><span>${designer.specialty}</span></span>`;
+      credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong></span>`;
       link?.before(credit);
     }
     setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
