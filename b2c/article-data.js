@@ -975,5 +975,32 @@
     article.editorialReview={writer:'Krane Editorial',pharmacyStatus:'pending',medicalStatus:hair?'reviewed':'pending',physician:hair?{th:'พญ. กรผกา ขันติโกสุม',en:'Dr. Kornphaka Kantikosum'}:weight?{th:'อ.นพ. พหล สโรจวิสุทธิ์',en:'Dr. Phahol Sarojvisut'}:null,verifiedAt:'2026-10-18'};
     if(reviewedHair[article.id]){article.manuscriptMarkdown=reviewedHair[article.id];article.sourceRevision='2026-10-18';}
   });
+  // Shared image policy: keep relevant editorial images; missing or failed media
+  // uses the approved Krane bird rather than an unrelated stock photograph.
+  const placeholder = 'assets/articles/krane-placeholder.svg';
+  const unassigned = new Set(['library-ed-01','library-ed-02','library-ed-03','library-ed-04','library-ed-05','library-hair-loss-04','library-obesity-03','library-obesity-05']);
+  articles.forEach(article => {
+    if (unassigned.has(article.id)) { article.image = placeholder; article.imageAlt = ''; }
+  });
+  window.KraneArticleImage = {
+    placeholder,
+    bind(image, article) {
+      image.alt = article.imageAlt || '';
+      image.onerror = () => { image.onerror = null; image.src = placeholder; image.alt = ''; };
+      image.src = article.image || placeholder;
+    }
+  };
+  const syncPreviews = () => document.querySelectorAll('.article-card[data-article-id]').forEach(card => {
+    const article = articles.find(item => item.id === card.dataset.articleId);
+    if (!article) return;
+    const image = card.querySelector('img');
+    if (image) window.KraneArticleImage.bind(image, article);
+    const title = card.querySelector('.article-card__title');
+    if (title) title.textContent = article.title;
+    const meta = card.querySelector('.article-card__meta');
+    if (meta) meta.textContent = article.categoryLabel + ' · อ่าน ' + article.minutes + ' นาที';
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncPreviews, {once:true});
+  else syncPreviews();
   window.KraneArticleSeed=articles;
 })();

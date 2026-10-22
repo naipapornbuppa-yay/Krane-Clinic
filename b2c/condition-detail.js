@@ -760,12 +760,18 @@
     } else {
       articles.innerHTML = matches.map((article) => `
         <li><a class="cd-article" href="articles.html${article.id?'?article='+article.id:''}" target="_parent" ${article.id?'data-article-id="'+article.id+'"':''}>
-          <span class="cd-article__thumb"><img src="${article.image}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
+          <span class="cd-article__thumb"><img src="${article.image || window.KraneArticleImage.placeholder}" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
           <span class="cd-article__body"><em>${article.categoryLabel || 'สุขภาพ'} · อ่าน ${article.minutes || 4} นาที</em><strong class="cd-article__title">${article.title}</strong><span class="cd-article__read">อ่านต่อ →</span></span>
         </a></li>
       `).join("");
     }
   }
+
+  articles?.querySelectorAll('.cd-article').forEach(card => {
+    const article = (window.KraneArticleSeed || []).find(item => item.id === card.dataset.articleId);
+    const image = card.querySelector('img');
+    if (article && image) window.KraneArticleImage.bind(image,article);
+  });
 
   /* Programme chapters stay visible; the pill navigation scrolls between them. */
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");

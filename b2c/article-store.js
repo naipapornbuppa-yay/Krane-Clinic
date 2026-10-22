@@ -14,7 +14,7 @@
  function save(id,draft,status){
   if(!['Draft','Pending approval','Published'].includes(status))throw Error('Invalid editorial status');
   const all=records(),record=all.find(x=>x.id===id);if(!record)throw Error('Unknown article');
-  if(!draft.title?.trim()||!draft.summary?.trim()||!draft.imageAlt?.trim()||!draft.sections?.length||draft.sections.some(s=>!s.heading?.trim()||!s.copy?.trim()))throw Error('กรอกชื่อ บทสรุป คำอธิบายภาพ และเนื้อหาให้ครบ');
+  if(!draft.title?.trim()||!draft.summary?.trim()||(draft.image && draft.image !== window.KraneArticleImage.placeholder && !draft.imageAlt?.trim())||!draft.sections?.length||draft.sections.some(s=>!s.heading?.trim()||!s.copy?.trim()))throw Error('กรอกชื่อ บทสรุป คำอธิบายภาพ และเนื้อหาให้ครบ');
   for(const url of [draft.image,draft.author?.photo,draft.source])if(url&&!/^(https?:\/\/|assets\/)/.test(url))throw Error('ใช้ลิงก์ https หรือรูปจาก assets เท่านั้น');
   for(const section of draft.sections){const media=section.media;if(media?.src&&(!/^((https:\/\/)|assets\/)[^\s<>]+$/.test(media.src)||!media.alt?.trim()))throw Error('รูปในเนื้อหาต้องใช้ลิงก์ https หรือ assets พร้อมคำอธิบายภาพ');}
   record.draft=clone({...draft,id});record.status=status;

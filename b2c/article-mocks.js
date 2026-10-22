@@ -52,7 +52,7 @@
       const article=localized(sourceArticle);
       const button=el('button','article-teaser');
       button.type='button';button.dataset.go='article';button.dataset.articleId=article.id;
-      const image=el('img','article-teaser__image');image.src=article.image;image.alt=article.imageAlt;image.loading='lazy';image.width=1280;image.height=800;
+      const image=el('img','article-teaser__image');window.KraneArticleImage.bind(image,article);image.loading='lazy';image.width=1280;image.height=800;
       const body=el('span','article-teaser__body');
       body.append(el('span','article-teaser__meta',document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที'),
         el('span','article-teaser__title',article.title),el('span','article-teaser__summary',article.summary));
@@ -139,8 +139,7 @@
     const article=localized(byId[selectedId] || articles[0]);
     const screen=document.getElementById('article');if(!screen) return;
     screen.dataset.articleId=article.id;
-    screen.querySelector('[data-article-hero]').src=article.image;
-    screen.querySelector('[data-article-hero]').alt=article.imageAlt;
+    window.KraneArticleImage.bind(screen.querySelector('[data-article-hero]'),article);
     screen.querySelector('[data-article-meta]').textContent=document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที';
     screen.querySelector('[data-article-title]').textContent=article.title;
     screen.querySelector('[data-article-byline]').replaceChildren(...articleCredits(article));
