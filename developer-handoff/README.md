@@ -1,3 +1,5 @@
+> Current entry points are complete standalone documents in `developer-handoff/pages/<id>/index.html`. See [standalone structure, dependencies and limits](STANDALONE.md). The all-screen descriptions below document the retained historical comparison build.
+
 # Krane: page-separated developer handoff
 
 > **22 October 2026 — full ownership re-audit:** `52d8aac` fixed the anonymous event branches but did not finish the split: article renderers and page activation/timer bodies still lived in adapters/navigation. This correction moves those bodies, treatment folder/history/pause UI, patient-specific clinical actions and the existing prototype prescription upload into page files. The independent inventory classifies all **62 pages: 56 owned, four shared/static, two unimplemented prototype states**, and records 430 authored controls plus loaded adapters and renderer/event/timer evidence. Counts alone do not prove behavior; see the original-versus-modular regressions in [QA.md](QA.md). Original app/styles and live `gh-pages` are unchanged by this handoff repair.

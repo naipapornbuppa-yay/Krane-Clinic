@@ -1,0 +1,75 @@
+function kraneInit_set_password_531(){
+  document.addEventListener('input', e => {
+    if(e.target.id==='new-password' || e.target.id==='confirm-password') syncPasswordValidity();
+  });
+}
+
+function kraneHandle_set_password_submit(e, passwordSave) {
+      const pw=document.getElementById('new-password');
+      const confirm=document.getElementById('confirm-password');
+      const value=pw?.value || '';
+      if(!passwordRuleState(value).every(([,ok]) => ok)){
+        showActionToast('รหัสผ่านต้องยาวอย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข','warning');
+        pw?.focus();
+        return true;
+      }
+      if(confirm?.value!==value){
+        showActionToast('รหัสผ่านทั้งสองช่องยังไม่ตรงกัน','warning');
+        confirm?.focus();
+        return true;
+      }
+      submitOnce('set-password',passwordSave,() => {
+        const reset=Boolean(flowState.passwordResetPending);
+        flowState.passwordSet=true;
+        flowState.passwordResetPending=false;
+        persistFlowState();
+        if(pw) pw.value='';
+        if(confirm) confirm.value='';
+        syncPasswordValidity();
+        applyAuthenticatedAccount({returning:reset || Boolean(flowState.returningLogin)});
+        if(reset){
+          showActionToast('ตั้งรหัสผ่านใหม่แล้ว','success');
+          show(nextAfterAuthentication());
+          return;
+        }
+        flowState.signupDonePending=true;
+        persistFlowState();
+        show('consent-terms');
+      });
+      return true;
+
+  return false;
+}
+
+function syncPasswordValidity(){
+    const pw=document.getElementById('new-password');
+    const confirm=document.getElementById('confirm-password');
+    const save=document.querySelector('[data-password-save]');
+    const mismatch=document.querySelector('[data-password-match]');
+    if(!pw || !confirm || !save) return;
+    const value=pw.value;
+    const states=passwordRuleState(value);
+    states.forEach(([name,ok]) => {
+      const row=document.querySelector('[data-password-rule="'+name+'"]');
+      if(row) row.classList.toggle('is-met',ok);
+    });
+    const strong=states.every(([,ok]) => ok);
+    const matched=confirm.value.length>0 && confirm.value===value;
+    if(mismatch) mismatch.hidden=!(confirm.value.length>0 && !matched);
+    save.disabled=!(strong && matched);
+  }
+
+function syncPasswordScreen(){
+    const reset=Boolean(flowState.passwordResetPending);
+    const heading=document.querySelector('[data-password-heading]');
+    const title=document.querySelector('[data-password-title]');
+    const lead=document.querySelector('[data-password-lead]');
+    const save=document.querySelector('[data-password-save]');
+    if(heading) heading.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
+    if(title) title.textContent=reset ? 'ตั้งรหัสผ่านใหม่' : 'ตั้งรหัสผ่าน';
+    if(lead) lead.textContent=reset
+      ? 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านใหม่เพื่อเข้าสู่ระบบ'
+      : 'ยืนยันเบอร์เรียบร้อยแล้ว ตั้งรหัสผ่านไว้เข้าสู่ระบบครั้งต่อไปได้เลย';
+    if(save) save.textContent=reset ? 'บันทึกรหัสผ่านใหม่' : 'บันทึกรหัสผ่านและไปต่อ';
+    syncPasswordValidity();
+  }

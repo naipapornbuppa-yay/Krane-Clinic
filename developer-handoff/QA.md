@@ -1,3 +1,19 @@
+# Standalone delivery verification — 22 October 2026
+
+The delivered entries are `pages/<id>/index.html`. They mount one screen per document. The historical all-screen comparison build is retained solely for regression evidence.
+
+- 6,788 dependency/entry assertions passed, including 124 real Chrome page entries (62 × mobile 390px / desktop 1440px), repository-prefixed URLs, zero missing local assets, no original all-screen application requests (including landing demo iframes), correct guarded destinations, no horizontal overflow, full-width desktop canvas and visually hidden screen-reader labels.
+- 24 standalone flow scenarios passed. The unchanged Tin baseline was rerun for the same 24 scenarios. All 68 observed UI checkpoints match. Native document navigation deliberately creates a history entry; hash-to-document translation replaces the intermediate hash entry. Both browser and in-app Back/Forward were verified.
+- 1,346 historical source/migration assertions, 1,450 page-handler ownership assertions, nine external renderer/event AST comparisons and five source-edit propagation checks passed. These prove the retained authored baseline; they do not by themselves prove standalone behavior.
+- Real-browser flows cover article search/filter/detail/back; treatment history and upload validation; matching timer and OTP Back; account document switching/re-entry; password reset; hair and weight intake/safety/back; general intake validation; partner insurance and self-pay; route guards; and repeated category/history navigation.
+- Final mobile/desktop login, intake, article and treatment screenshots were captured; representative login, intake and article images were visually reviewed. The checks caught and corrected missing CSS asset rebasing, dynamic progress-label styles and a desktop rail-width gap.
+
+Evidence: `qa/standalone-contract.json`, `qa/standalone-behavior.json`, `qa/standalone-baseline-parity.json`, and `qa/standalone-*.png`.
+
+These are frontend/prototype checks with fictional data and isolated browser storage. No real OTP, payment, insurance, upload backend, production authorization or clinical validation is claimed. Cold guarded routes retain the baseline prerequisite behavior; OTP and legacy identity can redirect until their prerequisites are met. See `STANDALONE.md` for source layout and prototype limits.
+
+---
+
 # Handoff verification — 21 October 2026
 
 ## 22 October: full page ownership re-audit after 52d8aac

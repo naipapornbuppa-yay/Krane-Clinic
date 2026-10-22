@@ -1,3 +1,5 @@
+> Current entry points are complete standalone documents in `developer-handoff/pages/<id>/index.html`. See [standalone structure, dependencies and limits](STANDALONE.md). The all-screen descriptions below document the retained historical comparison build.
+
 # Dependency and lifecycle contract
 
 ## What changed

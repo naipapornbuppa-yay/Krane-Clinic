@@ -1,3 +1,5 @@
+> **Tin standalone handoff:** 62 complete page entries are in [developer-handoff/pages](developer-handoff/pages). Start with [independent login](developer-handoff/pages/login/index.html), the [page directory](developer-handoff/index.html), and [structure / dependencies / prototype limits](developer-handoff/STANDALONE.md). Serve the repository root to preview; GitHub source view does not execute the HTML.
+
 # BE DEV handoff — B2C patient app
 
 > **22 October correction:** `045088c` did not finish page-specific JavaScript extraction. The corrected package has 49 page scripts with owned code and 13 explicitly using shared/external behavior; account, login, OTP, intake and payment handler bodies now have explicit owners. See [updated source guide](developer-handoff/README.md) and its handler map. This preserves Tin’s own baseline and does not update the live site.

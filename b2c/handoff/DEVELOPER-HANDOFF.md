@@ -1,3 +1,5 @@
+> Current entry points are complete standalone documents in `developer-handoff/pages/<id>/index.html`. See [standalone structure, dependencies and limits](../../developer-handoff/STANDALONE.md). The all-screen descriptions below document the retained historical comparison build.
+
 # Krane B2C developer handoff
 
 > **22 October correction:** `045088c` did not finish page-specific JavaScript extraction. The first correction at `52d8aac` still left page renderers/lifecycles central. The full re-audit now classifies 56 pages with owned code, four shared/static views and two prototype states. Article/search, treatment, upload and route/timer bodies have explicit page owners; the independent inventory covers all 62 templates and 430 authored controls. See [updated source guide](../../developer-handoff/README.md) and its handler map. This preserves Tin’s own baseline and does not update the live site.

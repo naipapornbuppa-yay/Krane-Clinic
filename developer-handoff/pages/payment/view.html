@@ -1,0 +1,274 @@
+<section class="screen" id="payment" data-screen-code="SCR-015" data-checkout-mode="final">
+    <div class="screen__top payment-topbar checkout-brandbar"><button class="back" data-back aria-label="ย้อนกลับ">‹</button><img class="payment-topbar__logo checkout-brandbar__logo" src="../assets/brand-final/krane-lockup-blue.svg" width="473" height="72" alt="Krane Clinic"></div>
+    <div class="payment-deadline" data-payment-deadline role="status" aria-live="polite">
+      <span class="payment-deadline__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg></span>
+      <span class="payment-deadline__copy"><strong data-payment-deadline-title>กรุณาชำระเงินภายใน <time class="payment-deadline__time" data-payment-deadline-time datetime="PT1H">60:00</time></strong><small data-payment-deadline-copy>ร้านยาสำรองสินค้าและราคานี้ไว้ให้คุณ</small></span>
+      <button class="payment-deadline__retry" type="button" data-payment-deadline-retry hidden>ตรวจสอบสต็อกและยอดอีกครั้ง</button>
+    </div>
+    <div class="screen__body stack-4">
+
+      <div class="checkout-context" data-checkout-sequence="context" aria-label="ข้อมูลร้านยาและเวลาคำนวณราคา">
+        <span class="checkout-context__icon" aria-hidden="true"><i data-lucide="store" class="ui-icon"></i></span>
+        <span class="checkout-context__copy"><strong>ร้านยาพาร์ตเนอร์ Krane</strong><span>ร้านยาและค่าจัดส่งจะยืนยันตามที่อยู่ของคุณ</span></span>
+      </div>
+
+      <!-- Checkout, in the order a delivery app puts it (client, 20 Aug: "ทำลอก
+           grab มาเลย"): where it goes, what is in it, offers, how it is paid,
+           then the bill. The address used to sit below the basket, which is why
+           the one thing blocking the button was the last thing you saw. -->
+      <!-- The app's segmented control, not a shape of its own (client, 19 Aug). -->
+      <div class="stack-2 checkout-fulfillment-block" data-checkout-sequence="fulfillment" data-fulfillment-section>
+        <div class="partner-binary partner-binary--accent checkout-fulfillment-tabs" role="tablist" aria-label="วิธีรับยา">
+          <button class="partner-binary__option" type="button" role="tab" aria-selected="true" data-fulfillment-mode-option="delivery">จัดส่ง</button>
+          <button class="partner-binary__option" type="button" role="tab" aria-selected="false" data-fulfillment-mode-option="pickup">รับที่ร้าน</button>
+        </div>
+      </div>
+      <!-- The address is the first decision on the page and the one that blocks
+           payment, so it sits at the top rather than three sections down. -->
+      <div class="stack-2" data-checkout-sequence="address" data-fulfillment-address-section>
+        <span class="section-label" data-fulfillment-address-label>การจัดส่ง</span>
+        <button class="checkout-row" data-go="address" aria-label="เพิ่มที่อยู่จัดส่ง" data-payment-address-row>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.3" r="2.8"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label" data-fulfillment-address-title>ที่อยู่จัดส่ง</span><span class="checkout-row__value checkout-row__value--wrap" data-payment-address data-address-empty="true" hidden></span><span class="checkout-row__recipient" data-payment-recipient hidden></span></span>
+          <span class="checkout-row__tag" data-payment-address-action>เพิ่มที่อยู่</span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="checkout-row checkout-row--compact" data-go="address" data-delivery-address-detail-section>
+          <span class="checkout-row__icon"><i data-lucide="package-check" class="ui-icon" aria-hidden="true"></i></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รายละเอียดการรับสินค้า</span><span class="checkout-row__value" data-payment-address-detail hidden></span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <!-- Delivery options. Krane runs one same-day service, so this is a single
+           confirmed choice rather than a picker. -->
+      <div class="stack-2" data-checkout-sequence="delivery" data-fulfillment-section data-fulfillment-panel="delivery" data-delivery-options>
+        <div class="checkout-head">
+          <span class="section-label">ตัวเลือกการจัดส่ง</span>
+          <span class="hint" data-payment-km hidden>คำนวณหลังใส่ที่อยู่</span>
+        </div>
+        <div class="alert alert--warning" data-payment-sla-notice hidden><span class="a-ic">!</span><div><div class="a-title">เปลี่ยนเป็นจัดส่งมาตรฐาน</div><div class="hint">หาร้านยาใกล้เคียงที่พร้อมส่งภายในวันไม่สำเร็จ จึงเปลี่ยนเป็นจัดส่งแบบมาตรฐานแทน</div></div></div>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" aria-selected="false" data-delivery-option data-delivery-value="priority">
+          <span class="opt-body">
+            <span class="opt-title">ด่วนพิเศษ</span>
+            <span class="opt-sub">ประมาณ 60 นาที · มีการรับประกันเวลา</span>
+          </span>
+          <span class="checkout-order__price" data-payment-priority-fee data-fee-estimated="true">ค่าประมาณ ฿140</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="true" aria-selected="true" data-delivery-option data-delivery-value="same-day">
+          <span class="opt-body">
+            <span class="opt-title">จัดส่งภายในวัน</span>
+            <span class="opt-sub">ภายในวันนี้ก่อน 18:00 น. · มีการรับประกันเวลา</span>
+          </span>
+          <span class="checkout-order__price" data-payment-same-day-fee data-fee-estimated="true">คำนวณหลังใส่ที่อยู่</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" data-delivery-option data-delivery-value="postal">
+          <span class="opt-body">
+            <span class="opt-title">จัดส่งทางไปรษณีย์</span>
+            <span class="opt-sub">1 ถึง 3 วัน · มีหมายเลขติดตาม</span>
+          </span>
+          <span class="checkout-order__price">ฟรี</span>
+        </button>
+        <button class="option checkout-delivery-option" role="radio" aria-checked="false" aria-selected="false" data-delivery-option data-delivery-value="scheduled">
+          <span class="opt-body"><span class="opt-title">เลือกช่วงเวลาจัดส่ง</span><span class="opt-sub">เลือกวันที่และช่วงเวลาที่สะดวก</span></span>
+          <span class="checkout-order__price">เลือกเวลา</span>
+        </button>
+      </div>
+      <div class="stack-2" data-checkout-sequence="delivery" data-fulfillment-section data-fulfillment-panel="pickup" hidden>
+        <span class="section-label">จุดรับยา</span>
+        <button class="checkout-row checkout-pickup-row" type="button" data-open-branch aria-label="เลือกสาขาที่จะไปรับยา">
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18"/><path d="M5 9v11h14V9"/><path d="M8 20v-5h8v5"/><path d="m4 9 2-5h12l2 5"/><path d="M4 9v1a2 2 0 0 0 4 0V9M8 9v1a2 2 0 0 0 4 0V9M12 9v1a2 2 0 0 0 4 0V9M16 9v1a2 2 0 0 0 4 0V9"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">รับด้วยตนเอง</span><span class="checkout-row__value checkout-row__value--wrap" data-pickup-branch>ร้านยาฟาสซิโน สาขาใกล้คุณ</span></span>
+          <span class="checkout-row__tag">ฟรี</span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <!-- 2. What is in the order. This is now a true read-only summary: the
+           consultation appears first and medicine quantities are edited on
+           #payment-items, never inline beside prices. -->
+      <div class="stack-2" data-checkout-sequence="order">
+        <div class="checkout-head">
+          <span class="section-label">สรุปรายการสั่งซื้อ</span>
+          <button class="checkout-head__edit" type="button" data-order-edit aria-pressed="false" aria-controls="payment-order-list">แก้ไขจำนวน</button>
+        </div>
+        <div class="checkout-order" id="payment-order-list" data-order-list>
+          <div class="checkout-order__item checkout-order__item--service" data-order-consultation>
+            <span class="checkout-order__thumb checkout-order__thumb--service" aria-hidden="true"><img src="assets/doctor-profile-male-2026-07-25.png" width="256" height="256" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Doctor Fee</span>
+              <span class="checkout-order__note">แพทย์นรินทร์ ทานากะ</span>
+            </span>
+            <span class="checkout-order__price checkout-order__price--paid" data-payment-consultation-price data-discounted="true"><strong data-payment-consultation>฿ 0</strong><s data-payment-consultation-original>฿ 350</s></span>
+          </div>
+          <div class="checkout-order__medicines">
+          <div class="checkout-order__item" data-order-item="cough">
+            <span class="checkout-order__thumb" data-medicine-photo="cough" aria-hidden="true"><img src="assets/medicine/real-v1/generic-tablet-blister-v1.png?v=20260920-float-v1" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Dextromethorphan 15 mg</span>
+              <span class="checkout-order__meta"><span class="checkout-order__note">ลดอาการไอ</span></span>
+            </span>
+            <span class="checkout-order__amount"><span class="checkout-order__price" data-order-price>฿ 170</span><span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="85" aria-label="จำนวน Dextromethorphan 15 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span></span>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+          </div>
+          <div class="checkout-order__item" data-order-item="loratadine">
+            <span class="checkout-order__thumb" data-medicine-photo="loratadine" aria-hidden="true"><img src="assets/medicine/real-v1/loratadine-loreze-10mg.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Loratadine 10 mg</span>
+              <span class="checkout-order__meta"><span class="checkout-order__note">ลดอาการแพ้ ผื่นคัน ลมพิษ ลดน้ำมูก</span></span>
+            </span>
+            <span class="checkout-order__amount"><span class="checkout-order__price" data-order-price>฿ 94</span><span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="94" aria-label="จำนวน Loratadine 10 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span></span>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+          </div>
+          <div class="checkout-order__item" data-order-item="paracetamol">
+            <span class="checkout-order__thumb" data-medicine-photo="paracetamol" aria-hidden="true"><img src="assets/medicine/real-v1/paracetamol-para-gpo-500mg.png" width="932" height="932" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Paracetamol 500 mg</span>
+              <span class="checkout-order__meta"><span class="checkout-order__note">แก้ปวด ลดไข้</span></span>
+            </span>
+            <span class="checkout-order__amount"><span class="checkout-order__price" data-order-price>฿ 40</span><span class="qty checkout-order__stepper" data-qty data-min="0" data-max="2" data-unit="20" aria-label="จำนวน Paracetamol 500 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>2</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span></span>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+          </div>
+          <div class="checkout-order__item" data-order-item="naproxen">
+            <span class="checkout-order__thumb" data-medicine-photo="naproxen" aria-hidden="true"><img class="medicine-photo medicine-photo--naproxen" src="assets/medicine/real-v1/naproxen-250mg-thai-mit.jpg" width="3540" height="3024" loading="lazy" decoding="async" alt=""></span>
+            <span class="checkout-order__body">
+              <span class="checkout-order__name">Naproxen 250 mg</span>
+              <span class="checkout-order__meta"><span class="checkout-order__note">บรรเทาอาการปวด อักเสบข้อ กระดูก กล้ามเนื้อ</span></span>
+            </span>
+            <span class="checkout-order__amount"><span class="checkout-order__price" data-order-price>฿ 134</span><span class="qty checkout-order__stepper" data-qty data-min="0" data-max="1" data-unit="134" aria-label="จำนวน Naproxen 250 mg"><button class="qty-btn" data-qty-minus aria-label="ลดจำนวน">−</button><span class="qty-n" data-qty-n>1</span><button class="qty-btn" data-qty-plus disabled aria-label="เพิ่มจำนวน">+</button><span class="hint">แผง</span></span></span>
+            <button class="checkout-order__line-edit" type="button" data-order-edit aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+          </div>
+          </div>
+        </div>
+        <!-- A refill starts at the quantity the doctor approved, so "+" is greyed on
+             every line; the note says why while the steppers are out (client, 17 Sep). -->
+        <p class="hint checkout-order__cap" data-order-cap hidden>ลดจำนวนได้ แต่เพิ่มได้ไม่เกินที่แพทย์สั่ง</p>
+        <span class="checkout-order__by"><span>ใบสั่งยาโดย</span><strong>แพทย์นรินทร์ ทานากะ</strong></span>
+        <div class="alert" data-no-fulfillment-notice hidden><span class="a-ic">i</span><div><div class="a-title">ดำเนินการต่อโดยไม่รับยา</div><div class="hint">คุณยังเปิดดูใบสั่งยาและเอกสารหลังจบขั้นตอนได้ โดยไม่ต้องกรอกที่อยู่จัดส่ง</div></div></div>
+      </div>
+      <!-- Add-ons sit directly under the basket they add to, so the bill below
+           stays the last thing on the page and never has to be re-read after a
+           change (client, 10 Sep). -->
+      <div class="stack-2" data-checkout-sequence="addons" data-payment-required-section data-payment-addons>
+        <div class="checkout-head">
+          <span class="section-label">สินค้าเสริมสำหรับการดูแล</span>
+          <span class="hint">ไม่บังคับ</span>
+        </div>
+        <!-- Client, 22 Sep: an add-on the patient picked belongs with the add-ons,
+             not threaded into the doctor's prescription list above — and what is
+             already in the basket reads before what could still be added, so the
+             picked rows sit above the picker rather than below it. -->
+        <div class="checkout-order checkout-order--addons" data-addon-picked-list hidden>
+          <div class="checkout-order__medicines">
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="wellness" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/biotin-zinc.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">Biotin + Zinc</span>
+                <span class="checkout-order__note">อาหารเสริม · 30 วัน</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="wellness" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pillcase" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/pill-organizer.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">กล่องจัดยาแบบพกพา</span>
+                <span class="checkout-order__note">7 ช่อง · ใช้ซ้ำได้</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="pillcase" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+            <div class="checkout-order__item checkout-order__item--retail" data-order-addon="pouch" hidden>
+              <span class="checkout-order__thumb" aria-hidden="true"><img src="assets/addons-v2/travel-pouch.png" width="512" height="512" loading="lazy" decoding="async" alt=""></span>
+              <span class="checkout-order__body">
+                <span class="checkout-order__name">กระเป๋าจัดเก็บผลิตภัณฑ์</span>
+                <span class="checkout-order__note">ขนาดพกพา · กันละอองน้ำ</span>
+              </span>
+              <button class="checkout-order__line-edit" type="button" data-addon-edit="pouch" aria-haspopup="dialog" aria-controls="payment-item-sheet">แก้ไข</button>
+              <span class="checkout-order__quantity" data-order-addon-quantity>0 ชิ้น</span>
+              <span class="checkout-order__price" data-order-addon-price>฿ 0</span>
+            </div>
+          </div>
+        </div>
+        <div class="checkout-addon-rail" aria-label="ผลิตภัณฑ์ที่เพิ่มได้">
+          <button class="checkout-addon-card" type="button" data-addon-item data-addon-option="wellness" data-addon-price="290">
+            <span class="checkout-addon-card__visual"><img src="assets/addons-v2/biotin-zinc.png" alt="" loading="lazy" decoding="async"></span>
+            <span class="checkout-addon-card__copy"><strong>Biotin + Zinc</strong><span>อาหารเสริม · 30 วัน</span></span>
+            <span class="checkout-addon-card__foot"><span>฿ 290</span><span class="checkout-addon-card__controls"><small data-addon-count hidden>0 ชิ้น</small><em data-addon-action aria-hidden="true">+</em></span></span>
+          </button>
+          <button class="checkout-addon-card" type="button" data-addon-item data-addon-option="pillcase" data-addon-price="190">
+            <span class="checkout-addon-card__visual"><img src="assets/addons-v2/pill-organizer.png" alt="" loading="lazy" decoding="async"></span>
+            <span class="checkout-addon-card__copy"><strong>กล่องจัดยาแบบพกพา</strong><span>7 ช่อง · ใช้ซ้ำได้</span></span>
+            <span class="checkout-addon-card__foot"><span>฿ 190</span><span class="checkout-addon-card__controls"><small data-addon-count hidden>0 ชิ้น</small><em data-addon-action aria-hidden="true">+</em></span></span>
+          </button>
+          <button class="checkout-addon-card" type="button" data-addon-item data-addon-option="pouch" data-addon-price="250">
+            <span class="checkout-addon-card__visual"><img src="assets/addons-v2/travel-pouch.png" alt="" loading="lazy" decoding="async"></span>
+            <span class="checkout-addon-card__copy"><strong>กระเป๋าจัดเก็บผลิตภัณฑ์</strong><span>ขนาดพกพา · กันละอองน้ำ</span></span>
+            <span class="checkout-addon-card__foot"><span>฿ 250</span><span class="checkout-addon-card__controls"><small data-addon-count hidden>0 ชิ้น</small><em data-addon-action aria-hidden="true">+</em></span></span>
+          </button>
+        </div>
+      </div>
+      <label class="checkout-eco-option" data-checkout-sequence="eco" data-fulfillment-section>
+        <span><strong>ลดบรรจุภัณฑ์ที่ไม่จำเป็น</strong><small>ใช้เฉพาะบรรจุภัณฑ์ที่จำเป็นต่อความปลอดภัยของยา</small></span>
+        <input type="checkbox" data-eco-packaging><span class="checkout-switch" aria-hidden="true"></span>
+      </label>
+      <!-- The bill follows the prescription cart it totals, matching the
+           delivery-app reading order validated with the client. -->
+      <div class="stack-2 checkout-final-summary" data-checkout-sequence="total">
+        <div class="checkout-head">
+          <span class="section-label">สรุปยอดชำระ</span>
+          <span class="checkout-calc">คำนวณค่าจัดส่งเมื่อ <span data-fee-calc-time>16:47</span> น.</span>
+        </div>
+        <div class="checkout-bill">
+          <div class="checkout-bill__row" data-payment-consultation-row><span>ค่าปรึกษาแพทย์</span><strong data-payment-consultation>฿ 350</strong></div>
+          <div class="checkout-bill__row" data-payment-medicine-row><span>ยอดรวมย่อย</span><strong data-payment-subtotal>฿ 438</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--delivery" data-payment-delivery-row><span data-payment-delivery-label>ค่าจัดส่งภายในวัน</span><strong data-payment-delivery>฿ 120</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-consultation-discount-row><span>ส่วนลดค่าปรึกษาครั้งแรก</span><strong data-payment-consultation-discount>- ฿ 350</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-insurance hidden><span>เครดิตจากสิทธิ์ประกัน</span><strong data-payment-credit>- ฿ 1,000</strong></div>
+          <div class="checkout-bill__row checkout-bill__row--credit" data-payment-promo-row hidden><span data-payment-promo-code>ส่วนลด</span><strong data-payment-promo-amount>- ฿ 0</strong></div>
+          <div class="checkout-bill__rule"></div>
+          <div class="checkout-bill__total"><span>ยอดชำระจริง</span><strong data-payment-total>฿ 558</strong></div>
+        </div>
+      </div>
+      <!-- 3. Offers, between the basket and the payment method. -->
+      <div class="stack-2" data-checkout-sequence="offers">
+        <div class="section-label">ส่วนลดและสิทธิ์</div>
+        <button class="checkout-row" data-open-promo data-payment-required-section>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4.6A1.6 1.6 0 0 1 4.4 3h7.4a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.4Z"/><circle cx="7.6" cy="7.6" r="1.2"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">โค้ดส่วนลด</span><span class="checkout-row__value" data-payment-promo hidden></span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <div class="checkout-row" data-payment-insurance-summary hidden>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5 6v5.5c0 4 2.9 7.6 7 9.3 4.1-1.7 7-5.3 7-9.3V6Z"/><path d="m9.4 12.2 1.9 1.9 3.4-3.6"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__label">สิทธิ์ที่ใช้โดยอัตโนมัติ</span><span class="checkout-row__value" data-payment-insurance-label>เครดิตจากกรมธรรม์</span></span>
+          <span class="badge badge--ok">ใช้แล้ว</span>
+        </div>
+      </div>
+      <!-- 4. How it is paid, immediately before the bill it settles. -->
+      <div class="stack-2" data-checkout-sequence="payment" data-payment-required-section>
+        <div class="section-label">วิธีชำระเงิน</div>
+        <button class="checkout-row" data-open-methods>
+          <span class="checkout-row__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5M20.5 14v.01M14 20.5v.01M17.2 20.5v.01M20.5 17.2v3.3"/></svg></span>
+          <span class="checkout-row__body"><span class="checkout-row__value" data-payment-method>QR Code</span></span>
+          <svg class="checkout-row__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="checkout-reward-row" data-checkout-sequence="rewards" data-payment-required-section>
+        <span class="checkout-reward-row__icon" aria-hidden="true"><i data-lucide="sparkles" class="ui-icon"></i></span>
+        <span><strong>รับ Krane Points จากคำสั่งซื้อนี้</strong><small>รับคะแนนหลังชำระเงินสำเร็จ</small></span>
+        <strong data-payment-points>56 คะแนน</strong>
+      </div>
+      <p class="hint" data-checkout-sequence="assurance" data-checkout-assurance>ร้านยายืนยันใบสั่งยา สต็อก และราคาสุทธิแล้วก่อนชำระเงิน</p>
+    </div>
+    <div class="screen__footer">
+      <div class="checkout-pay">
+        <span class="checkout-pay__amount">
+          <span>ยอดรวม</span>
+          <strong data-payment-total>฿ 558</strong>
+          <span class="checkout-pay__save" data-payment-save hidden>ว้าว คุณประหยัดไป <span data-payment-save-amt>฿ 0</span></span>
+          <s class="checkout-pay__was" data-payment-was hidden>฿ 0</s>
+        </span>
+        <button class="btn btn--primary" data-payment-go data-string-id="action.pay" disabled aria-disabled="true"><span data-payment-cta-label>ชำระเงิน</span></button>
+      </div>
+    </div>
+  </section>
