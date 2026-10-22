@@ -35,12 +35,6 @@
     const pharmacist=card(en?'Pharmacy review':'ผู้ตรวจทานข้อมูลยา',en?'Reviewer not yet confirmed':'รอยืนยันชื่อเภสัชกร','','—',en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน');
     return [writer,pharmacist];
   }
-  function articleReadAction(){
-    const action=el('span','article-teaser__action','อ่านบทความ');
-    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('class','ui-icon ui-icon--sm');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');
-    const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M5 12h14M12 5l7 7-7 7');svg.append(path);action.append(svg);return action;
-  }
   function renderFeed(){
     const feed=document.querySelector('[data-article-feed]');
     if(!feed) return;
@@ -56,7 +50,7 @@
       const body=el('span','article-teaser__body');
       body.append(el('span','article-teaser__meta',document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที'),
         el('span','article-teaser__title',article.title),el('span','article-teaser__summary',article.summary));
-      const footer=el('span','article-teaser__footer');footer.append(articleAuthor(article),articleReadAction());body.append(footer);button.append(image,body);return button;
+      const footer=el('span','article-teaser__footer');footer.append(articleAuthor(article));body.append(footer);button.append(image,body);return button;
     }));
     const empty=document.querySelector('[data-article-empty]');if(empty) empty.hidden=visible.length>0;
   }
