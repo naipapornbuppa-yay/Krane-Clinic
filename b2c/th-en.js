@@ -14,6 +14,7 @@
 (function () {
   var EN = {
     "ผู้ใช้บริการโปรแกรมลดน้ำหนัก":"Weight-management programme participant",
+    "คุณพา":"Khun Pha",
     "คุณพา · ผู้ใช้บริการดูแลเส้นผม":"Khun Pha · Hair-care programme participant",
     "ผู้ใช้บริการดูแลเส้นผม":"Hair-care programme participant",
     "ประสบการณ์การปรึกษาแพทย์เพื่อดูแลน้ำหนัก":"An experience of consulting a doctor about weight management",
