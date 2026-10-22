@@ -16,7 +16,7 @@
   function articleAuthor(article){
     const row=el('span','article-author');
     const photo=el('img','article-author__photo');photo.src=article.author.photo||'../assets/brand-final/krane-logotype.svg';photo.alt='';photo.width=40;photo.height=40;
-    const text=el('span','article-author__text');text.append(el('strong','',article.author.name),el('small','',article.contentStatus==='client-review'?(document.documentElement.lang==='en'?'Editorial review manuscript · Oct 2026':'ต้นฉบับสำหรับตรวจทาน · ต.ค. 2569'):'ผู้เขียนตัวอย่าง · อัปเดต ต.ค. 2569'));
+    const text=el('span','article-author__text');text.append(el('strong','',article.author.name));
     if(article.author.photo)row.append(photo);row.append(text);return row;
   }
   function articleCredits(article){

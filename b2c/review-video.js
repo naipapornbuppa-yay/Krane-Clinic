@@ -14,7 +14,7 @@
         </video></div>
       </div>
       <div class="review-video__copy">
-        <p class="cd-review__quote">“ตอนนี้ก็มั่นใจขึ้นเยอะ คิดว่าเรามาถูกทางแล้ว”</p>
+        <p class="cd-review__quote">“ตอนนี้ก็มั่นใจขึ้นเยอะ<br>คิดว่าเรามาถูกทางแล้ว”</p>
         <p class="cd-fine"><b>ผู้ใช้บริการ Krane</b></p>
         <p class="cd-fine review-video__note" id="review-video-note">ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน</p>
       </div>
