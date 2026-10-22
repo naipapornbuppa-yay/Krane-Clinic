@@ -1,8 +1,7 @@
-(() => {
-  document.querySelectorAll('.info-faq details').forEach(item => {
-    item.addEventListener('toggle', () => {
-      if (!item.open) return;
-      document.querySelectorAll('.info-faq details[open]').forEach(other => { if (other !== item) other.open = false; });
-    });
-  });
-})();
+/* FAQ filtering augments the shared native-details accordion. */
+(()=>{const input=document.querySelector('[data-faq-search]');if(!input)return;const root=document.querySelector('[data-accordion-group]'),sections=[...root.querySelectorAll('.info-section')],questions=[...root.querySelectorAll('.krane-accordion details')],status=document.querySelector('[data-faq-status]'),empty=document.querySelector('[data-faq-empty]'),clear=document.querySelector('[data-faq-clear]');
+const filter=()=>{const query=input.value.trim().toLocaleLowerCase(),en=document.documentElement.lang==='en';let count=0;questions.forEach(item=>{const matches=!query||item.textContent.toLocaleLowerCase().includes(query);item.hidden=!matches;if(matches)count++});sections.forEach(section=>section.hidden=![...section.querySelectorAll('details')].some(item=>!item.hidden));empty.hidden=count>0;clear.hidden=!query;status.textContent=en?(query?count+' matching questions':questions.length+' questions across '+sections.length+' topics'):(query?'พบ '+count+' คำถามที่ตรงกับการค้นหา':'รวม '+questions.length+' คำถาม แบ่งเป็น '+sections.length+' หมวด')};
+input.addEventListener('input',filter);clear.addEventListener('click',()=>{input.value='';filter();input.focus()});document.addEventListener('krane:languagechange',filter);
+const links=[...document.querySelectorAll('.info-categories a')];links.forEach(link=>link.addEventListener('click',()=>{if(input.value){input.value='';filter()}links.forEach(other=>other.removeAttribute('aria-current'));link.setAttribute('aria-current','location')}));
+if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{const current=entries.find(e=>e.isIntersecting);if(!current)return;links.forEach(link=>{if(link.hash==='#'+current.target.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')})},{rootMargin:'-15% 0px -65% 0px'});sections.forEach(section=>observer.observe(section));}
+filter();})();

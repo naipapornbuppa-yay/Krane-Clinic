@@ -1,0 +1,2 @@
+/* Native details keeps keyboard behaviour; one answer opens per accordion group. */
+document.addEventListener('toggle',event=>{const item=event.target;if(!(item instanceof HTMLDetailsElement)||!item.open||!item.closest('.krane-accordion'))return;const group=item.closest('[data-accordion-group]')||item.closest('.krane-accordion');group.querySelectorAll('details[open]').forEach(other=>{if(other!==item)other.open=false})},true);
