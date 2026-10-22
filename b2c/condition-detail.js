@@ -478,9 +478,10 @@
     }[data.category];
     if(designer){
       const link=document.querySelector('.programme-doctor--hero');
-      const credit=document.createElement('div');credit.className='programme-designer';
-      credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong></span>`;
-      link?.before(credit);
+      const credit=document.createElement('a');credit.className='programme-designer';
+      credit.href='doctors.html?doctor='+({weight:'3','hair-skin':'2','sexual-health':'5'}[data.category]);
+      credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong></span><i data-lucide="arrow-up-right" class="programme-designer__arrow" aria-hidden="true"></i>`;
+      link?.replaceWith(credit);
     }
     setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
     setText('[data-pricing-note]',data.category==='weight' ? 'ไม่มีค่าสมาชิกรายเดือน จ่ายตามจริงเมื่อสั่งยา แพทย์จะประเมินความเหมาะสมก่อนสั่งจ่ายทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
