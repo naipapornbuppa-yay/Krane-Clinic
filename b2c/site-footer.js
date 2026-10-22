@@ -3,27 +3,28 @@
 (() => {
   const groups = [
     { id: 'services', title: ['บริการของเรา', 'Our Service'], items: [
-      ['ปรึกษาอาการทั่วไป', 'General Consultation', 'krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions', 'conditions'],
+      ['ปรึกษาอาการทั่วไป', 'General Consultation', 'general-consultation.html'],
       ['re:body', 're:body', 'condition-detail.html?condition=weight'],
       ['re:hair', 're:hair', 'condition-detail.html?condition=hair-loss'],
       ['re:flow', 're:flow', 'condition-detail.html?condition=re-flow'],
-      ['เติมยาออนไลน์', 'Online Refills', 'krane-b2c.html#profile', 'profile'],
-      ['สั่งยาตามใบสั่งแพทย์', 'Prescription Delivery', 'krane-b2c.html?v=20260920-float-v1#upload-rx', 'upload-rx']
+      ['เติมยาออนไลน์', 'Online Refills', 'online-refills.html'],
+      ['สั่งยาตามใบสั่งแพทย์', 'Prescription Delivery', 'prescription-delivery.html']
     ] },
     { id: 'about', title: ['เกี่ยวกับเรา', 'About Us'], items: [
-      ['วิธีใช้งาน', 'How It Works', 'krane-b2c-landing.html#how'],
+      ['เกี่ยวกับ Krane', 'About Krane', 'about.html'],
+      ['วิธีใช้งาน', 'How It Works', 'how-it-works.html'],
       ['ทีมแพทย์ของเรา', 'Our Medical Team', 'doctors.html'],
       ['คลังความรู้สุขภาพ', 'Health Library', 'articles.html'],
-      ['ร่วมงานกับเรา', 'Careers', null]
+      ['ร่วมงานกับเรา', 'Careers', 'careers.html']
     ] },
     { id: 'support', title: ['ช่วยเหลือ', 'Support'], items: [
-      ['ติดต่อเรา', 'Contact Us', 'mailto:support@kraneclinic.com'],
+      ['ติดต่อเรา', 'Contact Us', 'contact.html'],
       ['คำถามที่พบบ่อย', 'FAQ', 'faq.html'],
-      ['การคืนของและคืนเงิน', 'Returns & Refunds', null],
-      ['ราคา', 'Pricing', 'faq.html#price']
+      ['การคืนสินค้าและคืนเงิน', 'Returns & Refunds', 'returns-refunds.html'],
+      ['ราคา', 'Pricing', 'pricing.html']
     ] },
     { id: 'legal', title: ['กฎหมาย', 'Legal'], items: [
-      ['ข้อกำหนดและเงื่อนไข', 'Terms and Conditions', null],
+      ['ข้อกำหนดและเงื่อนไข', 'Terms and Conditions', 'terms.html'],
       ['นโยบายความเป็นส่วนตัว', 'Privacy Policy', 'privacy.html'],
       ['นโยบายคุกกี้', 'Cookies Policy', 'cookies.html'],
       ['ตั้งค่าคุกกี้', 'Manage Cookies', 'cookies.html#controls']
