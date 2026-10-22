@@ -2,7 +2,9 @@
 
 ## What changed
 
-The original app stores screen markup and approximately eleven thousand lines of its main script in one HTML file. This handoff separates 62 screen templates, 76 original page-owned functions and 47 page-owned initializer routines. The 353 original top-level functions remain single implementations. Shared functions live in seven domain libraries; category-specific intake markup is authored once in `shared/lib/intake-templates.js`. A deterministic build preserves the DOM and CSS cascade.
+The original app stores screen markup and approximately eleven thousand lines of its main script in one HTML file. This handoff separates 62 screen templates. After the 22 October correction there are 152 page functions (76 original functions plus 76 extracted event branches) and 64 page initializer routines (47 original extractions plus 17 newly moved setup blocks). Seven reused event branches live in shared domain libraries. All 353 original top-level functions remain single, unchanged implementations. Category-specific intake markup is authored once in `shared/lib/intake-templates.js`. A deterministic build preserves the DOM and CSS cascade.
+
+The first `045088c` package did not finish page ownership: 30 of its page scripts were comment-only and page-specific event bodies were still central. The corrected package has 49 scripts with owned code and 13 explicitly using shared/external behavior. `page-behavior.json` distinguishes static states, shared controls, existing adapters and unimplemented prototype actions.
 
 This is source modularization with a working shared runtime. It does not claim fully independent/lazy-mounted components or a production backend.
 
@@ -38,7 +40,7 @@ This is source modularization with a working shared runtime. It does not claim f
 ## Mount / initialize / activate / dispose
 
 - **Mount:** compose every registered template before the runtime runs. The supplied build performs this step and validates one slot per page.
-- **Initialize:** execute each ordered initializer once. Shared delegated handlers and state live centrally; never copy them into page initializers.
+- **Initialize:** execute each ordered initializer once. Shared dispatcher selectors/order and state live centrally; page-specific branch bodies live in page files. `handler-ownership.json` records ownership. `true` consumes a matched event, even when validation fails; `false` preserves fallthrough. Never register the same page listener again on every route change.
 - **Activate/deactivate:** `show()` changes the active screen and dispatches `krane:screenchange`. Existing timers and view work are controlled there. In-app Back uses the app's own history; ordinary `show()` calls use `replaceState`, preserving the original browser-history behavior.
 - **Dispose:** end the whole app session/document. Removing individual screen DOM while the legacy runtime is running is not supported.
 

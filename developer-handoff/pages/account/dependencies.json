@@ -9,9 +9,34 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Owns ID/passport switching and restores the separate typed values. Shared field formatting and routing remain central. Baseline Save changes/Cancel only navigate to settings; persistent saving, required-field enforcement and an audit trail are not implemented by this prototype.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_account_documentType",
+      "condition": "tog.dataset.accountDoc",
+      "selectors": [
+        "label[for=\"account-document\"]",
+        ".float-field",
+        "[data-toggle]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_account_documentType"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "syncFloatingFieldState",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

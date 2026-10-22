@@ -57,6 +57,23 @@ async function load(app,params='entry=direct&fresh=1&category=hair-skin',hash='i
 }
 async function run(app,name,params,hash,fn){if(filter&&!name.includes(filter))return;let env;try{env=await load(app,params,hash);assert.deepEqual(env.errors,[],'initialization errors');const observations=await fn(env);assert.deepEqual(env.errors,[],'runtime errors');results.push({app,name,status:'pass',observations,unsupported:[...new Set(env.unsupported)]});console.log('PASS',app,name);}catch(error){results.push({app,name,status:'fail',error:error.stack,errors:env?.errors,unsupported:env?.unsupported});console.error('FAIL',app,name,error.message);}finally{env?.close();}}
 for(const app of apps){
+await run(app,'owned-payment-deadline-and-submit','public=1','login',async e=>{
+ // Seed only isolated prototype state. No provider requests or real payment.
+ e.w.eval("seedClinicalDemoStage('payment'); show('payment-gw'); flowState.orderState.paymentExpiresAt=Date.now()-1000;");
+ const button=e.q('[data-payment-submit]');
+ // Exercise the handler guard independently of the disabled-button affordance.
+ button.dispatchEvent(new e.w.MouseEvent('click',{bubbles:true}));
+ assert.equal(e.active(),'payment-gw');
+ assert.notEqual(e.w.eval('flowState.paymentResolution'),'final-paid');
+ const out=[{label:'expired',paymentResolution:e.w.eval('flowState.paymentResolution'),active:e.active()}];
+ e.w.eval('flowState.orderState.paymentExpiresAt=Date.now()+60000;');
+ button.dispatchEvent(new e.w.MouseEvent('click',{bubbles:true}));
+ await e.step('payment-success');
+ assert.equal(e.w.eval('flowState.paymentResolution'),'final-paid');
+ assert.equal(e.w.eval('flowState.documentsUnlocked'),true);
+ out.push({label:'submitted',active:e.active(),resolution:e.w.eval('flowState.paymentResolution'),documentsUnlocked:e.w.eval('flowState.documentsUnlocked')});
+ return out;
+});
 await run(app,'hair-full-safety-and-back','entry=direct&fresh=1&category=hair-skin','intake1',async e=>{
  const out=[];
  await e.choose('hair.current_goal');await e.choose('hair.previous_treatment',{multi:true,last:true});await e.choose('hair.onset');await e.choose('hair.loss_area',{multi:true});await e.choose('hair.family_history',{last:true});await e.choose('hair.severity');

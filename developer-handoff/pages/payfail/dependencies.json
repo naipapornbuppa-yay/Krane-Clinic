@@ -9,11 +9,43 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_payfail_retry",
+      "condition": "event.target.closest('[data-payment-retry]')",
+      "selectors": [
+        "[data-payment-retry]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payfail_alternate",
+      "condition": "event.target.closest('[data-payment-alternate-method]')",
+      "selectors": [
+        "[data-payment-alternate-method]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
-    "syncMedicationFailureAmount"
+    "syncMedicationFailureAmount",
+    "kraneHandle_payfail_retry",
+    "kraneHandle_payfail_alternate"
   ],
   "orderedInitializers": [],
   "dependencies": [
+    {
+      "name": "activateGatewayMethod",
+      "source": "shared/lib/ui.js"
+    },
     {
       "name": "baht",
       "source": "shared/lib/ui.js"
@@ -21,6 +53,22 @@
     {
       "name": "currentMedicationDue",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "openPaymentMethodModal",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "paymentMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "resetGatewayAttempt",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
     }
   ],
   "externalDependencies": [

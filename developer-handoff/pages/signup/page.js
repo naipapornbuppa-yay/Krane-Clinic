@@ -47,3 +47,63 @@ function kraneInit_signup_98(){
       button.setAttribute('aria-disabled',String(!ready));
     });
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_signup_submit(e, signupPhone) {
+      const phone=document.getElementById('signup-phone').value.trim();
+      if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์','warning'); return true; }
+      if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return true; }
+      if(!signupPasswordReady()){ showActionToast('ตั้งรหัสผ่านให้ครบเงื่อนไขและตรงกันทั้งสองช่อง','warning'); document.getElementById('signup-password')?.focus(); return true; }
+      submitOnce('signup-phone',signupPhone,() => {
+        flowState.signupPasswordChosen=true;
+        flowState.accountCreated=true;
+        flowState.patientInfoComplete=false;
+        if(!flowState.identityVerified && !flowState.partnerIdStepDone){
+          flowState.patientName='';
+          flowState.profileDisplayName='';
+        }
+        flowState.authProvider='';
+        flowState.returningIdentityValid=false;
+        flowState.verifiedPhone=normalizePhone(phone);
+        persistFlowState();
+        const patientPhone=document.getElementById('patient-phone');
+        if(patientPhone) patientPhone.value=formatPhoneForDisplay(phone);
+        show('otp');
+      });
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_signup_newAccount(e, newAccount) {
+      flowState.returningLogin=false;
+      /* With no saved intake there is no consultation to resume, so the finished
+         account lands on the profile instead of question one (client, 20 Sep). */
+      if(!flowState.draftReady) postAuthNext='profile';
+      persistFlowState();
+      show('signup');
+      return true;
+
+  return false;
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_signup_initialSubmit() {
+syncSignupSubmit();
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_signup_doneDialog() {
+if(signupDoneModal){
+    signupDoneModal.addEventListener('click', event => {
+      if(event.target===signupDoneModal || event.target.classList.contains('modal-layer__scrim')){
+        closeSignupDoneModal();
+        return;
+      }
+      if(!event.target.closest('[data-signup-done-continue]')) return;
+      closeSignupDoneModal();
+      show(signupDoneTarget || 'patient-info');
+    });
+  }
+}

@@ -23,3 +23,16 @@ if(obesityRiskModal){
     });
   }
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake3_obesityRisk(e, obesityRiskChoice) {
+      const group=obesityRiskChoice.closest('[data-obesity-risk]');
+      group?.querySelectorAll('[data-obesity-risk-choice]').forEach(option => {
+        option.setAttribute('aria-checked',String(option===obesityRiskChoice));
+      });
+      syncObesityRiskWarning();
+      saveIntakeDraft();
+      return true;
+
+  return false;
+}

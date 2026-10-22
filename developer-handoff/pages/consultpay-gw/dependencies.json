@@ -9,9 +9,44 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_consultpay_gw_submit",
+      "condition": "event.target.closest('[data-consult-payment-submit]')",
+      "selectors": [
+        "[data-consult-payment-submit]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_consultpay_gw_submit"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "consultationHandoffTarget",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

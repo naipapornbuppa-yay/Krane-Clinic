@@ -1,3 +1,4 @@
-/* settings: behavior is supplied by shared libraries. No duplicate per-page implementation.
- * Add page-owned functions here; shared/runtime.js owns ordered initialization.
+/* settings: Shared route links, localization selector and prototype toast actions. No separate settings service is implemented.
+ * Sources: shared/lib/navigation.js, shared/lib/ui.js, ../b2c/i18n.js
+ * See dependencies.json. Do not duplicate shared behavior to fill this file.
  */

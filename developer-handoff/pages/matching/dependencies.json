@@ -9,9 +9,27 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_matching_demoNoMatch",
+      "condition": "noMatch",
+      "selectors": [
+        ".rail",
+        "[data-demo-nomatch]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "directClinicalStartTarget",
-    "partnerClinicalStartTarget"
+    "partnerClinicalStartTarget",
+    "kraneHandle_matching_demoNoMatch"
   ],
   "orderedInitializers": [],
   "dependencies": [
@@ -20,8 +38,24 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "history",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "needsAppointment",
       "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "seedClinicalDemoStage",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "seededHistory",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
     }
   ],
   "externalDependencies": [

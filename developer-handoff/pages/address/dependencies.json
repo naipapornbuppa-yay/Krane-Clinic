@@ -9,6 +9,99 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_address_fillSuggestion",
+      "condition": "fillItem",
+      "selectors": [
+        ".screen",
+        ".ac-item",
+        "#",
+        "#addrSearch",
+        ".ac-name",
+        "#addrSuggest",
+        "#addrNote",
+        ".ac-item[data-fill]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_zoom",
+      "condition": "simZoom",
+      "selectors": [
+        "[data-sim-zoom]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_openPicker",
+      "condition": "e.target.closest('[data-address-picker-open]')",
+      "selectors": [
+        "[data-address-picker-open]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_closePicker",
+      "condition": "e.target.closest('[data-address-picker-close]')",
+      "selectors": [
+        "[data-address-picker-close]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_locate",
+      "condition": "e.target.closest('[data-sim-locate]')",
+      "selectors": [
+        "[data-sim-locate]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_confirmMap",
+      "condition": "e.target.closest('[data-address-map-confirm]')",
+      "selectors": [
+        "[data-address-map-confirm]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_save",
+      "condition": "addressSave",
+      "selectors": [
+        "[data-address-save]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_address_recipientEdit",
+      "condition": "e.target.closest('[data-address-recipient-edit]')",
+      "selectors": [
+        "[data-address-recipient-edit]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "syncFieldClearButtons",
     "setupClearableFields",
@@ -30,7 +123,15 @@
     "startNewAddress",
     "bindAddressSearch",
     "applyAddress",
-    "syncComposedDistrict"
+    "syncComposedDistrict",
+    "kraneHandle_address_fillSuggestion",
+    "kraneHandle_address_zoom",
+    "kraneHandle_address_openPicker",
+    "kraneHandle_address_closePicker",
+    "kraneHandle_address_locate",
+    "kraneHandle_address_confirmMap",
+    "kraneHandle_address_save",
+    "kraneHandle_address_recipientEdit"
   ],
   "orderedInitializers": [
     "kraneInit_address_155",
@@ -47,7 +148,12 @@
     "kraneInit_address_owned_139",
     "kraneInit_address_owned_151",
     "kraneInit_address_owned_327",
-    "kraneInit_address_owned_329"
+    "kraneInit_address_owned_329",
+    "kraneInit_address_clearAll",
+    "kraneInit_address_cascade",
+    "kraneInit_address_resize",
+    "kraneInit_address_places",
+    "kraneInit_address_pickupEscape"
   ],
   "dependencies": [
     {
@@ -63,12 +169,20 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "SIM_PLACES",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "addrSearch",
       "source": "shared/runtime.js"
     },
     {
       "name": "addrSuggest",
       "source": "shared/runtime.js"
+    },
+    {
+      "name": "addressBookKey",
+      "source": "shared/lib/address.js"
     },
     {
       "name": "addressEditingSavedIndex",
@@ -80,6 +194,10 @@
     },
     {
       "name": "addressLabelCustom",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "addressListSelected",
       "source": "shared/runtime.js"
     },
     {
@@ -135,6 +253,10 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "closeAddressPicker",
+      "source": "shared/lib/address.js"
+    },
+    {
       "name": "closeAddressSuggestions",
       "source": "shared/lib/address.js"
     },
@@ -144,6 +266,10 @@
     },
     {
       "name": "composeDistrict",
+      "source": "shared/lib/address.js"
+    },
+    {
+      "name": "confirmAddressPicker",
       "source": "shared/lib/address.js"
     },
     {
@@ -199,6 +325,10 @@
       "source": "shared/lib/identity.js"
     },
     {
+      "name": "openAddressPicker",
+      "source": "shared/lib/address.js"
+    },
+    {
       "name": "openPickupBranchModal",
       "source": "shared/lib/ui.js"
     },
@@ -213,6 +343,10 @@
     {
       "name": "osmView",
       "source": "shared/runtime.js"
+    },
+    {
+      "name": "osmZoomBy",
+      "source": "shared/lib/address.js"
     },
     {
       "name": "persistAddressBook",
@@ -299,6 +433,14 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "simApplyTransform",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "simLocate",
+      "source": "shared/lib/ui.js"
+    },
+    {
       "name": "simState",
       "source": "shared/runtime.js"
     },
@@ -317,6 +459,10 @@
     {
       "name": "syncFloatingFieldStates",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncMapFromAddressFields",
+      "source": "shared/lib/address.js"
     },
     {
       "name": "writeDeliveryAddressDraft",

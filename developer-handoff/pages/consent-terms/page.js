@@ -124,3 +124,67 @@ if(consentChecked.pdpa && consentChecked.telemedicine){
     if(cue) cue.hidden=true;
   }
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_consent_terms_submit(e, consentSubmit) {
+      if(!consentIdentityVerified()){
+        showActionToast('กรุณาเข้าสู่ระบบและยืนยันรหัส OTP ก่อนให้ความยินยอม','warning');
+        return true;
+      }
+      if(consentSubmit.disabled) return true;
+      submitOnce('consent',consentSubmit,() => {
+        const acceptedAt=new Date().toISOString();
+        const records=requiredConsentChecks.map(input => ({
+          type:input.dataset.consentType,
+          version:consentDocuments[input.dataset.consentType].version,
+          required:true,
+          granted:true,
+          acceptedAt
+        }));
+        records.push({
+          type:'marketing',
+          version:'marketing-v1',
+          required:false,
+          granted:Boolean(consentChecked.marketing),
+          recordedAt:acceptedAt,
+          acceptedAt:consentChecked.marketing ? acceptedAt : null
+        });
+        flowState.marketingConsent={
+          version:'marketing-v1',
+          granted:Boolean(consentChecked.marketing),
+          recordedAt:acceptedAt
+        };
+        const consentSource=flowState.entryChannel==='partner' ? 'partner' : 'direct';
+        saveConsentRecords(consentSource,records);
+        if(consentSource==='partner') flowState.partnerConsentComplete=true;
+        else {
+          flowState.consentsComplete=true;
+          // Consent starts a fresh pre-doctor confirmation cycle. Keep the
+          // saved values, but require the patient to review and submit them.
+          if(flowState.draftReady) flowState.patientInfoComplete=false;
+        }
+        // Personal details must be reviewed immediately after consent, including
+        // for returning patients. Only after that confirmation may the route open
+        // general health or continue toward doctor matching.
+        const consentNext = consentSource==='partner'
+          ? 'partner-idcard'
+          : (!flowState.draftReady
+              ? nextAfterAuthentication()
+              : 'patient-info');
+        flowState.lastRequiredScreen=consentNext;
+        const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
+        if(showSignupDone) flowState.signupDonePending=false;
+        persistFlowState();
+        showActionToast('บันทึกความยินยอมแล้ว','success');
+        if(showSignupDone) openSignupDoneModal(consentNext);
+        else show(consentNext);
+      });
+      return true;
+
+  return false;
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_consent_terms_initialContinue() {
+syncConsentContinue();
+}

@@ -9,10 +9,83 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_profile_followUpCase",
+      "condition": "followUpCaseOpen",
+      "selectors": [
+        "[data-followup-case-open]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_profile_followUpJoin",
+      "condition": "followUpJoin",
+      "selectors": [
+        "[data-followup-join]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_profile_treatmentOpen",
+      "condition": "treatmentOpen",
+      "selectors": [
+        "[data-treatment-open]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_profile_followUp",
+      "condition": "profileFollowup",
+      "selectors": [
+        "[data-profile-followup]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_profile_referral",
+      "condition": "profileReferral",
+      "selectors": [
+        "[data-referral-modal]",
+        "[data-profile-referral]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_profile_newAppointment",
+      "condition": "profileNewAppointment",
+      "selectors": [
+        "[data-profile-new-appointment]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "syncTreatmentStatus",
     "syncHomeFollowUpCta",
-    "openRefillSheet"
+    "openRefillSheet",
+    "kraneHandle_profile_followUpCase",
+    "kraneHandle_profile_followUpJoin",
+    "kraneHandle_profile_treatmentOpen",
+    "kraneHandle_profile_followUp",
+    "kraneHandle_profile_referral",
+    "kraneHandle_profile_newAppointment"
   ],
   "orderedInitializers": [
     "kraneInit_profile_320",
@@ -36,6 +109,14 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "beginAssignedDoctorFlow",
+      "source": "pages/intake-general/page.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "followUpAppointmentFor",
       "source": "shared/lib/clinical.js"
     },
@@ -52,8 +133,16 @@
       "source": "shared/lib/ui.js"
     },
     {
+      "name": "journeyActive",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "openTreatmentDetail",
       "source": "pages/treatment-detail/page.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
     },
     {
       "name": "refillCardFor",
@@ -62,6 +151,14 @@
     {
       "name": "refillSheet",
       "source": "shared/runtime.js"
+    },
+    {
+      "name": "selectedCategoryId",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
     },
     {
       "name": "syncFollowUpCaseStates",

@@ -168,3 +168,44 @@ if(healthHistoryModal){
     });
   }
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_general_partnerHistory(e, partnerHistoryChoice) {
+      const group=partnerHistoryChoice.closest('[data-partner-history]');
+      const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
+      setPartnerHistoryChoice(group,hasDetails);
+      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_general_screening(e, partnerScreeningOption) {
+      const group=partnerScreeningOption.closest('[data-partner-screening-question]');
+      if(group){
+        flowState.partnerScreening[group.dataset.partnerScreeningQuestion]=partnerScreeningOption.dataset.partnerScreeningValue;
+        persistFlowState();
+        syncPartnerScreening();
+      }
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_general_submit(e, intakeComplete) {
+      const dob=document.getElementById('intake-dob');
+      if(!dob?.value){
+        showActionToast('กรุณาเลือกวันเกิด','warning');
+        dob?.focus();
+        return true;
+      }
+      /* The three safety answers decide whether it is safe to prescribe, so
+         they are confirmed in their own dialog at the moment of submission
+         rather than sitting mid-page where they are scrolled past. */
+      openHealthHistoryModal();
+      return true;
+
+  return false;
+}

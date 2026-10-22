@@ -9,9 +9,94 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
-  "orderedInitializers": [],
-  "dependencies": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_patient_info_continue",
+      "condition": "patientInfoContinue",
+      "selectors": [
+        "#patient-info [data-patient-payment-choice-value][aria-selected=\"true\"]",
+        "#patient-info [data-phone-note]",
+        "#patient-info [data-phone-edit]",
+        "[data-patient-info-continue]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_patient_info_continue"
+  ],
+  "orderedInitializers": [
+    "kraneInit_patient_info_restorePhone",
+    "kraneInit_patient_info_restoreName"
+  ],
+  "dependencies": [
+    {
+      "name": "directNextAfterPatientInfo",
+      "source": "pages/intake-general/page.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "formatPhoneForDisplay",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "insuranceEntry",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "isGeneralPath",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "isValidThaiMobile",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "normalizePhone",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "patientNameValue",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "restoredFirstName",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "restoredLastName",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "restoredPatientPhone",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "submitOnce",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

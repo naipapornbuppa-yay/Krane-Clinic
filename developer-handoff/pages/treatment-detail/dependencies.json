@@ -9,12 +9,54 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_treatment_detail_tab",
+      "condition": "treatmentTab",
+      "selectors": [
+        "[data-treatment-tab]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_treatment_detail_editSymptoms",
+      "condition": "followUpEditSymptoms",
+      "selectors": [
+        "[data-followup-edit-symptoms]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "setTreatmentDetailTab",
-    "openTreatmentDetail"
+    "openTreatmentDetail",
+    "kraneHandle_treatment_detail_tab",
+    "kraneHandle_treatment_detail_editSymptoms"
   ],
-  "orderedInitializers": [],
+  "orderedInitializers": [
+    "kraneInit_treatment_detail_refill"
+  ],
   "dependencies": [
+    {
+      "name": "closeRefillSheet",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "openRefillSheet",
+      "source": "pages/profile/page.js"
+    },
+    {
+      "name": "selectedCategoryId",
+      "source": "shared/runtime.js"
+    },
     {
       "name": "setSelectedCategory",
       "source": "shared/lib/intake.js"
@@ -22,6 +64,10 @@
     {
       "name": "show",
       "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "startRefill",
+      "source": "pages/payment/page.js"
     },
     {
       "name": "syncFollowUpDates",

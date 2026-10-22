@@ -140,3 +140,37 @@ function kraneInit_intake_concern_owned_331(){
     syncEmpty();
   })();
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_concern_submit(e, intakeComplete) {
+      const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
+      const amount=Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
+      const unitOn=document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]');
+      const reliefOn=document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]');
+      if(concern.length<5){
+        showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning');
+        document.getElementById('partner-concern-text')?.focus();
+        return true;
+      }
+      if(!amount || !unitOn){
+        showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning');
+        document.getElementById('partner-concern-duration-value')?.focus();
+        return true;
+      }
+      if(!reliefOn){
+        showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning');
+        return true;
+      }
+      flowState.partnerConcern=concern;
+      flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
+      flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
+      flowState.partnerConcernComplete=true;
+      if(flowState.entryChannel==='direct') flowState.draftReady=true;
+      flowState.lastRequiredScreen='intake-general';
+      persistFlowState();
+      saveIntakeDraft();
+      show('intake-general');
+      return true;
+
+  return false;
+}

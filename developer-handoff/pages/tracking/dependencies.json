@@ -9,12 +9,55 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_tracking_riderLocate",
+      "condition": "riderLocate",
+      "selectors": [
+        "[data-rider-locate]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_tracking_confirmDelivery",
+      "condition": "e.target.closest('[data-delivery-confirm]')",
+      "selectors": [
+        "[data-delivery-confirm]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_tracking_demoStatus",
+      "condition": "mockDelivery",
+      "selectors": [
+        "[data-mock-status]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "openCsatModal",
-    "startTrackingDemoWalk"
+    "startTrackingDemoWalk",
+    "kraneHandle_tracking_riderLocate",
+    "kraneHandle_tracking_confirmDelivery",
+    "kraneHandle_tracking_demoStatus"
   ],
   "orderedInitializers": [],
   "dependencies": [
+    {
+      "name": "IS_DEMO_EMBED",
+      "source": "shared/runtime.js"
+    },
     {
       "name": "TRACKING_DEMO_STEP_MS",
       "source": "shared/runtime.js"
@@ -32,6 +75,10 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "deliveryMethod",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "flowState",
       "source": "shared/runtime.js"
     },
@@ -40,8 +87,20 @@
       "source": "shared/lib/clinical.js"
     },
     {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
       "name": "reduceMotion",
       "source": "shared/runtime.js"
+    },
+    {
+      "name": "seedClinicalDemoStage",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
     },
     {
       "name": "stopTrackingDemoWalk",

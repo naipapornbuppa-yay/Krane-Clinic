@@ -9,9 +9,104 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_social_confirm_provider",
+      "condition": "social",
+      "selectors": [
+        "#login",
+        "[data-auth-provider-name]",
+        "[data-auth-provider-icon] use",
+        "[data-auth-display-name]",
+        "[data-auth-email]",
+        "[data-social]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_social_confirm_continue",
+      "condition": "authContinue",
+      "selectors": [
+        "[data-auth-continue]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_social_confirm_provider",
+    "kraneHandle_social_confirm_continue"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "AUTH_PROFILE_KEY",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "authNext",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "completeAuthentication",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "formatPhoneForDisplay",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "isValidThaiMobile",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "normalizePhone",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "postAuthNext",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "readSessionJson",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "socialCompletesAuth",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "splitRecipientName",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "submitOnce",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

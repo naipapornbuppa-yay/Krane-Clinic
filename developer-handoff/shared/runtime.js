@@ -366,7 +366,7 @@ kraneInit_signup_98();
 
 /* syncSignupSubmit: pages/signup/page.js */
 
-  syncSignupSubmit();
+  kraneInit_signup_initialSubmit();
 /* renderConsentReadState: shared/lib/intake.js */
 
 /* markConsentRead: shared/lib/intake.js */
@@ -382,7 +382,7 @@ kraneInit_signup_98();
 
   kraneInit_consent_terms_owned_82();
   kraneInit_consent_terms_owned_83();
-  syncConsentContinue();
+  kraneInit_consent_terms_initialContinue();
   kraneInit_consent_terms_owned_85();
 
   // Full labels are read by screen readers and shown for the current step.
@@ -514,7 +514,7 @@ kraneInit_signup_98();
 /* clearDeliveryAddressForm: pages/address/page.js */
 
 
-  document.querySelector('[data-address-clear-all]')?.addEventListener('click',clearDeliveryAddressForm);
+  kraneInit_address_clearAll();
 /* recipientFields: pages/address/page.js */
 
 /* clearRecipientFields: shared/lib/ui.js */
@@ -553,20 +553,13 @@ kraneInit_address_155();
 
 /* hydrateAddressMapSearch: pages/address/page.js */
 
-  document.addEventListener('change',event => {
-    if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id)){
-      syncAddressMapCascade(event.target.id);
-      commitManualAddress();
-      persistAddressSearchDraft();
-      syncMapFromAddressFields();
-    }
-  });
+  kraneInit_address_cascade();
   let manualMapRequest=0;
 /* syncMapFromAddressFields: shared/lib/address.js */
 
 /* resizeAddressMapQuery: pages/address/page.js */
 
-  window.addEventListener("resize",resizeAddressMapQuery);
+  kraneInit_address_resize();
 /* persistAddressSearchDraft: pages/address/page.js */
 
 kraneInit_address_168();
@@ -878,7 +871,7 @@ kraneInit_address_208();
     { title:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', aliases:'lumpini place rama 4', building:'ลุมพินี เพลส พระราม 4, ห้อง 11/3', floor:'11', line:'ถนนพระราม 4',
       subdistrict:'แขวงคลองเตย', districtName:'เขตคลองเตย', province:'กรุงเทพมหานคร', postcode:'10110' }
   ];
-  SIM_PLACES.forEach(p => { p.district = composeDistrict(p); p.detail = p.line + ' · ' + p.district; });
+  kraneInit_address_places();
   const simState = { x:0, y:0, z:1, place:SIM_PLACES[0], picked:false };
 /* simReverseGeocode: shared/lib/address.js */
 
@@ -1273,11 +1266,7 @@ kraneInit_otp_366();
 
 /* partnerNameValue: shared/lib/intake.js */
 
-  document.body.addEventListener('input',event => {
-    if(!event.target.matches?.('#partner-first-name,#partner-last-name')) return;
-    flowState.partnerName=partnerNameValue();
-    persistFlowState();
-  });
+  kraneInit_partner_patient_info_nameInput();
 /* restorePartnerName: shared/lib/intake.js */
 
 /* restorePartnerFields: shared/lib/intake.js */
@@ -1497,20 +1486,7 @@ kraneInit_payment_400();
 
 /* startRefill: pages/payment/page.js */
 
-  document.body.addEventListener('click', event => {
-    /* Client, 15 Sep: pressing refill from inside a treatment already answers
-       the sheet's only question — this is that treatment's prescription — so it
-       goes straight to the checkout. The sheet is for the quick menu, which is
-       reached with no treatment in hand. */
-    if(event.target.closest('[data-refill-treatment]')){
-      if(!startRefill(selectedCategoryId)) openRefillSheet();
-      return;
-    }
-    if(event.target.closest('[data-refill-open]')){ openRefillSheet(); return; }
-    if(event.target.closest('[data-refill-sheet-close]')){ closeRefillSheet(); return; }
-    const choice=event.target.closest('#refill-sheet [data-refill-choice]');
-    if(choice) startRefill(choice.dataset.refillChoice);
-  });
+  kraneInit_treatment_detail_refill();
 
   /* Booking requires a day and time before enabling the shared Confirm action. */
   let appointmentDay='วันนี้', appointmentSlot='';
@@ -1706,11 +1682,7 @@ kraneInit_appointment_443();
 
 /* syncObesityBmi: shared/lib/intake.js */
 
-  document.body.addEventListener('input', event => {
-    if(!event.target.closest('[data-obesity-metric]')) return;
-    syncObesityBmi();
-    saveIntakeDraft();
-  });
+  kraneInit_intake2_obesityMetrics();
 /* saveIntakeDraft: pages/intake-concern/page.js */
 
 /* restoreIntakeDraft: pages/intake-concern/page.js */
@@ -1772,27 +1744,7 @@ kraneInit_appointment_443();
 
 /* savePendingQueue: shared/lib/clinical.js */
 
-  document.addEventListener('click',event => {
-    if(event.target.closest('[data-queue-close]')){
-      if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}
-      clearTimeout(waitTimer); clearInterval(waitCountdownTimer); stopWaitroomEntryWindow();
-      queueDismissOnce=true;show('landing');
-    }
-    if(event.target.closest('[data-queue-resume]')){
-      if(pendingQueue){pendingQueue.suspended=false;savePendingQueue()}
-      show('waitroom');
-    }
-    if(event.target.closest('[data-queue-book]')){
-      saveIntakeDraft();
-      persistFlowState();
-      clearTimeout(waitTimer);
-      clearInterval(waitCountdownTimer);
-      stopWaitroomEntryWindow();
-      pendingQueue=null;
-      if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
-      show('appointment');
-    }
-  });
+  kraneInit_queue_resume_queueActions();
   window.addEventListener('pagehide',()=>{if(pendingQueue){pendingQueue.suspended=true;savePendingQueue()}});
 /* resetWaitroom: pages/waitroom/page.js */
 
@@ -1816,23 +1768,7 @@ kraneInit_appointment_443();
 
 /* closeWaitroomExpiredModal: shared/lib/ui.js */
 
-  if(waitroomExpiredModal()){
-    waitroomExpiredModal().addEventListener('click', event => {
-      if(event.target.closest('[data-waitroom-retry]')){
-        closeWaitroomExpiredModal();
-        /* Straight back into matching: the intake answers are untouched, so
-           there is nothing to re-ask. */
-        pendingQueue=null;
-        if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
-        show('matching');
-        return;
-      }
-      if(event.target.closest('[data-waitroom-expired-home]')){
-        closeWaitroomExpiredModal();
-        show('profile');
-      }
-    });
-  }
+  kraneInit_waitroom_expiredDialog();
   // Consume a fresh launch once. The query stays in the URL while the patient
   // moves through later hashes, so reading it on every hashchange would reset
   // a real order each time they revisited tracking.
@@ -1928,72 +1864,29 @@ kraneInit_payment_537();
   // navigation
   document.body.addEventListener('click', e => {
     const treatmentTab=e.target.closest('[data-treatment-tab]');
-    if(treatmentTab){ setTreatmentDetailTab(treatmentTab.dataset.treatmentTab); return; }
+    if(treatmentTab){ if (kraneHandle_treatment_detail_tab(e, treatmentTab)) return; }
     const followUpCaseOpen=e.target.closest('[data-followup-case-open]');
-    if(followUpCaseOpen){
-      const card=document.querySelector(`#profile [data-treatment-open][data-category="${followUpCaseOpen.dataset.followupCaseOpen}"]`);
-      if(card) openTreatmentDetail(card);
-      return;
-    }
+    if(followUpCaseOpen){ if (kraneHandle_profile_followUpCase(e, followUpCaseOpen)) return; }
     const followUpJoin=e.target.closest('[data-followup-join]');
-    if(followUpJoin){
-      if(followUpJoin.disabled || followUpJoin.getAttribute('aria-disabled')==='true' || window.kraneTreatmentPause?.isPaused(followUpJoin.dataset.category)) return;
-      beginAssignedDoctorFlow(followUpJoin.dataset.category || selectedCategoryId);
-      return;
-    }
+    if(followUpJoin){ if (kraneHandle_profile_followUpJoin(e, followUpJoin)) return; }
     const treatmentOpen=e.target.closest('[data-treatment-open]');
-    if(treatmentOpen){ openTreatmentDetail(treatmentOpen); return; }
+    if(treatmentOpen){ if (kraneHandle_profile_treatmentOpen(e, treatmentOpen)) return; }
     const followUpEditSymptoms=e.target.closest('[data-followup-edit-symptoms]');
-    if(followUpEditSymptoms){ show('intake1'); return; }
+    if(followUpEditSymptoms){ if (kraneHandle_treatment_detail_editSymptoms(e, followUpEditSymptoms)) return; }
     const profileFollowup=e.target.closest('[data-profile-followup]');
-    if(profileFollowup){ beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return; }
+    if(profileFollowup){ if (kraneHandle_profile_followUp(e, profileFollowup)) return; }
     /* "Consult now" duplicated the two appointment actions beside it and the
        button at the bottom of every treatment card. The slot carries the
        referral instead, which had nowhere to live (client, 10 Sep). */
     const profileReferral=e.target.closest('[data-profile-referral]');
-    if(profileReferral){
-      const modal=document.querySelector('[data-referral-modal]');
-      if(modal) modal.hidden=false;
-      return;
-    }
-    if(e.target.closest('[data-referral-close]')){
-      const modal=document.querySelector('[data-referral-modal]');
-      if(modal) modal.hidden=true;
-      return;
-    }
+    if(profileReferral){ if (kraneHandle_profile_referral(e, profileReferral)) return; }
+    if(e.target.closest('[data-referral-close]')){ if (kraneHandle_referral_close(e)) return; }
     const referralAction=e.target.closest('[data-referral-native-share],[data-referral-copy-code]');
-    if(referralAction){
-      const code=document.querySelector('[data-referral-page-code]').textContent.trim();
-      const url='https://krane.clinic/invite/'+encodeURIComponent(code);
-      const share=referralAction.hasAttribute('data-referral-native-share');
-      const action=share && navigator.share
-        ? navigator.share({title:'แนะนำเพื่อนให้ Krane',text:code,url})
-        : navigator.clipboard ? navigator.clipboard.writeText(share ? url : code) : Promise.reject(new Error('Clipboard unavailable'));
-      action.then(()=>{if(!share || !navigator.share) showActionToast('คัดลอกแล้ว','success');})
-        .catch(error=>{if(error.name!=='AbortError') showActionToast('ยังแชร์หรือคัดลอกไม่ได้ กรุณาลองอีกครั้ง','warning');});
-      return;
-    }
+    if(referralAction){ if (kraneHandle_referral_shareAction(e, referralAction)) return; }
     const referralShare=e.target.closest('[data-referral-share]');
-    if(referralShare){
-      const code=document.querySelector('[data-referral-code]')?.textContent.trim() || '';
-      const link='https://krane.clinic/invite/'+code;
-      /* Clipboard access is refused in some embedded contexts, so the toast
-         reports what actually happened rather than assuming it worked. */
-      Promise.resolve(navigator.clipboard?.writeText(link))
-        .then(() => showActionToast('คัดลอกลิงก์ชวนเพื่อนแล้ว','success'))
-        .catch(() => showActionToast('คัดลอกไม่สำเร็จ ใช้โค้ด '+code+' บอกเพื่อนได้เลย','info'));
-      return;
-    }
+    if(referralShare){ if (kraneHandle_referral_share(e, referralShare)) return; }
     const profileNewAppointment=e.target.closest('[data-profile-new-appointment]');
-    if(profileNewAppointment){
-      flowState.followUpDirectToWaitroom=false;
-      flowState.followUpContext=null;
-      flowState.entryChannel='direct';
-      persistFlowState();
-      journeyActive=true;
-      show('conditions');
-      return;
-    }
+    if(profileNewAppointment){ if (kraneHandle_profile_newAppointment(e, profileNewAppointment)) return; }
     /* The continue button this served lived on #rx-writing, a waiting screen,
        and was enabled in the same tick that auto-advanced away from it. The
        plan screen carries that step now and refreshMedicationCheckout() runs
@@ -2002,569 +1895,69 @@ kraneInit_payment_537();
     // profile setup (no order yet, just save the policy) or from checkout (an order is
     // being paid). Detect which one from where the click came from.
     const goInsurance = e.target.closest('[data-go="insurance"]');
-    if(goInsurance){
-      insuranceEntry = goInsurance.dataset.insuranceEntry || (goInsurance.closest('#patient-info') ? 'profile' : 'checkout');
-      if(insuranceEntry==='partner' && goInsurance.closest('.rail')) seedPartnerStage('partner-insurance');
-    }
+    if(goInsurance){ if (kraneHandle_insurance_entry(e, goInsurance)) return; }
     // Demo: force the "no doctor available" outcome, then run the match animation
     // so the flow shows match -> available-time fallback -> pay.
     const noMatch = e.target.closest('[data-demo-nomatch]');
-    if(noMatch){
-      if(noMatch.closest('.rail')){
-        seedClinicalDemoStage('matching');
-        history=seededHistory('matching');
-      }
-      doctorAvailable = false;
-      show('matching',!noMatch.closest('.rail'));
-      return;
-    }
+    if(noMatch){ if (kraneHandle_matching_demoNoMatch(e, noMatch)) return; }
     // Demo: force the next pharmacy match to decline (out of stock), so the retry loop
     // and the standard-delivery fallback after 3 tries can be shown on demand.
     const noStock = e.target.closest('[data-demo-nostock]');
-    if(noStock){
-      if(noStock.closest('.rail')){
-        seedClinicalDemoStage('pharmacy-search');
-        history=seededHistory('pharmacy-search');
-      }
-      pharmacyForceDecline = true;
-      show('pharmacy-search',!noStock.closest('.rail'));
-      return;
-    }
+    if(noStock){ if (kraneHandle_pharmacy_search_demoNoStock(e, noStock)) return; }
     // OAuth demo: each provider returns to a visible confirmation step before entering the app.
     const social = e.target.closest('[data-social]');
-    if(social){
-      const provider = social.dataset.social;
-      flowState.authProvider=provider;
-      socialCompletesAuth = Boolean(social.closest('#login'));
-      flowState.returningLogin = socialCompletesAuth;
-      persistFlowState();
-      authNext = socialCompletesAuth ? postAuthNext : (social.dataset.authNext || 'consent-terms');
-      const name = document.querySelector('[data-auth-provider-name]'); if(name) name.textContent = provider;
-      const providerIcons={Google:'#logo-google',Apple:'#logo-apple',LINE:'#logo-line'};
-      const use = document.querySelector('[data-auth-provider-icon] use'); if(use) use.setAttribute('href', providerIcons[provider] || '#logo-line');
-      // The prototype has no live OAuth callback. Reuse only profile fields
-      // actually returned by an integration or saved from this provider.
-      const saved=readSessionJson(AUTH_PROFILE_KEY);
-      const providerData=window.kraneOAuthProfiles?.[provider]
-        || (saved.authenticated && saved.provider===provider ? saved : {});
-      const savedName=splitRecipientName(providerData.displayName);
-      const first=String(providerData.firstName || savedName.firstName || '').trim();
-      const last=String(providerData.lastName || savedName.lastName || '').trim();
-      const email=String(providerData.email || '').trim();
-      const phone=String(providerData.phone || (saved.provider===provider ? flowState.verifiedPhone : '') || '').trim();
-      const displayName=document.querySelector('[data-auth-display-name]');
-      if(displayName) displayName.textContent=[first,last].filter(Boolean).join(' ') || 'บัญชีของคุณ';
-      const emailLabel=document.querySelector('[data-auth-email]'); if(emailLabel) emailLabel.textContent=email;
-      for(const [field,value] of [['social-first-name',first],['social-last-name',last],['social-email',email],['social-birth-date',providerData.birthDate || ''],['social-phone',phone ? formatPhoneForDisplay(phone) : '']]){
-        const input=document.getElementById(field);
-        if(input) input.value=value;
-      }
-      show('social-confirm'); return;
-    }
+    if(social){ if (kraneHandle_social_confirm_provider(e, social)) return; }
     const authContinue = e.target.closest('[data-auth-continue]');
-    if(authContinue){
-      const phone=document.getElementById('social-phone')?.value.trim() || '';
-      const birthDate=document.getElementById('social-birth-date');
-      if(!birthDate?.value){
-        showActionToast('กรุณาเลือกวันเกิด','warning');
-        birthDate?.focus();
-        return;
-      }
-      if(!isValidThaiMobile(phone)){
-        showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
-        document.getElementById('social-phone')?.focus();
-        return;
-      }
-      const phoneChanged=normalizePhone(phone)!==normalizePhone(flowState.verifiedPhone);
-      if(phoneChanged || !flowState.otpVerified){
-        flowState.pendingPhone=normalizePhone(phone);
-        flowState.phoneOtpPending=true;
-        flowState.phoneOtpReturn='social-confirm';
-        flowState.phoneOtpDestination=authNext;
-        flowState.phoneOtpCompletesAuth=true;
-        persistFlowState();
-        show('otp');
-        return;
-      }
-      submitOnce('social-confirm',authContinue,() => completeAuthentication(authNext));
-      return;
-    }
+    if(authContinue){ if (kraneHandle_social_confirm_continue(e, authContinue)) return; }
     const signupPhone = e.target.closest('[data-signup-phone]');
-    if(signupPhone){
-      const phone=document.getElementById('signup-phone').value.trim();
-      if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์','warning'); return; }
-      if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
-      if(!signupPasswordReady()){ showActionToast('ตั้งรหัสผ่านให้ครบเงื่อนไขและตรงกันทั้งสองช่อง','warning'); document.getElementById('signup-password')?.focus(); return; }
-      submitOnce('signup-phone',signupPhone,() => {
-        flowState.signupPasswordChosen=true;
-        flowState.accountCreated=true;
-        flowState.patientInfoComplete=false;
-        if(!flowState.identityVerified && !flowState.partnerIdStepDone){
-          flowState.patientName='';
-          flowState.profileDisplayName='';
-        }
-        flowState.authProvider='';
-        flowState.returningIdentityValid=false;
-        flowState.verifiedPhone=normalizePhone(phone);
-        persistFlowState();
-        const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=formatPhoneForDisplay(phone);
-        show('otp');
-      });
-      return;
-    }
+    if(signupPhone){ if (kraneHandle_signup_submit(e, signupPhone)) return; }
     /* A returning patient signs in with the password they set, so there is no
        second SMS on the ordinary path. The code is only asked for again when
        the password has to be replaced (client, 12 Sep). */
     const loginSubmit = e.target.closest('[data-login-submit]');
-    if(loginSubmit){
-      const phone=document.getElementById('login-phone').value.trim();
-      const password=document.getElementById('login-password').value;
-      if(!phone){ showActionToast('กรุณากรอกเบอร์โทรศัพท์','warning'); return; }
-      if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
-      if(!password){ showActionToast('กรุณากรอกรหัสผ่าน','warning'); document.getElementById('login-password')?.focus(); return; }
-      submitOnce('login-submit',loginSubmit,() => {
-        flowState.accountCreated=true;
-        flowState.otpVerified=true;
-        flowState.passwordSet=true;
-        flowState.returningIdentityValid=true;
-        flowState.returningLogin=true;
-        flowState.verifiedPhone=normalizePhone(phone);
-        persistFlowState();
-        applyAuthenticatedAccount({returning:true});
-        const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=formatPhoneForDisplay(phone);
-        showActionToast('เข้าสู่ระบบแล้ว','success');
-        show(nextAfterAuthentication());
-      });
-      return;
-    }
+    if(loginSubmit){ if (kraneHandle_login_submit(e, loginSubmit)) return; }
     const loginForgot = e.target.closest('[data-login-forgot]');
-    if(loginForgot){
-      const phone=document.getElementById('login-phone').value.trim();
-      if(!isValidThaiMobile(phone)){ showActionToast('กรอกเบอร์โทรศัพท์ก่อน แล้วเราจะส่งรหัส OTP ไปให้','warning'); document.getElementById('login-phone')?.focus(); return; }
-      flowState.accountCreated=true;
-      flowState.returningIdentityValid=true;
-      flowState.returningLogin=true;
-      flowState.passwordResetPending=true;
-      flowState.verifiedPhone=normalizePhone(phone);
-      persistFlowState();
-      showActionToast('ส่งรหัส OTP ไปที่เบอร์ของคุณแล้ว','success');
-      show('otp');
-      return;
-    }
+    if(loginForgot){ if (kraneHandle_login_forgot(e, loginForgot)) return; }
     const authComplete = e.target.closest('[data-auth-complete]');
-    if(authComplete){
-      const otpCode=document.querySelector('#otp [data-otp-code]');
-      if(!otpCode || !/^\d{6}$/.test(otpCode.value)){
-        showActionToast('กรุณากรอกรหัส OTP ให้ครบ 6 หลัก','warning');
-        otpCode?.focus();
-        return;
-      }
-      if(flowState.partnerPhoneOtpPending){
-        submitOnce('partner-phone-otp',authComplete,() => {
-          flowState.partnerPhone=flowState.partnerPendingPhone || flowState.partnerPhone;
-          flowState.partnerPendingPhone='';
-          flowState.partnerPhoneOtpPending=false;
-          flowState.partnerPhoneVerified=true;
-          flowState.verifiedPhone=flowState.partnerPhone;
-          flowState.otpVerified=true;
-          persistFlowState();
-          const phone=document.getElementById('partner-phone');
-          const note=document.querySelector('#partner-patient-info [data-phone-note]');
-          const edit=document.querySelector('#partner-patient-info [data-phone-edit]');
-          if(phone){
-            phone.value=formatPhoneForDisplay(flowState.partnerPhone);
-            phone.readOnly=true;
-            phone.setAttribute('aria-readonly','true');
-          }
-          if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
-          if(edit) edit.textContent='เปลี่ยนเบอร์';
-          showActionToast('ยืนยันเบอร์โทรศัพท์ใหม่แล้ว','success');
-          if(flowState.partnerInfoContinueAfterOtp){
-            flowState.partnerInfoContinueAfterOtp=false;
-            persistFlowState();
-            if(history[history.length-1]==='otp') history.pop();
-            completePartnerPatientInfo();
-          }else{
-            returnFromPhoneOtp('partner-patient-info');
-          }
-        });
-        return;
-      }
-      if(flowState.phoneOtpPending){
-        submitOnce('phone-change-otp',authComplete,() => {
-          const returnTarget=flowState.phoneOtpReturn || 'patient-info';
-          const destination=flowState.phoneOtpDestination;
-          const completesAuth=flowState.phoneOtpCompletesAuth;
-          flowState.verifiedPhone=flowState.pendingPhone || flowState.verifiedPhone;
-          flowState.otpVerified=true;
-          clearPhoneOtpContext();
-          persistFlowState();
-          const patientPhone=document.getElementById('patient-phone');
-          const socialPhone=document.getElementById('social-phone');
-          if(patientPhone) patientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
-          if(socialPhone) socialPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
-          if(completesAuth){
-            completeAuthentication(destination);
-            return;
-          }
-          if(patientPhone){
-            patientPhone.readOnly=true;
-            patientPhone.setAttribute('aria-readonly','true');
-          }
-          const note=document.querySelector('#patient-info [data-phone-note]');
-          const edit=document.querySelector('#patient-info [data-phone-edit]');
-          if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
-          if(edit) edit.textContent='เปลี่ยนเบอร์';
-          showActionToast('ยืนยันเบอร์โทรศัพท์ใหม่แล้ว','success');
-          returnFromPhoneOtp(returnTarget);
-        });
-        return;
-      }
-      submitOnce('otp',authComplete,() => {
-        flowState.otpVerified=true;
-        const patientPhone=document.getElementById('patient-phone');
-        if(patientPhone) patientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
-        persistFlowState();
-        // A phone sign-up chose its password on the sign-up page (client, 19 Sep),
-        // so the code completes the account. A reset still goes on to replace
-        // the password.
-        if(flowState.signupPasswordChosen && !flowState.passwordResetPending){
-          flowState.signupPasswordChosen=false;
-          ['signup-password','signup-confirm'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-          applyAuthenticatedAccount({returning:false});
-          flowState.signupDonePending=true;
-          persistFlowState();
-          show('consent-terms');
-          return;
-        }
-        syncPasswordScreen();
-        show('set-password');
-      });
-      return;
-    }
+    if(authComplete){ if (kraneHandle_otp_submit(e, authComplete)) return; }
     const passwordSave = e.target.closest('[data-password-save]');
-    if(passwordSave){
-      const pw=document.getElementById('new-password');
-      const confirm=document.getElementById('confirm-password');
-      const value=pw?.value || '';
-      if(!passwordRuleState(value).every(([,ok]) => ok)){
-        showActionToast('รหัสผ่านต้องยาวอย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข','warning');
-        pw?.focus();
-        return;
-      }
-      if(confirm?.value!==value){
-        showActionToast('รหัสผ่านทั้งสองช่องยังไม่ตรงกัน','warning');
-        confirm?.focus();
-        return;
-      }
-      submitOnce('set-password',passwordSave,() => {
-        const reset=Boolean(flowState.passwordResetPending);
-        flowState.passwordSet=true;
-        flowState.passwordResetPending=false;
-        persistFlowState();
-        if(pw) pw.value='';
-        if(confirm) confirm.value='';
-        syncPasswordValidity();
-        applyAuthenticatedAccount({returning:reset || Boolean(flowState.returningLogin)});
-        if(reset){
-          showActionToast('ตั้งรหัสผ่านใหม่แล้ว','success');
-          show(nextAfterAuthentication());
-          return;
-        }
-        flowState.signupDonePending=true;
-        persistFlowState();
-        show('consent-terms');
-      });
-      return;
-    }
+    if(passwordSave){ if (kraneHandle_set_password_submit(e, passwordSave)) return; }
     const partnerInfoContinue=e.target.closest('[data-partner-info-continue]');
-    if(partnerInfoContinue){
-      const name=partnerNameValue();
-      const phone=document.getElementById('partner-phone')?.value.trim() || '';
-      const selected=document.querySelector('#partner-patient-info [data-partner-payment-choice-value][aria-selected="true"]');
-      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
-      if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
-      if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return; }
-      if(flowState.partnerInfoComplete && flowState.partnerPhoneVerified
-         && normalizePhone(phone)===normalizePhone(flowState.partnerPhone)){
-        flowState.partnerName=name;
-        flowState.partnerPaymentMethod=paymentMethod;
-        completePartnerPatientInfo();
-        return;
-      }
-      { // Verify a new phone once, then reuse its completed verification.
-        flowState.partnerName=name;
-        flowState.partnerPaymentMethod=paymentMethod;
-        flowState.partnerPendingPhone=normalizePhone(phone);
-        flowState.partnerPhoneVerified=false;
-        flowState.partnerPhoneOtpPending=true;
-        flowState.partnerInfoContinueAfterOtp=true;
-        persistFlowState();
-        show('otp'); return;
-      }
-      return;
-    }
+    if(partnerInfoContinue){ if (kraneHandle_partner_patient_info_continue(e, partnerInfoContinue)) return; }
     const partnerPayment=e.target.closest('[data-partner-payment]');
-    if(partnerPayment){
-      const paymentMethod=partnerPayment.dataset.partnerPayment;
-      const eligiblePartnerPolicy=paymentMethod==='insurance' && Boolean(partnerPayment.closest('#partner-insurance'));
-      const selectedPartnerPolicy=eligiblePartnerPolicy ? syncPartnerPolicySummary() : null;
-      const partnerMedicineCredit=Number(selectedPartnerPolicy?.dataset.medicineCredit || 1000);
-      const partnerPolicyProvider=selectedPartnerPolicy?.dataset.product || 'แผนสุขภาพออนไลน์';
-      const partnerPolicyId=selectedPartnerPolicy?.value || 'online-care';
-      flowState.entryChannel='partner';
-      flowState.partnerPaymentChosen=true;
-      flowState.partnerPaymentMethod=paymentMethod;
-      // Selecting insurance opens entitlement review; only confirming an eligible
-      // policy makes this demo balance zero and records the medicine credit for the
-      // post-consult checkout. Self-pay keeps the ฿350 balance and no medicine credit.
-      flowState.partnerConsultationBalanceDue=eligiblePartnerPolicy ? 0 : (paymentMethod==='self-pay' ? CONSULTATION_FEE_BAHT : null);
-      flowState.partnerMedicineCredit=eligiblePartnerPolicy ? partnerMedicineCredit : 0;
-      flowState.coverage=eligiblePartnerPolicy
-        ? {provider:partnerPolicyProvider,policyId:partnerPolicyId,consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:partnerMedicineCredit}
-        : {provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
-      persistFlowState();
-      if(partnerPayment.dataset.go==='intake1') setSelectedCategory('general');
-      show(partnerPayment.dataset.go || (flowState.partnerPaymentMethod==='insurance' ? 'partner-insurance' : 'intake-concern'));
-      return;
-    }
+    if(partnerPayment){ if (kraneHandle_partner_insurance_paymentChoice(e, partnerPayment)) return; }
     const intakeDurationStep=e.target.closest('[data-intake-duration-step]');
-    if(intakeDurationStep){
-      const screen=intakeDurationStep.closest('.screen');
-      const input=screen?.querySelector('input[data-intake-role="duration"]');
-      if(!input) return;
-      input.value=String(Math.min(99,Math.max(1,(Number(input.value) || 1)+Number(intakeDurationStep.dataset.intakeDurationStep || 0))));
-      input.dispatchEvent(new Event('input',{bubbles:true}));
-      syncIntakeDropdownContinue(screen);
-      return;
-    }
+    if(intakeDurationStep){ if (kraneHandle_intake_durationStep(e, intakeDurationStep)) return; }
     const intakeDurationUnit=e.target.closest('[data-intake-duration-unit]');
-    if(intakeDurationUnit){
-      const screen=intakeDurationUnit.closest('.screen');
-      screen?.querySelectorAll('[data-intake-duration-unit]').forEach(option => {
-        option.setAttribute('aria-selected',String(option===intakeDurationUnit));
-      });
-      saveIntakeDraft();
-      syncIntakeDropdownContinue(screen);
-      return;
-    }
+    if(intakeDurationUnit){ if (kraneHandle_intake_durationUnit(e, intakeDurationUnit)) return; }
     const partnerHistoryChoice=e.target.closest('[data-partner-history-choice]');
-    if(partnerHistoryChoice){
-      const group=partnerHistoryChoice.closest('[data-partner-history]');
-      const hasDetails=partnerHistoryChoice.dataset.partnerHistoryChoice==='yes';
-      setPartnerHistoryChoice(group,hasDetails);
-      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
-      return;
-    }
+    if(partnerHistoryChoice){ if (kraneHandle_intake_general_partnerHistory(e, partnerHistoryChoice)) return; }
     /* Obesity screening (client, 13 Sep): seven yes/no rows, each its own
        radiogroup. A "yes" is never a dead end here — the doctor's SOP has the
        doctor read these before deciding, and two of the seven are looking for
        another cause of the weight rather than a contraindication. */
     const obesityRiskChoice=e.target.closest('[data-obesity-risk-choice]');
-    if(obesityRiskChoice){
-      const group=obesityRiskChoice.closest('[data-obesity-risk]');
-      group?.querySelectorAll('[data-obesity-risk-choice]').forEach(option => {
-        option.setAttribute('aria-checked',String(option===obesityRiskChoice));
-      });
-      syncObesityRiskWarning();
-      saveIntakeDraft();
-      return;
-    }
+    if(obesityRiskChoice){ if (kraneHandle_intake3_obesityRisk(e, obesityRiskChoice)) return; }
     const directHistoryChoice=e.target.closest('[data-direct-history-choice]');
-    if(directHistoryChoice){
-      const group=directHistoryChoice.closest('[data-direct-history]');
-      const hasDetails=directHistoryChoice.dataset.directHistoryChoice==='yes';
-      setDirectHistoryChoice(group,hasDetails);
-      saveIntakeDraft();
-      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
-      return;
-    }
+    if(directHistoryChoice){ if (kraneHandle_intake_directHistory(e, directHistoryChoice)) return; }
     const partnerScreeningOption=e.target.closest('[data-partner-screening-value]');
-    if(partnerScreeningOption){
-      const group=partnerScreeningOption.closest('[data-partner-screening-question]');
-      if(group){
-        flowState.partnerScreening[group.dataset.partnerScreeningQuestion]=partnerScreeningOption.dataset.partnerScreeningValue;
-        persistFlowState();
-        syncPartnerScreening();
-      }
-      return;
-    }
+    if(partnerScreeningOption){ if (kraneHandle_intake_general_screening(e, partnerScreeningOption)) return; }
     const partnerComplete = e.target.closest('[data-partner-complete]');
-    if(partnerComplete){
-      submitOnce('partner-phr',partnerComplete,() => {
-        flowState.draftReady=true;
-        flowState.accountCreated=true;
-        flowState.otpVerified=true;
-        flowState.consentsComplete=true;
-        flowState.patientInfoComplete=true;
-        flowState.identityVerified=true;
-        flowState.patientName=flowState.partnerName || flowState.patientName || '';
-        flowState.partnerReviewComplete=true;
-        flowState.partnerReviewConfirmedAt=new Date().toISOString();
-        flowState.lastRequiredScreen='matching';
-        persistFlowState();
-        showActionToast('ตรวจสอบสิทธิ์ประกันแล้ว กำลังจับคู่แพทย์','success');
-        show(partnerClinicalStartTarget());
-      });
-      return;
-    }
+    if(partnerComplete){ if (kraneHandle_partner_phr_complete(e, partnerComplete)) return; }
     const patientInfoContinue = e.target.closest('[data-patient-info-continue]');
-    if(patientInfoContinue){
-      const name=patientNameValue();
-      const phoneInput=document.getElementById('patient-phone');
-      // Off the general path the choice is not rendered, so self-pay stands in
-      // rather than blocking on a question the patient was never asked.
-      const paymentChoice=isGeneralPath()
-        ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
-        : 'self-pay';
-      if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
-      if(phoneInput && !phoneInput.readOnly){
-        if(!isValidThaiMobile(phoneInput.value)){
-          showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
-          phoneInput.focus();
-          return;
-        }
-        if(normalizePhone(phoneInput.value)!==normalizePhone(flowState.verifiedPhone)){
-          flowState.pendingPhone=normalizePhone(phoneInput.value);
-          flowState.phoneOtpPending=true;
-          flowState.phoneOtpReturn='patient-info';
-          flowState.phoneOtpDestination='';
-          flowState.phoneOtpCompletesAuth=false;
-          persistFlowState();
-          show('otp');
-          return;
-        }
-        phoneInput.readOnly=true;
-        phoneInput.setAttribute('aria-readonly','true');
-        const phoneNote=document.querySelector('#patient-info [data-phone-note]');
-        const phoneEdit=document.querySelector('#patient-info [data-phone-edit]');
-        if(phoneNote) phoneNote.textContent='ยืนยันด้วยรหัส OTP แล้ว';
-        if(phoneEdit) phoneEdit.textContent='เปลี่ยนเบอร์';
-      }
-      if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
-      submitOnce('patient-info',patientInfoContinue,() => {
-        flowState.patientInfoComplete=true;
-        flowState.patientName=name;
-        flowState.profileDisplayName=name;
-        flowState.paymentPreference=paymentChoice;
-        if(paymentChoice==='self-pay') flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
-        persistFlowState();
-        showActionToast('บันทึกข้อมูลผู้รับบริการแล้ว','success');
-        if(paymentChoice==='insurance'){
-          insuranceEntry='profile';
-          show('insurance');
-        } else show(directNextAfterPatientInfo());
-      });
-      return;
-    }
+    if(patientInfoContinue){ if (kraneHandle_patient_info_continue(e, patientInfoContinue)) return; }
     const identityContinue = e.target.closest('[data-identity-continue]');
-    if(identityContinue){
-      if(identityContinue.disabled) return;
-      submitOnce('identity',identityContinue,() => {
-        flowState.identityVerified=true;
-        persistFlowState();
-        showActionToast('ยืนยันตัวตนเรียบร้อยแล้ว','success');
-        // Client (17 Aug): identity is verified before the patient record is
-        // taken, so this hands off to patient-info unless that is already done.
-        show(flowState.patientInfoComplete ? directClinicalStartTarget() : 'patient-info');
-      });
-      return;
-    }
+    if(identityContinue){ if (kraneHandle_identity_continue(e, identityContinue)) return; }
     const consentSubmit = e.target.closest('[data-consent-continue]');
-    if(consentSubmit){
-      if(!consentIdentityVerified()){
-        showActionToast('กรุณาเข้าสู่ระบบและยืนยันรหัส OTP ก่อนให้ความยินยอม','warning');
-        return;
-      }
-      if(consentSubmit.disabled) return;
-      submitOnce('consent',consentSubmit,() => {
-        const acceptedAt=new Date().toISOString();
-        const records=requiredConsentChecks.map(input => ({
-          type:input.dataset.consentType,
-          version:consentDocuments[input.dataset.consentType].version,
-          required:true,
-          granted:true,
-          acceptedAt
-        }));
-        records.push({
-          type:'marketing',
-          version:'marketing-v1',
-          required:false,
-          granted:Boolean(consentChecked.marketing),
-          recordedAt:acceptedAt,
-          acceptedAt:consentChecked.marketing ? acceptedAt : null
-        });
-        flowState.marketingConsent={
-          version:'marketing-v1',
-          granted:Boolean(consentChecked.marketing),
-          recordedAt:acceptedAt
-        };
-        const consentSource=flowState.entryChannel==='partner' ? 'partner' : 'direct';
-        saveConsentRecords(consentSource,records);
-        if(consentSource==='partner') flowState.partnerConsentComplete=true;
-        else {
-          flowState.consentsComplete=true;
-          // Consent starts a fresh pre-doctor confirmation cycle. Keep the
-          // saved values, but require the patient to review and submit them.
-          if(flowState.draftReady) flowState.patientInfoComplete=false;
-        }
-        // Personal details must be reviewed immediately after consent, including
-        // for returning patients. Only after that confirmation may the route open
-        // general health or continue toward doctor matching.
-        const consentNext = consentSource==='partner'
-          ? 'partner-idcard'
-          : (!flowState.draftReady
-              ? nextAfterAuthentication()
-              : 'patient-info');
-        flowState.lastRequiredScreen=consentNext;
-        const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
-        if(showSignupDone) flowState.signupDonePending=false;
-        persistFlowState();
-        showActionToast('บันทึกความยินยอมแล้ว','success');
-        if(showSignupDone) openSignupDoneModal(consentNext);
-        else show(consentNext);
-      });
-      return;
-    }
+    if(consentSubmit){ if (kraneHandle_consent_terms_submit(e, consentSubmit)) return; }
     const newAccount = e.target.closest('[data-new-account]');
-    if(newAccount){
-      flowState.returningLogin=false;
-      /* With no saved intake there is no consultation to resume, so the finished
-         account lands on the profile instead of question one (client, 20 Sep). */
-      if(!flowState.draftReady) postAuthNext='profile';
-      persistFlowState();
-      show('signup');
-      return;
-    }
+    if(newAccount){ if (kraneHandle_signup_newAccount(e, newAccount)) return; }
     // category card: set the chosen category (so the conditions screen knows what to show)
     // BEFORE the generic navigation handler runs below.
     const catCard = e.target.closest('[data-category-card]');
-    if(catCard){
-      flowState.entryChannel='direct';
-      flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
-      flowState.partnerConsultationBalanceDue=null;
-      flowState.partnerMedicineCredit=0;
-      persistFlowState();
-      setSelectedCategory(catCard.dataset.categoryId);
-      const chosen = selectedCategory();
-      const choices = (chosen.conditions || []).filter(item => item.status !== 'Soon');
-      /* A category with one condition has nothing to choose between — the
-         second card only repeated the first. Go straight to the questionnaire
-         and reveal the list only when there is a real choice. */
-      if(catCard.dataset.go === 'conditions' && choices.length <= 1){
-        conditionListRevealed = false;
-        renderConditionList();
-        if(choices[0]) selectedConditionId = choices[0].id;
-        show(choices[0] ? (choices[0].next || 'intake1') : 'intake1');
-        return;
-      }
-      conditionListRevealed = true;
-      renderConditionList();
-    }
+    if(catCard){ if (kraneHandle_conditions_category(e, catCard)) return; }
     const conditionCard = e.target.closest('[data-condition-card]');
-    if(conditionCard) selectedConditionId = conditionCard.dataset.conditionId;
+    if(conditionCard) { if (kraneHandle_conditions_condition(e, conditionCard)) return; }
     const postAuthSetter = e.target.closest('[data-post-auth]');
     if(postAuthSetter) postAuthNext = postAuthSetter.dataset.postAuth;
     const authRequired = e.target.closest('[data-requires-auth]');
@@ -2575,287 +1968,63 @@ kraneInit_payment_537();
     }
     // address suggestion: tap to fill the structured fields + recalc distance-based same-day fee
     const fillItem = e.target.closest('.ac-item[data-fill]');
-    if(fillItem){
-      const g = fillItem.parentElement, scr = fillItem.closest('.screen'), d = fillItem.dataset;
-      [...g.querySelectorAll('.ac-item')].forEach(x => x.setAttribute('aria-selected', x===fillItem));
-      const set = (id,v) => { const el = scr.querySelector('#'+id); if(el && v!=null) el.value = v; };
-      set('addrBuilding',d.building); set('addrFloor',d.floor); set('addrLine',d.addr); set('addrDistrict',d.district);
-      if(d.km) scr.dataset.selectedKm=d.km;
-      // reflect the choice in the search box and close the suggestions
-      const sb = scr.querySelector('#addrSearch'); const nm = fillItem.querySelector('.ac-name');
-      if(sb && nm) sb.value = nm.textContent.trim();
-      const sg = scr.querySelector('#addrSuggest'); if(sg) sg.style.display = 'none';
-      writeDeliveryAddressDraft(scr,{
-        building:d.building,floor:d.floor,line:d.addr,district:d.district,
-        note:scr.querySelector('#addrNote')?.value || '',km:d.km || scr.dataset.selectedKm
-      });
-    }
+    if(fillItem){ if (kraneHandle_address_fillSuggestion(e, fillItem)) return; }
     // F13: End hangs up (the chat return-bar disappears); Chat keeps the call running
     const ec = e.target.closest('[data-endcall]');
-    if(ec) callActive = false;
+    if(ec) { if (kraneHandle_video_endActiveCall(e, ec)) return; }
     // ---- declined medicines: put one back ----
     const restore=e.target.closest('[data-restore-item]');
-    if(restore){
-      const key=restore.dataset.restoreItem;
-      const row=document.querySelector(`#plan [data-order-item="${key}"]`);
-      const ctl=row?.querySelector('[data-qty]');
-      if(ctl){
-        const nEl=ctl.querySelector('[data-qty-n]');
-        const max=parseInt(ctl.dataset.max,10), unit=parseInt(ctl.dataset.unit,10);
-        nEl.textContent=max;
-        ctl.querySelector('[data-qty-minus]').disabled=false;
-        ctl.querySelector('[data-qty-plus]').disabled=true;
-        const line=row.querySelector('[data-line-price],[data-order-price]');
-        if(line) line.textContent='฿ '+(unit*max).toLocaleString();
-        flowState.orderState.quantities[key]=max;
-        persistFlowState();
-        syncDeclinedMedicines();
-        syncOrderCheckout();
-        refreshMedicationCheckout();
-        showActionToast('เพิ่มกลับเข้ารายการแล้ว','success');
-      }
-      return;
-    }
+    if(restore){ if (kraneHandle_rx_plan_restoreMedicine(e, restore)) return; }
     // ---- accept the medicine list, which ends the consultation ----
-    if(e.target.closest('[data-accept-plan]')){
-      e.preventDefault();
-      const m=document.querySelector('[data-acceptplan-modal]');
-      if(m){ m.hidden=false; fillDoctorName(m); return; }
-    }
-    if(e.target.closest('[data-acceptplan-cancel]')){
-      const m=document.querySelector('[data-acceptplan-modal]');
-      if(m) m.hidden=true;
-      return;
-    }
-    if(e.target.closest('[data-acceptplan-confirm]')){
-      const m=document.querySelector('[data-acceptplan-modal]');
-      if(m) m.hidden=true;
-      flowState.orderState.checkoutOrigin='consultation';
-      resetOptionalAddOns();
-      persistFlowState();
-      show('rx-writing');
-      return;
-    }
+    if(e.target.closest('[data-accept-plan]')){ if (kraneHandle_rx_plan_acceptPlan(e)) return; }
+    if(e.target.closest('[data-acceptplan-cancel]')){ if (kraneHandle_rx_plan_cancelPlan(e)) return; }
+    if(e.target.closest('[data-acceptplan-confirm]')){ if (kraneHandle_rx_plan_confirmPlan(e)) return; }
     // ---- end-call confirmation (item 7) ----
     const endCall=e.target.closest('[data-endcall]');
-    if(endCall){
-      e.preventDefault();
-      const m=document.querySelector('[data-endcall-modal]');
-      if(m){ m.hidden=false; fillDoctorName(m); return; }
-    }
-    if(e.target.closest('[data-endcall-cancel]')){
-      const m=document.querySelector('[data-endcall-modal]');
-      if(m) m.hidden=true;
-      return;
-    }
-    if(e.target.closest('[data-endcall-confirm]')){
-      const m=document.querySelector('[data-endcall-modal]');
-      if(m) m.hidden=true;
-      show('consult');
-      return;
-    }
+    if(endCall){ if (kraneHandle_video_endCall(e, endCall)) return; }
+    if(e.target.closest('[data-endcall-cancel]')){ if (kraneHandle_video_cancelEndCall(e)) return; }
+    if(e.target.closest('[data-endcall-confirm]')){ if (kraneHandle_video_confirmEndCall(e)) return; }
     // ---- map picker (in-app only, never navigates out) ----
     const simZoom=e.target.closest('[data-sim-zoom]');
-    if(simZoom){
-      const dir=parseInt(simZoom.dataset.simZoom,10);
-      if(osmZoomBy(dir)) return;
-      simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
-      simApplyTransform(); return;
-    }
-    if(e.target.closest('[data-address-picker-open]')){ openAddressPicker(); return; }
-    if(e.target.closest('[data-address-picker-close]')){ closeAddressPicker(); return; }
-    if(e.target.closest('[data-sim-locate]')){ simLocate(); return; }
-    if(e.target.closest('[data-address-map-confirm]')){ confirmAddressPicker(); return; }
+    if(simZoom){ if (kraneHandle_address_zoom(e, simZoom)) return; }
+    if(e.target.closest('[data-address-picker-open]')){ if (kraneHandle_address_openPicker(e)) return; }
+    if(e.target.closest('[data-address-picker-close]')){ if (kraneHandle_address_closePicker(e)) return; }
+    if(e.target.closest('[data-sim-locate]')){ if (kraneHandle_address_locate(e)) return; }
+    if(e.target.closest('[data-address-map-confirm]')){ if (kraneHandle_address_confirmMap(e)) return; }
     const addressSave=e.target.closest('[data-address-save]');
-    if(addressSave){
-      if(!saveDeliveryAddress()) return;
-      addressEditingSavedIndex=-1;
-      /* The form is done with; the page goes back to its list so returning to
-         it shows the address that was just saved, selected. */
-      addressListSelected=savedAddresses().findIndex(entry => addressBookKey(entry)===addressBookKey(flowState.orderState.address));
-      setAddressPageMode('list');
-      focusCheckoutDelivery=true;
-      replaceCurrent('payment');
-      startInlineDeliveryQuote();
-      showActionToast('บันทึกและใช้ที่อยู่นี้แล้ว','success');
-      return;
-    }
+    if(addressSave){ if (kraneHandle_address_save(e, addressSave)) return; }
     const fulfillmentModeChoice=e.target.closest('[data-fulfillment-mode-option]');
-    if(fulfillmentModeChoice){
-      const nextMode=fulfillmentModeChoice.dataset.fulfillmentModeOption;
-      if(flowState.orderState.fulfillmentMode!==nextMode) invalidateFulfillmentQuote();
-      flowState.orderState.fulfillmentMode=nextMode==='pickup' ? 'pickup' : 'delivery';
-      persistFlowState();
-      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
-      else refreshMedicationCheckout();
-      return;
-    }
+    if(fulfillmentModeChoice){ if (kraneHandle_payment_fulfillment(e, fulfillmentModeChoice)) return; }
     const deliveryChoice=e.target.closest('[data-delivery-value]');
-    if(deliveryChoice){
-      const nextDeliveryMethod=deliveryChoice.dataset.deliveryValue;
-      if(flowState.orderState.deliveryMethod!==nextDeliveryMethod) invalidateFulfillmentQuote();
-      flowState.orderState.fulfillmentMode='delivery';
-      flowState.orderState.deliveryMethod=nextDeliveryMethod;
-      deliveryMethod=flowState.orderState.deliveryMethod;
-      persistFlowState();
-      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
-      else refreshMedicationCheckout();
-      return;
-    }
+    if(deliveryChoice){ if (kraneHandle_payment_delivery(e, deliveryChoice)) return; }
     /* The basket row carries its own remove, so an add-on can be dropped where
        it is listed instead of hunting for its card in the rail below. Adding it
        back is still the card, which is where the price and description live. */
     /* The filter narrows the one feed. It runs before the [data-go] handler so a
        filter press never also opens the card underneath it. */
     const activityFilter=e.target.closest('[data-activity-filter]');
-    if(activityFilter){
-      const want=activityFilter.dataset.activityFilter;
-      document.querySelectorAll('[data-activity-filter]').forEach(b => {
-        const current=b===activityFilter;
-        b.classList.toggle('is-current',current);
-        b.setAttribute('aria-selected',String(current));
-      });
-      let shown=0;
-      document.querySelectorAll('#activity [data-activity-type]').forEach(card => {
-        const match=want==='all' || card.dataset.activityType===want;
-        card.hidden=!match;
-        if(match) shown+=1;
-      });
-      const empty=document.querySelector('[data-activity-empty]');
-      if(empty) empty.hidden=shown>0;
-      return;
-    }
+    if(activityFilter){ if (kraneHandle_activity_filter(e, activityFilter)) return; }
     /* There is no dispatch map behind the prototype, so the button says where
        the live position actually lives rather than opening an empty frame. */
     const riderLocate=e.target.closest('[data-rider-locate]');
-    if(riderLocate){
-      showActionToast('ตำแหน่งไรเดอร์แบบเรียลไทม์เปิดดูได้ในแอปของผู้ให้บริการขนส่ง','info');
-      return;
-    }
+    if(riderLocate){ if (kraneHandle_tracking_riderLocate(e, riderLocate)) return; }
     const addOnEdit=e.target.closest('[data-addon-edit]');
-    if(addOnEdit){
-      openPaymentItemSheet(addOnEdit.closest('[data-order-addon]'),addOnEdit);
-      return;
-    }
+    if(addOnEdit){ if (kraneHandle_payment_editAddon(e, addOnEdit)) return; }
     const addOnRemove=e.target.closest('[data-addon-remove]');
-    if(addOnRemove){
-      const key=addOnRemove.dataset.addonRemove;
-      if(flowState.orderState.addOns[key]){
-        flowState.orderState.addOns[key]=false;
-        flowState.orderState.addonQuantities[key]=0;
-        invalidateFulfillmentQuote();
-        persistFlowState();
-        refreshMedicationCheckout();
-      }
-      return;
-    }
+    if(addOnRemove){ if (kraneHandle_payment_removeAddon(e, addOnRemove)) return; }
     const addOnChoice=e.target.closest('[data-addon-option]');
-    if(addOnChoice){
-      const key=addOnChoice.dataset.addonOption;
-      const quantity=Math.max(0,Math.min(10,Number(flowState.orderState.addonQuantities[key] || 0)));
-      if(quantity>=10){
-        showActionToast('เพิ่มได้สูงสุด 10 ชิ้น','info');
-        return;
-      }
-      flowState.orderState.addOns[key]=true;
-      flowState.orderState.addonQuantities[key]=quantity+1;
-      invalidateFulfillmentQuote();
-      persistFlowState();
-      refreshMedicationCheckout();
-      return;
-    }
+    if(addOnChoice){ if (kraneHandle_payment_addAddon(e, addOnChoice)) return; }
     // F16 (client 5 Jul): reduce-only quantity stepper; the prescription is the ceiling
     const qbtn = e.target.closest('[data-qty-minus],[data-qty-plus]');
-    if(qbtn && !qbtn.disabled){
-      const ctl = qbtn.closest('[data-qty]');
-      const nEl = ctl.querySelector('[data-qty-n]');
-      const min = parseInt(ctl.dataset.min || '1', 10);
-      const max = parseInt(ctl.dataset.max, 10), unit = parseInt(ctl.dataset.unit, 10);
-      let q = parseInt(nEl.textContent, 10);
-      q = qbtn.hasAttribute('data-qty-minus') ? Math.max(min, q - 1) : Math.min(max, q + 1);
-      const item=ctl.closest('[data-order-item]')?.dataset.orderItem;
-      const nextQuantities=Object.assign({},flowState.orderState.quantities,item ? {[item]:q} : {});
-      nEl.textContent = q;
-      ctl.querySelector('[data-qty-minus]').disabled = q <= min;
-      ctl.querySelector('[data-qty-plus]').disabled = q >= max;
-      const row=ctl.closest('[data-order-item]');
-      const line = row?.querySelector('[data-line-price],[data-order-price]');
-      if(line) line.textContent = '฿ ' + (unit * q).toLocaleString();
-      if(item){
-        flowState.orderState.quantities[item]=q;
-        invalidateFulfillmentQuote();
-        persistFlowState();
-        syncOrderCheckout();
-        syncDeclinedMedicines();
-        refreshMedicationCheckout();
-      }
-      return;
-    }
+    if(qbtn && !qbtn.disabled){ if (kraneHandle_orders_quantity(e, qbtn)) return; }
     const insuranceConfirm = e.target.closest('[data-insurance-confirm]');
-    if(insuranceConfirm){
-      const insuranceId=document.getElementById('insurance-id');
-      const insuranceDob=document.getElementById('insurance-dob');
-      if(!insuranceId?.value.trim()){
-        showActionToast('กรุณากรอกเลขบัตรหรือหนังสือเดินทาง','warning');
-        insuranceId?.focus();
-        return;
-      }
-      if(!insuranceDob?.value){
-        showActionToast('กรุณาเลือกวันเกิด','warning');
-        insuranceDob?.focus();
-        return;
-      }
-      if(insuranceEntry === 'partner'){
-        flowState.entryChannel='partner';
-        // This was entered for eligibility immediately before general health.
-        // Carry the user's real answer forward instead of using a demo birthday.
-        flowState.partnerIdentityDob=insuranceDob.value;
-        flowState.partnerPaymentChosen=true;
-        flowState.partnerPaymentMethod='insurance';
-        flowState.partnerConsultationBalanceDue=null;
-        flowState.partnerMedicineCredit=0;
-        flowState.coverage={provider:'MTL Group',policyId:'',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:0};
-        persistFlowState();
-        showActionToast('พบสิทธิ์ประกันที่ใช้ได้ 1 รายการ','success');
-        show('partner-insurance');
-        return;
-      }
-      if(insuranceEntry === 'profile'){
-        flowState.paymentPreference='insurance';
-        flowState.coverage={provider:'เฮลท์ แฮปปี้',policyId:'POL-88123',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000};
-        persistFlowState();
-        show('insurance-result');
-        return;
-      }
-      flowState.entryChannel='insured';
-      flowState.coverage={provider:'AIA เฮลท์ แฮปปี้',policyId:'POL-88123',consultationCredit:CONSULTATION_FEE_BAHT,medicineCredit:1000};
-      persistFlowState();
-      refreshMedicationCheckout();
-      show('payment');
-      return;
-    }
+    if(insuranceConfirm){ if (kraneHandle_insurance_confirm(e, insuranceConfirm)) return; }
     const chatSend = e.target.closest('[data-chat-send]');
-    if(chatSend){
-      const input = document.querySelector('#consult [data-chat-input]');
-      const value = input ? input.value.trim() : '';
-      if(!value){ showActionToast('พิมพ์ข้อความก่อนส่ง','warning'); return; }
-      try { window.KraneClinical.send(value); input.value=''; } catch { showActionToast('ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง','warning'); }
-      return;
-    }
+    if(chatSend){ if (kraneHandle_consult_sendChat(e, chatSend)) return; }
     const markRead = e.target.closest('[data-mark-read]');
-    if(markRead){
-      document.querySelectorAll('#notifications .notif--unread').forEach(n => n.classList.remove('notif--unread'));
-      markRead.textContent = 'อ่านทั้งหมดแล้ว';
-      markRead.disabled = true;
-      showActionToast('อ่านการแจ้งเตือนทั้งหมดแล้ว');
-      return;
-    }
+    if(markRead){ if (kraneHandle_notifications_markRead(e, markRead)) return; }
     const bank = e.target.closest('[data-bank-select]');
-    if(bank){
-      bank.closest('.bank-grid').querySelectorAll('[data-bank-select]').forEach(b => b.classList.toggle('is-selected', b === bank));
-      showActionToast('เลือกธนาคารแล้ว');
-      return;
-    }
+    if(bank){ if (kraneHandle_orders_selectBank(e, bank)) return; }
     const demoAction = e.target.closest('[data-demo-action]');
     if(demoAction){
       if(demoAction.closest('#otp')) prepareFreshOtpChallenge();
@@ -2863,48 +2032,15 @@ kraneInit_payment_537();
       return;
     }
     const directIntakeComplete=e.target.closest('[data-direct-intake-complete]');
-    if(directIntakeComplete){
-      finishDirectF02();
-      return;
-    }
+    if(directIntakeComplete){ if (kraneHandle_intake_directComplete(e, directIntakeComplete)) return; }
     const csatGo = e.target.closest('[data-csat-go]');
-    if(csatGo){ openCsatModal(csatGo.dataset.csatGo); return; }
-    if(e.target.closest('[data-delivery-confirm]')){
-      flowState.orderDelivered=true;
-      persistFlowState();
-      if(!IS_DEMO_EMBED) window.KraneGoldenDemo?.advanceFulfilment('Delivered');
-      syncTrackingDelivery();
-      showActionToast('ยืนยันการรับยาแล้ว','success');
-      /* The review asks about the whole thing — the advice, the app and the
-         call — so it belongs after the medicine has actually arrived, not at
-         the moment the card is charged (client, 20 Aug). */
-      openCsatModal('tracking');
-      return;
-    }
-    if(e.target.closest('[data-address-recipient-edit]')) addressRecipientEditing=true;
+    if(csatGo){ if (kraneHandle_clinical_csatOpen(e, csatGo)) return; }
+    if(e.target.closest('[data-delivery-confirm]')){ if (kraneHandle_tracking_confirmDelivery(e)) return; }
+    if(e.target.closest('[data-address-recipient-edit]')) { if (kraneHandle_address_recipientEdit(e)) return; }
     const mockDelivery=e.target.closest('[data-mock-status]');
-    if(mockDelivery){
-      seedClinicalDemoStage('tracking');
-      flowState.orderState.deliveryMethod=mockDelivery.dataset.mockDelivery;
-      flowState.orderState.fulfillmentMode='delivery';
-      flowState.orderState.justPaidTracking=true;
-      flowState.orderDelivered=mockDelivery.dataset.mockStatus==='Delivered';
-      flowState.csatDone=false;
-      window.kraneDemoStatus=mockDelivery.dataset.mockStatus;
-      window.KraneGoldenDemo?.writeState({fulfilmentStatus:mockDelivery.dataset.mockStatus});
-      persistFlowState();
-    }
+    if(mockDelivery){ if (kraneHandle_tracking_demoStatus(e, mockDelivery)) return; }
     const paidTracking=e.target.closest('[data-payment-success-cta][data-go="tracking"]');
-    if(paidTracking){
-      flowState.orderDelivered=false;
-      flowState.csatDeliveryPrompted=false;
-      flowState.deliveryNotified=false;
-      flowState.orderState.deliveredAt=null;
-      flowState.orderState.justPaidTracking=true;
-      window.kraneDemoStatus='';
-      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
-      persistFlowState();
-    }
+    if(paidTracking){ if (kraneHandle_payment_success_tracking(e, paidTracking)) return; }
     const go = e.target.closest('[data-go]');
     if(go){
       const intakeQuestionScreen=go.closest('.screen');
@@ -3055,73 +2191,19 @@ kraneInit_payment_537();
     // segmented toggles (ID/passport, article filters): single-select within parent group
     /* Open issued PDFs directly; the treatment record contains medicine details. */
     const docOpen = e.target.closest('[data-doc-open]');
-    if(docOpen){
-      const documentUrls={receipt:'assets/documents-v1/receipt-v3.pdf',cert:'assets/documents-v1/medical-certificate-v3.pdf'};
-      const file=documentUrls[docOpen.dataset.docOpen];
-      if(file) window.open(file,'_blank','noopener');
-      else show('treatment-detail');
-      return;
-    }
+    if(docOpen){ if (kraneHandle_my_documents_open(e, docOpen)) return; }
     const tog = e.target.closest('[data-toggle]');
     if(tog){
       [...tog.parentElement.querySelectorAll('[data-toggle]')].forEach(o => o.setAttribute('aria-selected', o===tog));
-      if(tog.dataset.accountDoc){
-        const input=document.getElementById('account-document');
-        const passport=tog.dataset.accountDoc==='passport';
-        input.dataset[tog.dataset.accountDoc==='passport'?'idValue':'passportValue']=input.value;
-        input.value=input.dataset[passport?'passportValue':'idValue']||'';
-        input.inputMode=passport?'text':'numeric';
-        input.maxLength=passport?32:17;
-        input.placeholder=passport?'เช่น AB1234567':'0-0000-00000-00-0';
-        input.toggleAttribute('data-national-id',!passport);
-        document.querySelector('label[for="account-document"]').textContent=passport?'เลขหนังสือเดินทาง':'เลขบัตรประชาชน';
-        syncFloatingFieldState(input.closest('.float-field'));
-      }
-      if(tog.dataset.insuranceDoc){
-        const input=document.getElementById('insurance-id');
-        const passport=tog.dataset.insuranceDoc==='passport';
-        if(input){
-          input.value='';
-          input.inputMode=passport ? 'text' : 'numeric';
-          input.maxLength=passport ? 32 : 17;
-          input.placeholder=passport ? 'เช่น AB1234567' : '0-0000-00000-00-0';
-          document.querySelector('label[for="insurance-id"]').textContent=passport ? 'เลขหนังสือเดินทาง' : 'เลขบัตรประชาชน';
-          input.toggleAttribute('data-national-id',!passport);
-          syncFloatingFieldState(input.closest('.float-field'));
-        }
-      }
+      if(tog.dataset.accountDoc){ if (kraneHandle_account_documentType(e, tog)) return; }
+      if(tog.dataset.insuranceDoc){ if (kraneHandle_insurance_documentType(e, tog)) return; }
       saveIntakeDraft();
       // documents screen: the toggle swaps the prescription / certificate blocks
-      if(tog.dataset.docTab){
-        const dScr = tog.closest('.screen');
-        dScr.querySelectorAll('[data-doc]').forEach(b => { b.hidden = b.dataset.doc !== tog.dataset.docTab; });
-      }
+      if(tog.dataset.docTab){ if (kraneHandle_my_documents_tab(e, tog)) return; }
     }
     // independent press toggles (call controls: mute / cam / speaker)
     const press = e.target.closest('[data-press]');
-    if(press){
-      const nowPressed = press.getAttribute('aria-pressed') !== 'true';
-      press.setAttribute('aria-pressed', nowPressed);
-      // re-icon to match the new state (mic <-> mic-off, speaker <-> speaker-muted)
-      if(press.dataset.callIconPressed){ press.dataset.iconReady=''; if(window.krane_normalizeIcons) window.krane_normalizeIcons(); }
-      // Camera toggles voice-only in place on the call screen: no separate screen to visit.
-      // (dataset.cameraToggle is '' for a valueless attribute, which is falsy, so check
-      // presence with "in" rather than truthiness.)
-      if('cameraToggle' in press.dataset){
-        const stage = press.closest('.callstage');
-        const lbl = press.querySelector('[data-camera-lbl]');
-        const self = stage && stage.querySelector('[data-call-self]');
-        const status = stage && stage.querySelector('[data-call-status]');
-        const note = stage && stage.querySelector('[data-camera-note]');
-        const hint = stage && stage.querySelector('[data-call-hint]');
-        press.title = nowPressed ? 'Turn camera on' : 'Turn camera off';
-        if(lbl) lbl.textContent = nowPressed ? 'Cam on' : 'Cam off';
-        if(self) self.hidden = nowPressed;
-        if(status) status.textContent = nowPressed ? 'Voice consultation · 00:42' : 'Video consultation · 02:14';
-        if(note) note.hidden = !nowPressed;
-        if(hint) hint.textContent = nowPressed ? 'Turn your camera back on at any point. End hangs up.' : 'Turning your camera off keeps the call on voice. End hangs up.';
-      }
-    }
+    if(press){ if (kraneHandle_video_callControl(e, press)) return; }
     // rating stars: fill up to the clicked star within its group
     const star = e.target.closest('.rating[data-rate] .star');
     if(star){
@@ -3195,21 +2277,9 @@ kraneInit_payment_gw_550();
 kraneInit_consultpay_551();
 
   document.body.addEventListener('click',event => {
-    if(event.target.closest('[data-consult-payment-submit]')){
-      flowState.consultationPaid=true;
-      flowState.paymentResolution='consultation-paid';
-      persistFlowState();
-      show(consultationHandoffTarget());
-      return;
-    }
-    if(event.target.closest('[data-consult-payment-retry]')){
-      resetGatewayAttempt('consultpay-gw');
-      show('consultpay-gw');
-      return;
-    }
-    if(event.target.closest('[data-consult-payment-alternate]')){
-      show('consultpay');
-    }
+    if(event.target.closest('[data-consult-payment-submit]')){ if (kraneHandle_consultpay_gw_submit(event)) return; }
+    if(event.target.closest('[data-consult-payment-retry]')){ if (kraneHandle_consultpay_fail_retry(event)) return; }
+    if(event.target.closest('[data-consult-payment-alternate]')){ if (kraneHandle_consultpay_fail_alternate(event)) return; }
   });
 
   // Grab-style checkout: the method and promo rows resolve here, then the bank
@@ -3225,28 +2295,7 @@ kraneInit_consultpay_551();
 
 /* commitPaymentItemQuantity: shared/lib/orders.js */
 
-  if(paymentItemSheet){
-    paymentItemSheet.addEventListener('click',event => {
-      if(event.target.closest('[data-payment-item-close]')){ closePaymentItemSheet(); return; }
-      if(event.target.closest('[data-payment-item-minus]') && paymentItemDraft){
-        paymentItemDraft.quantity=Math.max(0,paymentItemDraft.quantity-1);
-        syncPaymentItemDraft();
-        return;
-      }
-      if(event.target.closest('[data-payment-item-plus]') && paymentItemDraft?.allowIncrease){
-        paymentItemDraft.quantity=Math.min(paymentItemDraft.max,paymentItemDraft.quantity+1);
-        syncPaymentItemDraft();
-        return;
-      }
-      if(event.target.closest('[data-payment-item-save]') && paymentItemDraft){
-        commitPaymentItemQuantity(paymentItemDraft.quantity);
-        return;
-      }
-    });
-    paymentItemSheet.addEventListener('keydown',event => {
-      if(event.key==='Escape') closePaymentItemSheet();
-    });
-  }
+  kraneInit_payment_itemSheet();
   const postpayHelpSheet=document.getElementById('postpay-help-sheet');
   let postpayHelpReturnFocus=null;
 /* openPostpayHelp: shared/lib/ui.js */
@@ -3295,7 +2344,7 @@ kraneInit_consultpay_551();
 
 kraneInit_address_579();
 
-  pickupBranchModal?.addEventListener('keydown', event => { if(event.key==='Escape') closePickupBranchModal(); });
+  kraneInit_address_pickupEscape();
 /* openPaymentMethodModal: shared/lib/orders.js */
 
 /* closePaymentMethodModal: shared/lib/orders.js */
@@ -3313,77 +2362,15 @@ kraneInit_address_579();
 
 /* applyPromoCode: shared/lib/orders.js */
 
-  if(promoModal){
-    promoModal.addEventListener('click', event => {
-      const option = event.target.closest('[data-promo-option]');
-      if(option){
-        // A listed code is a single choice, so the tap is the answer and the
-        // sheet closes — same as the payment method sheet. The CTA below stays
-        // for a code typed by hand, which has no other way to be submitted.
-        pendingPromoCode = option.dataset.promoOption;
-        const input = promoModal.querySelector('#promoInput');
-        if(input) input.value = pendingPromoCode;
-        promoModal.querySelectorAll('[data-promo-option]').forEach(opt => {
-          opt.setAttribute('aria-selected', String(opt.dataset.promoOption === pendingPromoCode));
-        });
-        applyPromoCode(pendingPromoCode);
-        return;
-      }
-      if(event.target.closest('[data-promo-close]')){ closePromoModal(); return; }
-      if(event.target.closest('[data-promo-confirm]')){
-        const input = promoModal.querySelector('#promoInput');
-        applyPromoCode(input ? input.value : pendingPromoCode);
-      }
-    });
-  }
+  kraneInit_payment_promo();
   kraneInit_payment_owned_277();
   /* An expired quote rechecks pharmacy stock, then returns to this checkout.
      Payment is still an explicit later action by the patient. */
   document.body.addEventListener('click',event => {
-    if(event.target.closest('[data-payment-deadline-retry]')){
-      invalidateFulfillmentQuote();
-      persistFlowState();
-      show('pharmacy-search');
-      return;
-    }
-    if(event.target.closest('[data-payment-submit]')){
-      if(paymentDeadlineExpired()){
-        showActionToast('หมดเวลาชำระเงิน กรุณาให้ร้านยายืนยันสต็อกและยอดอีกครั้ง','warning');
-        return;
-      }
-      flowState.orderState.paidAmount=currentMedicationDue();
-      flowState.orderState.paidMethod=paymentMethod;
-      flowState.orderState.paidAt=Date.now();
-      flowState.orderState.paidDeliveryMethod=flowState.orderState.fulfillmentMode==='pickup' ? 'pickup' : flowState.orderState.deliveryMethod;
-      flowState.orderState.paymentExpiresAt=null;
-      flowState.consultationPaid=true;
-      flowState.paymentResolution='final-paid';
-      flowState.documentsUnlocked=true;
-      flowState.orderDelivered=false;
-      flowState.csatDone=false;
-      flowState.csatDeliveryPrompted=false;
-      flowState.deliveryNotified=false;
-      /* A new payment starts a new parcel. The arrival stamp is written once
-         and then read back, so leaving the previous order's stamp in place made
-         this one report that it had arrived before it was paid for
-         (client, 29 Sep). */
-      flowState.orderState.deliveredAt=null;
-      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
-      persistFlowState();
-      syncPaymentOutcome();
-      show('payment-success');
-      return;
-    }
-    if(event.target.closest('[data-payment-retry]')){
-      resetGatewayAttempt('payment-gw');
-      show('payment-gw');
-      activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
-      return;
-    }
-    if(event.target.closest('[data-payment-alternate-method]')){
-      show('payment');
-      window.requestAnimationFrame(openPaymentMethodModal);
-    }
+    if(event.target.closest('[data-payment-deadline-retry]')){ if (kraneHandle_payment_deadlineRetry(event)) return; }
+    if(event.target.closest('[data-payment-submit]')){ if (kraneHandle_payment_gw_submit(event)) return; }
+    if(event.target.closest('[data-payment-retry]')){ if (kraneHandle_payfail_retry(event)) return; }
+    if(event.target.closest('[data-payment-alternate-method]')){ if (kraneHandle_payfail_alternate(event)) return; }
   });
 
 
@@ -3394,49 +2381,8 @@ kraneInit_address_579();
     if(!intakeComplete) return;
     const intakeQuestionScreen=intakeComplete.closest('.screen');
     if(intakeQuestionScreen && INTAKE_ONE_QUESTION_SCREENS.includes(intakeQuestionScreen.id) && advanceIntakeQuestionPage(intakeQuestionScreen)) return;
-    if(intakeComplete.closest('#intake-concern')){
-      const concern=document.getElementById('partner-concern-text')?.value.trim() || '';
-      const amount=Number(document.getElementById('partner-concern-duration-value')?.value) || 0;
-      const unitOn=document.querySelector('#intake-concern [data-partner-duration-unit][aria-selected="true"]');
-      const reliefOn=document.querySelector('#intake-concern [data-partner-relief-value][aria-selected="true"]');
-      if(concern.length<5){
-        showActionToast('กรุณาอธิบายอาการอย่างน้อย 5 ตัวอักษร','warning');
-        document.getElementById('partner-concern-text')?.focus();
-        return;
-      }
-      if(!amount || !unitOn){
-        showActionToast('กรุณาระบุระยะเวลาที่มีอาการ','warning');
-        document.getElementById('partner-concern-duration-value')?.focus();
-        return;
-      }
-      if(!reliefOn){
-        showActionToast('กรุณาเลือกสิ่งที่ลองทำเพื่อบรรเทาอาการ','warning');
-        return;
-      }
-      flowState.partnerConcern=concern;
-      flowState.partnerConcernDuration=amount+' '+unitOn.dataset.partnerDurationUnit;
-      flowState.partnerConcernRelief=reliefOn.dataset.partnerReliefValue;
-      flowState.partnerConcernComplete=true;
-      if(flowState.entryChannel==='direct') flowState.draftReady=true;
-      flowState.lastRequiredScreen='intake-general';
-      persistFlowState();
-      saveIntakeDraft();
-      show('intake-general');
-      return;
-    }
-    if(intakeComplete.closest('#intake-general')){
-      const dob=document.getElementById('intake-dob');
-      if(!dob?.value){
-        showActionToast('กรุณาเลือกวันเกิด','warning');
-        dob?.focus();
-        return;
-      }
-      /* The three safety answers decide whether it is safe to prescribe, so
-         they are confirmed in their own dialog at the moment of submission
-         rather than sitting mid-page where they are scrolled past. */
-      openHealthHistoryModal();
-      return;
-    }
+    if(intakeComplete.closest('#intake-concern')){ if (kraneHandle_intake_concern_submit(e, intakeComplete)) return; }
+    if(intakeComplete.closest('#intake-general')){ if (kraneHandle_intake_general_submit(e, intakeComplete)) return; }
     completeSharedHealthIntake(false);
   });
 /* completeSharedHealthIntake: pages/intake-general/page.js */
@@ -3581,17 +2527,7 @@ kraneInit_address_579();
 
 /* closeSignupDoneModal: shared/lib/ui.js */
 
-  if(signupDoneModal){
-    signupDoneModal.addEventListener('click', event => {
-      if(event.target===signupDoneModal || event.target.classList.contains('modal-layer__scrim')){
-        closeSignupDoneModal();
-        return;
-      }
-      if(!event.target.closest('[data-signup-done-continue]')) return;
-      closeSignupDoneModal();
-      show(signupDoneTarget || 'patient-info');
-    });
-  }
+  kraneInit_signup_doneDialog();
 
   const obesityRiskModal = document.getElementById('obesity-risk-modal');
 /* obesityRiskFlagged: shared/lib/intake.js */
@@ -3612,7 +2548,7 @@ kraneInit_address_579();
 /* closeHealthHistoryModal: shared/lib/ui.js */
 
   kraneInit_intake_general_owned_302();
-kraneInit_partner_patient_info_650();
+kraneInit_partner_idcard_upload();
 
 /* applyInsuranceVisibility: shared/lib/ui.js */
 
@@ -3664,20 +2600,10 @@ kraneInit_partner_patient_info_650();
   syncPartnerScreening();
   syncPartnerReview();
   const restoredPatientPhone=document.getElementById('patient-phone');
-  if(restoredPatientPhone && flowState.verifiedPhone) restoredPatientPhone.value=formatPhoneForDisplay(flowState.verifiedPhone);
+  kraneInit_patient_info_restorePhone();
   const restoredFirstName=document.getElementById('patient-first-name');
   const restoredLastName=document.getElementById('patient-last-name');
-  if(restoredFirstName && restoredLastName){
-    if(flowState.patientName){
-      const parts=flowState.patientName.trim().split(/\s+/);
-      restoredFirstName.value=parts.shift() || '';
-      restoredLastName.value=parts.join(' ');
-    }
-    [restoredFirstName,restoredLastName].forEach(input => input.addEventListener('input',() => {
-      flowState.patientName=patientNameValue();
-      persistFlowState();
-    }));
-  }
+  kraneInit_patient_info_restoreName();
   restoreAuthenticatedAccount();
 kraneInit_consult_675();
 

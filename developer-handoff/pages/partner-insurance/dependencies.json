@@ -9,11 +9,54 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_partner_insurance_paymentChoice",
+      "condition": "partnerPayment",
+      "selectors": [
+        "#partner-insurance",
+        "[data-partner-payment]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_partner_insurance_paymentChoice"
+  ],
   "orderedInitializers": [
     "kraneInit_partner_insurance_owned_220"
   ],
   "dependencies": [
+    {
+      "name": "CONSULTATION_FEE_BAHT",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "setSelectedCategory",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
     {
       "name": "syncPartnerPolicySummary",
       "source": "shared/lib/intake.js"

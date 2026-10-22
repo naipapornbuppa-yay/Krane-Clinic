@@ -469,3 +469,8 @@
     const riderButton=screen.querySelector('[data-rider-locate]');
     if(riderButton) riderButton.hidden=pickup || postal || !outForDelivery;
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_clinical_csatOpen(e, csatGo) { openCsatModal(csatGo.dataset.csatGo); return true;
+  return false;
+}

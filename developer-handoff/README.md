@@ -1,5 +1,7 @@
 # Krane: page-separated developer handoff
 
+> **22 October 2026 — JavaScript ownership correction:** The first package (`045088c`) had 62 page file sets, but only 32 page scripts contained code; anonymous page handlers still lived in the central runtime. That was an incomplete split. This correction moves 76 page-specific event branches and 17 setup blocks into page scripts, keeps seven reused branches in shared libraries, and moves the ID-card initializer to its actual page. There are now **49 page scripts with executable definitions and 13 using shared/external behavior**, with a specific explanation in every `dependencies.json`. No dummy functions were added. The original app, styles and live `gh-pages` remain unchanged.
+
 > **21 October 2026 — page source handoff for Tin:** Use this guide for the new editable per-page HTML/JS/CSS and shared libraries. This is regenerated from this branch's own baseline `3beddab450c9a6da9649c75dddce402dbc9cd39d`, not the newer live `gh-pages` app. The original app and styles remain unchanged. Hair scalp screening stays before photos; ED heart and nitrate screening stay in separate steps. Pricing/navigation updates on `gh-pages` are a separate delivery. All screens still mount together in the compatibility runtime; these are not independently mounted production routes. B2C-only scope and the existing backend limitations remain.
 
 
@@ -16,7 +18,11 @@
 - `shared/shell.html`: shell, dialog/overlay กลาง, assets และตำแหน่งประกอบแต่ละหน้า
 - `manifest.json`: รายชื่อหน้าและการประกอบทั้งหมด
 
-Some page scripts contain only a comment because the page uses shared behavior without page-specific functions. Do not duplicate that behavior just to fill the file.
+The remaining 13 comment-only scripts are explicitly classified in `page-behavior.json`. Some are static states; others reuse shared controls or the existing article adapter. They are not all passive pages. See each dependency contract for the actual implementation, and do not duplicate it just to fill a file.
+
+`handler-ownership.json` maps every newly extracted branch/setup block to its source file and original position in `045088c`. Shared click dispatch still decides which selector matched, in the original order. A page handler returns `true` to consume the event (including failed validation) or `false` to preserve the original fallthrough. Keep that contract when editing a handler.
+
+For the account page, edit `pages/account/page.js` to change ID/passport switching. Generic phone/ID formatting, floating labels and routing remain shared. The baseline's **Save changes button only navigates to settings**; persistent profile saving, required-field enforcement and an audit trail are not implemented. This source-organization repair does not add those product features.
 
 ## Run the working handoff
 
@@ -65,6 +71,9 @@ Auth, insurance, payment, clinical records and browser storage remain prototype 
 ```sh
 # Initial migration proof against the original, unchanged prototype:
 npm run check:migration --prefix developer-handoff
+# Unique ownership, dispatcher/dependency contracts and real handler edit propagation:
+npm run test:ownership --prefix developer-handoff
+npm run test:edits --prefix developer-handoff
 # Execute original and refactored local scripts in a DOM emulator:
 npm run test:dom --prefix developer-handoff
 # Real Chromium regression, mobile and desktop:

@@ -28,3 +28,42 @@
     };
     trackingDemoTimer=window.setTimeout(step,TRACKING_DEMO_STEP_MS);
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_tracking_riderLocate(e, riderLocate) {
+      showActionToast('ตำแหน่งไรเดอร์แบบเรียลไทม์เปิดดูได้ในแอปของผู้ให้บริการขนส่ง','info');
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_tracking_confirmDelivery(e) {
+      flowState.orderDelivered=true;
+      persistFlowState();
+      if(!IS_DEMO_EMBED) window.KraneGoldenDemo?.advanceFulfilment('Delivered');
+      syncTrackingDelivery();
+      showActionToast('ยืนยันการรับยาแล้ว','success');
+      /* The review asks about the whole thing — the advice, the app and the
+         call — so it belongs after the medicine has actually arrived, not at
+         the moment the card is charged (client, 20 Aug). */
+      openCsatModal('tracking');
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_tracking_demoStatus(e, mockDelivery) {
+      seedClinicalDemoStage('tracking');
+      flowState.orderState.deliveryMethod=mockDelivery.dataset.mockDelivery;
+      flowState.orderState.fulfillmentMode='delivery';
+      flowState.orderState.justPaidTracking=true;
+      flowState.orderDelivered=mockDelivery.dataset.mockStatus==='Delivered';
+      flowState.csatDone=false;
+      window.kraneDemoStatus=mockDelivery.dataset.mockStatus;
+      window.KraneGoldenDemo?.writeState({fulfilmentStatus:mockDelivery.dataset.mockStatus});
+      persistFlowState();
+
+  return false;
+}

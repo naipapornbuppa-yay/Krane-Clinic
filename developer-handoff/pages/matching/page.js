@@ -18,3 +18,16 @@
     doctorAvailable=true;
     return 'matching';
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_matching_demoNoMatch(e, noMatch) {
+      if(noMatch.closest('.rail')){
+        seedClinicalDemoStage('matching');
+        history=seededHistory('matching');
+      }
+      doctorAvailable = false;
+      show('matching',!noMatch.closest('.rail'));
+      return true;
+
+  return false;
+}

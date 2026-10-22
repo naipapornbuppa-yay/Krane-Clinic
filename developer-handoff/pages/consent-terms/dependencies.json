@@ -9,15 +9,33 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_consent_terms_submit",
+      "condition": "consentSubmit",
+      "selectors": [
+        "[data-consent-continue]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
-    "unlockConsentBundleAfterDelay"
+    "unlockConsentBundleAfterDelay",
+    "kraneHandle_consent_terms_submit"
   ],
   "orderedInitializers": [
     "kraneInit_consent_terms_owned_79",
     "kraneInit_consent_terms_owned_81",
     "kraneInit_consent_terms_owned_82",
     "kraneInit_consent_terms_owned_83",
-    "kraneInit_consent_terms_owned_85"
+    "kraneInit_consent_terms_owned_85",
+    "kraneInit_consent_terms_initialContinue"
   ],
   "dependencies": [
     {
@@ -65,12 +83,40 @@
       "source": "shared/lib/intake.js"
     },
     {
+      "name": "nextAfterAuthentication",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "openSignupDoneModal",
+      "source": "shared/lib/ui.js"
+    },
+    {
       "name": "persistFlowState",
       "source": "shared/lib/ui.js"
     },
     {
       "name": "renderConsentReadState",
       "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "requiredConsentChecks",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "saveConsentRecords",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "submitOnce",
+      "source": "shared/lib/ui.js"
     },
     {
       "name": "syncConsentContinue",

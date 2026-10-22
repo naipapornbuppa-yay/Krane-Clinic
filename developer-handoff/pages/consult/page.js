@@ -144,3 +144,14 @@ function kraneInit_consult_677(){
   })();
 }
 
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_consult_sendChat(e, chatSend) {
+      const input = document.querySelector('#consult [data-chat-input]');
+      const value = input ? input.value.trim() : '';
+      if(!value){ showActionToast('พิมพ์ข้อความก่อนส่ง','warning'); return true; }
+      try { window.KraneClinical.send(value); input.value=''; } catch { showActionToast('ส่งข้อความไม่ได้ กรุณาลองอีกครั้ง','warning'); }
+      return true;
+
+  return false;
+}

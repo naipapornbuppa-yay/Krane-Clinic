@@ -1,5 +1,7 @@
 # Krane B2C developer handoff
 
+> **22 October correction:** `045088c` did not finish page-specific JavaScript extraction. The corrected package has 49 page scripts with owned code and 13 explicitly using shared/external behavior; account, login, OTP, intake and payment handler bodies now have explicit owners. See [updated source guide](../../developer-handoff/README.md) and its handler map. This preserves Tin’s own baseline and does not update the live site.
+
 > **21 October 2026 — page source handoff for Tin:** Use [developer-handoff/README.md](../../developer-handoff/README.md) for the new editable per-page HTML/JS/CSS and shared libraries. This is regenerated from this branch's own baseline `3beddab450c9a6da9649c75dddce402dbc9cd39d`, not the newer live `gh-pages` app. The original app and styles remain unchanged. Hair scalp screening stays before photos; ED heart and nitrate screening stay in separate steps. Pricing/navigation updates on `gh-pages` are a separate delivery. All screens still mount together in the compatibility runtime; these are not independently mounted production routes. B2C-only scope and the existing backend limitations remain.
 
 

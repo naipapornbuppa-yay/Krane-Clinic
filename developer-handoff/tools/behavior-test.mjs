@@ -49,6 +49,46 @@ async function snapshot(p){return p.evaluate(()=>{const screen=document.querySel
 async function run(app,width,name,fn){if(filter&&!name.includes(filter))return;const context=await browser.newContext({viewport:{width,height:844},isMobile:width<600,hasTouch:width<600,reducedMotion:'reduce'});context.setDefaultTimeout(12000);context.setDefaultNavigationTimeout(30000);await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));const tag=app.includes('-handoff')?'handoff':'original';const observation=[];const capture=async(label)=>{const data=await snapshot(p);assert.equal(data.overflow,false,`${label}: horizontal document overflow`);observation.push({label,...data});await p.screenshot({path:`${output}/${tag}-${width}-${name}-${label}.png`,fullPage:false});};const open=async(params='',hash='intake1')=>{await p.goto(`${base}/${app}${params?'?'+params:''}${hash?'#'+hash:''}`,{waitUntil:'domcontentloaded'});await p.locator('.screen.active').waitFor();};try{await fn(p,open,capture,observation);assert.deepEqual(errors,[],'uncaught browser errors');results.push({app,width,name,status:'pass',observation});console.log('PASS',tag,width,name);}catch(e){await p.screenshot({path:`${output}/${tag}-${width}-${name}-FAILED.png`}).catch(()=>{});results.push({app,width,name,status:'fail',error:e.stack,observation,errors});console.error('FAIL',tag,width,name,e.message);}finally{await context.close();}}
 try{
 for(const app of apps)for(const width of widths){
+await run(app,width,'owned-account-login-and-reentry',async(p,open,capture)=>{
+ await open('public=1','login');await step(p,'login');
+ // A matched invalid submit must consume, even if a generic route is also present.
+ await p.locator('[data-login-submit]').evaluate(el=>el.dataset.go='settings');
+ await p.locator('[data-login-submit]').click();assert.equal(await active(p),'login');
+ await p.locator('#login-phone').fill('0812345678');
+ await p.locator('[data-login-submit]').click();assert.equal(await active(p),'login');
+ await p.locator('#login-password').fill('QaDemo123!');
+ await p.locator('[data-login-submit]').click();await step(p,'profile');
+ await p.evaluate(()=>location.hash='account');await step(p,'account');
+ await p.locator('#account-document').fill('1234567890123');
+ const id=await p.locator('#account-document').inputValue();
+ await p.locator('[data-account-doc="passport"]').click();
+ assert.equal(await p.locator('#account-document').inputValue(),'');
+ assert.equal(await p.locator('#account-document').getAttribute('inputmode'),'text');
+ await p.locator('#account-document').fill('QA1234567');
+ await p.locator('[data-account-doc="id"]').click();
+ assert.equal(await p.locator('#account-document').inputValue(),id);
+ await p.locator('[data-account-doc="passport"]').click();
+ assert.equal(await p.locator('#account-document').inputValue(),'QA1234567');
+ await capture('account-passport');
+ await p.locator('#account .screen__footer [data-go="settings"]').first().click();await step(p,'settings');
+ await p.locator('#settings [data-go="account"]').first().click();await step(p,'account');
+ assert.equal(await p.locator('#account-document').inputValue(),'QA1234567');
+ await p.locator('[data-account-doc="id"]').click();
+ assert.equal(await p.locator('#account-document').inputValue(),id);
+ await capture('account-reentered');
+});
+await run(app,width,'owned-password-reset-validation',async(p,open,capture)=>{
+ await open('public=1','login');await step(p,'login');
+ await p.locator('[data-login-forgot]').click();assert.equal(await active(p),'login');
+ await p.locator('#login-phone').fill('0812345678');await p.locator('[data-login-forgot]').click();await step(p,'otp');
+ await p.locator('#otp [data-auth-complete]').evaluate(el=>el.dataset.go='settings');
+ assert(await p.locator('#otp [data-auth-complete]').isDisabled());assert.equal(await active(p),'otp');
+ await p.locator('#otp [data-otp-code]').fill('123456');await p.locator('#otp [data-auth-complete]').click();await step(p,'set-password');
+ await p.locator('#new-password').fill('QaDemo123!');await p.locator('#confirm-password').fill('Different123!');
+ assert(await p.locator('[data-password-save]').isDisabled());
+ await p.locator('#confirm-password').fill('QaDemo123!');await p.locator('[data-password-save]').click();await step(p,'profile');
+ await capture('reset-complete');
+});
 await run(app,width,'hair-full-safety-and-back',async(p,open,capture)=>{
  await open('entry=direct&fresh=1&category=hair-skin');await step(p,'intake1');
  await choose(p,'hair.current_goal');await choose(p,'hair.previous_treatment',{multi:true,last:true});await choose(p,'hair.onset');await choose(p,'hair.loss_area',{multi:true});await choose(p,'hair.family_history',{last:true});await choose(p,'hair.severity');

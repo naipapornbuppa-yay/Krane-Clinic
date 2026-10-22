@@ -9,9 +9,90 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_insurance_entry",
+      "condition": "goInsurance",
+      "selectors": [
+        "#patient-info",
+        ".rail",
+        "[data-go=\"insurance\"]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_insurance_confirm",
+      "condition": "insuranceConfirm",
+      "selectors": [
+        "[data-insurance-confirm]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_insurance_documentType",
+      "condition": "tog.dataset.insuranceDoc",
+      "selectors": [
+        "label[for=\"insurance-id\"]",
+        ".float-field",
+        "[data-toggle]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_insurance_entry",
+    "kraneHandle_insurance_confirm",
+    "kraneHandle_insurance_documentType"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "CONSULTATION_FEE_BAHT",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "insuranceEntry",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "refreshMedicationCheckout",
+      "source": "pages/payment/page.js"
+    },
+    {
+      "name": "seedPartnerStage",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncFloatingFieldState",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

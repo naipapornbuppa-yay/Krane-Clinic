@@ -31,3 +31,22 @@ document.querySelector('[data-document-search]')?.addEventListener('input',refre
 function kraneInit_my_documents_owned_125(){
 document.querySelector('[data-document-sort]')?.addEventListener('change',refreshMyDocuments);
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_my_documents_open(e, docOpen) {
+      const documentUrls={receipt:'assets/documents-v1/receipt-v3.pdf',cert:'assets/documents-v1/medical-certificate-v3.pdf'};
+      const file=documentUrls[docOpen.dataset.docOpen];
+      if(file) window.open(file,'_blank','noopener');
+      else show('treatment-detail');
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_my_documents_tab(e, tog) {
+        const dScr = tog.closest('.screen');
+        dScr.querySelectorAll('[data-doc]').forEach(b => { b.hidden = b.dataset.doc !== tog.dataset.docTab; });
+
+  return false;
+}

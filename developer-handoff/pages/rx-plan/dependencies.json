@@ -9,9 +9,105 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_rx_plan_restoreMedicine",
+      "condition": "restore",
+      "selectors": [
+        "[data-qty]",
+        "[data-qty-n]",
+        "[data-qty-minus]",
+        "[data-qty-plus]",
+        "[data-line-price],[data-order-price]",
+        "[data-restore-item]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_rx_plan_acceptPlan",
+      "condition": "e.target.closest('[data-accept-plan]')",
+      "selectors": [
+        "[data-accept-plan]",
+        "[data-acceptplan-modal]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_rx_plan_cancelPlan",
+      "condition": "e.target.closest('[data-acceptplan-cancel]')",
+      "selectors": [
+        "[data-acceptplan-cancel]",
+        "[data-acceptplan-modal]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_rx_plan_confirmPlan",
+      "condition": "e.target.closest('[data-acceptplan-confirm]')",
+      "selectors": [
+        "[data-acceptplan-confirm]",
+        "[data-acceptplan-modal]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_rx_plan_restoreMedicine",
+    "kraneHandle_rx_plan_acceptPlan",
+    "kraneHandle_rx_plan_cancelPlan",
+    "kraneHandle_rx_plan_confirmPlan"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "fillDoctorName",
+      "source": "shared/lib/clinical.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "refreshMedicationCheckout",
+      "source": "pages/payment/page.js"
+    },
+    {
+      "name": "resetOptionalAddOns",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncDeclinedMedicines",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncOrderCheckout",
+      "source": "pages/payment/page.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

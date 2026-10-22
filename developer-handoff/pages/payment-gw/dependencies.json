@@ -9,7 +9,25 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_payment_gw_submit",
+      "condition": "event.target.closest('[data-payment-submit]')",
+      "selectors": [
+        "[data-payment-submit]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_payment_gw_submit"
+  ],
   "orderedInitializers": [
     "kraneInit_payment_gw_550"
   ],
@@ -17,6 +35,42 @@
     {
       "name": "activateGatewayMethod",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "currentMedicationDue",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "deliveryMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentDeadlineExpired",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "paymentMethod",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncPaymentOutcome",
+      "source": "pages/payment-success/page.js"
     }
   ],
   "externalDependencies": [

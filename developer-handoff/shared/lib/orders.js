@@ -665,3 +665,40 @@
     const clock=d => String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
     return clock(from)+' - '+clock(to);
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_orders_selectBank(e, bank) {
+      bank.closest('.bank-grid').querySelectorAll('[data-bank-select]').forEach(b => b.classList.toggle('is-selected', b === bank));
+      showActionToast('เลือกธนาคารแล้ว');
+      return true;
+
+  return false;
+}
+
+function kraneHandle_orders_quantity(e, qbtn) {
+      const ctl = qbtn.closest('[data-qty]');
+      const nEl = ctl.querySelector('[data-qty-n]');
+      const min = parseInt(ctl.dataset.min || '1', 10);
+      const max = parseInt(ctl.dataset.max, 10), unit = parseInt(ctl.dataset.unit, 10);
+      let q = parseInt(nEl.textContent, 10);
+      q = qbtn.hasAttribute('data-qty-minus') ? Math.max(min, q - 1) : Math.min(max, q + 1);
+      const item=ctl.closest('[data-order-item]')?.dataset.orderItem;
+      const nextQuantities=Object.assign({},flowState.orderState.quantities,item ? {[item]:q} : {});
+      nEl.textContent = q;
+      ctl.querySelector('[data-qty-minus]').disabled = q <= min;
+      ctl.querySelector('[data-qty-plus]').disabled = q >= max;
+      const row=ctl.closest('[data-order-item]');
+      const line = row?.querySelector('[data-line-price],[data-order-price]');
+      if(line) line.textContent = '฿ ' + (unit * q).toLocaleString();
+      if(item){
+        flowState.orderState.quantities[item]=q;
+        invalidateFulfillmentQuote();
+        persistFlowState();
+        syncOrderCheckout();
+        syncDeclinedMedicines();
+        refreshMedicationCheckout();
+      }
+      return true;
+
+  return false;
+}

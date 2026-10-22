@@ -1,3 +1,4 @@
-/* delivery-quote: behavior is supplied by shared libraries. No duplicate per-page implementation.
- * Add page-owned functions here; shared/runtime.js owns ordered initialization.
+/* delivery-quote: Delivery quote view uses the shared order/fulfilment state machine.
+ * Sources: shared/lib/orders.js, shared/lib/navigation.js
+ * See dependencies.json. Do not duplicate shared behavior to fill this file.
  */

@@ -1,5 +1,28 @@
 # Handoff verification — 21 October 2026
 
+## 22 October: page JavaScript ownership correction
+
+The original `045088c` preview was built before repair and captured on desktop/mobile for landing, signup and intake. All six visible-text comparisons matched the original app, with no missing local assets or browser errors. That unchanged preview remains separate from the repaired checkout.
+
+The first package's 62 file sets did **not** mean 62 complete page implementations: 32 scripts contained code and 30 were comment-only. This correction extracts 76 page-owned branches, seven shared branches, and 17 additional page setup blocks. The ID-card initializer now belongs to `partner-idcard`. Current count: 49 scripts with owned code and 13 with explicit shared/external behavior. Static states were not padded with dummy JavaScript.
+
+Final personal-Mac verification after the correction:
+
+- 1,303 structural checks: all 353 original functions unchanged; original runtime AST recovered exactly after expanding the declared extraction wrappers; equivalent DOM and byte-identical CSS.
+- 1,334 ownership checks: unique definitions, exactly one ordered dispatcher/setup call, per-page handler/dependency records, account/ID-card ownership, shared quantity controls, and behavior-level login edit propagation.
+- 36/36 Chrome runs at 390px and 1440px; 18/18 original/modular comparisons. Added account ID/passport value restoration and re-entry, invalid login consumption, and password reset/OTP gating to the existing intake/back/guard suite.
+- 16/16 DOM runs and 8/8 parity comparisons. Added expired-payment guard and successful prototype payment state transition; no real provider calls.
+- Existing UI contract: 170/170. String contract: 87 IDs. Source-edit propagation: 5/5.
+- Original `b2c/krane-b2c.html`, `b2c/components.css` and all original application assets are unchanged. Only handoff source, tests, generated dependency/catalog metadata and handoff documentation changed.
+
+Evidence: [structure](qa/ownership-correction-structure.txt), [ownership](qa/ownership-correction-ownership.txt), [DOM](qa/ownership-correction-dom.json), [Chrome](qa/ownership-correction-browser.json), [account desktop](qa/ownership-correction-account-1440.png), [account mobile](qa/ownership-correction-account-390.png).
+
+Two new test assertions initially failed against both original and modular apps: one tried to click a deliberately disabled empty-OTP button; another injected a generic route into a later payment listener. The tests were corrected to respect the original UI/dispatch order, then the complete final suites above passed. No product logic was changed to satisfy those test assumptions.
+
+The account page still has the original prototype limitation: Save changes/Cancel only navigate to settings. Persistent account saving, required-field enforcement and an audit trail are not implemented. All-screen mounting, shared lexical state and the existing external adapters also remain; this is not independent route mounting or production backend acceptance.
+
+## Historical first-package evidence (21 October)
+
 Baseline: `handoff/be-dev-2026-10-11` at `3beddab450c9a6da9649c75dddce402dbc9cd39d`. Regenerated from Tin's own app; not the newer live gh-pages snapshot. Original `b2c/krane-b2c.html` and `b2c/components.css` remain byte-identical to this baseline.
 
 ## Verified on the personal Mac

@@ -187,3 +187,31 @@
     setTreatmentDetailTab('plan');
     show('treatment-detail');
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_treatment_detail_tab(e, treatmentTab) { setTreatmentDetailTab(treatmentTab.dataset.treatmentTab); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_treatment_detail_editSymptoms(e, followUpEditSymptoms) { show('intake1'); return true;
+  return false;
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_treatment_detail_refill() {
+document.body.addEventListener('click', event => {
+    /* Client, 15 Sep: pressing refill from inside a treatment already answers
+       the sheet's only question — this is that treatment's prescription — so it
+       goes straight to the checkout. The sheet is for the quick menu, which is
+       reached with no treatment in hand. */
+    if(event.target.closest('[data-refill-treatment]')){
+      if(!startRefill(selectedCategoryId)) openRefillSheet();
+      return;
+    }
+    if(event.target.closest('[data-refill-open]')){ openRefillSheet(); return; }
+    if(event.target.closest('[data-refill-sheet-close]')){ closeRefillSheet(); return; }
+    const choice=event.target.closest('#refill-sheet [data-refill-choice]');
+    if(choice) startRefill(choice.dataset.refillChoice);
+  });
+}

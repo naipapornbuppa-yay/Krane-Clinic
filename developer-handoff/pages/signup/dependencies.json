@@ -9,18 +9,96 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_signup_submit",
+      "condition": "signupPhone",
+      "selectors": [
+        "[data-signup-phone]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_signup_newAccount",
+      "condition": "newAccount",
+      "selectors": [
+        "[data-new-account]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "signupPasswordReady",
     "syncSignupPassword",
-    "syncSignupSubmit"
+    "syncSignupSubmit",
+    "kraneHandle_signup_submit",
+    "kraneHandle_signup_newAccount"
   ],
   "orderedInitializers": [
-    "kraneInit_signup_98"
+    "kraneInit_signup_98",
+    "kraneInit_signup_initialSubmit",
+    "kraneInit_signup_doneDialog"
   ],
   "dependencies": [
     {
+      "name": "closeSignupDoneModal",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "formatPhoneForDisplay",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "isValidThaiMobile",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "normalizePhone",
+      "source": "shared/lib/identity.js"
+    },
+    {
       "name": "passwordRuleState",
       "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "postAuthNext",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "signupDoneModal",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "signupDoneTarget",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "submitOnce",
+      "source": "shared/lib/ui.js"
     }
   ],
   "externalDependencies": [

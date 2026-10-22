@@ -458,3 +458,135 @@ document.body.addEventListener('click', e => {
     activateGatewayMethod('payment-gw',paymentMethod,{persistMedicationMethod:true});
   });
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_fulfillment(e, fulfillmentModeChoice) {
+      const nextMode=fulfillmentModeChoice.dataset.fulfillmentModeOption;
+      if(flowState.orderState.fulfillmentMode!==nextMode) invalidateFulfillmentQuote();
+      flowState.orderState.fulfillmentMode=nextMode==='pickup' ? 'pickup' : 'delivery';
+      persistFlowState();
+      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
+      else refreshMedicationCheckout();
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_delivery(e, deliveryChoice) {
+      const nextDeliveryMethod=deliveryChoice.dataset.deliveryValue;
+      if(flowState.orderState.deliveryMethod!==nextDeliveryMethod) invalidateFulfillmentQuote();
+      flowState.orderState.fulfillmentMode='delivery';
+      flowState.orderState.deliveryMethod=nextDeliveryMethod;
+      deliveryMethod=flowState.orderState.deliveryMethod;
+      persistFlowState();
+      if(flowState.orderState.addressConfirmed) startInlineDeliveryQuote();
+      else refreshMedicationCheckout();
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_editAddon(e, addOnEdit) {
+      openPaymentItemSheet(addOnEdit.closest('[data-order-addon]'),addOnEdit);
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_removeAddon(e, addOnRemove) {
+      const key=addOnRemove.dataset.addonRemove;
+      if(flowState.orderState.addOns[key]){
+        flowState.orderState.addOns[key]=false;
+        flowState.orderState.addonQuantities[key]=0;
+        invalidateFulfillmentQuote();
+        persistFlowState();
+        refreshMedicationCheckout();
+      }
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_addAddon(e, addOnChoice) {
+      const key=addOnChoice.dataset.addonOption;
+      const quantity=Math.max(0,Math.min(10,Number(flowState.orderState.addonQuantities[key] || 0)));
+      if(quantity>=10){
+        showActionToast('เพิ่มได้สูงสุด 10 ชิ้น','info');
+        return true;
+      }
+      flowState.orderState.addOns[key]=true;
+      flowState.orderState.addonQuantities[key]=quantity+1;
+      invalidateFulfillmentQuote();
+      persistFlowState();
+      refreshMedicationCheckout();
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_deadlineRetry(event) {
+      invalidateFulfillmentQuote();
+      persistFlowState();
+      show('pharmacy-search');
+      return true;
+
+  return false;
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_payment_itemSheet() {
+if(paymentItemSheet){
+    paymentItemSheet.addEventListener('click',event => {
+      if(event.target.closest('[data-payment-item-close]')){ closePaymentItemSheet(); return; }
+      if(event.target.closest('[data-payment-item-minus]') && paymentItemDraft){
+        paymentItemDraft.quantity=Math.max(0,paymentItemDraft.quantity-1);
+        syncPaymentItemDraft();
+        return;
+      }
+      if(event.target.closest('[data-payment-item-plus]') && paymentItemDraft?.allowIncrease){
+        paymentItemDraft.quantity=Math.min(paymentItemDraft.max,paymentItemDraft.quantity+1);
+        syncPaymentItemDraft();
+        return;
+      }
+      if(event.target.closest('[data-payment-item-save]') && paymentItemDraft){
+        commitPaymentItemQuantity(paymentItemDraft.quantity);
+        return;
+      }
+    });
+    paymentItemSheet.addEventListener('keydown',event => {
+      if(event.key==='Escape') closePaymentItemSheet();
+    });
+  }
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_payment_promo() {
+if(promoModal){
+    promoModal.addEventListener('click', event => {
+      const option = event.target.closest('[data-promo-option]');
+      if(option){
+        // A listed code is a single choice, so the tap is the answer and the
+        // sheet closes — same as the payment method sheet. The CTA below stays
+        // for a code typed by hand, which has no other way to be submitted.
+        pendingPromoCode = option.dataset.promoOption;
+        const input = promoModal.querySelector('#promoInput');
+        if(input) input.value = pendingPromoCode;
+        promoModal.querySelectorAll('[data-promo-option]').forEach(opt => {
+          opt.setAttribute('aria-selected', String(opt.dataset.promoOption === pendingPromoCode));
+        });
+        applyPromoCode(pendingPromoCode);
+        return;
+      }
+      if(event.target.closest('[data-promo-close]')){ closePromoModal(); return; }
+      if(event.target.closest('[data-promo-confirm]')){
+        const input = promoModal.querySelector('#promoInput');
+        applyPromoCode(input ? input.value : pendingPromoCode);
+      }
+    });
+  }
+}

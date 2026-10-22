@@ -9,9 +9,79 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_login_submit",
+      "condition": "loginSubmit",
+      "selectors": [
+        "[data-login-submit]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_login_forgot",
+      "condition": "loginForgot",
+      "selectors": [
+        "[data-login-forgot]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_login_submit",
+    "kraneHandle_login_forgot"
+  ],
   "orderedInitializers": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "applyAuthenticatedAccount",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "formatPhoneForDisplay",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "isValidThaiMobile",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "nextAfterAuthentication",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "normalizePhone",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "submitOnce",
+      "source": "shared/lib/ui.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

@@ -33,3 +33,17 @@
         : (thai ? 'ดูเอกสาร' : 'View documents');
     }
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_payment_success_tracking(e, paidTracking) {
+      flowState.orderDelivered=false;
+      flowState.csatDeliveryPrompted=false;
+      flowState.deliveryNotified=false;
+      flowState.orderState.deliveredAt=null;
+      flowState.orderState.justPaidTracking=true;
+      window.kraneDemoStatus='';
+      window.KraneGoldenDemo?.writeState({fulfilmentStatus:'Preparing'});
+      persistFlowState();
+
+  return false;
+}

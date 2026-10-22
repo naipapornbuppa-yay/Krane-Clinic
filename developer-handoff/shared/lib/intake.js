@@ -761,3 +761,49 @@
     obesityRiskModal.setAttribute('aria-hidden','true');
     document.body.classList.remove('modal-open');
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_durationStep(e, intakeDurationStep) {
+      const screen=intakeDurationStep.closest('.screen');
+      const input=screen?.querySelector('input[data-intake-role="duration"]');
+      if(!input) return true;
+      input.value=String(Math.min(99,Math.max(1,(Number(input.value) || 1)+Number(intakeDurationStep.dataset.intakeDurationStep || 0))));
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      syncIntakeDropdownContinue(screen);
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_durationUnit(e, intakeDurationUnit) {
+      const screen=intakeDurationUnit.closest('.screen');
+      screen?.querySelectorAll('[data-intake-duration-unit]').forEach(option => {
+        option.setAttribute('aria-selected',String(option===intakeDurationUnit));
+      });
+      saveIntakeDraft();
+      syncIntakeDropdownContinue(screen);
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_directHistory(e, directHistoryChoice) {
+      const group=directHistoryChoice.closest('[data-direct-history]');
+      const hasDetails=directHistoryChoice.dataset.directHistoryChoice==='yes';
+      setDirectHistoryChoice(group,hasDetails);
+      saveIntakeDraft();
+      if(hasDetails) requestAnimationFrame(() => group?.querySelector('input')?.focus());
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_intake_directComplete(e, directIntakeComplete) {
+      finishDirectF02();
+      return true;
+
+  return false;
+}

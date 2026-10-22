@@ -39,9 +39,21 @@
       "html": "pages/conditions/index.html",
       "js": "pages/conditions/page.js",
       "css": "pages/conditions/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_conditions_category",
+        "kraneHandle_conditions_condition"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "conditionListRevealed",
+        "flowState",
+        "persistFlowState",
+        "renderConditionList",
+        "selectedCategory",
+        "selectedConditionId",
+        "setSelectedCategory",
+        "show"
+      ],
       "cssBlocks": [
         "css-0201",
         "css-0202"
@@ -111,8 +123,13 @@
       "js": "pages/intake2/page.js",
       "css": "pages/intake2/page.css",
       "functions": [],
-      "initializers": [],
-      "dependencies": [],
+      "initializers": [
+        "kraneInit_intake2_obesityMetrics"
+      ],
+      "dependencies": [
+        "saveIntakeDraft",
+        "syncObesityBmi"
+      ],
       "cssBlocks": [],
       "sourceLine": 1333
     },
@@ -121,7 +138,9 @@
       "html": "pages/intake3/index.html",
       "js": "pages/intake3/page.js",
       "css": "pages/intake3/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_intake3_obesityRisk"
+      ],
       "initializers": [
         "kraneInit_intake3_owned_300"
       ],
@@ -131,7 +150,9 @@
         "obesityRiskFlagged",
         "obesityRiskModal",
         "obesityRiskStep",
-        "renderObesityRiskStep"
+        "renderObesityRiskStep",
+        "saveIntakeDraft",
+        "syncObesityRiskWarning"
       ],
       "cssBlocks": [],
       "sourceLine": 1360
@@ -177,7 +198,8 @@
       "css": "pages/intake-concern/page.css",
       "functions": [
         "saveIntakeDraft",
-        "restoreIntakeDraft"
+        "restoreIntakeDraft",
+        "kraneHandle_intake_concern_submit"
       ],
       "initializers": [
         "kraneInit_intake_concern_683",
@@ -193,6 +215,7 @@
         "selectedCategoryId",
         "selectedConditionId",
         "setDirectHistoryChoice",
+        "show",
         "showActionToast",
         "syncIntakeDropdownContinue",
         "syncObesityBmi",
@@ -215,7 +238,10 @@
         "syncGeneralHealthContext",
         "directNextAfterPatientInfo",
         "updateFollowUpPrefillCard",
-        "completeSharedHealthIntake"
+        "completeSharedHealthIntake",
+        "kraneHandle_intake_general_partnerHistory",
+        "kraneHandle_intake_general_screening",
+        "kraneHandle_intake_general_submit"
       ],
       "initializers": [
         "kraneInit_intake_general_owned_302"
@@ -232,15 +258,18 @@
         "hydrateFollowUpRecord",
         "journeyActive",
         "nextAfterAuthentication",
+        "openHealthHistoryModal",
         "partnerClinicalStartTarget",
         "persistFlowState",
         "postAuthNext",
         "saveIntakeDraft",
         "selectedCategoryId",
+        "setPartnerHistoryChoice",
         "setSelectedCategory",
         "show",
         "showActionToast",
-        "signedIn"
+        "signedIn",
+        "syncPartnerScreening"
       ],
       "cssBlocks": [
         "css-0053",
@@ -288,13 +317,29 @@
       "functions": [
         "signupPasswordReady",
         "syncSignupPassword",
-        "syncSignupSubmit"
+        "syncSignupSubmit",
+        "kraneHandle_signup_submit",
+        "kraneHandle_signup_newAccount"
       ],
       "initializers": [
-        "kraneInit_signup_98"
+        "kraneInit_signup_98",
+        "kraneInit_signup_initialSubmit",
+        "kraneInit_signup_doneDialog"
       ],
       "dependencies": [
-        "passwordRuleState"
+        "closeSignupDoneModal",
+        "flowState",
+        "formatPhoneForDisplay",
+        "isValidThaiMobile",
+        "normalizePhone",
+        "passwordRuleState",
+        "persistFlowState",
+        "postAuthNext",
+        "show",
+        "showActionToast",
+        "signupDoneModal",
+        "signupDoneTarget",
+        "submitOnce"
       ],
       "cssBlocks": [],
       "sourceLine": 1584
@@ -304,9 +349,23 @@
       "html": "pages/login/index.html",
       "js": "pages/login/page.js",
       "css": "pages/login/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_login_submit",
+        "kraneHandle_login_forgot"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "applyAuthenticatedAccount",
+        "flowState",
+        "formatPhoneForDisplay",
+        "isValidThaiMobile",
+        "nextAfterAuthentication",
+        "normalizePhone",
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "submitOnce"
+      ],
       "cssBlocks": [],
       "sourceLine": 1626
     },
@@ -316,13 +375,21 @@
       "js": "pages/set-password/page.js",
       "css": "pages/set-password/page.css",
       "functions": [
-        "syncPasswordValidity"
+        "syncPasswordValidity",
+        "kraneHandle_set_password_submit"
       ],
       "initializers": [
         "kraneInit_set_password_531"
       ],
       "dependencies": [
-        "passwordRuleState"
+        "applyAuthenticatedAccount",
+        "flowState",
+        "nextAfterAuthentication",
+        "passwordRuleState",
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "submitOnce"
       ],
       "cssBlocks": [],
       "sourceLine": 1657
@@ -332,9 +399,28 @@
       "html": "pages/social-confirm/index.html",
       "js": "pages/social-confirm/page.js",
       "css": "pages/social-confirm/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_social_confirm_provider",
+        "kraneHandle_social_confirm_continue"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "AUTH_PROFILE_KEY",
+        "authNext",
+        "completeAuthentication",
+        "flowState",
+        "formatPhoneForDisplay",
+        "isValidThaiMobile",
+        "normalizePhone",
+        "persistFlowState",
+        "postAuthNext",
+        "readSessionJson",
+        "show",
+        "showActionToast",
+        "socialCompletesAuth",
+        "splitRecipientName",
+        "submitOnce"
+      ],
       "cssBlocks": [],
       "sourceLine": 1687
     },
@@ -343,9 +429,30 @@
       "html": "pages/patient-info/index.html",
       "js": "pages/patient-info/page.js",
       "css": "pages/patient-info/page.css",
-      "functions": [],
-      "initializers": [],
-      "dependencies": [],
+      "functions": [
+        "kraneHandle_patient_info_continue"
+      ],
+      "initializers": [
+        "kraneInit_patient_info_restorePhone",
+        "kraneInit_patient_info_restoreName"
+      ],
+      "dependencies": [
+        "directNextAfterPatientInfo",
+        "flowState",
+        "formatPhoneForDisplay",
+        "insuranceEntry",
+        "isGeneralPath",
+        "isValidThaiMobile",
+        "normalizePhone",
+        "patientNameValue",
+        "persistFlowState",
+        "restoredFirstName",
+        "restoredLastName",
+        "restoredPatientPhone",
+        "show",
+        "showActionToast",
+        "submitOnce"
+      ],
       "cssBlocks": [],
       "sourceLine": 1708
     },
@@ -367,12 +474,17 @@
       "css": "pages/matching/page.css",
       "functions": [
         "directClinicalStartTarget",
-        "partnerClinicalStartTarget"
+        "partnerClinicalStartTarget",
+        "kraneHandle_matching_demoNoMatch"
       ],
       "initializers": [],
       "dependencies": [
         "doctorAvailable",
-        "needsAppointment"
+        "history",
+        "needsAppointment",
+        "seedClinicalDemoStage",
+        "seededHistory",
+        "show"
       ],
       "cssBlocks": [
         "css-0014"
@@ -461,9 +573,16 @@
       "html": "pages/consultpay-gw/index.html",
       "js": "pages/consultpay-gw/page.js",
       "css": "pages/consultpay-gw/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_consultpay_gw_submit"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "consultationHandoffTarget",
+        "flowState",
+        "persistFlowState",
+        "show"
+      ],
       "cssBlocks": [],
       "sourceLine": 1871
     },
@@ -472,9 +591,15 @@
       "html": "pages/consultpay-fail/index.html",
       "js": "pages/consultpay-fail/page.js",
       "css": "pages/consultpay-fail/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_consultpay_fail_retry",
+        "kraneHandle_consultpay_fail_alternate"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "resetGatewayAttempt",
+        "show"
+      ],
       "cssBlocks": [],
       "sourceLine": 1883
     },
@@ -486,10 +611,14 @@
       "functions": [
         "resetWaitroom"
       ],
-      "initializers": [],
+      "initializers": [
+        "kraneInit_waitroom_expiredDialog"
+      ],
       "dependencies": [
         "DOCTOR_NAME",
         "QUEUE_ADMIT_MS",
+        "QUEUE_KEY",
+        "closeWaitroomExpiredModal",
         "flowConfig",
         "flowState",
         "paintElapsedTimer",
@@ -497,9 +626,11 @@
         "queuePreview",
         "reduceMotion",
         "savePendingQueue",
+        "show",
         "startWaitroomEntryWindow",
         "waitCountdownTimer",
-        "waitTimer"
+        "waitTimer",
+        "waitroomExpiredModal"
       ],
       "cssBlocks": [
         "css-0012",
@@ -514,8 +645,22 @@
       "js": "pages/queue-resume/page.js",
       "css": "pages/queue-resume/page.css",
       "functions": [],
-      "initializers": [],
-      "dependencies": [],
+      "initializers": [
+        "kraneInit_queue_resume_queueActions"
+      ],
+      "dependencies": [
+        "QUEUE_KEY",
+        "pendingQueue",
+        "persistFlowState",
+        "queueDismissOnce",
+        "queuePreview",
+        "saveIntakeDraft",
+        "savePendingQueue",
+        "show",
+        "stopWaitroomEntryWindow",
+        "waitCountdownTimer",
+        "waitTimer"
+      ],
       "cssBlocks": [],
       "sourceLine": 1932
     },
@@ -526,7 +671,8 @@
       "css": "pages/consult/page.css",
       "functions": [
         "revealConsultationSummary",
-        "scheduleConsultationSummary"
+        "scheduleConsultationSummary",
+        "kraneHandle_consult_sendChat"
       ],
       "initializers": [
         "kraneInit_consult_675",
@@ -541,6 +687,7 @@
         "seedPartnerStage",
         "setSelectedCategory",
         "show",
+        "showActionToast",
         "syncConsultationSummaryUnread",
         "typingTimer"
       ],
@@ -576,11 +723,19 @@
       "js": "pages/video/page.js",
       "css": "pages/video/page.css",
       "functions": [
-        "syncConsultationSummaryUnread"
+        "syncConsultationSummaryUnread",
+        "kraneHandle_video_endActiveCall",
+        "kraneHandle_video_endCall",
+        "kraneHandle_video_cancelEndCall",
+        "kraneHandle_video_confirmEndCall",
+        "kraneHandle_video_callControl"
       ],
       "initializers": [],
       "dependencies": [
-        "isEnglishUi"
+        "callActive",
+        "fillDoctorName",
+        "isEnglishUi",
+        "show"
       ],
       "cssBlocks": [
         "css-0127",
@@ -621,9 +776,24 @@
       "html": "pages/rx-plan/index.html",
       "js": "pages/rx-plan/page.js",
       "css": "pages/rx-plan/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_rx_plan_restoreMedicine",
+        "kraneHandle_rx_plan_acceptPlan",
+        "kraneHandle_rx_plan_cancelPlan",
+        "kraneHandle_rx_plan_confirmPlan"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "fillDoctorName",
+        "flowState",
+        "persistFlowState",
+        "refreshMedicationCheckout",
+        "resetOptionalAddOns",
+        "show",
+        "showActionToast",
+        "syncDeclinedMedicines",
+        "syncOrderCheckout"
+      ],
       "cssBlocks": [],
       "sourceLine": 2095
     },
@@ -653,7 +823,15 @@
         "startNewAddress",
         "bindAddressSearch",
         "applyAddress",
-        "syncComposedDistrict"
+        "syncComposedDistrict",
+        "kraneHandle_address_fillSuggestion",
+        "kraneHandle_address_zoom",
+        "kraneHandle_address_openPicker",
+        "kraneHandle_address_closePicker",
+        "kraneHandle_address_locate",
+        "kraneHandle_address_confirmMap",
+        "kraneHandle_address_save",
+        "kraneHandle_address_recipientEdit"
       ],
       "initializers": [
         "kraneInit_address_155",
@@ -670,17 +848,25 @@
         "kraneInit_address_owned_139",
         "kraneInit_address_owned_151",
         "kraneInit_address_owned_327",
-        "kraneInit_address_owned_329"
+        "kraneInit_address_owned_329",
+        "kraneInit_address_clearAll",
+        "kraneInit_address_cascade",
+        "kraneInit_address_resize",
+        "kraneInit_address_places",
+        "kraneInit_address_pickupEscape"
       ],
       "dependencies": [
         "ADDRESS_FIELD_KEYS",
         "ADDRESS_MAP_CASCADE_IDS",
         "ADDRESS_MAP_GEOGRAPHY",
+        "SIM_PLACES",
         "addrSearch",
         "addrSuggest",
+        "addressBookKey",
         "addressEditingSavedIndex",
         "addressFormIntent",
         "addressLabelCustom",
+        "addressListSelected",
         "addressLocationGaps",
         "addressPageMode",
         "addressPicker",
@@ -694,9 +880,11 @@
         "addressSuggestions",
         "clearFieldError",
         "clearRecipientFields",
+        "closeAddressPicker",
         "closeAddressSuggestions",
         "closePickupBranchModal",
         "composeDistrict",
+        "confirmAddressPicker",
         "confirmDeleteSavedAddress",
         "confirmListAddress",
         "deliveryAddressDraft",
@@ -710,10 +898,12 @@
         "invalidateFulfillmentQuote",
         "manualMapRequest",
         "normalizePhone",
+        "openAddressPicker",
         "openPickupBranchModal",
         "osmReverseTimer",
         "osmReverseToken",
         "osmView",
+        "osmZoomBy",
         "persistAddressBook",
         "persistAddressEditorDraft",
         "persistFlowState",
@@ -735,11 +925,14 @@
         "setFieldError",
         "show",
         "showActionToast",
+        "simApplyTransform",
+        "simLocate",
         "simState",
         "startInlineDeliveryQuote",
         "syncCheckoutReadiness",
         "syncFloatingFieldState",
         "syncFloatingFieldStates",
+        "syncMapFromAddressFields",
         "writeDeliveryAddressDraft"
       ],
       "cssBlocks": [
@@ -832,9 +1025,17 @@
       "html": "pages/pharmacy-search/index.html",
       "js": "pages/pharmacy-search/page.js",
       "css": "pages/pharmacy-search/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_pharmacy_search_demoNoStock"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "history",
+        "pharmacyForceDecline",
+        "seedClinicalDemoStage",
+        "seededHistory",
+        "show"
+      ],
       "cssBlocks": [
         "css-0092",
         "css-0093",
@@ -867,13 +1068,21 @@
         "flagCheckoutBlocker",
         "syncCheckoutReadiness",
         "refreshMedicationCheckout",
-        "renderPromo"
+        "renderPromo",
+        "kraneHandle_payment_fulfillment",
+        "kraneHandle_payment_delivery",
+        "kraneHandle_payment_editAddon",
+        "kraneHandle_payment_removeAddon",
+        "kraneHandle_payment_addAddon",
+        "kraneHandle_payment_deadlineRetry"
       ],
       "initializers": [
         "kraneInit_payment_400",
         "kraneInit_payment_537",
         "kraneInit_payment_owned_273",
-        "kraneInit_payment_owned_277"
+        "kraneInit_payment_owned_277",
+        "kraneInit_payment_itemSheet",
+        "kraneInit_payment_promo"
       ],
       "dependencies": [
         "ADDON_PRICES",
@@ -883,12 +1092,16 @@
         "activateGatewayMethod",
         "addressListSelected",
         "appliedPromo",
+        "applyPromoCode",
         "availableRefillKeys",
         "baht",
         "checkoutActionState",
         "checkoutBlockerTimer",
+        "closePaymentItemSheet",
         "closePaymentMethodModal",
+        "closePromoModal",
         "closeRefillSheet",
+        "commitPaymentItemQuantity",
         "consultationBalanceDue",
         "currentMedicationDue",
         "deliveryAddressSummary",
@@ -909,12 +1122,16 @@
         "paymentCredit",
         "paymentDeadlineExpired",
         "paymentDue",
+        "paymentItemDraft",
+        "paymentItemSheet",
         "paymentMethod",
         "paymentMethodModal",
         "paymentMethodNames",
         "pendingPaymentMethod",
+        "pendingPromoCode",
         "persistAddressBook",
         "persistFlowState",
+        "promoModal",
         "reduceMotion",
         "rememberDeliveryAddress",
         "replaceCurrent",
@@ -928,6 +1145,7 @@
         "startInlineDeliveryQuote",
         "syncDeliveryAddress",
         "syncMedicationFailureAmount",
+        "syncPaymentItemDraft",
         "syncPaymentMethodOptions",
         "syncPaymentOutcome",
         "syncPickupBranch"
@@ -1064,12 +1282,23 @@
       "html": "pages/payment-gw/index.html",
       "js": "pages/payment-gw/page.js",
       "css": "pages/payment-gw/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_payment_gw_submit"
+      ],
       "initializers": [
         "kraneInit_payment_gw_550"
       ],
       "dependencies": [
-        "activateGatewayMethod"
+        "activateGatewayMethod",
+        "currentMedicationDue",
+        "deliveryMethod",
+        "flowState",
+        "paymentDeadlineExpired",
+        "paymentMethod",
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "syncPaymentOutcome"
       ],
       "cssBlocks": [
         "css-0290"
@@ -1082,7 +1311,8 @@
       "js": "pages/payment-success/page.js",
       "css": "pages/payment-success/page.css",
       "functions": [
-        "syncPaymentOutcome"
+        "syncPaymentOutcome",
+        "kraneHandle_payment_success_tracking"
       ],
       "initializers": [],
       "dependencies": [
@@ -1092,7 +1322,8 @@
         "deliveryOutcomeLabel",
         "flowState",
         "hasFulfillableItems",
-        "paymentMethod"
+        "paymentMethod",
+        "persistFlowState"
       ],
       "cssBlocks": [
         "css-0314"
@@ -1104,9 +1335,23 @@
       "html": "pages/insurance/index.html",
       "js": "pages/insurance/page.js",
       "css": "pages/insurance/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_insurance_entry",
+        "kraneHandle_insurance_confirm",
+        "kraneHandle_insurance_documentType"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "CONSULTATION_FEE_BAHT",
+        "flowState",
+        "insuranceEntry",
+        "persistFlowState",
+        "refreshMedicationCheckout",
+        "seedPartnerStage",
+        "show",
+        "showActionToast",
+        "syncFloatingFieldState"
+      ],
       "cssBlocks": [
         "css-0010",
         "css-0011",
@@ -1121,12 +1366,19 @@
       "js": "pages/payfail/page.js",
       "css": "pages/payfail/page.css",
       "functions": [
-        "syncMedicationFailureAmount"
+        "syncMedicationFailureAmount",
+        "kraneHandle_payfail_retry",
+        "kraneHandle_payfail_alternate"
       ],
       "initializers": [],
       "dependencies": [
+        "activateGatewayMethod",
         "baht",
-        "currentMedicationDue"
+        "currentMedicationDue",
+        "openPaymentMethodModal",
+        "paymentMethod",
+        "resetGatewayAttempt",
+        "show"
       ],
       "cssBlocks": [],
       "sourceLine": 2682
@@ -1149,17 +1401,25 @@
       "css": "pages/tracking/page.css",
       "functions": [
         "openCsatModal",
-        "startTrackingDemoWalk"
+        "startTrackingDemoWalk",
+        "kraneHandle_tracking_riderLocate",
+        "kraneHandle_tracking_confirmDelivery",
+        "kraneHandle_tracking_demoStatus"
       ],
       "initializers": [],
       "dependencies": [
+        "IS_DEMO_EMBED",
         "TRACKING_DEMO_STEP_MS",
         "csatModal",
         "csatReplaces",
         "csatTarget",
+        "deliveryMethod",
         "flowState",
         "leaveCsat",
+        "persistFlowState",
         "reduceMotion",
+        "seedClinicalDemoStage",
+        "showActionToast",
         "stopTrackingDemoWalk",
         "syncTrackingDelivery",
         "trackingDemoTimer"
@@ -1225,7 +1485,13 @@
       "functions": [
         "syncTreatmentStatus",
         "syncHomeFollowUpCta",
-        "openRefillSheet"
+        "openRefillSheet",
+        "kraneHandle_profile_followUpCase",
+        "kraneHandle_profile_followUpJoin",
+        "kraneHandle_profile_treatmentOpen",
+        "kraneHandle_profile_followUp",
+        "kraneHandle_profile_referral",
+        "kraneHandle_profile_newAppointment"
       ],
       "initializers": [
         "kraneInit_profile_320",
@@ -1236,13 +1502,19 @@
         "FOLLOWUP_JOIN_MS",
         "FOLLOWUP_NOTICE_MS",
         "availableRefillKeys",
+        "beginAssignedDoctorFlow",
+        "flowState",
         "followUpAppointmentFor",
         "formatFollowUpDate",
         "formatFollowUpPill",
         "formatFollowUpTime",
+        "journeyActive",
         "openTreatmentDetail",
+        "persistFlowState",
         "refillCardFor",
         "refillSheet",
+        "selectedCategoryId",
+        "show",
         "syncFollowUpCaseStates",
         "syncFollowUpDates"
       ],
@@ -1327,12 +1599,20 @@
       "css": "pages/treatment-detail/page.css",
       "functions": [
         "setTreatmentDetailTab",
-        "openTreatmentDetail"
+        "openTreatmentDetail",
+        "kraneHandle_treatment_detail_tab",
+        "kraneHandle_treatment_detail_editSymptoms"
       ],
-      "initializers": [],
+      "initializers": [
+        "kraneInit_treatment_detail_refill"
+      ],
       "dependencies": [
+        "closeRefillSheet",
+        "openRefillSheet",
+        "selectedCategoryId",
         "setSelectedCategory",
         "show",
+        "startRefill",
         "syncFollowUpDates"
       ],
       "cssBlocks": [
@@ -1348,13 +1628,17 @@
       "js": "pages/my-documents/page.js",
       "css": "pages/my-documents/page.css",
       "functions": [
-        "refreshMyDocuments"
+        "refreshMyDocuments",
+        "kraneHandle_my_documents_open",
+        "kraneHandle_my_documents_tab"
       ],
       "initializers": [
         "kraneInit_my_documents_owned_124",
         "kraneInit_my_documents_owned_125"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "show"
+      ],
       "cssBlocks": [],
       "sourceLine": 3074
     },
@@ -1363,7 +1647,9 @@
       "html": "pages/activity/index.html",
       "js": "pages/activity/page.js",
       "css": "pages/activity/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_activity_filter"
+      ],
       "initializers": [],
       "dependencies": [],
       "cssBlocks": [
@@ -1378,9 +1664,13 @@
       "html": "pages/notifications/index.html",
       "js": "pages/notifications/page.js",
       "css": "pages/notifications/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_notifications_markRead"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "showActionToast"
+      ],
       "cssBlocks": [
         "css-0006",
         "css-0382",
@@ -1395,9 +1685,13 @@
       "html": "pages/account/index.html",
       "js": "pages/account/page.js",
       "css": "pages/account/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_account_documentType"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "syncFloatingFieldState"
+      ],
       "cssBlocks": [],
       "sourceLine": 3253
     },
@@ -1443,14 +1737,16 @@
       "js": "pages/consent-terms/page.js",
       "css": "pages/consent-terms/page.css",
       "functions": [
-        "unlockConsentBundleAfterDelay"
+        "unlockConsentBundleAfterDelay",
+        "kraneHandle_consent_terms_submit"
       ],
       "initializers": [
         "kraneInit_consent_terms_owned_79",
         "kraneInit_consent_terms_owned_81",
         "kraneInit_consent_terms_owned_82",
         "kraneInit_consent_terms_owned_83",
-        "kraneInit_consent_terms_owned_85"
+        "kraneInit_consent_terms_owned_85",
+        "kraneInit_consent_terms_initialContinue"
       ],
       "dependencies": [
         "checkConsentScrollEnd",
@@ -1464,8 +1760,15 @@
         "consentRead",
         "flowState",
         "markConsentRead",
+        "nextAfterAuthentication",
+        "openSignupDoneModal",
         "persistFlowState",
         "renderConsentReadState",
+        "requiredConsentChecks",
+        "saveConsentRecords",
+        "show",
+        "showActionToast",
+        "submitOnce",
         "syncConsentContinue"
       ],
       "cssBlocks": [
@@ -1498,12 +1801,19 @@
       "html": "pages/identity/index.html",
       "js": "pages/identity/page.js",
       "css": "pages/identity/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_identity_continue"
+      ],
       "initializers": [
         "kraneInit_identity_owned_93"
       ],
       "dependencies": [
-        "showActionToast"
+        "directClinicalStartTarget",
+        "flowState",
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "submitOnce"
       ],
       "cssBlocks": [],
       "sourceLine": 3377
@@ -1516,14 +1826,25 @@
       "functions": [
         "returnFromPhoneOtp",
         "prepareFreshOtpChallenge",
-        "renderOtpCells"
+        "renderOtpCells",
+        "kraneHandle_otp_submit"
       ],
       "initializers": [
         "kraneInit_otp_366"
       ],
       "dependencies": [
+        "applyAuthenticatedAccount",
+        "clearPhoneOtpContext",
+        "completeAuthentication",
+        "completePartnerPatientInfo",
+        "flowState",
+        "formatPhoneForDisplay",
         "history",
-        "show"
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "submitOnce",
+        "syncPasswordScreen"
       ],
       "cssBlocks": [],
       "sourceLine": 3397
@@ -1544,9 +1865,15 @@
       "html": "pages/referral/index.html",
       "js": "pages/referral/page.js",
       "css": "pages/referral/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_referral_close",
+        "kraneHandle_referral_shareAction",
+        "kraneHandle_referral_share"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "showActionToast"
+      ],
       "cssBlocks": [
         "css-0386",
         "css-0387"
@@ -1559,8 +1886,15 @@
       "js": "pages/partner-idcard/page.js",
       "css": "pages/partner-idcard/page.css",
       "functions": [],
-      "initializers": [],
-      "dependencies": [],
+      "initializers": [
+        "kraneInit_partner_idcard_upload"
+      ],
+      "dependencies": [
+        "flowState",
+        "persistFlowState",
+        "show",
+        "showActionToast"
+      ],
       "cssBlocks": [],
       "sourceLine": 3453
     },
@@ -1569,12 +1903,19 @@
       "html": "pages/partner-patient-info/index.html",
       "js": "pages/partner-patient-info/page.js",
       "css": "pages/partner-patient-info/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_partner_patient_info_continue"
+      ],
       "initializers": [
-        "kraneInit_partner_patient_info_650"
+        "kraneInit_partner_patient_info_nameInput"
       ],
       "dependencies": [
+        "completePartnerPatientInfo",
         "flowState",
+        "isValidThaiMobile",
+        "normalizePhone",
+        "partnerNameValue",
+        "paymentMethod",
         "persistFlowState",
         "show",
         "showActionToast"
@@ -1590,11 +1931,19 @@
       "html": "pages/partner-insurance/index.html",
       "js": "pages/partner-insurance/page.js",
       "css": "pages/partner-insurance/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_partner_insurance_paymentChoice"
+      ],
       "initializers": [
         "kraneInit_partner_insurance_owned_220"
       ],
       "dependencies": [
+        "CONSULTATION_FEE_BAHT",
+        "flowState",
+        "paymentMethod",
+        "persistFlowState",
+        "setSelectedCategory",
+        "show",
         "syncPartnerPolicySummary"
       ],
       "cssBlocks": [],
@@ -1605,9 +1954,18 @@
       "html": "pages/partner-phr/index.html",
       "js": "pages/partner-phr/page.js",
       "css": "pages/partner-phr/page.css",
-      "functions": [],
+      "functions": [
+        "kraneHandle_partner_phr_complete"
+      ],
       "initializers": [],
-      "dependencies": [],
+      "dependencies": [
+        "flowState",
+        "partnerClinicalStartTarget",
+        "persistFlowState",
+        "show",
+        "showActionToast",
+        "submitOnce"
+      ],
       "cssBlocks": [],
       "sourceLine": 3532
     },

@@ -9,7 +9,26 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_intake3_obesityRisk",
+      "condition": "obesityRiskChoice",
+      "selectors": [
+        "[data-obesity-risk]",
+        "[data-obesity-risk-choice]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_intake3_obesityRisk"
+  ],
   "orderedInitializers": [
     "kraneInit_intake3_owned_300"
   ],
@@ -36,6 +55,14 @@
     },
     {
       "name": "renderObesityRiskStep",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "saveIntakeDraft",
+      "source": "pages/intake-concern/page.js"
+    },
+    {
+      "name": "syncObesityRiskWarning",
       "source": "shared/lib/intake.js"
     }
   ],

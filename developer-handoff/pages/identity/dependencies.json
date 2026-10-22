@@ -9,13 +9,51 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_identity_continue",
+      "condition": "identityContinue",
+      "selectors": [
+        "[data-identity-continue]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_identity_continue"
+  ],
   "orderedInitializers": [
     "kraneInit_identity_owned_93"
   ],
   "dependencies": [
     {
+      "name": "directClinicalStartTarget",
+      "source": "pages/matching/page.js"
+    },
+    {
+      "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "persistFlowState",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    },
+    {
       "name": "showActionToast",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "submitOnce",
       "source": "shared/lib/ui.js"
     }
   ],

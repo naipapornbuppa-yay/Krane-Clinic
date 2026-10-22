@@ -98,3 +98,53 @@ function kraneInit_profile_322(){
     document.body.classList.add('modal-open');
     refillSheet.querySelector('[data-refill-choice]')?.focus();
   }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_followUpCase(e, followUpCaseOpen) {
+      const card=document.querySelector(`#profile [data-treatment-open][data-category="${followUpCaseOpen.dataset.followupCaseOpen}"]`);
+      if(card) openTreatmentDetail(card);
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_followUpJoin(e, followUpJoin) {
+      if(followUpJoin.disabled || followUpJoin.getAttribute('aria-disabled')==='true' || window.kraneTreatmentPause?.isPaused(followUpJoin.dataset.category)) return true;
+      beginAssignedDoctorFlow(followUpJoin.dataset.category || selectedCategoryId);
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_treatmentOpen(e, treatmentOpen) { openTreatmentDetail(treatmentOpen); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_followUp(e, profileFollowup) { beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_referral(e, profileReferral) {
+      const modal=document.querySelector('[data-referral-modal]');
+      if(modal) modal.hidden=false;
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_profile_newAppointment(e, profileNewAppointment) {
+      flowState.followUpDirectToWaitroom=false;
+      flowState.followUpContext=null;
+      flowState.entryChannel='direct';
+      persistFlowState();
+      journeyActive=true;
+      show('conditions');
+      return true;
+
+  return false;
+}

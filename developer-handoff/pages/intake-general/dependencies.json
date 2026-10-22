@@ -9,12 +9,55 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_intake_general_partnerHistory",
+      "condition": "partnerHistoryChoice",
+      "selectors": [
+        "[data-partner-history]",
+        "input",
+        "[data-partner-history-choice]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_intake_general_screening",
+      "condition": "partnerScreeningOption",
+      "selectors": [
+        "[data-partner-screening-question]",
+        "[data-partner-screening-value]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_intake_general_submit",
+      "condition": "intakeComplete.closest('#intake-general')",
+      "selectors": [
+        "#intake-general",
+        "[data-intake-complete]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "beginAssignedDoctorFlow",
     "syncGeneralHealthContext",
     "directNextAfterPatientInfo",
     "updateFollowUpPrefillCard",
-    "completeSharedHealthIntake"
+    "completeSharedHealthIntake",
+    "kraneHandle_intake_general_partnerHistory",
+    "kraneHandle_intake_general_screening",
+    "kraneHandle_intake_general_submit"
   ],
   "orderedInitializers": [
     "kraneInit_intake_general_owned_302"
@@ -65,6 +108,10 @@
       "source": "shared/lib/identity.js"
     },
     {
+      "name": "openHealthHistoryModal",
+      "source": "shared/lib/ui.js"
+    },
+    {
       "name": "partnerClinicalStartTarget",
       "source": "pages/matching/page.js"
     },
@@ -85,6 +132,10 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "setPartnerHistoryChoice",
+      "source": "shared/lib/intake.js"
+    },
+    {
       "name": "setSelectedCategory",
       "source": "shared/lib/intake.js"
     },
@@ -99,6 +150,10 @@
     {
       "name": "signedIn",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "syncPartnerScreening",
+      "source": "shared/lib/intake.js"
     }
   ],
   "externalDependencies": [

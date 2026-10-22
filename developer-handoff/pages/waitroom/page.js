@@ -94,3 +94,24 @@
       startWaitroomEntryWindow(w,timer);
     }, admissionDelay);
   }
+
+// Called once at the original bootstrap position.
+function kraneInit_waitroom_expiredDialog() {
+if(waitroomExpiredModal()){
+    waitroomExpiredModal().addEventListener('click', event => {
+      if(event.target.closest('[data-waitroom-retry]')){
+        closeWaitroomExpiredModal();
+        /* Straight back into matching: the intake answers are untouched, so
+           there is nothing to re-ask. */
+        pendingQueue=null;
+        if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
+        show('matching');
+        return;
+      }
+      if(event.target.closest('[data-waitroom-expired-home]')){
+        closeWaitroomExpiredModal();
+        show('profile');
+      }
+    });
+  }
+}

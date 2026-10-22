@@ -9,6 +9,73 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_payment_fulfillment",
+      "condition": "fulfillmentModeChoice",
+      "selectors": [
+        "[data-fulfillment-mode-option]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_delivery",
+      "condition": "deliveryChoice",
+      "selectors": [
+        "[data-delivery-value]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_editAddon",
+      "condition": "addOnEdit",
+      "selectors": [
+        "[data-order-addon]",
+        "[data-addon-edit]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_removeAddon",
+      "condition": "addOnRemove",
+      "selectors": [
+        "[data-addon-remove]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_addAddon",
+      "condition": "addOnChoice",
+      "selectors": [
+        "[data-addon-option]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_payment_deadlineRetry",
+      "condition": "event.target.closest('[data-payment-deadline-retry]')",
+      "selectors": [
+        "[data-payment-deadline-retry]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "syncPaymentFooterSavings",
     "enforceCheckoutSequence",
@@ -18,13 +85,21 @@
     "flagCheckoutBlocker",
     "syncCheckoutReadiness",
     "refreshMedicationCheckout",
-    "renderPromo"
+    "renderPromo",
+    "kraneHandle_payment_fulfillment",
+    "kraneHandle_payment_delivery",
+    "kraneHandle_payment_editAddon",
+    "kraneHandle_payment_removeAddon",
+    "kraneHandle_payment_addAddon",
+    "kraneHandle_payment_deadlineRetry"
   ],
   "orderedInitializers": [
     "kraneInit_payment_400",
     "kraneInit_payment_537",
     "kraneInit_payment_owned_273",
-    "kraneInit_payment_owned_277"
+    "kraneInit_payment_owned_277",
+    "kraneInit_payment_itemSheet",
+    "kraneInit_payment_promo"
   ],
   "dependencies": [
     {
@@ -56,6 +131,10 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "applyPromoCode",
+      "source": "shared/lib/orders.js"
+    },
+    {
       "name": "availableRefillKeys",
       "source": "shared/lib/ui.js"
     },
@@ -72,12 +151,24 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "closePaymentItemSheet",
+      "source": "shared/lib/orders.js"
+    },
+    {
       "name": "closePaymentMethodModal",
+      "source": "shared/lib/orders.js"
+    },
+    {
+      "name": "closePromoModal",
       "source": "shared/lib/orders.js"
     },
     {
       "name": "closeRefillSheet",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "commitPaymentItemQuantity",
+      "source": "shared/lib/orders.js"
     },
     {
       "name": "consultationBalanceDue",
@@ -160,6 +251,14 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "paymentItemDraft",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "paymentItemSheet",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "paymentMethod",
       "source": "shared/runtime.js"
     },
@@ -176,12 +275,20 @@
       "source": "shared/runtime.js"
     },
     {
+      "name": "pendingPromoCode",
+      "source": "shared/runtime.js"
+    },
+    {
       "name": "persistAddressBook",
       "source": "shared/lib/address.js"
     },
     {
       "name": "persistFlowState",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "promoModal",
+      "source": "shared/runtime.js"
     },
     {
       "name": "reduceMotion",
@@ -234,6 +341,10 @@
     {
       "name": "syncMedicationFailureAmount",
       "source": "pages/payfail/page.js"
+    },
+    {
+      "name": "syncPaymentItemDraft",
+      "source": "shared/lib/intake.js"
     },
     {
       "name": "syncPaymentMethodOptions",

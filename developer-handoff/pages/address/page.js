@@ -802,3 +802,106 @@ if(deliveryAddressScreen){
     });
   }
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_fillSuggestion(e, fillItem) {
+      const g = fillItem.parentElement, scr = fillItem.closest('.screen'), d = fillItem.dataset;
+      [...g.querySelectorAll('.ac-item')].forEach(x => x.setAttribute('aria-selected', x===fillItem));
+      const set = (id,v) => { const el = scr.querySelector('#'+id); if(el && v!=null) el.value = v; };
+      set('addrBuilding',d.building); set('addrFloor',d.floor); set('addrLine',d.addr); set('addrDistrict',d.district);
+      if(d.km) scr.dataset.selectedKm=d.km;
+      // reflect the choice in the search box and close the suggestions
+      const sb = scr.querySelector('#addrSearch'); const nm = fillItem.querySelector('.ac-name');
+      if(sb && nm) sb.value = nm.textContent.trim();
+      const sg = scr.querySelector('#addrSuggest'); if(sg) sg.style.display = 'none';
+      writeDeliveryAddressDraft(scr,{
+        building:d.building,floor:d.floor,line:d.addr,district:d.district,
+        note:scr.querySelector('#addrNote')?.value || '',km:d.km || scr.dataset.selectedKm
+      });
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_zoom(e, simZoom) {
+      const dir=parseInt(simZoom.dataset.simZoom,10);
+      if(osmZoomBy(dir)) return true;
+      simState.z=Math.min(2.6,Math.max(.7, +(simState.z + dir*0.25).toFixed(2)));
+      simApplyTransform(); return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_openPicker(e) { openAddressPicker(); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_closePicker(e) { closeAddressPicker(); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_locate(e) { simLocate(); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_confirmMap(e) { confirmAddressPicker(); return true;
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_save(e, addressSave) {
+      if(!saveDeliveryAddress()) return true;
+      addressEditingSavedIndex=-1;
+      /* The form is done with; the page goes back to its list so returning to
+         it shows the address that was just saved, selected. */
+      addressListSelected=savedAddresses().findIndex(entry => addressBookKey(entry)===addressBookKey(flowState.orderState.address));
+      setAddressPageMode('list');
+      focusCheckoutDelivery=true;
+      replaceCurrent('payment');
+      startInlineDeliveryQuote();
+      showActionToast('บันทึกและใช้ที่อยู่นี้แล้ว','success');
+      return true;
+
+  return false;
+}
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_address_recipientEdit(e) {addressRecipientEditing=true;
+  return false;
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_address_clearAll() {
+document.querySelector('[data-address-clear-all]')?.addEventListener('click',clearDeliveryAddressForm);
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_address_cascade() {
+document.addEventListener('change',event => {
+    if(ADDRESS_MAP_CASCADE_IDS.includes(event.target?.id)){
+      syncAddressMapCascade(event.target.id);
+      commitManualAddress();
+      persistAddressSearchDraft();
+      syncMapFromAddressFields();
+    }
+  });
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_address_resize() {
+window.addEventListener("resize",resizeAddressMapQuery);
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_address_places() {
+SIM_PLACES.forEach(p => { p.district = composeDistrict(p); p.detail = p.line + ' · ' + p.district; });
+}
+
+// Called once at the original bootstrap position.
+function kraneInit_address_pickupEscape() {
+pickupBranchModal?.addEventListener('keydown', event => { if(event.key==='Escape') closePickupBranchModal(); });
+}

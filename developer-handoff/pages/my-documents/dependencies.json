@@ -9,14 +9,49 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_my_documents_open",
+      "condition": "docOpen",
+      "selectors": [
+        "[data-doc-open]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_my_documents_tab",
+      "condition": "tog.dataset.docTab",
+      "selectors": [
+        ".screen",
+        "[data-doc]",
+        "[data-toggle]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
-    "refreshMyDocuments"
+    "refreshMyDocuments",
+    "kraneHandle_my_documents_open",
+    "kraneHandle_my_documents_tab"
   ],
   "orderedInitializers": [
     "kraneInit_my_documents_owned_124",
     "kraneInit_my_documents_owned_125"
   ],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
+    }
+  ],
   "externalDependencies": [
     "Existing b2c shared CSS, icons, select enhancement, i18n, clinical demo/storage adapters; see shared/shell.html."
   ],

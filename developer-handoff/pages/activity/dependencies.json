@@ -9,7 +9,27 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_activity_filter",
+      "condition": "activityFilter",
+      "selectors": [
+        "[data-activity-filter]",
+        "#activity [data-activity-type]",
+        "[data-activity-empty]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_activity_filter"
+  ],
   "orderedInitializers": [],
   "dependencies": [],
   "externalDependencies": [

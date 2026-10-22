@@ -9,13 +9,52 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
-  "functions": [],
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_partner_patient_info_continue",
+      "condition": "partnerInfoContinue",
+      "selectors": [
+        "#partner-patient-info [data-partner-payment-choice-value][aria-selected=\"true\"]",
+        "[data-partner-info-continue]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
+  "functions": [
+    "kraneHandle_partner_patient_info_continue"
+  ],
   "orderedInitializers": [
-    "kraneInit_partner_patient_info_650"
+    "kraneInit_partner_patient_info_nameInput"
   ],
   "dependencies": [
     {
+      "name": "completePartnerPatientInfo",
+      "source": "shared/lib/intake.js"
+    },
+    {
       "name": "flowState",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "isValidThaiMobile",
+      "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "normalizePhone",
+      "source": "shared/lib/identity.js"
+    },
+    {
+      "name": "partnerNameValue",
+      "source": "shared/lib/intake.js"
+    },
+    {
+      "name": "paymentMethod",
       "source": "shared/runtime.js"
     },
     {

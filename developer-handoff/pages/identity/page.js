@@ -30,3 +30,19 @@ function kraneInit_identity_owned_93(){
     syncIdentityContinue();
   })();
 }
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_identity_continue(e, identityContinue) {
+      if(identityContinue.disabled) return true;
+      submitOnce('identity',identityContinue,() => {
+        flowState.identityVerified=true;
+        persistFlowState();
+        showActionToast('ยืนยันตัวตนเรียบร้อยแล้ว','success');
+        // Client (17 Aug): identity is verified before the patient record is
+        // taken, so this hands off to patient-info unless that is already done.
+        show(flowState.patientInfoComplete ? directClinicalStartTarget() : 'patient-info');
+      });
+      return true;
+
+  return false;
+}

@@ -25,3 +25,41 @@ function kraneInit_set_password_531(){
   });
 }
 
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_set_password_submit(e, passwordSave) {
+      const pw=document.getElementById('new-password');
+      const confirm=document.getElementById('confirm-password');
+      const value=pw?.value || '';
+      if(!passwordRuleState(value).every(([,ok]) => ok)){
+        showActionToast('รหัสผ่านต้องยาวอย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข','warning');
+        pw?.focus();
+        return true;
+      }
+      if(confirm?.value!==value){
+        showActionToast('รหัสผ่านทั้งสองช่องยังไม่ตรงกัน','warning');
+        confirm?.focus();
+        return true;
+      }
+      submitOnce('set-password',passwordSave,() => {
+        const reset=Boolean(flowState.passwordResetPending);
+        flowState.passwordSet=true;
+        flowState.passwordResetPending=false;
+        persistFlowState();
+        if(pw) pw.value='';
+        if(confirm) confirm.value='';
+        syncPasswordValidity();
+        applyAuthenticatedAccount({returning:reset || Boolean(flowState.returningLogin)});
+        if(reset){
+          showActionToast('ตั้งรหัสผ่านใหม่แล้ว','success');
+          show(nextAfterAuthentication());
+          return;
+        }
+        flowState.signupDonePending=true;
+        persistFlowState();
+        show('consent-terms');
+      });
+      return true;
+
+  return false;
+}

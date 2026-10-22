@@ -9,9 +9,27 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_consult_sendChat",
+      "condition": "chatSend",
+      "selectors": [
+        "#consult [data-chat-input]",
+        "[data-chat-send]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
     "revealConsultationSummary",
-    "scheduleConsultationSummary"
+    "scheduleConsultationSummary",
+    "kraneHandle_consult_sendChat"
   ],
   "orderedInitializers": [
     "kraneInit_consult_675",
@@ -49,6 +67,10 @@
     {
       "name": "show",
       "source": "shared/lib/navigation.js"
+    },
+    {
+      "name": "showActionToast",
+      "source": "shared/lib/ui.js"
     },
     {
       "name": "syncConsultationSummaryUnread",

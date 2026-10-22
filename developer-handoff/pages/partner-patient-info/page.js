@@ -1,50 +1,44 @@
 /* Shared lexical runtime: load through the handoff build; see DEPENDENCIES.md. */
 
 /** Initialization is called by shared/runtime.js at the original dependency-safe position. */
-function kraneInit_partner_patient_info_650(){
-  // SCR-002A. The card is read for one field only: the name, which lands on the
-  // next screen where it stays editable. Nothing is uploaded; the preview is a
-  // local object URL and the "read" value comes from the demo fixture.
-  (function partnerIdCard(){
-    const input = document.querySelector('[data-idcard-input]');
-    const thumbs = document.querySelector('[data-idcard-thumbs]');
-    if(!input || !thumbs) return;
-    const empty = thumbs.querySelector('[data-idcard-empty]');
-    const readout = document.querySelector('[data-idcard-read]');
-    const nameOut = document.querySelector('[data-idcard-name]');
-    const CARD_NAME = 'มะลิ สุธิดา';
-    input.addEventListener('change', () => {
-      const file = (input.files || [])[0];
-      if(!file || !file.type.startsWith('image/')) return;
-      if(file.size > 10 * 1024 * 1024){ showActionToast('ไฟล์ใหญ่เกิน 10 MB','warning'); return; }
-      thumbs.querySelectorAll('.up-thumb').forEach(el => el.remove());
-      const fig = document.createElement('span');
-      fig.className = 'up-thumb';
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      img.alt = 'ตัวอย่างบัตรประชาชนที่อัปโหลด';
-      img.addEventListener('load', () => URL.revokeObjectURL(img.src));
-      fig.appendChild(img);
-      thumbs.appendChild(fig);
-      if(empty) empty.hidden = true;
-      if(nameOut) nameOut.textContent = CARD_NAME;
-      if(readout) readout.hidden = false;
-      flowState.partnerName = CARD_NAME;
-      persistFlowState();
-      showActionToast('อ่านชื่อจากบัตรแล้ว','success');
-    });
-    document.body.addEventListener('click', e => {
-      const skip = e.target.closest('[data-idcard-skip]');
-      const go = e.target.closest('[data-idcard-continue]');
-      if(!skip && !go) return;
-      if(go && !thumbs.querySelector('.up-thumb')){
-        showActionToast('กรุณาถ่ายหรืออัปโหลดรูปบัตรก่อน','warning');
-        return;
+
+
+
+// Matched branch returns true when it consumes the original delegated event.
+function kraneHandle_partner_patient_info_continue(e, partnerInfoContinue) {
+      const name=partnerNameValue();
+      const phone=document.getElementById('partner-phone')?.value.trim() || '';
+      const selected=document.querySelector('#partner-patient-info [data-partner-payment-choice-value][aria-selected="true"]');
+      const paymentMethod=selected?.dataset.partnerPaymentChoiceValue || 'insurance';
+      if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return true; }
+      if(!isValidThaiMobile(phone)){ showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning'); return true; }
+      if(flowState.partnerInfoComplete && flowState.partnerPhoneVerified
+         && normalizePhone(phone)===normalizePhone(flowState.partnerPhone)){
+        flowState.partnerName=name;
+        flowState.partnerPaymentMethod=paymentMethod;
+        completePartnerPatientInfo();
+        return true;
       }
-      flowState.partnerIdStepDone = true;
-      persistFlowState();
-      show('partner-patient-info');
-    });
-  })();
+      { // Verify a new phone once, then reuse its completed verification.
+        flowState.partnerName=name;
+        flowState.partnerPaymentMethod=paymentMethod;
+        flowState.partnerPendingPhone=normalizePhone(phone);
+        flowState.partnerPhoneVerified=false;
+        flowState.partnerPhoneOtpPending=true;
+        flowState.partnerInfoContinueAfterOtp=true;
+        persistFlowState();
+        show('otp'); return true;
+      }
+      return true;
+
+  return false;
 }
 
+// Called once at the original bootstrap position.
+function kraneInit_partner_patient_info_nameInput() {
+document.body.addEventListener('input',event => {
+    if(!event.target.matches?.('#partner-first-name,#partner-last-name')) return;
+    flowState.partnerName=partnerNameValue();
+    persistFlowState();
+  });
+}

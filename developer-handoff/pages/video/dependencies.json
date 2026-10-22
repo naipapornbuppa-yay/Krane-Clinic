@@ -9,14 +9,96 @@
     "activate": "Shared show() changes active screen and emits krane:screenchange. Page functions respond through shared router or their registered listeners.",
     "unmount": "Not supported during a running session. Existing shared handlers retain DOM references; keep templates mounted until the app is disposed."
   },
+  "behavior": {
+    "note": "Page-owned functions/handlers live in this script; state, navigation and generic controls use shared libraries.",
+    "sources": []
+  },
+  "eventHandlers": [
+    {
+      "name": "kraneHandle_video_endActiveCall",
+      "condition": "ec",
+      "selectors": [
+        "[data-endcall]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_video_endCall",
+      "condition": "endCall",
+      "selectors": [
+        "[data-endcall-modal]",
+        "[data-endcall]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_video_cancelEndCall",
+      "condition": "e.target.closest('[data-endcall-cancel]')",
+      "selectors": [
+        "[data-endcall-cancel]",
+        "[data-endcall-modal]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_video_confirmEndCall",
+      "condition": "e.target.closest('[data-endcall-confirm]')",
+      "selectors": [
+        "[data-endcall-confirm]",
+        "[data-endcall-modal]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    },
+    {
+      "name": "kraneHandle_video_callControl",
+      "condition": "press",
+      "selectors": [
+        ".callstage",
+        "[data-camera-lbl]",
+        "[data-call-self]",
+        "[data-call-status]",
+        "[data-camera-note]",
+        "[data-call-hint]",
+        "[data-press]"
+      ],
+      "dispatch": "shared/runtime.js",
+      "consumesOn": "true (including failed validation)",
+      "fallsThroughOn": "false"
+    }
+  ],
   "functions": [
-    "syncConsultationSummaryUnread"
+    "syncConsultationSummaryUnread",
+    "kraneHandle_video_endActiveCall",
+    "kraneHandle_video_endCall",
+    "kraneHandle_video_cancelEndCall",
+    "kraneHandle_video_confirmEndCall",
+    "kraneHandle_video_callControl"
   ],
   "orderedInitializers": [],
   "dependencies": [
     {
+      "name": "callActive",
+      "source": "shared/runtime.js"
+    },
+    {
+      "name": "fillDoctorName",
+      "source": "shared/lib/clinical.js"
+    },
+    {
       "name": "isEnglishUi",
       "source": "shared/lib/ui.js"
+    },
+    {
+      "name": "show",
+      "source": "shared/lib/navigation.js"
     }
   ],
   "externalDependencies": [
