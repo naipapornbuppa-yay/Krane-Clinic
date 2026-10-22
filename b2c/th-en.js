@@ -14,6 +14,11 @@
 (function () {
   var EN = {
     "ผู้ใช้บริการโปรแกรมลดน้ำหนัก":"Weight-management programme participant",
+        "คุณเมย์ (นามสมมุติ)":"May (pseudonym)",
+    "คุณพลอย (นามสมมุติ)":"Ploy (pseudonym)",
+    "คุณฝน (นามสมมุติ)":"Fon (pseudonym)",
+    "คุณแป้ง (นามสมมุติ)":"Pang (pseudonym)",
+    "คุณต้น (นามสมมุติ)":"Ton (pseudonym)",
     "คุณพา":"Khun Pha",
     "คุณพา · ผู้ใช้บริการดูแลเส้นผม":"Khun Pha · Hair-care programme participant",
     "ผู้ใช้บริการดูแลเส้นผม":"Hair-care programme participant",

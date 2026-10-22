@@ -20,6 +20,9 @@
   slides.forEach(slide=>slide.querySelectorAll('video').forEach(v=>{
    v.addEventListener('pause',()=>{if(internalPause.has(v)){internalPause.delete(v);return}paused.add(v)});v.addEventListener('play',()=>paused.delete(v));
    const toggle=()=>{if(v.paused){paused.delete(v);v.play().catch(()=>{})}else{paused.add(v);v.pause()}};
+   const button=document.createElement('button');button.type='button';button.className='weight-story-gallery__play-toggle';const icon=document.createElement('span');icon.setAttribute('aria-hidden','true');button.append(icon);slide.append(button);
+   const syncPlayback=()=>{const en=document.documentElement.lang==='en';button.setAttribute('aria-label',v.paused?(en?'Play video':'เล่นวิดีโอ'):(en?'Pause video':'หยุดวิดีโอ'));icon.textContent=v.paused?'▶':'Ⅱ'};
+   button.addEventListener('click',toggle);v.addEventListener('play',syncPlayback);v.addEventListener('pause',syncPlayback);syncPlayback();new MutationObserver(syncPlayback).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
    let touched=0;const transport=e=>e.clientY>=v.getBoundingClientRect().bottom-54;
    v.addEventListener('pointerup',e=>{if(e.pointerType!=='touch'||transport(e))return;e.preventDefault();touched=Date.now();toggle()},{capture:true});
    v.addEventListener('click',e=>{if(Date.now()-touched<700){e.preventDefault();return}if(transport(e))return;e.preventDefault();toggle()});
