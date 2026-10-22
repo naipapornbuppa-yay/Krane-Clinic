@@ -54,6 +54,14 @@
         return '<details class="kf__group" data-footer-group><summary aria-controls="' + id + '"><h2>' + label(group.id, group.title) + '</h2>' + chevron + '</summary><ul id="' + id + '">' + group.items.map((item, index) => '<li>' + link(item, group.id + '.' + index) + '</li>').join('') + '</ul></details>';
       }).join('');
       footer.innerHTML = '<div class="kf__main"><div class="kf__brand"><a class="kf__wordmark" href="krane-b2c-landing.html#top" aria-label="Krane Clinic"><img class="brand-lockup" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" loading="lazy" alt="Krane Clinic"></a><p>' + label('description', copy.description) + '</p><div class="kf__contact"><a href="mailto:support@kraneclinic.com">support@kraneclinic.com</a><a href="tel:+66613840206">061-384-0206</a></div><small class="kf__licence">' + label('licence', copy.licence) + '</small><small>' + label('disclaimer', copy.disclaimer) + '</small></div><nav class="kf__links">' + groupsMarkup + '</nav></div><div class="kf__bottom"><div class="kf__social"><span class="kf__sr-only">' + label('social', copy.social) + '</span>' + ['Facebook', 'Instagram', 'YouTube', 'TikTok', 'LINE', 'X'].map((name, index) => unavailable('social.' + index, [name, name])).join('') + '</div><span class="kf__copyright">Copyright © 2026 kraneclinic.com All rights reserved.</span></div>';
+      // Keep the programme action bar from covering footer navigation.
+      const actionBar = document.querySelector('.cd-stickybar');
+      if (actionBar && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+          actionBar.style.visibility = entry.isIntersecting ? 'hidden' : '';
+          actionBar.inert = entry.isIntersecting;
+        }).observe(footer);
+      }
       const details = [...footer.querySelectorAll('[data-footer-group]')];
       const syncViewport = () => details.forEach(group => {
         group.open = !mobile.matches;
