@@ -8,10 +8,10 @@
     if (host.dataset.realReview === 'programme' && !['weight', 'hair-loss', 're-flow', 'ed'].includes(key || 'weight')) return;
     host.innerHTML = `<article class="cd-review cd-review--story review-video">
       <div class="cd-review__story-media review-video__media">
-        <div class="review-video__player"><video autoplay muted loop playsinline preload="metadata" width="540" height="960" poster="assets/reviews/confidence-real-med-poster.jpg" aria-label="วิดีโอรีวิวจากผู้ใช้บริการ" aria-describedby="review-video-note">
+        <div class="review-video__player"><video controls autoplay muted loop playsinline preload="metadata" width="540" height="960" poster="assets/reviews/confidence-real-med-poster.jpg" aria-label="วิดีโอรีวิวจากผู้ใช้บริการ" aria-describedby="review-video-note">
           <source src="assets/reviews/confidence-real-med.mp4" type="video/mp4">
           <a href="assets/reviews/confidence-real-med.mp4">เปิดวิดีโอรีวิว</a>
-        </video><button type="button" class="review-video__play" aria-label="เล่นวิดีโอรีวิว"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button></div>
+        </video></div>
       </div>
       <div class="review-video__copy">
         <p class="cd-review__quote">วิดีโอประสบการณ์การปรึกษาแพทย์</p>
@@ -22,28 +22,29 @@
     </article>`;
     host.hidden = false;
     const video = host.querySelector('video');
-    const play = host.querySelector('.review-video__play');
-    video.controls = false;
+    video.controls = true;
     video.muted = true;
     video.defaultMuted = true;
-    let inView = false;
-    const sync = () => { play.hidden = !video.paused || !inView; };
-    const start = () => video.play().then(sync).catch(() => { play.hidden = !inView; });
-    play.hidden = true;
-    play.addEventListener('click', start);
-    video.addEventListener('play', sync);
-    video.addEventListener('pause', sync);
-    video.addEventListener('loadeddata', () => { if(inView) start(); });
+    let inView = false, userPaused = false, visibilityPause = false;
+    const start = () => { if(!userPaused) video.play().catch(()=>{}); };
+    const pauseForVisibility = () => {
+      if(!video.paused){visibilityPause=true;video.pause();}
+    };
+    video.addEventListener('play',()=>{userPaused=false;visibilityPause=false;});
+    video.addEventListener('pause',()=>{
+      if(visibilityPause){visibilityPause=false;return;}
+      if(!document.hidden)userPaused=true;
+    });
+    video.addEventListener('loadeddata',()=>{if(inView&&!document.hidden)start();});
     const update = visible => {
       inView = visible;
-      document.body.classList.toggle('is-review-in-view', visible);
-      if (visible && !document.hidden) { start(); }
-      else { video.pause(); play.hidden = true; }
+      document.body.classList.toggle('is-review-in-view',visible);
+      if(visible&&!document.hidden)start();else pauseForVisibility();
     };
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries => update(entries.some(entry => entry.isIntersecting)), {threshold:.2}).observe(video);
-    } else update(true);
-    document.addEventListener('visibilitychange', () => { if(document.hidden){video.pause();}else if(inView){start();} });
+    if('IntersectionObserver'in window){
+      new IntersectionObserver(entries=>update(entries.some(entry=>entry.isIntersecting)),{threshold:.2}).observe(video);
+    }else update(true);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseForVisibility();else if(inView)start();});
     if (host.dataset.realReview === 'programme') {
       const section = host.closest('.cd-reviews');
       section.hidden = false;
