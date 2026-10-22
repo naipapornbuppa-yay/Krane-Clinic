@@ -2606,12 +2606,18 @@
   video.controls=true;video.muted=true;video.defaultMuted=true;video.tabIndex=video.closest('[aria-hidden="true"]')?-1:0;
   video.addEventListener('play',()=>{state.userPaused=false;state.visibilityPause=false});
   video.addEventListener('pause',()=>{if(state.visibilityPause){state.visibilityPause=false;return}if(!document.hidden)state.userPaused=true});
+  const toggle=()=>{state.userPaused=!video.paused;if(video.paused)video.play().catch(()=>{});else video.pause()};
+  let lastTouch=-Infinity;
+  const isTransport=event=>event.clientY>=video.getBoundingClientRect().bottom-54;
+  video.addEventListener('pointerup',event=>{
+   if(event.pointerType!=='touch'||isTransport(event))return;
+   event.preventDefault();lastTouch=performance.now();toggle();
+  },true);
   video.addEventListener('click',event=>{
    // Leave the native transport, timeline and sound controls to the browser.
-   const rect=video.getBoundingClientRect();if(event.clientY>=rect.bottom-54)return;
-   event.preventDefault();state.userPaused=!video.paused;
-   if(video.paused)video.play().catch(()=>{});else video.pause();
-  });
+   if(isTransport(event))return;
+   event.preventDefault();if(performance.now()-lastTouch<700)return;toggle();
+  },true);
   video.addEventListener('pointerdown',()=>collage?.classList.add('is-review-interacting'));
   video.addEventListener('keydown',event=>{if(event.target!==video||![' ','k','K'].includes(event.key))return;event.preventDefault();if(video.paused)video.play().catch(()=>{});else video.pause()});
   video.addEventListener('volumechange',()=>{if(!video.muted&&video.volume>0)videos.forEach(other=>{if(other!==video)other.muted=true})});
