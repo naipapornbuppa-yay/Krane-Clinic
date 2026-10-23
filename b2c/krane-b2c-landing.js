@@ -2338,6 +2338,14 @@
     } else {
       hero.style.setProperty("--hero-parallax", "0px");
     }
+    // Match the sticky consultation CTA to the programme currently in view.
+    const programmes = [...document.querySelectorAll('.program-section')];
+    const currentProgramme = programmes.find(section => {
+      const rect = section.getBoundingClientRect();
+      return rect.top < innerHeight * .6 && rect.bottom > innerHeight * .4;
+    });
+    const programmeLink = currentProgramme?.querySelector('[data-route="intake1"][data-category]');
+    mobileCta.href = programmeLink?.href || 'krane-b2c.html?entry=direct&fresh=1#intake1';
     const mobile = window.matchMedia("(max-width: 700px)").matches;
     const closingRect = closing.getBoundingClientRect();
     mobileCta.classList.toggle("is-visible", mobile && heroRect.bottom < 90 && closingRect.top > window.innerHeight * 0.72);
