@@ -9,7 +9,7 @@
   const labels = ['ประเมินสุขภาพ', 'แผนจากแพทย์', 'รับยาที่บ้าน', 'ติดตามผล', 'เติมยา'];
   const icons = ['clipboard-list', 'file-check-2', 'package', 'calendar-check', 'repeat-2'];
   const visuals = [
-    '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
+    '<img src="assets/consultation/doctor-video-live.jpg" alt="" width="1672" height="941" loading="lazy">',
     '<img src="assets/editorial-stock-20261017/pexels-5452269.jpg" alt="" loading="lazy">',
     '<img class="journey-placeholder" src="assets/articles/krane-placeholder.svg" alt="" loading="lazy">',
     '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
