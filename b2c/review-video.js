@@ -8,6 +8,19 @@
   const reviews=(window.KraneReviews||[]).filter(item=>host.dataset.realReview!=='programme'||item.category===category);if(!reviews.length)return;
   host.classList.add('review-video__collection');host.tabIndex=0;
   host.innerHTML=reviews.map((item,index)=>`<article class="cd-review cd-review--story review-video" data-review-id="${item.id}"><div class="cd-review__story-media review-video__media"><div class="review-video__player"><video controls muted loop playsinline preload="none" width="540" height="960" poster="${item.poster}" aria-label="${escape(item.caption)}" aria-describedby="review-video-note-${index}"><source src="${item.src}" type="video/mp4"><a href="${item.src}">เปิดวิดีโอรีวิว</a></video></div></div><div class="review-video__copy"><p class="cd-review__quote">${item.quote?'“'+escape(item.quote).replace(/&lt;br&gt;/g,'<br>')+'”':escape(item.caption)}</p><p class="cd-fine"><b>${escape(item.name)}</b></p><p class="cd-fine review-video__note" id="review-video-note-${index}">ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน</p><p class="cd-fine">ชื่อและรายละเอียดผู้รีวิวบางส่วนเป็นข้อมูลตัวอย่าง</p></div></article>`+(item.before&&item.after?`<article class="cd-review review-video review-video--comparison" data-review-id="${item.id}" data-review-comparison><div class="review-video__photos"><figure><img src="${item.before}" alt="" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${item.after}" alt="" loading="lazy"><figcaption>${item.exampleMonths?`หลัง ${item.exampleMonths} เดือน<small class="review-example-period">ข้อมูลตัวอย่าง</small>`:"หลัง"}</figcaption></figure></div><p class="cd-fine">${escape(item.name)}</p></article>`:'')).join('');
+  // A continuous rail: people in video, interleaved with supplied quotes.
+  const videos=[...host.querySelectorAll('.review-video:not([data-review-comparison])')];
+  const comparisons=[...host.querySelectorAll('[data-review-comparison]')];
+  const usedQuotes=new Set();host.replaceChildren();
+  videos.forEach((card,index)=>{
+   host.append(card);
+   const quoted=reviews[(index+1)%reviews.length];
+   if(quoted.quote&&!usedQuotes.has(quoted.id)){
+    usedQuotes.add(quoted.id);const quote=document.createElement('article');quote.className='cd-review review-video review-video--quote';quote.dataset.reviewId=quoted.id;
+    quote.innerHTML=`<blockquote><p>“${escape(quoted.quote).replace(/&lt;br&gt;/g,'<br>')}”</p><cite>${escape(quoted.name)}</cite></blockquote>`;host.append(quote);
+   }
+  });
+  comparisons.forEach(card=>host.append(card));
   host.hidden=false;
   const shell=document.createElement('div');shell.className='review-video__shell';host.before(shell);shell.append(host);
 
@@ -15,7 +28,7 @@
   if(cards.length>1){
    const dots=document.createElement('nav');dots.className='review-video__dots';dots.setAttribute('aria-label','เลือกวิดีโอรีวิว');
    const go=index=>host.scrollTo({left:cards[index].offsetLeft-cards[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
-   cards.forEach((card,index)=>{const item=reviews.find(item=>item.id===card.dataset.reviewId);const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',card.hasAttribute('data-review-comparison')?'ภาพก่อนและหลัง':item.caption);button.addEventListener('click',()=>go(index));dots.append(button)});const controls=document.createElement('div');controls.className='review-video__navigation';
+   cards.forEach((card,index)=>{const item=reviews.find(item=>item.id===card.dataset.reviewId);const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',card.hasAttribute('data-review-comparison')?'ภาพก่อนและหลัง':card.classList.contains('review-video--quote')?'คำพูดของ '+item.name:item.caption);button.addEventListener('click',()=>go(index));dots.append(button)});const controls=document.createElement('div');controls.className='review-video__navigation';
    const previous=document.createElement('button'),next=document.createElement('button');previous.type=next.type='button';previous.className=next.className='review-video__arrow';previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label','รีวิวก่อนหน้า');next.setAttribute('aria-label','รีวิวถัดไป');
    previous.onclick=()=>go((sync()-1+cards.length)%cards.length);next.onclick=()=>go((sync()+1)%cards.length);controls.append(previous,dots,next);host.after(controls);
    const sync=()=>{let current=0;cards.forEach((card,index)=>{if(Math.abs(card.offsetLeft-cards[0].offsetLeft-host.scrollLeft)<Math.abs(cards[current].offsetLeft-cards[0].offsetLeft-host.scrollLeft))current=index});[...dots.children].forEach((button,index)=>{button.classList.toggle('is-current',index===current);if(index===current)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current')});return current};
