@@ -51,32 +51,9 @@ window.KraneProgrammeOverview = data => {
   const heroAction = document.querySelector('.condition-hero__actions [data-intake-link]');
   heroAction.firstChild.textContent = 'เริ่มปรึกษาฟรี ';
   const intro = overview.querySelector('.cd-card');
-  const copy = document.createElement('div');copy.className = 'programme-intro__copy';
-  const heading = document.createElement('h2');heading.className = 'cd-h2';heading.dataset.overviewTitle = '';heading.textContent = intro.querySelector('[data-overview-title]').textContent;
-  const paragraph = intro.querySelector('[data-overview-copy]');
-  paragraph.textContent = 'คุณหมอประเมินสุขภาพก่อนเริ่มและปรับแผนไปกับคุณ ควบคู่กับการดูแลอาหารและการเคลื่อนไหว เพื่อรักษามวลกล้ามเนื้อและดูแลน้ำหนักในระยะยาว';
-  copy.append(heading, paragraph);
-  const points = document.createElement('ul');points.className = 'programme-intro__points';
-  points.innerHTML = [
-    ['clipboard-check', 'ประเมินก่อนเริ่ม', 'ดูสุขภาพโดยรวมและเป้าหมายของคุณ'],
-    ['leaf', 'กินและขยับอย่างพอดี', 'วางแผนการกินและออกกำลังกายให้เข้ากับชีวิต'],
-    ['calendar-check', 'ติดตามกับคุณหมอ', 'ทบทวนผลและปรับแผนตามความเหมาะสม']
-  ].map(([icon,title,text]) => `<li><i data-lucide="${icon}" aria-hidden="true"></i><div><strong>${title}</strong><p>${text}</p></div></li>`).join('');
-  copy.append(points);
-  const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
-  const media = document.createElement('div');media.className = 'programme-intro__media';
-  media.innerHTML = '<video controls autoplay loop playsinline muted preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
-  doctor.append(media);
-  const interview = media.querySelector('video');
-  interview.muted = true;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) interview.autoplay = false;
-  else new IntersectionObserver(entries => {
-    if (entries.some(entry => entry.isIntersecting)) interview.play().catch(() => {});
-    else interview.pause();
-  }, {threshold: .25}).observe(interview);
-  const designer = document.querySelector('.programme-designer');
-  if (designer) doctor.append(designer);
-  intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);
+  // The weight overview keeps only the suitability content.
+  intro.remove();
+  document.querySelector('.programme-designer')?.remove();
   overview.querySelector('.cd-feature-grid').remove();
   const fit = overview.querySelector('[data-fit-list]');
   fit.innerHTML = ['อยากดูแลน้ำหนักควบคู่กับสุขภาพโดยรวม','ต้องการให้แพทย์ประเมินความเหมาะสมก่อนเริ่ม','อยากมีคุณหมอช่วยวางแผนและติดตามผล','สะดวกปรึกษาและรับการดูแลจากที่บ้าน'].map(text=>`<li>${text}</li>`).join('');
