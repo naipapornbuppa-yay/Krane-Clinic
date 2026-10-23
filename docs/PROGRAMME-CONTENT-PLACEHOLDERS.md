@@ -34,3 +34,10 @@ Updated 23 October 2026. User authorised mock content while the real assets are 
 ## Review rhythm prototype — 23 October 2026
 
 All age/occupation fields added for the reviewer quote layout are SAMPLE DATA, not inferred identities: May 29 office worker; Ploy 32 business owner; Fon 24 office worker; Pha 34 business owner; Pang 28 office worker; Ton 35 office worker. Shared review-section disclosure applies; no invented quotations were added. Cards without a supplied quotation rotate video and matching photos only. Each card keeps media from the same person.
+
+
+## Doctor portrait identity confirmation — 23 October 2026
+- User confirmed IMG_8539.png / preview-a is Dr Q (หมอคิว), urology.
+- User confirmed IMG_8554-03.png / preview-b is Dr Win (หมอวิน).
+- Names and portrait associations are confirmed by the user. Full legal names, education, licensing and Dr Win specialty remain unconfirmed; do not borrow another physician record.
+- Profile descriptive copy is presentation copy, not a verified CV. Existing preview IDs retained for link compatibility.
