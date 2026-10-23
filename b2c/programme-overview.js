@@ -1,6 +1,12 @@
 /* Re:Body editorial structure, adapted from the supplied programme reference.
    Stock interview is explicitly labelled mock pending the real doctor footage. */
 window.KraneProgrammeOverview = data => {
+  const heroCopy = document.querySelector('.condition-hero__copy');
+  const actions = heroCopy.querySelector('.condition-hero__actions');
+  const facts = document.createElement('ul');
+  facts.className = 'programme-hero-facts';
+  facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li><li><i data-lucide="calendar-check" aria-hidden="true"></i>ติดตามกับแพทย์</li>';
+  heroCopy.append(facts, actions);
   if (data.category !== 'weight') return;
   const main = document.querySelector('main');
   main.classList.add('programme-reference');
@@ -23,9 +29,6 @@ window.KraneProgrammeOverview = data => {
   document.querySelector('[data-lead]').textContent = 'ดูแลน้ำหนักด้วย GLP-1 กับคุณหมอประจำตัวออนไลน์ พร้อมแผนการกิน การออกกำลังกาย และติดตามผล';
   const heroAction = document.querySelector('.condition-hero__actions [data-intake-link]');
   heroAction.firstChild.textContent = 'เริ่มปรึกษาฟรี ';
-  const facts = document.createElement('ul');facts.className = 'programme-hero-facts';
-  facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li>';
-  document.querySelector('.condition-hero__actions').after(facts);
   const intro = overview.querySelector('.cd-card');
   const copy = document.createElement('div');copy.className = 'programme-intro__copy';
   const heading = document.createElement('h2');heading.className = 'cd-h2';heading.dataset.overviewTitle = '';heading.textContent = intro.querySelector('[data-overview-title]').textContent;
