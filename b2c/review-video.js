@@ -13,7 +13,7 @@
   host.querySelectorAll('.review-video__copy').forEach(copy=>copy.remove());
   [...host.children].forEach(card=>{
    const item=reviews.find(i=>i.id===card.dataset.reviewId);card.dataset.startFace='video';
-   let last=card;['quote','comparison'].forEach(kind=>{if(kind==='quote'&&!item.quote||kind==='comparison'&&!(item.before&&item.after))return;const copy=card.cloneNode(true);copy.dataset.startFace=kind;last.after(copy);last=copy});
+   let last=card;['quote'].forEach(kind=>{if(kind==='quote'&&!item.quote||kind==='comparison'&&!(item.before&&item.after))return;const copy=card.cloneNode(true);copy.dataset.startFace=kind;last.after(copy);last=copy});
   });
   host.hidden=false;
   const shell=document.createElement('div');shell.className='review-video__shell';host.before(shell);shell.append(host);
