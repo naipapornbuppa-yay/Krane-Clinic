@@ -5,6 +5,13 @@
  const attribution=item=>`${item.name} · ${item.age} ปี · ${item.occupation}`;
  document.querySelectorAll('.weight-story-gallery__video-copy,.review-video__copy').forEach(e=>e.remove());
  document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite)cite.textContent=attribution(item)});
+ document.querySelectorAll('.weight-story-gallery__photos figcaption,.review-video__photos figcaption,.review-video--comparison>.cd-fine').forEach(e=>e.remove());
+ // Group each person's initial video, quotation and matching photos together.
+ document.querySelectorAll('.review-marquee__set').forEach(set=>{
+  [...set.children].forEach(card=>{const item=data.find(i=>i.id===card.dataset.reviewId);if(!item)return;card.dataset.startFace='video';let last=card;
+   ['quote','comparison'].forEach(kind=>{if(kind==='quote'&&!item.quote||kind==='comparison'&&!(item.before&&item.after))return;const copy=card.cloneNode(true);copy.dataset.startFace=kind;last.after(copy);last=copy});
+  });
+ });
  // Existing programme galleries already rotate within their own frame.
  const cards=[...document.querySelectorAll('.review-video[data-review-id],.review-marquee__set figure[data-review-id]')];
  const tones={weight:'#be7d61','hair-loss':'#7ea99e','re-flow':'#1c3e56'};
@@ -21,9 +28,9 @@
   card.classList.add('review-rhythm-card');card.style.setProperty('--review-tone',tones[item.category]||'#395aa4');
   const faces=['video'];
   if(item.quote){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-quote';face.dataset.face='quote';face.innerHTML=`<blockquote><p>“${esc(item.quote).replace(/&lt;br&gt;/g,'<br>')}”</p><cite>${esc(item.name)}<span>${item.age} ปี · ${esc(item.occupation)}</span></cite></blockquote>`;card.append(face);faces.push('quote')}
-  if(item.before&&item.after){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-photos';face.dataset.face='comparison';face.innerHTML=`<figure><img src="${esc(item.before)}" alt="ภาพก่อนของ ${esc(item.name)}" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${esc(item.after)}" alt="ภาพหลังของ ${esc(item.name)}" loading="lazy"><figcaption>หลัง</figcaption></figure>`;card.append(face);faces.push('comparison')}
+  if(item.before&&item.after){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-photos';face.dataset.face='comparison';face.innerHTML=`<figure><img src="${esc(item.before)}" alt="ภาพก่อนของ ${esc(item.name)}" loading="lazy"></figure><figure><img src="${esc(item.after)}" alt="ภาพหลังของ ${esc(item.name)}" loading="lazy"></figure>`;card.append(face);faces.push('comparison')}
   // Prefer video / quotation / comparison across neighbouring people.
-  const desired=['video','quote','comparison'][index%3];let active=faces.includes(desired)?faces.indexOf(desired):index%faces.length;
+  const desired=card.dataset.startFace||['video','quote','comparison'][index%3];let active=faces.includes(desired)?faces.indexOf(desired):index%faces.length;
   let visible=false,elapsed=0;const interval=7000+(index%3)*1200;
   const show=()=>{const kind=faces[active];card.dataset.storyKind=kind;card.querySelectorAll('[data-face]').forEach(f=>f.hidden=f.dataset.face!==kind);video.style.visibility=kind==='video'?'visible':'hidden';if(kind!=='video'||!visible||document.hidden)video.pause();else if(!reduced.matches)video.play().catch(()=>{});if(card.classList.contains('review-video')){card.setAttribute('role',kind==='video'?'button':'group');card.setAttribute('aria-label',kind==='video'?'เปิดวิดีโอเต็ม: '+item.name:kind==='quote'?'คำพูดของ '+item.name:'ภาพก่อนและหลังของ '+item.name)}};
   // Keep hidden faces silent even when an existing visibility observer tries to play.

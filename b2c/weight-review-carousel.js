@@ -5,7 +5,8 @@
   const viewport=section.querySelector('[data-interview-viewport]'),slides=[...section.querySelectorAll('[data-interview-slide]')],dots=[...section.querySelectorAll('[data-interview-go]')];
   if(!slides.length)return;
   const track=slides[0].parentElement;
-  const ordered=[];for(let i=0;i<slides.length;){const group=[slides[i++]];while(i<slides.length&&!slides[i].classList.contains('weight-story-gallery__video-slide'))group.push(slides[i++]);ordered.push(...group.filter(x=>x.classList.contains('weight-story-gallery__quote-slide')),...group.filter(x=>!x.classList.contains('weight-story-gallery__quote-slide')))}
+  const ordered=[];const ids=[...new Set(slides.map(s=>s.dataset.reviewId))];
+  ids.forEach(id=>['video','quote','comparison'].forEach(kind=>ordered.push(...slides.filter(s=>s.dataset.reviewId===id&&s.dataset.reviewKind===kind))));
   slides.splice(0,slides.length,...ordered);slides.forEach(slide=>track.append(slide));
   const paused=new WeakSet(),internalPause=new WeakSet();
   const copy=slide=>{const node=slide.cloneNode(true);node.removeAttribute('data-interview-slide');node.setAttribute('data-interview-clone','');node.setAttribute('aria-hidden','true');node.inert=true;node.querySelectorAll('video').forEach(v=>{v.removeAttribute('controls');v.preload='none'});return node};
