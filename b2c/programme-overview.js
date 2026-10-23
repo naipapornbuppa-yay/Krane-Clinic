@@ -5,7 +5,7 @@ window.KraneProgrammeOverview = data => {
   const actions = heroCopy.querySelector('.condition-hero__actions');
   const facts = document.createElement('ul');
   facts.className = 'programme-hero-facts';
-  facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li><li><i data-lucide="calendar-check" aria-hidden="true"></i>ติดตามกับแพทย์</li>';
+  facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li>';
   heroCopy.append(facts, actions);
   if (!['weight','hair-skin','sexual-health'].includes(data.category)) return;
   const isWeight = data.category === 'weight';
