@@ -14,10 +14,7 @@
   };
   function localized(article){if(document.documentElement.lang!=='en')return article;if(!article.en)return {...article,categoryLabel:({hair:'Hair loss',weight:'Weight',lifestyle:'Lifestyle','sexual-health':'Sexual health'})[article.category]||'Health'};return {...article,...article.en,categoryLabel:({hair:'Hair loss',weight:'Weight','sexual-health':'Sexual health'})[article.category]||article.categoryLabel,sections:[{heading:'Thai manuscript',copy:'The full manuscript supplied by Krane is in Thai. Use the language menu to switch to Thai and read it. An English clinical translation is not yet available.'}],tags:[({hair:'Hair loss',weight:'Weight','sexual-health':'Sexual health'})[article.category]],byline:'Krane Editorial'};}
   function articleAuthor(article){
-    const row=el('span','article-author');
-    const photo=el('img','article-author__photo');photo.src=article.author.photo||'../assets/brand-final/krane-logotype.svg';photo.alt='';photo.width=40;photo.height=40;
-    const text=el('span','article-author__text');text.append(el('strong','',article.author.name));
-    if(article.author.photo)row.append(photo);row.append(text);return row;
+    return el('span','article-read-time',document.documentElement.lang==='en'?`${article.minutes}-minute read`:`อ่าน ${article.minutes} นาที`);
   }
   function articleCredits(article){
     const en=document.documentElement.lang==='en';
@@ -48,7 +45,7 @@
       button.type='button';button.dataset.go='article';button.dataset.articleId=article.id;
       const image=el('img','article-teaser__image');window.KraneArticleImage.bind(image,article);image.loading='lazy';image.width=1280;image.height=800;
       const body=el('span','article-teaser__body');
-      body.append(el('span','article-teaser__meta',document.documentElement.lang==='en'?article.categoryLabel+' · '+article.minutes+' min read':article.categoryLabel+' · อ่าน '+article.minutes+' นาที'),
+      body.append(el('span','article-teaser__meta',article.categoryLabel),
         el('span','article-teaser__title',article.title),el('span','article-teaser__summary',article.summary));
       const footer=el('span','article-teaser__footer');footer.append(articleAuthor(article));body.append(footer);button.append(image,body);return button;
     }));
