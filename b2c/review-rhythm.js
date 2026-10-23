@@ -43,5 +43,5 @@
   show();
  });
  // One quiet note per review section, rather than repeated copy over videos.
- document.querySelectorAll('.cd-reviews,#reviews.reviews').forEach(section=>{if(section.querySelector('.review-rhythm-note'))return;const p=document.createElement('p');p.className='review-rhythm-note';p.textContent='ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน · ชื่อ อายุ และอาชีพบางส่วนเป็นข้อมูลตัวอย่าง';section.append(p)});
+ document.querySelectorAll('.cd-reviews,#reviews.reviews').forEach(section=>{if(section.querySelector('.review-rhythm-note'))return;const p=document.createElement('p');p.className='review-rhythm-note';p.textContent='ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน';section.append(p)});
 })();
