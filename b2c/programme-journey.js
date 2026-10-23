@@ -31,7 +31,7 @@
     button.id = `journey-tab-${index}`;
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', `journey-panel-${index}`);
-    button.innerHTML = `<span class="journey-tab__number">${index + 1}</span><span>${labels[index]}</span><i data-lucide="${icons[index]}" aria-hidden="true"></i>`;
+    button.innerHTML = `<span>${labels[index]}</span><i data-lucide="${icons[index]}" aria-hidden="true"></i>`;
     tablist.append(button);
     const panel = document.createElement('section');
     panel.id = `journey-panel-${index}`;
@@ -54,7 +54,7 @@
       button.tabIndex = i === selected ? 0 : -1;
       panels.children[i].hidden = i !== selected;
     });
-    root.querySelector('[data-journey-count]').textContent = `${selected + 1} / ${steps.length}`;
+    const count=root.querySelector('[data-journey-count]');if(count)count.textContent = `${selected + 1} / ${steps.length}`;
     const active = buttons[selected];
     if (focus) active.focus({preventScroll: true});
     // Only move the horizontal rail; selecting a step never jumps the page.
@@ -76,5 +76,8 @@
   source.hidden = true;
   source.closest('.cd-card').classList.add('journey-card');
   select(0);
+  root.querySelector('.journey-footer')?.remove();
+  root.querySelector('.journey-hint')?.remove();
+  source.closest('.cd-card').querySelector(':scope > h3')?.remove();
   window.lucide?.createIcons();
 })();
