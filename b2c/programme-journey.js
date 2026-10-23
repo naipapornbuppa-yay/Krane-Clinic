@@ -11,7 +11,7 @@
   const visuals = [
     '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
     '<img src="assets/editorial-stock-20261017/pexels-5452269.jpg" alt="" loading="lazy">',
-    '<i data-lucide="package-check"></i>',
+    '<img class="journey-placeholder" src="assets/articles/krane-placeholder.svg" alt="" loading="lazy">',
     '<img src="assets/editorial-stock-20261017/pexels-6129645.jpg" alt="" width="1125" height="750" loading="lazy">',
     '<img src="assets/partners/fascino-storefront-official.png" alt="" width="1326" height="624" loading="lazy">'
   ];

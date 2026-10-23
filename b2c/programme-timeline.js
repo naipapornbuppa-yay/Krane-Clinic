@@ -26,4 +26,9 @@
   const columns=document.createElement('div');columns.className='programme-journey-columns';
   panel.before(columns);columns.append(panel,price);
  }
+ const fullGuide=document.createElement('section');fullGuide.className='programme-start-section';
+ fullGuide.setAttribute('aria-labelledby','programme-start-title');
+ const title=document.createElement('h2');title.id='programme-start-title';title.textContent='ขั้นตอนการเริ่มต้นและรับยา';
+ fullGuide.append(title);guide.querySelector(':scope > summary')?.remove();fullGuide.append(...guide.childNodes);guide.remove();
+ (panel.closest('.programme-journey-columns')||panel).after(fullGuide);
 })();
