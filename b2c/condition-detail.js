@@ -262,7 +262,6 @@
         ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral", "ใช้ต่อเนื่อง"],
         ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical", "ใช้เสริม"]
       ],
-      safety: "ข้อมูลความปลอดภัยสำหรับโปรแกรมดูแลเส้นผม",
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุ ระยะเวลา และความต่อเนื่องในการรักษา"
     },
     skin: {
@@ -471,12 +470,15 @@
     data.knowledgeTitle=programme.knowledgeTitle;data.knowledge=programme.knowledge;data.knowledgeStats=programme.stats;
     setText('[data-overview-copy]',programme.overview);
     setText('[data-doctor-quote]',programme.quote);
+    const designerId={weight:'3','hair-skin':'2','sexual-health':'5'}[data.category];
     const designer={
-      weight:{name:'อ.นพ. พหล สโรจวิสุทธิ์',specialty:'อายุรศาสตร์ · โภชนศาสตร์คลินิก',initials:'พส'},
+      weight:{name:'อ.นพ. พหล สโรจวิสุทธิ์',specialty:'อายุรศาสตร์ · โภชนศาสตร์คลินิก',image:'assets/doctors/client-20261017/IMG_8554-03.png',initials:'พส'},
       'hair-skin':{name:'พญ. กรผกา ขันติโกสุม',specialty:'ตจวิทยา (ผิวหนัง)',image:'assets/landing-573/doctors/client-doctor-ploy.png'},
-      'sexual-health':{name:'นพ. กฤติน สกุลเชี่ยวชาญ',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',initials:'กส'}
+      'sexual-health':{name:'นพ. กฤติน สกุลเชี่ยวการ',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',initials:'กส'}
     }[data.category];
     if(designer){
+      const sourceDoctor=window.KraneDoctorSource?.[designerId];
+      if(sourceDoctor){designer.name=sourceDoctor.name;designer.specialty=sourceDoctor.specialty;}
       const link=document.querySelector('.programme-doctor--hero');
       const credit=document.createElement('a');credit.className='programme-designer';
       credit.href='doctors.html?doctor='+({weight:'3','hair-skin':'2','sexual-health':'5'}[data.category]);
@@ -543,10 +545,7 @@
     const reviews=document.querySelector('[data-programme-reviews]');
     setText('[data-overview-title]',data.category==='weight' ? 'ลดน้ำหนักอย่างมีคุณภาพ'
       : data.category==='hair-skin' ? 'ดูแลผมร่วงอย่างมีหลักฐาน' : 'ดูแลการแข็งตัวอย่างเป็นระบบ');
-    // The fixture renderer below is retained only for future source reference.
-    // Replace stock media/fictional attribution and record consent before approval.
-    if(reviews) reviews.closest('.cd-reviews').hidden=programme.reviewsApproved!==true;
-    if(reviews && programme.reviewsApproved===true){
+    if(reviews){
       const isFlow=data.category==='sexual-health';
       const isHair=data.category==='hair-skin';
       reviews.innerHTML=Array.from({length:3},(_,i)=>{
