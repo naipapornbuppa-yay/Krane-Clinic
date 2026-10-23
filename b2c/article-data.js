@@ -1002,5 +1002,11 @@
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncPreviews, {once:true});
   else syncPreviews();
-  window.KraneArticleSeed=articles;
+  // Client confirmed this exact 15-manuscript collection on 23 October 2026.
+  const approvedIds = new Set(['ed','hair-loss','obesity'].flatMap(group =>
+    Array.from({length:5},(_,index)=>'library-'+group+'-0'+(index+1))));
+  const approved = articles.filter(article=>approvedIds.has(article.id));
+  if (approved.length !== 15) throw new Error('Approved article collection must contain 15 manuscripts');
+  approved.forEach(article=>{article.publicationApproved=true;article.approvalConfirmedAt='2026-10-23';});
+  window.KraneArticleSeed=approved;
 })();

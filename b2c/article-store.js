@@ -28,6 +28,6 @@
   Object.assign(draft,{id,title:'บทความใหม่',summary:'',sections:[{heading:'',copy:''}]});delete draft.manuscriptMarkdown;delete draft.editorialReview;delete draft.manuscriptUrl;
   all.push({id,status:'Draft',draft,published:null});
   localStorage.setItem(key,JSON.stringify(Object.fromEntries(all.map(r=>[r.id,r]))));return id;
- },published:()=>records().filter(r=>r.published).map(r=>clone(r.published))};
+ },published:()=>KraneArticleSeed.filter(article=>article.publicationApproved).map(article=>clone(article))};
  window.addEventListener('storage',e=>{if(e.key===key)window.dispatchEvent(new CustomEvent('krane-articles-changed'))});
 })();
