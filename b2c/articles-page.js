@@ -7,7 +7,17 @@ const product=titleText.includes('sildenafil')?['assets/medicine/ed-sheet-v1/via
 const hasPhoto=!!product || (article.image && article.image!==window.KraneArticleImage.placeholder);
 header.classList.toggle('has-editorial-photo',!!hasPhoto);heroMedia.hidden=!hasPhoto;heroMedia.classList.toggle('is-product',!!product);
 if(product){heroImage.src=product[0];heroImage.alt=product[1];}else window.KraneArticleImage.bind(heroImage,article);
-const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways)body.prepend(takeaways);
+const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways){
+body.prepend(takeaways);
+const intro=document.createElement('div');intro.className='article-reading__intro';
+[...takeaways.children].filter(node=>!node.matches('h2,h3,blockquote,ul,ol')).forEach(node=>intro.append(node));
+if(intro.childNodes.length)takeaways.after(intro);
+if(article.id==='library-obesity-01'&&!en){
+const concise=['GLP-1 เลียนแบบฮอร์โมนอิ่ม เพื่อช่วยดูแลน้ำหนัก','ไม่เหมาะกับทุกคน ต้องให้แพทย์ประเมินก่อนใช้','ชนิดฉีดในไทยต้องมีใบสั่งแพทย์และจ่ายผ่านเภสัชกร','ใช้ควบคู่กับการกิน การออกกำลังกาย และติดตามผลระยะยาว'];
+takeaways.querySelectorAll('li').forEach((li,i)=>{if(concise[i])li.textContent=concise[i]});
+}
+}
+const toc=body.querySelector('.article-toc');if(toc)toc.open=false;
 reading.querySelector('.article-editorial-footer')?.remove();
 const footer=document.createElement('div');footer.className='article-editorial-footer';
 const refs=reading.querySelector('.article-references');if(refs){refs.open=true;footer.append(refs)}
