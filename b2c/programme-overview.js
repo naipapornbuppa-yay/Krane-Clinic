@@ -24,7 +24,9 @@ window.KraneProgrammeOverview = data => {
     media.className = 'programme-video-overview__media';
     media.innerHTML = '<video controls autoplay loop muted playsinline preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
     const credit = heroCopy.querySelector('.programme-designer');
-    if (credit) media.append(credit);
+    if (credit) intro.querySelector('[data-overview-title]').after(credit);
+    overview.classList.add('programme-hair-overview');
+    overview.querySelector('[data-fit-list]')?.parentElement.classList.add('programme-hair-fit');
     intro.before(block);
     block.append(media, intro);
     const features = overview.querySelector(".cd-feature-grid");
