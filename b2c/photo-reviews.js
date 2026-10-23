@@ -1,0 +1,19 @@
+/* Supplied same-person before/after photographs, separate from video reviews. */
+(()=>{
+ const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const category=new URLSearchParams(location.search).get('condition')||'weight';
+ const items=(window.KraneReviews||[]).filter(i=>i.category===category&&i.before&&i.after);
+ const reviews=document.querySelector('.cd-reviews');if(!reviews||!items.length)return;
+ const section=document.createElement('section');section.className='photo-reviews';section.setAttribute('aria-label','ภาพก่อนและหลังจากผู้ใช้บริการ');
+ section.innerHTML='<div class="photo-reviews__heading"><h2>เรื่องราวก่อนและหลัง</h2><button type="button" aria-pressed="false">หยุดเลื่อน</button></div><div class="photo-reviews__viewport" tabindex="0" aria-label="ภาพก่อนและหลัง เลื่อนแนวนอนเพื่อดูเพิ่มเติม"><div class="photo-reviews__track"><div class="photo-reviews__set"></div></div></div><p class="photo-reviews__note">ผลลัพธ์แตกต่างกันในแต่ละบุคคล · ชื่อและรายละเอียดบางส่วนเป็นข้อมูลตัวอย่าง</p>';
+ const set=section.querySelector('.photo-reviews__set');
+ set.innerHTML=items.map(i=>`<article class="photo-review" data-review-id="${esc(i.id)}"><div class="photo-review__pair"><figure><img src="${esc(i.before)}" alt="ภาพก่อนของ ${esc(i.name)}" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${esc(i.after)}" alt="ภาพหลังของ ${esc(i.name)}" loading="lazy"><figcaption>หลัง</figcaption></figure></div><div class="photo-review__copy">${i.quote?`<blockquote>“${esc(i.quote).replace(/&lt;br&gt;/g,' ')}”</blockquote>`:`<p>${esc(i.caption)}</p>`}<p class="photo-review__name">${esc(i.name)}</p></div></article>`).join('');
+ const duplicate=set.cloneNode(true);duplicate.setAttribute('aria-hidden','true');duplicate.inert=true;section.querySelector('.photo-reviews__track').append(duplicate);
+ const viewport=section.querySelector('.photo-reviews__viewport'),button=section.querySelector('button');let paused=false,visible=false,hover=false,last=0,position=0;const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ button.onclick=()=>{paused=!paused;button.textContent=paused?'เล่นต่อ':'หยุดเลื่อน';button.setAttribute('aria-pressed',String(paused))};
+ viewport.addEventListener('pointerenter',()=>hover=true);viewport.addEventListener('pointerleave',()=>hover=false);viewport.addEventListener('scroll',()=>position=viewport.scrollLeft,{passive:true});
+ viewport.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();viewport.scrollBy({left:e.key==='ArrowRight'?320:-320,behavior:'smooth'})}});
+ new IntersectionObserver(entries=>visible=entries.some(e=>e.isIntersecting)).observe(section);
+ function tick(time){const dt=Math.min(time-last,50);last=time;if(visible&&!paused&&!hover&&!document.hidden&&!reduced.matches&&!section.contains(document.activeElement)){position+=dt*.022;if(position>=set.offsetWidth+24)position-=set.offsetWidth+24;viewport.scrollLeft=position}requestAnimationFrame(tick)}
+ reviews.after(section);requestAnimationFrame(tick);
+})();
