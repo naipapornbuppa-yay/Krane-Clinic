@@ -7,6 +7,27 @@ window.KraneProgrammeOverview = data => {
   facts.className = 'programme-hero-facts';
   facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li><li><i data-lucide="calendar-check" aria-hidden="true"></i>ติดตามกับแพทย์</li>';
   heroCopy.append(facts, actions);
+  if (data.category === 'hair-skin') {
+    const overview = document.querySelector('#cd-panel-overview');
+    const intro = overview.querySelector('.cd-card');
+    const block = document.createElement('section');
+    block.className = 'programme-video-overview';
+    const media = document.createElement('div');
+    media.className = 'programme-video-overview__media';
+    media.innerHTML = '<video controls autoplay loop muted playsinline preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
+    const credit = heroCopy.querySelector('.programme-designer');
+    if (credit) media.append(credit);
+    intro.before(block);
+    block.append(media, intro);
+    const features = overview.querySelector(".cd-feature-grid");
+    if (features) intro.append(features);
+    const video = media.querySelector('video'); video.muted = true;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) video.autoplay = false;
+    else new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) video.play().catch(() => {});
+      else video.pause();
+    }, {threshold:.25}).observe(video);
+  }
   if (data.category !== 'weight') return;
   const main = document.querySelector('main');
   main.classList.add('programme-reference');
