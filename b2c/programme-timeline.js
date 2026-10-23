@@ -17,9 +17,10 @@
  const timeline=document.createElement('div');timeline.className='programme-monthly';
  timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ตัวอย่างช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
  panel.replaceChildren(timeline,guide);
+ timeline.classList.add('is-animated');
  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
   if(entry.isIntersecting){entry.target.classList.add('is-entering');observer.unobserve(entry.target)}
- }),{threshold:.25});
+ }),{threshold:.1});
  timeline.querySelectorAll('li').forEach(step=>observer.observe(step));
  const price=document.getElementById('cd-panel-price');
  if(price && !panel.parentElement.classList.contains('programme-journey-columns')){

@@ -27,15 +27,23 @@
 
 .condition-detail-page.public-care-page .programme-journey-columns #cd-panel-price.programme-price:not([hidden]){display:block;padding:0;background:transparent;width:100%;max-width:none}
 
-.programme-monthly li{transition:transform .6s ease,border-color .6s ease}.programme-monthly li.is-entering{animation:journey-step-in .65s ease both}@keyframes journey-step-in{from{transform:translateY(18px)}to{transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.programme-monthly li.is-entering{animation:none}.programme-monthly li{transition:none}}@media(max-width:760px){.condition-detail-page.public-care-page .programme-journey-columns #cd-panel-steps{padding:24px}.programme-journey-columns .programme-monthly h2{font-size:27px}}
+@media(max-width:760px){.condition-detail-page.public-care-page .programme-journey-columns #cd-panel-steps{padding:24px}.programme-journey-columns .programme-monthly h2{font-size:27px}}
 
 /* Visible milestones sit on the rail, aligned with each month label. */
 .programme-monthly li{position:relative;--milestone-color:var(--color-accent,#395aa4)}
 .programme-monthly li:nth-child(2){--milestone-color:#597bc0}
 .programme-monthly li:nth-child(3){--milestone-color:#b1c2e3}
-.programme-monthly li::before{content:"";position:absolute;box-sizing:border-box;width:18px;height:18px;left:0;top:-12px;border:3px solid var(--public-surface,#fff);border-radius:50%;background:var(--milestone-color);box-shadow:0 0 0 2px var(--milestone-color)}
+.programme-monthly li::before{content:"";position:absolute;box-sizing:border-box;width:18px;height:18px;left:0;top:-12px;border:0;border-radius:50%;background:var(--milestone-color);box-shadow:none;z-index:1}
 .programme-journey-columns .programme-monthly li::before{left:-11px;top:0}
 @media(max-width:760px){.programme-monthly li::before{left:-11px;top:0}}
+
+/* Draw the rail downward as each milestone enters the viewport. */
+.programme-journey-columns .programme-monthly li{border-left-color:transparent}
+.programme-journey-columns .programme-monthly li::after{content:"";position:absolute;left:-4px;top:9px;bottom:-9px;width:4px;background:var(--milestone-color);transform-origin:top;pointer-events:none}
+.programme-journey-columns .programme-monthly li:last-child::after{bottom:0}
+.programme-monthly.is-animated li::after{transform:scaleY(0);transition:transform .9s cubic-bezier(.22,.61,.36,1)}
+.programme-monthly.is-animated li.is-entering::after{transform:scaleY(1)}
+@media(prefers-reduced-motion:reduce){.programme-monthly.is-animated li::after{transform:none;transition:none}}
 
 /* Keep the two desktop surfaces aligned while allowing content to set the height. */
 @media(min-width:901px){
