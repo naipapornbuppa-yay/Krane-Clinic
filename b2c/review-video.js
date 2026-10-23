@@ -24,23 +24,32 @@
   host.hidden=false;
   const shell=document.createElement('div');shell.className='review-video__shell';host.before(shell);shell.append(host);
 
-  const cards=[...host.children];
-  if(cards.length>1){
-   const dots=document.createElement('nav');dots.className='review-video__dots';dots.setAttribute('aria-label','เลือกวิดีโอรีวิว');
-   const go=index=>host.scrollTo({left:cards[index].offsetLeft-cards[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
-   cards.forEach((card,index)=>{const item=reviews.find(item=>item.id===card.dataset.reviewId);const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',card.hasAttribute('data-review-comparison')?'ภาพก่อนและหลัง':card.classList.contains('review-video--quote')?'คำพูดของ '+item.name:item.caption);button.addEventListener('click',()=>go(index));dots.append(button)});const controls=document.createElement('div');controls.className='review-video__navigation';
-   const previous=document.createElement('button'),next=document.createElement('button');previous.type=next.type='button';previous.className=next.className='review-video__arrow';previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label','รีวิวก่อนหน้า');next.setAttribute('aria-label','รีวิวถัดไป');
-   previous.onclick=()=>go((sync()-1+cards.length)%cards.length);next.onclick=()=>go((sync()+1)%cards.length);controls.append(previous,dots,next);host.after(controls);
-   const sync=()=>{let current=0;cards.forEach((card,index)=>{if(Math.abs(card.offsetLeft-cards[0].offsetLeft-host.scrollLeft)<Math.abs(cards[current].offsetLeft-cards[0].offsetLeft-host.scrollLeft))current=index});[...dots.children].forEach((button,index)=>{button.classList.toggle('is-current',index===current);if(index===current)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current')});return current};
-   host.addEventListener('scroll',sync,{passive:true});host.addEventListener('keydown',event=>{if(event.target!==host||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();go(Math.max(0,Math.min(cards.length-1,sync()+(event.key==='ArrowRight'?1:-1))))});sync();
-  }
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  let hovered=false,touching=false,inViewport=false,lastTime=0,direction=1,position=0;
+  const dialog=document.createElement('dialog');dialog.className='review-video__dialog';
+  dialog.setAttribute('aria-label','วิดีโอรีวิวฉบับเต็ม');
+  dialog.innerHTML='<button type="button" class="review-video__close" aria-label="ปิดวิดีโอ">×</button><video controls playsinline preload="none"></video>';
+  document.body.append(dialog);const fullVideo=dialog.querySelector('video');let opener=null;
+  const close=()=>dialog.close();dialog.querySelector('button').onclick=close;
+  dialog.addEventListener('click',event=>{if(event.target===dialog)close()});
+  dialog.addEventListener('close',()=>{fullVideo.pause();fullVideo.removeAttribute('src');fullVideo.load();opener?.focus({preventScroll:true})});
+  const openVideo=(video,card)=>{opener=card;fullVideo.src=video.querySelector('source').src;fullVideo.poster=video.poster;dialog.showModal();fullVideo.play().catch(()=>{})};
+  host.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')hovered=true});host.addEventListener('pointerleave',()=>hovered=false);
+  host.addEventListener('pointerdown',()=>touching=true);window.addEventListener('pointerup',()=>touching=false);window.addEventListener('pointercancel',()=>touching=false);
+  host.addEventListener('scroll',()=>{position=host.scrollLeft},{passive:true});
+  host.addEventListener('keydown',event=>{if(event.target===host&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();host.scrollBy({left:event.key==='ArrowRight'?320:-320,behavior:'smooth'})}});
+  new IntersectionObserver(entries=>{inViewport=entries.some(e=>e.isIntersecting)},{threshold:.1}).observe(host);
+  const tick=time=>{const dt=Math.min(time-lastTime,50);lastTime=time;
+   if(inViewport&&!document.hidden&&!reduced.matches&&!hovered&&!touching&&!dialog.open&&!host.contains(document.activeElement)){
+    const max=host.scrollWidth-host.clientWidth;if(max>0){position+=direction*dt*.025;if(position>=max){position=max;direction=-1}else if(position<=0){position=0;direction=1}host.scrollLeft=position;}
+   }requestAnimationFrame(tick);
+  };requestAnimationFrame(tick);
   if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{if(isIntersecting)visibleComparisons.add(target);else visibleComparisons.delete(target)});document.body.classList.toggle('is-review-in-view',visibleVideos.size+visibleComparisons.size>0)},{threshold:.3});host.querySelectorAll('[data-review-comparison]').forEach(card=>observer.observe(card))}
   host.querySelectorAll('video').forEach(video=>{
    video.muted=true;video.defaultMuted=true;video.controls=false;
-   const actions=document.createElement('div');actions.className='review-video__actions';
-   const playback=document.createElement('button'),sound=document.createElement('button');playback.type=sound.type='button';
-   const syncActions=()=>{playback.textContent=video.paused?'▶':'Ⅱ';playback.setAttribute('aria-label',video.paused?'เล่นวิดีโอ':'พักวิดีโอ');sound.textContent=video.muted?'เปิดเสียง':'ปิดเสียง';sound.setAttribute('aria-label',sound.textContent)};
-   const toggle=()=>{if(video.paused)video.play().catch(()=>{});else video.pause()};playback.onclick=toggle;video.onclick=toggle;sound.onclick=()=>{video.muted=!video.muted;syncActions()};video.addEventListener('play',syncActions);video.addEventListener('pause',syncActions);video.addEventListener('volumechange',syncActions);actions.append(sound,playback);video.parentElement.append(actions);syncActions();let inView=false,userPaused=false,visibilityPause=false;
+   const card=video.closest('.review-video');card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label','เปิดวิดีโอเต็ม: '+video.getAttribute('aria-label'));video.tabIndex=-1;
+   card.addEventListener('click',()=>openVideo(video,card));card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openVideo(video,card)}});
+   let inView=false,userPaused=false,visibilityPause=false;
    const start=()=>{if(!userPaused)video.play().catch(()=>{})};
    const pause=()=>{if(!video.paused){visibilityPause=true;video.pause()}};
    video.addEventListener('play',()=>{userPaused=false;visibilityPause=false});video.addEventListener('pause',()=>{if(visibilityPause){visibilityPause=false;return}if(!document.hidden)userPaused=true});video.addEventListener('loadeddata',()=>{if(inView&&!document.hidden)start()});
