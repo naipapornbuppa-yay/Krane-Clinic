@@ -1410,7 +1410,7 @@
     }
 
     function slideScrollLeft(slide) {
-      return slide.offsetLeft - slides[0].offsetLeft;
+      return slide.getBoundingClientRect().left - viewport.getBoundingClientRect().left + viewport.scrollLeft;
     }
 
     function stopAuto() {
@@ -1419,7 +1419,7 @@
     }
 
     function canAutoPlay() {
-      return performance.now() >= pageScrollUntil && isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !(keyboardFocus && section.contains(document.activeElement));
+      return section.dataset.howAutoplay === 'true' && performance.now() >= pageScrollUntil && isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !(keyboardFocus && section.contains(document.activeElement));
     }
 
     function scheduleAuto(delay = AUTO_DELAY) {
@@ -1453,7 +1453,6 @@
 
     function goTo(index, fromAuto = false) {
       const nextIndex = normalizeIndex(index);
-      setActive(nextIndex);
       const left = slideScrollLeft(slides[nextIndex]);
       viewport.scrollTo({ left, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
       scheduleAuto(fromAuto ? AUTO_DELAY : AUTO_DELAY + 1800);
