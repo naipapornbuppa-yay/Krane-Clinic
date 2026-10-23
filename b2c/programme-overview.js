@@ -44,8 +44,15 @@ window.KraneProgrammeOverview = data => {
   copy.append(points);
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
-  media.innerHTML = '<video controls playsinline muted preload="none" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
+  media.innerHTML = '<video controls autoplay loop playsinline muted preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
   doctor.append(media);
+  const interview = media.querySelector('video');
+  interview.muted = true;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) interview.autoplay = false;
+  else new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) interview.play().catch(() => {});
+    else interview.pause();
+  }, {threshold: .25}).observe(interview);
   const designer = document.querySelector('.programme-designer');
   if (designer) doctor.append(designer);
   intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);
