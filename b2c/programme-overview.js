@@ -8,6 +8,14 @@ window.KraneProgrammeOverview = data => {
   facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li><li><i data-lucide="calendar-check" aria-hidden="true"></i>ติดตามกับแพทย์</li>';
   heroCopy.append(facts, actions);
   if (data.category === 'hair-skin') {
+    const nav=document.querySelector('.cd-tabs'),panels=document.querySelector('.cd-panels');
+    document.querySelector('.condition-hero').after(nav);
+    nav.classList.add('cd-tabs--four');
+    const reviews=document.querySelector('#reviews');
+    document.querySelector('#cd-panel-overview').after(reviews);
+    reviews.dataset.cdPanel='reviews';
+    const reviewTab=document.createElement('button');reviewTab.type='button';reviewTab.className='cd-tab';reviewTab.id='cd-tab-reviews';reviewTab.dataset.cdTab='reviews';reviewTab.setAttribute('aria-controls','reviews');reviewTab.textContent='รีวิว';
+    document.querySelector('#cd-tab-overview').after(reviewTab);
     const overview = document.querySelector('#cd-panel-overview');
     const intro = overview.querySelector('.cd-card');
     const block = document.createElement('section');
