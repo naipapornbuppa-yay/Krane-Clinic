@@ -1058,7 +1058,7 @@
      never starts for reduced motion. */
   (function autoScrollReviews() {
     const collage = document.querySelector(".review-collage");
-    if (!collage || reducedMotionQuery.matches) return;
+    if (!collage || collage.querySelector(".review-marquee") || reducedMotionQuery.matches) return;
     let paused = false;
     const pause = () => { paused = true; };
     const resume = () => { paused = false; };
@@ -2566,7 +2566,8 @@
       ? (en ? 'Resume automatic scrolling' : 'เริ่มการเลื่อนอัตโนมัติ')
       : (en ? 'Pause automatic scrolling' : 'หยุดการเลื่อนอัตโนมัติ');
     }
-    rail.classList.toggle('is-animated', !paused && !reducedMotion.matches);
+    rail.classList.toggle('is-animated', !reducedMotion.matches);
+    rail.querySelector('.trust-logo-marquee__track').style.animationPlayState=paused?'paused':'';
     group.querySelectorAll('img').forEach(img => {
       img.alt = en ? img.dataset.badgeAltEn : img.dataset.badgeAltTh;
     });
@@ -2576,7 +2577,6 @@
   };
   if (toggle) toggle.addEventListener('click', () => {
     paused = !paused;
-    rail.scrollLeft = 0;
     render();
   });
   rail.addEventListener('pointerdown', pauseForManualScroll, { passive:true });
@@ -2632,4 +2632,17 @@
  document.addEventListener('visibilitychange',()=>videos.forEach(update));
  document.addEventListener('pointerdown',event=>{if(!event.target.closest('.review-collage video')){collage?.classList.remove('is-review-interacting');if(document.activeElement?.closest?.('.review-collage video'))document.activeElement.blur()}});
  collage?.addEventListener('pointerleave',()=>collage.classList.remove('is-review-interacting'));
+})();
+
+/* Measure one complete repeated sequence, including its actual gap. */
+(()=>{
+ const specs=[['.review-marquee','.review-marquee__set'],['.trust-logo-marquee__track','.trust-logo-marquee__group'],['.hero-draft__benefits',null],['.trust-grid--open',null],['.trust-strip__track','.trust-strip__group'],['.compliance__track',null],['.announcement__track',null]];
+ const measure=()=>specs.forEach(([selector,group])=>document.querySelectorAll(selector).forEach(track=>{
+  const children=[...track.children],first=children[0];if(!first)return;
+  const next=group?track.querySelectorAll(group)[1]:children.find(c=>c.classList.contains('is-clone')||c.getAttribute('aria-hidden')==='true');
+  if(!next)return;const distance=next.getBoundingClientRect().left-first.getBoundingClientRect().left;
+  if(distance>0)track.style.setProperty('--marquee-distance',distance+'px');
+ }));
+ const observer=new ResizeObserver(measure);specs.forEach(([selector])=>document.querySelectorAll(selector).forEach(e=>observer.observe(e)));
+ window.addEventListener('load',measure);document.fonts.ready.then(measure);document.addEventListener('krane:languagechange',measure);setTimeout(measure,0);
 })();

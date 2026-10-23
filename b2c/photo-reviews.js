@@ -9,11 +9,13 @@
  const set=section.querySelector('.photo-reviews__set');
  set.innerHTML=items.map(i=>`<article class="photo-review" data-review-id="${esc(i.id)}"><div class="photo-review__pair"><figure><img src="${esc(i.before)}" alt="ภาพก่อนของ ${esc(i.name)}" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure><img src="${esc(i.after)}" alt="ภาพหลังของ ${esc(i.name)}" loading="lazy"><figcaption>หลัง</figcaption></figure></div><div class="photo-review__copy">${i.quote?`<blockquote>“${esc(i.quote).replace(/&lt;br&gt;/g,' ')}”</blockquote>`:`<p>${esc(i.caption)}</p>`}<p class="photo-review__name">${esc(i.name)}</p></div></article>`).join('');
  const duplicate=set.cloneNode(true);duplicate.setAttribute('aria-hidden','true');duplicate.inert=true;section.querySelector('.photo-reviews__track').append(duplicate);
- const viewport=section.querySelector('.photo-reviews__viewport'),button=section.querySelector('button');let paused=false,visible=false,hover=false,last=0,position=0;const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const viewport=section.querySelector('.photo-reviews__viewport'),button=section.querySelector('button');let paused=false,visible=false,hover=false,last=0,position=0,loopWidth=0;const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  button.onclick=()=>{paused=!paused;button.textContent=paused?'เล่นต่อ':'หยุดเลื่อน';button.setAttribute('aria-pressed',String(paused))};
- viewport.addEventListener('pointerenter',()=>hover=true);viewport.addEventListener('pointerleave',()=>hover=false);viewport.addEventListener('scroll',()=>position=viewport.scrollLeft,{passive:true});
+ viewport.addEventListener('pointerenter',()=>hover=true);viewport.addEventListener('pointerleave',()=>hover=false);viewport.addEventListener('scroll',()=>{if(Math.abs(position-viewport.scrollLeft)>2)position=viewport.scrollLeft},{passive:true});
  viewport.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();viewport.scrollBy({left:e.key==='ArrowRight'?320:-320,behavior:'smooth'})}});
  new IntersectionObserver(entries=>visible=entries.some(e=>e.isIntersecting)).observe(section);
- function tick(time){const dt=Math.min(time-last,50);last=time;if(visible&&!paused&&!hover&&!document.hidden&&!reduced.matches&&!section.contains(document.activeElement)){position+=dt*.022;if(position>=set.offsetWidth+24)position-=set.offsetWidth+24;viewport.scrollLeft=position}requestAnimationFrame(tick)}
- reviews.after(section);requestAnimationFrame(tick);
+ function tick(time){const dt=Math.min(time-last,50);last=time;if(visible&&!paused&&!hover&&!document.hidden&&!reduced.matches&&!section.contains(document.activeElement)){position+=dt*.022;if(loopWidth>0)position%=loopWidth;viewport.scrollLeft=position}requestAnimationFrame(tick)}
+ reviews.after(section);
+ const measure=()=>{loopWidth=duplicate.offsetLeft-set.offsetLeft;if(!loopWidth)return;const track=set.parentElement;while(track.scrollWidth<loopWidth+viewport.clientWidth+24){const extra=duplicate.cloneNode(true);track.append(extra)}position%=loopWidth;viewport.scrollLeft=position;viewport.dataset.loopWidth=String(loopWidth)};
+ new ResizeObserver(measure).observe(viewport);measure();requestAnimationFrame(tick);
 })();

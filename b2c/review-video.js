@@ -19,7 +19,16 @@
   const shell=document.createElement('div');shell.className='review-video__shell';host.before(shell);shell.append(host);
 
   const reduced=matchMedia('(prefers-reduced-motion:reduce)');
-  let hovered=false,touching=false,inViewport=false,lastTime=0,direction=1,position=0;
+  let hovered=false,touching=false,inViewport=false,lastTime=0,position=0,loopWidth=0;
+  // Build after shared review styling has finished, keeping each repeated sequence identical.
+  setTimeout(()=>{
+   const originals=[...host.children];if(!originals.length)return;
+   const clones=[];
+   function appendSet(){originals.forEach(original=>{const copy=original.cloneNode(true);copy.dataset.loopClone='true';copy.setAttribute('aria-hidden','true');copy.tabIndex=-1;copy.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));copy.addEventListener('click',()=>original.click());copy.querySelectorAll('video').forEach(v=>{v.muted=true;v.tabIndex=-1;v.play().catch(()=>{})});host.append(copy);clones.push(copy)})}
+   appendSet();
+   const measure=()=>{loopWidth=clones[0].offsetLeft-originals[0].offsetLeft;if(!loopWidth)return;while(host.scrollWidth<loopWidth+host.clientWidth+320)appendSet();position%=loopWidth;host.scrollLeft=position;host.dataset.loopWidth=String(loopWidth)};
+   new ResizeObserver(measure).observe(host);measure();
+  },0);
   const dialog=document.createElement('dialog');dialog.className='review-video__dialog';
   dialog.setAttribute('aria-label','วิดีโอรีวิวฉบับเต็ม');
   dialog.innerHTML='<button type="button" class="review-video__close" aria-label="ปิดวิดีโอ">×</button><video controls playsinline preload="none"></video>';
@@ -30,12 +39,12 @@
   const openVideo=(video,card)=>{opener=card;fullVideo.src=video.querySelector('source').src;fullVideo.poster=video.poster;dialog.showModal();fullVideo.play().catch(()=>{})};
   host.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')hovered=true});host.addEventListener('pointerleave',()=>hovered=false);
   host.addEventListener('pointerdown',()=>touching=true);window.addEventListener('pointerup',()=>touching=false);window.addEventListener('pointercancel',()=>touching=false);
-  host.addEventListener('scroll',()=>{position=host.scrollLeft},{passive:true});
+  host.addEventListener('scroll',()=>{if(Math.abs(position-host.scrollLeft)>2)position=host.scrollLeft},{passive:true});
   host.addEventListener('keydown',event=>{if(event.target===host&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();host.scrollBy({left:event.key==='ArrowRight'?320:-320,behavior:'smooth'})}});
   new IntersectionObserver(entries=>{inViewport=entries.some(e=>e.isIntersecting)},{threshold:.1}).observe(host);
   const tick=time=>{const dt=Math.min(time-lastTime,50);lastTime=time;
    if(inViewport&&!document.hidden&&!reduced.matches&&!hovered&&!touching&&!dialog.open&&!host.contains(document.activeElement)){
-    const max=host.scrollWidth-host.clientWidth;if(max>0){position+=direction*dt*.025;if(position>=max){position=max;direction=-1}else if(position<=0){position=0;direction=1}host.scrollLeft=position;}
+    if(loopWidth>0){position=(position+dt*.025)%loopWidth;host.scrollLeft=position;}
    }requestAnimationFrame(tick);
   };requestAnimationFrame(tick);
   if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{if(isIntersecting)visibleComparisons.add(target);else visibleComparisons.delete(target)});document.body.classList.toggle('is-review-in-view',visibleVideos.size+visibleComparisons.size>0)},{threshold:.3});host.querySelectorAll('[data-review-comparison]').forEach(card=>observer.observe(card))}
