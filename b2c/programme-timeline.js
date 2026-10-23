@@ -19,7 +19,7 @@
  ['ดูแลต่อเนื่อง','ติดตามและปรับแผน','ทบทวนผลและปรับแผนร่วมกับคุณหมอ']
  ];
  const timeline=document.createElement('div');timeline.className='programme-monthly';
- timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ตัวอย่างช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
+ timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
  panel.replaceChildren(timeline,guide);
  timeline.classList.add('is-animated');
  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{

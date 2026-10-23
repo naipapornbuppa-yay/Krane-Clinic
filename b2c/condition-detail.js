@@ -501,7 +501,7 @@
       ] : [['ได้รับ','ยาเม็ดรับประทาน 1 ขวด (30 เม็ด)'],['วิธีใช้','รับประทาน'],['ความถี่','ตามใบสั่งแพทย์'],['ระยะเวลา','1 เดือน']]).map(([label,value])=>`<span><em>${label}</em><strong>${value}</strong></span>`).join('');
     }
     const priceFine=document.querySelector('.cd-price>.cd-fine:not([data-pricing-note])');
-    if(priceFine)priceFine.textContent=priced?'ราคาเริ่มต้นตามตัวอย่างโปรแกรม ไม่รวมค่าจัดส่ง ยาและวิธีใช้จริงขึ้นอยู่กับการประเมินของแพทย์':'แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ตรวจสอบก่อนยืนยัน';
+    if(priceFine)priceFine.textContent=priced?'ราคาเริ่มต้นของโปรแกรม ไม่รวมค่าจัดส่ง ยาและวิธีใช้จริงขึ้นอยู่กับการประเมินของแพทย์':'แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ตรวจสอบก่อนยืนยัน';
     if(data.category==='weight') {
       setText('[data-coaching-copy]','1:1 health coaching ปรับนิสัยการกินและเรียนรู้การนับแคลอรี');
       setText('.condition-hero__note','ระบบจะค้นหาแพทย์ประจำตัวที่พร้อมดูแลคุณ หลังทำแบบประเมินเสร็จ');

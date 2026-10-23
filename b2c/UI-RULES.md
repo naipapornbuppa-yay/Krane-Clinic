@@ -351,3 +351,8 @@ else (client, 23 Aug):
 ## Public marketing pages (17 October 2026)
 
 Read `../design.md` for composition and `public-care.css` for public foundations before creating or redesigning a public page. `doctors-page.css` is the current team-directory example. Public doctor cards share geometry with landing; preserve image-led proportions and readable horizontal rails rather than shrinking cards to fit. These rules complement the clinical app interactions above.
+
+
+## Public copy: no prototype labels (23 October 2026)
+
+Do not show “ข้อมูลตัวอย่าง”, “ตัวอย่าง”, sample-data, or prototype-status labels as public UI copy. Keep implementation status in internal documentation. Do not turn invented values into factual claims by removing their label: omit unverified outcome durations and use verified case data when available. Preserve medically meaningful uses such as specimen collection and ordinary words containing the same substring.
