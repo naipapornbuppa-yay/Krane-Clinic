@@ -2624,5 +2624,6 @@
  });
  const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{states.get(target).visible=isIntersecting;update(target)})},{threshold:.1});videos.forEach(video=>observer.observe(video));
  document.addEventListener('visibilitychange',()=>videos.forEach(update));
- document.addEventListener('pointerdown',event=>{if(!event.target.closest('.review-collage video'))collage?.classList.remove('is-review-interacting')});
+ document.addEventListener('pointerdown',event=>{if(!event.target.closest('.review-collage video')){collage?.classList.remove('is-review-interacting');if(document.activeElement?.closest?.('.review-collage video'))document.activeElement.blur()}});
+ collage?.addEventListener('pointerleave',()=>collage.classList.remove('is-review-interacting'));
 })();
