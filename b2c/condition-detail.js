@@ -819,6 +819,8 @@
     video.addEventListener('ended',()=>{if(!stopped)show(1);});
   });
 
+  window.KraneProgrammeOverview?.(data);
+
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
   const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));
   cdPanels.forEach(panel=>panel.hidden=false);
@@ -835,7 +837,7 @@
     selectSection(name);
   };
   cdTabs.forEach(button=>button.addEventListener('click',()=>scrollToSection(button.dataset.cdTab)));
-  const hashPanel={pricing:'price',price:'price',how:'steps',steps:'steps',overview:'overview'};
+  const hashPanel={pricing:'price',price:'price',how:'steps',steps:'steps',overview:'overview',reviews:'reviews'};
   const openFromHash=()=>{const name=hashPanel[decodeURIComponent(location.hash.slice(1))];if(name)requestAnimationFrame(()=>scrollToSection(name));};
   openFromHash();window.addEventListener('hashchange',openFromHash);
   let sectionFrame=0;
