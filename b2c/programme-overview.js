@@ -76,7 +76,8 @@ window.KraneProgrammeOverview = data => {
   const priceLink = document.createElement('a');priceLink.className = 'programme-text-link';priceLink.href = 'pricing.html';priceLink.innerHTML = 'ดูค่าปรึกษาและค่าจัดส่ง <i data-lucide="arrow-right" aria-hidden="true"></i>';price.querySelector('.cd-price').append(priceLink);
   const faq = document.querySelector('.cd-faq');
   const faqHead = document.createElement('div');faqHead.className = 'programme-faq-heading';
-  faqHead.append(faq.querySelector('h2'), document.querySelector('.cd-safety-link'));
+  faqHead.append(faq.querySelector('h2'));
+  faq.append(document.querySelector('.cd-safety-link'));
   faq.prepend(faqHead);
   const firstQuestion = faq.querySelector('summary');
   if (firstQuestion) {
