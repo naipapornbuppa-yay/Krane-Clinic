@@ -19,11 +19,8 @@
     fees.textContent = 'ดูค่าปรึกษาและค่าจัดส่ง →';
     note.append(fees);
     card.append(note);
-    const title = document.createElement('h2');
-    title.className = 'cd-h2';
-    title.textContent = 'ราคาโปรแกรม';
     panel.classList.add('programme-price');
-    panel.replaceChildren(title, card);
+    panel.replaceChildren(card);
     window.lucide?.createIcons();
   } catch (error) { console.warn('Programme pricing card unavailable; retaining price summary.', error); }
 })();
