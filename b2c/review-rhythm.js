@@ -9,7 +9,7 @@
  // Group each person's initial video, quotation and matching photos together.
  document.querySelectorAll('.review-marquee__set').forEach(set=>{
   [...set.children].forEach(card=>{const item=data.find(i=>i.id===card.dataset.reviewId);if(!item)return;card.dataset.startFace='video';let last=card;
-   ['quote'].forEach(kind=>{if(kind==='quote'&&!item.quote||kind==='comparison'&&!(item.before&&item.after))return;const copy=card.cloneNode(true);copy.dataset.startFace=kind;last.after(copy);last=copy});
+   ['quote'].forEach(kind=>{if(kind==='quote'&&!(item.quote||item.caption)||kind==='comparison'&&!(item.before&&item.after))return;const copy=card.cloneNode(true);copy.dataset.startFace=kind;last.after(copy);last=copy});
   });
  });
  // Alternate available video and quotation cards; keep each card fixed.
@@ -32,7 +32,7 @@
   }
   card.classList.add('review-rhythm-card');card.style.setProperty('--review-tone',tones[item.category]||'#395aa4');
   const faces=['video'];
-  if(item.quote){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-quote';face.dataset.face='quote';face.innerHTML=`<blockquote><p>“${esc(item.quote).replace(/&lt;br&gt;/g,'<br>')}”</p><cite>${esc(item.name)}<span>${item.age} ปี · ${esc(item.occupation)}</span></cite></blockquote>`;card.append(face);faces.push('quote')}
+  if(item.quote||item.caption){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-quote';face.dataset.face='quote';if(!item.quote)face.classList.add('review-rhythm-summary');face.innerHTML=`<blockquote><p>${item.quote?'“'+esc(item.quote).replace(/&lt;br&gt;/g,'<br>')+'”':esc(item.caption)}</p><cite>${esc(item.name)}<span>${item.age} ปี · ${esc(item.occupation)}</span></cite></blockquote>`;card.append(face);faces.push('quote')}
   // Prefer video / quotation / comparison across neighbouring people.
   const desired=card.dataset.startFace||'video';let active=faces.includes(desired)?faces.indexOf(desired):index%faces.length;
   let visible=false,elapsed=0;const interval=7000+(index%3)*1200;
