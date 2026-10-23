@@ -1,6 +1,13 @@
 (()=>{'use strict';const index=document.querySelector('[data-library-index]'),reading=document.getElementById('article');function editorialLayout(){
 const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.articleId);if(!article)return;
-const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.append(credits);const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways)body.prepend(takeaways);
+const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.querySelector('.library-hero__copy').append(credits);
+const heroImage=header.querySelector('[data-article-hero]'),heroMedia=header.querySelector('.library-hero__media');
+const titleText=article.title.toLowerCase();
+const product=titleText.includes('sildenafil')?['assets/medicine/ed-sheet-v1/viagra-100mg-vgr100-cutout.png','เม็ดยา sildenafil ตราสัญลักษณ์ VGR 100']:titleText.includes('tadalafil')?['assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png','เม็ดยา tadalafil ตราสัญลักษณ์ C20']:null;
+const hasPhoto=!!product || (article.image && article.image!==window.KraneArticleImage.placeholder);
+header.classList.toggle('has-editorial-photo',!!hasPhoto);heroMedia.hidden=!hasPhoto;heroMedia.classList.toggle('is-product',!!product);
+if(product){heroImage.src=product[0];heroImage.alt=product[1];}else window.KraneArticleImage.bind(heroImage,article);
+const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways)body.prepend(takeaways);
 reading.querySelector('.article-editorial-footer')?.remove();
 const footer=document.createElement('div');footer.className='article-editorial-footer';
 const refs=reading.querySelector('.article-references');if(refs){refs.open=true;footer.append(refs)}
