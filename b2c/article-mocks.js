@@ -160,6 +160,7 @@
     }
     const tags=screen.querySelector('[data-article-tags]');
     tags.replaceChildren(...article.tags.map(tag => el('span','article-tags__tag',tag)));
+    document.dispatchEvent(new CustomEvent('krane-article-rendered'));
   }
   document.addEventListener('click',event => {
     const card=event.target.closest('[data-article-id][data-go="article"]');
