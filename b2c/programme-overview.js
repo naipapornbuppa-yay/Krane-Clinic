@@ -54,17 +54,17 @@ window.KraneProgrammeOverview = data => {
   // Care phases give context; the practical five-step guide stays available.
   const guide = steps.querySelector('.cd-card');
   const detail = document.createElement('details');detail.className = 'programme-start-guide';
-  const summary = document.createElement('summary');summary.textContent = 'วิธีเริ่มต้น · 5 ขั้นตอนผ่านออนไลน์';
+  const summary = document.createElement('summary');summary.textContent = 'ดูรายละเอียดการเริ่มต้นและรับยา';
   guide.querySelector('h3').remove();detail.append(summary,guide);
   steps.replaceChildren();
-  const journeyHeading = document.createElement('h2');journeyHeading.className = 'cd-h2';journeyHeading.textContent = 'เส้นทางสู่เป้าหมายของคุณ';
-  const journeyNote = document.createElement('p');journeyNote.className = 'programme-section-note';journeyNote.textContent = 'จังหวะการดูแลของแต่ละคนต่างกัน ตามการประเมินของคุณหมอ';
+  const journeyHeading = document.createElement('h2');journeyHeading.className = 'cd-h2';journeyHeading.textContent = 'เริ่มง่าย ดูแลต่อเนื่อง';
+  const journeyNote = document.createElement('p');journeyNote.className = 'programme-section-note';journeyNote.textContent = '3 ช่วงการดูแล กับแพทย์ประจำตัวของคุณ';
   const phases = document.createElement('ol');phases.className = 'programme-care-phases';
   phases.innerHTML = [
-    ['เริ่มต้น','ตั้งเป้าหมายร่วมกัน','ประเมินสุขภาพและความเหมาะสม พร้อมวางแผนที่เริ่มทำได้'],
-    ['ติดตาม','ปรับแผนให้เข้ากับคุณ','คุยถึงผลที่ได้ อาการข้างเคียง และสิ่งที่ต้องปรับกับคุณหมอ'],
-    ['ระยะยาว','ดูแลต่อเนื่อง','ทบทวนเป้าหมายและพฤติกรรม เพื่อวางแผนดูแลน้ำหนักต่อไป']
-  ].map(([phase,title,text])=>`<li><span>${phase}</span><h3>${title}</h3><p>${text}</p></li>`).join('');
+    ['video','คุยกับแพทย์','ประเมินสุขภาพและเลือกแผนที่เหมาะกับคุณ'],
+    ['package-check','เริ่มตามแผน','รับคำแนะนำและยา หากแพทย์เห็นว่าเหมาะสม'],
+    ['calendar-check','ติดตามและปรับ','ทบทวนผลและปรับแผนร่วมกับคุณหมอ']
+  ].map(([icon,title,text],index)=>`<li><div class="programme-phase-visual"><span class="programme-phase-icon" aria-hidden="true"><i data-lucide="${icon}"></i></span><span class="programme-phase-number">0${index+1}</span></div><h3>${title}</h3><p>${text}</p></li>`).join('');
   steps.append(journeyHeading,journeyNote,phases,detail);
 
   const priceHeading = document.createElement('h2');priceHeading.className = 'cd-h2 programme-price-title';priceHeading.textContent = 'ราคา';price.prepend(priceHeading);
