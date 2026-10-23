@@ -30,3 +30,7 @@ Updated 23 October 2026. User authorised mock content while the real assets are 
 
 - The three phases are an editorial explanation of the existing process, not a promised treatment schedule or weight-loss result.
 - No fixed month-based dose changes, treatment results, or stopping instructions have been added from the reference.
+
+## Review rhythm prototype — 23 October 2026
+
+All age/occupation fields added for the reviewer quote layout are SAMPLE DATA, not inferred identities: May 29 office worker; Ploy 32 business owner; Fon 24 office worker; Pha 34 business owner; Pang 28 office worker; Ton 35 office worker. Shared review-section disclosure applies; no invented quotations were added. Cards without a supplied quotation rotate video and matching photos only. Each card keeps media from the same person.

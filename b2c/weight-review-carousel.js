@@ -13,8 +13,9 @@
   let active=0,visible=false,moving=false,scrollTimer=0,autoTimer=0,autoPaused=false;
   const autoButton=document.createElement('button');autoButton.type='button';autoButton.className='weight-story-gallery__auto';section.querySelector('.weight-testimonials__controls').append(autoButton);
   const syncAuto=()=>{const en=document.documentElement.lang==='en';autoButton.textContent=autoPaused?'▶':'Ⅱ';autoButton.setAttribute('aria-label',autoPaused?(en?'Resume automatic slides':'เล่นสไลด์อัตโนมัติ'):(en?'Pause automatic slides':'หยุดสไลด์อัตโนมัติ'));autoButton.setAttribute('aria-pressed',String(autoPaused))};
-  const schedule=()=>{clearTimeout(autoTimer);if(!visible||document.hidden||reduced.matches||autoPaused||section.matches(':focus-within'))return;const slide=slides[active];if(slide.querySelector('video'))return;autoTimer=setTimeout(()=>go(active+1),slide.classList.contains('weight-story-gallery__quote-slide')?6000:7000)};
+  const schedule=()=>{clearTimeout(autoTimer);if(!visible||document.hidden||reduced.matches||autoPaused||(section.matches(':focus-within')||section.matches(':hover')))return;const slide=slides[active];if(slide.querySelector('video'))return;autoTimer=setTimeout(()=>go(active+1),slide.classList.contains('weight-story-gallery__quote-slide')?6000:7000)};
   autoButton.addEventListener('click',()=>{autoPaused=!autoPaused;syncAuto();schedule()});syncAuto();
+  section.addEventListener('pointerenter',()=>clearTimeout(autoTimer));section.addEventListener('pointerleave',schedule);
   section.addEventListener('focusin',()=>clearTimeout(autoTimer));section.addEventListener('focusout',()=>setTimeout(schedule,0));
   const jump=left=>viewport.scrollTo({left,behavior:'instant'});
   const pauseVideo=v=>{if(!v.paused){internalPause.add(v);v.pause()}};
