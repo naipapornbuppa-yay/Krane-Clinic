@@ -2346,9 +2346,8 @@
     });
     const programmeLink = currentProgramme?.querySelector('[data-route="intake1"][data-category]');
     mobileCta.href = programmeLink?.href || 'krane-b2c.html?entry=direct&fresh=1#intake1';
-    const mobile = window.matchMedia("(max-width: 700px)").matches;
-    const closingRect = closing.getBoundingClientRect();
-    mobileCta.classList.toggle("is-visible", mobile && heroRect.bottom < 90 && closingRect.top > window.innerHeight * 0.72);
+    const desktop = window.matchMedia("(min-width: 701px)").matches;
+    mobileCta.classList.toggle("is-visible", desktop || window.scrollY > 0);
   }
 
   function requestMobileCtaUpdate() {
