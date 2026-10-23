@@ -2,6 +2,10 @@
   const index = document.querySelector("[data-safety-index]");
   if (!index) return;
 
+  const layout=document.querySelector('.safety-layout');
+  layout.prepend(index);
+  document.querySelectorAll('.safety-section > .eyebrow,.safety-section > .section-number').forEach(el=>el.remove());
+  const label=document.createElement('h2');label.className='safety-index__title';label.textContent='สารบัญ';index.prepend(label);
   const links = [...index.querySelectorAll("a[href^='#']")];
   const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 
