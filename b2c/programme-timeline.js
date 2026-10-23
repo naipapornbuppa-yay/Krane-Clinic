@@ -17,4 +17,9 @@
  const timeline=document.createElement('div');timeline.className='programme-monthly';
  timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ตัวอย่างช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
  panel.replaceChildren(timeline,guide);
+ const price=document.getElementById('cd-panel-price');
+ if(price && !panel.parentElement.classList.contains('programme-journey-columns')){
+  const columns=document.createElement('div');columns.className='programme-journey-columns';
+  panel.before(columns);columns.append(panel,price);
+ }
 })();
