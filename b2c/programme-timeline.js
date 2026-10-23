@@ -1,0 +1,20 @@
+/* Illustrative care-planning periods, not promised treatment outcomes. */
+(()=>{
+ const key=new URLSearchParams(location.search).get('condition')||'weight';
+ if(!['weight','hair-loss'].includes(key))return;
+ const panel=document.querySelector('#cd-panel-steps');if(!panel)return;
+ let guide=panel.querySelector('.programme-start-guide');
+ if(!guide){guide=document.createElement('details');guide.className='programme-start-guide';const summary=document.createElement('summary');summary.textContent='ดูรายละเอียดการเริ่มต้นและรับยา';guide.append(summary,...panel.childNodes)}
+ const phases=key==='weight'?[
+ ['เดือนที่ 1–2','เริ่มต้นอย่างมั่นใจ','ประเมินสุขภาพ ตั้งเป้าหมายกับคุณหมอ และเริ่มแผนการกิน การเคลื่อนไหว หรือยาหากเหมาะสม'],
+ ['เดือนที่ 3–4','ปรับแผนให้เข้ากับคุณ','ทบทวนความคืบหน้าและอาการระหว่างดูแล ให้คุณหมอปรับแผนตามการตอบสนองของคุณ'],
+ ['เดือนที่ 5 เป็นต้นไป','ดูแลระยะยาว','วางแผนดูแลน้ำหนักและพฤติกรรมที่ทำต่อได้ พร้อมติดตามความเหมาะสมของการรักษากับแพทย์']
+ ]:[
+ ['เดือนที่ 1–2','เข้าใจสาเหตุและเริ่มดูแล','ประเมินเส้นผมและหนังศีรษะ บันทึกภาพตั้งต้น แล้วเริ่มแนวทางดูแลที่แพทย์เลือกให้'],
+ ['เดือนที่ 3–6','ติดตามอย่างต่อเนื่อง','ทบทวนการใช้ยาและการดูแล เปรียบเทียบภาพในมุมเดิม พร้อมปรึกษาแพทย์หากมีอาการผิดปกติ'],
+ ['เดือนที่ 7 เป็นต้นไป','ทบทวนผลและวางแผนต่อ','ประเมินการเปลี่ยนแปลงร่วมกับคุณหมอ และวางแผนดูแลเส้นผมระยะยาวให้เหมาะกับคุณ']
+ ];
+ const timeline=document.createElement('div');timeline.className='programme-monthly';
+ timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ตัวอย่างช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
+ panel.replaceChildren(timeline,guide);
+})();

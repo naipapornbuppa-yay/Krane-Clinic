@@ -41,3 +41,7 @@ All age/occupation fields added for the reviewer quote layout are SAMPLE DATA, n
 - User confirmed IMG_8554-03.png / preview-b is Dr Win (หมอวิน).
 - Names and portrait associations are confirmed by the user. Full legal names, education, licensing and Dr Win specialty remain unconfirmed; do not borrow another physician record.
 - Profile descriptive copy is presentation copy, not a verified CV. Existing preview IDs retained for link compatibility.
+
+
+## Monthly programme timelines — 23 October 2026
+Weight: months 1–2, 3–4, 5 onward. Hair: months 1–2, 3–6, 7 onward. These are illustrative planning phases requested for the design, not clinically approved schedules or outcome promises. No fixed dose changes, treatment cessation dates or guaranteed results. Medical team to confirm timelines before treating them as a protocol.
