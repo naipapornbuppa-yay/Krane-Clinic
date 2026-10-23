@@ -1,6 +1,6 @@
 (()=>{'use strict';const index=document.querySelector('[data-library-index]'),reading=document.getElementById('article');function editorialLayout(){
 const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.articleId);if(!article)return;
-const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.after(credits);const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways)body.prepend(takeaways);
+const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.append(credits);const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways)body.prepend(takeaways);
 reading.querySelector('.article-editorial-footer')?.remove();
 const footer=document.createElement('div');footer.className='article-editorial-footer';
 const refs=reading.querySelector('.article-references');if(refs){refs.open=true;footer.append(refs)}
