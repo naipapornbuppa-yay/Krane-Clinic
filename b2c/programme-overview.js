@@ -44,7 +44,7 @@ window.KraneProgrammeOverview = data => {
   copy.append(points);
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
-  media.innerHTML = '<video controls playsinline muted preload="none" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video><span class="programme-media-placeholder">วิดีโอตัวอย่าง · รอคลิปแพทย์</span>';
+  media.innerHTML = '<video controls playsinline muted preload="none" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
   doctor.append(media);
   const designer = document.querySelector('.programme-designer');
   if (designer) doctor.append(designer);
