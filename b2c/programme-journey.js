@@ -10,7 +10,7 @@
   const icons = ['clipboard-list', 'file-check-2', 'package', 'calendar-check', 'repeat-2'];
   const visuals = [
     '<img src="assets/krane-laptop-consultation-v1.png" alt="" width="1536" height="1024" loading="lazy">',
-    '<img src="assets/editorial-stock-20261017/pexels-5452269.jpg" alt="" loading="lazy">',
+    '<img src="assets/krane-phone-plan-v1.png" alt="มุมมองผู้ใช้ถือมือถือเพื่อดูแผนยาและรายการยาจากแพทย์" loading="lazy">',
     '<img src="assets/krane-home-delivery-v2.png" alt="" width="1536" height="1024" loading="lazy">',
     '<img src="assets/krane-laptop-consultation-v1.png" alt="" width="1536" height="1024" loading="lazy">',
     '<img src="assets/partners/fascino-storefront-official.png" alt="" width="1326" height="624" loading="lazy">'
