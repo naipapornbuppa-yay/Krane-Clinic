@@ -27,7 +27,7 @@ window.KraneProgrammeOverview = data => {
   reviewTab.textContent = 'รีวิว';
   document.querySelector('#cd-tab-overview').after(reviewTab);
 
-  if (isWeight) document.querySelector('[data-lead]').textContent = 'ดูแลน้ำหนักด้วย GLP-1 กับคุณหมอประจำตัวออนไลน์ พร้อมแผนการกิน การออกกำลังกาย และติดตามผล';
+  document.querySelector('[data-lead]').textContent = isWeight ? 'ดูแลน้ำหนักกับแพทย์ออนไลน์' : data.category === 'hair-skin' ? 'ดูแลผมร่วงกับแพทย์ออนไลน์' : 'ปรึกษาสุขภาพทางเพศอย่างเป็นส่วนตัว';
   const heroAction = document.querySelector('.condition-hero__actions [data-intake-link]');
   heroAction.firstChild.textContent = 'เริ่มปรึกษาฟรี ';
   const intro = overview.querySelector('.cd-card');

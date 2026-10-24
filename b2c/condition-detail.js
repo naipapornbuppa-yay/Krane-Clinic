@@ -438,7 +438,7 @@
   // Existing hero, product and article image sources remain the source of truth.
   const programme = {
     weight: {
-      title:'Re:Body Program',
+      title:'re:body Program',
       lead:'โปรแกรมลดน้ำหนักออนไลน์ด้วย GLP-1 ประเมินและดูแลโดยคุณหมอประจำตัวอย่างใกล้ชิด',
       overview:'แพทย์จะประเมินความเหมาะสมก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามอาการและปรับแผนให้เหมาะกับคุณ ควบคู่กับ coaching ปรับไลฟ์สไตล์และการกิน โดยเน้นรักษามวลกล้ามเนื้อ และลดความเสี่ยงน้ำหนักเด้งกลับ (yo-yo effect)',
       knowledgeTitle:'น้ำหนักขึ้นได้จากหลายสาเหตุ',
@@ -447,7 +447,7 @@
       quote:'โปรแกรมลดน้ำหนักผ่าน GLP-1 ต้องมีแพทย์คอยติดตามผลอย่างใกล้ชิด ช่องทางออนไลน์จะช่วยให้หลายคนเริ่มต้นได้ง่ายขึ้น ประหยัดเวลา และไม่ต้องเสียค่าเดินทางครับ'
     },
     'hair-skin':{
-      title:'Re:Hair Program',
+      title:'re:hair Program',
       lead:'ปรึกษาเรื่องผมร่วงและหนังศีรษะแบบส่วนตัว กับแพทย์ที่มีใบอนุญาต พร้อมส่งยาถึงบ้าน',
       overview:'ดูแลผมร่วงอย่างมีหลักฐาน แพทย์จะประเมินรูปแบบผมร่วงและสาเหตุก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามผลและปรับแผนให้เหมาะกับคุณเป็นรายบุคคล',
       knowledgeTitle:'ผมร่วงแต่ละแบบดูแลไม่เหมือนกัน',
@@ -456,7 +456,7 @@
       quote:'ผมร่วงส่วนใหญ่ดูแลได้ ถ้าเริ่มถูกวิธีและติดตามต่อเนื่อง สิ่งสำคัญคือแยกสาเหตุให้ชัดก่อน แล้วจึงเลือกแนวทางที่เหมาะกับแต่ละคนครับ'
     },
     'sexual-health':{
-      title:'Re:Flow Program',
+      title:'re:flow Program',
       lead:'ปรึกษาเรื่องสมรรถภาพทางเพศแบบส่วนตัว กับแพทย์ที่มีใบอนุญาต พร้อมส่งยาถึงบ้าน',
       overview:'ดูแลปัญหาการแข็งตัวอย่างเป็นระบบ แพทย์จะประเมินสาเหตุและความเสี่ยงก่อนเริ่มการรักษาทุกครั้ง พร้อมนัดติดตามผลและปรับแผนให้เหมาะกับคุณเป็นรายบุคคล',
       knowledgeTitle:'ปัญหาการแข็งตัวมีได้หลายสาเหตุ',
@@ -485,7 +485,7 @@
       credit.innerHTML=`${designer.image?`<img src="${designer.image}" alt="${designer.name}">`:`<span class="programme-designer__initials" aria-hidden="true">${designer.initials}</span>`}<span><small>แพทย์ผู้ออกแบบโปรแกรม</small><strong>${designer.name}</strong></span><i data-lucide="arrow-up-right" class="programme-designer__arrow" aria-hidden="true"></i>`;
       link?.replaceWith(credit);
     }
-    setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม Re:Body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
+    setText('[data-pricing-title]',data.category==='weight' ? 'ค่าบริการโปรแกรม re:body' : 'จ่ายตามจริง ไม่มีแพ็กเกจรายเดือน');
     setText('[data-pricing-note]',data.category==='weight' ? 'ไม่มีค่าสมาชิกรายเดือน จ่ายตามจริงเมื่อสั่งยา แพทย์จะประเมินความเหมาะสมก่อนสั่งจ่ายทุกครั้ง' : 'ปรึกษาแพทย์ครั้งแรกไม่มีค่าใช้จ่าย ค่ายาขึ้นอยู่กับแผนการรักษาของคุณ แพทย์จะแจ้งค่ายาและค่าจัดส่งให้ทราบก่อนยืนยันทุกครั้ง');
     const priceAmount=document.querySelector('[data-programme-price]');
     const priceSummary=document.querySelector('.cd-price__chip');
