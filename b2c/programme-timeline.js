@@ -21,11 +21,15 @@
  const timeline=document.createElement('div');timeline.className='programme-monthly';
  timeline.innerHTML='<h2>เส้นทางสู่เป้าหมายของคุณ</h2><p class="programme-monthly__note">ช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์</p><ol>'+phases.map(([period,title,copy])=>`<li><p class="programme-monthly__period">${period}</p><h3>${title}</h3><p>${copy}</p></li>`).join('')+'</ol>';
  panel.replaceChildren(timeline,guide);
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const milestones=[...timeline.querySelectorAll('li')];let scheduled=false;
+ const updateProgress=()=>{scheduled=false;const trigger=innerHeight*.72;
+  milestones.forEach(step=>{const rect=step.getBoundingClientRect();const progress=reduced.matches?1:Math.max(0,Math.min(1,(trigger-rect.top)/Math.max(rect.height,1)));step.style.setProperty('--scroll-progress',progress);step.classList.toggle('is-entering',reduced.matches||rect.top<trigger);});
+ };
+ const schedule=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(updateProgress)}};
  timeline.classList.add('is-animated');
- const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-  if(entry.isIntersecting){entry.target.classList.add('is-entering');observer.unobserve(entry.target)}
- }),{threshold:.1});
- timeline.querySelectorAll('li').forEach(step=>observer.observe(step));
+ window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});reduced.addEventListener('change',schedule);
+ new ResizeObserver(schedule).observe(timeline);requestAnimationFrame(updateProgress);
  const price=document.getElementById('cd-panel-price');
  if(price && !panel.parentElement.classList.contains('programme-journey-columns')){
   const columns=document.createElement('div');columns.className='programme-journey-columns';

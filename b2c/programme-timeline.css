@@ -41,8 +41,11 @@
 .programme-journey-columns .programme-monthly li{border-left-color:transparent}
 .programme-journey-columns .programme-monthly li::after{content:"";position:absolute;left:-4px;top:9px;bottom:-9px;width:4px;background:var(--milestone-color);transform-origin:top;pointer-events:none}
 .programme-journey-columns .programme-monthly li:last-child::after{bottom:0}
-.programme-monthly.is-animated li::after{transform:scaleY(0);transition:transform .9s cubic-bezier(.22,.61,.36,1)}
-.programme-monthly.is-animated li.is-entering::after{transform:scaleY(1)}
+.programme-monthly.is-animated li::after{transform:scaleY(var(--scroll-progress,0));transition:none}
+.programme-monthly.is-animated li::before{opacity:.3;transform:scale(.8);transition:opacity .3s,transform .3s}
+.programme-monthly.is-animated li.is-entering::before{opacity:1;transform:scale(1)}
+.programme-monthly.is-animated li> :is(h3,p){transition:opacity .3s;opacity:.55}
+.programme-monthly.is-animated li.is-entering> :is(h3,p){opacity:1}
 @media(prefers-reduced-motion:reduce){.programme-monthly.is-animated li::after{transform:none;transition:none}}
 
 /* Keep the two desktop surfaces aligned while allowing content to set the height. */
