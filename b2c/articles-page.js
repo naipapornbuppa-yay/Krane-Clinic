@@ -1,5 +1,5 @@
 (()=>{'use strict';const index=document.querySelector('[data-library-index]'),reading=document.getElementById('article');function editorialLayout(){
-const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.articleId);if(!article)return;
+const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.articleId);if(!article)return;reading.querySelector('[data-article-tags]').hidden=true;
 const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.querySelector('.library-hero__copy').append(credits);
 const heroImage=header.querySelector('[data-article-hero]'),heroMedia=header.querySelector('.library-hero__media');
 const titleText=article.title.toLowerCase();
