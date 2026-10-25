@@ -13,6 +13,9 @@ document.querySelectorAll('[data-interview-reviews]').forEach(section=>{
  const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','ดูเคสที่ '+(i+1));button.addEventListener('click',()=>{active=i;sync()});g.panel=panel;g.button=button;panels.append(panel);tabs.append(button);
  });section.append(panels);const programme=section.closest('.program-section');const legal=programme?.querySelector('.program-section__legal');
  if(legal){const footer=document.createElement('div');footer.className='story-blocks__footer';legal.before(footer);footer.append(legal);if(groups.length>1)footer.append(tabs)}
+ const mobile=matchMedia('(max-width:760px)');
+ const placeDots=()=>{if(groups.length<2)return;if(mobile.matches)section.append(tabs);else programme?.querySelector('.story-blocks__footer')?.append(tabs)};
+ placeDots();mobile.addEventListener('change',placeDots);
  sync();
  let timer;
  const stop=()=>clearInterval(timer);
