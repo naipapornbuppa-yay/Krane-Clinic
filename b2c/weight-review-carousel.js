@@ -16,7 +16,7 @@ document.querySelectorAll('[data-interview-reviews]').forEach(section=>{
  sync();
  let timer;
  const stop=()=>clearInterval(timer);
- const start=()=>{stop();if(groups.length>1&&visible&&!document.hidden&&!reduced.matches)timer=setInterval(()=>{if(section.matches(':focus-within')||tabs.matches(':focus-within'))return;active=(active+1)%groups.length;sync()},10000)};
+ const start=()=>{stop();if(!window.KraneCarouselShared&&groups.length>1&&visible&&!document.hidden&&!reduced.matches)timer=setInterval(()=>{if(section.matches(':focus-within')||tabs.matches(':focus-within'))return;active=(active+1)%groups.length;sync()},10000)};
  tabs.addEventListener('click',start);reduced.addEventListener('change',start);
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start()});window.addEventListener('pagehide',stop,{once:true});
  new IntersectionObserver(entries=>{visible=entries.some(e=>e.isIntersecting);sync();start()},{threshold:.15}).observe(section);

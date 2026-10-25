@@ -1423,6 +1423,7 @@
     }
 
     function scheduleAuto(delay = AUTO_DELAY) {
+      if(window.KraneCarouselShared)return;
       stopAuto();
       if (!canAutoPlay()) return;
       autoTimer = window.setTimeout(() => {
@@ -1642,6 +1643,7 @@
     }
 
     function scheduleAuto(delay = AUTO_DELAY) {
+      if(window.KraneCarouselShared)return;
       stopAuto();
       if (!canAutoPlay()) return;
       autoTimer = window.setTimeout(() => goTo(activeIndex + 1, true), delay);
@@ -1761,6 +1763,7 @@
     const canAutoPlay = () => isVisible && !document.hidden && !reducedMotionQuery.matches && !isPointerDown && !section.contains(document.activeElement);
 
     function scheduleAuto(delay = AUTO_DELAY) {
+      if(window.KraneCarouselShared)return;
       stopAuto();
       if (!canAutoPlay()) return;
       autoTimer = window.setTimeout(() => goTo(activeIndex + 1, true), delay);
@@ -2035,6 +2038,7 @@
       bio: "ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์"
     }
   };
+  Object.entries(window.KraneDoctorSource||{}).forEach(([id,record])=>{expertProfiles[id]={...expertProfiles[id],...record,education:[record.education,...record.training].join(" · "),bio:record.bio+" ปัจจุบัน: "+record.workplaces.join(" · ")};});
   const expertDialog = document.querySelector("[data-expert-dialog]");
   const expertDialogClose = document.querySelector("[data-expert-close]");
   const expertDialogMedia = document.querySelector("[data-expert-dialog-media]");

@@ -812,7 +812,7 @@
     pause.addEventListener('click',()=>{stopped=!stopped;syncPause();});syncPause();
     window.setInterval(()=>{
       const bounds=carousel.getBoundingClientRect();
-      if(stopped||document.hidden||bounds.bottom<0||bounds.top>innerHeight||carousel.matches(':hover')||carousel.contains(document.activeElement)||!video.paused)return;
+      if(window.KraneCarouselShared||stopped||document.hidden||bounds.bottom<0||bounds.top>innerHeight||carousel.matches(':hover')||carousel.contains(document.activeElement)||!video.paused)return;
       show((current+1)%slides.length);
     },5500);
     video.addEventListener('ended',()=>{if(!stopped)show(1);});
