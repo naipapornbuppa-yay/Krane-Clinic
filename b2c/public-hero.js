@@ -16,7 +16,7 @@
   bind(hero,copy,media,'split');
  }
  const doctors=document.querySelector('.doctors-about');if(doctors)bind(doctors,doctors.querySelector('.doctors-about__copy'),doctors.querySelector('.doctors-about__portraits'),'full');
- const programme=document.querySelector('.condition-hero');if(programme)bind(programme,programme.querySelector('.condition-hero__copy'),programme.querySelector('.condition-hero__image'),'split');
+ const programme=document.querySelector('.condition-hero');if(programme){bind(programme,programme.querySelector('.condition-hero__copy'),programme.querySelector('.condition-hero__image'),'split');if(new URLSearchParams(location.search).get('condition')==='hair-loss')programme.classList.add('public-hero--hair');}
  document.querySelectorAll('.library-hero--reading').forEach(hero=>{
   const media=hero.querySelector('.library-hero__media');
   if(!hero.classList.contains('has-editorial-photo')){hero.classList.add('has-editorial-photo');media.querySelector('img').src=editorial;media.querySelector('img').alt=''}
