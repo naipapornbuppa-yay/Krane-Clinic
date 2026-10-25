@@ -79,5 +79,26 @@
   root.querySelector('.journey-footer')?.remove();
   root.querySelector('.journey-hint')?.remove();
   source.closest('.cd-card').querySelector(':scope > h3')?.remove();
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let visible = false, timer;
+  const stop = () => { clearTimeout(timer); };
+  const schedule = () => {
+    stop();
+    if (!visible || document.hidden || reducedMotion.matches || root.matches(':hover') || root.contains(document.activeElement)) return;
+    timer = setTimeout(() => { select(selected + 1); schedule(); }, 6000);
+  };
+  const observer = new IntersectionObserver(entries => {
+    visible = entries.some(entry => entry.isIntersecting);
+    schedule();
+  }, {threshold: .25});
+  observer.observe(root);
+  root.addEventListener('pointerenter', stop);
+  root.addEventListener('pointerleave', schedule);
+  root.addEventListener('focusin', stop);
+  root.addEventListener('focusout', () => setTimeout(schedule, 0));
+  document.addEventListener('visibilitychange', schedule);
+  reducedMotion.addEventListener('change', schedule);
+  window.addEventListener('pagehide', stop);
+  window.addEventListener('pageshow', schedule);
   window.lucide?.createIcons();
 })();
