@@ -3,9 +3,11 @@
   if (!index) return;
 
   const layout=document.querySelector('.safety-layout');
-  layout.prepend(index);
+  const disclosure=document.createElement('details');disclosure.className='safety-toc';
+  const summary=document.createElement('summary');summary.textContent='สารบัญ';
+  disclosure.append(summary,index);layout.prepend(disclosure);
   document.querySelectorAll('.safety-section > .eyebrow,.safety-section > .section-number').forEach(el=>el.remove());
-  const label=document.createElement('h2');label.className='safety-index__title';label.textContent='สารบัญ';index.prepend(label);
+
   const links = [...index.querySelectorAll("a[href^='#']")];
   const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 
