@@ -820,6 +820,12 @@
 
   window.KraneProgrammeOverview?.(data);
 
+  const faqSection=document.querySelector('.cd-faq'),faqTab=document.getElementById('cd-tab-price');
+  if(faqSection&&faqTab){
+    faqSection.id='cd-panel-faq';faqSection.dataset.cdPanel='faq';
+    faqTab.textContent='คำถามที่พบบ่อย';faqTab.dataset.cdTab='faq';faqTab.setAttribute('aria-controls','cd-panel-faq');
+    document.getElementById('cd-panel-price')?.removeAttribute('data-cd-panel');
+  }
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
   const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));
   cdPanels.forEach(panel=>panel.hidden=false);
@@ -836,7 +842,7 @@
     selectSection(name);
   };
   cdTabs.forEach(button=>button.addEventListener('click',()=>scrollToSection(button.dataset.cdTab)));
-  const hashPanel={pricing:'price',price:'price',how:'steps',steps:'steps',overview:'overview',reviews:'reviews'};
+  const hashPanel={pricing:'steps',price:'steps',faq:'faq',how:'steps',steps:'steps',overview:'overview',reviews:'reviews'};
   const openFromHash=()=>{const name=hashPanel[decodeURIComponent(location.hash.slice(1))];if(name)requestAnimationFrame(()=>scrollToSection(name));};
   openFromHash();window.addEventListener('hashchange',openFromHash);
   let sectionFrame=0;
