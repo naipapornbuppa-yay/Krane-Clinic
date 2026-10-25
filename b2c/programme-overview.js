@@ -92,6 +92,7 @@ window.KraneProgrammeOverview = data => {
   const faq = document.querySelector('.cd-faq');
   const faqHead = document.createElement('div');faqHead.className = 'programme-faq-heading';
   faqHead.append(faq.querySelector('h2'));
+  const faqLink=document.createElement('a');faqLink.href='faq.html';faqLink.innerHTML='ดูคำถามทั้งหมด <i data-lucide="arrow-up-right" aria-hidden="true"></i>';faqHead.append(faqLink);
   faq.append(document.querySelector('.cd-safety-link'));
   faq.prepend(faqHead);
   const firstQuestion = faq.querySelector('summary');
