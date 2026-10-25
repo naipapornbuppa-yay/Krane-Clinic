@@ -23,7 +23,7 @@
   bind(hero,hero.querySelector('.library-hero__copy'),media,'split');
  });
  split(document.querySelector('.library-intro'),editorial);
- document.querySelectorAll('.info-hero').forEach(hero=>split(hero,location.pathname.endsWith('about.html')?team:editorial));
+ document.querySelectorAll('.info-hero').forEach(hero=>split(hero,location.pathname.endsWith('careers.html')?'assets/doctors/workshop-team-planning.png':location.pathname.endsWith('about.html')?team:editorial));
  split(document.querySelector('.safety-hero'),editorial);
  const price=document.querySelector('.pricing-hero');if(price){const copy=document.createElement('div');while(price.firstChild)copy.append(price.firstChild);price.append(copy);bind(price,copy,null,'text')}
 })();
