@@ -62,6 +62,7 @@ window.KraneProgrammeOverview = data => {
   const fit = overview.querySelector('[data-fit-list]');
   if (isWeight) fit.innerHTML = ['อยากดูแลน้ำหนักควบคู่กับสุขภาพโดยรวม','ต้องการให้แพทย์ประเมินความเหมาะสมก่อนเริ่ม','อยากมีคุณหมอช่วยวางแผนและติดตามผล','สะดวกปรึกษาและรับการดูแลจากที่บ้าน'].map(text=>`<li>${text}</li>`).join('');
   fit.parentElement.classList.add('programme-fit');
+  const fitIcon = document.createElement('i');fitIcon.dataset.lucide = 'lightbulb';fitIcon.setAttribute('aria-hidden','true');fit.parentElement.querySelector('h3').prepend(fitIcon);
 
   // Care phases give context; the practical five-step guide stays available.
   const guide = steps.querySelector('.cd-card');
