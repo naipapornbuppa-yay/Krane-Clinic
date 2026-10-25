@@ -28,10 +28,12 @@
     ['urgent','อาการที่ควรรับการรักษาทันที','เจ็บหน้าอก แพ้รุนแรง การมองเห็นลดลงฉับพลัน หรือแข็งตัวต่อเนื่องเกิน 4 ชั่วโมง ให้รับการรักษาทันที หากเจ็บหน้าอกอย่าใช้ยาไนเตรตเอง และแจ้งทีมรักษาว่าใช้ยาใดไปเมื่อไร'],
     ['safe-use','อย่าเพิ่มยาหรือผสมยาเอง','ใช้ตามขนาดและเวลาที่แพทย์กำหนด ไม่ใช้ร่วมกับยาเสริมสมรรถภาพอื่นโดยไม่ปรึกษาแพทย์ และไม่รับยาจากแหล่งที่ตรวจสอบไม่ได้']
   ];
+  const emergencyButton=document.querySelector('#urgent .emergency-button')?.cloneNode(true);
   content.forEach(([id,title,text],i)=>{
     const section=document.getElementById(id);
     section.innerHTML=`<p class="eyebrow">${['ภาพรวม','ใครไม่ควรใช้','แจ้งแพทย์ก่อนเริ่ม','ผลข้างเคียง','สัญญาณอันตราย','ใช้อย่างปลอดภัย'][i]}</p><h2 id="${id}-title">${title}</h2><p>${text}</p>`;
   });
+  if(emergencyButton)document.getElementById('urgent').append(emergencyButton);
   const sources=hair ? [
     ['NHS: finasteride','https://www.nhs.uk/medicines/finasteride/'],
     ['NHS: ผลข้างเคียง finasteride','https://www.nhs.uk/medicines/finasteride/side-effects-of-finasteride/'],
