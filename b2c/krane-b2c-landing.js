@@ -2593,15 +2593,6 @@
 (()=>{
  const rail=document.querySelector('[data-expert-viewport]');if(!rail)return;
  const cards=[...rail.querySelectorAll('.expert-card')];if(!cards.length)return;
- // Release vertical trackpad gestures to the page instead of latching the rail.
- rail.addEventListener('wheel',event=>{
-  if(event.ctrlKey||event.defaultPrevented||Math.abs(event.deltaY)<1)return;
-  const scale=event.deltaMode===1?16:event.deltaMode===2?innerHeight:1;
-  const top=event.deltaY*scale,root=document.scrollingElement;
-  if(!root||(top<0&&root.scrollTop<=0)||(top>0&&root.scrollTop>=root.scrollHeight-root.clientHeight))return;
-  event.preventDefault();window.scrollBy({top,behavior:'instant'});
- },{passive:false});
-
  const dots=document.createElement('nav');dots.className='expert-dots';dots.setAttribute('aria-label','เลือกสไลด์ทีมแพทย์');rail.after(dots);
  let positions=[],frame=0;
  const sync=()=>{frame=0;let active=0;positions.forEach((x,i)=>{if(Math.abs(x-rail.scrollLeft)<Math.abs(positions[active]-rail.scrollLeft))active=i});[...dots.children].forEach((b,i)=>{b.classList.toggle('is-current',i===active);if(i===active)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')})};
@@ -2653,3 +2644,17 @@
  const observer=new ResizeObserver(measure);specs.forEach(([selector])=>document.querySelectorAll(selector).forEach(e=>observer.observe(e)));
  window.addEventListener('load',measure);document.fonts.ready.then(measure);document.addEventListener('krane:languagechange',measure);setTimeout(measure,0);
 })();
+
+/* Keep page scrolling available over horizontal rails and review media. */
+(()=>{document.querySelectorAll("[data-expert-viewport],.review-collage").forEach(rail=>{
+ // Release vertical trackpad gestures to the page instead of latching the rail.
+ rail.addEventListener('wheel',event=>{
+  if(event.ctrlKey||event.defaultPrevented||Math.abs(event.deltaY)<1)return;
+  const scale=event.deltaMode===1?16:event.deltaMode===2?innerHeight:1;
+  const top=event.deltaY*scale,root=document.scrollingElement;
+  if(!root||(top<0&&root.scrollTop<=0)||(top>0&&root.scrollTop>=root.scrollHeight-root.clientHeight))return;
+  event.preventDefault();window.scrollBy({top,behavior:'instant'});
+ },{passive:false});
+
+
+});})();
