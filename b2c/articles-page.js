@@ -28,7 +28,7 @@ const concise=['GLP-1 เลียนแบบฮอร์โมนอิ่ม 
 takeaways.querySelectorAll('li').forEach((li,i)=>{if(concise[i])li.textContent=concise[i]});
 }
 }
-const toc=body.querySelector('.article-toc');if(toc)toc.open=false;
+const toc=body.querySelector('details.article-toc');if(toc){const aside=document.createElement('aside');aside.className=toc.className;const title=document.createElement('h2');title.textContent=toc.querySelector('summary').textContent;aside.append(title,toc.querySelector('nav'));toc.replaceWith(aside)}
 reading.querySelector('.article-editorial-footer')?.remove();
 const footer=document.createElement('div');footer.className='article-editorial-footer';
 const refs=reading.querySelector('.article-references');if(refs){refs.open=true;footer.append(refs)}

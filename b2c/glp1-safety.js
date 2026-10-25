@@ -7,6 +7,7 @@
   document.querySelectorAll('.safety-section > .eyebrow,.safety-section > .section-number').forEach(el=>el.remove());
   const label=document.createElement('h2');label.className='safety-index__title';label.textContent='สารบัญ';index.prepend(label);
   const links = [...index.querySelectorAll("a[href^='#']")];
+  const list=document.createElement('ol');links.forEach(link=>{const item=document.createElement('li');item.append(link);list.append(item)});index.append(list);
   const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 
   const setActive = (id) => {
