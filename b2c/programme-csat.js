@@ -10,16 +10,24 @@
  const body=section.querySelector('.programme-csat__body'),status=section.querySelector('[role=status]');
  const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
  const comments=node('div','','programme-comments');section.append(comments);
- let reviews=[];
+ let reviews=[],selected=0,sort="newest";
  function renderComments(){
   comments.replaceChildren();if(!reviews.length)return;
-  const list=node('div','','programme-comments__list');
-  reviews.forEach(r=>{
+  const toolbar=node('div','','programme-comments__toolbar');toolbar.append(node('h3','ความคิดเห็น'));
+  const label=node('label','เรียงตาม '),select=document.createElement('select');
+  [['newest','ล่าสุด'],['highest','คะแนนสูงสุด'],['lowest','คะแนนต่ำสุด']].forEach(([value,text])=>{const option=node('option',text);option.value=value;select.append(option)});
+  select.value=sort;select.addEventListener('change',()=>{sort=select.value;renderComments();comments.querySelector('select').focus()});label.append(select);toolbar.append(label);comments.append(toolbar);
+  const filters=node('div','','programme-comments__filters');filters.setAttribute('aria-label','กรองคะแนนความคิดเห็น');
+  [0,5,4,3,2,1].forEach(rating=>{const button=node('button',rating?rating+' ★':'ทั้งหมด');button.type='button';button.setAttribute('aria-pressed',String(selected===rating));button.addEventListener('click',()=>{selected=rating;renderComments();comments.querySelector('[aria-pressed="true"]').focus()});filters.append(button)});comments.append(filters);
+  const list=node('div','','programme-comments__list');list.setAttribute('aria-live','polite');
+  const visible=reviews.filter(r=>!selected||r.rating===selected).sort((a,b)=>sort==='newest'?b.date.localeCompare(a.date):sort==='highest'?b.rating-a.rating:a.rating-b.rating);
+  if(!visible.length)list.append(node('p','ยังไม่มีความคิดเห็นในคะแนนนี้','programme-comments__empty'));
+  visible.forEach(r=>{
    const article=node('article','','programme-comment'),meta=node('div','','programme-comment__meta');
    const avatar=node('span',Array.from(r.name)[0],'programme-comment__avatar');avatar.setAttribute('aria-hidden','true');
    const identity=node('div');identity.append(node('strong',r.name));
    const time=node('time',new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(r.date)));time.dateTime=r.date;identity.append(time);meta.append(avatar,identity);
-   article.append(meta);
+   const stars=node('div','★'.repeat(r.rating)+'☆'.repeat(5-r.rating),'programme-comment__stars');stars.setAttribute('aria-label',r.rating+' จาก 5 ดาว');article.append(meta,stars);
    if(typeof r.title==='string')article.append(node('h3',r.title));
    article.append(node('blockquote','“'+r.text+'”'));
    list.append(article);
