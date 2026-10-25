@@ -2,9 +2,9 @@
 (()=>{
  const data=window.KraneReviews||[],reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const attribution=item=>`${item.name} · ${item.age} ปี · ${item.occupation}`;
+ const attribution=item=>[item.name,item.age?`${item.age} ปี`:null,item.occupation].filter(Boolean).join(' · ');
  document.querySelectorAll('.weight-story-gallery__video-copy,.review-video__copy').forEach(e=>e.remove());
- document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite)cite.textContent=attribution(item)});
+ document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id],.story-blocks__panel[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite&&!cite.textContent.includes(" · "))cite.textContent=attribution(item)});
  document.querySelectorAll('.weight-story-gallery__photos figcaption,.review-video__photos figcaption,.review-video--comparison>.cd-fine').forEach(e=>e.remove());
  // Group each person's initial video, quotation and matching photos together.
  document.querySelectorAll('.review-marquee__set').forEach(set=>{
@@ -32,7 +32,7 @@
   }
   card.classList.add('review-rhythm-card');card.style.setProperty('--review-tone',tones[item.category]||'#395aa4');
   const faces=['video'];
-  if(item.quote||item.caption){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-quote';face.dataset.face='quote';if(!item.quote)face.classList.add('review-rhythm-summary');face.innerHTML=`<blockquote><p>${item.quote?'“'+esc(item.quote).replace(/&lt;br&gt;/g,'<br>')+'”':esc(item.caption)}</p><cite>${esc(item.name)}<span>${item.age} ปี · ${esc(item.occupation)}</span></cite></blockquote>`;card.append(face);faces.push('quote')}
+  if(item.quote||item.caption){const face=document.createElement('div');face.className='review-rhythm-face review-rhythm-quote';face.dataset.face='quote';if(!item.quote)face.classList.add('review-rhythm-summary');face.innerHTML=`<blockquote><p>${item.quote?'“'+esc(item.quote).replace(/&lt;br&gt;/g,'<br>')+'”':esc(item.caption)}</p><cite>${esc(attribution(item))}</cite></blockquote>`;card.append(face);faces.push('quote')}
   // Prefer video / quotation / comparison across neighbouring people.
   const desired=card.dataset.startFace||'video';let active=faces.includes(desired)?faces.indexOf(desired):index%faces.length;
   let visible=false,elapsed=0;const interval=7000+(index%3)*1200;
