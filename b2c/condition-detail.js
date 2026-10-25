@@ -824,7 +824,8 @@
   if(faqSection&&faqTab){
     faqSection.id='cd-panel-faq';faqSection.dataset.cdPanel='faq';
     faqTab.textContent='คำถามที่พบบ่อย';faqTab.dataset.cdTab='faq';faqTab.setAttribute('aria-controls','cd-panel-faq');
-    document.getElementById('cd-panel-price')?.removeAttribute('data-cd-panel');
+    const priceSection=document.getElementById('cd-panel-price');
+    if(priceSection){priceSection.hidden=false;priceSection.removeAttribute('data-cd-panel');}
   }
   const cdTabs = Array.from(document.querySelectorAll("[data-cd-tab]"));
   const cdPanels = Array.from(document.querySelectorAll("[data-cd-panel]"));
