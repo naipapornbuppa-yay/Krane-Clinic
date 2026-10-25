@@ -1,4 +1,4 @@
-/* Two public masthead variants. The page owns content; this adapter owns layout. */
+/* Three public masthead variants. The page owns content; this adapter owns layout. */
 (()=>{
  const team='assets/doctors/team-hero-concept-20261017.png';
  const editorial='assets/journey-web/krane-phone-consultation-v1-960.webp';
@@ -25,5 +25,5 @@
  split(document.querySelector('.library-intro'),editorial);
  document.querySelectorAll('.info-hero').forEach(hero=>split(hero,location.pathname.endsWith('about.html')?team:editorial));
  split(document.querySelector('.safety-hero'),editorial);
- const price=document.querySelector('.pricing-hero');if(price){const steps=price.querySelector('.pricing-steps');if(steps)price.after(steps);split(price,editorial)}
+ const price=document.querySelector('.pricing-hero');if(price){const copy=document.createElement('div');while(price.firstChild)copy.append(price.firstChild);price.append(copy);bind(price,copy,null,'text')}
 })();
