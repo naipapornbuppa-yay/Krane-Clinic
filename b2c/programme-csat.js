@@ -14,7 +14,7 @@
  function renderComments(){
   comments.replaceChildren();if(!reviews.length)return;
   const toolbar=node('div','','programme-comments__toolbar');
-  const heading=node('h3','ความคิดเห็น'+(demo?'ตัวอย่าง':''));toolbar.append(heading);
+  const heading=node('h3','ความคิดเห็น');toolbar.append(heading);
   const label=node('label','เรียงตาม '),select=document.createElement('select');
   [['newest','ล่าสุด'],['highest','คะแนนสูงสุด'],['lowest','คะแนนต่ำสุด']].forEach(([value,text])=>{const option=node('option',text);option.value=value;select.append(option)});select.value=sort;select.addEventListener('change',()=>{sort=select.value;renderComments()});label.append(select);toolbar.append(label);comments.append(toolbar);
   const filters=node('div','','programme-comments__filters');filters.setAttribute('aria-label','กรองคะแนนความคิดเห็น');
@@ -35,10 +35,10 @@
    reviews=Array.isArray(d.comments)?d.comments.filter(r=>typeof r.name==='string'&&typeof r.text==='string'&&Number.isInteger(r.rating)&&r.rating>=1&&r.rating<=5&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&Number.isFinite(Date.parse(r.date))):[];demo=payload.demo===true;renderComments();
    const average=d.total?d.distribution.reduce((sum,n,i)=>sum+n*(5-i),0)/d.total:0;
    const score=node('div','','programme-csat__score');score.append(node('strong',d.total?average.toFixed(1):'—'),node('span',' / 5'));
-   const stars=node('div','★★★★★','programme-csat__stars');stars.setAttribute('aria-label',average.toFixed(1)+' จาก 5 ดาว');stars.style.setProperty('--rating',average/5*100+'%');score.append(stars,node('p',d.total+' การประเมิน'+(payload.demo?'จำลอง':'')));
+   const stars=node('div','★★★★★','programme-csat__stars');stars.setAttribute('aria-label',average.toFixed(1)+' จาก 5 ดาว');stars.style.setProperty('--rating',average/5*100+'%');score.append(stars,node('p',d.total+' การประเมิน'));
    const bars=node('div','','programme-csat__bars');d.distribution.forEach((n,i)=>{const row=node('div');row.append(node('span',(5-i)+' ★'));const bar=document.createElement('meter');bar.min=0;bar.max=d.total||1;bar.value=n;bar.setAttribute('aria-label',(5-i)+' ดาว '+n+' การประเมิน');row.append(bar,node('span',String(n)));bars.append(row)});
    const dimensions=node('ul','','programme-csat__dimensions');d.dimensions.forEach(x=>{const li=node('li');li.append(node('span',x.label),node('strong',x.score.toFixed(1)+' / 5'));dimensions.append(li)});
-   body.replaceChildren(score,bars,dimensions);status.textContent=d.total?'คะแนนด้านประสบการณ์บริการ ไม่ใช่ผลลัพธ์ทางการรักษา':'ยังไม่มีการประเมิน';
+   body.replaceChildren(score,bars,dimensions);status.textContent=payload.demo?'ข้อมูลตัวอย่าง':d.total?'':'ยังไม่มีการประเมิน';
   }catch(error){comments.replaceChildren();body.replaceChildren();status.textContent='ยังโหลดคะแนนไม่ได้ กรุณาลองใหม่ภายหลัง';}finally{pending=false}
  }
  refresh();const timer=setInterval(refresh,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
