@@ -18,16 +18,16 @@
   for(const url of [draft.image,draft.author?.photo,draft.source])if(url&&!/^(https?:\/\/|assets\/)/.test(url))throw Error('ใช้ลิงก์ https หรือรูปจาก assets เท่านั้น');
   for(const section of draft.sections){const media=section.media;if(media?.src&&(!/^((https:\/\/)|assets\/)[^\s<>]+$/.test(media.src)||!media.alt?.trim()))throw Error('รูปในเนื้อหาต้องใช้ลิงก์ https หรือ assets พร้อมคำอธิบายภาพ');}
   record.draft=clone({...draft,id});record.status=status;
-  if(status==='Published')record.published=clone(record.draft);
+  if(status==='Published')record.published=clone({...record.draft,publicationApproved:true});
   localStorage.setItem(key,JSON.stringify(Object.fromEntries(all.map(r=>[r.id,r]))));
   window.dispatchEvent(new CustomEvent('krane-articles-changed'));
   return clone(record);
  }
  window.KraneArticleStore={records,save,create(){
   const id='article-'+crypto.randomUUID(),all=records(),draft=clone(KraneArticleSeed[0]);
-  Object.assign(draft,{id,title:'บทความใหม่',summary:'',sections:[{heading:'',copy:''}]});delete draft.manuscriptMarkdown;delete draft.editorialReview;delete draft.manuscriptUrl;
+  Object.assign(draft,{id,title:'บทความใหม่',summary:'',sections:[{heading:'',copy:''}]});delete draft.manuscriptMarkdown;delete draft.en;delete draft.publicationApproved;delete draft.editorialReview;delete draft.manuscriptUrl;
   all.push({id,status:'Draft',draft,published:null});
   localStorage.setItem(key,JSON.stringify(Object.fromEntries(all.map(r=>[r.id,r]))));return id;
- },published:()=>KraneArticleSeed.filter(article=>article.publicationApproved).map(article=>clone(article))};
+ },published:()=>records().filter(record=>record.published?.publicationApproved).map(record=>clone(record.published))};
  window.addEventListener('storage',e=>{if(e.key===key)window.dispatchEvent(new CustomEvent('krane-articles-changed'))});
 })();

@@ -1,6 +1,7 @@
 .clinical-workspace{padding:24px;margin:20px 0;background:var(--surface,#fff);border:1px solid var(--line,#e0e5ed);border-radius:20px;color:var(--ink,#1a1e28);overflow-wrap:anywhere}
+.clinical-workspace__actions{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap}
 .clinical-workspace h2{font-size:22px;margin:0 0 8px}.clinical-workspace h3{font-size:17px;margin:0 0 10px}
-.clinical-workspace__head,.clinical-workspace__actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.clinical-workspace__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .clinical-workspace__list{display:grid;gap:12px;margin-top:18px}.clinical-workspace__card{border:1px solid var(--line,#e0e5ed);border-radius:14px;padding:16px;display:grid;gap:10px;background:var(--surface,#fff);min-width:0}
 .clinical-workspace p{margin:0;line-height:1.65}.clinical-workspace small{color:var(--muted,#657089)}.clinical-workspace .badge{width:fit-content}
 .clinical-workspace label{display:grid;gap:6px;font-size:14px}.clinical-workspace input,.clinical-workspace select,.clinical-workspace textarea{font:inherit;box-sizing:border-box;max-width:100%;min-width:0;width:100%;padding:11px 12px;border:1px solid var(--line,#dce1e9);border-radius:10px;background:var(--surface,#fff);color:inherit}
@@ -18,3 +19,22 @@ body.clinical-confirmed-plan #rx-plan .screen__body>:not([data-clinical-panel=pl
 body.clinical-managed :is(#queue,#followups)>:not(.clinical-workspace){display:none!important}
 
 body.clinical-real-patient :is(#activity,#my-documents,#notifications,#appointment-booked) .screen__body>:not([data-workflow]):not([data-clinical-requests]):not([data-clinical-panel]){display:none!important}
+
+/* Managed encounters have one source of patient data and one action hierarchy. */
+body.clinical-managed #preconsult>:not(.crumb):not(.page-head):not([data-workflow="intake"]){display:none!important}
+body.clinical-managed #preconsult .page-actions{display:none!important}
+body.clinical-managed #record>:not(.crumb):not(.page-head):not([data-workflow="history"]){display:none!important}
+.clinical-workspace__primary{padding:16px 0 20px;border-bottom:1px solid var(--line,#e0e5ed)}
+.clinical-workspace__record{display:grid;gap:10px;padding:20px 0}
+.clinical-workspace__record>p:first-child{font-size:18px;font-weight:600}
+.clinical-workspace__disclosure{border-top:1px solid var(--line,#e0e5ed)}
+.clinical-workspace__disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;list-style:none;padding:18px 0;font-weight:600;min-height:48px}
+.clinical-workspace__disclosure>summary::-webkit-details-marker{display:none}
+.clinical-workspace__disclosure>summary::after{content:'+';font-size:22px;color:var(--brand,#395aa4)}
+.clinical-workspace__disclosure[open]>summary::after{content:'−'}
+.clinical-workspace__management{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding-bottom:20px}
+.clinical-workspace__management>.clinical-workspace__actions{grid-column:1/-1}
+.clinical-workspace__appointment{grid-template-columns:1fr 1fr auto;align-items:end;margin:0 0 20px;background:var(--bg,#f5f7fb)}
+@media(max-width:760px){.clinical-workspace__appointment,.clinical-workspace__management{grid-template-columns:1fr}.clinical-workspace__primary>.btn{flex:1 1 auto}}
+
+.clinical-workspace__clinical{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0}.clinical-workspace__clinical>div{padding:16px;border-radius:12px;background:var(--bg,#f5f7fb)}.clinical-workspace__clinical dt{font-weight:600;margin-bottom:6px}.clinical-workspace__clinical dd{margin:0;line-height:1.6;color:var(--muted,#657089)}@media(max-width:760px){.clinical-workspace__clinical{grid-template-columns:1fr}}

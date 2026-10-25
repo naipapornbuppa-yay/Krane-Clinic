@@ -9,22 +9,22 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'
 
 async function test(name,fn){console.log('RUN',name);try{await fn();results.push({test:name,status:'pass'})}catch(e){results.push({test:name,status:'fail',error:e.message,severity:'P1'});console.error(name,e.message)}}
 function check(x,m){if(!x)throw Error(m)}
-const ctx=await browser.newContext();ctx.setDefaultTimeout(10000);const admin=await ctx.newPage(),patient=await ctx.newPage(),doctor=await ctx.newPage();
+const ctx=await browser.newContext();await ctx.addInitScript(()=>localStorage.setItem('krane_lang','th'));ctx.setDefaultTimeout(10000);const admin=await ctx.newPage(),patient=await ctx.newPage(),doctor=await ctx.newPage();
 try{
 await admin.goto(base+'/cms/cms-admin.html#content',{waitUntil:'networkidle'});
 for(const width of [390,1440]){await admin.setViewportSize({width,height:900});await admin.waitForTimeout(700);await admin.screenshot({path:out+'/editor-'+width+'.png',fullPage:true})}
-const seed=await admin.evaluate(()=>KraneArticleStore.records()[0]);
+const seed=await admin.evaluate(()=>KraneArticleStore.records().find(r=>r.id==='library-hair-loss-01'));await admin.locator('[data-edit-article="'+seed.id+'"]').click();
 await patient.goto(base+'/b2c/krane-b2c.html?screens=1&article='+seed.id+'#article',{waitUntil:'networkidle'});
 await test('article draft remains private',async()=>{
-await admin.locator('[data-editorial-form] [name=title]').fill('QA draft private');await admin.locator('[data-editorial-form] button[value=Draft]').click();
-check(await admin.evaluate(()=>KraneArticleStore.records()[0].draft.title)==='QA draft private','Draft not saved');
-check(await patient.evaluate(()=>KraneArticleStore.published()[0].title)===seed.published.title,'Draft leaked');
+await admin.locator('[data-editorial-form] [name=title]').fill('QA draft private');await admin.locator('[data-editorial-form] [name="copy-0"]').fill('QA revised article body');await admin.locator('[data-editorial-form] button[value=Draft]').click();
+check(await admin.evaluate(()=>KraneArticleStore.records().find(r=>r.id==='library-hair-loss-01').draft.title)==='QA draft private','Draft not saved');
+check(await patient.evaluate(()=>KraneArticleStore.published().find(r=>r.id==='library-hair-loss-01').title)===seed.published.title,'Draft leaked');
 await patient.reload();check(await patient.locator('#article').innerText().then(t=>!t.includes('QA draft private')),'Draft rendered after reload');
 });
 await test('article publish propagates to B2C and survives reload',async()=>{
 await admin.locator('[data-editorial-form] button[value=Published]').click();await patient.waitForFunction(()=>document.querySelector('#article').textContent.includes('QA draft private'));
-await patient.reload();await patient.waitForFunction(()=>document.querySelector('#article').textContent.includes('QA draft private'));
-await admin.reload();check(await admin.locator('[data-editorial-form] [name=title]').inputValue()==='QA draft private','CMS reload lost title');
+await patient.reload();await patient.waitForFunction(()=>document.querySelector('#article').textContent.includes('QA draft private'));check((await patient.locator('#article').innerText()).includes('QA revised article body'),'Edited body replaced by old manuscript');
+await admin.reload();await admin.locator('[data-edit-article="'+seed.id+'"]').click();check(await admin.locator('[data-editorial-form] [name=title]').inputValue()==='QA draft private','CMS reload lost title');
 });
 await test('landing featured article follows published title',async()=>{const landing=await ctx.newPage();await landing.goto(base+'/b2c/krane-b2c-landing.html');await landing.waitForFunction(id=>document.querySelector('[data-article-id="'+id+'"]')?.textContent.includes('QA draft private'),seed.id);await landing.close()});
 await test('pending revision preserves published snapshot',async()=>{
@@ -49,12 +49,12 @@ await admin.locator('[data-status-select]').selectOption(stage);await admin.loca
 const shared=stage==='Out for delivery'?'Dispatched':stage;
 await patient.waitForFunction(s=>KraneGoldenDemo.readState().fulfilmentStatus===s,shared);
 await doctor.waitForFunction(s=>KraneGoldenDemo.readState().fulfilmentStatus===s,shared);
-const expectedDoctor={'Rider pickup':'ไรเดอร์กำลังเข้าไปรับของ','Out for delivery':'กำลังจัดส่ง','Delivered':'จัดส่งถึงผู้ป่วยแล้ว'};const expectedPatient={'Rider pickup':'ไรเดอร์กำลังไปรับยา','Out for delivery':'ไรเดอร์กำลังไปส่ง','Delivered':'จัดส่งสำเร็จแล้ว'};
+const expectedDoctor={'Rider pickup':'ไรเดอร์กำลังเข้าไปรับของ','Out for delivery':'กำลังจัดส่ง','Delivered':'จัดส่งถึงผู้ป่วยแล้ว'};const expectedPatient={'Rider pickup':'กำลังจัดส่ง','Out for delivery':'กำลังจัดส่ง','Delivered':'จัดส่งสำเร็จ'};
 await doctor.waitForFunction(t=>document.querySelector('[data-done-order-status]').textContent.includes(t),expectedDoctor[stage]);await patient.waitForFunction(t=>document.querySelector('#tracking').textContent.includes(t),expectedPatient[stage]);const d=await doctor.locator('[data-done-order-status]').innerText();
 results.push({test:'visible stage evidence '+stage,status:'pass',doctor:d,patient:(await patient.locator('#tracking').innerText()).slice(0,1300)});
 });
 await test('golden order rendered values match admin and summary',async()=>{
-check((await patient.locator('[data-postpay-total]').first().innerText()).replace(/[^0-9]/g,'')==='1160','Total mismatch: '+await patient.locator('[data-postpay-total]').first().innerText());check((await patient.locator('[data-delivery-address]').innerText()).includes('22/418'),'Address mismatch');check(!await patient.locator('[data-tracking-reference]').isVisible(),'Postal card shown for same-day');await patient.locator('#tracking [data-go="order-summary"]').click();await patient.waitForFunction(()=>document.getElementById('order-summary').classList.contains('active') || document.getElementById('order-summary').classList.contains('is-active'));await patient.waitForFunction(()=>document.querySelector('[data-delivery-items]').textContent.includes('590'));const lines=await patient.locator('[data-delivery-items]').innerText();check((/Finasteride|ฟี|ฟิ/.test(lines))&&(/Minoxidil|ไมน/.test(lines))&&lines.includes('590')&&lines.includes('450'),'Medicine snapshot mismatch');
+check((await patient.locator('[data-postpay-total]').first().innerText()).replace(/[^0-9]/g,'')==='1160','Total mismatch: '+await patient.locator('[data-postpay-total]').first().innerText());check((await patient.locator('[data-delivery-address]').innerText()).includes('22/418'),'Address mismatch');check(!await patient.locator('[data-tracking-reference]').isVisible(),'Postal card shown for same-day');const survey=patient.locator('#csat-modal[aria-hidden="false"]');if(await survey.count())await survey.locator('button[data-csat-close]').last().click();await patient.locator('#tracking [data-go="order-summary"]').click();await patient.waitForFunction(()=>document.getElementById('order-summary').classList.contains('active') || document.getElementById('order-summary').classList.contains('is-active'));await patient.waitForFunction(()=>document.querySelector('[data-delivery-items]').textContent.includes('590'));const lines=await patient.locator('[data-delivery-items]').innerText();check((/Finasteride|ฟี|ฟิ/.test(lines))&&(/Minoxidil|ไมน/.test(lines))&&lines.includes('590')&&lines.includes('450'),'Medicine snapshot mismatch');
 });
 await test('doctor plan event updates explicit golden snapshot without delivery reset',async()=>{
 await doctor.evaluate(()=>document.dispatchEvent(new CustomEvent('krane-doctor-order-created',{detail:{items:[{key:'qa',sku:'qa',name:'QA fictional item',price:100,qty:2,directions:'Demo only'}],total:200}})));

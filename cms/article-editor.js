@@ -38,12 +38,14 @@
   for(const name of ['title','summary','image','imageAlt'])draft[name]=form.elements[name].value.trim();
   draft.author={...draft.author,name:form.elements.authorName.value.trim(),photo:form.elements.authorPhoto.value.trim()};
   draft.category=form.elements.category.value;draft.categoryLabel=({hair:'ผมร่วง',weight:'น้ำหนัก',men:'สุขภาพทางเพศ','sexual-health':'สุขภาพทางเพศ',lifestyle:'ไลฟ์สไตล์',general:'ทั่วไป'})[draft.category]||draft.categoryLabel;draft.tags=form.elements.tags.value.split(',').map(s=>s.trim()).filter(Boolean);draft.source=form.elements.source.value.trim();
+  const previousCopy=JSON.stringify(draft.sections.map(section=>[section.heading,section.copy]));
   draft.sections=Array.from({length:sectionCount},(_,i)=>{
    const section={heading:form.elements[`heading-${i}`].value.trim(),copy:form.elements[`copy-${i}`].value.trim(),presentation:form.elements[`presentation-${i}`].value};
    const src=form.elements[`mediaSrc-${i}`].value.trim();if(src)section.media={src,alt:form.elements[`mediaAlt-${i}`].value.trim(),caption:form.elements[`mediaCaption-${i}`].value.trim()};return section;
   });
+  if(previousCopy!==JSON.stringify(draft.sections.map(section=>[section.heading,section.copy])))delete draft.manuscriptMarkdown;
   const segmenter=new Intl.Segmenter('th',{granularity:'word'});draft.minutes=Math.max(1,Math.ceil([...segmenter.segment(draft.summary+' '+draft.sections.map(s=>s.copy).join(' '))].filter(s=>s.isWordLike).length/180));
-  const saved=KraneArticleStore.save(selected,draft,e.submitter?.value||'Draft');form.querySelector('[data-editorial-preview]').hidden=!saved.published;render();feedback.textContent=e.submitter?.value==='Published'?'เผยแพร่แล้ว เปิดดูในหน้าบทความได้':'บันทึกแล้ว บทความที่เผยแพร่ยังไม่เปลี่ยน';
+  const saved=KraneArticleStore.save(selected,draft,e.submitter?.value||'Draft');form.querySelector('[data-editorial-preview]').hidden=!saved.published;render();feedback.textContent=e.submitter?.value==='Published'?'เผยแพร่ในต้นแบบเบราว์เซอร์นี้แล้ว เปิดดูหน้าบทความบนอุปกรณ์นี้ได้':'บันทึกแล้ว บทความที่เผยแพร่ยังไม่เปลี่ยน';
  }catch(error){feedback.textContent=error.message;}});
  document.querySelector('[data-editorial-new]').addEventListener('click',()=>{try{const id=KraneArticleStore.create();render();load(id)}catch(e){form.querySelector('[data-editorial-feedback]').textContent='บันทึกไม่ได้ โปรดตรวจการอนุญาตพื้นที่จัดเก็บของเบราว์เซอร์'}});
  form.querySelector('[data-editorial-add-section]').addEventListener('click',()=>{const i=sectionCount++;form.querySelector('[data-editorial-sections]').append(sectionFields({},i))});

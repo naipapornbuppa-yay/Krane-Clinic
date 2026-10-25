@@ -1,0 +1,37 @@
+Krane back-office audit — 25 October 2026
+Scope: static doctor/admin application, public CMS handoff and patient workflow.
+Evidence uses fictional records in isolated browser contexts. This is not a production backend certification.
+
+URGENT FIXES COMPLETED
+P1 doctor/preconsult, 1440 and 390: legacy encounter and injected workspace both rendered, while appointment forms preceded the patient header. Reproduce by opening cms/cms-doctor.html#preconsult. One managed encounter now follows the patient header; primary actions precede the record, secondary scheduling and reassignment are expandable. Legacy admission buttons no longer bypass the managed accept/join sequence. Patient history duplicates are suppressed as well.
+P2 clinical record: explicit allergy, medical-condition and current-medication summaries. Missing values say not recorded rather than implying none. No clinical facts invented.
+P2 scheduling: available-time selection starts with a placeholder, disables until slots exist and restores options for a stored date. Date/time and submit are arranged together on desktop and stacked on mobile.
+P1 CMS publishing: public readers previously always returned approved seed content, ignoring published local revisions. Published snapshots now propagate; draft/pending revisions remain isolated. Unapproved initial records remain excluded.
+P1 CMS body editing: an existing manuscript could override updated section text. Editing section text now removes the stale manuscript rendering override. New articles no longer inherit a prior article's English translation/approval flag.
+
+VERIFICATION
+50 doctor/admin route/runtime checks across 390px and 1440px passed.
+13 doctor/patient workflow scenarios passed: new encounter layout and rescheduling; shift slots/conflicts; accept/join/chat/private notes; prescription and checkout; no-medication/referral/history; pause/resume; request review; versioned document revoke/download; profile/rating/multi-patient isolation; reassignment and timing guards; write failure/conflict; attachment reload/download; responsive/language rendering.
+18 cross-surface checks passed: CMS draft isolation, published title AND body, landing featured article, pending revision isolation, invalid/new draft validation, delivery state and visible labels, order values, reload persistence, legacy redirects and normal-basket isolation.
+Test corrections: featured-card test now selects a featured article (the first seed is not on landing). Delivery checks use the current tracking labels and explicitly close the optional CSAT dialog. These were stale tests, not product fixes.
+
+REQUIRED BACK-OFFICE CAPABILITIES / CURRENT STATUS
+1. Identity and access — doctor/admin UI exists; server-side authentication, role enforcement, sessions and least-privilege API access remain integration work. Browser role flags are not authorization.
+2. Clinical intake and consent — submitted encounter, questionnaire, attachments and consent fields rendered; durable versioned consent records and secure file storage required on server.
+3. Queue, appointments and availability — local cross-tab booking, conflicts, reassignment, callback, cancellation, no-show and follow-up flows tested. Server-side atomic reservation, timezone policy, reminders and cross-device sync required.
+4. Clinical consultation — local encounter transitions, chat, private notes, prescription draft and confirmed patient plan tested. Real video/chat transport, clinician identity and clinical review remain external integrations.
+5. History and documents — versioned local documents/revocation/download tested. Signed prescriptions, access-controlled durable records and legal retention remain backend responsibilities; unsigned preview is retained as such.
+6. Orders and pharmacy — fixture delivery states and patient/doctor rendering tested. Real pharmacy stock, fulfilment callbacks, delivery provider events, retries and reconciliation require APIs. Golden fixture tests do not certify live orders.
+7. Finance — pricing/promotion configuration currently saves browser-only settings; it does NOT drive patient checkout. Payment capture/refunds, invoices, reconciliation and server-authoritative prices are outstanding integration work. Do not label browser save as a production price change.
+8. CMS — approved initial collection, draft/review/publish snapshots and local recipient refresh tested. Cross-device publication, editor/reviewer separation and immutable change history require authenticated content APIs.
+9. Operations — queue counts and local audit view exist. Production alerting, support ownership, operational SLA queues, event retries and logs must be built against real event sources.
+10. Reviews — local ratings flow tested. Programme marketing aggregates/sample comments are not verified customer reviews and must not be promoted to real data without an approved review source.
+
+NEXT IMPLEMENTATION ORDER
+P0: authenticated backend and role boundaries; durable encounter/consent/storage; production payment and pharmacy contracts.
+P1: authoritative booking and workflow transitions with idempotency; clinical records/documents; publish API with explicit approval and audit history.
+P1: operational reconciliation for failed payments, pharmacy acceptance, delivery and callbacks.
+P2: validated price/promotion publication, support dashboards, notifications/reminders, verified reviews and reporting.
+
+LIMITS
+No real patient data, clinical prescription, payment, refund, or external message was sent in this audit. Local storage workflows synchronize within one origin/browser context only. Cross-device/production persistence and service permissions were not verified. Do not call the whole back office production-ready from these frontend checks.
