@@ -100,7 +100,7 @@
   });
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
     const stories=document.querySelectorAll('.doctor-work__story');
-    const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}});},{threshold:.12});
+    const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{entry.target.classList.toggle('is-revealed',entry.isIntersecting);entry.target.classList.toggle('is-above',!entry.isIntersecting&&entry.boundingClientRect.bottom<0);});},{threshold:.12});
     stories.forEach(story=>{story.classList.add('will-reveal');observer.observe(story);});
   }
 }());
