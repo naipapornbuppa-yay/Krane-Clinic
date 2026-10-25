@@ -31,7 +31,7 @@
     button.id = `journey-tab-${index}`;
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', `journey-panel-${index}`);
-    button.innerHTML = `<span>${labels[index]}</span><i data-lucide="${icons[index]}" aria-hidden="true"></i>`;
+    button.innerHTML = `<i data-lucide="${icons[index]}" aria-hidden="true"></i><span>${labels[index]}</span>`;
     tablist.append(button);
     const panel = document.createElement('section');
     panel.id = `journey-panel-${index}`;
@@ -84,7 +84,7 @@
   const stop = () => { clearTimeout(timer); };
   const schedule = () => {
     stop();
-    if (!visible || document.hidden || reducedMotion.matches || root.matches(':hover') || root.contains(document.activeElement)) return;
+    if (!visible || document.hidden || reducedMotion.matches || root.contains(document.activeElement)) return;
     timer = setTimeout(() => { select(selected + 1); schedule(); }, 6000);
   };
   const observer = new IntersectionObserver(entries => {
@@ -92,8 +92,6 @@
     schedule();
   }, {threshold: .25});
   observer.observe(root);
-  root.addEventListener('pointerenter', stop);
-  root.addEventListener('pointerleave', schedule);
   root.addEventListener('focusin', stop);
   root.addEventListener('focusout', () => setTimeout(schedule, 0));
   document.addEventListener('visibilitychange', schedule);
