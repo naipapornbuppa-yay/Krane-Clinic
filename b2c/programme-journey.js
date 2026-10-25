@@ -9,11 +9,11 @@
   const labels = ['ประเมินสุขภาพ', 'แผนจากแพทย์', 'รับยาที่บ้าน', 'ติดตามผล', 'เติมยา'];
   const icons = ['clipboard-list', 'file-check-2', 'package', 'calendar-check', 'repeat-2'];
   const visuals = [
-    '<img src="assets/krane-phone-consultation-v1.png" alt="ผู้รับบริการวิดีโอคอลกับแพทย์ผ่านมือถือ" width="1536" height="1024" loading="lazy">',
-    '<img src="assets/krane-real-plan-mockup-v1.png" alt="หน้าจอใบสั่งยาจริงของ Krane จากระบบเดโมในกรอบมือถือ" loading="lazy">',
-    '<img src="assets/krane-home-delivery-v2.png" alt="" width="1536" height="1024" loading="lazy">',
-    '<img src="assets/krane-real-followup-mockup-v1.png" alt="หน้าการแจ้งเตือนนัดหมายจริงของ Krane จากระบบเดโม" width="1536" height="1024" loading="lazy">',
-    '<img src="assets/partners/fascino-storefront-official.png" alt="" width="1326" height="624" loading="lazy">'
+    '<img src="assets/journey-web/krane-phone-consultation-v1-960.webp" srcset="assets/journey-web/krane-phone-consultation-v1-640.webp 640w, assets/journey-web/krane-phone-consultation-v1-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 42vw, 600px" width="960" height="640" decoding="async" alt="ผู้รับบริการวิดีโอคอลกับแพทย์ผ่านมือถือ" loading="lazy">',
+    '<img src="assets/journey-web/krane-real-plan-mockup-v1-960.webp" srcset="assets/journey-web/krane-real-plan-mockup-v1-640.webp 640w, assets/journey-web/krane-real-plan-mockup-v1-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 42vw, 600px" width="960" height="698" decoding="async" alt="หน้าจอใบสั่งยาจริงของ Krane จากระบบเดโมในกรอบมือถือ" loading="lazy">',
+    '<img src="assets/journey-web/krane-home-delivery-v2-960.webp" srcset="assets/journey-web/krane-home-delivery-v2-640.webp 640w, assets/journey-web/krane-home-delivery-v2-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 42vw, 600px" width="960" height="640" decoding="async" alt="" loading="lazy">',
+    '<img src="assets/journey-web/krane-real-followup-mockup-v1-960.webp" srcset="assets/journey-web/krane-real-followup-mockup-v1-640.webp 640w, assets/journey-web/krane-real-followup-mockup-v1-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 42vw, 600px" width="960" height="698" decoding="async" alt="หน้าการแจ้งเตือนนัดหมายจริงของ Krane จากระบบเดโม" loading="lazy">',
+    '<img src="assets/journey-web/fascino-storefront-official-960.webp" srcset="assets/journey-web/fascino-storefront-official-640.webp 640w, assets/journey-web/fascino-storefront-official-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 42vw, 600px" width="960" height="452" decoding="async" alt="" loading="lazy">'
   ];
   const root = document.createElement('div');
   root.className = 'programme-journey';
