@@ -3,9 +3,10 @@ const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.ar
 const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.querySelector('.library-hero__copy').append(credits);
 const heroImage=header.querySelector('[data-article-hero]'),heroMedia=header.querySelector('.library-hero__media');
 const titleText=article.title.toLowerCase();
-const product=titleText.includes('sildenafil')?['assets/medicine/ed-sheet-v1/viagra-100mg-vgr100-cutout.png','เม็ดยา sildenafil ตราสัญลักษณ์ VGR 100']:titleText.includes('tadalafil')?['assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png','เม็ดยา tadalafil ตราสัญลักษณ์ C20']:null;
+const product=titleText.includes('sildenafil')?['assets/medicine/ed-sheet-v1/sildenafil-tablet-hires.jpg','ภาพถ่ายเม็ดยา sildenafil ด้านที่มีตรา Pfizer']:titleText.includes('tadalafil')?['assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png','เม็ดยา tadalafil ตราสัญลักษณ์ C20']:null;
 const hasPhoto=!!product || (article.image && article.image!==window.KraneArticleImage.placeholder);
-header.classList.toggle('has-editorial-photo',!!hasPhoto);heroMedia.hidden=!hasPhoto;heroMedia.classList.toggle('is-product',!!product);
+header.classList.toggle('has-editorial-photo',!!hasPhoto);heroMedia.hidden=!hasPhoto;heroMedia.classList.toggle('is-product',!!product&&!titleText.includes('sildenafil'));
+reading.querySelector('.article-photo-credit')?.remove();if(titleText.includes('sildenafil')){const credit=document.createElement('p');credit.className='article-photo-credit';credit.innerHTML='Photo: Tim Reckmann · <a href="https://commons.wikimedia.org/wiki/File:Viagra_Tablette.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>';header.after(credit);}
 if(product){heroImage.src=product[0];heroImage.alt=product[1];}else window.KraneArticleImage.bind(heroImage,article);
 const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways){
 body.prepend(takeaways);
