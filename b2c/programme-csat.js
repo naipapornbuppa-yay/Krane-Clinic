@@ -30,9 +30,10 @@
    const avatar=node('span',Array.from(r.name)[0],'programme-comment__avatar');avatar.setAttribute('aria-hidden','true');
    const identity=node('div');identity.append(node('strong',r.name));
    const time=node('time',new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(r.date)));time.dateTime=r.date;identity.append(time);meta.append(avatar,identity);
-   const stars=node('div','★'.repeat(r.rating)+'☆'.repeat(5-r.rating),'programme-comment__stars');stars.setAttribute('aria-label',r.rating+' จาก 5 ดาว');article.append(meta,stars);
+   const stars=node('div','★'.repeat(r.rating)+'☆'.repeat(5-r.rating),'programme-comment__stars');stars.setAttribute('aria-label',r.rating+' จาก 5 ดาว');article.append(stars);
    if(typeof r.title==='string')article.append(node('h3',r.title));
    article.append(node('blockquote','“'+r.text+'”'));
+   article.append(meta);
    list.append(article);
   });comments.append(list);
   if(pages>1){
