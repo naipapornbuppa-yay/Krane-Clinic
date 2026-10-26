@@ -2342,8 +2342,8 @@
     } else {
       hero.style.setProperty("--hero-parallax", "0px");
     }
-    // The global consultation action always starts general care.
-    mobileCta.href = 'krane-b2c.html?entry=direct&fresh=1&category=general#intake1';
+    // Let visitors choose their care programme before starting an assessment.
+    mobileCta.href = 'krane-b2c.html?entry=direct&fresh=1#conditions';
     const desktop = window.matchMedia("(min-width: 701px)").matches;
     mobileCta.classList.toggle("is-visible", desktop || window.scrollY > 0);
   }
