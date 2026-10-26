@@ -6,7 +6,8 @@
  const key=({ed:'re-flow','sexual-health':'re-flow','hair-skin':'hair-loss'})[raw]||raw;
  const section=document.createElement('section');section.className='programme-csat';section.setAttribute('aria-labelledby','csat-title');section.dataset.csatEndpoint='csat-demo.json';
  section.innerHTML='<header><h2 id="csat-title">ประสบการณ์เล็ก ๆ<br>ที่ช่วยให้ตัดสินใจง่ายขึ้น</h2><p class="programme-csat__intro">อ่านเรื่องการปรึกษา การติดตาม และความสะดวก<br>จากมุมมองของผู้รับบริการ</p></header><div class="programme-csat__body"></div><p class="programme-csat__status" role="status">กำลังโหลดคะแนน…</p>';
- fit.after(section);
+ const intro=fit.closest('.programme-intro');
+ (intro || fit).after(section);
  const body=section.querySelector('.programme-csat__body'),status=section.querySelector('[role=status]');
  const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
  const comments=node('div','','programme-comments');section.append(comments);
