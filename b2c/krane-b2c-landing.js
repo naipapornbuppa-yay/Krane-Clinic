@@ -2045,7 +2045,7 @@
     body.querySelector('h3').textContent=profile.name.replace(/\s*ว\.$/,'')+(profile.license?' ว. '+profile.license:'');
     body.querySelector('strong').textContent=profile.role;
     const summary=body.querySelector('p');summary.classList.add('expert-card__summary');
-    summary.textContent=profile.specialty+' · '+profile.education;
+    summary.textContent=[profile.bio,profile.specialty,profile.education].filter(Boolean).join(' · ');
     const link=body.querySelector('.expert-card__bio-link');link.firstChild.textContent='อ่านเพิ่มเติม ';
     card.setAttribute('aria-label',profile.name.replace(/\s*ว\.$/,'')+' — อ่านประวัติและความเชี่ยวชาญ');
   });
