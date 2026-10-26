@@ -356,3 +356,6 @@ Read `../design.md` for composition and `public-care.css` for public foundations
 ## Public copy: no prototype labels (23 October 2026)
 
 Do not show “ข้อมูลตัวอย่าง”, “ตัวอย่าง”, sample-data, or prototype-status labels as public UI copy. Keep implementation status in internal documentation. Do not turn invented values into factual claims by removing their label: omit unverified outcome durations and use verified case data when available. Preserve medically meaningful uses such as specimen collection and ordinary words containing the same substring.
+
+## Missing imagery
+Use a neutral labeled placeholder when an image is unavailable. Do not substitute unrelated imagery or invented portraits.
