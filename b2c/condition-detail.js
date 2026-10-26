@@ -116,7 +116,7 @@
     weight: {
       category: "weight",
       tone: "weight",
-      image: "assets/product-hero/weight-care-couple-peach-v11.png",
+      image: "assets/optimized-web/weight-care-couple-peach-v11.webp",
       kicker: "ดูแลน้ำหนักกับแพทย์",
       hook: "ลดน้ำหนักด้วยแผนที่แพทย์ออกให้คุณ",
       lead: "เริ่มจากการประเมินโดยแพทย์ที่มีใบอนุญาต แล้ววางแผนที่ทำต่อได้จริงในชีวิตคุณ",
@@ -145,15 +145,15 @@
       productsTitle: "รูปแบบยาที่แพทย์อาจพิจารณา",
       productsLead: "แพทย์เลือกรูปแบบและขนาดยาจากข้อบ่งใช้ เป้าหมาย และประวัติสุขภาพของคุณ",
       products: [
-          ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png", "pen", "ใช้ต่อเนื่อง"],
-          ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/medicine/weight-diecut-v1/rybelsus-bottles-diecut-v1.png", "oral", "ใช้ต่อเนื่อง"]
+          ["ปากกาฉีด GLP-1", "ฉีดใต้ผิวหนังสัปดาห์ละครั้ง", "เช่น semaglutide หรือ tirzepatide", "assets/optimized-web/wegovy-flex-touch-diecut-v1.webp", "pen", "ใช้ต่อเนื่อง"],
+          ["ยารับประทาน", "ตามข้อบ่งใช้รายบุคคล", "แพทย์พิจารณาเมื่อเหมาะกับสุขภาพและเป้าหมาย", "assets/optimized-web/rybelsus-bottles-diecut-v1.webp", "oral", "ใช้ต่อเนื่อง"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับแผนการดูแลและการติดตามกับแพทย์"
     },
     "re-flow": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/flow-hands-peach-v6.png",
+      image: "assets/optimized-web/flow-hands-peach-v6.webp",
       kicker: "โปรแกรม re:flow",
       hook: "กลับมามั่นใจ ในจังหวะของคุณ",
       lead: "เริ่มจากการประเมินสุขภาพกับแพทย์อย่างเป็นส่วนตัว เพื่อหาสาเหตุและวางแผนการดูแลที่ปลอดภัยสำหรับคุณ",
@@ -183,7 +183,7 @@
       productsLead: "ระยะเวลาออกฤทธิ์และขนาดยาต้องเลือกจากสุขภาพหัวใจและยาที่คุณใช้อยู่",
       products: [
         ["ยากลุ่ม PDE5", "รับประทานก่อนมีกิจกรรม", "เช่น sildenafil หรือ tadalafil เมื่อไม่มีข้อห้ามใช้", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral", "ใช้เมื่อจำเป็น"],
-        ["ขนาดต่ำรายวัน", "สำหรับบางกรณีตามการประเมิน", "แพทย์พิจารณาเมื่อเหมาะกับรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ใช้ต่อเนื่อง"]
+        ["ขนาดต่ำรายวัน", "สำหรับบางกรณีตามการประเมิน", "แพทย์พิจารณาเมื่อเหมาะกับรูปแบบอาการ", "assets/optimized-web/oral-tablet.webp", "oral", "ใช้ต่อเนื่อง"]
       ],
       safety:
         "หากมีอาการเจ็บหน้าอก หายใจไม่ออก อ่อนแรงเฉียบพลัน หรือการแข็งตัวนานเกิน 4 ชั่วโมง ให้ไปห้องฉุกเฉินหรือโทร 1669 ทันที",
@@ -192,7 +192,7 @@
     "sexual-health": {
       category: "sexual-health",
       tone: "ed",
-      image: "assets/product-hero/ed-care-couple-short-sleepwear-bed-pills-v13.png",
+      image: "assets/optimized-web/ed-care-couple-short-sleepwear-bed-pills-v13.webp",
       kicker: "สุขภาพทางเพศแบบเป็นส่วนตัว",
       hook: "เริ่มจากการคุย โดยไม่ถูกตัดสิน",
       lead: "อาการด้านสมรรถภาพ ความต้องการทางเพศ หรือข้อกังวลอื่น ๆ ประเมินออนไลน์กับแพทย์ได้อย่างเป็นส่วนตัว",
@@ -222,14 +222,14 @@
       productsLead: "แพทย์เริ่มจากสาเหตุและความปลอดภัย ก่อนพิจารณายา การตรวจ หรือการส่งต่อ",
       products: [
         ["ยาเมื่อมีข้อบ่งใช้", "เลือกตามอาการและข้อห้ามใช้", "แพทย์ทบทวนยาที่ใช้อยู่ทุกครั้งก่อนสั่งจ่าย", "assets/condition-detail/products-diecut-v1/sexual-capsule.png", "oral", "ใช้เมื่อจำเป็น"],
-        ["การดูแลตามสาเหตุ", "คำแนะนำ การตรวจ และการติดตาม", "บางกรณีไม่ต้องใช้ยาเลย", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"]
+        ["การดูแลตามสาเหตุ", "คำแนะนำ การตรวจ และการติดตาม", "บางกรณีไม่ต้องใช้ยาเลย", "assets/optimized-web/oral-tablet.webp", "oral", "ไม่ใช้ยา"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุและแผนการดูแลของแพทย์"
     },
     "hair-loss": {
       category: "hair-skin",
       tone: "hair",
-      image: "assets/product-hero/hair-asian-man-left-hand-final-v1.png",
+      image: "assets/optimized-web/hair-asian-man-left-hand-final-v1.webp",
       kicker: "ฟื้นฟูเส้นผม",
       hook: "รู้สาเหตุก่อน แล้วผมจะกลับมาถูกทาง",
       lead: "รูปแบบผมร่วง หนังศีรษะ ประวัติครอบครัว และความเครียด ช่วยให้แพทย์เลือกวิธีดูแลได้ตรงจุด",
@@ -259,7 +259,7 @@
       productsLead: "มีทั้งยาทาและยารับประทาน โดยต้องเลือกให้ตรงกับรูปแบบผมร่วงและข้อควรระวัง",
       products: [
         ["ยาทาหนังศีรษะ", "ใช้วันละ 1 ถึง 2 ครั้ง", "เช่น minoxidil ตามรูปแบบอาการ", "assets/condition-detail/products-diecut-v1/hair-pump.png", "topical", "ใช้ต่อเนื่อง"],
-        ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/condition-detail/products-diecut-v1/hair-bottle.png", "oral", "ใช้ต่อเนื่อง"],
+        ["ยารับประทาน", "วันละครั้ง ตามใบสั่งแพทย์", "เช่น finasteride เมื่อแพทย์เห็นว่าเหมาะสม", "assets/optimized-web/hair-bottle.webp", "oral", "ใช้ต่อเนื่อง"],
         ["เซรั่มบำรุงหนังศีรษะ", "ใช้ร่วมกับแผนหลัก", "ช่วยเรื่องความชุ่มชื้นและการระคายเคือง", "assets/condition-detail/products-diecut-v1/hair-dropper.png", "topical", "ใช้เสริม"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุ ระยะเวลา และความต่อเนื่องในการรักษา"
@@ -267,7 +267,7 @@
     skin: {
       category: "skin",
       tone: "skin",
-      image: "assets/treatment-editorial/skin-hands-cream-editorial-v2.png",
+      image: "assets/optimized-web/skin-hands-cream-editorial-v2.webp",
       kicker: "ผิวพรรณ & ชะลอวัย",
       hook: "ผิวที่ดูคล้ายกัน อาจต้องการคนละแผน",
       lead: "สิว รอยดำ ความไวของผิว และริ้วรอยมีหลายปัจจัย แพทย์ประเมินก่อนแนะนำสารออกฤทธิ์ที่เหมาะกับผิวคุณ",
@@ -304,7 +304,7 @@
     hormone: {
       category: "hormone",
       tone: "hormone",
-      image: "assets/treatment-editorial/hormone-hands-consult-editorial-v2.png",
+      image: "assets/optimized-web/hormone-hands-consult-editorial-v2.webp",
       kicker: "ฮอร์โมน & TRT",
       hook: "ก่อนจะเริ่ม TRT ต้องรู้ให้แน่ก่อนว่าใช่",
       lead: "ความเหนื่อยล้า สมรรถภาพลดลง หรือมวลกล้ามเนื้อเปลี่ยน มีได้หลายสาเหตุ การตรวจยืนยันจึงมาก่อนการรักษา",
@@ -334,14 +334,14 @@
       productsLead: "TRT พิจารณาเฉพาะผู้ที่มีอาการและผลตรวจสอดคล้องกัน พร้อมแผนติดตามความปลอดภัย",
       products: [
         ["ฮอร์โมนตามใบสั่งแพทย์", "ใช้เฉพาะเมื่อวินิจฉัยชัดเจน", "พร้อมแผนติดตามผลเลือดเป็นระยะ", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "injection", "ใช้ต่อเนื่อง"],
-        ["การดูแลปัจจัยร่วม", "การนอน น้ำหนัก และยาที่ใช้", "หลายกรณีอาการดีขึ้นโดยไม่ต้องใช้ฮอร์โมน", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"]
+        ["การดูแลปัจจัยร่วม", "การนอน น้ำหนัก และยาที่ใช้", "หลายกรณีอาการดีขึ้นโดยไม่ต้องใช้ฮอร์โมน", "assets/optimized-web/oral-tablet.webp", "oral", "ไม่ใช้ยา"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล และต้องอยู่ภายใต้การติดตามของแพทย์"
     },
     "sleep-stress": {
       category: "sleep-stress",
       tone: "mind",
-      image: "assets/treatment-editorial/sleep-hands-winddown-editorial-v2.png",
+      image: "assets/optimized-web/sleep-hands-winddown-editorial-v2.webp",
       kicker: "การนอนและความเครียด",
       hook: "นอนไม่ดีไม่ใช่เรื่องต้องทน",
       lead: "ปัญหาการนอน สมาธิ และความเครียดมักเชื่อมโยงกัน การประเมินช่วยหาว่าควรปรับพฤติกรรม รักษา หรือส่งต่อ",
@@ -370,7 +370,7 @@
       productsTitle: "รูปแบบการดูแลที่อาจใช้",
       productsLead: "การรักษาเริ่มจากรูปแบบอาการและสาเหตุ ไม่ได้เริ่มจากยานอนหลับเสมอไป",
       products: [
-        ["แผนปรับพฤติกรรมการนอน", "ติดตามเป็นสัปดาห์", "แนวทางแรกที่มีหลักฐานรองรับมากที่สุด", "assets/condition-detail/products-diecut-v1/oral-tablet.png", "oral", "ไม่ใช้ยา"],
+        ["แผนปรับพฤติกรรมการนอน", "ติดตามเป็นสัปดาห์", "แนวทางแรกที่มีหลักฐานรองรับมากที่สุด", "assets/optimized-web/oral-tablet.webp", "oral", "ไม่ใช้ยา"],
         ["ยาเมื่อมีข้อบ่งใช้", "ระยะสั้นภายใต้การดูแล", "แพทย์เลือกเมื่อประเมินความเสี่ยงแล้ว", "assets/condition-detail/products-diecut-v1/hormone-vial.png", "oral", "ระยะสั้น"]
       ],
       resultsNote: "ผลลัพธ์แตกต่างกันในแต่ละบุคคล ขึ้นอยู่กับสาเหตุและความต่อเนื่องของแผน"
@@ -472,8 +472,8 @@
     setText('[data-doctor-quote]',programme.quote);
     const designerId={weight:'3','hair-skin':'2','sexual-health':'5'}[data.category];
     const designer={
-      weight:{name:'อ.นพ. พหล สโรจวิสุทธิ์',specialty:'อายุรศาสตร์ · โภชนศาสตร์คลินิก',image:'assets/doctors/client-20261017/IMG_8554-03.png',initials:'พส'},
-      'hair-skin':{name:'พญ. กรผกา ขันติโกสุม',specialty:'ตจวิทยา (ผิวหนัง)',image:'assets/landing-573/doctors/client-doctor-ploy.png'},
+      weight:{name:'อ.นพ. พหล สโรจวิสุทธิ์',specialty:'อายุรศาสตร์ · โภชนศาสตร์คลินิก',image:'assets/optimized-web/IMG_8554-03.webp',initials:'พส'},
+      'hair-skin':{name:'พญ. กรผกา ขันติโกสุม',specialty:'ตจวิทยา (ผิวหนัง)',image:'assets/optimized-web/client-doctor-ploy.webp'},
       'sexual-health':{name:'นพ. กฤติน สกุลเชี่ยวการ',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',initials:'กส'}
     }[data.category];
     if(designer){
@@ -554,7 +554,7 @@
         const after=isHair?pair:`assets/figma-draft-20260830/results-v1/weight-pair-${i+1}-after-v1.png`;
         return `<article class="cd-review cd-review--story ${isFlow?'cd-review--private':''}">
           <div class="cd-review__story-media" data-review-carousel>
-            <div class="cd-review__frame"><div data-review-slide><video controls playsinline preload="metadata" poster="assets/landing-573/reviews-asian/telehealth-review.png" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video></div>
+            <div class="cd-review__frame"><div data-review-slide><video controls playsinline preload="metadata" poster="assets/optimized-web/telehealth-review.webp" aria-label="วิดีโอตัวอย่างการดูแล ${i+1}"><source src="assets/landing/smiling-man-office.mp4" type="video/mp4"></video></div>
             ${isFlow?'':`<figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--before':''}"><img src="${before}" alt="ภาพตัวอย่างก่อนเริ่มดูแล" loading="lazy"><figcaption>ก่อน</figcaption></figure><figure data-review-slide hidden class="${isHair?'cd-review__diptych cd-review__diptych--after':''}"><img src="${after}" alt="ภาพตัวอย่างหลังติดตาม" loading="lazy"><figcaption>หลังติดตาม</figcaption></figure>`}</div>
             ${isFlow?'':`<div class="cd-review__controls" aria-label="เลือกสื่อรีวิว"><div class="cd-review__dots"><button type="button" data-review-select="0" aria-pressed="true" aria-label="วิดีโอ"></button><button type="button" data-review-select="1" aria-pressed="false" aria-label="ภาพก่อน"></button><button type="button" data-review-select="2" aria-pressed="false" aria-label="ภาพหลัง"></button></div><button type="button" data-review-pause aria-pressed="false" aria-label="หยุดสลับสื่ออัตโนมัติ"><span aria-hidden="true">Ⅱ</span></button></div>`}
           </div>
@@ -593,7 +593,7 @@
   hero?.setAttribute("data-tone", data.tone);
   document.querySelector("main")?.setAttribute("data-tone", data.tone);
   const image = document.querySelector("[data-hero-image]");
-  if (image) image.src = data.image;
+  if (image) { image.loading="eager"; image.decoding="async"; image.fetchPriority="high"; image.src = data.image; }
   const imageAlt = document.querySelector("[data-hero-image-alt]");
   const hasAlternateHero = Boolean(imageAlt && data.imageAlt);
   if (imageAlt) {
