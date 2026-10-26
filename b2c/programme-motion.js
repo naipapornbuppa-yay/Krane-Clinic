@@ -29,3 +29,5 @@
  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync()},{threshold:.25}).observe(chart);
  reduced.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);window.addEventListener('pagehide',stop,{once:true});sync();
 })();
+
+(()=>{const section=document.querySelector('.programme-focus--hair');if(!section)return;let visible=false;const sync=()=>section.classList.toggle('is-hair-visible',visible&&!document.hidden);new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync()},{threshold:.15}).observe(section);document.addEventListener('visibilitychange',sync)})();
