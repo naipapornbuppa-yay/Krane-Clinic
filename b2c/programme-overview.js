@@ -29,8 +29,7 @@ window.KraneProgrammeOverview = data => {
   document.querySelector('#cd-tab-overview').after(reviewTab);
 
   document.querySelector('[data-lead]').textContent = isWeight ? 'ดูแลน้ำหนักกับแพทย์ออนไลน์' : data.category === 'hair-skin' ? 'ดูแลผมร่วงกับแพทย์ออนไลน์' : 'ปรึกษาสุขภาพทางเพศอย่างเป็นส่วนตัว';
-  const heroAction = document.querySelector('.condition-hero__actions [data-intake-link]');
-  heroAction.firstChild.textContent = 'เริ่มปรึกษาฟรี ';
+
   const intro = overview.querySelector('.cd-card');
   const copy = document.createElement('div');copy.className = 'programme-intro__copy';
   const heading = document.createElement('h2');heading.className = 'cd-h2';heading.dataset.overviewTitle = '';heading.textContent = intro.querySelector('[data-overview-title]').textContent;
@@ -39,9 +38,9 @@ window.KraneProgrammeOverview = data => {
   copy.append(heading, paragraph);
   const points = document.createElement('ul');points.className = 'programme-intro__points';
   const pointData = isWeight ? [
-    ['clipboard-check', 'ประเมินก่อนเริ่ม', 'ดูสุขภาพโดยรวมและเป้าหมายของคุณ'],
-    ['leaf', 'กินและขยับอย่างพอดี', 'วางแผนการกินและออกกำลังกายให้เข้ากับชีวิต'],
-    ['calendar-check', 'ติดตามกับคุณหมอ', 'ทบทวนผลและปรับแผนตามความเหมาะสม']
+    ['clipboard-check', 'แพทย์ประเมินสุขภาพก่อนเริ่มแผน', 'ดูสุขภาพโดยรวมและเป้าหมายของคุณ'],
+    ['leaf', 'วางแผนอาหารและการเคลื่อนไหวให้เข้ากับชีวิต', 'วางแผนการกินและออกกำลังกายให้เข้ากับชีวิต'],
+    ['calendar-check', 'ติดตามผลและปรับแผนร่วมกับแพทย์', 'ทบทวนผลและปรับแผนตามความเหมาะสม']
   ] : Array.from(overview.querySelectorAll('.cd-feature')).map(item => [item.querySelector('[data-lucide]')?.dataset.lucide || 'check', item.textContent.trim()]);
   points.innerHTML = pointData.map(([icon,title,text]) => `<li><i data-lucide="${icon}" aria-hidden="true"></i><div><strong>${title}</strong></div></li>`).join('');
   copy.append(points);
