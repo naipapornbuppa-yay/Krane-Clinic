@@ -8,6 +8,14 @@
  section.innerHTML='<header><h2 id="csat-title">ประสบการณ์เล็ก ๆ<br>ที่ช่วยให้ตัดสินใจง่ายขึ้น</h2><p class="programme-csat__intro">อ่านเรื่องการปรึกษา การติดตาม และความสะดวก<br>จากมุมมองของผู้รับบริการ</p></header><div class="programme-csat__body"></div><p class="programme-csat__status" role="status">กำลังโหลดคะแนน…</p>';
  const intro=fit.closest('.programme-intro');
  (intro || fit).after(section);
+ // The review tab now targets the comments section; remove the duplicate video rail.
+ const removeVideoReviews=()=>{
+   const old=document.querySelector('.cd-reviews#reviews');
+   if(old){old.querySelectorAll('video').forEach(video=>video.pause());old.remove();}
+   section.id='reviews';section.dataset.cdPanel='reviews';
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeVideoReviews,{once:true});else removeVideoReviews();
+
  const body=section.querySelector('.programme-csat__body'),status=section.querySelector('[role=status]');
  const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
  const comments=node('div','','programme-comments');section.append(comments);
