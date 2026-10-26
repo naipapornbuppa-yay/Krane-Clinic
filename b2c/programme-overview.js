@@ -64,6 +64,8 @@ window.KraneProgrammeOverview = data => {
   fit.parentElement.classList.add('programme-fit');
   const fitIcon = document.createElement('i');fitIcon.dataset.lucide = 'lightbulb';fitIcon.setAttribute('aria-hidden','true');fit.parentElement.querySelector('h3').prepend(fitIcon);
 
+  copy.insertBefore(fit.parentElement, designer && designer.parentElement === copy ? designer : null);
+
   // Care phases give context; the practical five-step guide stays available.
   const guide = steps.querySelector('.cd-card');
   const detail = document.createElement('details');detail.className = 'programme-start-guide';
