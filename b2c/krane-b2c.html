@@ -7967,6 +7967,8 @@
     const thai = document.documentElement.lang === 'th';
     const list = document.querySelector('[data-condition-list]');
     if(!list) return;
+    const categories=document.querySelector('[data-category-list]');
+    if(categories) categories.hidden=conditionListRevealed && !cat.general;
     list.className = 'choice-list';
     if(cat.general || !conditionListRevealed){
       list.innerHTML = '';
@@ -12004,8 +12006,17 @@
         show(choices[0] ? (choices[0].next || 'intake1') : 'intake1');
         return;
       }
+      if(catCard.dataset.go !== 'conditions'){
+        conditionListRevealed=false;
+        renderConditionList();
+        show(catCard.dataset.go || 'intake1');
+        return;
+      }
       conditionListRevealed = true;
       renderConditionList();
+      document.querySelector('#conditions .screen__body')?.scrollTo(0,0);
+      document.querySelector('[data-condition-card]:not([disabled])')?.focus({preventScroll:true});
+      return;
     }
     const conditionCard = e.target.closest('[data-condition-card]');
     if(conditionCard) selectedConditionId = conditionCard.dataset.conditionId;
@@ -12422,6 +12433,12 @@
     const back = e.target.closest('[data-back]');
     if(back){
       const backScreen=back.closest('.screen');
+      if(backScreen?.id==='conditions' && conditionListRevealed){
+        conditionListRevealed=false;
+        renderConditionList();
+        document.querySelector(`[data-category-id="${selectedCategoryId}"]`)?.focus({preventScroll:true});
+        return;
+      }
       if(backScreen && retreatIntakeQuestionPage(backScreen)) return;
       /* The form is a step inside the address page, so back leaves the form
          rather than the page — unless there is no list to go back to. */
