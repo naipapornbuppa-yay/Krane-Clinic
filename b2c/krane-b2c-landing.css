@@ -8972,7 +8972,7 @@ html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:cl
    alignment system. The two compact cards fill equal grid rows, and their
    labels, actions and pagers stay fixed while only the artwork cross-fades. */
 .landing-figma-draft .care-banner-grid--auto-products{
-  grid-template-rows:repeat(2,minmax(0,1fr));
+  grid-template-rows:1fr;
   align-items:stretch;
 }
 .landing-figma-draft .care-banner-grid--auto-products .care-banner-grid__sub{
@@ -9901,7 +9901,7 @@ html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:cl
  .landing-figma-draft :is(.weight-engagement--stories,.program-review-engagement){margin-top:32px;grid-template-columns:minmax(0,1fr)}
  .landing-figma-draft .program-review-gallery{height:650px;min-height:0;padding:0;border-radius:32px}
  .landing-figma-draft .program-review-gallery .weight-testimonials__viewport{border-radius:24px}
- .landing-figma-draft .weight-story-gallery__photos{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr))}
+ .landing-figma-draft .weight-story-gallery__photos{grid-template-columns:1fr;grid-template-rows:1fr}
  .weight-story-gallery__video-copy{bottom:88px;left:20px;right:20px}
  .landing-figma-draft .weight-story-gallery__video-copy p{font-size:25px}
 }
@@ -10008,9 +10008,9 @@ html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:cl
 .landing-figma-draft .program-section .weight-quick h3{font-size:22px}
 .landing-figma-draft .program-section .weight-quick__options{margin-top:16px;gap:8px}
 .landing-figma-draft .program-section .story-blocks{display:block;padding:0;background:transparent;overflow:visible;box-shadow:none}
-.story-blocks__panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:auto minmax(240px,1fr);gap:16px;min-height:480px}
+.story-blocks__panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:1fr;gap:16px;min-height:480px}
 .story-blocks__panel[hidden]{display:none}
-.story-blocks__video{grid-row:1 / span 2;border-radius:24px;overflow:hidden;min-width:0;background:rgba(0,0,0,.12)}
+.story-blocks__video{position:relative;grid-row:1;border-radius:24px;overflow:hidden;min-width:0;background:rgba(0,0,0,.12)}
 .story-blocks__video video{display:block;width:100%;height:100%;max-height:530px;object-fit:cover}
 .story-blocks__quote{position:relative;isolation:isolate;margin:0;padding:26px;background:rgba(0,0,0,.12);border-radius:24px;color:white;font-size:clamp(18px,1.6vw,24px);line-height:1.5;align-self:stretch}
 .story-blocks__quote cite{display:block;font-size:13px;font-style:normal;margin-top:16px;opacity:.8}
@@ -10019,13 +10019,22 @@ html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:cl
 .story-blocks__photos img{width:100%;height:100%;object-fit:cover;display:block}
 .story-blocks__photos figcaption{position:absolute;top:12px;left:10px;padding:5px 9px;border-radius:6px;background:white;color:#1a1e28;font-size:12px}
 .story-blocks__photos--single-after figure:nth-child(2) img{width:200%;max-width:none;transform:translateX(-50%);object-fit:fill}
+/* Interview text sits over a bottom fade, with compact playback controls. */
+.story-blocks__video::after{content:"";position:absolute;inset:25% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.45) 45%,rgba(0,0,0,.9));pointer-events:none}
+.story-blocks__video .story-blocks__quote{position:absolute;inset:auto 0 0;z-index:1;padding:24px;background:transparent;border-radius:0;font-size:clamp(17px,1.45vw,22px);line-height:1.5}
+.story-blocks__video .story-blocks__quote::before{display:none}
+.story-blocks__video .story-blocks__quote cite{opacity:1;margin-top:14px}
+.story-blocks__sound,.story-blocks__play{position:absolute;top:14px;z-index:2;min-height:44px;border:0;background:rgba(0,0,0,.5);color:#fff;cursor:pointer}
+.story-blocks__sound{left:14px;border-radius:99px;padding:8px 14px;font:inherit;font-size:12px}
+.story-blocks__play{right:14px;width:44px;border-radius:50%;font-size:18px}
+.story-blocks__video button:focus-visible{outline:2px solid white;outline-offset:3px}
 .story-blocks__people{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px auto 0;padding:10px 16px;width:fit-content;max-width:100%;box-sizing:border-box;border-radius:24px;background:rgba(0,0,0,.1)}
 .story-blocks__people button{padding:8px 14px;border:1px solid rgba(255,255,255,.35);border-radius:99px;background:transparent;color:white;font:inherit;font-size:12px;cursor:pointer}
 .story-blocks__people button[aria-pressed=true]{background:white;color:#1a1e28}
 .story-blocks__people button:focus-visible{outline:2px solid white;outline-offset:3px}
 .story-blocks__panel--no-photos{grid-template-rows:1fr}.story-blocks__panel--no-photos .story-blocks__video{grid-row:1}.story-blocks__panel--no-photos .story-blocks__quote{align-content:center}
 @media(max-width:1000px) and (min-width:761px){.landing-figma-draft .program-section{grid-template-columns:minmax(220px,.75fr) minmax(0,1.3fr);gap:24px;padding:32px}.story-blocks__panel{grid-template-columns:1fr 1fr;min-height:440px}.story-blocks__quote{padding:18px;font-size:18px}}
-@media(max-width:760px){.story-blocks__panel{min-height:0;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:12px}.story-blocks__video{grid-row:1;height:280px}.story-blocks__quote{padding:18px;font-size:17px}.story-blocks__photos{grid-column:1 / -1;height:260px;min-height:0}.story-blocks__panel--no-photos .story-blocks__video{height:320px}}
+@media(max-width:760px){.story-blocks__panel{min-height:0;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:12px}.story-blocks__video{grid-column:1 / -1;grid-row:1;height:440px}.story-blocks__quote{padding:18px;font-size:17px}.story-blocks__photos{grid-column:1 / -1;height:260px;min-height:0}.story-blocks__panel--no-photos .story-blocks__video{height:440px}}
 
 .story-blocks__quote .story-blocks__people{margin-top:20px;gap:6px}.story-blocks__quote .story-blocks__people button{padding:7px 10px;font-size:12px}
 
@@ -10034,7 +10043,7 @@ html[lang="en"] .landing-figma-draft .reviews--figma #reviews-title{font-size:cl
 
 /* Split the quote and comparison into equal desktop rows. */
 @media(min-width:761px){
- .story-blocks__panel:not(.story-blocks__panel--no-photos){grid-template-rows:repeat(2,minmax(0,1fr))}
+ .story-blocks__panel:not(.story-blocks__panel--no-photos){grid-template-rows:1fr}
  .story-blocks__panel:not(.story-blocks__panel--no-photos) .story-blocks__quote{align-content:center}
  .story-blocks__photos{min-height:0}
  .story-blocks__photos img{position:absolute;inset:0}
