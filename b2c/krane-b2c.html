@@ -80,6 +80,7 @@
   /* prototype chrome only (not part of the product) */
   html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
   html::-webkit-scrollbar{display:none}
+  @media(max-width:760px){html[data-landing-canvas="true"]{background:#5871B5}}
   /* Keep the document canvas on the app surface so translucent browser chrome
      at the bottom stays light. The landing notch is painted separately below. */
   body{width:100vw;max-width:none;height:100%;overflow:hidden;background:var(--surface-page)}
@@ -7942,7 +7943,7 @@
        bottom toolbar. The landing-only body gradient and safe-area overlay
        keep the notch blue without tinting the browser controls below. */
     document.documentElement.dataset.landingCanvas=String(id==='landing');
-    document.documentElement.style.backgroundColor=THEME_COLOR_APP;
+    document.documentElement.style.backgroundColor=id==='landing' && matchMedia('(max-width:760px)').matches ? THEME_COLOR_LANDING : THEME_COLOR_APP;
     document.body.style.backgroundColor=THEME_COLOR_APP;
   }
   function resetLandingViewport(){
