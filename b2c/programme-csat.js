@@ -10,19 +10,22 @@
  const body=section.querySelector('.programme-csat__body'),status=section.querySelector('[role=status]');
  const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
  const comments=node('div','','programme-comments');section.append(comments);
- let reviews=[],selected=0,sort="newest";
+ let reviews=[],selected=0,sort="newest",page=1;
+ const PAGE_SIZE=3;
  function renderComments(){
   comments.replaceChildren();if(!reviews.length)return;
   const toolbar=node('div','','programme-comments__toolbar');toolbar.append(node('h3','ความคิดเห็น'));
   const label=node('label','เรียงตาม '),select=document.createElement('select');
   [['newest','ล่าสุด'],['highest','คะแนนสูงสุด'],['lowest','คะแนนต่ำสุด']].forEach(([value,text])=>{const option=node('option',text);option.value=value;select.append(option)});
-  select.value=sort;select.addEventListener('change',()=>{sort=select.value;renderComments();comments.querySelector('select').focus()});label.append(select);toolbar.append(label);comments.append(toolbar);
+  select.value=sort;select.addEventListener('change',()=>{sort=select.value;page=1;renderComments();comments.querySelector('select').focus()});label.append(select);toolbar.append(label);comments.append(toolbar);
   const filters=node('div','','programme-comments__filters');filters.setAttribute('aria-label','กรองคะแนนความคิดเห็น');
-  [0,5,4,3,2,1].forEach(rating=>{const button=node('button',rating?rating+' ★':'ทั้งหมด');button.type='button';button.setAttribute('aria-pressed',String(selected===rating));button.addEventListener('click',()=>{selected=rating;renderComments();comments.querySelector('[aria-pressed="true"]').focus()});filters.append(button)});comments.append(filters);
+  [0,5,4,3,2,1].forEach(rating=>{const button=node('button',rating?rating+' ★':'ทั้งหมด');button.type='button';button.setAttribute('aria-pressed',String(selected===rating));button.addEventListener('click',()=>{selected=rating;page=1;renderComments();comments.querySelector('[aria-pressed="true"]').focus()});filters.append(button)});comments.append(filters);
   const list=node('div','','programme-comments__list');list.setAttribute('aria-live','polite');
   const visible=reviews.filter(r=>!selected||r.rating===selected).sort((a,b)=>sort==='newest'?b.date.localeCompare(a.date):sort==='highest'?b.rating-a.rating:a.rating-b.rating);
   if(!visible.length)list.append(node('p','ยังไม่มีความคิดเห็นในคะแนนนี้','programme-comments__empty'));
-  visible.forEach(r=>{
+  const pages=Math.max(1,Math.ceil(visible.length/PAGE_SIZE));
+  page=Math.min(page,pages);
+  visible.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE).forEach(r=>{
    const article=node('article','','programme-comment'),meta=node('div','','programme-comment__meta');
    const avatar=node('span',Array.from(r.name)[0],'programme-comment__avatar');avatar.setAttribute('aria-hidden','true');
    const identity=node('div');identity.append(node('strong',r.name));
@@ -32,6 +35,14 @@
    article.append(node('blockquote','“'+r.text+'”'));
    list.append(article);
   });comments.append(list);
+  if(pages>1){
+   const pagination=node('nav','','programme-comments__pagination');pagination.setAttribute('aria-label','หน้าความคิดเห็น');
+   const changePage=(next)=>{page=next;renderComments();const controls=comments.querySelector('.programme-comments__pagination');controls?.querySelector('button:not([disabled])')?.focus({preventScroll:true});comments.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});};
+   const previous=node('button','ก่อนหน้า');previous.type='button';previous.disabled=page===1;previous.addEventListener('click',()=>changePage(page-1));
+   const count=node('span',`หน้า ${page} / ${pages}`);count.setAttribute('role','status');
+   const next=node('button','ถัดไป');next.type='button';next.disabled=page===pages;next.addEventListener('click',()=>changePage(page+1));
+   pagination.append(previous,count,next);comments.append(pagination);
+  }
  }
  let pending=false;
  async function refresh(){
