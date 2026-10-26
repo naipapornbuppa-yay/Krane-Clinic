@@ -34,13 +34,14 @@
     if(profile.image){const image=document.createElement("img");image.src=profile.image;image.alt=profile.name;image.width=profile.w||674;image.height=profile.h||1200;media.replaceChildren(image);media.classList.remove("doctor-profile-dialog__media--identity");return;}
     const identity=document.createElement("span");identity.className="doctor-profile-dialog__identity";const initials=document.createElement("b");initials.textContent=profile.initials;const label=document.createElement("small");label.textContent=profile.specialty;identity.append(initials,label);media.replaceChildren(identity);media.classList.add("doctor-profile-dialog__media--identity");
   }
-  function openProfile(trigger){if(!dialog||typeof dialog.showModal!=="function")return;const profile=profiles[trigger.dataset.doctorId];if(!profile)return;returnFocus=trigger;renderMedia(profile);name.textContent=profile.name;role.textContent=profile.role;bio.textContent=profile.bio;specialty.textContent=profile.specialty;education.textContent=profile.education;education.closest('div').style.display=profile.education?'':'none';bio.style.display=profile.bio?'':'none';document.body.classList.add("doctor-dialog-open");dialog.showModal();requestAnimationFrame(()=>closeButton?.focus());}
+  function openProfile(trigger){if(!dialog||typeof dialog.showModal!=="function")return;const profile=profiles[trigger.dataset.doctorId];if(!profile)return;returnFocus=trigger;renderMedia(profile);name.textContent=profile.name;role.textContent=profile.role;bio.textContent=profile.bio;specialty.textContent=profile.specialty;education.textContent=profile.education;education.closest('div').style.display=profile.education?'':'none';bio.style.display=profile.bio?'':'none';document.body.classList.add("doctor-dialog-open");dialog.classList.add("is-opening");dialog.showModal();requestAnimationFrame(()=>closeButton?.focus());}
   document.querySelectorAll("[data-doctor-open]").forEach((trigger)=>{trigger.addEventListener("click",(event)=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(!dialog||typeof dialog.showModal!=="function")return;event.preventDefault();openProfile(trigger);});});
   const requestedDoctor=new URLSearchParams(location.search).get('doctor');
   if(requestedDoctor && Object.hasOwn(profiles,requestedDoctor)){
     const trigger=[...document.querySelectorAll('[data-doctor-open]')].find(item=>item.dataset.doctorId===requestedDoctor) || {dataset:{doctorId:requestedDoctor},focus:()=>document.querySelector('.public-back')?.focus()};
     openProfile(trigger);
   }
+  dialog?.addEventListener("animationend",()=>dialog.classList.remove("is-opening"));
   closeButton?.addEventListener("click",()=>dialog?.close());
   dialog?.addEventListener("click",(event)=>{if(event.target===dialog)dialog.close();});
   dialog?.addEventListener("close",()=>{document.body.classList.remove("doctor-dialog-open");resetDrag();returnFocus?.focus();});
@@ -52,7 +53,7 @@
   function resetDrag(){
     dragId=null;dx=0;axis="";
     if(!dialog) return;
-    dialog.classList.remove("is-dragging","is-settling","is-dismissing");
+    dialog.classList.remove("is-opening","is-dragging","is-settling","is-dismissing");
     dialog.style.transform="";
   }
   function settle(){
@@ -86,7 +87,9 @@
       if(Math.abs(moveX)<8 && Math.abs(moveY)<8) return;
       axis=Math.abs(moveX)>Math.abs(moveY)*1.3 ? "x" : "y";
       if(axis==="y"){dragId=null;return;}
+      dialog.classList.remove("is-opening");
       dialog.classList.add("is-dragging");
+      dialog.setPointerCapture?.(event.pointerId);
     }
     dx=Math.max(0,moveX);
     dialog.style.transform="translateX("+dx+"px)";
@@ -95,6 +98,7 @@
     dialog?.addEventListener(type,(event)=>{
       if(event.pointerId!==dragId) return;
       if(axis!=="x"){dragId=null;axis="";return;}
+      if(type==="pointercancel")dx=0;
       settle();
     });
   });

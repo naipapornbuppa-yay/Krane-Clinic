@@ -78,8 +78,8 @@ body.public-care-page .detail-page{max-width:1440px;margin:auto;padding:24px var
  .doctors-index-page .doctors-closing .public-action{justify-content:center;white-space:normal}
  .doctors-index-page .doctors-closing .public-back{align-self:center}
 }
-/* Profile preview follows the app's dialog/bottom-sheet convention. */
-.public-care-page dialog.doctor-profile-dialog{inset:0;margin:0 0 0 auto;width:min(560px,calc(100% - 32px));height:100dvh;max-height:100dvh;border:0;border-radius:32px 0 0 32px;background:var(--public-surface);color:var(--public-text);overflow-y:auto;transform:none}
+/* Profile preview opens as a right-hand drawer. */
+.public-care-page dialog.doctor-profile-dialog{inset:0;margin:0 0 0 auto;width:min(560px,calc(100% - 32px));height:100dvh;max-height:100dvh;border:0;border-radius:32px 0 0 32px;background:var(--public-surface);color:var(--public-text);overflow-y:auto;transform:none;touch-action:pan-y;overscroll-behavior:contain}
 .public-care-page .doctor-profile-dialog__panel{display:block;min-height:0;background:transparent}
 .public-care-page .doctor-profile-dialog__media{height:260px;min-height:0;background:var(--public-care-tint)}
 .public-care-page .doctor-profile-dialog__media img{object-fit:contain;object-position:center bottom}
@@ -114,10 +114,10 @@ body.public-care-page .detail-page{max-width:1440px;margin:auto;padding:24px var
   .doctors-index-page .doctor-work__story:nth-child(even) .doctor-work__media,.doctors-index-page .doctor-work__story:nth-child(even) .doctor-work__copy{order:initial}
   .doctors-index-page .doctors-articles__row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:max(300px,var(--care-doctor-width));overflow-x:auto;scroll-snap-type:x proximity}
   .doctors-index-page .article-card{scroll-snap-align:start}
-  .public-care-page dialog.doctor-profile-dialog{inset:auto 0 0;margin:0;width:100%;height:auto;max-height:92dvh;border-radius:28px 28px 0 0}
+  .public-care-page dialog.doctor-profile-dialog{inset:0;margin:0 0 0 auto;width:100%;height:100dvh;max-height:100dvh;border-radius:0}
   .public-care-page .doctor-profile-dialog__media{height:240px;min-height:0}
   .public-care-page .doctor-profile-dialog__content{padding:24px}
-  .public-care-page .doctor-profile-dialog__grab{display:block;position:absolute;top:10px;left:calc(50% - 20px);width:40px;height:4px;background:var(--color-line);border-radius:4px;z-index:3}
+  .public-care-page .doctor-profile-dialog__grab{display:none}
 }
 /* Full profile keeps the same calm care plate and restrained heading scale. */
 body.doctor-detail-page.public-care-page .detail-hero{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:48px;padding:48px;border:0;border-radius:var(--public-section-radius);background:var(--public-care-tint);color:var(--public-text)}
@@ -162,3 +162,7 @@ body.doctor-detail-page.public-care-page .doctor-work__copy p,body.doctor-detail
 .doctors-index-page .doctor-directory-card:is([data-doctor-id="3"],[data-doctor-id="4"]) .doctor-directory-card__media>img{transform:scale(1.45);transform-origin:center top;padding-top:12px}
 
 .doctor-directory-card__body>em svg,.article-card__read svg{flex:none;width:16px;height:16px;vertical-align:middle}
+
+.public-care-page dialog.doctor-profile-dialog.is-dismissing{transform:translateX(100%)}
+
+@media(prefers-reduced-motion:no-preference){.public-care-page dialog.doctor-profile-dialog[open].is-opening{animation:doctor-dialog-enter .28s cubic-bezier(.2,.8,.2,1)}}
