@@ -2,9 +2,9 @@
 (()=>{
  const data=window.KraneReviews||[],reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const attribution=item=>[item.name,item.age?`${item.age} ปี`:null,item.occupation].filter(Boolean).join(' · ');
+ const attribution=item=>[item.category==='re-flow'?'คุณ '+(item.name||'').replace(/^คุณ\s*/,'').slice(0,1)+'.':item.name,item.age?`${item.age} ปี`:null,item.province].filter(Boolean).join(' · ');
  document.querySelectorAll('.weight-story-gallery__video-copy,.review-video__copy').forEach(e=>e.remove());
- document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id],.story-blocks__panel[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite&&!cite.textContent.includes(" · "))cite.textContent=attribution(item)});
+ document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id],.story-blocks__panel[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite)cite.textContent=attribution(item)});
  document.querySelectorAll('.weight-story-gallery__photos figcaption,.review-video__photos figcaption,.review-video--comparison>.cd-fine').forEach(e=>e.remove());
  // Group each person's initial video, quotation and matching photos together.
  document.querySelectorAll('.review-marquee__set').forEach(set=>{
