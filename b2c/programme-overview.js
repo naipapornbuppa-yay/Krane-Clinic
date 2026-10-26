@@ -5,7 +5,11 @@ window.KraneProgrammeOverview = data => {
   const actions = heroCopy.querySelector('.condition-hero__actions');
   const facts = document.createElement('ul');
   facts.className = 'programme-hero-facts';
-  facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li>';
+  facts.innerHTML = Array.from(document.querySelectorAll('#cd-panel-overview .cd-feature')).map(item => {
+    const row=document.createElement('li');
+    const icon=document.createElement('i');icon.dataset.lucide=item.querySelector('[data-lucide]')?.dataset.lucide || 'check';icon.setAttribute('aria-hidden','true');
+    const text=document.createElement('span');text.textContent=item.textContent.trim();row.append(icon,text);return row.outerHTML;
+  }).join('');
   heroCopy.append(facts);
   if(actions) heroCopy.append(actions);
   if (!['weight','hair-skin','sexual-health'].includes(data.category)) return;
