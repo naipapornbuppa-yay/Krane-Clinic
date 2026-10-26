@@ -47,7 +47,11 @@ window.KraneProgrammeOverview = data => {
     ['calendar-check', 'ติดตามผลและปรับแผนร่วมกับแพทย์', 'ทบทวนผลและปรับแผนตามความเหมาะสม']
   ] : Array.from(overview.querySelectorAll('.cd-feature')).map(item => [item.querySelector('[data-lucide]')?.dataset.lucide || 'check', item.textContent.trim()]);
   points.innerHTML = pointData.map(([icon,title,text]) => `<li><i data-lucide="${icon}" aria-hidden="true"></i><div><strong>${title}</strong></div></li>`).join('');
-  copy.append(points);
+  if (isWeight) {
+    facts.innerHTML=pointData.map(([icon,title],index)=>`<li style="--point-delay:${index*180}ms"><i data-lucide="${icon}" aria-hidden="true"></i><span>${title}</span></li>`).join('');
+    facts.classList.add('programme-selling-points');
+    new IntersectionObserver(entries=>{facts.classList.toggle('is-visible',entries[0].isIntersecting)},{threshold:.2}).observe(facts);
+  } else copy.append(points);
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
   media.innerHTML = '<video controls autoplay loop playsinline muted preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
@@ -60,7 +64,7 @@ window.KraneProgrammeOverview = data => {
     else interview.pause();
   }, {threshold: .25}).observe(interview);
   const designer = document.querySelector('.programme-designer');
-  if (designer) copy.append(designer);
+  if (designer) doctor.append(designer);
   intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);
   overview.querySelector('.cd-feature-grid').remove();
   const fit = overview.querySelector('[data-fit-list]');
