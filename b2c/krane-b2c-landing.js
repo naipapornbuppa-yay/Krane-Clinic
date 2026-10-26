@@ -2039,6 +2039,16 @@
     }
   };
   Object.entries(window.KraneDoctorSource||{}).forEach(([id,record])=>{expertProfiles[id]={...expertProfiles[id],...record,education:[record.education,...record.training].join(" · "),bio:record.bio+" ปัจจุบัน: "+record.workplaces.join(" · ")};});
+  document.querySelectorAll('.expert-card[data-doctor-id]').forEach(card=>{
+    const profile=expertProfiles[card.dataset.doctorId];if(!profile)return;
+    const body=card.querySelector('.expert-card__body');
+    body.querySelector('h3').textContent=profile.name.replace(/\s*ว\.$/,'')+(profile.license?' ว. '+profile.license:'');
+    body.querySelector('strong').textContent=profile.role;
+    const summary=body.querySelector('p');summary.classList.add('expert-card__summary');
+    summary.textContent=profile.specialty+' · '+profile.education;
+    const link=body.querySelector('.expert-card__bio-link');link.firstChild.textContent='อ่านเพิ่มเติม ';
+    card.setAttribute('aria-label',profile.name.replace(/\s*ว\.$/,'')+' — อ่านประวัติและความเชี่ยวชาญ');
+  });
   const expertDialog = document.querySelector("[data-expert-dialog]");
   const expertDialogClose = document.querySelector("[data-expert-close]");
   const expertDialogMedia = document.querySelector("[data-expert-dialog-media]");
