@@ -23,7 +23,7 @@ document.querySelectorAll('[data-interview-reviews]').forEach(section=>{
  if(g.quote){if(privateReview){const cite=g.quote.querySelector('cite');if(cite)cite.textContent='คุณ ต. · 35 ปี';}g.quote.className='story-blocks__quote';(g.video?panel.querySelector('.story-blocks__video'):panel).append(g.quote);}
  if(g.photos){g.photos.className='story-blocks__photos';if(g.id==='hair-pha')g.photos.classList.add('story-blocks__photos--single-after');panel.append(g.photos);}
  const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','ดูเคสที่ '+(i+1));button.addEventListener('click',()=>{active=i;sync()});g.panel=panel;g.button=button;panels.append(panel);tabs.append(button);
- });section.append(panels);if(privateReview){const packaging=section.closest('#ed-program')?.querySelector('.care-packaging-placeholder');if(packaging)section.append(packaging);}const programme=section.closest('.program-section');const legal=programme?.querySelector('.program-section__legal');
+ });section.append(panels);if(privateReview){const packaging=section.closest('#ed-program')?.querySelector('.care-packaging-placeholder');if(packaging)section.closest("#ed-program").append(packaging);}const programme=section.closest('.program-section');const legal=programme?.querySelector('.program-section__legal');
  if(legal){const footer=document.createElement('div');footer.className='story-blocks__footer';legal.before(footer);footer.append(legal);if(groups.length>1)footer.append(tabs)}
  const mobile=matchMedia('(max-width:760px)');
  const placeDots=()=>{if(groups.length<2)return;if(mobile.matches)section.append(tabs);else programme?.querySelector('.story-blocks__footer')?.append(tabs)};
