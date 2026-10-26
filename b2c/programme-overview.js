@@ -6,7 +6,8 @@ window.KraneProgrammeOverview = data => {
   const facts = document.createElement('ul');
   facts.className = 'programme-hero-facts';
   facts.innerHTML = '<li><i data-lucide="video" aria-hidden="true"></i>ปรึกษาออนไลน์</li><li><i data-lucide="shield-check" aria-hidden="true"></i>ประเมินโดยแพทย์</li><li><i data-lucide="package-check" aria-hidden="true"></i>จัดยาโดย Fascino</li>';
-  heroCopy.append(facts, actions);
+  heroCopy.append(facts);
+  if(actions) heroCopy.append(actions);
   if (!['weight','hair-skin','sexual-health'].includes(data.category)) return;
   const isWeight = data.category === 'weight';
   const main = document.querySelector('main');
