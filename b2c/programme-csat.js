@@ -13,6 +13,15 @@
    const old=document.querySelector('.cd-reviews#reviews');
    if(old){old.querySelectorAll('video').forEach(video=>video.pause());old.remove();}
    section.id='reviews';section.dataset.cdPanel='reviews';
+   const tab=document.querySelector('#cd-tab-reviews');
+   tab?.addEventListener('click',event=>{
+     event.preventDefault();event.stopImmediatePropagation();
+     const nav=document.querySelector('.cd-tabs');
+     const offset=(parseFloat(getComputedStyle(nav).top)||90)+nav.getBoundingClientRect().height+16;
+     section.style.scrollMarginTop=offset+'px';
+     window.scrollTo({top:window.scrollY+section.getBoundingClientRect().top-offset,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+     document.querySelectorAll('[data-cd-tab]').forEach(button=>{const active=button===tab;button.classList.toggle('is-active',active);button.setAttribute('aria-selected',String(active));});
+   },true);
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeVideoReviews,{once:true});else removeVideoReviews();
 
@@ -67,7 +76,7 @@
    const score=node('div','','programme-csat__score');score.append(node('strong',d.total?average.toFixed(1):'—'),node('span',' / 5'));
    const detail=node('div','','programme-csat__detail');
    const stars=node('div','★★★★★','programme-csat__stars');stars.setAttribute('aria-label',average.toFixed(1)+' จาก 5 ดาว');stars.style.setProperty('--rating',average/5*100+'%');
-   detail.append(stars,node('p','ความพึงพอใจต่อบริการ'),node('small',(payload.demo?'ข้อมูลตัวอย่าง · ':'')+d.total+' การประเมิน'));
+   detail.append(stars,node('p',payload.demo?'คะแนนจำลอง':'ความพึงพอใจต่อบริการ'),node('small',d.total+' การประเมิน'));
    body.replaceChildren(score,detail);status.textContent=d.total?'':'ยังไม่มีการประเมิน';
 
   }catch(error){comments.replaceChildren();body.replaceChildren();status.textContent='ยังโหลดคะแนนไม่ได้ กรุณาลองใหม่ภายหลัง';}finally{pending=false}

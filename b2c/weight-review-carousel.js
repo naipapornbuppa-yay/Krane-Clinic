@@ -13,7 +13,7 @@ document.querySelectorAll('[data-interview-reviews]').forEach(section=>{
  g.video.controls=false;g.video.muted=true;g.video.loop=true;g.video.playsInline=true;
  const media=document.createElement('div');media.className='story-blocks__video';media.append(g.video);panel.append(media);
  const sound=document.createElement('button');sound.type='button';sound.className='story-blocks__sound';
- const setSound=()=>{sound.textContent=g.video.muted?'เปิดเสียงสัมภาษณ์':'ปิดเสียงสัมภาษณ์';sound.setAttribute('aria-label',sound.textContent);};setSound();
+ const setSound=()=>{const label=g.video.muted?'เปิดเสียง':'ปิดเสียง';sound.setAttribute('aria-label',label);sound.title=label;sound.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z"/>'+(g.video.muted?'<path d="m17 9 5 6m0-6-5 6"/>':'<path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/>')+'</svg>';};setSound();
  sound.addEventListener('click',()=>{g.video.muted=!g.video.muted;setSound()});
  const play=document.createElement('button');play.type='button';play.className='story-blocks__play';
  const setPlay=()=>{play.textContent=g.video.paused?'▶':'Ⅱ';play.setAttribute('aria-label',g.video.paused?'เล่นวิดีโอ':'หยุดวิดีโอ');};

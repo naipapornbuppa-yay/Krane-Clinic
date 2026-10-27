@@ -40,18 +40,22 @@ window.KraneProgrammeOverview = data => {
   const paragraph = intro.querySelector('[data-overview-copy]');
   if (isWeight) paragraph.textContent = 'คุณหมอประเมินสุขภาพก่อนเริ่มและปรับแผนไปกับคุณ ควบคู่กับการดูแลอาหารและการเคลื่อนไหว เพื่อรักษามวลกล้ามเนื้อและดูแลน้ำหนักในระยะยาว';
   copy.append(heading, paragraph);
-  const points = document.createElement('ul');points.className = 'programme-intro__points';
   const pointData = isWeight ? [
     ['clipboard-check', 'แพทย์ประเมินสุขภาพก่อนเริ่มแผน', 'ดูสุขภาพโดยรวมและเป้าหมายของคุณ'],
     ['leaf', 'วางแผนอาหารและการเคลื่อนไหวให้เข้ากับชีวิต', 'วางแผนการกินและออกกำลังกายให้เข้ากับชีวิต'],
     ['calendar-check', 'ติดตามผลและปรับแผนร่วมกับแพทย์', 'ทบทวนผลและปรับแผนตามความเหมาะสม']
   ] : Array.from(overview.querySelectorAll('.cd-feature')).map(item => [item.querySelector('[data-lucide]')?.dataset.lucide || 'check', item.textContent.trim()]);
-  points.innerHTML = pointData.map(([icon,title,text]) => `<li><i data-lucide="${icon}" aria-hidden="true"></i><div><strong>${title}</strong></div></li>`).join('');
   if (isWeight) {
     facts.innerHTML=pointData.map(([icon,title],index)=>`<li style="--point-delay:${index*180}ms"><i data-lucide="${icon}" aria-hidden="true"></i><span>${title}</span></li>`).join('');
-    facts.classList.add('programme-selling-points');
-    new IntersectionObserver(entries=>{facts.classList.toggle('is-visible',entries[0].isIntersecting)},{threshold:.2}).observe(facts);
-  } else copy.append(points);
+  }
+  // Animate the selling points for every programme, including re:hair.
+  facts.classList.add('programme-selling-points');
+  Array.from(facts.children).forEach((row,index)=>row.style.setProperty('--point-delay',index*180+'ms'));
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries=>{
+      entries.forEach(entry=>facts.classList.toggle('is-visible',entry.isIntersecting));
+    },{threshold:.2}).observe(facts);
+  } else facts.classList.add('is-visible');
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
   media.innerHTML = '<video controls autoplay loop playsinline muted preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
@@ -64,7 +68,7 @@ window.KraneProgrammeOverview = data => {
     else interview.pause();
   }, {threshold: .25}).observe(interview);
   const designer = document.querySelector('.programme-designer');
-  if (designer) doctor.append(designer);
+  if (designer) copy.append(designer);
   intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);
   overview.querySelector('.cd-feature-grid').remove();
   const fit = overview.querySelector('[data-fit-list]');
