@@ -530,20 +530,22 @@
       ]
     },
     {
-      "name": "Every how-it-works step uses a live app preview",
+      "name": "Every how-it-works step uses a recorded app preview",
       "page": "krane-b2c-landing.html",
       "count": [
-        ".figma-how__slide iframe.figma-how__live",
+        ".figma-how__slide .figma-how__recording img[src*=\"assets/how-demo/\"]",
         3
-      ]
+      ],
+      "why": "dd16cd8 and 6bbd8e7 intentionally replace live iframes with recorded app GIFs; preserve all three actual app demonstrations."
     },
     {
-      "name": "Every how-it-works step keeps the iPhone device frame",
+      "name": "Every recorded app preview supplies a reduced-motion still",
       "page": "krane-b2c-landing.html",
       "count": [
-        ".figma-how__slide img.figma-how__device",
+        ".figma-how__recording source[media=\"(prefers-reduced-motion: reduce)\"][srcset*=\".png\"]",
         3
-      ]
+      ],
+      "why": "Device framing is baked into the approved recordings (db1fbd4); test each accessible still fallback instead of the retired overlay image."
     },
     {
       "name": "How-it-works does not fall back to editorial illustrations",
@@ -641,34 +643,37 @@
       "name": "Landing shows all six distinct supplied review videos in the original composition",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#reviews figure:not([aria-hidden=\"true\"]) video source",
+        "#reviews figure[data-start-face=\"video\"]:not([aria-hidden=\"true\"]) video source",
         6
       ],
-      "why": "Client, 22 October: use all supplied review clips from the downloaded รีวิว folder, rather than repeating one person. Only duplicate marquee loops are aria-hidden."
+      "why": "Client, 22 October: use all supplied review clips from the downloaded รีวิว folder, rather than repeating one person. Only duplicate marquee loops are aria-hidden. review-rhythm.js now creates a separate quotation face per person; count the original video faces and verify distinct supplied sources in public-redesign-qa.mjs."
     },
     {
       "name": "weight landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#weight-program .weight-quick a",
+        "#weight-program .pc-goals a[data-route=\"intake1\"][data-category]",
         4
-      ]
+      ],
+      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
     },
     {
       "name": "hair landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#hair-program .weight-quick a",
+        "#hair-program .pc-goals a[data-route=\"intake1\"][data-category]",
         4
-      ]
+      ],
+      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
     },
     {
       "name": "ed landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#ed-program .weight-quick a",
+        "#ed-program .pc-goals a[data-route=\"intake1\"][data-category]",
         4
-      ]
+      ],
+      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
     },
     {
       "name": "Programme review galleries use supplied video without mock comparisons or stock testimonials",
@@ -676,33 +681,36 @@
       "absent": ".program-review-gallery source[src*=\"pexels\"], .weight-story-gallery__comparison-slide img[src*=\"figma-draft\"], .programme-story-image, #reviews source[src*=\"pexels\"], #reviews .cd-review--story:not(.review-video)",
       "why": "Client supplied five additional review clips on 22 October: three weight, two hair. Weight/hair galleries must use their matching source clips and the existing men’s-health clip remains in its own programme. Client, 22 October: real supplied before/after photos now belong in each speaker’s story; continue rejecting mock comparison assets.",
       "count": [
-        "#weight-program .program-review-gallery [data-interview-slide] video source",
+        "#weight-program [data-pc-video] video source[src^=\"assets/reviews/weight-\"]",
         3
       ]
     },
     {
-      "name": "weight detail shows the three supplied weight-management reviews",
+      "name": "weight detail retains the programme ratings and filterable comments",
       "page": "condition-detail.html?condition=weight",
       "count": [
-        ".review-video video",
+        "#reviews.programme-csat .programme-comment",
         3
-      ]
+      ],
+      "why": "7162830 intentionally removes the duplicate video rail. Reviews now target programme ratings/comments; supplied review clips remain in the landing marquee."
     },
     {
-      "name": "hair-loss detail shows the two supplied hair-care reviews",
+      "name": "hair-loss detail retains the programme ratings and filterable comments",
       "page": "condition-detail.html?condition=hair-loss",
       "count": [
-        ".review-video video",
-        2
-      ]
+        "#reviews.programme-csat .programme-comment",
+        3
+      ],
+      "why": "7162830 intentionally removes the duplicate video rail. Reviews now target programme ratings/comments; supplied review clips remain in the landing marquee."
     },
     {
-      "name": "re-flow detail shows one supplied service-experience review",
+      "name": "re-flow detail retains the programme ratings and filterable comments",
       "page": "condition-detail.html?condition=re-flow",
       "count": [
-        ".review-video video",
-        1
-      ]
+        "#reviews.programme-csat .programme-comment",
+        3
+      ],
+      "why": "7162830 intentionally removes the duplicate video rail. Reviews now target programme ratings/comments; supplied review clips remain in the landing marquee."
     },
     {
       "name": "Footer information template remains available: about",
@@ -810,49 +818,49 @@
       "why": "Client, 22 October: prescription delivery from the footer must open prescription upload, not unrelated clinical intake. Submission and checkout retain their existing guards."
     },
     {
-      "name": "Per-speaker review story sequence: weight-program",
+      "name": "Programme chapter supplied story: weight-program",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#weight-program [data-interview-slide]",
-        9
-      ],
-      "why": "Client, 22 October: each supplied speaker has video, their own before/after photo pair, and a story card; the men’s-health speaker has no supplied photo pair."
-    },
-    {
-      "name": "Per-speaker review story sequence: hair-program",
-      "page": "krane-b2c-landing.html",
-      "count": [
-        "#hair-program [data-interview-slide]",
-        6
-      ],
-      "why": "Client, 22 October: each supplied speaker has video, their own before/after photo pair, and a story card; the men’s-health speaker has no supplied photo pair."
-    },
-    {
-      "name": "Per-speaker review story sequence: ed-program",
-      "page": "krane-b2c-landing.html",
-      "count": [
-        "#ed-program [data-interview-slide]",
-        2
-      ],
-      "why": "Client, 22 October: each supplied speaker has video, their own before/after photo pair, and a story card; the men’s-health speaker has no supplied photo pair."
-    },
-    {
-      "name": "Programme reviews retain matching before-and-after slides: weight",
-      "page": "condition-detail.html?condition=weight",
-      "count": [
-        "[data-review-comparison]",
+        "#weight-program [data-pc-video] video",
         3
       ],
-      "why": "Client, 23 October: each speaker video and quote is followed by that same speaker’s supplied before/after images."
+      "why": "069cf91 uses a main supplied video and two supporting video stories; 011b17f explicitly removes weight comparison photographs."
     },
     {
-      "name": "Programme reviews retain matching before-and-after slides: hair-loss",
-      "page": "condition-detail.html?condition=hair-loss",
+      "name": "Programme chapter supplied story: hair-program",
+      "page": "krane-b2c-landing.html",
       "count": [
-        "[data-review-comparison]",
+        "#hair-program .pc-hair-comparison .pc-photo-pair img",
         2
       ],
-      "why": "Client, 23 October: each speaker video and quote is followed by that same speaker’s supplied before/after images."
+      "why": "9af7eb5 removes the requested hair interview. 069cf91 retains the matching supplied before/after pair."
+    },
+    {
+      "name": "Programme chapter supplied story: ed-program",
+      "page": "krane-b2c-landing.html",
+      "count": [
+        "#ed-program .pc-private-review blockquote",
+        1
+      ],
+      "why": "0ee2f98 presents an anonymous concise testimonial with private consultation, preserving the requested ED privacy."
+    },
+    {
+      "name": "Programme photos retain matching before-and-after pairs: weight",
+      "page": "condition-detail.html?condition=weight",
+      "count": [
+        ".photo-reviews__set:not([aria-hidden=\"true\"]) .photo-review__pair",
+        3
+      ],
+      "why": "photo-reviews.js owns supplied same-person pairs in a separate rail; 7162830 removes the duplicate video section without removing these photographs."
+    },
+    {
+      "name": "Programme photos retain matching before-and-after pairs: hair-loss",
+      "page": "condition-detail.html?condition=hair-loss",
+      "count": [
+        ".photo-reviews__set:not([aria-hidden=\"true\"]) .photo-review__pair",
+        2
+      ],
+      "why": "photo-reviews.js owns supplied same-person pairs in a separate rail; 7162830 removes the duplicate video section without removing these photographs."
     }
   ]
 }

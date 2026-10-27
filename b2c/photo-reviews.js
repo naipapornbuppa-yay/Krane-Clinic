@@ -15,6 +15,14 @@
  new IntersectionObserver(entries=>visible=entries.some(e=>e.isIntersecting)).observe(section);
  function tick(time){const dt=Math.min(time-last,50);last=time;if(visible&&!paused&&!hover&&!document.hidden&&!reduced.matches&&!section.contains(document.activeElement)){position+=dt*.022;if(loopWidth>0)position%=loopWidth;viewport.scrollLeft=position}requestAnimationFrame(tick)}
  reviews.after(section);
- const measure=()=>{loopWidth=duplicate.offsetLeft-set.offsetLeft;if(!loopWidth)return;const track=set.parentElement;while(track.scrollWidth<loopWidth+viewport.clientWidth+24){const extra=duplicate.cloneNode(true);track.append(extra)}position%=loopWidth;viewport.scrollLeft=position;viewport.dataset.loopWidth=String(loopWidth)};
- new ResizeObserver(measure).observe(viewport);measure();requestAnimationFrame(tick);
+ const measure=()=>{
+  // Reduced-motion copies are display:none. Their offset is not a loop width,
+  // and appending more hidden copies cannot fill the viewport.
+  if(reduced.matches){loopWidth=0;viewport.dataset.loopWidth='0';return;}
+  loopWidth=duplicate.offsetLeft-set.offsetLeft;if(loopWidth<=0)return;
+  const track=set.parentElement;let copiesNeeded=Math.ceil(viewport.clientWidth/loopWidth)+1;
+  while(track.scrollWidth<loopWidth+viewport.clientWidth+24&&copiesNeeded-- > 0){const extra=duplicate.cloneNode(true);track.append(extra)}
+  position%=loopWidth;viewport.scrollLeft=position;viewport.dataset.loopWidth=String(loopWidth);
+ };
+ new ResizeObserver(measure).observe(viewport);reduced.addEventListener('change',measure);measure();requestAnimationFrame(tick);
 })();

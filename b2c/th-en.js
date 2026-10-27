@@ -13,6 +13,282 @@
    ============================================================ */
 (function () {
   var EN = {
+    "ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน":"Oversees Krane's medical direction and standards, with consultations guided by each person's health and suitability.",
+    "แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย":"Doctor of Medicine · Bachelor of Science, Chulalongkorn University",
+    "ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน":"Consultations on hair, scalp and skin, with care planned around each person's symptoms, health history and suitability.",
+    "ให้คำปรึกษาด้านการควบคุมน้ำหนักและโภชนศาสตร์คลินิก โดยทบทวนปัจจัยสุขภาพ เป้าหมาย และความเหมาะสมก่อนวางแผนร่วมกับผู้รับบริการ":"Consultations on weight management and clinical nutrition, reviewing health factors, goals and suitability before planning care together.",
+    "ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์":"Private consultations on men's health and urology, explaining options and precautions based on medical assessment.",
+
+    "เครนคลินิกเวชกรรม เลขที่ใบอนุญาต 10101017669":"Krane Clinic, licence no. 10101017669",
+    "กระทรวงสาธารณสุข":"Ministry of Public Health",
+
+    "เม็ดยาฟินาสเตอไรด์":"Finasteride tablet",
+    "ภาพเส้นผมก่อนรับบริการของคุณพา":"Pha’s hair before care",
+    "ภาพเส้นผมหลังรับบริการของคุณพา":"Pha’s hair after care",
+    "ภาพเส้นผมคุณพาก่อนรับบริการ":"Pha’s hair before care",
+    "ภาพเส้นผมคุณพาหลังรับบริการ":"Pha’s hair after care",
+    "ภาพจำลองซองสีน้ำเงิน มีนกกระดาษเล็ก ๆ วางบนโต๊ะหินสีอ่อน":"Illustration of a blue envelope with a small paper crane on a light stone table",
+    "ภาพถ่ายประกอบบทความสุขภาพ":"Health article photograph",
+    "ภาพจำลองบรรยากาศการทำงานร่วมกันของทีมแพทย์":"Illustration of a medical team working together",
+    "ภาพประกอบบรรยากาศสัมมนาและแลกเปลี่ยนความรู้ของแพทย์หลายคน":"Illustration of doctors exchanging knowledge at a seminar",
+    "ภาพก่อนของ คุณเมย์":"May before care",
+    "ภาพหลังของ คุณเมย์":"May after care",
+    "ภาพก่อนของ คุณพลอย":"Ploy before care",
+    "ภาพหลังของ คุณพลอย":"Ploy after care",
+    "ภาพก่อนของ คุณฝน":"Fon before care",
+    "ภาพหลังของ คุณฝน":"Fon after care",
+    "ผู้รับบริการวิดีโอคอลกับแพทย์ผ่านมือถือ":"A participant consulting a doctor by mobile video call",
+    "หน้าจอใบสั่งยาจริงของ Krane จากระบบเดโมในกรอบมือถือ":"Krane prescription screen from the demo app inside a phone frame",
+    "หน้าการแจ้งเตือนนัดหมายจริงของ Krane จากระบบเดโม":"Krane appointment notification screen from the demo app",
+    "ภาพก่อนของ คุณพา":"Pha before care",
+    "ภาพหลังของ คุณพา":"Pha after care",
+    "ภาพก่อนของ คุณแป้ง":"Pang before care",
+    "ภาพหลังของ คุณแป้ง":"Pang after care",
+
+    "หยุดวิดีโอ":"Pause video",
+    "ปิดเสียง":"Mute",
+
+    // Public programme redesign and asynchronous ratings copy (October 2026).
+    "หมอประจำตัว":"Your own doctor",
+    "ที่ดูแลคุณอย่างต่อเนื่อง":"Providing ongoing care for you",
+    "รอใบสั่งยาอิเล็กทรอนิกส์ (ถ้ามี)":"Wait for an electronic prescription (if needed)",
+    "re:body · ดูแลและควบคุมน้ำหนัก":"re:body · Weight management",
+    "ในการลดน้ำหนักออนไลน์":"in online weight management",
+    "เรียนรู้เพิ่ม":"Learn more",
+    "ประสบการณ์การปรึกษาแพทย์":"An experience of consulting a doctor",
+    "เพื่อดูแลน้ำหนัก":"about weight management",
+    "คุณ ม. · ผู้ใช้บริการ re:body":"M. · re:body participant",
+    "คุณพลอย · ผู้ใช้บริการ re:body":"Ploy · re:body participant",
+    "อีกหนึ่งประสบการณ์":"Another experience",
+    "การดูแลน้ำหนักกับแพทย์":"of doctor-guided weight management",
+    "คุณ ฝ.":"F.",
+    "ติดตามน้ำหนักได้ในบัญชี":"Track weight in your account",
+    "บันทึกทุกครั้ง คุณหมอเห็นความคืบหน้า":"Your doctor can see every progress update",
+    "และปรับแผนร่วมกับคุณ":"and adjust the plan with you",
+    "ตัวอย่างบันทึก":"Illustrative record",
+    "จาก 3":"of 3",
+    "กก.":"kg",
+    "กก. จากบันทึกแรก":"kg since the first record",
+    "82.4 กก.":"82.4 kg",
+    "77.6 กก.":"77.6 kg",
+    "ครั้งที่ 1":"Record 1",
+    "ครั้งที่ 2":"Record 2",
+    "ครั้งที่ 3":"Record 3",
+    "เป้าหมายตัวอย่าง":"Illustrative goal",
+    "72.0 กก.":"72.0 kg",
+    "✓ บันทึกครบ 3 ครั้ง · คุณหมอเห็นความคืบหน้า":"✓ All 3 records saved · Your doctor can see your progress",
+    "ผลลัพธ์และความเหมาะสมของการรักษาแตกต่างกันในแต่ละบุคคล":"Results and treatment suitability vary by individual",
+    "re:hair · ดูแลผมร่วง ผมบาง":"re:hair · Hair loss and thinning care",
+    "กลับมาผมหนาขึ้นได้":"Support thicker hair",
+    "ด้วยวิธีที่มีงานวิจัยรองรับ":"with evidence-based care",
+    "ภาพติดตามผลจากผู้ใช้บริการ":"Follow-up photographs from participants",
+    "หลัง · 6 เดือน (ตัวอย่าง)":"After · 6 months (illustration)",
+    "“ลองมาปรึกษาคุณหมอที่มีความเชี่ยวชาญด้านนี้โดยตรง”":"“Try consulting a doctor who specializes in this field”",
+    "คุณ พ. · ผู้ใช้บริการ re:hair":"P. · re:hair participant",
+    "ติดตามผลด้วยรูปถ่าย":"Track progress with photographs",
+    "ถ่ายเองที่บ้าน คุณหมอเปรียบเทียบให้":"Take photos at home for your doctor to compare",
+    "และปรับแผนร่วมกับคุณต่อเนื่อง":"and keep adjusting your plan together",
+    "ก่อนรับบริการ":"Before care",
+    "6 เดือน (ตัวอย่าง)":"6 months (illustration)",
+    "✓ คุณหมอเปรียบเทียบรูปให้ทุกครั้ง":"✓ Your doctor compares photos at every check-in",
+    "ภาพจากผู้ใช้บริการ · ผลลัพธ์แตกต่างกันในแต่ละบุคคล":"Participant photographs · Individual results vary",
+    "ดูแลผมบาง":"Hair thinning care",
+    "re:flow · สุขภาพเพศชาย":"re:flow · Men's health",
+    "ช่วยให้คุณกลับมา":"Helping you regain",
+    "มั่นใจได้อย่างเป็นส่วนตัว":"confidence with privacy",
+    "ตัวอย่างการปรึกษา":"Illustrative consultation",
+    "แพทย์ผู้ดูแล":"Your doctor",
+    "ห้องปรึกษาส่วนตัว":"Private consultation room",
+    "เริ่มบทสนทนากับแพทย์":"Start a conversation with a doctor",
+    "สวัสดีครับ วันนี้มีเรื่องอะไรให้ช่วยดูแลครับ":"Hello, how can I help you today?",
+    "ช่วงนี้มีปัญหาเรื่องสมรรถภาพทางเพศครับ":"I have been having difficulties with sexual performance.",
+    "ขอถามก่อนนะครับ ตอนนี้ใช้ยาอะไรประจำอยู่ไหม โดยเฉพาะยาโรคหัวใจ":"May I ask what medicines you take regularly, especially heart medicines?",
+    "ยาความดันครับ":"Blood pressure medicine.",
+    "ขอบคุณครับ ผมขอประเมินเรื่องหัวใจและความดันก่อน แล้ววางแผนการรักษาร่วมกันครับ":"Thank you. I will assess your heart health and blood pressure before we plan treatment together.",
+    "✓ แพทย์ประเมินก่อนวางแผนการรักษาทุกครั้ง":"✓ A doctor assesses you before every treatment plan",
+    "ภาพจำลองการปรึกษา ข้อความเป็นตัวอย่าง":"Illustrative consultation and messages",
+    "ตอนนี้ก็มั่นใจขึ้นเยอะ":"I feel much more confident now",
+    "คิดว่าเรามาถูกทางแล้ว":"I think I am on the right path",
+    "ต":"T",
+    "คุณ ต.":"T.",
+    "ผู้ใช้บริการ re:flow":"re:flow participant",
+    "เป็นส่วนตัวทุกขั้นตอน":"Privacy at every step",
+    "ตั้งแต่คุยกับแพทย์ จนถึงรับยาที่บ้าน":"From your consultation to medicine delivered at home",
+    "ปรึกษาแพทย์ทางออนไลน์":"Consult a doctor online",
+    "คุยในพื้นที่ที่คุณสะดวก":"Talk in a place that suits you",
+    "แพทย์ประเมินก่อนสั่งยา":"Doctor assessment before prescribing",
+    "ตรวจสุขภาพและยาที่ใช้อยู่ทุกครั้ง":"Review health and current medicines every time",
+    "จัดส่งในซองที่ไม่ระบุชื่อสินค้า":"Delivered in packaging without product names",
+    "ซองทึบ ไม่ระบุชื่อสินค้า":"Opaque packaging without product names",
+    "ปรึกษาเรื่องความมั่นใจ":"Discuss your confidence",
+    "เข้าใจทางเลือกการดูแล":"Understand your care options",
+    "แพลตฟอร์ม":"Platform",
+    "ให้":"for",
+    "แพทย์":"medical care",
+    "ทาง":"at a",
+    "ไกล":"distance",
+    "ออกแบบ":"designed",
+    "มา":"to",
+    "เพื่อ":"help",
+    "ช่วย":"support",
+    "คุณ":"you",
+    "ทีมแพทย์ที่ดูแลทุกการตัดสินใจ":"The medical team behind every care decision",
+    "แพทย์เฉพาะทางผิวหนังและศัลยแพทย์ปลูกผม เชี่ยวชาญโรคเส้นผม/หนังศีรษะ การปลูกผม FUE/DHI และหัตถการด้านผิวหนัง ปัจจุบัน: Vimut Hospital – Founder & Lead Surgeon, Hair Transplantation Center · Vichaiyut Hospital · Atier Clinic · ตจวิทยา · โรคเส้นผมและหนังศีรษะ · ศัลยกรรมปลูกผม · คณะแพทยศาสตร์ศิริราชพยาบาล มหาวิทยาลัยมหิดล (2008–2013) · Thai Board of Dermatology – จุฬาลงกรณ์มหาวิทยาลัย (2019–2023) · Fellowship in Hair Disorder & Hair Restoration Surgery (2023–2025) · International Clinical Rotation – Tohoku University, Japan (2018) · Research Fellowship (2017 – 2018) Division of Dermatology, Department of Medicine, Faculty of Medicine, Chulalongkorn University":"Dermatologist and hair transplant surgeon specializing in hair and scalp disorders, FUE/DHI transplantation and dermatological procedures. Current workplaces: Vimut Hospital – Founder & Lead Surgeon, Hair Transplantation Center · Vichaiyut Hospital · Atier Clinic · Dermatology · Hair and scalp disorders · Hair transplantation · Faculty of Medicine Siriraj Hospital, Mahidol University (2008–2013) · Thai Board of Dermatology – Chulalongkorn University (2019–2023) · Fellowship in Hair Disorder & Hair Restoration Surgery (2023–2025) · International Clinical Rotation – Tohoku University, Japan (2018) · Research Fellowship (2017–2018), Division of Dermatology, Department of Medicine, Faculty of Medicine, Chulalongkorn University",
+    "นพ. ไพรัช เกตุรัตนกุล":"Dr Phairat Keturanakul",
+    "ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน · อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ · แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย":"Oversees Krane's medical direction and standards, with consultations guided by each person's health and suitability · Internal medicine · Respiratory medicine · Doctor of Medicine · Bachelor of Science, Chulalongkorn University",
+    "แพทย์เฉพาะทางอายุรศาสตร์ พร้อมพื้นฐานด้านโภชนศาสตร์คลินิก เหมาะกับการดูแลสุขภาพทั่วไป โรคทางอายุรกรรม และการให้คำปรึกษาด้านโภชนาการ ปัจจุบัน: อาจารย์, หน่วยโภชนศาสตร์คลินิก ภาควิชาอายุรศาสตร์ คณะแพทยศาสตร์ มหาวิทยาลัยธรรมศาสตร์ · อายุรศาสตร์ · โภชนศาสตร์คลินิก · แพทยศาสตรบัณฑิต มหาวิทยาลัยรังสิต · วุฒิบัตรผู้มีความรู้ความชำนาญในการประกอบวิชาชีพเวชกรรม สาขาอายุรศาสตร์ · วุฒิบัตรผู้มีความรู้ความชำนาญในการประกอบวิชาชีพเวชกรรม อนุสาขาโภชนศาสตร์คลินิก":"Internal medicine specialist with a background in clinical nutrition, general health, medical conditions and nutritional consultations. Current position: Lecturer, Clinical Nutrition Unit, Department of Medicine, Faculty of Medicine, Thammasat University · Internal medicine · Clinical nutrition · Doctor of Medicine, Rangsit University · Thai Board of Internal Medicine · Thai Subspecialty Board of Clinical Nutrition",
+    "อ.นพ. ชวลิต หงส์เลิศสกุล":"Dr Chawalit Honglertsakul",
+    "ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์ · ศัลยศาสตร์ยูโรวิทยา · ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต":"Private consultations on men's health and urology, explaining options and precautions based on medical assessment · Urology · Education details are being verified and updated",
+    "ไม่มีรูปภาพ":"Photo unavailable",
+    "แพทย์จำลอง 1":"Doctor placeholder 1",
+    "การ์ดสำหรับทดสอบ":"Test card",
+    "พื้นที่สำหรับข้อมูลแพทย์เพิ่มเติม":"Space for additional doctor information",
+    "แพทย์จำลอง 2":"Doctor placeholder 2",
+    "แพทย์จำลอง 3":"Doctor placeholder 3",
+    "คุณเมย์ · 29 ปี":"May · 29",
+    "คุณพลอย · 32 ปี":"Ploy · 32",
+    "คุณฝน · 24 ปี":"Fon · 24",
+    "คุณพา · 34 ปี":"Pha · 34",
+    "คุณแป้ง · 28 ปี":"Pang · 28",
+    "คุณ ต. · 35 ปี":"T. · 35",
+    "ดูคำถามทั้งหมด ↗":"View all questions ↗",
+    "Krane Clinic คืออะไร?":"What is Krane Clinic?",
+    "บริการปรึกษาแพทย์ทางไกลสำหรับการดูแลน้ำหนัก เส้นผม และสุขภาพทางเพศ แพทย์ประเมินความเหมาะสมก่อนสั่งยา และจัดส่งยาผ่านพาร์ตเนอร์ร้านยา":"Telemedicine consultations for weight management, hair and sexual health. A doctor assesses suitability before prescribing, with medicine delivered through our pharmacy partner.",
+    "ทำแบบประเมินแล้วจะได้รับยาทุกคนไหม?":"Does everyone receive medicine after the assessment?",
+    "ไม่เสมอไป แพทย์พิจารณาจากข้อมูลสุขภาพและความเหมาะสม อาจแนะนำการดูแลอื่นหรือให้ตรวจเพิ่มเติม":"Not always. The doctor considers your health and suitability and may recommend other care or additional investigations.",
+    "รับยาจากที่ไหน?":"Where does my medicine come from?",
+    "เมื่อมีใบสั่งยา ยาจัดส่งผ่านพาร์ตเนอร์ร้านยา Fascino โดยตรวจสอบรายการและรายละเอียดการส่งได้ในบัญชี":"When prescribed, medicine is delivered through our pharmacy partner Fascino. Review the items and delivery details in your account.",
+    "จัดส่งราคาเท่าไหร่และใช้เวลานานไหม?":"How much does delivery cost, and how long does it take?",
+    "ราคาและเวลาจัดส่งขึ้นอยู่กับพื้นที่และวิธีส่ง ระบบแสดงรายละเอียดก่อนยืนยันคำสั่งซื้อ":"Delivery cost and timing depend on your area and delivery method. Details appear before you confirm your order.",
+    "ใครเข้าถึงข้อมูลสุขภาพของฉัน?":"Who can access my health information?",
+    "ข้อมูลที่จำเป็นใช้สำหรับการประเมินและดูแลโดยทีมที่เกี่ยวข้อง รายละเอียดการใช้และเปิดเผยข้อมูลดูได้ในนโยบายความเป็นส่วนตัว":"Necessary information is used by the relevant care team for assessment and care. See the privacy policy for details on use and disclosure.",
+    "ดูบทความทั้งหมด ↗":"View all articles ↗",
+    "เริ่มปรึกษาแพทย์เลย":"Start a consultation",
+    "ปรึกษาแพทย์ →":"Consult a doctor →",
+    "เปิดเสียง":"Unmute",
+    "เล่นวิดีโอ":"Play video",
+    "เปิดวิดีโอเต็มจอ":"Open video fullscreen",
+    "ตัวอย่างกราฟน้ำหนัก 82.4, 77.6 และ 72 กิโลกรัม":"Illustrative weight chart: 82.4, 77.6 and 72 kilograms",
+    "พญ. กรผกา ขันติโกสุม — อ่านประวัติและความเชี่ยวชาญ":"Dr Kornpaka Khantikhosum — Read profile and specialties",
+    "นพ. ไพรัช เกตุรัตนกุล — อ่านประวัติและความเชี่ยวชาญ":"Dr Phairat Keturanakul — Read profile and specialties",
+    "อ.นพ. พหล สโรจวิสุทธิ์ — อ่านประวัติและความเชี่ยวชาญ":"Dr Pahol Sarojvisut — Read profile and specialties",
+    "อ.นพ. ชวลิต หงส์เลิศสกุล — อ่านประวัติและความเชี่ยวชาญ":"Dr Chawalit Honglertsakul — Read profile and specialties",
+    "ยังไม่มีรูปภาพ":"Photo not yet available",
+    "วิดีโอประสบการณ์ผู้ใช้บริการ":"Participant experience video",
+    "ปิดวิดีโอ":"Close video",
+    "เรื่องก่อนหน้า":"Previous story",
+    "เรื่องถัดไป":"Next story",
+    "บัญชีผู้ใช้":"Account",
+    "โปรไฟล์":"Profile",
+    "ออกจากระบบ":"Sign out",
+    "ภาษาไทย":"Thai",
+    "อ่านต่อ":"Read more",
+    "ทีมแพทย์ทั้ง 4 คน":"All 4 doctors",
+    "ดูแลน้ำหนักกับแพทย์ออนไลน์":"Online doctor-guided weight management",
+    "แพทย์ประเมินสุขภาพก่อนเริ่มแผน":"Doctor assessment before starting your plan",
+    "วางแผนอาหารและการเคลื่อนไหวให้เข้ากับชีวิต":"Nutrition and activity suited to your life",
+    "ติดตามผลและปรับแผนร่วมกับแพทย์":"Follow up and adjust the plan with your doctor",
+    "ประสบการณ์เล็ก ๆ":"Small experiences",
+    "ที่ช่วยให้ตัดสินใจง่ายขึ้น":"that help you decide",
+    "อ่านเรื่องการปรึกษา การติดตาม และความสะดวก":"Read about consultations, follow-up and convenience",
+    "จากมุมมองของผู้รับบริการ":"from participants' perspectives",
+    "คะแนนจำลอง":"Illustrative rating",
+    "100 การประเมิน":"100 ratings",
+    "ความคิดเห็น":"Comments",
+    "เรียงตาม":"Sort by",
+    "ล่าสุด":"Newest",
+    "คะแนนสูงสุด":"Highest rated",
+    "คะแนนต่ำสุด":"Lowest rated",
+    "ทั้งหมด":"All",
+    "เข้าใจแผนก่อนเริ่ม":"Understand the plan before starting",
+    "“ขั้นตอนเข้าใจง่าย คุณหมออธิบายแนวทางและตอบคำถามได้ชัดเจน”":"“The steps were easy to understand. The doctor explained the approach and answered questions clearly.”",
+    "ก":"K",
+    "ก***":"K***",
+    "22 ต.ค. 2569":"22 Oct 2026",
+    "ปรึกษาได้จากที่บ้าน":"Consult from home",
+    "“ปรึกษาจากที่บ้านได้สะดวก ดูรายละเอียดแผนและค่าใช้จ่ายก่อนตัดสินใจได้”":"“Consulting from home is convenient. I could review the plan and costs before deciding.”",
+    "พ":"P",
+    "พ***":"P***",
+    "18 ต.ค. 2569":"18 Oct 2026",
+    "ข้อมูลชัดเจน พร้อมติดตาม":"Clear information and follow-up",
+    "“ข้อมูลการรับยาอ่านเข้าใจง่าย อยากให้การแจ้งเตือนนัดติดตามเห็นชัดขึ้นอีกนิด”":"“The medicine information was easy to understand. I would like follow-up appointment notifications to be a little clearer.”",
+    "น":"N",
+    "น***":"N***",
+    "12 ต.ค. 2569":"12 Oct 2026",
+    "เรื่องราวก่อนและหลัง":"Before and after stories",
+    "หลัง · 3 เดือน (ตัวอย่าง)":"After · 3 months (illustration)",
+    "คุณเมย์ · 29 ปี · พนักงานออฟฟิศ":"May · 29 · Office worker",
+    "หลัง · 4 เดือน (ตัวอย่าง)":"After · 4 months (illustration)",
+    "“เข้ามาปรึกษาคุณหมอ ผ่านออนไลน์ที่เทเลเมดิซีนได้ค่ะ”":"“I can consult a doctor online through telemedicine”",
+    "คุณพลอย · 32 ปี · ธุรกิจส่วนตัว":"Ploy · 32 · Business owner",
+    "ช่วงเวลาการดูแล แต่ละคนอาจใช้เวลาต่างกันตามการประเมินของแพทย์":"Care timelines vary according to your doctor's assessment",
+    "เดือนที่ 1–2":"Months 1–2",
+    "เริ่มต้นอย่างมั่นใจ":"Start with confidence",
+    "ประเมินสุขภาพ ตั้งเป้าหมายกับคุณหมอ และเริ่มแผนการกิน การเคลื่อนไหว หรือยาหากเหมาะสม":"Review your health, set goals with your doctor, and begin nutrition, activity or medicine when appropriate.",
+    "เดือนที่ 3–4":"Months 3–4",
+    "ทบทวนความคืบหน้าและอาการระหว่างดูแล ให้คุณหมอปรับแผนตามการตอบสนองของคุณ":"Review progress and symptoms so your doctor can adjust the plan to your response.",
+    "เดือนที่ 5 เป็นต้นไป":"Month 5 onwards",
+    "ดูแลระยะยาว":"Long-term care",
+    "วางแผนดูแลน้ำหนักและพฤติกรรมที่ทำต่อได้ พร้อมติดตามความเหมาะสมของการรักษากับแพทย์":"Plan sustainable weight management and habits while reviewing treatment suitability with your doctor.",
+    "ดูแลและควบคุมน้ำหนัก":"Weight management",
+    "ยาฉีดชนิดปากกา":"Injectable pen",
+    "ขนาดเริ่มต้น 1 ด้าม":"1 pen at the starting dose",
+    "฿":"THB",
+    "/ เดือน":"/ month",
+    "จุดเด่นของโปรแกรม":"Programme features",
+    "แพทย์ช่วยตั้งเป้าหมายที่ทำได้จริง":"Your doctor helps set practical goals",
+    "แผนการกินและออกกำลังกายเฉพาะคุณ":"Personalized nutrition and activity plan",
+    "นัดติดตามผลกับแพทย์ประจำตัว":"Follow-up appointments with your regular doctor",
+    "เติมยาออนไลน์ได้สะดวก เมื่อแพทย์อนุมัติ":"Convenient online refills when approved by your doctor",
+    "ติดตามความคืบหน้าได้ที่โปรไฟล์":"Track progress in your profile",
+    "* ราคาค่ายายังไม่รวมค่าปรึกษาแพทย์และค่าจัดส่ง · บัญชีใหม่ปรึกษาครั้งแรกฟรี":"* Medicine prices exclude consultation and delivery · First consultation free for new accounts",
+    "ดูค่าปรึกษาและค่าจัดส่ง →":"View consultation and delivery fees →",
+    "ขั้นตอนการเริ่มต้นและรับยา":"Getting started and receiving medicine",
+    "ดูคำถามทั้งหมด":"View all questions",
+    "4.8 จาก 5 ดาว":"4.8 out of 5 stars",
+    "กรองคะแนนความคิดเห็น":"Filter comments by rating",
+    "5 จาก 5 ดาว":"5 out of 5 stars",
+    "4 จาก 5 ดาว":"4 out of 5 stars",
+    "ภาพก่อนและหลังจากผู้ใช้บริการ":"Before and after participant photographs",
+    "ภาพก่อนและหลัง เลื่อนแนวนอนเพื่อดูเพิ่มเติม":"Before and after photographs. Scroll horizontally for more.",
+    "วิดีโอรีวิวฉบับเต็ม":"Full review video",
+    "ดูแลผมร่วงกับแพทย์ออนไลน์":"Online doctor-guided hair loss care",
+    "“ลองมาปรึกษาคุณหมอ ที่มีความเชี่ยวชาญด้านนี้โดยตรง”":"“Try consulting a doctor who specializes in this field”",
+    "คุณพา · 34 ปี · ธุรกิจส่วนตัว":"Pha · 34 · Business owner",
+    "“ไม่ค่อยมีเวลาเดินทางไปพบคุณหมอ อันนี้ก็เป็นตัวช่วยอีกทางหนึ่งด้วย”":"“I do not have much time to travel to a doctor. This is another helpful option.”",
+    "คุณแป้ง · 28 ปี · พนักงานออฟฟิศ":"Pang · 28 · Office worker",
+    "เข้าใจสาเหตุและเริ่มดูแล":"Understand the cause and start care",
+    "ประเมินเส้นผมและหนังศีรษะ บันทึกภาพตั้งต้น แล้วเริ่มแนวทางดูแลที่แพทย์เลือกให้":"Assess your hair and scalp, record baseline photographs, and start the care your doctor recommends.",
+    "เดือนที่ 3–6":"Months 3–6",
+    "ติดตามอย่างต่อเนื่อง":"Ongoing follow-up",
+    "ทบทวนการใช้ยาและการดูแล เปรียบเทียบภาพในมุมเดิม พร้อมปรึกษาแพทย์หากมีอาการผิดปกติ":"Review medicine use and care, compare photographs from the same angle, and consult your doctor about unusual symptoms.",
+    "เดือนที่ 7 เป็นต้นไป":"Month 7 onwards",
+    "ทบทวนผลและวางแผนต่อ":"Review results and plan ahead",
+    "ประเมินการเปลี่ยนแปลงร่วมกับคุณหมอ และวางแผนดูแลเส้นผมระยะยาวให้เหมาะกับคุณ":"Review changes with your doctor and plan long-term hair care suited to you.",
+    "ดูแลผมบาง ผมร่วง":"Hair thinning and hair loss care",
+    "ยาเม็ดรับประทาน":"Oral tablets",
+    "30 เม็ด":"30 tablets",
+    "ยาเม็ด + ยาทาภายนอก":"Oral tablets + topical treatment",
+    "30 เม็ด และ 1 ขวด (30 มล.)":"30 tablets and 1 bottle (30 ml)",
+    "แพทย์ช่วยวิเคราะห์สาเหตุที่ผมร่วง":"Your doctor helps assess the causes of hair loss",
+    "ถ่ายภาพติดตามผลร่วมกับแพทย์":"Photograph progress with your doctor",
+    "ปรึกษาสุขภาพทางเพศอย่างเป็นส่วนตัว":"Private sexual health consultations",
+    "นพ. กฤติน สกุลเชี่ยวการ":"Dr Krittin Sakulchaowkarn",
+    "ก่อนเริ่มดูแล":"Before starting care",
+    "ประเมินสุขภาพและเลือกแผนที่เหมาะกับคุณ":"Assess your health and choose a suitable plan",
+    "เริ่มตามแผน":"Start your plan",
+    "รับคำแนะนำจากแพทย์":"Receive medical advice",
+    "รับคำแนะนำและยา หากแพทย์เห็นว่าเหมาะสม":"Receive advice and medicine when your doctor considers it appropriate",
+    "ทบทวนผลและปรับแผนร่วมกับคุณหมอ":"Review progress and adjust the plan with your doctor",
+    "ฟื้นฟูสมรรถภาพทางเพศ":"Erectile dysfunction care",
+    "ยาสามัญ":"Generic medicine",
+    "ยาเม็ดรับประทาน 4 เม็ด":"4 oral tablets",
+    "/ แผง":"/ pack",
+    "ยาต้นแบบ":"Originator medicine",
+    "ปรึกษาแพทย์แบบส่วนตัว":"Private doctor consultations",
+    "แพทย์แนะนำการรักษาที่เหมาะกับคุณ":"Your doctor recommends suitable treatment",
+    "จัดส่งยาในบรรจุภัณฑ์มิดชิด":"Medicine delivered in discreet packaging",
+
     "รีวิว":"Reviews",
     "ดูแลน้ำหนักด้วย GLP-1 กับคุณหมอประจำตัวออนไลน์ พร้อมแผนการกิน การออกกำลังกาย และติดตามผล":"Online GLP-1 weight management with your own doctor, a food and activity plan, and ongoing follow-up.",
     "เริ่มปรึกษาฟรี":"Start a free consultation",
@@ -1163,6 +1439,16 @@
     return ownsLang ? prefersEnglish() : document.documentElement.lang === "en";
   }
 
+  function englishText(text) {
+    if (EN[text] !== undefined) return EN[text];
+    var match;
+    if ((match = text.match(/^([\d.]+) จาก 5 ดาว$/))) return match[1] + " out of 5 stars";
+    if ((match = text.match(/^(\d+) การประเมิน$/))) return match[1] + " ratings";
+    if ((match = text.match(/^เรื่องที่ (\d+) จาก (\d+)$/))) return "Story " + match[1] + " of " + match[2];
+    if ((match = text.match(/^หน้า (\d+) \/ (\d+)$/))) return "Page " + match[1] + " / " + match[2];
+    return undefined;
+  }
+
   function walk(en) {
     var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode: function (n) {
@@ -1175,28 +1461,39 @@
     nodes.forEach(function (node) {
       if (en) {
         var key = (node.__thSrc !== undefined ? node.__thSrc : node.nodeValue).trim();
-        if (EN[key] !== undefined) {
+        var english = englishText(key);
+        if (english !== undefined) {
           if (node.__thSrc === undefined) node.__thSrc = node.nodeValue;
-          node.nodeValue = node.__thSrc.replace(key, EN[key]);
+          node.nodeValue = node.__thSrc.replace(key, english);
         }
       } else if (node.__thSrc !== undefined) {
         node.nodeValue = node.__thSrc;
         delete node.__thSrc;
       }
     });
-    document.querySelectorAll("[placeholder]").forEach(function (el) {
-      var th = el.getAttribute("data-ph-th");
-      if (en) {
-        var p = (th || el.getAttribute("placeholder") || "").trim();
-        if (EN[p] !== undefined) { if (!th) el.setAttribute("data-ph-th", el.getAttribute("placeholder")); el.setAttribute("placeholder", EN[p]); }
-      } else if (th) { el.setAttribute("placeholder", th); el.removeAttribute("data-ph-th"); }
-    });
-    document.querySelectorAll("[aria-label]").forEach(function (el) {
-      var th = el.getAttribute("data-al-th");
-      if (en) {
-        var a = (th || el.getAttribute("aria-label") || "").trim();
-        if (EN[a] !== undefined) { if (!th) el.setAttribute("data-al-th", el.getAttribute("aria-label")); el.setAttribute("aria-label", EN[a]); }
-      } else if (th) { el.setAttribute("aria-label", th); el.removeAttribute("data-al-th"); }
+    // Keep the current source when a control changes its label at runtime.
+    // A stored "Unmute" translation must not overwrite a new "Mute" action.
+    ["placeholder", "aria-label", "alt", "title"].forEach(function (attr) {
+      var sourceAttr = attr === "placeholder" ? "data-ph-th" : attr === "aria-label" ? "data-al-th" : "data-" + attr + "-th";
+      var translatedAttr = "data-" + attr + "-en";
+      document.querySelectorAll("[" + attr + "]").forEach(function (el) {
+        var current = el.getAttribute(attr);
+        var source = el.getAttribute(sourceAttr);
+        var translated = el.getAttribute(translatedAttr);
+        if (en) {
+          var key = (source !== null && current === translated ? source : current).trim();
+          var value = englishText(key);
+          if (value !== undefined) {
+            el.setAttribute(sourceAttr, source !== null && current === translated ? source : current);
+            el.setAttribute(translatedAttr, value);
+            el.setAttribute(attr, value);
+          }
+        } else {
+          if (source !== null && current === translated) el.setAttribute(attr, source);
+          el.removeAttribute(sourceAttr);
+          el.removeAttribute(translatedAttr);
+        }
+      });
     });
   }
 

@@ -1,5 +1,4 @@
-/* Re:Body editorial structure, adapted from the supplied programme reference.
-   Stock interview is explicitly labelled mock pending the real doctor footage. */
+/* Programme editorial structure with category-specific process storytelling. */
 window.KraneProgrammeOverview = data => {
   const heroCopy = document.querySelector('.condition-hero__copy');
   const actions = heroCopy.querySelector('.condition-hero__actions');
@@ -58,15 +57,8 @@ window.KraneProgrammeOverview = data => {
   } else facts.classList.add('is-visible');
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
-  media.innerHTML = '<video controls autoplay loop playsinline muted preload="metadata" poster="assets/landing/interview-off-camera-poster.jpg" aria-label="วิดีโอจำลองสำหรับจัดหน้า ไม่ใช่บทสัมภาษณ์แพทย์"><source src="assets/landing/interview-off-camera-pexels-6602739.mp4" type="video/mp4"></video>';
+  if(window.KraneProgrammeStory)media.append(window.KraneProgrammeStory(data.category));
   doctor.append(media);
-  const interview = media.querySelector('video');
-  interview.muted = true;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) interview.autoplay = false;
-  else new IntersectionObserver(entries => {
-    if (entries.some(entry => entry.isIntersecting)) interview.play().catch(() => {});
-    else interview.pause();
-  }, {threshold: .25}).observe(interview);
   const designer = document.querySelector('.programme-designer');
   if (designer) copy.append(designer);
   intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);

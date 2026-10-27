@@ -270,6 +270,7 @@
      global translation contract: text nodes remember their Thai source and
      receive a page-local English equivalent when the language changes. */
   const draftEnglishText = new Map([
+    ["แพลตฟอร์มให้บริการแพทย์ทางไกล ออกแบบมาเพื่อช่วยคุณ", "A telemedicine platform designed to help you"],
     ["เสียงจากผู้รับการดูแล", "A care recipient's perspective"],
     ["ตัวอย่างผลลัพธ์จากการติดตาม", "Example follow-up results"],
     ["คำบอกเล่าและภาพตัวอย่างเป็นคนละกรณี", "The quote and example images show different cases."],
