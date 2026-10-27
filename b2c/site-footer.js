@@ -43,7 +43,7 @@
   const link = (item, key) => {
     const [th, en, href, route] = item;
     if (!href) return unavailable(key, [th, en]);
-    return '<a href="' + escape(href) + '"' + (route ? ' target="_parent" data-route="' + escape(route) + '"' : '') + '>' + label(key, [th, en]) + '</a>';
+    return '<a href="' + escape(href) + '"' + (href==='cookies.html#controls' ? ' data-cookie-settings' : '') + (route ? ' target="_parent" data-route="' + escape(route) + '"' : '') + '>' + label(key, [th, en]) + '</a>';
   };
   const chevron = '<svg class="kf__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 

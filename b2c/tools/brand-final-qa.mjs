@@ -1,3 +1,4 @@
+import {necessaryConsent} from './consent-test-fixture.mjs';
 import {chromium} from 'playwright';
 import {createServer} from 'node:http';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
@@ -9,7 +10,7 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'
 
 const targets=[['landing','b2c/krane-b2c-landing.html'],...['profile','intake-general','consultpay','payment','video','consult'].map(id=>[id,'b2c/krane-b2c.html?screens=1&demoStage='+id+'#'+id]),['doctor-login','cms/cms-doctor.html#login'],['doctor-rail','cms/cms-doctor.html#dashboard'],['admin-rail','cms/cms-admin.html#cases']];
 try{for(const width of [390,1440])for(const [name,url] of targets.filter(([name])=>!process.env.BRAND_NAMES||process.env.BRAND_NAMES.split(',').includes(name))){
-const context=await browser.newContext({viewport:{width,height:900}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const context=await browser.newContext({viewport:{width,height:900}});await necessaryConsent(context);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.goto(base+'/'+url,{waitUntil:'domcontentloaded'});await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(500);
 if(width===390&&name.endsWith('rail')){const toggle=page.locator('[data-nav-toggle]');if(await toggle.count())await toggle.click();else await page.locator('.cms-topbar__menu').click();await page.waitForTimeout(300)}
 const logos=await page.evaluate(()=>[...document.querySelectorAll('img[src*="brand-final"],.intake-lockup,.brand-lockup')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'&&e.checkVisibility()}).map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {tag:e.tagName,src:e.currentSrc||e.src||s.maskImage||s.webkitMaskImage,cls:e.className,width:r.width,height:r.height,x:r.x,y:r.y,right:r.right,naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,fit:s.objectFit,mask:s.maskImage||s.webkitMaskImage,filter:s.filter}}));

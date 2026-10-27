@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {necessaryConsent} from './consent-test-fixture.mjs';
 /* Browser QA for repeated logo, public header, app bar and bottom navigation. */
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
@@ -26,7 +27,7 @@ const screenshotDir = process.env.QA_SCREENSHOT_DIR || '';
 if (screenshotDir) await mkdir(screenshotDir, { recursive:true });
 try {
   for (const width of (process.env.QA_WIDTH ? [Number(process.env.QA_WIDTH)] : [320, 360, 390, 768, 1100, 1440])) {
-    const page = await browser.newPage({ viewport:{ width, height:900 } });
+    const context=await browser.newContext({viewport:{width,height:900}});await necessaryConsent(context);const page=await context.newPage();
     page.setDefaultTimeout(30000*qaTimeoutFactor);page.setDefaultNavigationTimeout(30000*qaTimeoutFactor);
     for (const route of ['krane-b2c-landing.html', 'condition-detail.html?condition=weight', 'doctors.html', 'glp1-safety.html']) {
       await page.goto(base + route, { waitUntil:'domcontentloaded' });
@@ -72,7 +73,7 @@ try {
       await page.locator('#intake-general.active').waitFor();
       await page.screenshot({path:join(screenshotDir,`partner-intake-general-${width}.png`)});
     }
-    await page.close();
+    await context.close();
   }
   const failures = [];
   const publicRoutes = new Set(['krane-b2c-landing.html','condition-detail.html?condition=weight','doctors.html','glp1-safety.html']);

@@ -1,3 +1,4 @@
+import {necessaryConsent} from './consent-test-fixture.mjs';
 /* Behavioral coverage for the October public-page redesign. */
 import {chromium} from 'playwright';
 import {createServer} from 'node:http';
@@ -16,7 +17,7 @@ const thai=page=>page.evaluate(()=>{const found=new Set(),w=document.createTreeW
 try{
 for(const width of [390,1440]){
  const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
- ctx.setDefaultNavigationTimeout(60000);ctx.setDefaultTimeout(10000);
+ await necessaryConsent(ctx);ctx.setDefaultNavigationTimeout(60000);ctx.setDefaultTimeout(10000);
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
  for(const route of ['krane-b2c-landing.html','doctors.html',...['weight','hair-loss','re-flow'].map(c=>'condition-detail.html?condition='+c)]){
   await p.goto(`${base}/b2c/${route}${route.includes('?')?'&':'?'}lang=en`,{waitUntil:'domcontentloaded'});await p.waitForTimeout(1800);

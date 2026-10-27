@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {necessaryConsent} from './consent-test-fixture.mjs';
 /*
  * Regression lock for the Krane B2C prototype.
  *
@@ -60,6 +61,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']
 });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+await necessaryConsent(ctx);
 ctx.setDefaultTimeout(5000*qaTimeoutFactor);
 ctx.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 const consoleErrors = [];
@@ -135,6 +137,7 @@ const completePartnerIdentity = async page => {
   await page.waitForFunction(() => document.querySelector('.screen.active')?.id !== 'otp');
 };
 const freshPartnerHealth = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+await necessaryConsent(freshPartnerHealth);
 freshPartnerHealth.setDefaultTimeout(5000*qaTimeoutFactor);
 freshPartnerHealth.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 try {
@@ -184,6 +187,7 @@ try {
 // The waiting room persists an in-progress queue. Keep this end-to-end patient
 // journey in its own browser storage so later independent flow checks start fresh.
 const partnerCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+await necessaryConsent(partnerCtx);
 partnerCtx.setDefaultTimeout(5000*qaTimeoutFactor);
 partnerCtx.setDefaultNavigationTimeout(60000*qaTimeoutFactor);
 const partnerJourney = await partnerCtx.newPage();
