@@ -23,10 +23,12 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No banner horizontal overflow');
  const bannerBox=await banner(p).boundingBox();check(bannerBox.width<=width&&bannerBox.y>=0&&bannerBox.y+bannerBox.height<=901,'Responsive banner fits viewport');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
+ check((await banner(p).locator('a').boundingBox()).height>=44,'Banner policy link has a 44px touch target');
  await banner(p).screenshot({path:join(out,`banner-${width}-${lang}.png`)});
  await p.screenshot({path:join(out,`notice-page-${width}-${lang}.png`),animations:'disabled'});
  await p.evaluate(()=>localStorage.setItem('krane-cookie-qa-sentinel','preserve'));
  await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');
+ check((await dialog(p).locator('a').boundingBox()).height>=44,'Dialog policy link has a 44px touch target');
  check(await dialog(p).locator('input:checked:disabled').count()===1,'Necessary always active');
  check(await dialog(p).locator('[data-cookie-category]:not(:checked):disabled').count()===2,'Unavailable optional categories stay off');
  await p.keyboard.press('Tab');check(await p.evaluate(()=>document.querySelector('[data-cookie-preferences]').contains(document.activeElement)),'Keyboard stays in native modal');

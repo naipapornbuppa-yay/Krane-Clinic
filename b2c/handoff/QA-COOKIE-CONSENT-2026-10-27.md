@@ -14,7 +14,7 @@ The hosting-provider section is preserved. Its server-side logging is outside th
 - Equal prominence for necessary-only and accept-all actions. Analytics and advertising are explicitly marked unused, disabled and off. Since no optional categories are implemented, every choice currently retains necessary storage only. Accept-all never adds or enables a tracker.
 - A versioned record (`krane_cookie_preferences_v1`) stores the choice and timestamp in localStorage. Session storage is a fallback; if both stores are blocked the UI reports a page-only choice. Invalid/unknown records never authorize optional storage.
 - Footer Manage Cookies, the policy controls section and app settings reopen preferences. The app shell owns its notice; the embedded marketing landing forwards settings to the shell and renders no duplicate notice.
-- Native modal keyboard containment, Escape/backdrop/close behavior, focus return, responsive layout, readable category status, language updates, reload/navigation persistence and cross-tab updates.
+- Native modal keyboard containment, Escape/backdrop/close behavior, focus return, responsive layout, 44px action/link targets, readable category status, language updates, reload/navigation persistence and cross-tab updates.
 - Rejecting optional storage leaves unrelated user/prototype data intact. No addresses, drafts, clinical files or language preferences are cleared.
 - Cookie/storage policy updated with the actual choice key, storage fallback and current UI behavior. No change to the released programme compositions or supplied media.
 
@@ -22,7 +22,7 @@ Before adding an optional provider, the owner must supply its actual purpose, in
 
 ## Release checks
 
-Final local aggregate: 502/502 passed (193 contract + 180 public + 129 consent). All additional release suites listed below passed.
+Final local aggregate: 510/510 passed (193 contract + 180 public + 137 consent). All additional release suites listed below passed.
 
 `npm run check:ui` now runs the original 193 contract checks, 180 public behaviour/motion checks and the dedicated consent suite. Existing flow/visual suites explicitly start after a necessary-only choice via `consent-test-fixture.mjs`; the separate consent suite uses genuine fresh contexts and covers the first-visit UI.
 
