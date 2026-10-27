@@ -22,6 +22,9 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(await p.evaluate(()=>!KraneCookieConsent.isAllowed('analytics')&&!KraneCookieConsent.isAllowed('advertising')),'Optional categories denied by default');
  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No banner horizontal overflow');
  const bannerBox=await banner(p).boundingBox();check(bannerBox.width<=width&&bannerBox.y>=0&&bannerBox.y+bannerBox.height<=901,'Responsive banner fits viewport');
+ check(Math.abs(bannerBox.x+bannerBox.width/2-width/2)<2,'Notice horizontally centred');
+ check(bannerBox.height<=(width<760?240:160),'Notice stays compact');
+ check(await banner(p).locator('button').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44})),'Notice actions retain 44px targets');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
  check((await banner(p).locator('a').boundingBox()).height>=44,'Banner policy link has a 44px touch target');
  await banner(p).screenshot({path:join(out,`banner-${width}-${lang}.png`)});
@@ -61,6 +64,8 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check((await ctx.cookies()).length===0,'No site cookies created by consent choices');
  await ctx.close();results.push({width,lang,status:'pass'});
 }
+// Narrow phone geometry keeps the compact notice's choices within safe edges.
+for(const lang of ['th','en']){const ctx=await browser.newContext({viewport:{width:320,height:640}});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c-landing.html?lang='+lang);await banner(p).waitFor();const box=await banner(p).boundingBox();check(box.x>=10&&box.x+box.width<=310&&box.y>=0&&box.y+box.height<=640,'320px notice fits safe edges '+lang);check(await banner(p).locator('button,a').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44&&r.left>=10&&r.right<=310})),'320px notice actions fit and remain usable '+lang);await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'320px preferences open '+lang);await p.keyboard.press('Escape');check(await banner(p).isVisible(),'320px Escape preserves unanswered notice '+lang);await ctx.close();}
 // A first-time application entry owns the banner above its embedded landing.
 {
  const ctx=await browser.newContext({viewport:{width:390,height:900}});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c.html?public=1&screens=1#landing');await banner(p).waitFor();
