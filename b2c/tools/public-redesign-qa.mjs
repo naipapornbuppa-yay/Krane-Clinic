@@ -45,10 +45,16 @@ for(const width of [390,1440]){
    await p.locator('#weight-program .pc-story-open').first().click();await p.waitForTimeout(150);
    check(await p.locator('dialog[open]').count()===1,'Programme story opens');
    check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));
+   const ugc=await p.evaluate(()=>{const card=document.querySelector('#weight-program [data-pc-video]'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
+   for(const [key,ok] of Object.entries(ugc))check(ok,'UGC integrated caption '+key);
+   await p.keyboard.press('ArrowRight');
+   check(await p.locator('.pc-story-caption p').innerText()===await p.locator('#weight-program blockquote').nth(1).innerText(),'UGC next quote retains approved line breaks');
+   await p.keyboard.press('ArrowLeft');
+   check(await p.locator('.pc-story-caption p').innerText()===await p.locator('#weight-program blockquote').first().innerText(),'UGC previous story restores its caption');
    const sound=p.locator('dialog[open] [data-story-sound]');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Mute','Unmuting updates the accessible action');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Unmute','Muting updates the accessible action');
-   await p.keyboard.press('Escape');check(await p.locator('dialog[open]').count()===0,'Escape closes story');
+   await p.keyboard.press('Escape');check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await p.locator('#weight-program .pc-story-open').first().evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
   } else if(route.startsWith('condition-detail')){
    const kind=new URLSearchParams(route.split('?')[1]).get('condition');
    const story=p.locator('[data-programme-story]'),concept=kind==='weight'?'weight':kind==='hair-loss'?'hair':'private';
