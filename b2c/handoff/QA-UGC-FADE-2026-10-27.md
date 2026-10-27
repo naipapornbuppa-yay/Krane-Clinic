@@ -11,3 +11,11 @@ Verification covers desktop 1440px and mobile 390px in Thai and English, inline 
 This static branch has no separate lint/build script. The applicable gate is `npm run check:ui`, the string-ID check, JavaScript syntax, whitespace checks and the exact-revision Pages deployment. Browser viewport emulation does not constitute physical-device or backend integration verification.
 
 Local release gate: 528/528 passed (193 contract + 198 public + 137 consent). All 87 translation IDs, changed JavaScript syntax and whitespace checks passed. No third-party requests were observed by the consent suite.
+
+## Follow-up: lighter programme surfaces and coloured CTAs
+
+The user subsequently requested lighter programme backgrounds and restoration of the darker coloured Start now buttons. History before `069cf91` establishes weight `--draft-weight-strong: #8e3611`, hair `#356a5f` and the default programme CTA `#111b30`. Those exact primary colours are restored. Weight and hair surfaces return to their existing lighter palette tokens (`#be7d61`, `#7ea99e`); re:flow uses a lighter related muted blue (`#8797b3`). Category-specific dark ink replaces white body text, and secondary text opacity is removed to retain contrast. Video captions keep white text over their darker tonal fades; other programme visual compositions and cookie assets are preserved.
+
+Additional public checks compare each programme's luminance to the prior surface, require a darker primary button, and verify at least 4.5:1 body, primary-button and secondary-button text contrast at desktop and mobile widths. The final combined gate supersedes the initial 528-check UGC-only run.
+
+Final combined local release gate: 558/558 passed (193 contract + 228 public + 137 consent), with 87 translation IDs, syntax and whitespace checks also passing.

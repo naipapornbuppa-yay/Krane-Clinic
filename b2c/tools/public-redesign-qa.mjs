@@ -31,6 +31,9 @@ for(const width of [390,1440]){
     const category=({weight:'weight',hair:'hair-skin',ed:'sexual-health'})[kind];
     const links=await p.locator(`#${kind}-program .pc-goals a`).evaluateAll(es=>es.map(e=>e.getAttribute('href')));
     check(links.length===4&&links.every(h=>h.includes('category='+category)&&h.endsWith('#intake1')),'Four matching goal destinations '+kind);
+    const palette=await p.locator(`#${kind}-program`).evaluate((section,kind)=>{const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number),lum=c=>c.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0),contrast=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05),style=getComputedStyle(section),bg=rgb(style.backgroundColor),button=getComputedStyle(section.querySelector('.pc-primary')),buttonBg=rgb(button.backgroundColor),old=({weight:[140,80,58],hair:[60,87,83],ed:[44,57,86]})[kind];return {lighter:lum(bg)>lum(old)*1.6,bodyContrast:contrast(rgb(style.color),bg)>=4.5,ctaContrast:contrast(rgb(button.color),buttonBg)>=4.5,darkerCta:lum(buttonBg)<lum(bg),secondaryContrast:contrast(rgb(getComputedStyle(section.querySelector('.pc-actions a:not(.pc-primary)')).color),bg)>=4.5};},kind);
+    for(const [key,ok] of Object.entries(palette))check(ok,'Programme lighter palette '+kind+' '+key);
+
     if(width===390){
      const receiving=await ctx.newPage();await receiving.goto(new URL(links[0],p.url()).href,{waitUntil:'domcontentloaded'});
      await receiving.locator('#intake1.active').waitFor();
