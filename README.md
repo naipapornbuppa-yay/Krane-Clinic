@@ -1,98 +1,81 @@
-# vinext-starter
+# Krane Clinic
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Interactive prototype for a telehealth clinic: the patient app, the public landing page, the doctor portal, and the admin portal. The screens are static HTML, CSS, and JavaScript in `public/`. A thin [vinext](https://github.com/cloudflare/vinext) / Next.js app in `app/` redirects `/` to the review gate. GitHub Pages publishes the `public/` directory.
 
-## Prerequisites
+Live review: https://naipapornbuppa-yay.github.io/Krane-Clinic/
 
-- Node.js `>=22.13.0`
+This is a design prototype for flow, content, and component behavior. It is not a production system and it does not contain real patient records.
 
-## Quick Start
+## Open it
+
+Node.js `>=22.13.0` is required for the vinext scripts. The static pages themselves need only a browser.
+
+GitHub Pages, or any static server whose document root is `public/`:
+
+```bash
+npm run preview:b2c
+```
+
+That serves `public/` at http://127.0.0.1:5173/ and opens `START-HERE.html`. A plain static server works too:
+
+```bash
+python3 -m http.server 8765 --directory public
+```
+
+Then open http://127.0.0.1:8765/START-HERE.html
+
+The vinext dev server serves the same files and redirects `/` to the gate:
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+Use a current Chrome, Edge, or Safari. Keep the HTML files next to `assets/`, `b2c/`, `cms/`, and `ui-inventory/`. Opening a single HTML file from a cloud-drive preview will not load the images, CSS, or scripts.
 
-## Included Shape
+`public/` contains `.nojekyll` so GitHub Pages serves the prototype as static files.
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## Review gate
 
-## Workspace Auth Headers
+`START-HERE.html` (also `/` and `index.html`) asks for an access code, then shows four destinations. The check runs in the browser and remembers a session flag. It is unchanged by the repo cleanup. It is not account authentication.
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+## Page map
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+| Page | File | Also reachable as |
+| --- | --- | --- |
+| Review gate | `public/START-HERE.html` | `/`, `index.html` |
+| Patient app | `public/b2c/krane-b2c.html` | `krane-b2c.html` redirects here. Hash routes such as `#landing`, `#consent-terms`, `#conditions`, `#profile` |
+| Public landing | `public/b2c/krane-b2c-landing.html` | `krane-b2c-landing.html` redirects here. The patient app embeds this page on `#landing` |
+| Doctors | `public/b2c/doctors.html` | Linked from the landing page |
+| Doctor profile | `public/b2c/doctor-detail.html` | `doctor-detail.html` redirects here |
+| Condition guide | `public/b2c/condition-detail.html` | Linked from the landing page |
+| Medical advisors | `public/b2c/advisor-detail.html` | `advisor-detail.html` redirects here |
+| GLP-1 safety | `public/b2c/glp1-safety.html` | Linked from the patient flow |
+| Doctor portal | `public/cms/cms-doctor.html` | `cms-doctor.html` redirects here |
+| Admin portal | `public/cms/cms-admin.html` | `cms-admin.html` redirects here |
+| UI inventory | `public/ui-inventory/ui-components.html` | `ui-components.html` redirects here |
+| State illustrations | `public/b2c/state-illustrations-ink.html` | Set B, the set used in the app. `state-illustrations.html?archive=set-a` keeps the archived Set A gallery |
 
-Treat the full name as optional and fall back to email when it is absent:
+The four cards on the gate are the partner entry (`b2c/krane-b2c.html?entry=partner#consent-terms`), the patient app, the doctor portal, and the admin portal.
 
-```tsx
-import { headers } from "next/headers";
+Thai is the default. `?lang=en` switches a page that loads `i18n.js` to English. The patient app's landing screen is the public landing in an iframe, so the language control on that screen is the one inside the landing page.
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
+## Where the code lives
 
-  const displayName = fullName ?? email;
-  // ...
-}
-```
+- `public/b2c/` is the patient app and landing. `design-tokens.css`, `components.css`, `i18n.js`, and `custom-select.*` in this folder are the live patient copies.
+- `public/cms/` is the doctor and admin portals, with their own tokens, stylesheet, and `i18n.js`. Those files are not identical to the patient copies, so they stay separate.
+- `public/ui-inventory/` is the component inventory. It keeps its own tokens, components, and CMS stylesheet because those files still differ, and `components.css` resolves `assets/` relative to this folder.
+- `public/assets/lucide.min.js` is the single icon bundle. `public/assets/krane-logo.svg` is the canonical wordmark (`public/assets/krane-clinic-lockup-v1.svg` is the lockup used in the app header).
+- `public/i18n.js` is an older dictionary. No page loads it. It stays because `tests/rendered-html.test.mjs` locks three strings in that file, and the live `b2c/i18n.js` translation of the same line is different.
+- `app/` is the vinext shell: `page.tsx` redirects to the gate, and `layout.tsx` sets the document icon to `/assets/krane-logo.svg`.
+- `worker/routes.mjs` maps the short vinext URLs (`/cms/doctor`, `/b2c/landing`, and the root HTML aliases) onto the files above.
+- `public/b2c/handoff/` and `public/b2c/strings/` describe the string-id contract. The prototype does not load them, so editing them does not change the UI.
+- `tests/` checks routes and a large set of markup contracts. Many cases are marked `todo` because they still describe an older landing.
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## Scripts
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
-
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
-
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
-
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
-
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
-
-## Useful Commands
-
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+- `npm run dev` — vinext dev server
+- `npm run preview:b2c` — static server for `public/` with live reload
+- `npm run build` — vinext build
+- `npm test` — build, then the node tests
+- `npm run test:fast` — node tests only
