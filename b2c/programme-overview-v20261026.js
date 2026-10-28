@@ -57,7 +57,9 @@ window.KraneProgrammeOverview = data => {
   } else facts.classList.add('is-visible');
   const doctor = document.createElement('aside');doctor.className = 'programme-intro__doctor';
   const media = document.createElement('div');media.className = 'programme-intro__media';
-  if(window.KraneProgrammeStory)media.append(window.KraneProgrammeStory(data.category));
+  media.classList.add('programme-interview-placeholder');
+  const video=document.createElement('video');video.controls=true;video.playsInline=true;video.muted=true;video.defaultMuted=true;video.loop=true;video.preload='metadata';video.poster='assets/landing/interview-off-camera-poster.jpg';video.src='assets/landing/interview-off-camera-pexels-6602739.mp4';video.setAttribute('aria-label','วิดีโอสัมภาษณ์ประกอบ รอวิดีโอแนะนำโปรแกรมจากแพทย์');
+  const videoLabel=document.createElement('div');videoLabel.className='programme-interview-label';const title=document.createElement('strong');title.textContent='คุณหมอแนะนำโปรแกรม';const note=document.createElement('span');note.textContent='ภาพประกอบ · เตรียมพบกับบทสัมภาษณ์คุณหมอ';videoLabel.append(title,note);media.append(video,videoLabel);
   doctor.append(media);
   const designer = document.querySelector('.programme-designer');
   if (designer) copy.append(designer);
