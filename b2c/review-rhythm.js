@@ -27,7 +27,7 @@
   if(card.closest('.review-marquee')){
    card.tabIndex=card.closest('[aria-hidden=true]')?-1:0;
    const open=event=>{if(card.dataset.storyKind!=='video'||event.target.closest('.review-rhythm-selector'))return;event.preventDefault();event.stopImmediatePropagation();
-    const modal=document.createElement('dialog');modal.className='review-rhythm-modal';modal.setAttribute('aria-label','วิดีโอรีวิวฉบับเต็ม');modal.innerHTML='<button aria-label="ปิดวิดีโอ">×</button><video controls playsinline></video>';document.body.append(modal);const full=modal.querySelector('video');full.muted=true;full.defaultMuted=true;full.autoplay=true;full.src=item.src;modal.querySelector('button').onclick=()=>modal.close();modal.addEventListener('close',()=>{full.pause();modal.remove();card.focus({preventScroll:true})});modal.showModal();full.play().catch(()=>{});
+    document.dispatchEvent(new CustomEvent('krane:open-review-stories',{detail:{items:data.map(review=>({...review,attribution:attribution(review)})),activeId:item.id,trigger:card}}));
    };card.addEventListener('click',open,true);card.addEventListener('keydown',event=>{if(['Enter',' '].includes(event.key))open(event)},true);
   }
   card.classList.add('review-rhythm-card');card.style.setProperty('--review-tone',tones[item.category]||'#395aa4');
