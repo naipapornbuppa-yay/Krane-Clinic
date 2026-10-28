@@ -1,8 +1,9 @@
 /* Shared review rhythm: same-person faces, staggered and motion-aware. */
 (()=>{
+ const demoNotice=document.createElement('p');demoNotice.textContent='เว็บไซต์สาธิต · อายุ จังหวัด ระยะเวลา คะแนน และภาพ AI บางส่วนเป็นข้อมูลสมมติ ไม่ใช่ผลการรักษาที่รับรอง';demoNotice.style.cssText='margin:24px auto;padding:12px 24px;max-width:1100px;text-align:center;font-size:12px;line-height:1.6;color:#596477';const footer=document.querySelector('[data-site-footer]');if(footer)footer.before(demoNotice);else document.body.append(demoNotice);
  const data=window.KraneReviews||[],reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const attribution=item=>[item.category==='re-flow'?'คุณ '+(item.name||'').replace(/^คุณ\s*/,'').slice(0,1)+'.':item.name,item.age?`${item.age} ปี`:'อายุ —',item.province||'จังหวัด —',item.profileIsSample?'(อายุและจังหวัดสมมติ)':null].filter(Boolean).join(' · ');
+ const attribution=item=>[item.category==='re-flow'?'คุณ '+(item.name||'').replace(/^คุณ\s*/,'').slice(0,1)+'.':item.name,item.age?`${item.age} ปี`:'อายุ —',item.province||'จังหวัด —'].filter(Boolean).join(' · ');
  document.querySelectorAll('.weight-story-gallery__video-copy,.review-video__copy').forEach(e=>e.remove());
  document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id],.story-blocks__panel[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite)cite.textContent=attribution(item)});
  document.querySelectorAll('.weight-story-gallery__photos figcaption,.review-video__photos figcaption,.review-video--comparison>.cd-fine').forEach(e=>e.remove());

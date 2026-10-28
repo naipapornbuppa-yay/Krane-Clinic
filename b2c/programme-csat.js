@@ -74,7 +74,7 @@
    const score=node('div','','programme-csat__score');score.append(node('strong',d.total?average.toFixed(1):'—'),node('span',' / 5'));
    const detail=node('div','','programme-csat__detail');
    const stars=node('div','★★★★★','programme-csat__stars');stars.setAttribute('aria-label',average.toFixed(1)+' จาก 5 ดาว');stars.style.setProperty('--rating',average/5*100+'%');
-   detail.append(stars,node('p',payload.demo?'คะแนนจำลอง':'ความพึงพอใจต่อบริการ'),node('small',d.total+' การประเมิน'));
+   detail.append(stars,node('small',d.total+' การประเมิน'));
    body.replaceChildren(score,detail);status.textContent=d.total?'':'ยังไม่มีการประเมิน';
 
   }catch(error){comments.replaceChildren();body.replaceChildren();status.textContent='ยังโหลดคะแนนไม่ได้ กรุณาลองใหม่ภายหลัง';}finally{pending=false}
