@@ -459,7 +459,14 @@
     ["เล่นคลิปสัมภาษณ์ คุณ ร., 42 ปี", "Play interview with R., age 42"],
     ["รีวิวจากสมาชิก", "Member reviews"],
     ["รีวิวจากสมาชิก แถวบน", "Member reviews, top row"],
-    ["รีวิวจากสมาชิก แถวล่าง", "Member reviews, bottom row"]
+    ["รีวิวจากสมาชิก แถวล่าง", "Member reviews, bottom row"],
+    ["หมอประจำตัวที่ดูแลคุณอย่างต่อเนื่อง", "A doctor who looks after you, continuously"],
+    ["ปลดล็อกเวอร์ชันที่ดีที่สุดของคุณ", "Unlock the best version of you"],
+    ["“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”", "“Online visits are easy, and I can talk about weight with a doctor in private”"],
+    ["“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”", "“With a doctor following along, the weight plan became much clearer”"],
+    ["“ได้แผนดูแลที่เหมาะกับตัวเอง ไม่ต้องเดาเอง”", "“I got a plan that fits me, instead of guessing”"],
+    ["“ได้คุยเป็นส่วนตัว จึงตัดสินใจจากข้อมูลของแพทย์”", "“The conversation stayed private, so I decided from the doctor’s information”"],
+    ["“การติดตามเป็นระยะช่วยให้ปรับแผนได้จริง”", "“Regular follow-up made it possible to adjust the plan”"]
   ]);
 
   const applyDraftLanguage = (lang) => {
@@ -2023,17 +2030,30 @@
   const reviewDialog = document.querySelector("[data-review-dialog]");
   const reviewDialogImage = document.querySelector("[data-review-dialog-image]");
   const reviewDialogName = document.querySelector("[data-review-dialog-name]");
+  const reviewDialogQuote = document.querySelector("[data-review-dialog-quote]");
+  const reviewDialogProgram = document.querySelector("[data-review-dialog-program]");
   const reviewClose = document.querySelector("[data-review-close]");
+  const reviewStories = {
+    "@peach.vlog": { program: "โปรแกรมลดน้ำหนัก", quote: "“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”" },
+    "@ton_fitlife": { program: "โปรแกรมลดน้ำหนัก", quote: "“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”" },
+    "@bright.mind": { program: "โปรแกรมฟื้นฟูเส้นผม", quote: "“ดีมากและบริการดีมาก”" },
+    "@mick.antiag": { program: "โปรแกรมฟื้นฟูเส้นผม", quote: "“ได้แผนดูแลที่เหมาะกับตัวเอง ไม่ต้องเดาเอง”" },
+    "@gun_review": { program: "โปรแกรมฟื้นฟูสมรรถภาพเพศชาย", quote: "“ได้คุยเป็นส่วนตัว จึงตัดสินใจจากข้อมูลของแพทย์”" },
+    "@dr.oak_active": { program: "โปรแกรมลดน้ำหนัก", quote: "“การติดตามเป็นระยะช่วยให้ปรับแผนได้จริง”" }
+  };
   let reviewReturnFocus = null;
 
   function openReview(card) {
     if (!reviewDialog || !reviewDialogImage || !reviewDialogName) return;
     const sourceImage = card.querySelector("img");
     const name = card.querySelector("figcaption")?.textContent?.trim() || "Krane member";
+    const story = reviewStories[name] || { program: "โปรแกรมลดน้ำหนัก", quote: "“ดีมากและบริการดีมาก”" };
     reviewReturnFocus = card;
     reviewDialogImage.src = sourceImage?.currentSrc || sourceImage?.src || "";
     reviewDialogImage.alt = `ภาพรีวิวจาก ${name}`;
     reviewDialogName.textContent = name;
+    if (reviewDialogQuote) reviewDialogQuote.textContent = story.quote;
+    if (reviewDialogProgram) reviewDialogProgram.textContent = story.program;
     document.body.classList.add("review-open");
     if (typeof reviewDialog.showModal === "function") reviewDialog.showModal();
     else reviewDialog.setAttribute("open", "");

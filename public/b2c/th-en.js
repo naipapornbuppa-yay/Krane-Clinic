@@ -480,6 +480,13 @@
      text node and needs its own entry. */
     "แพทย์ประจำตัวที่":"Your personal doctor,",
     "คอยดูแลคุณ":"by your side",
+    "หมอประจำตัวที่ดูแลคุณอย่างต่อเนื่อง":"A doctor who looks after you, continuously",
+    "ปลดล็อกเวอร์ชันที่ดีที่สุดของคุณ":"Unlock the best version of you",
+    "“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”":"“Online visits are easy, and I can talk about weight with a doctor in private”",
+    "“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”":"“With a doctor following along, the weight plan became much clearer”",
+    "“ได้แผนดูแลที่เหมาะกับตัวเอง ไม่ต้องเดาเอง”":"“I got a plan that fits me, instead of guessing”",
+    "“ได้คุยเป็นส่วนตัว จึงตัดสินใจจากข้อมูลของแพทย์”":"“The conversation stayed private, so I decided from the doctor’s information”",
+    "“การติดตามเป็นระยะช่วยให้ปรับแผนได้จริง”":"“Regular follow-up made it possible to adjust the plan”",
     "ปรึกษาแพทย์ทางไกล พร้อมรับยาตามใบสั่งแพทย์ ส่งตรงถึงบ้าน":"Telehealth consultations with prescription medicine delivered to your door",
     "ปรึกษาแพทย์ทางไกล พร้อมรับยาตามใบสั่งแพทย์":"Telehealth consultations with prescription medicine",
     "ส่งตรงถึงบ้าน":"delivered to your door",
