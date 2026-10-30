@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "Krane Client Review",
   description: "Krane Clinic brand, patient, doctor and operations prototype for client review.",
   icons: {
-    icon: "/assets/krane-clinic-logo-charcoal.svg",
-    shortcut: "/assets/krane-clinic-logo-charcoal.svg",
+    icon: "/assets/krane-logo.svg",
+    shortcut: "/assets/krane-logo.svg",
   },
   openGraph: {
     title: "Krane Clinic Client Review",
