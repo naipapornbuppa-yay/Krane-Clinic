@@ -492,6 +492,10 @@
     "โปรแกรมลดน้ำหนัก":"Weight loss programme",
     "โปรแกรมฟื้นฟูเส้นผม":"Hair recovery programme",
     "โปรแกรมฟื้นฟูสมรรถภาพเพศชาย":"Sexual health programme",
+    "ดูแลและควบคุมน้ำหนักผ่าน GLP-1":"Weight care through GLP-1",
+    "ดูแลผมร่วง ผมบาง":"Hair loss and thinning care",
+    "ดูแลสมรรถภาพเพศชาย":"Men's sexual health care",
+    "ดูรายละเอียด":"View details",
     /* Product cards: weight */
     "ออกฤทธิ์สองทาง ช่วยคุมความอยากอาหารและระดับน้ำตาล":"Works two ways, helping control appetite and blood sugar",
     "ช่วยให้อิ่มนานขึ้น ลดความอยากอาหารระหว่างวัน":"Keeps you full for longer and reduces appetite through the day",

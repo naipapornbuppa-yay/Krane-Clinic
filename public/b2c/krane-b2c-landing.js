@@ -275,7 +275,7 @@
     ["อาการที่เราดูแล", "Conditions we treat"], ["โรคอ้วน / การลดน้ำหนัก", "Obesity / Weight loss"],
     ["ผมบาง ผมร่วง", "Thinning hair / Hair loss"], ["ภาวะหย่อนสมรรถภาพทางเพศ", "Erectile dysfunction"], ["เจ็บป่วยทั่วไป", "General health"],
     ["บริการของเรา", "our services"], ["โปรแกรม re:body", "re:body program"], ["โปรแกรม re:hair", "re:hair program"],
-    ["โปรแกรมฟื้นฟูสมรรถภาพเพศชาย", "Men's performance care"], ["ปรึกษาทั่วไป", "general consultation"], ["เติมยา", "refill medicine"],
+    ["ดูแลสมรรถภาพเพศชาย", "Men's sexual health care"], ["ดูแลและควบคุมน้ำหนักผ่าน GLP-1", "Weight care through GLP-1"], ["ดูแลผมร่วง ผมบาง", "Hair loss and thinning care"], ["ดูรายละเอียด", "View details"], ["ปรึกษาทั่วไป", "general consultation"], ["เติมยา", "refill medicine"],
     ["อัพโหลดใบสั่งยา", "upload prescription"], ["วิธีการทำงาน", "how it works"], ["วิธีใช้งาน", "how it works"], ["แพทย์ของเรา", "Our doctors"], ["ทีมแพทย์ของเรา", "our medical team"], ["บทความสุขภาพ", "health library"],
     ["บริการอื่น ๆ สำหรับคุณ", "More care for you"], ["อาการทั่วไป / ไม่แน่ใจ", "General symptoms / Not sure"],
     ["ผิวพรรณ & ชะลอวัย", "Skin & healthy ageing"], ["ฮอร์โมน & TRT", "Hormones & TRT"],
@@ -2033,12 +2033,12 @@
   const reviewDialogProgram = document.querySelector("[data-review-dialog-program]");
   const reviewClose = document.querySelector("[data-review-close]");
   const reviewStories = {
-    "@peach.vlog": { program: "โปรแกรมลดน้ำหนัก", quote: "“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”" },
-    "@ton_fitlife": { program: "โปรแกรมลดน้ำหนัก", quote: "“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”" },
-    "@bright.mind": { program: "โปรแกรมฟื้นฟูเส้นผม", quote: "“ดีมากและบริการดีมาก”" },
-    "@mick.antiag": { program: "โปรแกรมฟื้นฟูเส้นผม", quote: "“ได้แผนดูแลที่เหมาะกับตัวเอง ไม่ต้องเดาเอง”" },
-    "@gun_review": { program: "โปรแกรมฟื้นฟูสมรรถภาพเพศชาย", quote: "“ได้คุยเป็นส่วนตัว จึงตัดสินใจจากข้อมูลของแพทย์”" },
-    "@dr.oak_active": { program: "โปรแกรมลดน้ำหนัก", quote: "“การติดตามเป็นระยะช่วยให้ปรับแผนได้จริง”" }
+    "@peach.vlog": { program: "re:body", quote: "“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”" },
+    "@ton_fitlife": { program: "re:body", quote: "“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”" },
+    "@bright.mind": { program: "re:hair", quote: "“ดีมากและบริการดีมาก”" },
+    "@mick.antiag": { program: "re:hair", quote: "“ได้แผนดูแลที่เหมาะกับตัวเอง ไม่ต้องเดาเอง”" },
+    "@gun_review": { program: "re:flow", quote: "“ได้คุยเป็นส่วนตัว จึงตัดสินใจจากข้อมูลของแพทย์”" },
+    "@dr.oak_active": { program: "re:body", quote: "“การติดตามเป็นระยะช่วยให้ปรับแผนได้จริง”" }
   };
   let reviewReturnFocus = null;
 
@@ -2046,7 +2046,7 @@
     if (!reviewDialog || !reviewDialogImage || !reviewDialogName) return;
     const sourceImage = card.querySelector("img");
     const name = card.querySelector("figcaption")?.textContent?.trim() || "Krane member";
-    const story = reviewStories[name] || { program: "โปรแกรมลดน้ำหนัก", quote: "“ดีมากและบริการดีมาก”" };
+    const story = reviewStories[name] || { program: "re:body", quote: "“ดีมากและบริการดีมาก”" };
     reviewReturnFocus = card;
     reviewDialogImage.src = sourceImage?.currentSrc || sourceImage?.src || "";
     reviewDialogImage.alt = `ภาพรีวิวจาก ${name}`;
