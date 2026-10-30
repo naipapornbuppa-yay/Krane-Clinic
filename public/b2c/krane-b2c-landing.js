@@ -460,7 +460,6 @@
     ["รีวิวจากสมาชิก", "Member reviews"],
     ["รีวิวจากสมาชิก แถวบน", "Member reviews, top row"],
     ["รีวิวจากสมาชิก แถวล่าง", "Member reviews, bottom row"],
-    ["หมอประจำตัวที่ดูแลคุณอย่างต่อเนื่อง", "A doctor who looks after you, continuously"],
     ["ปลดล็อกเวอร์ชันที่ดีที่สุดของคุณ", "Unlock the best version of you"],
     ["“ปรึกษาออนไลน์สะดวก และคุยเรื่องน้ำหนักกับแพทย์ได้เป็นส่วนตัว”", "“Online visits are easy, and I can talk about weight with a doctor in private”"],
     ["“พอมีแพทย์ช่วยดูแล แผนลดน้ำหนักก็ชัดเจนขึ้น”", "“With a doctor following along, the weight plan became much clearer”"],
