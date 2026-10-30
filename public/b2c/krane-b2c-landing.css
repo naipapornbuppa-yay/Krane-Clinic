@@ -6006,7 +6006,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   box-shadow:inset 0 1px rgba(255,255,255,.05);
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
-  transition:transform .28s ease,background-color .28s ease,border-color .28s ease;
+  transition:transform .65s cubic-bezier(.22,1,.36,1),box-shadow .65s cubic-bezier(.22,1,.36,1),background-color .65s ease,border-color .65s ease;
 }
 .weight-product-card__tags{
   display:flex;
@@ -6059,7 +6059,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   object-fit:contain;
   filter:drop-shadow(0 22px 20px rgba(83,31,11,.22));
   transform-origin:center;
-  transition:transform .36s cubic-bezier(.22,.72,.2,1);
+  transition:transform .65s cubic-bezier(.22,1,.36,1);
 }
 .weight-product-card__image--pill{right:-24%;bottom:48px;width:142%;height:auto}
 .weight-product-card__image--pens{right:auto;bottom:24px;left:50%;width:74%;height:310px;transform:translateX(-50%)}
@@ -6093,10 +6093,11 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
     transform:translateY(-4px);
     border-color:rgba(255,255,255,.3);
     background:rgba(255,255,255,.105);
+    box-shadow:inset 0 1px rgba(255,255,255,.05),0 18px 36px rgba(8,12,24,.24);
   }
-  .weight-product-card:hover .weight-product-card__image{transform:translateY(-7px) scale(1.085)}
-  .weight-product-card:hover .weight-product-card__image--pens{transform:translateX(-50%) translateY(-7px) scale(1.085)}
-  .weight-product-card:hover .weight-product-card__image--single{transform:translateY(-7px) rotate(4deg) scale(1.085)}
+  .weight-product-card:hover .weight-product-card__image{transform:translateY(-7px) scale(1.03)}
+  .weight-product-card:hover .weight-product-card__image--pens{transform:translateX(-50%) translateY(-7px) scale(1.03)}
+  .weight-product-card:hover .weight-product-card__image--single{transform:translateY(-7px) rotate(4deg) scale(1.03)}
 }
 .weight-product-card__placeholder{
   position:absolute;
@@ -7161,7 +7162,7 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   transform:translateX(-50%) rotate(-7deg);
 }
 @media (hover:hover) and (pointer:fine){
-  .weight-product-card:hover .weight-product-card__image--oral{transform:translateX(-50%) translateY(-7px) rotate(-4deg) scale(1.085)}
+  .weight-product-card:hover .weight-product-card__image--oral{transform:translateX(-50%) translateY(-7px) rotate(-4deg) scale(1.03)}
 }
 
 @media(max-width:760px){
@@ -7234,8 +7235,8 @@ a[data-category="hair-skin"].care-banner-grid__sub .banner-swap__image--lifestyl
   transform:translateX(-50%);
 }
 @media (hover:hover) and (pointer:fine){
-  .weight-product-card:hover .weight-product-card__image--oral-tablet{transform:translateX(-50%) translateY(-7px) rotate(-2deg) scale(1.085)}
-  .weight-product-card:hover .weight-product-card__image--ed-pills{transform:translateX(-50%) translateY(-7px) scale(1.085)}
+  .weight-product-card:hover .weight-product-card__image--oral-tablet{transform:translateX(-50%) translateY(-7px) rotate(-2deg) scale(1.03)}
+  .weight-product-card:hover .weight-product-card__image--ed-pills{transform:translateX(-50%) translateY(-7px) scale(1.03)}
 }
 
 .landing-figma-draft .program-section--hair,
@@ -8026,13 +8027,13 @@ html[lang="en"] .landing-figma-draft #ed-title{
     transform:translateX(-50%) translateY(-6px) scale(1.035);
   }
   .weight-product-card:hover .weight-product-card__image--hair-set{
-    transform:translateY(-7px) scale(1.055);
+    transform:translateY(-7px) scale(1.03);
   }
   .weight-product-card:hover .weight-product-card__image--hair-dropper{
-    transform:translateX(-50%) translateY(-7px) rotate(-4deg) scale(1.085);
+    transform:translateX(-50%) translateY(-7px) rotate(-4deg) scale(1.03);
   }
   .weight-product-card:hover .weight-product-card__image--hair-pump{
-    transform:translateX(-50%) translateY(-7px) rotate(3deg) scale(1.085);
+    transform:translateX(-50%) translateY(-7px) rotate(3deg) scale(1.03);
   }
 }
 
@@ -9881,4 +9882,74 @@ html[lang="en"] .landing-figma-draft #ed-title{
   object-position:68% top!important;
   filter:none!important;
   mix-blend-mode:normal!important;
+}
+
+/* ---------- Entrance motion ----------
+   Resting geometry matches the un-animated page. Travel is transform-only
+   inside a mask, so the line box does not change size. Reduced motion never
+   applies the from-state. */
+.landing-figma-draft #hero-title .hero-line,
+.landing-figma-draft #hero-title .hero-line__text{
+  margin:0;
+  padding:0;
+  font:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+}
+
+@media (prefers-reduced-motion: no-preference){
+  html.krane-motion #hero-title:not(.is-settled) .hero-line{
+    display:inline-block;
+    overflow:hidden;
+    vertical-align:bottom;
+    line-height:inherit;
+  }
+  html.krane-motion #hero-title:not(.is-settled) .hero-line__text{
+    display:block;
+    animation:krane-line-reveal .72s cubic-bezier(.22,1,.36,1) both;
+  }
+  html.krane-motion #hero-title:not(.is-settled) .hero-line:nth-of-type(2) .hero-line__text{animation-delay:90ms}
+  .landing-figma-draft .hero__lead{
+    animation:krane-fade-up .7s cubic-bezier(.22,1,.36,1) .18s both;
+  }
+  .landing-figma-draft #services .service-carousel-card__cta{
+    animation:krane-cta-in .65s cubic-bezier(.22,1,.36,1) .34s both;
+  }
+  html.krane-motion [data-reveal] > *{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1);
+    transition-delay:calc(var(--reveal-i, 0) * 80ms);
+  }
+  html.krane-motion [data-reveal].is-in > *{
+    opacity:1;
+    transform:none;
+  }
+}
+
+@keyframes krane-line-reveal{
+  from{transform:translateY(110%)}
+  to{transform:translateY(0)}
+}
+@keyframes krane-fade-up{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:none}
+}
+@keyframes krane-cta-in{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* Marquees that already fade at the edges stay that way. Slow the loops and
+   hold them still under the pointer. Reduced motion already turns them off. */
+@media (prefers-reduced-motion: no-preference){
+  .landing-figma-draft .hero-draft__benefits{animation-duration:36s}
+  .landing-figma-draft .trust-section--figma .trust-grid--open{animation-duration:80s!important}
+  .landing-figma-draft .trust-section--figma .trust-grid--b{animation-duration:98s!important}
+  .review-marquee{animation-duration:86s}
+  .review-marquee--b{animation-duration:104s}
+  .landing-figma-draft .hero-draft__marquee:hover .hero-draft__benefits,
+  .landing-figma-draft .trust-rail:hover .trust-grid,
+  .review-collage:hover .review-marquee,
+  .review-marquee:hover{animation-play-state:paused}
 }

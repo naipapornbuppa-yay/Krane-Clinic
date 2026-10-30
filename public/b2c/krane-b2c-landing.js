@@ -2468,6 +2468,95 @@
     paint();
   })();
 
+  /* Drop the line mask once the reveal has finished so the headline
+     returns to the same inline + <br> boxes as the un-animated page. */
+  (function settleHeroLines() {
+    const title = document.querySelector("#hero-title");
+    if (!title || !document.documentElement.classList.contains("krane-motion")) return;
+    const lines = [...title.querySelectorAll(".hero-line__text")];
+    if (!lines.length) return;
+    let pending = lines.length;
+    const done = () => {
+      pending -= 1;
+      if (pending <= 0) title.classList.add("is-settled");
+    };
+    lines.forEach((line) => {
+      line.addEventListener("animationend", done, { once: true });
+    });
+    window.setTimeout(() => title.classList.add("is-settled"), 1200);
+  })();
+
+  /* Section entrances share one observer. data-scroll-reveal stays the
+     scroll-scrubbed phrase track; data-reveal is the fade-up used everywhere
+     else. Children keep their layout box — only opacity and transform move. */
+  (function sectionReveal() {
+    if (!document.documentElement.classList.contains("krane-motion")) return;
+    const sections = [...document.querySelectorAll("[data-reveal]")];
+    if (!sections.length) return;
+    sections.forEach((section) => {
+      [...section.children].forEach((item, index) => {
+        item.style.setProperty("--reveal-i", String(index));
+      });
+    });
+    const show = (section) => section.classList.add("is-in");
+    if (!("IntersectionObserver" in window)) {
+      sections.forEach(show);
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        show(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
+    sections.forEach((section) => observer.observe(section));
+  })();
+
+  /* Result durations and the "100% online" line count up once, then the
+     original string is put back so the settled copy matches the markup. */
+  (function countStats() {
+    const nodes = [...document.querySelectorAll(".weight-results figcaption span, .figma-how__heading > p")]
+      .filter((el) => /\d/.test(el.textContent || ""));
+    if (!nodes.length) return;
+    const play = (el) => {
+      if (el.dataset.countDone === "1") return;
+      el.dataset.countDone = "1";
+      const original = el.textContent;
+      const match = original.match(/\d+/);
+      if (!match || reducedMotionQuery.matches) return;
+      const token = match[0];
+      const target = Number(token);
+      const at = match.index;
+      const holder = document.createElement("span");
+      holder.textContent = token;
+      holder.style.display = "inline-block";
+      el.textContent = "";
+      el.append(original.slice(0, at), holder, original.slice(at + token.length));
+      holder.style.minWidth = holder.getBoundingClientRect().width + "px";
+      const started = performance.now();
+      const duration = 800;
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const tick = (now) => {
+        const progress = Math.min(1, (now - started) / duration);
+        holder.textContent = String(Math.round(target * ease(progress)));
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = original;
+      };
+      holder.textContent = "0";
+      requestAnimationFrame(tick);
+    };
+    if (!("IntersectionObserver" in window) || reducedMotionQuery.matches) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        play(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.6 });
+    nodes.forEach((node) => observer.observe(node));
+  })();
+
   if (window.lucide) {
     window.lucide.createIcons({ attrs: { "stroke-width": "1.8", "aria-hidden": "true" } });
   }
