@@ -1080,6 +1080,10 @@
     "ปรึกษาแพทย์ทางไกล พร้อมรับยาตามใบสั่งแพทย์":"Telehealth consultations with prescription medicine",
     "ส่งตรงถึงบ้าน":"delivered to your door",
     "โปรแกรมลดน้ำหนัก":"Weight loss programme",
+    "ดูแลและควบคุมน้ำหนักผ่าน GLP-1":"Weight care through GLP-1",
+    "ดูแลผมร่วง ผมบาง":"Hair loss and thinning care",
+    "ดูแลสมรรถภาพเพศชาย":"Men's sexual health care",
+    "ดูรายละเอียด":"View details",
     "โปรแกรมฟื้นฟูเส้นผม":"Hair recovery programme",
     "โปรแกรมฟื้นฟูสมรรถภาพเพศชาย":"Sexual health programme",
     /* Product cards: weight */
