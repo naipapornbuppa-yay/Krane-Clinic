@@ -176,6 +176,26 @@
     "re:flow · สุขภาพเพศชาย":"re:flow · Men's health",
     "ช่วยให้คุณกลับมา":"Helping you regain",
     "มั่นใจได้อย่างเป็นส่วนตัว":"confidence with privacy",
+    "วันนี้":"Today",
+    "จุดเด่นการดูแล":"Care highlights",
+    "คุยกับหมอส่วนตัว":"Speak privately with your doctor",
+    "ในพื้นที่ที่คุณสบายใจ":"In a space where you feel comfortable",
+    "ประเมินอย่างละเอียด":"A thorough assessment",
+    "ดูสุขภาพและยาที่ใช้":"Review your health and medicines",
+    "รับยาที่บ้านได้":"Medicine delivered to your home",
+    "เมื่อแพทย์พิจารณาสั่งยา":"When prescribed by your doctor",
+    "คุณหมอของคุณ":"Your doctor",
+    "พื้นที่ส่วนตัวสำหรับคุณและแพทย์":"A private space for you and your doctor",
+    "ตัวอย่างบทสนทนากับแพทย์":"Example conversation with a doctor",
+    "สวัสดีครับ คุยกับหมอได้เต็มที่นะครับ เราจะค่อย ๆ ประเมินไปด้วยกัน":"Hello. Please feel free to talk to me. We will work through your assessment together.",
+    "ช่วงนี้แข็งตัวได้ไม่นานครับ กังวลมากเลย":"I have been having trouble maintaining an erection. I am very worried.",
+    "เริ่มเป็นมานานแค่ไหนครับ เป็นทุกครั้งไหม และช่วงนี้พักผ่อนเป็นอย่างไรบ้าง":"How long has this been happening? Does it happen every time? How have you been sleeping?",
+    "ประมาณ 2 เดือนครับ ช่วงนี้นอนน้อยด้วย":"About two months. I have not been sleeping much lately either.",
+    "มีโรคประจำตัว หรือใช้ยาและอาหารเสริมอะไรอยู่บ้างครับ":"Do you have any medical conditions, or take any medicines or supplements?",
+    "มียาความดันครับ เดี๋ยวส่งรูปยาให้ดู":"I take blood pressure medicine. I will send you a photo of it.",
+    "ขอบคุณครับ หมอจะดูข้อมูลสุขภาพและยาที่ใช้ให้ครบก่อน แล้วคุยทางเลือกที่เหมาะกับคุณนะครับ":"Thank you. I will review your health information and medicines before we discuss suitable options.",
+    "ไม่ต้องกังวลว่าจะถามไม่ถูกนะครับ เล่าได้ทีละเรื่อง หมอพร้อมรับฟังครับ":"There is no need to worry about asking the right questions. Take one thing at a time. I am here to listen.",
+    "พิมพ์ข้อความถึงคุณหมอ…":"Type a message to your doctor…",
     "ตัวอย่างการปรึกษา":"Illustrative consultation",
     "แพทย์ผู้ดูแล":"Your doctor",
     "ห้องปรึกษาส่วนตัว":"Private consultation room",
@@ -1503,6 +1523,7 @@
     "ดูการติดตามผล":"View follow-up"
   };
 
+  EN["ภาพประกอบ AI: เปรียบเทียบผมบางกับผมหนา ลากเส้นแบ่งได้"]="AI illustration: compare thinning and thicker hair by dragging the divider";
   Object.assign(EN, window.KranePricingTranslations || {});
 
   (window.KraneArticleSeed||[]).forEach(function(article){
