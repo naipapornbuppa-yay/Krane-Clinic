@@ -30,6 +30,7 @@ const SITE_NAV_BRAND = {
 const SITE_NAV_SERVICES = [
   ["condition-detail.html?condition=weight", "re:body"],
   ["condition-detail.html?condition=hair-loss", "re:hair"],
+  ["rehair-opt1/index.html", "rehair (opt1)"],
   ["condition-detail.html?condition=re-flow", "re:flow"],
   ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
   ["krane-b2c.html#profile", "เติมยา", "profile"],
