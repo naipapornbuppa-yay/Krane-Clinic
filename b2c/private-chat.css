@@ -1,26 +1,39 @@
-/* Restored consultation mockup: unobtrusive control and motion preferences. */
+/* Consultation preview mirrors SCR-010 in krane-b2c.html / components.css.
+   Shared app tokens, incoming avatar, slate replies, brand bar and Send row. */
 #ed-program [data-chat-motion] .pc-ad-head{padding-right:0}
+#ed-program [data-chat-motion] .pc-ad-title{font-size:clamp(22px,2vw,28px);max-width:100%}
+#ed-program [data-chat-motion] .pc-device{box-sizing:border-box;width:min(100%,310px);aspect-ratio:390/810;margin:8px auto 16px;border:7px solid #1a1e28;border-radius:42px;background:#1a1e28;box-shadow:0 0 0 1px #8b94a2,0 22px 35px #10182740;filter:none;transform:none}
+#ed-program [data-chat-motion] .pc-device-screen{inset:0;border-radius:34px;background:var(--surface-chat);color:var(--color-ink)}
+#ed-program .pc-device-camera{position:absolute;z-index:5;top:7px;left:calc(50% - 34px);width:68px;height:15px;border-radius:20px;background:#111722;pointer-events:none}
+#ed-program .pc-status{height:32px;padding:8px 20px 0;background:var(--surface-chat)}
+#ed-program .pc-app-bar{display:grid;grid-template-columns:30px 1fr 30px;align-items:center;min-height:43px;padding:5px 12px;background:var(--surface-chat);flex:none}
+#ed-program .pc-app-bar>span{font-size:26px}
+#ed-program .pc-app-bar img{width:126px;max-width:100%;height:auto;justify-self:center}
+#ed-program .pc-chat-header{justify-content:center;gap:8px;padding:6px 12px 12px;border:0;background:var(--surface-chat)}
+#ed-program .pc-chat-header>div{flex:0 1 auto}
+#ed-program .pc-chat-doctor-photo{width:32px;height:32px;object-fit:cover;object-position:50% 22%;border-radius:50%}
+#ed-program .pc-chat-header strong{font-size:12px;font-weight:600}
+#ed-program .pc-chat-header small{font-size:9px;color:var(--color-ink-3)}
+#ed-program .pc-device .pc-messages{padding:10px 12px;gap:9px;background:var(--surface-chat)}
+#ed-program .pc-device .pc-messages p{position:relative;max-width:80%;margin:4px 0 0 28px;padding:9px 11px;background:var(--surface-bubble-in);color:var(--color-ink);border-radius:18px 18px 18px 7px;font-size:11px;line-height:1.45;box-shadow:none}
+#ed-program .pc-device .pc-messages p:not(.pc-reply)::after{content:"";position:absolute;left:-28px;bottom:0;width:23px;height:23px;border-radius:50%;background:url('assets/chat-v1/doctor-avatar.png') center/cover no-repeat}
+#ed-program .pc-device .pc-messages .pc-reply{margin-left:0;background:var(--surface-bubble-out);color:var(--color-ink);border-radius:18px 18px 7px 18px}
+#ed-program .pc-typing{margin-left:28px;background:var(--surface-bubble-in)}
+#ed-program .pc-chat-call{flex:none;align-self:flex-end;display:grid;place-items:center;margin:5px 12px;width:36px;height:36px;border-radius:50%;background:var(--color-accent);color:var(--color-on-accent)}
+#ed-program .pc-chat-call svg{width:18px;height:18px}
+#ed-program .pc-chat-compose{gap:7px;padding:10px 12px;background:var(--surface-chat)}
+#ed-program .pc-chat-compose>.pc-chat-input{display:flex;align-items:center;flex:1;min-width:0;min-height:36px;padding:7px 9px;border-radius:10px;background:var(--color-field);color:var(--color-ink-3);font-size:9px;line-height:1.3}
+#ed-program .pc-chat-compose>.pc-chat-send{display:grid;place-items:center;flex:none;width:auto;min-width:46px;height:auto;min-height:36px;padding:7px 10px;border-radius:10px;background:var(--color-accent);color:var(--color-on-accent);font-size:11px}
+/* A single cue occupies this shelf. It floats without covering the screen. */
+#ed-program [data-chat-motion] .pc-chat-pills{position:relative;inset:auto;width:min(100%,250px);min-height:108px;margin:12px auto 0}
+#ed-program [data-chat-motion] .pc-chat-pill{position:absolute;inset:0 0 auto;display:none;opacity:0;visibility:hidden;margin:0;background:#eef3fc;transform:none;transition:none}
+#ed-program [data-chat-motion] .pc-chat-pill.is-active{display:flex;opacity:1;visibility:visible;animation:pc-chat-float 4s ease-in-out infinite}
+#ed-program [data-chat-motion] .pc-chat-pill span{font-size:12px}
+#ed-program [data-chat-motion] .pc-chat-pill small{font-size:10px}
 #ed-program .pc-chat-toggle{align-self:center;min-height:44px;padding:8px 14px;border:0;border-radius:8px;background:transparent;color:#d9e5fa;font:inherit;font-size:11px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 #ed-program .pc-chat-toggle:focus-visible{outline:2px solid white;outline-offset:3px}
 #ed-program .pc-chat-toggle[hidden]{display:none}
-#ed-program [data-chat-motion] .pc-chat-pill.is-active{animation:pc-chat-float 4s ease-in-out infinite}
 #ed-program [data-chat-motion] .pc-note{text-align:center}
-/* The consultation is the lead feature; its three care cues sit beside the phone. */
-@media(min-width:761px){
- #ed-program [data-chat-motion] .pc-device{width:min(48%,280px);margin:28px 0 16px auto}
- #ed-program [data-chat-motion] .pc-chat-pills{top:210px;left:24px;width:40%;max-width:240px}
- #ed-program [data-chat-motion] .pc-chat-pill{opacity:1;transform:none;position:relative;inset:auto;margin-bottom:24px;background:#e4ebf7;box-shadow:none}
- #ed-program [data-chat-motion] .pc-chat-pill.is-active{background:#fff;box-shadow:0 12px 28px #101b3630}
- #ed-program [data-chat-motion] .pc-chat-pill span{font-size:13px}
- #ed-program [data-chat-motion] .pc-chat-pill small{font-size:11px}
- #ed-program [data-chat-motion] .pc-ad-title{font-size:clamp(22px,2vw,28px);max-width:100%}
-}
-/* Reserve a readable cue row on phones, rather than covering the chat header. */
-@media(max-width:760px){
- #ed-program [data-chat-motion] .pc-chat-pills{position:relative;inset:auto;width:min(100%,240px);min-height:120px;margin:12px auto 0}
- #ed-program [data-chat-motion] .pc-device{margin:0 auto 16px}
-}
 @keyframes pc-chat-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@media(prefers-reduced-motion:reduce){
- #ed-program [data-chat-motion] *,#ed-program [data-chat-motion] *::before,#ed-program [data-chat-motion] *::after{animation:none!important;transition:none!important}
-}
+@media(max-width:760px){#ed-program [data-chat-motion] .pc-device{width:min(100%,290px)}}
+@media(prefers-reduced-motion:reduce){#ed-program [data-chat-motion] *,#ed-program [data-chat-motion] *::before,#ed-program [data-chat-motion] *::after{animation:none!important;transition:none!important}}

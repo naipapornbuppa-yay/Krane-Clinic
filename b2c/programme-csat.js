@@ -28,37 +28,57 @@
  const body=section.querySelector('.programme-csat__body'),status=section.querySelector('[role=status]');section.querySelector('header').append(body);
  const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
  const comments=node('div','','programme-comments');section.append(comments);
- let reviews=[],selected=0,sort="newest",page=1;
- const PAGE_SIZE=4;let railObserver;
+ let reviews=[],selected=0,sort="newest",isDemo=false;
+ const english=()=>document.documentElement.lang==='en';
+ const local=(th,en)=>english()?en:th;
+ let railObserver;
  function renderComments(){
   railObserver?.disconnect();comments.replaceChildren();if(!reviews.length)return;
+  if(isDemo)comments.append(node('p',local('ตัวอย่างสมมติสำหรับแสดงหน้าจอ · คะแนนและความคิดเห็นไม่ใช่รีวิวจากผู้รับบริการจริง','Illustrative mock content · Ratings and comments are not real patient reviews'),'programme-comments__disclosure'));
   const toolbar=node('div','','programme-comments__toolbar');toolbar.append(node('h3','ความคิดเห็น'));
   const label=node('label','เรียงตาม '),select=document.createElement('select');
   [['newest','ล่าสุด'],['highest','คะแนนสูงสุด'],['lowest','คะแนนต่ำสุด']].forEach(([value,text])=>{const option=node('option',text);option.value=value;select.append(option)});
-  select.value=sort;select.addEventListener('change',()=>{sort=select.value;page=1;renderComments();comments.querySelector('select').focus()});label.append(select);toolbar.append(label);comments.append(toolbar);
+  select.value=sort;select.addEventListener('change',()=>{sort=select.value;renderComments();comments.querySelector('select').focus()});label.append(select);toolbar.append(label);comments.append(toolbar);
   const filters=node('div','','programme-comments__filters');filters.setAttribute('aria-label','กรองคะแนนความคิดเห็น');
-  [0,5,4,3,2,1].forEach(rating=>{const button=node('button',rating?rating+' ★':'ทั้งหมด');button.type='button';button.setAttribute('aria-pressed',String(selected===rating));button.addEventListener('click',()=>{selected=rating;page=1;renderComments();comments.querySelector('[aria-pressed="true"]').focus()});filters.append(button)});comments.append(filters);
+  [0,5,4,3,2,1].forEach(rating=>{const button=node('button',rating?rating+' ★':'ทั้งหมด');button.type='button';button.setAttribute('aria-pressed',String(selected===rating));button.addEventListener('click',()=>{selected=rating;renderComments();comments.querySelector('[aria-pressed="true"]').focus()});filters.append(button)});comments.append(filters);
   const list=node('div','','programme-comments__list');list.tabIndex=0;list.setAttribute('aria-label','ความคิดเห็น เลื่อนเพื่ออ่านเพิ่มเติม');
   const visible=reviews.filter(r=>!selected||r.rating===selected).sort((a,b)=>sort==='newest'?b.date.localeCompare(a.date):sort==='highest'?b.rating-a.rating:a.rating-b.rating);
   if(!visible.length)list.append(node('p','ยังไม่มีความคิดเห็นในคะแนนนี้','programme-comments__empty'));
-  const pages=Math.max(1,Math.ceil(visible.length/PAGE_SIZE));
-  page=Math.min(page,pages);
   visible.forEach(r=>{
    const article=node('article','','programme-comment'),meta=node('div','','programme-comment__meta');
    const avatar=node('span',Array.from(r.name)[0],'programme-comment__avatar');avatar.setAttribute('aria-hidden','true');
    const identity=node('div');identity.append(node('strong',r.name));
-   const time=node('time',new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(r.date)));time.dateTime=r.date;identity.append(time);meta.append(avatar,identity);
+   const time=node('time',new Intl.DateTimeFormat(english()?'en-GB':'th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(r.date)));time.dateTime=r.date;identity.append(time);meta.append(avatar,identity);
    const stars=node('div','★'.repeat(r.rating)+'☆'.repeat(5-r.rating),'programme-comment__stars');stars.setAttribute('aria-label',r.rating+' จาก 5 ดาว');article.append(stars);
-   if(typeof r.title==='string')article.append(node('h3',r.title));
-   article.append(node('blockquote','“'+r.text+'”'));
+   if(typeof r.title==='string')article.append(node('h3',english()&&r.titleEn?r.titleEn:r.title));
+   article.append(node('blockquote','“'+(english()&&r.textEn?r.textEn:r.text)+'”'));
+   if(isDemo)article.append(node('small',local('ตัวอย่างสมมติ','Mock example'),'programme-comment__mock'));
+   article.dataset.rating=r.rating;
    article.append(meta);
    list.append(article);
   });comments.append(list);
   if(visible.length){
    const dots=node('nav','','programme-comments__dots');dots.setAttribute('aria-label','หน้าความคิดเห็น');comments.append(dots);
-   const perPage=()=>matchMedia('(max-width:760px)').matches?1:4;
-   const update=()=>{const width=list.clientWidth,count=Math.ceil(visible.length/perPage()),active=Math.min(count-1,Math.round(list.scrollLeft/(width+14)));dots.replaceChildren();dots.hidden=false;for(let i=0;i<count;i++){const button=node('button','');button.type='button';button.setAttribute('aria-label','ไปหน้าความคิดเห็น '+(i+1));button.setAttribute('aria-current',i===active?'page':'false');button.onclick=()=>list.scrollTo({left:i*(width+14),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});dots.append(button)}};
-   list.addEventListener('scroll',()=>{const active=Math.min(dots.children.length-1,Math.round(list.scrollLeft/(list.clientWidth+14)));[...dots.children].forEach((button,i)=>button.setAttribute('aria-current',i===active?'page':'false'))},{passive:true});railObserver=new ResizeObserver(update);railObserver.observe(list);update();
+   let targets=[];
+   const update=()=>{
+    const cards=[...list.querySelectorAll('.programme-comment')];
+    const perPage=Math.max(1,Math.round((list.clientWidth+14)/(cards[0].getBoundingClientRect().width+14)));
+    const maximum=Math.max(0,list.scrollWidth-list.clientWidth);
+    targets=cards.filter((_,i)=>i%perPage===0).map(card=>Math.min(maximum,card.offsetLeft-cards[0].offsetLeft));
+    targets=[...new Set(targets)];
+    dots.replaceChildren();dots.hidden=targets.length<2;
+    targets.forEach((left,i)=>{
+     const button=node('button','');button.type='button';
+     button.setAttribute('aria-label',local('ไปหน้าความคิดเห็น ','Go to comments page ')+(i+1));
+     button.onclick=()=>list.scrollTo({left,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+     dots.append(button);
+    });markActive();
+   };
+   const markActive=()=>{
+    const active=targets.reduce((best,target,i)=>Math.abs(target-list.scrollLeft)<Math.abs(targets[best]-list.scrollLeft)?i:best,0);
+    [...dots.children].forEach((button,i)=>button.setAttribute('aria-current',i===active?'page':'false'));
+   };
+   list.addEventListener('scroll',markActive,{passive:true});railObserver=new ResizeObserver(update);railObserver.observe(list);update();
   }
  }
  let pending=false;
@@ -69,6 +89,7 @@
    const payload=await response.json(),d=payload.programmes?.[key];
    if(!d||!Array.isArray(d.distribution)||d.distribution.length!==5||!d.distribution.every(n=>Number.isInteger(n)&&n>=0)||d.distribution.reduce((a,b)=>a+b,0)!==d.total||!Array.isArray(d.dimensions)||!d.dimensions.every(x=>typeof x.label==='string'&&Number.isFinite(x.score)&&x.score>=0&&x.score<=5))throw Error('Invalid aggregate');
 
+   isDemo=payload.demo===true;
    reviews=Array.isArray(d.comments)?d.comments.filter(r=>typeof r.name==='string'&&typeof r.text==='string'&&Number.isInteger(r.rating)&&r.rating>=1&&r.rating<=5&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&Number.isFinite(Date.parse(r.date))):[];renderComments();
    const average=d.total?d.distribution.reduce((sum,n,i)=>sum+n*(5-i),0)/d.total:0;
    const score=node('div','','programme-csat__score');score.append(node('strong',d.total?average.toFixed(1):'—'),node('span',' / 5'));
@@ -79,5 +100,7 @@
 
   }catch(error){comments.replaceChildren();body.replaceChildren();status.textContent='ยังโหลดคะแนนไม่ได้ กรุณาลองใหม่ภายหลัง';}finally{pending=false}
  }
+ document.addEventListener('krane:languagechange',renderComments);
+ new MutationObserver(renderComments).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  refresh();const timer=setInterval(refresh,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
 })();

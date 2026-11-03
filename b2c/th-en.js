@@ -177,6 +177,7 @@
     "ช่วยให้คุณกลับมา":"Helping you regain",
     "มั่นใจได้อย่างเป็นส่วนตัว":"confidence with privacy",
     "วันนี้":"Today",
+    "ส่ง":"Send",
     "จุดเด่นการดูแล":"Care highlights",
     "คุยกับหมอส่วนตัว":"Speak privately with your doctor",
     "ในพื้นที่ที่คุณสบายใจ":"In a space where you feel comfortable",
