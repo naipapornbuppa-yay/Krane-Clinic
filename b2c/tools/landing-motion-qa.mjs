@@ -32,8 +32,13 @@ try{for(const width of [390,1440]){
  check(await p.locator('[data-feature-film], [data-feature-film-toggle]').count()===0,'Rejected film and circular overlay are absent '+width);
  await p.waitForFunction(()=>{const e=document.querySelector('[data-chat-motion]');return !/[\u0e00-\u0e7f]/.test(e.textContent)&&[...e.querySelectorAll('[aria-label], [placeholder]')].every(n=>!/[\u0e00-\u0e7f]/.test((n.getAttribute('aria-label')||'')+(n.getAttribute('placeholder')||'')))});check(true,'Every phone message, date, cue and accessible label is English '+width);
  check(await chat.locator('.pc-messages p').count()===8&&await chat.locator('.pc-chat-pill').count()===3,'Eight approved messages and three explanatory bubbles '+width);
- check(await chat.locator('.pc-device-frame').evaluate(img=>img.complete&&img.naturalWidth>0),'Original mobile frame loads '+width);
- if(width>=761){const layout=await chat.evaluate(e=>{const c=e.getBoundingClientRect(),sidebar=document.querySelector('#ed-program .pc-privacy').getBoundingClientRect();return {chat:c.width,sidebar:sidebar.width,left:c.left,right:sidebar.left,cues:[...e.querySelectorAll('.pc-chat-pill')].every(p=>Number(getComputedStyle(p).opacity)>0)}});check(layout.chat>layout.sidebar&&layout.left<layout.right,'Chat leads the wide primary column '+width);check(layout.cues,'All three explanatory bubbles are visible beside the phone '+width);}
+ check(await chat.locator('.pc-device-frame').count()===0,'Distorted photographic phone overlay is absent '+width);
+ check(await chat.locator('.pc-app-bar img, .pc-chat-doctor-photo').evaluateAll(es=>es.length===2&&es.every(img=>img.complete&&img.naturalWidth>0)),'Canonical Krane lockup and app doctor photo load '+width);
+ check(await chat.evaluate(e=>{const c=e.getBoundingClientRect(),phone=e.querySelector('.pc-device').getBoundingClientRect();return Math.abs((c.left+c.right)/2-(phone.left+phone.right)/2)<2}),'Phone is centered within the main card '+width);
+ const oneCue=async()=>check(await chat.locator('.pc-chat-pill').evaluateAll(es=>es.filter(e=>getComputedStyle(e).display!=='none'&&getComputedStyle(e).visibility!=='hidden').length===1),'Exactly one explanatory cue is visible '+width);
+ await oneCue();
+ check(await chat.locator('.pc-reply').first().evaluate(e=>getComputedStyle(e).backgroundColor==='rgb(183, 198, 232)'),'Patient bubbles use the actual app slate-blue token '+width);
+ if(width>=761){const layout=await chat.evaluate(e=>{const c=e.getBoundingClientRect(),sidebar=document.querySelector('#ed-program .pc-privacy').getBoundingClientRect();return {chat:c.width,sidebar:sidebar.width,left:c.left,right:sidebar.left}});check(layout.chat>layout.sidebar&&layout.left<layout.right,'Chat leads the wide primary column '+width);}
  const showChat=async()=>{await chat.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').getBoundingClientRect().bottom>0)};
  const hideChat=async()=>{await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='false')};
  const snapshot=()=>chat.evaluate(e=>JSON.stringify({scene:e.dataset.chatScene,messages:[...e.querySelectorAll('.pc-messages p')].map(m=>m.className),typing:e.querySelector('.pc-typing').className,pills:[...e.querySelectorAll('.pc-chat-pill')].map(p=>p.className)}));
@@ -53,9 +58,9 @@ try{for(const width of [390,1440]){
  await toggle.click();await waitRunning();await checkToggle(false);
  await p.waitForFunction(()=>document.querySelector('[data-chat-motion] .pc-messages p.is-shown'));
  await hideChat();await checkFrozen('Manually resumed conversation still pauses offscreen');await showChat();await waitRunning();
- await p.waitForFunction(()=>document.querySelector('[data-chat-pill="4"]').classList.contains('is-active'),null,{timeout:22000});check(true,'Health-assessment bubble follows its matching message '+width);
+ await p.waitForFunction(()=>document.querySelector('[data-chat-pill="4"]').classList.contains('is-active'),null,{timeout:22000});check(true,'Health-assessment bubble follows its matching message '+width);await oneCue();
  await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:22000});
- check(await chat.locator('.pc-messages p.is-shown').count()===8&&await chat.locator('[data-chat-pill="7"]').evaluate(e=>e.classList.contains('is-active')),'Conversation completes with the final care bubble '+width);
+ check(await chat.locator('.pc-messages p.is-shown').count()===8&&await chat.locator('[data-chat-pill="7"]').evaluate(e=>e.classList.contains('is-active')),'Conversation completes with the final care bubble '+width);await oneCue();
  await p.waitForFunction(()=>!document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:8000});check(true,'Visible conversation repeats after its reading hold '+width);
  await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));
  check(await chat.evaluate(e=>e.getAnimations({subtree:true}).length===0),'Reduced motion stops bubbles and device transitions '+width);

@@ -23,12 +23,24 @@ const checkLandingPolish=async(page,width)=>{
  check(/AI/i.test(await page.locator('#hair-program [data-hair-scan]').getAttribute('aria-label')||''),label+' retains accessible AI disclosure');
  const goals=await page.locator('#weight-program .pc-goals, #hair-program .pc-goals').evaluateAll(panels=>panels.map(panel=>{
   const heading=getComputedStyle(panel.querySelector('h3')),style=getComputedStyle(panel);
-  return {heading:heading.fontSize,inset:style.padding,buttons:[...panel.querySelectorAll('a')].map(a=>{
-   const css=getComputedStyle(a);return {font:css.fontSize,minHeight:parseFloat(css.minHeight),height:a.getBoundingClientRect().height,padding:css.padding};
+  return {heading:heading.fontSize,inset:style.padding,border:style.borderWidth,buttons:[...panel.querySelectorAll('a')].map(a=>{
+   const css=getComputedStyle(a);return {font:css.fontSize,minHeight:parseFloat(css.minHeight),height:a.getBoundingClientRect().height,padding:css.padding,border:css.borderWidth};
   })};
  }));
  check(goals.length===2&&goals.every(panel=>panel.buttons.length===4&&panel.buttons.every(button=>button.font==='14px'&&button.minHeight>=58&&button.height>=58)),label+' keeps eight readable 14px goal buttons with 58px targets');
  check(goals[0].heading===goals[1].heading&&goals[0].inset===goals[1].inset&&goals[0].buttons.every((button,i)=>button.padding===goals[1].buttons[i].padding),label+' matches goal heading type and panel/button insets');
+ check(goals.every(panel=>panel.border==='0px'&&panel.buttons.every(button=>button.border==='0px')),label+' removes goal panel and button outlines');
+ check(await page.locator('.programme-chapter .pc-actions a:not(.pc-primary)').evaluateAll(links=>links.every(link=>parseFloat(getComputedStyle(link).borderTopWidth)>0)),label+' preserves Learn more outlines');
+ if(width>=761&&width<1100){
+  const readable=await page.locator('#weight-program, #hair-program').evaluateAll(sections=>sections.every(section=>{
+   const goals=section.querySelector('.pc-goals'),feature=section.querySelector('.pc-feature'),g=goals.getBoundingClientRect(),f=feature.getBoundingClientRect();
+   const links=[...goals.querySelectorAll('a')],first=links[0].getBoundingClientRect(),second=links[1].getBoundingClientRect();
+   return g.top>=f.bottom&&Math.abs(g.width-f.width)<=1&&Math.abs(first.top-second.top)<=1&&second.left>first.right&&links.every(link=>{
+    const text=link.querySelector('span'),style=getComputedStyle(text);return text.getBoundingClientRect().height<=parseFloat(style.lineHeight)+1&&link.scrollWidth<=link.clientWidth;
+   });
+  }));
+  check(readable,label+' stacks media above full-width two-column goals with unwrapped labels');
+ }
  if(width<1024)return;
  const hero=await page.evaluate(()=>{
   const title=document.querySelector('#hero-title').getBoundingClientRect(),benefits=document.querySelector('#top .hero-draft__marquee').getBoundingClientRect();
@@ -49,19 +61,20 @@ const checkLandingPolish=async(page,width)=>{
   await button.scrollIntoViewIfNeeded();await page.mouse.move(0,0);
   const measure=el=>{const css=getComputedStyle(el),r=el.getBoundingClientRect();return {background:css.backgroundColor,border:css.borderTopColor,box:[r.x,r.y,r.width,r.height]}};
   const before=await button.evaluate(measure);await button.hover();
-  await page.waitForFunction(({kind,before})=>{const style=getComputedStyle(document.querySelector(`#${kind}-program .pc-goals a`));return style.backgroundColor!==before.background&&style.borderTopColor!==before.border},{kind,before});
+  await page.waitForFunction(({kind,before})=>{const style=getComputedStyle(document.querySelector(`#${kind}-program .pc-goals a`));return style.backgroundColor!==before.background},{kind,before});
   const after=await button.evaluate(measure);
-  check(before.background!==after.background&&before.border!==after.border,label+' '+kind+' desktop hover changes fill and border');
+  check(before.background!==after.background,label+' '+kind+' desktop hover changes tonal fill');
   check(before.box.every((value,i)=>Math.abs(value-after.box[i])<=.5),label+' '+kind+' hover has no layout shift');
   await page.mouse.move(0,0);
  }
 };
 try{
-for(const width of [390,1440]){
+for(const width of [390,800,1024,1440]){
  const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
  await necessaryConsent(ctx);ctx.setDefaultNavigationTimeout(60000);ctx.setDefaultTimeout(10000);
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
- for(const route of ['krane-b2c-landing.html','doctors.html',...['weight','hair-loss','re-flow'].map(c=>'condition-detail.html?condition='+c)]){
+ const routes=width===800||width===1024?['krane-b2c-landing.html']:['krane-b2c-landing.html','doctors.html',...['weight','hair-loss','re-flow'].map(c=>'condition-detail.html?condition='+c)];
+ for(const route of routes){
   await p.goto(`${base}/b2c/${route}${route.includes('?')?'&':'?'}lang=en`,{waitUntil:'domcontentloaded'});await p.waitForTimeout(1800);
   check((await thai(p)).length===0,route+' English: '+JSON.stringify(await thai(p)));
   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),route+' page overflow '+width);
