@@ -174,9 +174,9 @@ for(const width of [390,800,1024,1440]){
    check(photos.length===expected.length&&photos.every((x,i)=>x.id===expected[i]&&x.images[0].includes(x.id+'-before')&&x.images[1].includes(x.id+'-after')),'Matching supplied photo pairs '+kind);
 
    await p.locator('[data-cd-tab="reviews"]').click();check(await p.locator('#reviews.programme-csat').count()===1,'Review navigation targets ratings');
-   const filters=p.locator('.programme-comments__filters button');await filters.nth(2).click();await p.waitForTimeout(150);check(await p.locator('.programme-comment').count()===1,'4-star comment filter');
+   const filters=p.locator('.programme-comments__filters button');await filters.nth(2).click();await p.waitForTimeout(150);check(await p.locator('.programme-comment').count()===4 && await p.locator('.programme-comment').evaluateAll(es=>es.every(e=>e.dataset.rating==='4')),'4-star filter retains exactly the four matching mock comments');
    check((await thai(p)).length===0,'Translated filtered comments: '+JSON.stringify(await thai(p)));await filters.first().click();await p.locator('.programme-comments select').selectOption('lowest');await p.waitForTimeout(150);
-   check((await p.locator('.programme-comment__stars').first().innerText()).startsWith('★★★★☆'),'Lowest-rating sort');
+   check(await p.locator('.programme-comment').evaluateAll(es=>es.length===12&&es[0].dataset.rating==='1'&&es.every((e,i)=>i===0||Number(es[i-1].dataset.rating)<=Number(e.dataset.rating))),'Lowest-rating sort orders all twelve illustrative comments');
    check((await thai(p)).length===0,'Translated sorted comments: '+JSON.stringify(await thai(p)));
   } else {
    for(const profile of await p.locator('[data-doctor-open]').all()){await profile.click();await p.waitForTimeout(150);check((await thai(p)).length===0,'Translated doctor preview: '+JSON.stringify(await thai(p)));await p.keyboard.press('Escape');}
