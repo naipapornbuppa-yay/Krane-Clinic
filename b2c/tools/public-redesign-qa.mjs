@@ -45,36 +45,73 @@ for(const width of [390,1440]){
    for(let i=0;i<3;i++){const image=images.nth(i);await image.scrollIntoViewIfNeeded();await image.evaluate(e=>{e.loading='eager'});await p.waitForFunction(i=>{const e=document.querySelectorAll('.figma-how__recording img')[i];return e.complete&&e.naturalWidth>0},i);check(await image.evaluate(e=>e.currentSrc.endsWith('.png?v=20261026-hires')),'Reduced-motion app recording '+i)}
    await p.locator('[data-how-go="2"]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='2');check(await p.locator('[data-how-slide]').nth(2).getAttribute('aria-hidden')==='false','Third how step selectable');
    await p.locator('[data-how-prev]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='1');check(await p.locator('[data-how-slide]').nth(1).getAttribute('aria-hidden')==='false','How previous control');
-   await p.locator('#weight-program .pc-story-open').first().click();await p.waitForTimeout(150);
+   // The landscape interview has its own player; selfie stories use the rail viewer.
+   const interviewOpener=p.locator('#weight-program .pc-main-media .pc-story-open');
+   await interviewOpener.click();await p.locator('.pc-interview-player[open]').waitFor();
+   await p.waitForFunction(()=>{const v=document.querySelector('.pc-interview-player video');return v.readyState>=1&&Boolean(v.currentSrc)});
+   check(await p.locator('.pc-story-viewer[open]').count()===0,'Interview does not open selfie viewer');
+   check(await p.evaluate(()=>{const source=document.querySelector('#weight-program .pc-main-media video'),v=document.querySelector('.pc-interview-player video');return v.currentSrc===source.querySelector('source').src&&v.poster===source.poster&&v.controls&&v.playsInline}),'Interview player retains supplied source, poster and native controls');
+   await p.keyboard.press('Escape');await p.waitForFunction(()=>{const d=document.querySelector('.pc-interview-player'),v=d.querySelector('video');return !d.open&&v.paused&&!v.hasAttribute('src')});
+   check(await interviewOpener.evaluate(e=>document.activeElement===e),'Interview closing returns keyboard focus');
+   const storyCards=p.locator('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])');
+   const storyOpener=storyCards.first().locator('.pc-story-open');
+   await storyOpener.click();await p.locator('.pc-story-viewer[open]').waitFor();
+   await p.waitForFunction(()=>{const v=document.querySelector('.pc-story-viewer video'),card=document.querySelector('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])');return v.readyState>=1&&v.currentSrc===card.querySelector('source').src});
    check(await p.locator('dialog[open]').count()===1,'Programme story opens');
    check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));
-   const ugc=await p.evaluate(()=>{const card=document.querySelector('#weight-program [data-pc-video]'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
+   const ugc=await p.evaluate(()=>{const card=document.querySelector('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
    for(const [key,ok] of Object.entries(ugc))check(ok,'UGC integrated caption '+key);
    await p.keyboard.press('ArrowRight');
-   check(await p.locator('.pc-story-caption p').innerText()===await p.locator('#weight-program blockquote').nth(1).innerText(),'UGC next quote retains approved line breaks');
+   check(await p.locator('.pc-story-caption p').innerText()===await storyCards.nth(1).locator('blockquote').innerText(),'UGC next quote retains approved line breaks');
    await p.keyboard.press('ArrowLeft');
-   check(await p.locator('.pc-story-caption p').innerText()===await p.locator('#weight-program blockquote').first().innerText(),'UGC previous story restores its caption');
+   check(await p.locator('.pc-story-caption p').innerText()===await storyCards.first().locator('blockquote').innerText(),'UGC previous story restores its caption');
    const sound=p.locator('dialog[open] [data-story-sound]');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Mute','Unmuting updates the accessible action');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Unmute','Muting updates the accessible action');
-   await p.keyboard.press('Escape');check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await p.locator('#weight-program .pc-story-open').first().evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
+   await p.keyboard.press('Escape');await p.waitForFunction(()=>!document.querySelector('.pc-story-viewer').open&&document.activeElement?.classList.contains('pc-story-open'));check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await storyOpener.evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
   } else if(route.startsWith('condition-detail')){
    const kind=new URLSearchParams(route.split('?')[1]).get('condition');
-   const story=p.locator('[data-programme-story]'),concept=kind==='weight'?'weight':kind==='hair-loss'?'hair':'private';
    if(kind!=='re-flow')check(await p.locator('.photo-reviews__set').count()===2,'Reduced motion never appends hidden loop copies');
-   check(await story.getAttribute('data-programme-story')===concept,'Distinct programme story '+kind);
-   check(await p.locator('.programme-intro__media video').count()===0,'Generic stock interview replaced '+kind);
-   if(kind==='re-flow')check(await story.locator('p').evaluateAll(es=>es.every(e=>getComputedStyle(e).color==='rgb(255, 255, 255)')),'Private story copy has light text on its dark surface');
-   check(await story.getAttribute('data-story-running')==='false','Reduced-motion story stays still '+kind);
-   const storyControls=story.locator('[data-story-select]');await storyControls.last().click();await p.waitForTimeout(150);
-   check(await storyControls.last().getAttribute('aria-pressed')==='true','Story control selects a phase '+kind);
-   check((await thai(p)).length===0,'Story remains English '+kind);
-   await p.locator('[data-cd-tab="overview"]').focus();await p.mouse.move(0,0);await p.emulateMedia({reducedMotion:'no-preference'});await story.scrollIntoViewIfNeeded();
-   await p.waitForFunction(()=>document.querySelector('[data-programme-story]').dataset.storyRunning==='true');
-   check(await story.evaluate(e=>e.getAnimations({subtree:true}).length>0),'Category-specific motion runs '+kind);
-   const phase=await story.getAttribute('data-story-phase');await p.waitForFunction(old=>document.querySelector('[data-programme-story]').dataset.storyPhase!==old,phase,{timeout:7000});checks++;
-   await p.emulateMedia({reducedMotion:'reduce'});await p.waitForTimeout(100);check(await story.getAttribute('data-story-running')==='false','Story responds to reduced-motion preference '+kind);
-   await story.screenshot({path:join(out,`story-${kind}-${width}.png`),animations:'disabled'});
+   // cb6f4a2 restored the disclosed interview placeholder in place of category stories.
+   const overviewMedia=p.locator('.programme-intro__media.programme-interview-placeholder'),overviewVideo=overviewMedia.locator('video');
+   check(await overviewVideo.count()===1,'One disclosed programme interview placeholder '+kind);
+   await p.waitForFunction(()=>{const v=document.querySelector('.programme-interview-placeholder video');return v.readyState>=1&&Boolean(v.currentSrc)});
+   check(await overviewVideo.evaluate(v=>v.currentSrc.endsWith('/assets/landing/interview-off-camera-pexels-6602739.mp4')&&v.poster.endsWith('/assets/landing/interview-off-camera-poster.jpg')),'Programme interview retains supplied media '+kind);
+   check(await overviewVideo.evaluate(v=>v.controls&&v.playsInline&&v.muted&&v.loop),'Programme interview retains silent inline playback and native controls '+kind);
+   await overviewVideo.scrollIntoViewIfNeeded();
+   await p.waitForFunction(()=>{const v=document.querySelector('.programme-interview-placeholder video');return !v.autoplay&&v.paused});
+   const stillAt=await overviewVideo.evaluate(v=>v.currentTime);await p.waitForTimeout(250);
+   check(await overviewVideo.evaluate((v,t)=>!v.autoplay&&v.paused&&Math.abs(v.currentTime-t)<.02,stillAt),'Reduced motion prevents visible interview autoplay '+kind);
+   // Explicit user playback remains available even when automatic playback is disabled.
+   await overviewVideo.evaluate(v=>v.play());const playingAt=await overviewVideo.evaluate(v=>v.currentTime);
+   await p.waitForFunction(t=>{const v=document.querySelector('.programme-interview-placeholder video');return !v.paused&&Math.abs(v.currentTime-t)>.08},playingAt);
+   check(await overviewVideo.evaluate(v=>!v.paused&&!v.autoplay),'Explicit interview play works with reduced motion '+kind);
+   await overviewVideo.evaluate(v=>v.pause());
+   check(await overviewVideo.getAttribute('aria-label')==='Illustrative interview video; awaiting the doctor’s programme introduction video','Interview is explicitly disclosed as illustrative '+kind);
+   check(await overviewMedia.locator('.programme-interview-label span').textContent()==='Illustration · Doctor interview coming soon','Visible interview placeholder disclosure '+kind);
+   const points=p.locator('.programme-selling-points');await points.scrollIntoViewIfNeeded();
+   await p.waitForFunction(()=>document.querySelector('.programme-selling-points').classList.contains('is-visible'));
+   check(await points.locator('li').evaluateAll(es=>es.length>0&&es.every(e=>e.textContent.trim()&&getComputedStyle(e).animationName==='none'&&Number(getComputedStyle(e).opacity)>0)),'Reduced-motion selling points remain visible and still '+kind);
+   await p.emulateMedia({reducedMotion:'no-preference'});
+   await p.waitForFunction(()=>[...document.querySelectorAll('.programme-selling-points li')].every(e=>getComputedStyle(e).animationName==='programme-point-in'));
+   check(await points.evaluate(e=>e.getAnimations({subtree:true}).length>0),'Programme selling-point entrance animations are enabled '+kind);
+   await p.emulateMedia({reducedMotion:'reduce'});
+   await p.waitForFunction(()=>[...document.querySelectorAll('.programme-selling-points li')].every(e=>getComputedStyle(e).animationName==='none'));
+   check(await points.evaluate(e=>e.getAnimations({subtree:true}).length===0),'Selling points respond to reduced-motion preference '+kind);
+   // programme-timeline moves the practical guide into this standalone section.
+   const journey=p.locator('.programme-start-section .programme-journey'),tabs=journey.locator('[role="tab"]');
+   check(await tabs.count()===5,'All five practical care steps remain available '+kind);
+   await tabs.last().click();
+   check(await tabs.last().getAttribute('aria-selected')==='true'&&await journey.locator('#journey-panel-4').isVisible(),'Explicit journey tab selects its matching panel '+kind);
+   check(await journey.locator('[role="tabpanel"]:visible').count()===1,'Only selected journey panel is visible '+kind);
+   await p.keyboard.press('Home');
+   check(await tabs.first().evaluate(e=>e.getAttribute('aria-selected')==='true'&&document.activeElement===e)&&await journey.locator('#journey-panel-0').isVisible(),'Journey Home key restores first step and focus '+kind);
+   check((await thai(p)).length===0,'Programme guide remains English '+kind);
+   // With focus outside the visible guide, reduced motion must still prevent its 6s auto-advance.
+   await p.locator('[data-cd-tab="overview"]').evaluate(e=>e.focus({preventScroll:true}));await journey.scrollIntoViewIfNeeded();
+   await p.waitForTimeout(6300);
+   check(await tabs.first().getAttribute('aria-selected')==='true','Reduced motion prevents journey auto-advance '+kind);
+   await overviewMedia.screenshot({path:join(out,`interview-${kind}-${width}.png`),animations:'disabled'});
 
    const expected=kind==='weight'?['weight-02','weight-04','weight-05']:kind==='hair-loss'?['hair-pha','hair-03']:[];
    const photos=await p.locator('.photo-reviews__set:not([aria-hidden="true"]) .photo-review').evaluateAll(es=>es.map(e=>({id:e.dataset.reviewId,images:[...e.querySelectorAll('img')].map(i=>i.getAttribute('src'))})));
