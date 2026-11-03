@@ -28,7 +28,13 @@ try {for(const width of [390,800,1440])for(const lang of ['th','en']){
  check(Boolean(await page.locator('#video-toggle').getAttribute('aria-label')),'video accessible name');
  await page.locator('#video-toggle').click();await page.waitForFunction(()=>!document.querySelector('#hero-video').paused);
  check(await page.locator('#hero-video').evaluate(v=>v.videoWidth>0),'video loaded and plays explicitly');
- await page.emulateMedia({reducedMotion:'no-preference'});await page.emulateMedia({reducedMotion:'reduce'});
+ // Wait for each actual preference-change event. Back-to-back emulation can
+ // coalesce to the initial value and therefore never exercise the listener.
+ await page.evaluate(()=>{window.__motionChanges=[];matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>window.__motionChanges.push(e.matches));});
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.waitForFunction(()=>window.__motionChanges.includes(false));
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.waitForFunction(()=>window.__motionChanges.includes(true));
  await page.waitForFunction(()=>document.querySelector('#hero-video').paused);
  check(await page.locator('#hero-video').evaluate(v=>v.paused),'reduced-motion change pauses');
  for(const image of await page.locator('img').all()){await image.scrollIntoViewIfNeeded();await image.evaluate(i=>i.decode());}
