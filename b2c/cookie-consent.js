@@ -51,7 +51,14 @@
  function open(opener){
   if(window.top!==window.self){try{window.top.KraneCookieConsent?.open(opener);return;}catch{return;}}
   returnFocus=opener||document.activeElement;
-  if(!dialog.open){translate();preferencesReturnPending=true;sheet.classList.add('is-obscured');dialog.showModal();dialog.querySelector('h2').focus();}
+  if(!dialog.open){
+   translate();preferencesReturnPending=true;sheet.classList.add('is-obscured');
+   // Hiding an open native dialog leaves its Escape close watcher active.
+   // End the notice modal before opening preferences; restoreNotice reopens
+   // unanswered notices after preferences close, keeping one modal at a time.
+   if(sheet.open)sheet.close();
+   dialog.showModal();dialog.querySelector('h2').focus();
+  }
  }
  window.KraneCookieConsent={open,getPreferences:()=>({...current,necessary:true,analytics:false,advertising:false}),isAllowed:category=>category==='necessary'};
  function translate(){
@@ -88,7 +95,7 @@
   status=document.createElement('div');status.className='krane-cookie-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   sheet=document.createElement('dialog');sheet.className='krane-cookie-sheet';sheet.setAttribute('aria-labelledby','krane-cookie-notice-heading');
   document.body.append(banner,sheet,dialog,status);
-  sheet.addEventListener('cancel',event=>{event.preventDefault();dismissNotice();});
+  sheet.addEventListener('cancel',event=>{event.preventDefault();if(!dialog.open&&!preferencesReturnPending)dismissNotice();});
   sheet.addEventListener('click',event=>{if(event.target===sheet){const r=sheet.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dismissNotice();}});
   mobile.addEventListener('change',syncNotice);
   [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')closePreferences();else if(action==='dismiss')dismissNotice();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
