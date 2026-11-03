@@ -13,6 +13,86 @@
    ============================================================ */
 (function () {
   var EN = {
+    "หลัง · 6 เดือน":"After · 6 months",
+    "วิดีโอสัมภาษณ์ประกอบ รอวิดีโอแนะนำโปรแกรมจากแพทย์":"Illustrative interview video; awaiting the doctor’s programme introduction video",
+    "คุณหมอแนะนำโปรแกรม":"Doctor’s programme introduction",
+    "ภาพประกอบ · เตรียมพบกับบทสัมภาษณ์คุณหมอ":"Illustration · Doctor interview coming soon",
+    "ความคิดเห็น เลื่อนเพื่ออ่านเพิ่มเติม":"Comments; scroll to read more",
+    "หน้าความคิดเห็น":"Comment pages",
+    "หลัง · 3 เดือน":"After · 3 months",
+    "หลัง · 4 เดือน":"After · 4 months",
+
+    "คุณเมย์ · 29 ปี · กรุงเทพมหานคร":"May · 29 · Bangkok",
+    "คุณพา · 34 ปี · ปทุมธานี":"Pha · 34 · Pathum Thani",
+    "คุณแป้ง · 28 ปี · ชลบุรี":"Pang · 28 · Chon Buri",
+    "คุณ ต. · 35 ปี · กรุงเทพมหานคร":"T. · 35 · Bangkok",
+    "เว็บไซต์สาธิต · อายุ จังหวัด ระยะเวลา คะแนน และภาพ AI บางส่วนเป็นข้อมูลสมมติ ไม่ใช่ผลการรักษาที่รับรอง":"Demonstration website · Ages, provinces, durations, ratings and some AI images are illustrative, not verified treatment outcomes.",
+
+    // Current landing and programme copy, including runtime media controls.
+    "ปลดล็อกเวอร์ชันที่ดีที่สุดของคุณ":"Unlock your best self",
+    "ปรึกษาแพทย์ออนไลน์":"Consult a doctor online",
+    "ตอบแบบประเมิน":"Complete the assessment",
+    "รับการดูแลถึงบ้าน":"Receive care at home",
+    "พูดคุยเรื่องการดูแลน้ำหนัก":"Talk about weight management",
+    "ภาพประกอบ":"Illustration",
+    "คุณพลอย · 32 ปี · นนทบุรี":"Ploy · 32 · Nonthaburi",
+    "คุณฝน · 24 ปี · เชียงใหม่":"Fon · 24 · Chiang Mai",
+    "บันทึกน้ำหนัก ให้หมอติดตามและปรับแผนกับคุณ":"Record your weight so your doctor can follow your progress and adjust your plan with you",
+    "✓ บันทึกครบ 3 ครั้ง":"✓ All 3 records saved",
+    "คุณหมอเห็นความคืบหน้า":"Your doctor can see your progress",
+    "ปรับพฤติกรรม":"Adjust your habits",
+    "ติดตามกับแพทย์":"Follow up with your doctor",
+    "กลับมา":"Support ",
+    "ผมหนา":"thicker hair",
+    "ขึ้นได้":" ",
+    "เปรียบเทียบผมบางกับผมหนา ลากเส้นแบ่งได้":"Compare thinning and thicker hair by dragging the divider",
+    "ภาพประกอบ AI":"AI illustration",
+    "ถ่ายรูปที่บ้าน ให้หมอเปรียบเทียบและปรับแผนกับคุณ":"Take photos at home so your doctor can compare them and adjust your plan with you",
+    "ภาพจำลอง AI: ถ่ายรูปติดตาม":"AI illustration: taking progress photos",
+    "ถ่ายรูปติดตาม":"Take progress photos",
+    "ภาพจำลอง AI: คุณหมอทบทวน":"AI illustration: doctor review",
+    "คุณหมอทบทวน":"Your doctor reviews",
+    "ภาพล่าสุด":"Latest photo",
+    "ภาพแรกและภาพล่าสุดจากผู้ใช้บริการ · ภาพกลางเป็นภาพจำลอง AI อธิบายขั้นตอน":"First and latest photos from a participant · Middle images are AI illustrations of the process",
+    "ดูแลผมร่วง":"Hair loss care",
+    "แข็ง":"Erections",
+    "อย่างมั่นใจ":" with confidence",
+    "ดูแลอย่างเป็นส่วนตัว":"Private care",
+    "วิดีโอแนะนำการปรึกษาแพทย์ส่วนตัว":"Video introducing private doctor consultations",
+    "เล่นวิดีโอแนะนำบริการ":"Play service introduction video",
+    "หยุดวิดีโอแนะนำบริการ":"Pause service introduction video",
+    "เล่น":"Play",
+    "หยุด":"Pause",
+    "35 ปี · กรุงเทพมหานคร":"35 · Bangkok",
+    "เส้นผมและผิวหนัง":"Hair and skin",
+    "อายุรศาสตร์ · โรคระบบการหายใจ":"Internal medicine · Respiratory medicine",
+    "อายุรศาสตร์ · โภชนศาสตร์คลินิก":"Internal medicine · Clinical nutrition",
+    "การลดน้ำหนัก":"Weight management",
+    "น้ำหนักขึ้นได้จากหลายสาเหตุ":"Weight gain can have many causes",
+    "พันธุกรรม ฮอร์โมน การนอน ความเครียด และยาที่ใช้อยู่ ล้วนมีผลต่อน้ำหนัก แพทย์จะแยกสาเหตุก่อน แล้วจึงออกแบบแผนที่เหมาะกับคุณ":"Genetics, hormones, sleep, stress and current medicines can all affect weight. Your doctor will assess the causes before designing a plan for you.",
+    "5 ถึง 10%":"5 to 10%",
+    "น้ำหนักที่ลดลงอย่างมีคุณภาพ ช่วยลดความเสี่ยงสุขภาพได้ชัดเจน":"Healthy weight loss can meaningfully reduce health risks",
+    "ระยะเวลาที่เริ่มเห็นผลของการรักษา":"Time until treatment results begin to appear",
+    "หยุดยาโดยไม่ปรับพฤติกรรม น้ำหนักมีโอกาสกลับมา":"Weight may return if medicine is stopped without changing habits",
+    "re:body ดูแลน้ำหนักผ่าน GLP-1 และต้องมีแพทย์คอยติดตามผลอย่างใกล้ชิด ช่องทางออนไลน์จะช่วยให้หลายคนเริ่มต้นได้ง่ายขึ้น ประหยัดเวลา และไม่ต้องเสียค่าเดินทางครับ":"re:body uses GLP-1 for weight management with close medical follow-up. Online access can make it easier for many people to start, saving time and travel costs.",
+    "ราคาเริ่มต้นของโปรแกรม ไม่รวมค่าจัดส่ง ยาและวิธีใช้จริงขึ้นอยู่กับการประเมินของแพทย์":"Programme starting price, excluding delivery. The medicine and directions depend on your doctor's assessment.",
+    "ระบบจะค้นหาแพทย์ประจำตัวที่พร้อมดูแลคุณ หลังทำแบบประเมินเสร็จ":"After you complete the assessment, the system will find a doctor available to care for you",
+    "ผมร่วงส่วนใหญ่ดูแลได้ ถ้าเริ่มถูกวิธีและติดตามต่อเนื่อง สิ่งสำคัญคือแยกสาเหตุให้ชัดก่อน แล้วจึงเลือกแนวทางที่เหมาะกับแต่ละคนครับ":"Most hair loss can be managed with the right approach and ongoing follow-up. Identifying the cause first helps us choose appropriate care for each person.",
+    "ปัญหาการแข็งตัวมีได้หลายสาเหตุ":"Erection difficulties can have many causes",
+    "ความเครียด ฮอร์โมน การไหลเวียนเลือด ยาที่ใช้อยู่ และโรคประจำตัว ล้วนส่งผลต่อการแข็งตัวได้ แพทย์จะแยกสาเหตุก่อน แล้วจึงเลือกแนวทางที่เหมาะกับคุณ":"Stress, hormones, circulation, current medicines and underlying conditions can all affect erections. Your doctor will assess the causes before choosing an approach for you.",
+    "ผู้ชายอายุ 40 ถึง 70 ปี เคยมีปัญหาการแข็งตัวในระดับหนึ่ง":"Men aged 40 to 70 who have experienced some degree of erection difficulty",
+    "30 ถึง 60 นาที":"30 to 60 minutes",
+    "ระยะเวลาก่อนยาเริ่มออกฤทธิ์":"Time before the medicine starts working",
+    "ยาช่วยเฉพาะตอนที่ใช้ ไม่ได้แก้ที่ต้นเหตุ":"Medicine helps while it is used; it does not address the underlying cause",
+    "ปัญหาการแข็งตัวมักเป็นสัญญาณของสุขภาพโดยรวม การตรวจให้ครบและเลือกยาให้เหมาะกับโรคประจำตัว สำคัญกว่าการรีบใช้ยาครับ":"Erection difficulties can be a sign of overall health. A thorough assessment and choosing medicine suited to existing conditions matter more than rushing to take medicine.",
+    "เรื่องส่วนตัว… คุยกับหมอได้":"You can discuss private concerns with your doctor",
+    "หมอรับฟังทุกความกังวล":"Your doctor listens to every concern",
+    "ถามละเอียด ดูแลอย่างเข้าใจ":"Thoughtful questions and understanding care",
+    "ค่อย ๆ วางแผนไปด้วยกัน":"Build your plan together, step by step",
+    "มีหมออยู่ข้างคุณ ทุกขั้นตอน":"A doctor by your side at every step",
+    "เล่นแอนิเมชัน":"Play animation",
+    "หยุดแอนิเมชัน":"Pause animation",
+
     "ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน":"Oversees Krane's medical direction and standards, with consultations guided by each person's health and suitability.",
     "แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย":"Doctor of Medicine · Bachelor of Science, Chulalongkorn University",
     "ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน":"Consultations on hair, scalp and skin, with care planned around each person's symptoms, health history and suitability.",
@@ -1446,6 +1526,7 @@
   function englishText(text) {
     if (EN[text] !== undefined) return EN[text];
     var match;
+    if ((match = text.match(/^ไปหน้าความคิดเห็น (\d+)$/))) return "Go to comments page " + match[1];
     if ((match = text.match(/^([\d.]+) จาก 5 ดาว$/))) return match[1] + " out of 5 stars";
     if ((match = text.match(/^(\d+) การประเมิน$/))) return match[1] + " ratings";
     if ((match = text.match(/^เรื่องที่ (\d+) จาก (\d+)$/))) return "Story " + match[1] + " of " + match[2];
@@ -1464,15 +1545,23 @@
     while ((n = w.nextNode())) nodes.push(n);
     nodes.forEach(function (node) {
       if (en) {
+        // Runtime controllers may replace an existing text node in place.
+        // Reuse the Thai source only while our last translation is still present.
+        if (node.__thSrc !== undefined && node.nodeValue !== node.__enValue) {
+          delete node.__thSrc;
+          delete node.__enValue;
+        }
         var key = (node.__thSrc !== undefined ? node.__thSrc : node.nodeValue).trim();
         var english = englishText(key);
         if (english !== undefined) {
           if (node.__thSrc === undefined) node.__thSrc = node.nodeValue;
           node.nodeValue = node.__thSrc.replace(key, english);
+          node.__enValue = node.nodeValue;
         }
       } else if (node.__thSrc !== undefined) {
-        node.nodeValue = node.__thSrc;
+        if (node.nodeValue === node.__enValue) node.nodeValue = node.__thSrc;
         delete node.__thSrc;
+        delete node.__enValue;
       }
     });
     // Keep the current source when a control changes its label at runtime.
@@ -1502,11 +1591,13 @@
   }
 
   function observeOff() { if (mo) mo.disconnect(); }
-  function observeOn() { if (mo) mo.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+  function observeOn() { if (mo) mo.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "aria-label", "alt", "title"] }); }
 
   function apply() {
     var en = isEnglish();
-    if (ownsLang) document.documentElement.lang = en ? "en" : "th";
+    if (ownsLang && document.documentElement.lang !== (en ? "en" : "th")) {
+      document.documentElement.lang = en ? "en" : "th";
+    }
     observeOff();
     walk(en);
     observeOn();
