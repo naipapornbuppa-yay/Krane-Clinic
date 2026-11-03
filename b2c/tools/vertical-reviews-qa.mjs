@@ -15,7 +15,14 @@ try{for(const width of [320,390,800,1440])for(const lang of ['th','en']){
  try{
   await p.goto(`${base}/b2c/krane-b2c-landing.html?lang=${lang}`,{waitUntil:'domcontentloaded'});
   const section=p.locator('#reviews[data-vertical-gallery]'),wall=section.locator('.review-collage'),tracks=section.locator('.review-vertical-track'),pause=section.locator('.review-vertical-motion');
-  await section.waitFor();await section.scrollIntoViewIfNeeded();await p.mouse.move(width-1,1);await p.waitForFunction(()=>document.querySelector('#reviews').dataset.galleryRunning==='true');
+  await section.waitFor();await p.evaluate(()=>document.fonts.ready);await section.scrollIntoViewIfNeeded();await p.mouse.move(width-1,1);await p.waitForFunction(()=>document.querySelector('#reviews').dataset.galleryRunning==='true');
+  // Gallery drift starts on intersection, before the independently staggered
+  // copy entrance has settled. Measure the final layout, not its translateY.
+  // Only await these two elements, never the infinite descendant wall tracks.
+  await p.waitForFunction(()=>[...document.querySelectorAll('#reviews .reviews__copy,#reviews .review-collage')].every(e=>e.classList.contains('is-revealed')));
+  await section.locator('.reviews__copy,.review-collage').evaluateAll(async elements=>{
+   await Promise.all(elements.flatMap(element=>element.getAnimations()).map(animation=>animation.finished.catch(()=>{})));
+  });
   check(await section.locator('.review-vertical-rail').count()===3,'Three portrait columns '+width+' '+lang);
   const originals=section.locator('figure[data-start-face="video"]:not([aria-hidden="true"])');
   check(JSON.stringify((await originals.evaluateAll(es=>es.map(e=>e.dataset.reviewId))).sort())===JSON.stringify(expected),'All six original clips preserved');
@@ -23,7 +30,7 @@ try{for(const width of [320,390,800,1440])for(const lang of ['th','en']){
   check(await section.evaluate(e=>e.getBoundingClientRect().height<=950),'Section height is bounded');
   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No page overflow');
   const geometry=await section.evaluate(e=>{const a=e.querySelector('.review-collage').getBoundingClientRect(),b=e.querySelector('.reviews__copy').getBoundingClientRect();return {wallLeft:a.left,wallRight:a.right,wallTop:a.top,copyLeft:b.left,copyBottom:b.bottom}});
-  check(width>700?geometry.wallRight<=geometry.copyLeft:geometry.copyBottom<=geometry.wallTop+2,'Desktop side-by-side and mobile stacked');
+  check(width>700?geometry.wallRight<=geometry.copyLeft:geometry.copyBottom<=geometry.wallTop+2,'Desktop side-by-side and mobile stacked '+width+' '+lang+' '+JSON.stringify(geometry));
   const transform=()=>tracks.evaluateAll(es=>es.map(e=>getComputedStyle(e).transform));const before=await transform();await p.waitForTimeout(300);check(JSON.stringify(await transform())!==JSON.stringify(before),'Columns move vertically');
   check(await tracks.evaluateAll(es=>es.every(e=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return m.m41===0})),'Motion has no horizontal travel');
   await pause.click();const frozen=await transform();await p.waitForTimeout(250);check(JSON.stringify(await transform())===JSON.stringify(frozen),'Explicit pause freezes the wall');

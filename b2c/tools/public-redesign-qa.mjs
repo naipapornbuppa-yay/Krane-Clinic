@@ -158,22 +158,30 @@ for(const width of [390,800,1024,1440]){
    check(await p.evaluate(()=>{const source=document.querySelector('#weight-program .pc-main-media video'),v=document.querySelector('.pc-interview-player video');return v.currentSrc===source.querySelector('source').src&&v.poster===source.poster&&v.controls&&v.playsInline}),'Interview player retains supplied source, poster and native controls');
    await p.keyboard.press('Escape');await p.waitForFunction(()=>{const d=document.querySelector('.pc-interview-player'),v=d.querySelector('video');return !d.open&&v.paused&&!v.hasAttribute('src')});
    check(await interviewOpener.evaluate(e=>document.activeElement===e),'Interview closing returns keyboard focus');
-   const storyCards=p.locator('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])');
-   const storyOpener=storyCards.first().locator('.pc-story-open');
+   // The weight chapter now changes stories in-frame. The review gallery owns the full-screen viewer.
+   const gallery=p.locator('#reviews[data-vertical-gallery]'),storyOpener=gallery.locator('.review-vertical-watch');
+   const activeId=(await storyOpener.getAttribute('aria-controls')).replace('review-excerpt-','');
+   const panels=gallery.locator('.review-vertical-excerpt');
+   const expectedStories=await panels.evaluateAll(es=>es.map(e=>({id:e.id.replace('review-excerpt-',''),quote:e.querySelector('blockquote').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim(),person:e.querySelector('cite').innerText.trim()})));
+   const active=expectedStories.findIndex(item=>item.id===activeId),current=expectedStories[active];
+   const source=await gallery.locator('figure[data-review-id="'+activeId+'"][data-start-face="video"]:not([aria-hidden="true"]) source').getAttribute('src');
    await storyOpener.click();await p.locator('.pc-story-viewer[open]').waitFor();
-   await p.waitForFunction(()=>{const v=document.querySelector('.pc-story-viewer video'),card=document.querySelector('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])');return v.readyState>=1&&v.currentSrc===card.querySelector('source').src});
-   check(await p.locator('dialog[open]').count()===1,'Programme story opens');
+   await p.waitForFunction(src=>{const v=document.querySelector('.pc-story-viewer video');return v.readyState>=1&&v.currentSrc===new URL(src,location.href).href},source);
+   check(await p.locator('dialog[open]').count()===1,'Gallery story opens exactly one viewer');
+   await p.waitForTimeout(150);
    check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));
-   const ugc=await p.evaluate(()=>{const card=document.querySelector('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
+   const ugc=await p.evaluate(expected=>{const viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===expected.quote,person:caption.querySelector('strong').textContent===expected.person,route:caption.querySelector('a').href.includes('category=weight#intake1'),unboxed:getComputedStyle(caption).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(caption).borderRadius==='0px',fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};},current);
    for(const [key,ok] of Object.entries(ugc))check(ok,'UGC integrated caption '+key);
    await p.keyboard.press('ArrowRight');
-   check(await p.locator('.pc-story-caption p').innerText()===await storyCards.nth(1).locator('blockquote').innerText(),'UGC next quote retains approved line breaks');
+   await p.waitForFunction(text=>document.querySelector('.pc-story-caption p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===text,expectedStories[active+1].quote);
+   check((await p.locator('.pc-story-caption p').innerText()).replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===expectedStories[active+1].quote,'UGC next quote retains approved wording');
    await p.keyboard.press('ArrowLeft');
-   check(await p.locator('.pc-story-caption p').innerText()===await storyCards.first().locator('blockquote').innerText(),'UGC previous story restores its caption');
+   await p.waitForFunction(text=>document.querySelector('.pc-story-caption p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===text,current.quote);
+   check((await p.locator('.pc-story-caption p').innerText()).replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===current.quote,'UGC previous story restores its caption');
    const sound=p.locator('dialog[open] [data-story-sound]');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Mute','Unmuting updates the accessible action');
    await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Unmute','Muting updates the accessible action');
-   await p.keyboard.press('Escape');await p.waitForFunction(()=>!document.querySelector('.pc-story-viewer').open&&document.activeElement?.classList.contains('pc-story-open'));check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await storyOpener.evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
+   await p.keyboard.press('Escape');await p.locator('.pc-story-viewer[open]').waitFor({state:'hidden'});check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await storyOpener.evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
   } else if(route.startsWith('condition-detail')){
    const kind=new URLSearchParams(route.split('?')[1]).get('condition');
    if(kind!=='re-flow')check(await p.locator('.photo-reviews__set').count()===2,'Reduced motion never appends hidden loop copies');
