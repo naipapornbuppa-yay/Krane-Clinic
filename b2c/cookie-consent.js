@@ -14,17 +14,30 @@
   explanation:['เลือกได้ว่าจะอนุญาตข้อมูลเสริมหรือไม่ รุ่นนี้ยังไม่มีหมวดเสริมให้เปิดใช้ ทุกตัวเลือกจึงคงเฉพาะข้อมูลที่จำเป็น','Choose whether to allow optional storage. This version has no optional categories to enable, so every choice currently keeps necessary storage only.'],
   necessary:['ข้อมูลที่จำเป็น','Necessary storage'],necessaryCopy:['ใช้สำหรับการทำงานของเว็บไซต์ ภาษาที่เลือก และการจำตัวเลือกความเป็นส่วนตัวของคุณ','Used for site functions, your chosen language, and remembering your privacy choice.'],always:['ใช้งานเสมอ','Always active'],
   analytics:['การวิเคราะห์การใช้งาน','Analytics'],advertising:['การโฆษณา','Advertising'],notUsed:['ยังไม่มีการใช้งาน','Not used on this site'],off:['ปิดอยู่','Off'],
-  save:['บันทึกการตั้งค่า','Save preferences'],close:['ปิดการตั้งค่า','Close settings'],saved:['บันทึกตัวเลือกความเป็นส่วนตัวแล้ว','Privacy choice saved'],session:['บันทึกได้เฉพาะเซสชันของแท็บนี้','Saved for this tab session only'],memory:['เบราว์เซอร์ไม่อนุญาตให้บันทึก จะใช้ตัวเลือกนี้เฉพาะหน้านี้','Browser storage is unavailable. This choice applies to this page only.']
+  dismiss:['ปิดประกาศคุกกี้','Close cookie notice'],save:['บันทึกการตั้งค่า','Save preferences'],close:['ปิดการตั้งค่า','Close settings'],saved:['บันทึกตัวเลือกความเป็นส่วนตัวแล้ว','Privacy choice saved'],session:['บันทึกได้เฉพาะเซสชันของแท็บนี้','Saved for this tab session only'],memory:['เบราว์เซอร์ไม่อนุญาตให้บันทึก จะใช้ตัวเลือกนี้เฉพาะหน้านี้','Browser storage is unavailable. This choice applies to this page only.']
  };
  const english=()=>document.documentElement.lang==='en';
  const label=key=>words[key][english()?1:0];
  const valid=record=>record&&record.version===VERSION&&record.necessary===true&&record.analytics===false&&record.advertising===false&&['necessary_only','accept_all','save'].includes(record.decision)&&typeof record.savedAt==='string'&&Number.isFinite(Date.parse(record.savedAt));
  function read(){for(const name of ['localStorage','sessionStorage'])try{const record=JSON.parse(window[name].getItem(KEY));if(valid(record))return record;}catch{}return null;}
- let current=read(),banner,dialog,returnFocus,status,statusKey,statusTimer;
+ let current=read(),banner,dialog,sheet,returnFocus,status,statusKey,statusTimer,dismissed=false;
+ const mobile=window.matchMedia('(max-width:760px)');
+ function syncNotice(){
+  if(!banner||dialog.open)return;
+  banner.hidden=Boolean(current)||dismissed;
+  if(banner.hidden||!mobile.matches){
+   if(sheet.open)sheet.close();
+   if(banner.parentElement===sheet)document.body.insertBefore(banner,sheet);
+  }else{
+   if(banner.parentElement!==sheet)sheet.append(banner);
+   if(!sheet.open){sheet.showModal();banner.querySelector('h2').focus({preventScroll:true});}
+  }
+ }
+ function dismissNotice(){dismissed=true;syncNotice();}
  function open(opener){
   if(window.top!==window.self){try{window.top.KraneCookieConsent?.open(opener);return;}catch{return;}}
   returnFocus=opener||document.activeElement;
-  if(!dialog.open){translate();dialog.showModal();dialog.querySelector('h2').focus();}
+  if(!dialog.open){translate();sheet.classList.add('is-obscured');dialog.showModal();dialog.querySelector('h2').focus();}
  }
  window.KraneCookieConsent={open,getPreferences:()=>({...current,necessary:true,analytics:false,advertising:false}),isAllowed:category=>category==='necessary'};
  function translate(){
@@ -48,23 +61,28 @@
   let stored='memory';for(const name of ['localStorage','sessionStorage'])try{window[name].setItem(KEY,JSON.stringify(current));stored=name;break;}catch{}
   banner.hidden=true;
   if(dialog.open)dialog.close();
+  syncNotice();
   statusKey=stored==='localStorage'?'saved':stored==='sessionStorage'?'session':'memory';status.textContent=label(statusKey);
   clearTimeout(statusTimer);statusTimer=setTimeout(()=>{status.textContent='';statusKey=null;},5000);
   window.dispatchEvent(new CustomEvent('krane:cookiechange',{detail:{...current}}));
  }
  function boot(){
   banner=document.createElement('aside');banner.className='krane-cookie-banner';banner.dataset.cookieBanner='';banner.hidden=Boolean(current);
-  banner.innerHTML='<p>'+span('intro')+'</p><a href="'+policy+'">'+span('policy')+'</a><div class="krane-cookie-actions">'+button('reject','reject')+button('accept','accept')+button('open','settings')+'</div>';
+  banner.innerHTML='<button type="button" class="krane-cookie-close krane-cookie-notice-close" data-cookie-action="dismiss" data-cookie-label="dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button><h2 id="krane-cookie-notice-heading" tabindex="-1">'+span('title')+'</h2><p>'+span('intro')+'</p><a href="'+policy+'">'+span('policy')+'</a><div class="krane-cookie-actions">'+button('reject','reject')+button('accept','accept')+button('open','settings')+'</div>';
   dialog=document.createElement('dialog');dialog.className='krane-cookie-dialog';dialog.dataset.cookiePreferences='';dialog.setAttribute('aria-labelledby','krane-cookie-heading');dialog.setAttribute('aria-describedby','krane-cookie-description');
   dialog.innerHTML='<div class="krane-cookie-handle" aria-hidden="true"></div><button type="button" class="krane-cookie-close" data-cookie-action="close" data-cookie-label="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button><h2 id="krane-cookie-heading" tabindex="-1">'+span('preferences')+'</h2><p id="krane-cookie-description">'+span('explanation')+'</p><div class="krane-cookie-category"><label><input type="checkbox" checked disabled><strong>'+span('necessary')+'</strong></label><span class="krane-cookie-tag">'+span('always')+'</span><p>'+span('necessaryCopy')+'</p></div>'+['analytics','advertising'].map(key=>'<div class="krane-cookie-category"><label><input type="checkbox" disabled data-cookie-category="'+key+'"><strong>'+span(key)+'</strong></label><span class="krane-cookie-tag">'+span('off')+'</span><p>'+span('notUsed')+'</p></div>').join('')+'<a href="'+policy+'">'+span('policy')+'</a><div class="krane-cookie-dialog-actions">'+button('save','save')+'<div>'+button('reject','reject')+button('accept','accept')+'</div></div>';
   status=document.createElement('div');status.className='krane-cookie-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  document.body.append(banner,dialog,status);
-  [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')dialog.close();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
+  sheet=document.createElement('dialog');sheet.className='krane-cookie-sheet';sheet.setAttribute('aria-labelledby','krane-cookie-notice-heading');
+  document.body.append(banner,sheet,dialog,status);
+  sheet.addEventListener('cancel',event=>{event.preventDefault();dismissNotice();});
+  sheet.addEventListener('click',event=>{if(event.target===sheet){const r=sheet.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dismissNotice();}});
+  mobile.addEventListener('change',syncNotice);
+  [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')dialog.close();else if(action==='dismiss')dismissNotice();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
-  dialog.addEventListener('close',()=>{if(returnFocus?.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus({preventScroll:true});});
+  dialog.addEventListener('close',()=>{sheet.classList.remove('is-obscured');syncNotice();if(returnFocus?.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus({preventScroll:true});});
   new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();banner.hidden=Boolean(current);if(dialog.open)dialog.close();}});
-  translate();
+  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();dismissed=false;if(dialog.open)dialog.close();syncNotice();}});
+  translate();syncNotice();
   if(location.pathname.endsWith('/cookies.html')&&location.hash==='#controls')open();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();

@@ -62,9 +62,15 @@
    let targets=[];
    const update=()=>{
     const cards=[...list.querySelectorAll('.programme-comment')];
-    const perPage=Math.max(1,Math.round((list.clientWidth+14)/(cards[0].getBoundingClientRect().width+14)));
+    const railStyle=getComputedStyle(list);
+    const contentWidth=list.clientWidth-parseFloat(railStyle.paddingLeft)-parseFloat(railStyle.paddingRight);
+    const gap=parseFloat(railStyle.columnGap)||14;
+    const perPage=Math.max(1,Math.round((contentWidth+gap)/(cards[0].getBoundingClientRect().width+gap)));
     const maximum=Math.max(0,list.scrollWidth-list.clientWidth);
     targets=cards.filter((_,i)=>i%perPage===0).map(card=>Math.min(maximum,card.offsetLeft-cards[0].offsetLeft));
+    // The final control always reaches the final card, including fractional
+    // card widths and a shorter final group in filtered results.
+    if(targets.length>1)targets[targets.length-1]=maximum;
     targets=[...new Set(targets)];
     dots.replaceChildren();dots.hidden=targets.length<2;
     targets.forEach((left,i)=>{

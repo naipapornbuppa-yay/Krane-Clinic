@@ -142,12 +142,12 @@
   }
 
   /* Compact repeated UGC stays on the existing video/goal column grid. */
-  #weight-program > .pc-stories {
+  #weight-program:not([data-weight-story-layout]) > .pc-stories {
     grid-column: 1 / span 8 !important;
     overflow: hidden;
   }
 
-  #weight-program > .pc-tracking {
+  #weight-program:not([data-weight-story-layout]) > .pc-tracking {
     grid-column: 9 / span 4 !important;
     min-width: 0;
   }
@@ -223,13 +223,33 @@
   #hair-program .pc-checkins--photos .pc-checkin > div { aspect-ratio: 3 / 4; }
   #hair-program .pc-checkin span { font-size: 12px; white-space: normal; }
 
-  #ed-program > .pc-main-media,
-  #ed-program > .pc-sidebar,
-  #ed-program > .pc-private-review,
-  #ed-program > .pc-stories,
-  #ed-program > .pc-tracking {
-    align-self: stretch !important;
+  /* The phone anchors one column; privacy and goals form the other. */
+  body.landing-figma-draft #ed-program > .pc-consult {
+    grid-column: 1 / span 7;
+    grid-row: 2 / span 2;
+    align-self: start !important;
   }
+  body.landing-figma-draft #ed-program > .pc-privacy {
+    grid-column: 8 / span 5;
+    grid-row: 2;
+    align-self: start !important;
+    height: auto;
+  }
+  body.landing-figma-draft #ed-program > .pc-goals {
+    grid-column: 8 / span 5;
+    grid-row: 3;
+    align-self: start !important;
+    justify-content: flex-start;
+  }
+  body.landing-figma-draft #ed-program > .pc-private-review {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    min-height: 0;
+    padding: 28px 32px;
+  }
+  #ed-program > .pc-private-review blockquote { margin: 8px 0 18px; }
+  #ed-program .pc-privacy .pc-package-photo { max-height: 220px; }
+  #ed-program > .pc-legal { grid-row: 5; }
 }
 
 /* Phone/tablet: compact touch-scrollable stories, chart remains underneath. */

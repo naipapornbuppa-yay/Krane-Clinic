@@ -2,7 +2,7 @@
 (()=>{
  const prepared=new WeakMap();
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const excluded=video=>video.srcObject||video.hasAttribute('data-feature-film');
+ const excluded=video=>video.srcObject||video.hasAttribute('data-feature-film')||video.closest('[data-weight-story]');
  const ready=new IntersectionObserver(entries=>entries.forEach(({target:video,isIntersecting})=>{
   const state=prepared.get(video);
   if(!state||!isIntersecting||excluded(video)||reduced.matches)return;

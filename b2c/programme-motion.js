@@ -29,7 +29,7 @@
   const schedule=()=>{if(!pending){pending=true;requestAnimationFrame(measure)}};
   if(tracking&&chart){const observer=new ResizeObserver(schedule);observer.observe(tracking);observer.observe(chart);document.fonts.ready.then(schedule);window.addEventListener('resize',schedule);desktop.addEventListener('change',schedule);document.addEventListener('krane:languagechange',schedule);schedule()}
  });
- document.querySelectorAll('[data-pc-video]').forEach(card=>{const video=card.querySelector('video'),play=card.querySelector('.pc-play'),sound=card.querySelector('.pc-sound');video.loop=true;let visible=false,userPaused=false;const sync=()=>{if(visible&&!document.hidden&&!reduced.matches&&!userPaused)video.play().catch(()=>{});else video.pause()};play.addEventListener('click',()=>{userPaused=!video.paused;if(video.paused)video.play().catch(()=>{});else video.pause()});const soundLabel=()=>{icon(sound,video.muted?'muted':'sound',video.muted?'เปิดเสียง':'ปิดเสียง');sound.setAttribute('aria-pressed',String(!video.muted))};sound.addEventListener('click',()=>{video.muted=!video.muted;soundLabel()});soundLabel();const label=()=>icon(play,video.paused?'play':'pause',video.paused?'เล่นวิดีโอ':'หยุดวิดีโอ');label();video.addEventListener('play',label);video.addEventListener('pause',label);video.addEventListener('timeupdate',()=>{card.querySelector('.pc-video-progress i').style.width=(video.duration?video.currentTime/video.duration*100:0)+'%'});new IntersectionObserver(es=>{visible=es[0].isIntersecting;sync()},{threshold:.4}).observe(card);document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync)});
+ document.querySelectorAll('[data-pc-video]:not([data-weight-story])').forEach(card=>{const video=card.querySelector('video'),play=card.querySelector('.pc-play'),sound=card.querySelector('.pc-sound');video.loop=true;let visible=false,userPaused=false;const sync=()=>{if(visible&&!document.hidden&&!reduced.matches&&!userPaused)video.play().catch(()=>{});else video.pause()};play.addEventListener('click',()=>{userPaused=!video.paused;if(video.paused)video.play().catch(()=>{});else video.pause()});const soundLabel=()=>{icon(sound,video.muted?'muted':'sound',video.muted?'เปิดเสียง':'ปิดเสียง');sound.setAttribute('aria-pressed',String(!video.muted))};sound.addEventListener('click',()=>{video.muted=!video.muted;soundLabel()});soundLabel();const label=()=>icon(play,video.paused?'play':'pause',video.paused?'เล่นวิดีโอ':'หยุดวิดีโอ');label();video.addEventListener('play',label);video.addEventListener('pause',label);video.addEventListener('timeupdate',()=>{card.querySelector('.pc-video-progress i').style.width=(video.duration?video.currentTime/video.duration*100:0)+'%'});new IntersectionObserver(es=>{visible=es[0].isIntersecting;sync()},{threshold:.4}).observe(card);document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync)});
  const weight=document.querySelector('[data-weight-motion]');
  if(weight){const line=weight.querySelector('[data-chart-line]'),clip=weight.querySelector('[data-chart-clip]'),head=weight.querySelector('[data-chart-head]'),number=weight.querySelector('[data-weight-number]'),loss=weight.querySelector('[data-weight-loss]'),record=weight.querySelector('[data-record]'),length=line.getTotalLength();let low=0,high=length;for(let n=0;n<24;n++){const mid=(low+high)/2;if(line.getPointAtLength(mid).x<160)low=mid;else high=mid}const middle=(low+high)/2/length;
  const render=(p,value)=>{const pt=line.getPointAtLength(length*p);clip.setAttribute('width',pt.x+1);head.setAttribute('cx',pt.x);head.setAttribute('cy',pt.y);number.textContent=value.toFixed(1);loss.textContent=(82.4-value).toFixed(1)};render(0,82.4);
@@ -52,34 +52,33 @@
  while(chat.isConnected){if(reduced.matches){complete();await new Promise(resolve=>{const changed=()=>{if(!reduced.matches){reduced.removeEventListener('change',changed);resolve()}};reduced.addEventListener('change',changed)});if(!chat.isConnected)break}await delay(0,chat);await run();if(reduced.matches)continue;await delay(4200,chat);if(reduced.matches)continue;chat.classList.add('is-resetting');await delay(450,chat);chat.classList.remove('is-resetting')}
  },.25);
  const privacy=document.querySelector('[data-privacy-motion]');once(privacy,async()=>{if(!reduced.matches)await delay(400,privacy);for(const row of privacy.querySelectorAll('li')){row.classList.add('is-on');if(!reduced.matches)await delay(700,privacy)}privacy.classList.add('is-complete')});
- // The envelope replays once per visit, independently of the one-time privacy copy.
+ // The envelope tilts in 3D with scroll position, without a perpetual animation loop.
  if(privacy){
   const photo=privacy.querySelector('.pc-package-photo'),frame=photo?.closest('.pc-package');
-  if(photo&&frame&&photo.animate){
-   let entered=false,visible=false,animation=null;
-   const settle=()=>{animation?.cancel();animation=null};
-   const sync=()=>{if(reduced.matches){settle();return}if(!animation)return;if(document.hidden||!visible){if(animation.playState==='running')animation.pause()}else if(animation.playState==='paused')animation.play()};
-   new IntersectionObserver(entries=>{for(const entry of entries){
-    visible=entry.isIntersecting&&entry.intersectionRatio>0;
-    if(!visible){entered=false;settle();continue}
-    if(!entered&&entry.intersectionRatio>=.2){
-     entered=true;
-     if(!reduced.matches){
-      const base=getComputedStyle(photo).transform;
-      const rest=base==='none'?'':base;
-      animation=photo.animate([
-       {transform:`${rest} translateY(0) rotate(0deg) scale(.98)`,offset:0},
-       {transform:`${rest} translateY(-9px) rotate(1.5deg) scale(.99)`,offset:.38},
-       {transform:`${rest} translateY(-3px) rotate(-.6deg) scale(1)`,offset:.72},
-       {transform:`${rest} translateY(0) rotate(0deg) scale(1)`,offset:1}
-      ],{duration:1500,easing:'cubic-bezier(.22,.61,.36,1)',iterations:1});
-      animation.id='pc-envelope-entry';
-     }
-    }
-    sync();
-   }},{threshold:[0,.2]}).observe(frame);
+  if(photo&&frame){
+   let visible=false,pending=0,base='',needsBase=true;
+   const original=photo.style.transform;
+   const cancel=()=>{if(pending)cancelAnimationFrame(pending);pending=0};
+   const restore=()=>{photo.style.transform=original;photo.style.removeProperty('will-change');needsBase=true};
+   const render=()=>{
+    pending=0;if(!visible||document.hidden||reduced.matches)return;
+    if(needsBase){photo.style.transform=original;const value=getComputedStyle(photo).transform;base=value==='none'?'':value;needsBase=false}
+    const rect=frame.getBoundingClientRect(),height=window.innerHeight||document.documentElement.clientHeight;
+    if(!height||!rect.height)return;
+    // Measure the stable card, never the transformed image. Reverse scrolling reverses the tilt.
+    const progress=Math.max(0,Math.min(1,(height-rect.top)/(height+rect.height))),position=progress*2-1;
+    photo.style.transform=`perspective(900px) rotateX(${(-position*10).toFixed(3)}deg) rotateY(${(position*18).toFixed(3)}deg) rotateZ(${(position*2).toFixed(3)}deg) ${base}`;
+   };
+   const schedule=()=>{if(visible&&!document.hidden&&!reduced.matches&&!pending)pending=requestAnimationFrame(render)};
+   const sync=()=>{if(reduced.matches){cancel();restore();return}if(!visible||document.hidden){cancel();photo.style.removeProperty('will-change');return}photo.style.willChange='transform';schedule()};
+   new IntersectionObserver(entries=>{visible=entries.some(entry=>entry.isIntersecting);sync()},{threshold:0}).observe(frame);
+   window.addEventListener('scroll',schedule,{passive:true});
+   window.addEventListener('resize',()=>{needsBase=true;schedule()},{passive:true});
+   if('ResizeObserver' in window)new ResizeObserver(()=>{needsBase=true;schedule()}).observe(frame);
    document.addEventListener('visibilitychange',sync);
+   document.addEventListener('krane:languagechange',()=>{needsBase=true;schedule()});
    reduced.addEventListener('change',sync);
+   sync();
   }
  }
  // Full-height UGC story viewer; retains the current programme's intake route.
@@ -93,7 +92,7 @@
  const interview=document.createElement('dialog');interview.className='pc-interview-player';interview.setAttribute('aria-label','Interview video');interview.innerHTML='<button type="button" aria-label="Close video">×</button><video controls playsinline preload="metadata"></video>';document.body.append(interview);const interviewVideo=interview.querySelector('video');let interviewOpener,interviewResume=[];
  interview.querySelector('button').onclick=()=>interview.close();interview.addEventListener('click',e=>{if(e.target===interview)interview.close()});interview.addEventListener('close',()=>{interviewVideo.pause();interviewVideo.removeAttribute('src');interviewVideo.load();document.documentElement.classList.remove('pc-story-is-open');interviewResume.forEach(v=>v.play().catch(()=>{}));interviewOpener?.focus()});
  const openInterview=(card,button)=>{interviewOpener=button;interviewResume=[...document.querySelectorAll('video')].filter(v=>!v.paused);interviewResume.forEach(v=>v.pause());const source=card.querySelector('video');interviewVideo.src=source.querySelector('source')?.src||source.currentSrc;interviewVideo.poster=source.poster;interviewVideo.muted=source.muted;interview.showModal();document.documentElement.classList.add('pc-story-is-open');interviewVideo.play().catch(()=>{})};
- document.querySelectorAll('[data-pc-video]').forEach(card=>{const open=document.createElement('button');open.type='button';open.className='pc-story-open';if(card.dataset.railClone)open.tabIndex=-1;open.setAttribute('aria-label','เปิดวิดีโอเต็มจอ');card.append(open);open.addEventListener('click',()=>{if(card.closest('.pc-main-media')){openInterview(card,open);return}opener=open;stories=[...card.closest('.programme-chapter').querySelectorAll('.pc-stories [data-pc-video]:not([data-rail-clone])')];index=card.dataset.railClone?stories.findIndex(c=>c.dataset.railIndex===card.dataset.railIndex):stories.indexOf(card);bars.replaceChildren(...stories.map(()=>{const b=document.createElement('span');b.append(document.createElement('i'));return b}));resume=[...document.querySelectorAll('video')].filter(v=>!v.paused);resume.forEach(v=>v.pause());storyVideo.muted=card.querySelector('video').muted;viewer.showModal();document.documentElement.classList.add('pc-story-is-open');showStory()})});
+ document.querySelectorAll('[data-pc-video]:not([data-weight-story])').forEach(card=>{const open=document.createElement('button');open.type='button';open.className='pc-story-open';if(card.dataset.railClone)open.tabIndex=-1;open.setAttribute('aria-label','เปิดวิดีโอเต็มจอ');card.append(open);open.addEventListener('click',()=>{if(card.closest('.pc-main-media')){openInterview(card,open);return}opener=open;stories=[...card.closest('.programme-chapter').querySelectorAll('.pc-stories [data-pc-video]:not([data-rail-clone])')];index=card.dataset.railClone?stories.findIndex(c=>c.dataset.railIndex===card.dataset.railIndex):stories.indexOf(card);bars.replaceChildren(...stories.map(()=>{const b=document.createElement('span');b.append(document.createElement('i'));return b}));resume=[...document.querySelectorAll('video')].filter(v=>!v.paused);resume.forEach(v=>v.pause());storyVideo.muted=card.querySelector('video').muted;viewer.showModal();document.documentElement.classList.add('pc-story-is-open');showStory()})});
  document.addEventListener('krane:open-review-stories',event=>{const {items,activeId,trigger}=event.detail;const group=document.createElement('section');group.className='programme-chapter';const link=document.createElement('a');link.className='pc-primary';group.append(link);stories=items.map(item=>{const card=document.createElement('article');const v=document.createElement('video');const source=document.createElement('source');source.src=item.src;v.append(source);v.poster=item.poster;const quote=document.createElement('blockquote');quote.textContent=(item.quote||item.caption||'').replace(/<br\s*\/?\s*>/g,' ');const copy=document.createElement('div');copy.className='pc-video-copy';const name=document.createElement('span');name.textContent=item.attribution;copy.append(name);card.append(v,quote,copy);card.dataset.category=item.category;group.append(card);return card});index=Math.max(0,items.findIndex(item=>item.id===activeId));stories.forEach(card=>card.dataset.intake='krane-b2c.html?entry=direct&fresh=1&category='+(card.dataset.category==='hair-loss'?'hair-loss':card.dataset.category==='re-flow'?'sexual-health':'weight')+'#intake1');opener=trigger;bars.replaceChildren(...stories.map(()=>{const b=document.createElement('span');b.append(document.createElement('i'));return b}));resume=[...document.querySelectorAll('video')].filter(v=>!v.paused);resume.forEach(v=>v.pause());storyVideo.muted=true;viewer.showModal();document.documentElement.classList.add('pc-story-is-open');showStory()});
  viewer.querySelector('[data-story-close]').addEventListener('click',()=>viewer.close());viewer.querySelector('[data-story-play]').addEventListener('click',()=>{if(storyVideo.paused)storyVideo.play().catch(()=>{});else storyVideo.pause()});viewer.querySelector('[data-story-sound]').addEventListener('click',()=>{storyVideo.muted=!storyVideo.muted;storyLabels()});
  const change=step=>{const next=index+step;if(next>=0&&next<stories.length){index=next;showStory()}};viewer.querySelector('.pc-story-tap-prev').addEventListener('click',()=>change(-1));viewer.querySelector('.pc-story-tap-next').addEventListener('click',()=>change(1));viewer.addEventListener('keydown',e=>{if(e.key==='ArrowRight')change(1);if(e.key==='ArrowLeft')change(-1)});viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close()});viewer.addEventListener('close',()=>{storyVideo.pause();storyVideo.removeAttribute('src');storyVideo.load();document.documentElement.classList.remove('pc-story-is-open');resume.forEach(v=>v.play().catch(()=>{}));opener?.focus()});storyVideo.addEventListener('timeupdate',progress);storyVideo.addEventListener('play',storyLabels);storyVideo.addEventListener('pause',storyLabels);storyVideo.addEventListener('ended',()=>{if(index<stories.length-1)change(1);else viewer.close()});

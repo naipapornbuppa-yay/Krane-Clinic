@@ -26,7 +26,6 @@
  add('.pc-weight .pc-video','weight-story',[{opacity:.6,translate:'0 22px',scale:'.985'},{opacity:1,translate:'0 0',scale:'1'}]);
  add('.pc-hair [data-hair-motion] .pc-checkin>div','hair-record',[{translate:'0 18px',scale:'1.025'},{translate:'0 0',scale:'1'}],140);
  add('.pc-ed .pc-phone','private-consult',[{translate:'0 26px',rotate:'-2deg'},{translate:'0 0',rotate:'0deg'}],0);
- add('.pc-ed .pc-package-photo','private-delivery',[{translate:'0 24px',rotate:'7deg',scale:'.98'},{translate:'0 0',rotate:'0deg',scale:'1'}],0);
  const update=()=>items.forEach(sync);
  reduced.addEventListener('change',update);document.addEventListener('visibilitychange',update);
  window.addEventListener('pagehide',()=>{observer.disconnect();items.forEach(complete)},{once:true});

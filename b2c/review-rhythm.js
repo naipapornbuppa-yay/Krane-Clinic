@@ -4,6 +4,86 @@
  const data=window.KraneReviews||[],reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const attribution=item=>[item.category==='re-flow'?'คุณ '+(item.name||'').replace(/^คุณ\s*/,'').slice(0,1)+'.':item.name,item.age?`${item.age} ปี`:'อายุ —',item.province||'จังหวัด —'].filter(Boolean).join(' · ');
+ // The landing wall has its own composition; programme review cards keep their rhythm below.
+ const landing=document.querySelector('#reviews.reviews'),collage=landing?.querySelector('.review-collage');
+ if(collage&&data.length){
+  const sourceCards=new Map();
+  collage.querySelectorAll('figure[data-review-id]').forEach(card=>{if(!sourceCards.has(card.dataset.reviewId))sourceCards.set(card.dataset.reviewId,card)});
+  const items=data.filter(item=>sourceCards.has(item.id));
+  if(items.length){
+   landing.dataset.verticalGallery='true';
+   const copy=landing.querySelector('.reviews__copy'),wall=document.createDocumentFragment(),cards=[],tracks=[];
+   const namesEn={'weight-02':'May','weight-04':'Ploy','weight-05':'Fon','hair-pha':'Pha','hair-03':'Pang','confidence-real-med':'T.'};
+   let active=Math.min(1,items.length-1),paused=false,inView=false,hovered=false,focused=false,touching=false;
+   const open=(item,trigger)=>document.dispatchEvent(new CustomEvent('krane:open-review-stories',{detail:{items:items.map(review=>({...review,attribution:attribution(review)})),activeId:item.id,trigger}}));
+   const makeCard=(item,clone=false)=>{
+    const card=sourceCards.get(item.id).cloneNode(true),video=card.querySelector('video');
+    card.className='review-vertical-card';card.dataset.startFace='video';card.dataset.storyKind='video';
+    card.removeAttribute('aria-hidden');card.setAttribute('role','button');card.tabIndex=-1;
+    if(clone){card.dataset.loopClone='true';card.setAttribute('aria-hidden','true')}
+    video.controls=false;video.tabIndex=-1;video.muted=true;video.defaultMuted=true;
+    const name=document.createElement('figcaption');name.className='review-vertical-name';
+    const play=document.createElement('span');play.className='review-vertical-play';play.setAttribute('aria-hidden','true');play.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m9 5 11 7-11 7z"/></svg>';
+    card.append(name,play);
+    card.addEventListener('click',()=>open(item,clone?watch:card));
+    card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open(item,card)}});
+    cards.push({card,video,item,clone,visible:false});return card;
+   };
+   for(let column=0;column<3;column++){
+    const rail=document.createElement('div');rail.className='review-vertical-rail';
+    const track=document.createElement('div');track.className='review-vertical-track';track.style.setProperty('--review-column',column);
+    const originals=document.createElement('div');originals.className='review-vertical-set';
+    const selected=items.filter((_,i)=>i%3===column);selected.forEach(item=>originals.append(makeCard(item)));
+    track.append(originals);
+    // Repeated previews are pointer-playable but never repeated in the keyboard or screen-reader order.
+    for(let repeat=0;repeat<2;repeat++){const set=document.createElement('div');set.className='review-vertical-set';set.setAttribute('aria-hidden','true');selected.forEach(item=>set.append(makeCard(item,true)));track.append(set)}
+    rail.append(track);wall.append(rail);tracks.push(track);
+   }
+   collage.replaceChildren(wall);
+   const excerpts=document.createElement('div');excerpts.className='review-vertical-excerpts';
+   items.forEach((item,i)=>{const panel=document.createElement('div');panel.className='review-vertical-excerpt';panel.id='review-excerpt-'+item.id;panel.hidden=i!==active;panel.innerHTML=`<blockquote>${item.quote?'“'+esc(item.quote).replace(/&lt;br&gt;/g,'<br>')+'”':esc(item.caption)}</blockquote><cite>${esc(attribution(item))}</cite>`;excerpts.append(panel)});
+   const controls=document.createElement('div');controls.className='review-vertical-controls';
+   const previous=document.createElement('button'),next=document.createElement('button'),count=document.createElement('span'),watch=document.createElement('button'),motion=document.createElement('button');
+   previous.type=next.type=watch.type=motion.type='button';previous.className=next.className='review-vertical-arrow';
+   previous.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
+   next.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>';
+   count.className='review-vertical-count';count.setAttribute('aria-live','polite');watch.className='review-vertical-watch';motion.className='review-vertical-motion';
+   controls.append(previous,count,next,watch,motion);copy.append(excerpts,controls);
+   const render=()=>{
+    const en=document.documentElement.lang==='en';
+    collage.setAttribute('aria-label',en?'Member review videos':'วิดีโอรีวิวจากสมาชิก');
+    previous.setAttribute('aria-label',en?'Previous review':'รีวิวก่อนหน้า');next.setAttribute('aria-label',en?'Next review':'รีวิวถัดไป');
+    watch.textContent=en?'Watch video':'ดูวิดีโอ';watch.setAttribute('aria-controls','review-excerpt-'+items[active].id);
+    motion.hidden=reduced.matches;motion.setAttribute('aria-pressed',String(paused));motion.setAttribute('aria-label',paused?(en?'Resume gallery motion':'เริ่มการเคลื่อนไหวแกลเลอรี'):(en?'Pause gallery motion':'หยุดการเคลื่อนไหวแกลเลอรี'));
+    motion.innerHTML=paused?'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m9 5 11 7-11 7z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>';
+    count.textContent=(active+1)+' / '+items.length;
+    cards.forEach(({card,video,item})=>{card.setAttribute('aria-label',en?'Watch review: '+namesEn[item.id]:'ดูรีวิว: '+(item.category==='re-flow'?'คุณ ต.':item.name));card.querySelector('figcaption').textContent=en?namesEn[item.id]:(item.category==='re-flow'?'คุณ ต.':item.name);video.setAttribute('aria-label',en?'Review video: '+namesEn[item.id]:item.caption)});
+   };
+   const sync=()=>{
+    const dialogOpen=document.documentElement.classList.contains('pc-story-is-open');
+    const running=inView&&!document.hidden&&!reduced.matches&&!paused&&!hovered&&!focused&&!touching&&!dialogOpen;
+    landing.dataset.galleryRunning=String(running);landing.dataset.galleryPaused=String(paused);
+    tracks.forEach(track=>track.style.animationPlayState=running?'running':'paused');
+    cards.forEach(state=>{const canPlay=state.visible&&inView&&!document.hidden&&!reduced.matches&&!paused&&!dialogOpen;if(canPlay){state.video.play().catch(()=>{})}else state.video.pause()});
+   };
+   const select=direction=>{active=(active+direction+items.length)%items.length;[...excerpts.children].forEach((panel,i)=>panel.hidden=i!==active);render()};
+   previous.addEventListener('click',()=>select(-1));next.addEventListener('click',()=>select(1));watch.addEventListener('click',()=>open(items[active],watch));
+   motion.addEventListener('click',()=>{paused=!paused;render();sync()});
+   collage.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'){hovered=true;sync()}});collage.addEventListener('pointerleave',()=>{hovered=false;sync()});
+   collage.addEventListener('pointerdown',()=>{touching=true;sync()});window.addEventListener('pointerup',()=>{touching=false;sync()});window.addEventListener('pointercancel',()=>{touching=false;sync()});
+   collage.addEventListener('focusin',()=>{focused=true;sync()});collage.addEventListener('focusout',()=>{focused=collage.contains(document.activeElement);queueMicrotask(()=>{focused=collage.contains(document.activeElement);sync()})});
+   new IntersectionObserver(entries=>{inView=entries.some(entry=>entry.isIntersecting);sync()},{threshold:.05}).observe(collage);
+   const visibility=new IntersectionObserver(entries=>{entries.forEach(entry=>{const state=cards.find(value=>value.card===entry.target);state.visible=entry.isIntersecting;state.card.tabIndex=!state.clone&&(reduced.matches||entry.intersectionRatio>.97)?0:-1});sync()},{threshold:[0,.05,.98],root:collage});cards.forEach(state=>visibility.observe(state.card));
+   // Prevent the shared media initializer or story-viewer resume from bypassing an explicit pause.
+   cards.forEach(state=>state.video.addEventListener('play',()=>{if(paused||reduced.matches||!inView||!state.visible||document.hidden||document.documentElement.classList.contains('pc-story-is-open'))state.video.pause()}));
+   const measure=()=>tracks.forEach(track=>{const first=track.children[0],second=track.children[1];track.style.setProperty('--review-loop-height',(second.offsetTop-first.offsetTop)+'px')});
+   new ResizeObserver(measure).observe(collage);measure();
+   reduced.addEventListener('change',()=>{render();sync();cards.forEach(state=>{if(!state.clone&&reduced.matches)state.card.tabIndex=0})});
+   document.addEventListener('visibilitychange',sync);document.addEventListener('krane:languagechange',render);
+   new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+   render();sync();
+  }
+ }
  document.querySelectorAll('.weight-story-gallery__video-copy,.review-video__copy').forEach(e=>e.remove());
  document.querySelectorAll('.weight-story-gallery__quote-slide[data-review-id],.story-blocks__panel[data-review-id]').forEach(slide=>{const item=data.find(i=>i.id===slide.dataset.reviewId);if(!item)return;const cite=slide.querySelector('cite');if(cite)cite.textContent=attribution(item)});
  document.querySelectorAll('.weight-story-gallery__photos figcaption,.review-video__photos figcaption,.review-video--comparison>.cd-fine').forEach(e=>e.remove());
@@ -44,5 +124,5 @@
   show();
  });
  // One quiet note per review section, rather than repeated copy over videos.
- document.querySelectorAll('.cd-reviews,#reviews.reviews').forEach(section=>{if(section.querySelector('.review-rhythm-note'))return;const p=document.createElement('p');p.className='review-rhythm-note';p.textContent='ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน';section.append(p)});
+ document.querySelectorAll('.cd-reviews,#reviews.reviews').forEach(section=>{if(section.querySelector('.review-rhythm-note'))return;const p=document.createElement('p');p.className='review-rhythm-note';p.textContent='ประสบการณ์เฉพาะบุคคล ผลลัพธ์อาจแตกต่างกัน';(section.dataset.verticalGallery?section.querySelector('.reviews__copy'):section).append(p)});
 })();
