@@ -19,8 +19,36 @@ const checkLandingPolish=async(page,width)=>{
  await page.evaluate(()=>document.fonts.ready);
  const language=await page.locator('html').getAttribute('lang');
  const label=`Landing polish ${language} ${width}`;
+ check(await page.locator('#ed-program .pc-ad-kicker, #ed-program .pc-ad-progress').count()===0,label+' removes the private-care eyebrow and four-step progress bar');
  check(await page.locator('#hair-program .pc-hair-scan__label').count()===0,label+' removes the visible AI chip');
  check(/AI/i.test(await page.locator('#hair-program [data-hair-scan]').getAttribute('aria-label')||''),label+' retains accessible AI disclosure');
+ const hairFrame=await page.locator('#hair-program .pc-photo-card').evaluate(card=>{
+  const style=getComputedStyle(card),photo=card.querySelector('.pc-hair-scan');
+  const frame=card.getBoundingClientRect(),image=photo.getBoundingClientRect();
+  return {
+   borderless:['Top','Right','Bottom','Left'].every(side=>parseFloat(style[`border${side}Width`])===0&&parseFloat(style[`padding${side}`])===0),
+   transparent:style.backgroundColor==='rgba(0, 0, 0, 0)'&&style.backgroundImage==='none',
+   filled:frame.width>0&&frame.height>0&&['left','top','width','height'].every(edge=>Math.abs(frame[edge]-image[edge])<=.5)
+  };
+ });
+ check(hairFrame.borderless&&hairFrame.transparent,label+' removes all hair comparison card border, padding and background');
+ check(hairFrame.filled,label+' fills the hair comparison card edge to edge without an image inset');
+ const trackingBadges=[];
+ for(const kind of ['weight','hair']){
+  const tracking=page.locator(`#${kind}-program .pc-tracking`);await tracking.scrollIntoViewIfNeeded();
+  await page.waitForFunction(kind=>document.querySelector(`#${kind}-program .pc-tracking`).classList.contains('is-complete'),kind);
+  const badge=await tracking.evaluate((section,width)=>{
+   const header=section.querySelector('.pc-tracking-header'),heading=header.querySelector('h3'),tag=header.querySelector('.pc-complete');
+   const h=heading.getBoundingClientRect(),b=tag.getBoundingClientRect(),r=header.getBoundingClientRect(),css=getComputedStyle(tag);
+   return {one:section.querySelectorAll('.pc-complete').length===1&&Boolean(tag.textContent.trim()),
+    placed:Math.abs(b.right-r.right)<=1&&(width<=760?b.top>=h.bottom:b.left>=h.right&&Math.abs((b.top+b.bottom-h.top-h.bottom)/2)<=1),
+    visible:Number(css.opacity)===1,
+    style:[css.fontSize,css.lineHeight,css.padding,css.borderRadius,css.borderWidth,css.backgroundColor].join('|')};
+  },width);
+  check(badge.one&&badge.placed&&badge.visible,label+' '+kind+' completion badge is visible at the right of its tracking header, wrapping below on phones');
+  trackingBadges.push(badge.style);
+ }
+ check(trackingBadges[0]===trackingBadges[1],label+' gives both tracking completion badges identical UI styling');
  const goals=await page.locator('#weight-program .pc-goals, #hair-program .pc-goals').evaluateAll(panels=>panels.map(panel=>{
   const heading=getComputedStyle(panel.querySelector('h3')),style=getComputedStyle(panel);
   return {heading:heading.fontSize,inset:style.padding,border:style.borderWidth,buttons:[...panel.querySelectorAll('a')].map(a=>{
