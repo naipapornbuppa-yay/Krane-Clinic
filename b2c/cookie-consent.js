@@ -20,7 +20,7 @@
  const label=key=>words[key][english()?1:0];
  const valid=record=>record&&record.version===VERSION&&record.necessary===true&&record.analytics===false&&record.advertising===false&&['necessary_only','accept_all','save'].includes(record.decision)&&typeof record.savedAt==='string'&&Number.isFinite(Date.parse(record.savedAt));
  function read(){for(const name of ['localStorage','sessionStorage'])try{const record=JSON.parse(window[name].getItem(KEY));if(valid(record))return record;}catch{}return null;}
- let current=read(),banner,dialog,sheet,returnFocus,status,statusKey,statusTimer,dismissed=false;
+ let current=read(),banner,dialog,sheet,returnFocus,status,statusKey,statusTimer,dismissed=false,preferencesReturnPending=false;
  const mobile=window.matchMedia('(max-width:760px)');
  function syncNotice(){
   if(!banner||dialog.open)return;
@@ -34,10 +34,24 @@
   }
  }
  function dismissNotice(){dismissed=true;syncNotice();}
+ function restoreNotice(){
+  // A queued close event from an earlier opening must not reveal the notice
+  // or move focus out of newly reopened preferences.
+  if(dialog.open||!preferencesReturnPending)return;
+  preferencesReturnPending=false;
+  sheet.classList.remove('is-obscured');syncNotice();
+  if(returnFocus?.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus({preventScroll:true});
+ }
+ function closePreferences(){
+  if(!dialog.open)return;
+  // Restore the underlying surface before native close restores its focus.
+  // Do not leave it invisible until the asynchronous close event runs.
+  sheet.classList.remove('is-obscured');dialog.close();restoreNotice();
+ }
  function open(opener){
   if(window.top!==window.self){try{window.top.KraneCookieConsent?.open(opener);return;}catch{return;}}
   returnFocus=opener||document.activeElement;
-  if(!dialog.open){translate();sheet.classList.add('is-obscured');dialog.showModal();dialog.querySelector('h2').focus();}
+  if(!dialog.open){translate();preferencesReturnPending=true;sheet.classList.add('is-obscured');dialog.showModal();dialog.querySelector('h2').focus();}
  }
  window.KraneCookieConsent={open,getPreferences:()=>({...current,necessary:true,analytics:false,advertising:false}),isAllowed:category=>category==='necessary'};
  function translate(){
@@ -60,7 +74,7 @@
   current={version:VERSION,necessary:true,analytics:false,advertising:false,decision,savedAt:new Date().toISOString()};
   let stored='memory';for(const name of ['localStorage','sessionStorage'])try{window[name].setItem(KEY,JSON.stringify(current));stored=name;break;}catch{}
   banner.hidden=true;
-  if(dialog.open)dialog.close();
+  if(dialog.open)closePreferences();
   syncNotice();
   statusKey=stored==='localStorage'?'saved':stored==='sessionStorage'?'session':'memory';status.textContent=label(statusKey);
   clearTimeout(statusTimer);statusTimer=setTimeout(()=>{status.textContent='';statusKey=null;},5000);
@@ -77,11 +91,12 @@
   sheet.addEventListener('cancel',event=>{event.preventDefault();dismissNotice();});
   sheet.addEventListener('click',event=>{if(event.target===sheet){const r=sheet.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dismissNotice();}});
   mobile.addEventListener('change',syncNotice);
-  [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')dialog.close();else if(action==='dismiss')dismissNotice();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
-  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
-  dialog.addEventListener('close',()=>{sheet.classList.remove('is-obscured');syncNotice();if(returnFocus?.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus({preventScroll:true});});
+  [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')closePreferences();else if(action==='dismiss')dismissNotice();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
+  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closePreferences();}});
+  dialog.addEventListener('cancel',event=>{event.preventDefault();closePreferences();});
+  dialog.addEventListener('close',restoreNotice);
   new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();dismissed=false;if(dialog.open)dialog.close();syncNotice();}});
+  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();dismissed=false;if(dialog.open)closePreferences();syncNotice();}});
   translate();syncNotice();
   if(location.pathname.endsWith('/cookies.html')&&location.hash==='#controls')open();
  }
