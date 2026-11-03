@@ -33,7 +33,16 @@ try{for(const width of [320,390,800,1440])for(const lang of ['th','en']){
   check(width>700?geometry.wallRight<=geometry.copyLeft:geometry.copyBottom<=geometry.wallTop+2,'Desktop side-by-side and mobile stacked '+width+' '+lang+' '+JSON.stringify(geometry));
   const transform=()=>tracks.evaluateAll(es=>es.map(e=>getComputedStyle(e).transform));const before=await transform();await p.waitForTimeout(300);check(JSON.stringify(await transform())!==JSON.stringify(before),'Columns move vertically');
   check(await tracks.evaluateAll(es=>es.every(e=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return m.m41===0})),'Motion has no horizontal travel');
-  await pause.click();const frozen=await transform();await p.waitForTimeout(250);check(JSON.stringify(await transform())===JSON.stringify(frozen),'Explicit pause freezes the wall');
+  await pause.click();
+  // CSS pause first schedules a compositor pause task. Its final hold time
+  // becomes stable when Animation.ready resolves, not at the click boundary.
+  const pauseReady=await tracks.evaluateAll(async elements=>{
+   const animations=elements.flatMap(element=>element.getAnimations());
+   await Promise.all(animations.map(animation=>animation.ready));
+   return animations.length===elements.length&&animations.every(animation=>animation.playState==='paused'&&!animation.pending)&&elements.every(element=>getComputedStyle(element).animationPlayState==='paused');
+  });
+  check(pauseReady,'Every wall animation acknowledges pause '+width+' '+lang);
+  const frozen=await transform();await p.waitForTimeout(250);check(JSON.stringify(await transform())===JSON.stringify(frozen),'Explicit pause freezes the wall '+width+' '+lang);
   check(await section.locator('video').evaluateAll(es=>es.every(v=>v.paused)),'Explicit pause stops all preview videos');
   const seen=new Set();for(let i=0;i<6;i++){seen.add(await section.locator('.review-vertical-excerpt:not([hidden])').getAttribute('id'));await section.locator('.review-vertical-arrow').last().click()}
   check(seen.size===6,'Every existing review excerpt is reachable');

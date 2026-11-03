@@ -166,7 +166,8 @@ for(const width of [390,800,1024,1440]){
    const active=expectedStories.findIndex(item=>item.id===activeId),current=expectedStories[active];
    const source=await gallery.locator('figure[data-review-id="'+activeId+'"][data-start-face="video"]:not([aria-hidden="true"]) source').getAttribute('src');
    await storyOpener.click();await p.locator('.pc-story-viewer[open]').waitFor();
-   await p.waitForFunction(src=>{const v=document.querySelector('.pc-story-viewer video');return v.readyState>=1&&v.currentSrc===new URL(src,location.href).href},source);
+   check(await p.locator('.pc-story-viewer video').evaluate((v,src)=>v.src===new URL(src,location.href).href,source),'Viewer assigns the selected source synchronously');
+   await p.waitForFunction(src=>{const v=document.querySelector('.pc-story-viewer video');return v.readyState>=1&&v.currentSrc===new URL(src,location.href).href},source,{timeout:30000});
    check(await p.locator('dialog[open]').count()===1,'Gallery story opens exactly one viewer');
    await p.waitForTimeout(150);
    check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));

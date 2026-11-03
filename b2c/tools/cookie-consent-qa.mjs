@@ -13,6 +13,14 @@ const consent=p=>p.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
 const banner=p=>p.locator('[data-cookie-banner]');const dialog=p=>p.locator('[data-cookie-preferences]');
 function monitor(p){p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{const url=new URL(r.url());if(['http:','https:'].includes(url.protocol)&&url.origin!==new URL(base).origin)external.add(url.origin);});}
 const open=(p,route)=>p.goto(base+'/b2c/'+route,{waitUntil:'domcontentloaded'});
+const cookieUIState=p=>p.evaluate(()=>({
+ preferences:[...document.querySelectorAll('[data-cookie-preferences]')].map(e=>({open:e.open,modal:e.matches(':modal'),hidden:e.hidden,display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility})),
+ notice:[...document.querySelectorAll('[data-cookie-banner]')].map(e=>({hidden:e.hidden,parent:e.parentElement.className,display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,rect:e.getBoundingClientRect().toJSON()})),
+ sheet:[...document.querySelectorAll('.krane-cookie-sheet')].map(e=>({open:e.open,modal:e.matches(':modal'),classes:e.className,display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility})),
+ events:window.__cookieQAEvents||[],
+ active:document.activeElement?.outerHTML?.slice(0,300)
+}));
+
 async function escapeCookie(p){
  const preferencesOpen=await dialog(p).isVisible();
  await p.keyboard.press('Escape');
@@ -58,12 +66,23 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  await banner(p).screenshot({path:join(out,`banner-${width}-${lang}.png`)});
  await p.screenshot({path:join(out,`notice-page-${width}-${lang}.png`),animations:'disabled'});
  await p.evaluate(()=>localStorage.setItem('krane-cookie-qa-sentinel','preserve'));
- await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');await checkPlacement(p,dialog(p),'Preferences '+width+'/'+lang);
+ await p.evaluate(()=>{
+  window.__cookieQAEvents=[];
+  for(const type of ['cancel','close'])for(const el of document.querySelectorAll('.krane-cookie-sheet,[data-cookie-preferences]'))el.addEventListener(type,()=>{
+   const notice=document.querySelector('[data-cookie-banner]');
+   window.__cookieQAEvents.push({type,target:el.className,open:el.open,noticeHidden:notice.hidden,noticeParent:notice.parentElement.className});
+  },{capture:true});
+ });
+ await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Preferences do not leave a second native cookie modal open');await checkPlacement(p,dialog(p),'Preferences '+width+'/'+lang);
  check((await dialog(p).locator('a').boundingBox()).height>=44,'Dialog policy link has a 44px touch target');
  check(await dialog(p).locator('input:checked:disabled').count()===1,'Necessary always active');
  check(await dialog(p).locator('[data-cookie-category]:not(:checked):disabled').count()===2,'Unavailable optional categories stay off');
  await p.keyboard.press('Tab');check(await p.evaluate(()=>document.querySelector('[data-cookie-preferences]').contains(document.activeElement)),'Keyboard stays in native modal');
- await escapeCookie(p);check(!await dialog(p).isVisible()&&await banner(p).isVisible(),'Escape closes without consenting');
+ await escapeCookie(p);
+ const escapedState=JSON.stringify(await cookieUIState(p));
+ check(!await dialog(p).isVisible(),'Escape closes preferences '+width+'/'+lang+' '+escapedState);
+ check(await banner(p).isVisible(),'Escape restores unanswered notice '+width+'/'+lang+' '+escapedState);
+ if(width<=760)check(await p.locator('.krane-cookie-sheet:modal').count()===1,'Escape restores exactly one notice modal '+escapedState);
  check(await consent(p)===null,'Dismissal is not consent');
  check(await banner(p).locator('[data-cookie-action=open]').evaluate(e=>e===document.activeElement),'Escape returns focus to opener');
  await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).screenshot({path:join(out,`preferences-${width}-${lang}.png`)});

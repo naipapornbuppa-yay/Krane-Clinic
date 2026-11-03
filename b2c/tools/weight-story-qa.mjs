@@ -86,7 +86,16 @@ try {
       check(await frame.getAttribute('data-active-story') === '1', 'Playing story advances on ended');
       check(await frame.locator('[data-weight-story][hidden] video').evaluate(video => video.paused), 'Inactive video stays paused');
       await page.emulateMedia({ reducedMotion: 'reduce' });
+      // emulateMedia confirms the browser setting, not delivery of the queued
+      // MediaQueryList change event. Wait for the observable playback outcome;
+      // a broken listener still fails within this bounded deadline.
+      await page.waitForFunction(() => {
+        const videos = [...document.querySelectorAll('.weight-story-frame video')];
+        return matchMedia('(prefers-reduced-motion: reduce)').matches && videos.length === 2 && videos.every(video => video.paused);
+      }, null, { timeout: 3000 });
       check(await frame.locator('video').evaluateAll(videos => videos.every(video => video.paused)), 'Preference change stops playback');
+      check(await frame.locator('[data-weight-story]:visible .pc-play').getAttribute('aria-label') === 'Play video', 'Preference change updates play control');
+      check(await frame.getAttribute('data-active-story') === '1', 'Preference change preserves current story');
     }
     check(errors.length === 0, `No page errors: ${errors.join('; ')}`);
     await ctx.close();
