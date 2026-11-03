@@ -36,10 +36,13 @@
  const tween=(from,to,start,end,duration)=>new Promise(resolve=>{let begin;let elapsed=0;const frame=async t=>{if(reduced.matches){render(end,to);resolve();return}if(!clocks.get(weight).visible||document.hidden){await delay(0,weight);begin=null;requestAnimationFrame(frame);return}begin??=t;elapsed+=t-begin;begin=t;const x=Math.min(1,elapsed/duration),e=x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;render(start+(end-start)*e,from+(to-from)*e);if(x<1)requestAnimationFrame(frame);else resolve()};requestAnimationFrame(frame)});
  once(weight,async()=>{if(!reduced.matches){await delay(900,weight);await tween(82.4,77.6,0,middle,760);if(record)record.textContent='2';await delay(320,weight);await tween(77.6,72,middle,1,640);await delay(420,weight)}render(1,72);if(record)record.textContent='3';weight.classList.add('is-complete')});}
  const hair=document.querySelector('[data-hair-motion]');once(hair,async()=>{const tiles=[...hair.querySelectorAll('.pc-checkin')];if(!reduced.matches)await delay(400,hair);for(let i=0;i<tiles.length;i++){tiles.forEach(t=>t.classList.remove('is-current'));tiles[i].classList.add('is-on','is-current');hair.querySelector('.pc-timeline i').style.width=i/Math.max(1,tiles.length-1)*100+'%';if(!reduced.matches)await delay(620,hair)}hair.classList.add('is-complete')});
- const chat=document.querySelector('[data-chat-motion]');once(chat,async()=>{
+ const chat=document.querySelector('[data-chat-motion]');
+ // Anchor side cues to the actual phone after typography / language reflow.
+ if(chat){const device=chat.querySelector('.pc-device');let pending=false;const measure=()=>{pending=false;chat.style.setProperty('--chat-phone-top',device.offsetTop+'px');chat.style.setProperty('--chat-phone-height',device.offsetHeight+'px')};const schedule=()=>{if(!pending){pending=true;requestAnimationFrame(measure)}};const observer=new ResizeObserver(schedule);observer.observe(chat);observer.observe(device);observer.observe(chat.querySelector('.pc-ad-head'));document.fonts.ready.then(schedule);document.addEventListener('krane:languagechange',schedule);schedule()}
+ once(chat,async()=>{
  const messages=[...chat.querySelectorAll('.pc-messages p')],typing=chat.querySelector('.pc-typing'),container=chat.querySelector('.pc-messages'),title=chat.querySelector('.pc-ad-title'),steps=[...chat.querySelectorAll('.pc-ad-progress i')],control=chat.querySelector('.pc-chat-toggle'),pills=[...chat.querySelectorAll('.pc-chat-pill')];
  const titles=['เรื่องส่วนตัว… คุยกับหมอได้','หมอรับฟังทุกความกังวล','ถามละเอียด ดูแลอย่างเข้าใจ','ค่อย ๆ วางแผนไปด้วยกัน'];
- const label=()=>{const paused=chat.dataset.motionPaused==='true';control.textContent=paused?'เล่นแอนิเมชัน':'หยุดแอนิเมชัน';control.setAttribute('aria-label',control.textContent);control.setAttribute('aria-pressed',String(paused));control.hidden=reduced.matches};
+ const label=()=>{const paused=chat.dataset.motionPaused==='true';icon(control,paused?'play':'pause',paused?'เล่นแอนิเมชัน':'หยุดแอนิเมชัน');control.setAttribute('aria-pressed',String(paused));control.hidden=reduced.matches};
  control.addEventListener('click',()=>{chat.dataset.motionPaused=String(chat.dataset.motionPaused!=='true');label();syncClocks()});label();reduced.addEventListener('change',label);
  const complete=()=>{typing.classList.remove('is-on');messages.forEach(m=>m.classList.add('is-shown'));steps.forEach(step=>step.classList.add('is-active'));pills.forEach(p=>p.classList.toggle('is-active',p.dataset.chatPill==='7'));chat.dataset.chatScene='3';chat.classList.remove('is-resetting');chat.classList.add('is-complete');title.textContent='มีหมออยู่ข้างคุณ ทุกขั้นตอน';container.scrollTop=container.scrollHeight};
  const run=async()=>{chat.classList.remove('is-complete');messages.forEach(m=>m.classList.remove('is-shown'));pills.forEach(p=>p.classList.toggle('is-active',p.dataset.chatPill==='0'));container.scrollTop=0;
@@ -49,6 +52,36 @@
  while(chat.isConnected){if(reduced.matches){complete();await new Promise(resolve=>{const changed=()=>{if(!reduced.matches){reduced.removeEventListener('change',changed);resolve()}};reduced.addEventListener('change',changed)});if(!chat.isConnected)break}await delay(0,chat);await run();if(reduced.matches)continue;await delay(4200,chat);if(reduced.matches)continue;chat.classList.add('is-resetting');await delay(450,chat);chat.classList.remove('is-resetting')}
  },.25);
  const privacy=document.querySelector('[data-privacy-motion]');once(privacy,async()=>{if(!reduced.matches)await delay(400,privacy);for(const row of privacy.querySelectorAll('li')){row.classList.add('is-on');if(!reduced.matches)await delay(700,privacy)}privacy.classList.add('is-complete')});
+ // The envelope replays once per visit, independently of the one-time privacy copy.
+ if(privacy){
+  const photo=privacy.querySelector('.pc-package-photo'),frame=photo?.closest('.pc-package');
+  if(photo&&frame&&photo.animate){
+   let entered=false,visible=false,animation=null;
+   const settle=()=>{animation?.cancel();animation=null};
+   const sync=()=>{if(reduced.matches){settle();return}if(!animation)return;if(document.hidden||!visible){if(animation.playState==='running')animation.pause()}else if(animation.playState==='paused')animation.play()};
+   new IntersectionObserver(entries=>{for(const entry of entries){
+    visible=entry.isIntersecting&&entry.intersectionRatio>0;
+    if(!visible){entered=false;settle();continue}
+    if(!entered&&entry.intersectionRatio>=.2){
+     entered=true;
+     if(!reduced.matches){
+      const base=getComputedStyle(photo).transform;
+      const rest=base==='none'?'':base;
+      animation=photo.animate([
+       {transform:`${rest} translateY(0) rotate(0deg) scale(.98)`,offset:0},
+       {transform:`${rest} translateY(-9px) rotate(1.5deg) scale(.99)`,offset:.38},
+       {transform:`${rest} translateY(-3px) rotate(-.6deg) scale(1)`,offset:.72},
+       {transform:`${rest} translateY(0) rotate(0deg) scale(1)`,offset:1}
+      ],{duration:1500,easing:'cubic-bezier(.22,.61,.36,1)',iterations:1});
+      animation.id='pc-envelope-entry';
+     }
+    }
+    sync();
+   }},{threshold:[0,.2]}).observe(frame);
+   document.addEventListener('visibilitychange',sync);
+   reduced.addEventListener('change',sync);
+  }
+ }
  // Full-height UGC story viewer; retains the current programme's intake route.
  const viewer=document.createElement('dialog');viewer.className='pc-story-viewer';viewer.setAttribute('aria-label','วิดีโอประสบการณ์ผู้ใช้บริการ');viewer.innerHTML='<div class="pc-story-stage"><video playsinline preload="metadata"></video><div class="pc-story-bars"></div><span class="pc-story-count"></span><div class="pc-story-tools"><button type="button" data-story-play></button><button type="button" data-story-sound></button><button type="button" data-story-close aria-label="ปิดวิดีโอ"></button></div><button class="pc-story-tap-prev" type="button" aria-label="เรื่องก่อนหน้า"></button><button class="pc-story-tap-next" type="button" aria-label="เรื่องถัดไป"></button><div class="pc-story-caption"><p></p><strong></strong><a>ปรึกษาแพทย์ →</a></div></div>';document.body.append(viewer);
  icon(viewer.querySelector('[data-story-close]'),'close','ปิดวิดีโอ');

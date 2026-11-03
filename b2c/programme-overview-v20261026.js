@@ -59,10 +59,11 @@ window.KraneProgrammeOverview = data => {
   const media = document.createElement('div');media.className = 'programme-intro__media';
   media.classList.add('programme-interview-placeholder');
   const video=document.createElement('video');video.controls=true;video.playsInline=true;video.muted=true;video.defaultMuted=true;video.loop=true;video.preload='metadata';video.poster='assets/landing/interview-off-camera-poster.jpg';video.src='assets/landing/interview-off-camera-pexels-6602739.mp4';video.setAttribute('aria-label','วิดีโอสัมภาษณ์ประกอบ รอวิดีโอแนะนำโปรแกรมจากแพทย์');
-  const videoLabel=document.createElement('div');videoLabel.className='programme-interview-label';const title=document.createElement('strong');title.textContent='คุณหมอแนะนำโปรแกรม';const note=document.createElement('span');note.textContent='ภาพประกอบ · เตรียมพบกับบทสัมภาษณ์คุณหมอ';videoLabel.append(title,note);media.append(video,videoLabel);
-  doctor.append(media);
+  const videoLabel=document.createElement('div');videoLabel.className='programme-interview-label';
+  const note=document.createElement('span');note.textContent='ภาพประกอบ · เตรียมพบกับบทสัมภาษณ์คุณหมอ';videoLabel.append(note);
+  media.append(video,videoLabel);doctor.append(media);
   const designer = document.querySelector('.programme-designer');
-  if (designer) copy.append(designer);
+  if (designer) media.append(designer);
   intro.classList.add('programme-intro');intro.replaceChildren(doctor,copy);
   overview.querySelector('.cd-feature-grid').remove();
   const fit = overview.querySelector('[data-fit-list]');

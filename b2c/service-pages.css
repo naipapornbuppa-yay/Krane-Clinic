@@ -315,11 +315,11 @@ body.condition-detail-page.public-care-page{--detail-paper:var(--public-canvas);
 /* Nested corners: outer radius = inset + inner radius. */
 .condition-detail-page.public-care-page .programme-reference #cd-panel-overview>.programme-intro{--intro-inset:24px;--intro-inner-radius:28px;padding:var(--intro-inset);border-radius:calc(var(--intro-inset) + var(--intro-inner-radius))}
 .programme-reference .programme-intro__media{border-radius:var(--intro-inner-radius)}
-.condition-detail-page.public-care-page .programme-reference .programme-intro__copy>.programme-designer{border-radius:var(--intro-inner-radius);margin-top:auto}
+.condition-detail-page.public-care-page .programme-reference .programme-intro__copy>.programme-designer{border-radius:var(--intro-inner-radius);margin-top:24px}
 .programme-reference .programme-intro__points{margin-bottom:24px}
 @media(max-width:760px){
  .condition-detail-page.public-care-page .programme-reference #cd-panel-overview>.programme-intro{--intro-inset:20px}
- .condition-detail-page.public-care-page .programme-reference .programme-intro__copy>.programme-designer{margin-top:0}
+ .condition-detail-page.public-care-page .programme-reference .programme-intro__copy>.programme-designer{margin-top:24px}
 }
 
 /* Compact editorial suitability layout, matching the service summary. */
@@ -370,6 +370,21 @@ body.condition-detail-page.public-care-page{--detail-paper:var(--public-canvas);
 @media(prefers-reduced-motion:reduce){.programme-selling-points.is-visible li,.programme-selling-points.is-visible li:after,.programme-selling-points.is-visible li svg{animation:none}}
 
 .condition-detail-page.public-care-page #cd-panel-overview>.programme-csat{width:100%;min-width:0;grid-column:1 / -1;box-sizing:border-box}
-.condition-detail-page.public-care-page .programme-intro{align-items:start}
+.condition-detail-page.public-care-page .programme-intro{align-items:stretch}
 
-.programme-reference .programme-intro__media.programme-interview-placeholder{display:flex;flex-direction:column;aspect-ratio:auto;min-height:0;background:#171e2b;border-radius:24px;overflow:hidden;align-self:start;width:100%;flex:none}.programme-reference .programme-interview-placeholder video{position:relative;inset:auto;display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}.programme-interview-label{padding:18px 22px;color:#fff}.programme-interview-label strong{display:block;font-size:18px;font-weight:600}.programme-interview-label span{display:block;font-size:12px;opacity:.7;margin-top:6px}
+/* The existing programme designer is credited over illustrative footage,
+   not presented as the person speaking in the stock video. */
+.programme-reference .programme-intro__media.programme-interview-placeholder{position:relative;display:block;aspect-ratio:auto;min-height:360px;background:#171e2b;border-radius:24px;overflow:hidden;align-self:stretch;width:100%;flex:1}
+.programme-reference .programme-interview-placeholder video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.programme-interview-placeholder::after{content:'';position:absolute;inset:30% 0 0;pointer-events:none;background:linear-gradient(transparent,rgba(10,18,28,.48) 40%,rgba(10,18,28,.94));z-index:1}
+.programme-interview-label{position:absolute;z-index:2;top:16px;left:16px;right:16px;width:fit-content;max-width:calc(100% - 32px);padding:6px 10px;border-radius:8px;background:#101a28c9;color:#fff;font-size:11px;line-height:1.6;pointer-events:none}
+.condition-detail-page.public-care-page .programme-reference .programme-interview-placeholder>.programme-designer{position:absolute;z-index:2;inset:auto 20px 56px;display:flex;gap:12px;margin:0;padding:0;border-radius:0;background:transparent;color:#fff}
+.programme-interview-placeholder>.programme-designer>span{min-width:0}
+.programme-interview-placeholder>.programme-designer strong{color:#fff;line-height:1.55}
+.programme-interview-placeholder>.programme-designer small{color:#dce3ef;opacity:1}
+.programme-interview-placeholder>.programme-designer .programme-designer__initials{display:grid;background:#edf1fa;color:var(--color-accent)}
+@media(max-width:760px){
+ .programme-reference .programme-intro__media.programme-interview-placeholder{aspect-ratio:4/3;min-height:0;flex:none}
+ .condition-detail-page.public-care-page .programme-reference .programme-interview-placeholder>.programme-designer{inset:auto 16px 52px;gap:10px}
+ .programme-interview-placeholder>.programme-designer>img,.programme-interview-placeholder>.programme-designer .programme-designer__initials{width:40px;height:40px}
+}

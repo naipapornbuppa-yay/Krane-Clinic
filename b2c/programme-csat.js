@@ -58,7 +58,7 @@
    list.append(article);
   });comments.append(list);
   if(visible.length){
-   const dots=node('nav','','programme-comments__dots');dots.setAttribute('aria-label','หน้าความคิดเห็น');comments.append(dots);
+   const dots=node('nav','','programme-comments__dots carousel-dots carousel-dots--inverse');dots.setAttribute('aria-label','หน้าความคิดเห็น');comments.append(dots);
    let targets=[];
    const update=()=>{
     const cards=[...list.querySelectorAll('.programme-comment')];
@@ -76,7 +76,7 @@
    };
    const markActive=()=>{
     const active=targets.reduce((best,target,i)=>Math.abs(target-list.scrollLeft)<Math.abs(targets[best]-list.scrollLeft)?i:best,0);
-    [...dots.children].forEach((button,i)=>button.setAttribute('aria-current',i===active?'page':'false'));
+    [...dots.children].forEach((button,i)=>{button.setAttribute('aria-current',i===active?'page':'false');button.classList.toggle('is-current',i===active)});
    };
    list.addEventListener('scroll',markActive,{passive:true});railObserver=new ResizeObserver(update);railObserver.observe(list);update();
   }
