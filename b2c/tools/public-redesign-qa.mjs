@@ -32,9 +32,15 @@ const checkLandingPolish=async(page,width)=>{
  if(width<1024)return;
  const hero=await page.evaluate(()=>{
   const title=document.querySelector('#hero-title').getBoundingClientRect(),benefits=document.querySelector('#top .hero-draft__marquee').getBoundingClientRect();
-  const badge=document.querySelector('.care-banner--weight .care-banner__product-badges'),style=getComputedStyle(badge),rect=badge.getBoundingClientRect();
-  const visible=style.display!=='none'&&style.visibility!=='hidden'&&parseFloat(style.opacity)>0&&rect.width>0&&rect.height>0;
-  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear:!visible||rect.top>=document.querySelector('.care-banner--weight .service-carousel-card__subtitle').getBoundingClientRect().bottom+8};
+  const badges=document.querySelector('.care-banner--weight .care-banner__product-badges'),wrapperStyle=getComputedStyle(badges);
+  const subtitle=document.querySelector('.care-banner--weight .care-banner__copy > small').getBoundingClientRect();
+  const wrapperVisible=wrapperStyle.display!=='none'&&wrapperStyle.visibility!=='hidden'&&parseFloat(wrapperStyle.opacity)>0;
+  const badgeClear=[...badges.querySelectorAll('em')].every(badge=>{
+   const style=getComputedStyle(badge),rect=badge.getBoundingClientRect();
+   const visible=wrapperVisible&&style.display!=='none'&&style.visibility!=='hidden'&&parseFloat(style.opacity)>0&&rect.width>0&&rect.height>0;
+   return !visible||rect.top>=subtitle.bottom+8;
+  });
+  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear};
  });
  check(hero.sameRow,label+' aligns hero heading and benefits to equal-height columns');
  check(hero.badgeClear,label+' places visible product badges below the subtitle');
@@ -42,7 +48,9 @@ const checkLandingPolish=async(page,width)=>{
   const button=page.locator(`#${kind}-program .pc-goals a`).first();
   await button.scrollIntoViewIfNeeded();await page.mouse.move(0,0);
   const measure=el=>{const css=getComputedStyle(el),r=el.getBoundingClientRect();return {background:css.backgroundColor,border:css.borderTopColor,box:[r.x,r.y,r.width,r.height]}};
-  const before=await button.evaluate(measure);await button.hover();const after=await button.evaluate(measure);
+  const before=await button.evaluate(measure);await button.hover();
+  await page.waitForFunction(({kind,before})=>{const style=getComputedStyle(document.querySelector(`#${kind}-program .pc-goals a`));return style.backgroundColor!==before.background&&style.borderTopColor!==before.border},{kind,before});
+  const after=await button.evaluate(measure);
   check(before.background!==after.background&&before.border!==after.border,label+' '+kind+' desktop hover changes fill and border');
   check(before.box.every((value,i)=>Math.abs(value-after.box[i])<=.5),label+' '+kind+' hover has no layout shift');
   await page.mouse.move(0,0);
