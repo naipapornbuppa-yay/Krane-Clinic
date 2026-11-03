@@ -49,9 +49,9 @@
   body.landing-figma-draft #services .care-banner--weight.is-product-frame .care-banner__copy > small {
     left: var(--service-card-inset) !important;
     top: calc(var(--service-card-inset) + 58px) !important;
-    max-width: 22ch !important;
-    margin: 0 !important;
-    font-size: 16px !important;
+    max-width: 30ch !important;
+    margin: 6px 0 0 !important;
+    font-size: 15px !important;
     line-height: 1.35 !important;
   }
 
@@ -130,7 +130,7 @@
     box-sizing: border-box;
   }
 
-  /* UGC cards use the same columns as the video. The chart uses the goals column. */
+  /* Compact repeated UGC stays on the existing video/goal column grid. */
   #weight-program > .pc-stories {
     grid-column: 1 / span 8 !important;
     overflow: hidden;
@@ -142,18 +142,21 @@
   }
 
   #weight-program .pc-story-rail {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
+    display: flex !important;
     gap: 16px;
-    overflow: hidden;
+    height: var(--weight-review-height, 420px);
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
     scroll-snap-type: none;
   }
 
   #weight-program .pc-story-rail > .pc-video {
-    width: auto !important;
+    width: calc(var(--weight-review-height, 420px) * 9 / 16) !important;
     min-width: 0 !important;
-    flex: none !important;
-    height: auto !important;
+    flex: 0 0 auto !important;
+    height: 100% !important;
     aspect-ratio: 9 / 16;
   }
 
@@ -196,10 +199,10 @@
 
   #hair-program .pc-hair-scan__before,
   #hair-program .pc-hair-scan__after {
-    background-size: 200% 100%;
+    background-size: 200% auto;
+    background-position-y: 18%;
   }
 
-  #hair-program .pc-hair-scan__label,
   #hair-program .pc-hair-scan__controls,
   #hair-program .pc-photo-card > .pc-note {
     display: none !important;
@@ -217,6 +220,11 @@
     margin: 0 0 16px !important;
   }
 
+  #hair-program > .pc-tracking h3 { font-size: 26px; }
+  #hair-program > .pc-tracking > p { font-size: 15px; }
+  #hair-program .pc-checkins--photos .pc-checkin > div { aspect-ratio: 3 / 4; }
+  #hair-program .pc-checkin span { font-size: 12px; white-space: normal; }
+
   #ed-program > .pc-main-media,
   #ed-program > .pc-sidebar,
   #ed-program > .pc-private-review,
@@ -226,20 +234,30 @@
   }
 }
 
-/* Phone: two whole story cards, same width as the video above, chart underneath. */
+/* Phone/tablet: compact touch-scrollable stories, chart remains underneath. */
 @media (max-width: 1023px) {
   #weight-program .pc-story-rail {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 12px;
-    overflow: hidden;
+    height: 360px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: none;
   }
 
   #weight-program .pc-story-rail > .pc-video {
-    width: auto;
+    width: 202.5px;
     min-width: 0;
-    flex: none;
-    height: auto;
+    flex: 0 0 202.5px;
+    height: 360px;
     aspect-ratio: 9 / 16;
   }
 }
+
+/* Rendered feature film replaces the interactive consultation mockup. */
+.pc-feature-ad{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:28px;background:#173447;min-width:0}
+.pc-feature-ad video{display:block;width:100%;height:auto;max-height:100%;aspect-ratio:3/4;object-fit:contain}
+.pc-feature-ad [data-feature-film-toggle]{position:absolute;right:16px;top:16px;min-width:44px;min-height:44px;padding:8px 12px;border:1px solid #ffffff70;border-radius:50%;background:#102b3cdd;color:#fff;cursor:pointer}
+.pc-feature-ad [data-feature-film-toggle]:focus-visible{outline:3px solid #fff;outline-offset:3px}
