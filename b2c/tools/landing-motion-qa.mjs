@@ -26,36 +26,39 @@ try{for(const width of [390,1440]){
  const chart=p.locator('[data-weight-motion]');await p.locator('.pc-chart').evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>Number(document.querySelector('[data-weight-number]').textContent)<82.4);
  await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-weight-motion]').dataset.motionRunning==='false');const number=await p.locator('[data-weight-number]').textContent();await p.waitForTimeout(500);check(await p.locator('[data-weight-number]').textContent()===number,'Chart clock pauses offscreen '+width);
  await p.locator('.pc-chart').evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('[data-weight-motion]').classList.contains('is-complete'));check(await p.locator('[data-weight-number]').textContent()==='72.0','Existing illustrative chart completes unchanged '+width);
- // Exercise the real replacement film, not the retired animated consultation.
- const film=p.locator('[data-feature-film]'),toggle=p.locator('[data-feature-film-toggle]');
- check(await film.count()===1&&await toggle.count()===1,'One feature film and playback control '+width);
- const showFilm=async()=>{await film.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForTimeout(200)};
- const hideFilm=async()=>{await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-feature-film]').getBoundingClientRect().top>=innerHeight);await p.waitForTimeout(200)};
- const waitPlaying=async()=>{await p.waitForFunction(()=>{const v=document.querySelector('[data-feature-film]');return !v.paused&&v.readyState>=2});const before=await film.evaluate(v=>v.currentTime);await p.waitForFunction(t=>{const v=document.querySelector('[data-feature-film]');return !v.paused&&Math.abs(v.currentTime-t)>.08},before)};
- const checkPaused=async label=>{await p.waitForFunction(()=>document.querySelector('[data-feature-film]').paused);const before=await film.evaluate(v=>v.currentTime);await p.waitForTimeout(300);check(await film.evaluate((v,t)=>v.paused&&Math.abs(v.currentTime-t)<.02,before),label+' '+width)};
- const checkToggle=async playing=>{const expected={text:playing?'Pause':'Play',label:playing?'Pause service introduction video':'Play service introduction video'};await p.waitForFunction(({text,label})=>{const b=document.querySelector('[data-feature-film-toggle]');return b.textContent===text&&b.getAttribute('aria-label')===label},expected);check(await toggle.textContent()===expected.text,'English film control text matches playback '+width);check(await toggle.getAttribute('aria-label')===expected.label,'English film accessible label matches playback '+width)};
- await showFilm();await p.waitForFunction(()=>document.querySelector('[data-feature-film]').readyState>=1);
- const metadata=await film.evaluate(v=>({duration:v.duration,width:v.videoWidth,height:v.videoHeight,muted:v.muted,inline:v.playsInline,loop:v.loop,poster:v.getAttribute('poster'),source:v.currentSrc,error:v.error?.code}));
- check(Math.abs(metadata.duration-12)<.1&&metadata.width===720&&metadata.height===960,'Feature film has supplied 12-second portrait metadata '+width);
- check(metadata.muted&&metadata.inline&&metadata.loop&&!metadata.error,'Feature film is muted, inline, looping and error-free '+width);
- check(metadata.source.endsWith('/assets/krane-private-care-feature.mp4')&&metadata.poster==='assets/krane-private-care-feature-poster.jpg','Feature film uses supplied media and poster '+width);
- await waitPlaying();check(true,'Visible feature film advances '+width);await checkToggle(true);
- await hideFilm();await checkPaused('Offscreen film playback freezes');await checkToggle(false);
- await showFilm();await waitPlaying();check(true,'Film resumes after viewport re-entry '+width);
- await toggle.click();await checkPaused('Manual pause freezes film');await checkToggle(false);
- await hideFilm();await showFilm();await checkPaused('Manual pause survives viewport re-entry');
- await p.emulateMedia({reducedMotion:'reduce'});await p.waitForTimeout(100);await p.emulateMedia({reducedMotion:'no-preference'});await p.waitForTimeout(200);await checkPaused('Manual pause survives motion preference changes');
- await toggle.click();await waitPlaying();check(true,'Manual play resumes film '+width);await checkToggle(true);
- await hideFilm();await checkPaused('Manually resumed film still pauses offscreen');await showFilm();await waitPlaying();check(true,'Manual play clears persistent pause for viewport resume '+width);
-
- await p.emulateMedia({reducedMotion:'reduce'});await p.waitForTimeout(100);
+ // Exercise the restored phone conversation and synchronized explanatory bubbles.
+ const chat=p.locator('[data-chat-motion]'),toggle=chat.locator('.pc-chat-toggle');
+ check(await chat.count()===1&&await toggle.count()===1,'One restored conversation and inline animation control '+width);
+ check(await p.locator('[data-feature-film], [data-feature-film-toggle]').count()===0,'Rejected film and circular overlay are absent '+width);
+ await p.waitForFunction(()=>{const e=document.querySelector('[data-chat-motion]');return !/[\u0e00-\u0e7f]/.test(e.textContent)&&[...e.querySelectorAll('[aria-label], [placeholder]')].every(n=>!/[\u0e00-\u0e7f]/.test((n.getAttribute('aria-label')||'')+(n.getAttribute('placeholder')||'')))});check(true,'Every phone message, date, cue and accessible label is English '+width);
+ check(await chat.locator('.pc-messages p').count()===8&&await chat.locator('.pc-chat-pill').count()===3,'Eight approved messages and three explanatory bubbles '+width);
+ check(await chat.locator('.pc-device-frame').evaluate(img=>img.complete&&img.naturalWidth>0),'Original mobile frame loads '+width);
+ if(width>=761){const layout=await chat.evaluate(e=>{const c=e.getBoundingClientRect(),sidebar=document.querySelector('#ed-program .pc-privacy').getBoundingClientRect();return {chat:c.width,sidebar:sidebar.width,left:c.left,right:sidebar.left,cues:[...e.querySelectorAll('.pc-chat-pill')].every(p=>Number(getComputedStyle(p).opacity)>0)}});check(layout.chat>layout.sidebar&&layout.left<layout.right,'Chat leads the wide primary column '+width);check(layout.cues,'All three explanatory bubbles are visible beside the phone '+width);}
+ const showChat=async()=>{await chat.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').getBoundingClientRect().bottom>0)};
+ const hideChat=async()=>{await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='false')};
+ const snapshot=()=>chat.evaluate(e=>JSON.stringify({scene:e.dataset.chatScene,messages:[...e.querySelectorAll('.pc-messages p')].map(m=>m.className),typing:e.querySelector('.pc-typing').className,pills:[...e.querySelectorAll('.pc-chat-pill')].map(p=>p.className)}));
+ const checkFrozen=async label=>{const before=await snapshot();await p.waitForTimeout(2100);check(await snapshot()===before,label+' '+width);check(await chat.locator('.pc-chat-pill.is-active').evaluateAll(es=>es.every(e=>getComputedStyle(e).animationPlayState==='paused')),'Floating bubble animation pauses '+width)};
+ const waitRunning=()=>p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='true');
+ const checkToggle=async paused=>{const text=paused?'Play animation':'Pause animation';await p.waitForFunction(text=>document.querySelector('.pc-chat-toggle').textContent===text,text);check(await toggle.getAttribute('aria-label')===text&&await toggle.getAttribute('aria-pressed')===String(paused),'English inline control matches pause state '+width)};
+ await showChat();await waitRunning();await p.waitForFunction(()=>document.querySelector('[data-chat-motion] .pc-messages p.is-shown'));
+ check(await chat.locator('[data-chat-pill="0"]').evaluate(e=>e.classList.contains('is-active')),'First care bubble accompanies the conversation '+width);await checkToggle(false);
+ await hideChat();await checkFrozen('Offscreen conversation freezes');await showChat();await waitRunning();
+ await toggle.click();await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='false');await checkFrozen('Manual pause freezes conversation');await checkToggle(true);
+ await hideChat();await showChat();await checkFrozen('Manual pause survives viewport re-entry');
+ await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));
+ check(await chat.locator('.pc-messages p.is-shown').count()===8,'Reduced motion reveals every example message '+width);
+ check(await toggle.isHidden(),'Reduced motion needs no animation control '+width);
  check(await p.locator('[data-motion-kind]').evaluateAll(es=>es.every(e=>e.dataset.motionState==='complete')),'Preference change completes all entrance motion '+width);
- await checkPaused('Reduced-motion preference change pauses film');await checkToggle(false);
- // Reduced motion disables autoplay, but an explicit user play remains available.
- await toggle.click();await waitPlaying();check(true,'Explicit play works with reduced motion '+width);await checkToggle(true);
- await hideFilm();await checkPaused('Reduced-motion manual playback pauses offscreen');await showFilm();await checkPaused('Reduced motion prevents viewport autoplay');
- await p.emulateMedia({reducedMotion:'no-preference'});await waitPlaying();check(true,'Removing reduced motion restores eligible autoplay '+width);
- await p.emulateMedia({reducedMotion:'reduce'});await checkPaused('Restoring reduced motion pauses film again');
+ await p.emulateMedia({reducedMotion:'no-preference'});await checkToggle(true);await checkFrozen('Manual pause survives motion preference changes');
+ await toggle.click();await waitRunning();await checkToggle(false);
+ await p.waitForFunction(()=>document.querySelector('[data-chat-motion] .pc-messages p.is-shown'));
+ await hideChat();await checkFrozen('Manually resumed conversation still pauses offscreen');await showChat();await waitRunning();
+ await p.waitForFunction(()=>document.querySelector('[data-chat-pill="4"]').classList.contains('is-active'),null,{timeout:22000});check(true,'Health-assessment bubble follows its matching message '+width);
+ await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:22000});
+ check(await chat.locator('.pc-messages p.is-shown').count()===8&&await chat.locator('[data-chat-pill="7"]').evaluate(e=>e.classList.contains('is-active')),'Conversation completes with the final care bubble '+width);
+ await p.waitForFunction(()=>!document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:8000});check(true,'Visible conversation repeats after its reading hold '+width);
+ await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));
+ check(await chat.evaluate(e=>e.getAnimations({subtree:true}).length===0),'Reduced motion stops bubbles and device transitions '+width);
  check(await p.locator('.programme-chapter').count()===3,'All programme chapters remain present '+width);
  check(JSON.stringify(await p.locator('.pc-actions a').evaluateAll(es=>es.map(e=>e.href)))===JSON.stringify(links),'CTA destinations unchanged '+width);
  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
@@ -63,7 +66,7 @@ try{for(const width of [390,1440]){
  await p.emulateMedia({reducedMotion:'reduce'});await p.reload({waitUntil:'domcontentloaded'});
  check(await p.locator('[data-motion-kind]').evaluateAll(es=>es.every(e=>e.dataset.motionState==='complete'&&Number(getComputedStyle(e).opacity)>0)),'Initial reduced-motion content is visible '+width);
  check(await p.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('krane-')).length===0),'Initial reduced-motion has no new animations '+width);
- await showFilm();await checkPaused('Initial reduced motion prevents film autoplay');await checkToggle(false);
+ await showChat();await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));check(await chat.locator('.pc-messages p.is-shown').count()===8,'Initial reduced motion presents the complete conversation '+width);check(await toggle.isHidden(),'Initial reduced motion hides animation control '+width);await hideChat();await showChat();check(await chat.locator('.pc-messages p.is-shown').count()===8,'Reduced motion prevents viewport replay '+width);
  await p.evaluate(()=>scrollTo(0,0));
  await p.screenshot({path:join(out,'hero-'+width+'.png'),animations:'disabled'});await ctx.close();
 }check(errors.length===0,'No browser errors: '+errors.join('; '));await writeFile(join(out,'results.json'),JSON.stringify({checks,errors},null,2));console.log(`Landing motion QA: ${checks} checks passed.`)}finally{await browser.close();await new Promise(r=>server.close(r))}

@@ -13,6 +13,14 @@ const consent=p=>p.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
 const banner=p=>p.locator('[data-cookie-banner]');const dialog=p=>p.locator('[data-cookie-preferences]');
 function monitor(p){p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{const url=new URL(r.url());if(['http:','https:'].includes(url.protocol)&&url.origin!==new URL(base).origin)external.add(url.origin);});}
 const open=(p,route)=>p.goto(base+'/b2c/'+route,{waitUntil:'domcontentloaded'});
+async function checkCentered(p,locator,label){
+ const box=await locator.boundingBox(),{width,height}=p.viewportSize();
+ check(Boolean(box),label+' is visible');
+ check(Math.abs(box.x+box.width/2-width/2)<2,label+' horizontally centered');
+ check(Math.abs(box.y+box.height/2-height/2)<2,label+' vertically centered');
+ check(box.x>=11&&box.y>=11&&box.x+box.width<=width-11&&box.y+box.height<=height-11,label+' retains viewport margins');
+ return box;
+}
 try{
 for(const width of [390,1440])for(const lang of ['th','en']){
  const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});ctx.setDefaultNavigationTimeout(60000);const p=await ctx.newPage();monitor(p);
@@ -22,7 +30,7 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(await p.evaluate(()=>!KraneCookieConsent.isAllowed('analytics')&&!KraneCookieConsent.isAllowed('advertising')),'Optional categories denied by default');
  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No banner horizontal overflow');
  const bannerBox=await banner(p).boundingBox();check(bannerBox.width<=width&&bannerBox.y>=0&&bannerBox.y+bannerBox.height<=901,'Responsive banner fits viewport');
- check(Math.abs(bannerBox.x+bannerBox.width/2-width/2)<2,'Notice horizontally centred');
+ await checkCentered(p,banner(p),'First-visit notice '+width+'/'+lang);
  check(bannerBox.height<=(width<760?240:160),'Notice stays compact');
  check(await banner(p).locator('button').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44})),'Notice actions retain 44px targets');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
@@ -30,7 +38,7 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  await banner(p).screenshot({path:join(out,`banner-${width}-${lang}.png`)});
  await p.screenshot({path:join(out,`notice-page-${width}-${lang}.png`),animations:'disabled'});
  await p.evaluate(()=>localStorage.setItem('krane-cookie-qa-sentinel','preserve'));
- await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');
+ await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');await checkCentered(p,dialog(p),'Preferences '+width+'/'+lang);
  check((await dialog(p).locator('a').boundingBox()).height>=44,'Dialog policy link has a 44px touch target');
  check(await dialog(p).locator('input:checked:disabled').count()===1,'Necessary always active');
  check(await dialog(p).locator('[data-cookie-category]:not(:checked):disabled').count()===2,'Unavailable optional categories stay off');
@@ -66,6 +74,24 @@ for(const width of [390,1440])for(const lang of ['th','en']){
 }
 // Narrow phone geometry keeps the compact notice's choices within safe edges.
 for(const lang of ['th','en']){const ctx=await browser.newContext({viewport:{width:320,height:640}});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c-landing.html?lang='+lang);await banner(p).waitFor();const box=await banner(p).boundingBox();check(box.x>=10&&box.x+box.width<=310&&box.y>=0&&box.y+box.height<=640,'320px notice fits safe edges '+lang);check(await banner(p).locator('button,a').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44&&r.left>=10&&r.right<=310})),'320px notice actions fit and remain usable '+lang);await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'320px preferences open '+lang);await p.keyboard.press('Escape');check(await banner(p).isVisible(),'320px Escape preserves unanswered notice '+lang);await ctx.close();}
+// Short and reflow-sized viewports model landscape/zoom constraints without clipping choices.
+for(const viewport of [{width:320,height:320},{width:640,height:320},{width:720,height:450}])for(const lang of ['th','en']){
+ const ctx=await browser.newContext({viewport,reducedMotion:'reduce'}),p=await ctx.newPage();monitor(p);
+ await open(p,'krane-b2c-landing.html?lang='+lang);await banner(p).waitFor();
+ const label=viewport.width+'x'+viewport.height+'/'+lang;
+ const before=await checkCentered(p,banner(p),'Short-viewport notice '+label);
+ await p.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+ const after=await checkCentered(p,banner(p),'Scrolled notice '+label);
+ check(Math.abs(before.x-after.x)<2&&Math.abs(before.y-after.y)<2,'Notice stays fixed while page scrolls '+label);
+ await banner(p).locator('[data-cookie-action=open]').click();
+ await checkCentered(p,dialog(p),'Short-viewport preferences '+label);
+ check(await dialog(p).evaluate(e=>e.scrollHeight>e.clientHeight&&getComputedStyle(e).overflowY==='auto'),'Tall preferences scroll within viewport '+label);
+ await dialog(p).locator('[data-cookie-action=save]').scrollIntoViewIfNeeded();
+ check(await dialog(p).locator('[data-cookie-action=save]').isVisible(),'Save remains reachable '+label);
+ await p.keyboard.press('Escape');
+ check(await banner(p).isVisible()&&await consent(p)===null,'Short-viewport dismissal preserves unanswered notice '+label);
+ await checkCentered(p,banner(p),'Notice after preferences close '+label);await ctx.close();
+}
 // A first-time application entry owns the banner above its embedded landing.
 {
  const ctx=await browser.newContext({viewport:{width:390,height:900}});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c.html?public=1&screens=1#landing');await banner(p).waitFor();

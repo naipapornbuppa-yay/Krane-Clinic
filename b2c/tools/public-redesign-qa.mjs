@@ -14,6 +14,40 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,ar
 const results=[],errors=[];let checks=0;
 const check=(value,label)=>{assert(value,label);checks++};
 const thai=page=>page.evaluate(()=>{const found=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())if(!n.parentElement.closest('script,style,noscript')&&/[ก-๛]/.test(n.textContent))found.add(n.textContent.trim());for(const e of document.querySelectorAll('[aria-label],[placeholder],[alt],[title]'))for(const k of ['aria-label','placeholder','alt','title'])if(/[ก-๛]/.test(e.getAttribute(k)||''))found.add(e.getAttribute(k));return [...found]});
+// November screenshot polish: run in both languages in the existing viewport pass.
+const checkLandingPolish=async(page,width)=>{
+ await page.evaluate(()=>document.fonts.ready);
+ const language=await page.locator('html').getAttribute('lang');
+ const label=`Landing polish ${language} ${width}`;
+ check(await page.locator('#hair-program .pc-hair-scan__label').count()===0,label+' removes the visible AI chip');
+ check(/AI/i.test(await page.locator('#hair-program [data-hair-scan]').getAttribute('aria-label')||''),label+' retains accessible AI disclosure');
+ const goals=await page.locator('#weight-program .pc-goals, #hair-program .pc-goals').evaluateAll(panels=>panels.map(panel=>{
+  const heading=getComputedStyle(panel.querySelector('h3')),style=getComputedStyle(panel);
+  return {heading:heading.fontSize,inset:style.padding,buttons:[...panel.querySelectorAll('a')].map(a=>{
+   const css=getComputedStyle(a);return {font:css.fontSize,minHeight:parseFloat(css.minHeight),height:a.getBoundingClientRect().height,padding:css.padding};
+  })};
+ }));
+ check(goals.length===2&&goals.every(panel=>panel.buttons.length===4&&panel.buttons.every(button=>button.font==='14px'&&button.minHeight>=58&&button.height>=58)),label+' keeps eight readable 14px goal buttons with 58px targets');
+ check(goals[0].heading===goals[1].heading&&goals[0].inset===goals[1].inset&&goals[0].buttons.every((button,i)=>button.padding===goals[1].buttons[i].padding),label+' matches goal heading type and panel/button insets');
+ if(width<1024)return;
+ const hero=await page.evaluate(()=>{
+  const title=document.querySelector('#hero-title').getBoundingClientRect(),benefits=document.querySelector('#top .hero-draft__marquee').getBoundingClientRect();
+  const badge=document.querySelector('.care-banner--weight .care-banner__product-badges'),style=getComputedStyle(badge),rect=badge.getBoundingClientRect();
+  const visible=style.display!=='none'&&style.visibility!=='hidden'&&parseFloat(style.opacity)>0&&rect.width>0&&rect.height>0;
+  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear:!visible||rect.top>=document.querySelector('.care-banner--weight .service-carousel-card__subtitle').getBoundingClientRect().bottom+8};
+ });
+ check(hero.sameRow,label+' aligns hero heading and benefits to equal-height columns');
+ check(hero.badgeClear,label+' places visible product badges below the subtitle');
+ for(const kind of ['weight','hair']){
+  const button=page.locator(`#${kind}-program .pc-goals a`).first();
+  await button.scrollIntoViewIfNeeded();await page.mouse.move(0,0);
+  const measure=el=>{const css=getComputedStyle(el),r=el.getBoundingClientRect();return {background:css.backgroundColor,border:css.borderTopColor,box:[r.x,r.y,r.width,r.height]}};
+  const before=await button.evaluate(measure);await button.hover();const after=await button.evaluate(measure);
+  check(before.background!==after.background&&before.border!==after.border,label+' '+kind+' desktop hover changes fill and border');
+  check(before.box.every((value,i)=>Math.abs(value-after.box[i])<=.5),label+' '+kind+' hover has no layout shift');
+  await page.mouse.move(0,0);
+ }
+};
 try{
 for(const width of [390,1440]){
  const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
@@ -24,6 +58,7 @@ for(const width of [390,1440]){
   check((await thai(p)).length===0,route+' English: '+JSON.stringify(await thai(p)));
   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),route+' page overflow '+width);
   if(route.startsWith('krane-b2c-landing')){
+   await checkLandingPolish(p,width);
    const expected=['weight-02','weight-04','weight-05','hair-pha','hair-03','confidence-real-med'];
    const clips=await p.locator('#reviews figure[data-start-face="video"]:not([aria-hidden="true"]) source').evaluateAll(es=>es.map(e=>e.getAttribute('src').split('/').pop().replace('.mp4','')));
    check(JSON.stringify([...clips].sort())===JSON.stringify(expected.sort()),'All six distinct supplied clips');
@@ -128,6 +163,7 @@ for(const width of [390,1440]){
   await p.locator('[data-language]').first().selectOption('th',{force:true});await p.waitForTimeout(250);
   check(await p.evaluate(()=>document.documentElement.lang==='th'),'Thai toggle '+route);
   check((await thai(p)).length>0,'Thai copy restored '+route);
+  if(route.startsWith('krane-b2c-landing'))await checkLandingPolish(p,width);
   await p.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await p.screenshot({path:join(out,`thai-${route.replace(/[^a-z0-9]/gi,'-')}-${width}.png`),animations:'disabled'});
   await p.locator('[data-language]').first().selectOption('en',{force:true});await p.waitForTimeout(250);check((await thai(p)).length===0,'English toggle restored '+route+': '+JSON.stringify(await thai(p)));
   await p.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await p.screenshot({path:join(out,`${route.split('?')[0].replace('.html','')}-${route.includes('condition=')?route.split('condition=')[1]+'-':''}${width}.png`),fullPage:true,animations:'disabled'});
