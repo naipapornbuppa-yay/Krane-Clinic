@@ -21,6 +21,13 @@ for(const width of [390,599,600,760,761,800,820,821,1024,1440]){
  const boxes=await page.evaluate(()=>{const hero=document.querySelector('.condition-hero'),copy=hero.querySelector('.public-hero__copy'),image=hero.querySelector('.public-hero__media');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};return {hero:box(hero),copy:box(copy),image:box(image)};});
  if(width>760){check(Math.abs(boxes.image.y-boxes.copy.y)<1,`same hero row ${width}`);check(Math.abs(boxes.copy.right-boxes.image.x)<1,`no blank column ${width}`);check(Math.abs(boxes.image.right-boxes.hero.right)<1,`image fills right ${width}`);}else{check(Math.abs(boxes.image.width-boxes.hero.width)<1,`full mobile image ${width}`);check(Math.abs(boxes.copy.width-boxes.hero.width)<1,`full mobile copy ${width}`);}
  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`page overflow ${width}`);
+ check(await page.locator('.programme-comments__list').evaluate(list=>{
+  const r=list.getBoundingClientRect(),cards=[...list.querySelectorAll('.programme-comment')],heading=document.querySelector('.programme-comments__toolbar').getBoundingClientRect();
+  return Math.abs(r.left)<1&&Math.abs(r.right-innerWidth)<1&&Math.abs(cards[0].getBoundingClientRect().left-heading.left)<1&&cards.some(card=>{const c=card.getBoundingClientRect();return c.left<r.right&&c.right>r.right+1;})&&getComputedStyle(list).overflowX==='auto';
+ }),'review rail reaches viewport edge with next-card peek and aligned first card');
+ const articles=page.locator('.cd-articles .cd-rail');
+ if(await articles.count())check(await articles.evaluate(list=>{const r=list.getBoundingClientRect();return Math.abs(r.left)<1&&Math.abs(r.right-innerWidth)<1&&getComputedStyle(list).overflowX==='auto';}),'article rail bleeds to viewport edges');
+
  check(await page.locator('.programme-comment').count()===12,'12 illustrative comments');
  check((await page.locator('.programme-comments__disclosure').innerText()).includes(lang==='en'?'not real patient':'ไม่ใช่รีวิว'),'clear mock disclosure');
  const dots=page.locator('.programme-comments__dots button');check(await dots.count()===(width<600?12:width<=1100?6:3),'responsive page count');

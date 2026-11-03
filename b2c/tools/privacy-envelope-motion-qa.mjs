@@ -1,25 +1,35 @@
-/* Node-only regression tests for the envelope's bounded viewport lifecycle. */
+/* Node-only regression tests for scroll-linked 3D envelope lifecycle. */
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../programme-motion.js',import.meta.url),'utf8');
-const block=source.slice(source.indexOf(' // The envelope replays once per visit'),source.indexOf(' // Full-height UGC story viewer'));
-assert(block.includes("animation.id='pc-envelope-entry'"));
+const start=source.indexOf(' // The envelope tilts in 3D');
+assert(start>=0,'scroll-linked envelope block exists');
+const block=source.slice(start,source.indexOf(' // Full-height UGC story viewer',start));
 function setup(initialReduced=false){
- const animations=[],events={},motionEvents={};let observe;
- const frame={};
- const photo={closest:()=>frame,animate(frames,options){const a={frames,options,playState:'running',cancel(){this.playState='idle'},pause(){this.playState='paused'},play(){this.playState='running'}};animations.push(a);return a}};
+ const events={},motionEvents={},windowEvents={},queued=new Map();let observe,resizeObserver,id=0,reads=0,base='matrix(1, 0, 0, 1, 0, 0)';
+ const rect={top:800,height:400};
+ const frame={getBoundingClientRect(){reads++;return rect}};
+ const style={transform:'',removeProperty(key){if(key==='will-change')delete this.willChange}};
+ const photo={style,closest:()=>frame};
  const reduced={matches:initialReduced,addEventListener:(event,fn)=>motionEvents[event]=fn};
- const document={hidden:false,addEventListener:(event,fn)=>events[event]=fn};
- vm.runInNewContext(block,{privacy:{querySelector:()=>photo},reduced,document,getComputedStyle:()=>({transform:'matrix(1, 0, 0, 1, 0, 0)'}),IntersectionObserver:class{constructor(fn,options){observe=fn;assert.deepEqual(Array.from(options.threshold),[0,.2])}observe(target){assert.equal(target,frame)}}});
- return {animations,entry(ratio){observe([{isIntersecting:ratio>0,intersectionRatio:ratio}])},hidden(value){document.hidden=value;events.visibilitychange()},reduce(value){reduced.matches=value;motionEvents.change()}};
+ const document={hidden:false,documentElement:{clientHeight:800},addEventListener:(event,fn)=>events[event]=fn};
+ class ResizeObserver{constructor(fn){resizeObserver=fn}observe(target){assert.equal(target,frame)}}
+ const window={innerHeight:800,ResizeObserver,addEventListener:(event,fn,options)=>{windowEvents[event]=fn;assert.equal(options.passive,true)}};
+ vm.runInNewContext(block,{privacy:{querySelector:()=>photo},reduced,document,window,ResizeObserver,getComputedStyle:()=>({transform:base}),requestAnimationFrame:fn=>{queued.set(++id,fn);return id},cancelAnimationFrame:id=>queued.delete(id),IntersectionObserver:class{constructor(fn,options){observe=fn;assert.equal(options.threshold,0)}observe(target){assert.equal(target,frame)}}});
+ return {style,rect,window,get reads(){return reads},get pending(){return queued.size},flush(){const frames=[...queued.values()];queued.clear();frames.forEach(fn=>fn())},entry(visible){observe([{isIntersecting:visible}])},scroll(){windowEvents.scroll()},resize(value){base=value;windowEvents.resize()},resizeCard(){resizeObserver()},language(){events['krane:languagechange']()},hidden(value){document.hidden=value;events.visibilitychange()},reduce(value){reduced.matches=value;motionEvents.change()}};
 }
-let h=setup();h.entry(.1);assert.equal(h.animations.length,0);h.entry(.2);assert.equal(h.animations.length,1);const first=h.animations[0];assert.equal(first.options.duration,1500);assert.equal(first.options.iterations,1);assert.equal(first.frames.at(-1).offset,1);
-h.entry(.5);h.entry(.1);h.entry(.3);assert.equal(h.animations.length,1,'partial exit cannot replay');
-h.hidden(true);assert.equal(first.playState,'paused');h.hidden(false);assert.equal(first.playState,'running');first.playState='finished';h.hidden(true);h.hidden(false);assert.equal(first.playState,'finished','completed animation cannot restart');
-h.entry(0);assert.equal(first.playState,'idle');h.entry(.25);assert.equal(h.animations.length,2,'re-entry from either direction replays');h.entry(0);h.entry(.4);assert.equal(h.animations.length,3);
-h.reduce(true);assert.equal(h.animations.at(-1).playState,'idle');h.reduce(false);h.entry(.5);assert.equal(h.animations.length,3,'preference toggle cannot replay mid-visit');h.entry(0);h.entry(.3);assert.equal(h.animations.length,4);
-h=setup(true);h.entry(.5);assert.equal(h.animations.length,0);h.reduce(false);h.entry(.6);assert.equal(h.animations.length,0);h.entry(0);h.entry(.3);assert.equal(h.animations.length,1);
-h=setup();h.hidden(true);h.entry(.3);assert.equal(h.animations[0].playState,'paused');h.hidden(false);assert.equal(h.animations[0].playState,'running');
+const angles=h=>[...h.style.transform.matchAll(/rotate[XYZ]\((-?[\d.]+)deg\)/g)].map(m=>Number(m[1]));
+let h=setup();h.scroll();assert.equal(h.pending,0,'offscreen scroll is idle');h.entry(true);assert.equal(h.pending,1);h.flush();assert.deepEqual(angles(h),[10,-18,-2]);assert(h.style.transform.startsWith('perspective(900px)'));assert(h.style.transform.endsWith('matrix(1, 0, 0, 1, 0, 0)'),'base transform preserved');assert.equal(h.pending,0,'no perpetual RAF');
+h.rect.top=200;for(let i=0;i<20;i++)h.scroll();assert.equal(h.pending,1,'scroll events coalesce');h.flush();assert.deepEqual(angles(h),[0,0,0]);
+h.rect.top=-400;h.scroll();h.flush();assert.deepEqual(angles(h),[-10,18,2]);h.rect.top=800;h.scroll();h.flush();assert.deepEqual(angles(h),[10,-18,-2],'reverse scrolling reverses rotation');
+for(const top of [-10000,10000]){h.rect.top=top;h.scroll();h.flush();const [x,y,z]=angles(h);assert(Math.abs(x)<=10&&Math.abs(y)<=18&&Math.abs(z)<=2,'bounded rotation');}
+h.scroll();h.entry(false);assert.equal(h.pending,0,'exit cancels queued work');assert.equal(h.style.willChange,undefined);const reads=h.reads;h.scroll();h.flush();assert.equal(h.reads,reads,'offscreen does no layout reads');h.entry(true);h.flush();
+h.scroll();h.hidden(true);assert.equal(h.pending,0,'hidden tab cancels queued work');h.scroll();assert.equal(h.pending,0);h.hidden(false);assert.equal(h.pending,1,'visible tab resumes at current position');h.flush();
+h.scroll();h.reduce(true);assert.equal(h.pending,0);assert.equal(h.style.transform,'','reduced motion restores static CSS');assert.equal(h.style.willChange,undefined);h.scroll();assert.equal(h.pending,0);h.reduce(false);h.flush();assert.equal(angles(h).length,3);
+h.resize('matrix(0.99, 0.1, -0.1, 0.99, 0, 0)');h.flush();assert(h.style.transform.endsWith('matrix(0.99, 0.1, -0.1, 0.99, 0, 0)'),'responsive base refreshed');h.resizeCard();assert.equal(h.pending,1);h.flush();h.language();assert.equal(h.pending,1);h.flush();
+h.window.innerHeight=390;h.rect.height=200;h.rect.top=95;h.scroll();h.flush();assert.deepEqual(angles(h),[0,0,0],'mobile viewport uses its own scroll progress');
+h=setup(true);h.entry(true);h.scroll();h.flush();assert.equal(h.style.transform,'');assert.equal(h.reads,0,'initial reduced motion remains static');h.reduce(false);h.flush();assert.equal(angles(h).length,3);
 const css=fs.readFileSync(new URL('../programme-focus.css',import.meta.url),'utf8');assert(css.includes('.pc-privacy .pc-package{overflow:clip}'));
-console.log('PASS: finite envelope entry, full-exit rearm, no threshold jitter replay, hidden pause/resume, reduced static/cancel, card clipping rule. Browser visual/overflow QA remains separate.');
+const cards=fs.readFileSync(new URL('../programme-card-motion.js',import.meta.url),'utf8');assert(!cards.includes("add('.pc-ed .pc-package-photo'"),'finite card animation must not compete with scroll tilt');
+console.log('PASS: scroll-linked perspective XYZ, reverse scrolling, angle bounds, RAF coalescing/no loop, offscreen/background suspension, reduced static restoration, responsive base/viewport, layout updates and isolated transform ownership. Browser visual/overflow QA remains separate.');

@@ -1,7 +1,7 @@
 /* Run every release gate and retain a failing exit status for any failed stage. */
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-const stages=['contract-check.mjs','public-redesign-qa.mjs','cookie-consent-qa.mjs','landing-motion-qa.mjs','condition-detail-responsive-qa.mjs','privacy-envelope-motion-qa.mjs'];
+const stages=['contract-check.mjs','public-redesign-qa.mjs','cookie-consent-qa.mjs','landing-motion-qa.mjs','condition-detail-responsive-qa.mjs','privacy-envelope-motion-qa.mjs','vertical-reviews-qa.mjs','weight-story-qa.mjs'];
 const failures=[];
 for(const stage of stages){
  console.log(`\n=== UI gate: ${stage} ===`);

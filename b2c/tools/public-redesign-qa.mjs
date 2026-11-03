@@ -40,15 +40,20 @@ const checkLandingPolish=async(page,width)=>{
   const badge=await tracking.evaluate((section,width)=>{
    const header=section.querySelector('.pc-tracking-header'),heading=header.querySelector('h3'),tag=header.querySelector('.pc-complete');
    const h=heading.getBoundingClientRect(),b=tag.getBoundingClientRect(),r=header.getBoundingClientRect(),css=getComputedStyle(tag);
+   const narrow=section.clientWidth-parseFloat(getComputedStyle(section).paddingLeft)-parseFloat(getComputedStyle(section).paddingRight)<550;
    return {one:section.querySelectorAll('.pc-complete').length===1&&Boolean(tag.textContent.trim()),
-    placed:Math.abs(b.right-r.right)<=1&&(width<=760?b.top>=h.bottom:b.left>=h.right&&Math.abs((b.top+b.bottom-h.top-h.bottom)/2)<=1),
-    visible:Number(css.opacity)===1,
-    style:[css.fontSize,css.lineHeight,css.padding,css.borderRadius,css.borderWidth,css.backgroundColor].join('|')};
+    placed:narrow?css.position==='absolute'&&b.width<=1&&b.height<=1&&css.clipPath==='inset(50%)':Math.abs(b.right-r.right)<=1&&b.left>=h.right&&Math.abs((b.top+b.bottom-h.top-h.bottom)/2)<=1,
+    visible:Number(css.opacity)===1&&css.display!=='none'&&css.visibility!=='hidden',
+    style:[css.fontSize,css.lineHeight,css.borderRadius,css.borderWidth,css.backgroundColor].join('|')};
   },width);
-  check(badge.one&&badge.placed&&badge.visible,label+' '+kind+' completion badge is visible at the right of its tracking header, wrapping below on phones');
+  check(badge.one&&badge.placed&&badge.visible,label+' '+kind+' completion badge stays accessible, hiding visually in narrow cards and inline at the right in wide cards');
   trackingBadges.push(badge.style);
  }
  check(trackingBadges[0]===trackingBadges[1],label+' gives both tracking completion badges identical UI styling');
+ if(width>=1100){
+  const composition=await page.locator('#ed-program').evaluate(e=>{const box=s=>e.querySelector(s).getBoundingClientRect(),phone=box('.pc-consult'),privacy=box('.pc-privacy'),goals=box('.pc-goals'),review=box('.pc-private-review');return Math.abs(phone.top-privacy.top)<1&&privacy.left>phone.right&&Math.abs(goals.left-privacy.left)<1&&goals.top>=privacy.bottom&&review.top>=Math.max(phone.bottom,goals.bottom)&&review.width>phone.width+privacy.width;});
+  check(composition,'Privacy section balances phone beside stacked privacy and goals');
+ }
  const goals=await page.locator('#weight-program .pc-goals, #hair-program .pc-goals').evaluateAll(panels=>panels.map(panel=>{
   const heading=getComputedStyle(panel.querySelector('h3')),style=getComputedStyle(panel);
   return {heading:heading.fontSize,inset:style.padding,border:style.borderWidth,buttons:[...panel.querySelectorAll('a')].map(a=>{
@@ -69,7 +74,14 @@ const checkLandingPolish=async(page,width)=>{
   }));
   check(readable,label+' stacks media above full-width two-column goals with unwrapped labels');
  }
+ const privacyCard=await page.locator('#ed-program .pc-privacy').evaluate(e=>({
+  background:getComputedStyle(e).backgroundColor,title:getComputedStyle(e.querySelector('h3')).color,
+  bounded:e.getBoundingClientRect().bottom-e.querySelector('figcaption').getBoundingClientRect().bottom<=parseFloat(getComputedStyle(e).paddingBottom)+2,border:getComputedStyle(e).borderTopWidth
+ }));
+ check(privacyCard.background==='rgb(238, 235, 230)'&&privacyCard.title==='rgb(26, 30, 40)',label+' gives the blue mailer a neutral backdrop and dark readable heading');
+ check(privacyCard.bounded&&privacyCard.border==='0px',label+' keeps the privacy card content-height without an empty stretched border');
  if(width<1024)return;
+ await page.evaluate(()=>window.scrollTo({top:0,behavior:"instant"}));
  const hero=await page.evaluate(()=>{
   const title=document.querySelector('#hero-title').getBoundingClientRect(),benefits=document.querySelector('#top .hero-draft__marquee').getBoundingClientRect();
   const badges=document.querySelector('.care-banner--weight .care-banner__product-badges'),wrapperStyle=getComputedStyle(badges);
@@ -80,9 +92,18 @@ const checkLandingPolish=async(page,width)=>{
    const visible=wrapperVisible&&style.display!=='none'&&style.visibility!=='hidden'&&parseFloat(style.opacity)>0&&rect.width>0&&rect.height>0;
    return !visible||rect.top>=subtitle.bottom+8;
   });
-  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear};
+  const nav=document.querySelector('.site-header').getBoundingClientRect();
+  const items=[...document.querySelectorAll('.hero-draft__benefits li:not(.is-clone) strong')].map(e=>e.getBoundingClientRect());
+  const process=[...document.querySelectorAll('.hero__benefit-list li')].map(e=>e.getBoundingClientRect());
+  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear,
+   navClear:title.top-nav.bottom>=47,
+   optical:items.length===4&&Math.abs(items[0].top-title.top-(document.documentElement.lang==='en'?7:2))<=1&&items[3].bottom<=title.bottom-7&&items.every((r,i)=>!i||r.top>=items[i-1].bottom+1),
+   compactProcess:process.length===3&&process.every(r=>Math.abs(r.top-process[0].top)<=1)};
  });
  check(hero.sameRow,label+' aligns hero heading and benefits to equal-height columns');
+ check(hero.navClear,label+' leaves at least 48px below the navbar for the hero');
+ check(hero.optical,label+' aligns visible benefit rows inside the title with optical bottom inset');
+ check(hero.compactProcess,label+' keeps the three supporting steps on one desktop line');
  check(hero.badgeClear,label+' places visible product badges below the subtitle');
  for(const kind of ['weight','hair']){
   const button=page.locator(`#${kind}-program .pc-goals a`).first();
@@ -137,13 +158,13 @@ for(const width of [390,800,1024,1440]){
    check(await p.evaluate(()=>{const source=document.querySelector('#weight-program .pc-main-media video'),v=document.querySelector('.pc-interview-player video');return v.currentSrc===source.querySelector('source').src&&v.poster===source.poster&&v.controls&&v.playsInline}),'Interview player retains supplied source, poster and native controls');
    await p.keyboard.press('Escape');await p.waitForFunction(()=>{const d=document.querySelector('.pc-interview-player'),v=d.querySelector('video');return !d.open&&v.paused&&!v.hasAttribute('src')});
    check(await interviewOpener.evaluate(e=>document.activeElement===e),'Interview closing returns keyboard focus');
-   const storyCards=p.locator('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])');
+   const storyCards=p.locator('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])');
    const storyOpener=storyCards.first().locator('.pc-story-open');
    await storyOpener.click();await p.locator('.pc-story-viewer[open]').waitFor();
-   await p.waitForFunction(()=>{const v=document.querySelector('.pc-story-viewer video'),card=document.querySelector('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])');return v.readyState>=1&&v.currentSrc===card.querySelector('source').src});
+   await p.waitForFunction(()=>{const v=document.querySelector('.pc-story-viewer video'),card=document.querySelector('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])');return v.readyState>=1&&v.currentSrc===card.querySelector('source').src});
    check(await p.locator('dialog[open]').count()===1,'Programme story opens');
    check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));
-   const ugc=await p.evaluate(()=>{const card=document.querySelector('#weight-program .pc-stories [data-pc-video]:not([data-rail-clone])'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
+   const ugc=await p.evaluate(()=>{const card=document.querySelector('#hair-program .pc-stories [data-pc-video]:not([data-rail-clone])'),viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText===card.querySelector('blockquote').innerText.trim(),person:caption.querySelector('strong').textContent===card.querySelector('.pc-video-copy>span').textContent,route:caption.querySelector('a').href===card.closest('.programme-chapter').querySelector('.pc-primary').href,unboxed:[caption,card.querySelector('.pc-video-copy')].every(e=>getComputedStyle(e).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(e).borderRadius==='0px'),fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};});
    for(const [key,ok] of Object.entries(ugc))check(ok,'UGC integrated caption '+key);
    await p.keyboard.press('ArrowRight');
    check(await p.locator('.pc-story-caption p').innerText()===await storyCards.nth(1).locator('blockquote').innerText(),'UGC next quote retains approved line breaks');
