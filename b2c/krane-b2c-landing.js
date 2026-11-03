@@ -2616,7 +2616,8 @@
 (()=>{
  const videos=[...document.querySelectorAll('.reviews--figma video')];if(!videos.length)return;
  const collage=document.querySelector('.review-collage'),states=new Map();
- const update=video=>{const state=states.get(video);if(state.visible&&!document.hidden&&!state.userPaused)video.play().catch(()=>{});else if(!video.paused){state.visibilityPause=true;video.pause()}};
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const update=video=>{const state=states.get(video);if(state.visible&&!document.hidden&&!reduced.matches&&!state.userPaused)video.play().catch(()=>{});else if(!video.paused){state.visibilityPause=true;video.pause()}};
  videos.forEach(video=>{
   const state={visible:false,userPaused:false,visibilityPause:false};states.set(video,state);
   video.controls=true;video.muted=true;video.defaultMuted=true;video.tabIndex=video.closest('[aria-hidden="true"]')?-1:0;
@@ -2640,6 +2641,7 @@
  });
  const observer=new IntersectionObserver(entries=>{entries.forEach(({target,isIntersecting})=>{states.get(target).visible=isIntersecting;update(target)})},{threshold:.1});videos.forEach(video=>observer.observe(video));
  document.addEventListener('visibilitychange',()=>videos.forEach(update));
+ reduced.addEventListener('change',()=>videos.forEach(update));
  document.addEventListener('pointerdown',event=>{if(!event.target.closest('.review-collage video')){collage?.classList.remove('is-review-interacting');if(document.activeElement?.closest?.('.review-collage video'))document.activeElement.blur()}});
  collage?.addEventListener('pointerleave',()=>collage.classList.remove('is-review-interacting'));
 })();

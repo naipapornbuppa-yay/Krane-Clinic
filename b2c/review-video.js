@@ -24,8 +24,11 @@
   setTimeout(()=>{
    const originals=[...host.children];if(!originals.length)return;
    const clones=[];
-   function appendSet(){originals.forEach(original=>{const copy=original.cloneNode(true);copy.dataset.loopClone='true';copy.setAttribute('aria-hidden','true');copy.tabIndex=-1;copy.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));copy.addEventListener('click',()=>original.click());copy.querySelectorAll('video').forEach(v=>{v.muted=true;v.tabIndex=-1;v.play().catch(()=>{})});host.append(copy);clones.push(copy)})}
+   function appendSet(){originals.forEach(original=>{const copy=original.cloneNode(true);copy.dataset.loopClone='true';copy.setAttribute('aria-hidden','true');copy.tabIndex=-1;copy.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));copy.addEventListener('click',()=>original.click());copy.querySelectorAll('video').forEach(v=>{v.muted=true;v.tabIndex=-1;if(!reduced.matches)v.play().catch(()=>{})});host.append(copy);clones.push(copy)})}
    appendSet();
+   // Cloned previews have no manual transport; full-screen playback belongs to
+   // the separate user-opened dialog and is never paused by this listener.
+   reduced.addEventListener('change',()=>clones.forEach(card=>card.querySelectorAll('video').forEach(video=>{if(reduced.matches)video.pause();else video.play().catch(()=>{})})));
    const measure=()=>{loopWidth=clones[0].offsetLeft-originals[0].offsetLeft;if(!loopWidth)return;while(host.scrollWidth<loopWidth+host.clientWidth+320)appendSet();position%=loopWidth;host.scrollLeft=position;host.dataset.loopWidth=String(loopWidth)};
    new ResizeObserver(measure).observe(host);measure();
   },0);
@@ -53,12 +56,13 @@
    const card=video.closest('.review-video');card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label','เปิดวิดีโอเต็ม: '+video.getAttribute('aria-label'));video.tabIndex=-1;
    card.addEventListener('click',()=>{if(!card.dataset.storyKind||card.dataset.storyKind==='video')openVideo(video,card)});card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!card.dataset.storyKind||card.dataset.storyKind==='video')openVideo(video,card)}});
    let inView=false,userPaused=false,visibilityPause=false;
-   const start=()=>{if(!userPaused)video.play().catch(()=>{})};
+   const start=()=>{if(!reduced.matches&&!userPaused)video.play().catch(()=>{})};
    const pause=()=>{if(!video.paused){visibilityPause=true;video.pause()}};
    video.addEventListener('play',()=>{userPaused=false;visibilityPause=false});video.addEventListener('pause',()=>{if(visibilityPause){visibilityPause=false;return}if(!document.hidden)userPaused=true});video.addEventListener('loadeddata',()=>{if(inView&&!document.hidden)start()});
    const update=visible=>{inView=visible;if(visible)visibleVideos.add(video);else visibleVideos.delete(video);document.body.classList.toggle('is-review-in-view',visibleVideos.size+visibleComparisons.size>0);if(visible&&!document.hidden)start();else pause()};
    if('IntersectionObserver'in window)new IntersectionObserver(entries=>update(entries.some(entry=>entry.isIntersecting)),{threshold:.5}).observe(video);else update(true);
    document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else if(inView)start()});
+   reduced.addEventListener('change',()=>{if(reduced.matches)pause();else if(inView&&!document.hidden)start()});
   });
   if(host.dataset.realReview==='programme'){const section=host.closest('.cd-reviews');section.hidden=false;section.querySelector('.cd-section-head').hidden=false}
  });
