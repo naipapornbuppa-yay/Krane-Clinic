@@ -47,7 +47,11 @@ try{for(const width of [320,390,800,1440])for(const lang of ['th','en']){
   const seen=new Set();for(let i=0;i<6;i++){seen.add(await section.locator('.review-vertical-excerpt:not([hidden])').getAttribute('id'));await section.locator('.review-vertical-arrow').last().click()}
   check(seen.size===6,'Every existing review excerpt is reachable');
   const watch=section.locator('.review-vertical-watch');await watch.click();await p.locator('.pc-story-viewer[open]').waitFor();
-  check(await p.locator('.pc-story-count').innerText()=== (lang==='en'?'Story 2 of 6':'เรื่องที่ 2 จาก 6'),'The shared story viewer retains all six reviews');
+  // th-en translates new dialog copy in its next animation frame.
+  // Opening the native dialog is not evidence that the translation has run.
+  const expectedCount=lang==='en'?'Story 2 of 6':'เรื่องที่ 2 จาก 6';
+  await p.waitForFunction(expected=>document.querySelector('.pc-story-count')?.textContent===expected,expectedCount,{timeout:3000});
+  check(await p.locator('.pc-story-count').innerText()===expectedCount,'The shared story viewer retains all six reviews '+width+' '+lang);
   check(await p.locator('.pc-story-viewer video').evaluate(v=>v.currentSrc.endsWith('/weight-04.mp4')),'Watch opens the selected supplied video');
   await p.keyboard.press('Escape');await p.locator('.pc-story-viewer[open]').waitFor({state:'hidden'});check(await watch.evaluate(e=>document.activeElement===e),'Closing restores keyboard focus');
   check(await section.getAttribute('data-gallery-paused')==='true'&&await section.locator('video').evaluateAll(es=>es.every(v=>v.paused)),'Manual pause survives viewer close');
