@@ -236,7 +236,6 @@
     if (true) {
       const details = global.document.createElement("details");
       details.className = "rail-group";
-      details.open = true;
       details.innerHTML = `<summary><span class="rail-step">!</span><span>${thai ? "Modal และ Bottom sheet" : "Modals and bottom sheets"}</span></summary>`;
       const body = global.document.createElement("div");
       body.className = "rail-group__body";

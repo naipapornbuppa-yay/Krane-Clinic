@@ -269,6 +269,21 @@ await test('modal-preview-gallery',async p=>{
  await p.locator('.review-modal-preview__close').click();await p.locator('.review-modal-preview').waitFor({state:'detached'});
  }
 });
+await test('review-directory-opens-clean-landing',async p=>{
+ await p.setViewportSize({width:1440,height:900});
+ await p.goto(`${base}/b2c/krane-b2c.html?screens=1#landing`);await p.locator('#landing.active').waitFor();
+ const groups=p.locator('#prototype-rail > .rail-group');
+ assert.equal(await groups.filter({has:p.locator('[data-go="landing"]')}).evaluateAll(nodes=>nodes.filter(node=>node.open).length),1);
+ assert.equal(await groups.filter({has:p.locator('[data-modal-preview]')}).evaluateAll(nodes=>nodes.filter(node=>node.open).length),0);
+ assert.equal(await p.locator('.review-modal-veil').count(),0);
+ await p.screenshot({path:output+'/review-directory-clean-landing.png',animations:'disabled'});
+ const modalLink=p.locator('[data-modal-preview="red-flag-modal"]');
+ await modalLink.evaluate(link=>{link.closest('details').open=true;link.click();});
+ await p.locator('.review-modal-preview[open]').waitFor();
+ await p.locator('#prototype-rail [data-go="landing"]').evaluate(link=>link.click());
+ await p.locator('.review-modal-veil').waitFor({state:'detached'});
+ assert.equal(await p.locator('#landing.active').count(),1);
+});
 await test('notification-icon-colors',async p=>{
  await open(p,'notifications');
  for(const kind of ['clock','check']){

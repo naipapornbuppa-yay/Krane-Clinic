@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261026-notch-v290";
+    const release = "20261115-review-landing-clean-v291";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -42,7 +42,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261013-toast-gallery"></script>
+<script src="review-tools.js?v=20261115-review-landing-clean-v291"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -8639,6 +8639,10 @@
   let insuranceEntry = 'checkout';
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function syncRailPath(id){
+    /* Review samples are temporary overlays, not route state. Leaving one open
+       after the reviewer chooses a real screen makes the new route look broken
+       even though its hash and active screen are correct. */
+    document.querySelectorAll('.review-modal-veil').forEach(veil => veil.remove());
     const link = railLinks.find(a => a.dataset.go === id);
     if(!link) return;
     /* Following the current screen opens its group and closes the others, so
