@@ -14,6 +14,21 @@
     window.dispatchEvent(new Event('krane-articles-changed'));
   }
   document.querySelectorAll('[data-landing-review]').forEach(button=>button.addEventListener('click',()=>{const items=(window.KraneReviews||[]).map(item=>({...item,attribution:[item.name,item.province].filter(Boolean).join(' · ')}));document.dispatchEvent(new CustomEvent('krane:open-review-stories',{detail:{items,activeId:button.dataset.landingReview,trigger:button}}));}));
+  const benefits = document.querySelector('.landing-benefits__rail');
+  benefits?.addEventListener('keydown', event => {
+    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (event.target !== benefits || event.altKey || event.ctrlKey || event.metaKey || !keys.includes(event.key)) return;
+    const max = benefits.scrollWidth - benefits.clientWidth;
+    if (max < 1) return;
+    const current = benefits.scrollLeft;
+    const start = benefits.firstElementChild.getBoundingClientRect().left;
+    const stops = Array.from(benefits.children, card => Math.min(max, card.getBoundingClientRect().left - start));
+    let left = event.key === 'Home' ? 0 : max;
+    if (event.key === 'ArrowRight') left = stops.find(stop => stop > current + 1) ?? max;
+    if (event.key === 'ArrowLeft') left = stops.reverse().find(stop => stop < current - 1) ?? 0;
+    event.preventDefault();
+    benefits.scrollTo({left});
+  });
   document.querySelectorAll('[data-rail-dots]').forEach(dots=>{
     const rail=dots.parentElement.querySelector(dots.dataset.railDots);
     const update=()=>{const max=rail.scrollWidth-rail.clientWidth;const count=Math.max(1,Math.ceil(rail.scrollWidth/rail.clientWidth));dots.replaceChildren();for(let i=0;i<count;i++){const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','ความคิดเห็น หน้าที่ '+(i+1));b.setAttribute('aria-current',String(i===Math.round(rail.scrollLeft/Math.max(1,max)*(count-1))));b.onclick=()=>rail.scrollTo({left:count===1?0:max*i/(count-1),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});dots.append(b);}};
