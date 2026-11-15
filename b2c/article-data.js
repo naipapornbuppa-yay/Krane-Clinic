@@ -978,9 +978,71 @@
   // Shared image policy: keep relevant editorial images; missing or failed media
   // uses the approved Krane bird rather than an unrelated stock photograph.
   const placeholder = 'assets/articles/krane-placeholder.svg';
-  const unassigned = new Set(['library-ed-01','library-ed-02','library-ed-03','library-ed-04','library-ed-05','library-hair-loss-04','library-obesity-03','library-obesity-05']);
+  // Editorial images supplied by New, 15 November 2026. Shared by cards and article pages.
+  const editorialImages = {
+  "library-ed-01": {
+    "image": "assets/articles/new-20261115/library-ed-01.jpg",
+    "imageAlt": "ผู้รับบริการปรึกษาแพทย์ออนไลน์เรื่องการใช้ยา"
+  },
+  "library-ed-02": {
+    "image": "assets/articles/new-20261115/library-ed-02.jpg",
+    "imageAlt": "แพทย์ให้คำปรึกษาและใบสั่งยาออนไลน์"
+  },
+  "library-ed-03": {
+    "image": "assets/articles/new-20261115/library-ed-03.jpg",
+    "imageAlt": "ผู้ชายพักผ่อนและกังวลเกี่ยวกับสุขภาพ"
+  },
+  "library-ed-04": {
+    "image": "assets/articles/new-20261115/library-ed-04.jpg",
+    "imageAlt": "ผู้ชายพักหลังออกกำลังกาย"
+  },
+  "library-ed-05": {
+    "image": "assets/articles/new-20261115/library-ed-05.jpg",
+    "imageAlt": "ตรวจสอบกล่องบรรจุภัณฑ์ยา"
+  },
+  "library-hair-loss-01": {
+    "image": "assets/articles/new-20261115/library-hair-loss-01.jpg",
+    "imageAlt": "ผู้ชายค้นหาข้อมูลสุขภาพที่บ้าน"
+  },
+  "library-hair-loss-02": {
+    "image": "assets/articles/new-20261115/library-hair-loss-02.jpg",
+    "imageAlt": "แพทย์อธิบายแนวทางดูแลสุขภาพผ่านวิดีโอ"
+  },
+  "library-hair-loss-03": {
+    "image": "assets/articles/new-20261115/library-hair-loss-03.jpg",
+    "imageAlt": "แพทย์ให้คำปรึกษาการใช้ยาผ่านคอมพิวเตอร์"
+  },
+  "library-hair-loss-04": {
+    "image": "assets/articles/new-20261115/library-hair-loss-04.jpg",
+    "imageAlt": "ผู้หญิงถือวิตามิน"
+  },
+  "library-hair-loss-05": {
+    "image": "assets/articles/new-20261115/library-hair-loss-05.jpg",
+    "imageAlt": "ผู้ชายติดตามการดูแลกับแพทย์ออนไลน์"
+  },
+  "library-obesity-01": {
+    "image": "assets/articles/new-20261115/library-obesity-01.jpg",
+    "imageAlt": "อาหารที่มีโปรตีนและผัก"
+  },
+  "library-obesity-02": {
+    "image": "assets/articles/new-20261115/library-obesity-02.jpg",
+    "imageAlt": "ผู้หญิงเตรียมรับประทานยา"
+  },
+  "library-obesity-03": {
+    "image": "assets/articles/new-20261115/library-obesity-03.jpg",
+    "imageAlt": "ผู้ชายใส่ใจอาการและสุขภาพของตนเอง"
+  },
+  "library-obesity-04": {
+    "image": "assets/articles/new-20261115/library-obesity-04.jpg",
+    "imageAlt": "ผู้ชายใช้บริการปรึกษาสุขภาพจากที่บ้าน"
+  },
+  "library-obesity-05": {
+    "image": "assets/articles/new-20261115/library-obesity-05.jpg",
+    "imageAlt": "ผู้ชายออกกำลังกายเพื่อรักษากล้ามเนื้อ"
+  }
+};
   articles.forEach(article => {
-    if (unassigned.has(article.id)) { article.image = placeholder; article.imageAlt = ''; }
+    if (editorialImages[article.id]) Object.assign(article, editorialImages[article.id]);
   });
   window.KraneArticleImage = {
     placeholder,
