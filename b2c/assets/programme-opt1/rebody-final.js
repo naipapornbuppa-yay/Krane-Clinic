@@ -4,11 +4,99 @@
 
   const timeline = page.querySelector('.opt-timeline-list');
   const comparisons = page.querySelector('.opt-comparison [data-rail]');
-  if (comparisons.children.length === 2) {
-    const repeat = comparisons.firstElementChild.cloneNode(true);
-    repeat.setAttribute('aria-hidden', 'true');
-    comparisons.append(repeat);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const reviewData = window.KraneReviews || [];
+  const cards = Array.from(comparisons.children);
+  cards.forEach((card, index) => {
+    const review = reviewData.find(item => item.id === ['hair-pha', 'hair-03'][index]);
+    if (!review) return;
+    const images = card.firstElementChild;
+    images.className = 'rebody-pair-images';
+    Array.from(images.children).forEach((img, imageIndex) => {
+      const figure = document.createElement('figure');
+      const label = document.createElement('figcaption');
+      label.textContent = imageIndex ? 'หลัง · ' + review.exampleMonths + ' เดือน' : 'ก่อน';
+      img.alt = (imageIndex ? 'ภาพหลังของ ' : 'ภาพก่อนของ ') + review.name;
+      img.decoding = 'async';
+      if (review.id === 'hair-pha' && imageIndex) img.className = 'rebody-pair-composite';
+      img.replaceWith(figure);
+      figure.append(img, label);
+    });
+    const copy = document.createElement('div');
+    copy.className = 'rebody-pair-copy';
+    const quote = document.createElement('blockquote');
+    quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
+    const name = card.querySelector('p');
+    name.textContent = review.name + ' · ' + review.age + ' ปี · ' + review.occupation;
+    copy.append(quote, name);
+    card.append(copy);
+  });
+  comparisons.className = 'rebody-marquee';
+  comparisons.removeAttribute('data-rail');
+  comparisons.setAttribute('role', 'region');
+  comparisons.setAttribute('aria-label', 'เรื่องราวก่อนและหลัง ใช้ปุ่มลูกศรซ้ายหรือขวาเพื่อเลื่อนดู');
+  comparisons.tabIndex = 0;
+  const track = document.createElement('div');
+  track.className = 'rebody-marquee-track';
+  comparisons.replaceChildren(track);
+  const pause = document.createElement('button');
+  pause.type = 'button';
+  pause.className = 'rebody-marquee-toggle';
+  comparisons.before(pause);
+  let marqueePaused = false;
+  let marqueeVisible = !('IntersectionObserver' in window);
+  const syncMarquee = () => {
+    comparisons.classList.toggle('is-running', marqueeVisible && !marqueePaused && !reduce.matches && !document.hidden);
+    pause.textContent = marqueePaused ? '▶' : 'Ⅱ';
+    pause.setAttribute('aria-label', marqueePaused ? 'เล่นการเลื่อนภาพก่อนและหลัง' : 'หยุดการเลื่อนภาพก่อนและหลัง');
+    pause.setAttribute('aria-pressed', String(marqueePaused));
+  };
+  const duplicate = node => {
+    const copy = node.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.inert = true;
+    return copy;
+  };
+  let lastWidth = 0;
+  const buildMarquee = () => {
+    if (!comparisons.clientWidth) return;
+    lastWidth = comparisons.clientWidth;
+    const set = document.createElement('div');
+    set.className = 'rebody-marquee-set';
+    set.append(...cards);
+    track.replaceChildren(set);
+    if (!reduce.matches && cards.length) {
+      while (set.getBoundingClientRect().width < lastWidth) {
+        cards.forEach(card => set.append(duplicate(card)));
+      }
+      track.style.setProperty('--marquee-duration', set.getBoundingClientRect().width / 28 + 's');
+      track.append(duplicate(set));
+    }
+    syncMarquee();
+  };
+  pause.addEventListener('click', () => { marqueePaused = !marqueePaused; syncMarquee(); });
+  comparisons.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const step = cards[0]?.getBoundingClientRect().width || 300;
+    const animation = track.getAnimations()[0];
+    if (animation) {
+      marqueePaused = true;
+      syncMarquee();
+      const duration = Number(animation.effect.getTiming().duration);
+      animation.currentTime = (Number(animation.currentTime) + direction * step / 28 * 1000 + duration) % duration;
+    } else comparisons.scrollBy({left:direction * step, behavior:'instant'});
+  });
+  reduce.addEventListener('change', buildMarquee);
+  document.addEventListener('visibilitychange', syncMarquee);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(() => { if (comparisons.clientWidth !== lastWidth) buildMarquee(); }).observe(comparisons);
+  } else window.addEventListener('resize', buildMarquee);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => { marqueeVisible = entry.isIntersecting; syncMarquee(); }).observe(comparisons);
   }
+  buildMarquee();
   page.querySelector('.opt-price-band').style.setProperty(
     '--price-photo', 'url(assets/programme-opt1/rebody-price-banner.webp)'
   );
@@ -53,7 +141,6 @@
   toggle.className = 'rebody-hero-toggle';
   hero.append(toggle);
 
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let userPreference;
   let inView = false;
   const sync = () => {
