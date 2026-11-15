@@ -265,8 +265,15 @@
           global.document.querySelectorAll('.modal-layer').forEach(layer=>{layer.hidden=true;layer.setAttribute('aria-hidden','true');layer.style.removeProperty('visibility');});
           global.document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());
           global.document.body.classList.remove('modal-open');
+          const isCookieNotice=item.id==='cookie-notice';
           const preview=global.document.createElement('dialog');preview.className='review-modal-preview';if(item.selector||item.documentPath)preview.classList.add('review-cookie-preview');preview.setAttribute('aria-label',link.textContent);
-          const close=global.document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','ปิดหน้าต่าง');close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
+          if(isCookieNotice){
+            preview.addEventListener('keydown',event=>{
+              if(event.key==='Escape'){event.preventDefault();preview.close();}
+            });
+          }else{
+            const close=global.document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','ปิดหน้าต่าง');close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
+          }
           
           if(source){
             const content=source.querySelector('.modal-dialog') || source;
@@ -277,7 +284,7 @@
             clone.querySelectorAll('button,input,select,textarea,a').forEach(el=>{el.removeAttribute('href');el.removeAttribute('autofocus');});
             clone.inert=true;
             clone.style.cssText+=';display:block;position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';
-            if(item.selector)clone.style.cssText+=';display:'+ (item.id==='cookie-notice' ? 'grid' : 'block') +';inset:auto;max-width:none';
+            if(item.selector)clone.style.cssText+=';display:'+ (isCookieNotice ? 'grid' : 'block') +';inset:auto;max-width:none';
             preview.append(clone);
           }else if(item.documentPath){
             const content=global.document.createElement('div');
@@ -313,7 +320,7 @@
             preview.showModal();
             return;
           }
-          preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
+          preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';if(isCookieNotice)veil.classList.add('review-modal-veil--cookie-notice');const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
         });body.append(link);
       });
       details.appendChild(body);
