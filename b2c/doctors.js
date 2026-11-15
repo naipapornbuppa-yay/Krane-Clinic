@@ -1,19 +1,15 @@
 (function () {
   const rail=document.querySelector('.doctor-directory__viewport');
   if(rail){
-    const previous=document.querySelector('[data-directory-prev]'),next=document.querySelector('[data-directory-next]');
-    const controls = document.querySelector('[data-directory-controls]');
-    const sync = () => {
-      const end = rail.scrollWidth - rail.clientWidth;
-      controls.hidden = end <= 2;
-      previous.disabled = rail.scrollLeft <= 2;
-      next.disabled = rail.scrollLeft >= end - 2;
-    };
-    const move=direction=>{const card=rail.querySelector('.doctor-directory-card');if(!card)return;const gap=parseFloat(getComputedStyle(rail.firstElementChild).gap)||0;rail.scrollBy({left:direction*(card.offsetWidth+gap),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});};
-    previous?.addEventListener('click',()=>move(-1));next?.addEventListener('click',()=>move(1));
-    rail.addEventListener('scroll',sync,{passive:true});window.addEventListener('resize',sync,{passive:true});
-    rail.addEventListener('keydown',e=>{if(e.target!==rail||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();move(e.key==='ArrowRight'?1:-1);});
-    requestAnimationFrame(sync);
+    rail.addEventListener('keydown', event => {
+      if (event.target !== rail || !['ArrowLeft','ArrowRight'].includes(event.key)) return;
+      if (!rail.firstElementChild) return;
+      const gap = parseFloat(getComputedStyle(rail).gap) || 0;
+      const step = rail.firstElementChild.offsetWidth + gap;
+      event.preventDefault();
+      rail.scrollBy({left:event.key === 'ArrowRight' ? step : -step,
+        behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'instant' : 'smooth'});
+    });
     window.lucide?.createIcons();
   }
   const profiles = {

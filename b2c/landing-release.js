@@ -113,7 +113,11 @@
       const card = document.createElement('article');
       const headline = document.createElement('strong');
       headline.textContent = item.caption;
-      card.append(headline);
+      const star = document.createElement('span');
+      star.className = 'care-chapter__review-star';
+      star.textContent = '☆';
+      star.setAttribute('aria-hidden', 'true');
+      card.append(star, headline);
       if (item.quote) {
         const quote = document.createElement('blockquote');
         quote.textContent = `“${quoteText(item)}”`;
@@ -168,7 +172,11 @@
     let current = 0;
     let timer;
     let inView = false;
-    const show = index => {
+    let quoteFrame = 0;
+    let touching = false;
+    const narrow = matchMedia('(max-width:760px)');
+    const hover = matchMedia('(hover:hover)');
+    const mark = index => {
       current = index;
       panels.forEach((panel, i) => {
         panel.classList.toggle('is-current', i === index);
@@ -176,12 +184,19 @@
         dots.children[i].setAttribute('aria-current', String(i === index));
       });
     };
+    const show = (index, animate = true) => {
+      if (narrow.matches) {
+        slides.scrollTo({left: index * slides.clientWidth, behavior: animate && !reducedMotion.matches ? 'smooth' : 'instant'});
+      } else mark(index);
+    };
     const schedule = () => {
       clearTimeout(timer);
-      if (!inView || document.hidden || reducedMotion.matches ||
-          quotes.matches(':hover, :focus-within') || document.querySelector('.pc-story-viewer[open]')) return;
+      if (!inView || document.hidden || touching || reducedMotion.matches ||
+          (hover.matches && quotes.matches(':hover')) || quotes.matches(':focus-within') ||
+          document.querySelector('.pc-story-viewer[open]')) return;
       timer = setTimeout(() => {
-        show((current + 1) % panels.length);
+        const index = (current + 1) % panels.length;
+        show(index, index !== 0);
         schedule();
       }, 6500);
     };
@@ -197,7 +212,23 @@
       return dot;
     }));
     dots.hidden = false;
-    show(0);
+    mark(0);
+    slides.addEventListener('scroll', () => {
+      if (!narrow.matches) return;
+      if (!quoteFrame) quoteFrame = requestAnimationFrame(() => {
+        quoteFrame = 0;
+        const index = Math.round(slides.scrollLeft / (slides.clientWidth || 1));
+        const active = Math.max(0, Math.min(panels.length - 1, index));
+        if (active !== current) mark(active);
+      });
+      schedule();
+    }, {passive:true});
+    slides.addEventListener('touchstart', () => { touching = true; schedule(); }, {passive:true});
+    const finishTouch = () => { touching = false; schedule(); };
+    slides.addEventListener('touchend', finishTouch, {passive:true});
+    slides.addEventListener('touchcancel', finishTouch, {passive:true});
+    narrow.addEventListener('change', () => show(current, false));
+    new ResizeObserver(() => show(current, false)).observe(slides);
     new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
       schedule();
@@ -253,35 +284,14 @@
     new MutationObserver(measure).observe(rail, {childList:true});
     measure();
   }
-  const mobileCare = document.querySelector('.mobile-care-benefits');
-  if (mobileCare) {
-    const rail = mobileCare.querySelector('.mobile-care-benefits__rail');
-    const previous = mobileCare.querySelector('[data-care-prev]');
-    const next = mobileCare.querySelector('[data-care-next]');
-    const offsets = () => Array.from(rail.children, card => card.offsetLeft - rail.firstElementChild.offsetLeft);
-    const updateCareControls = () => {
-      const limit = rail.scrollWidth - rail.clientWidth;
-      previous.disabled = rail.scrollLeft <= 1;
-      next.disabled = rail.scrollLeft >= limit - 1;
-      const progress = limit > 0 ? rail.scrollLeft / limit : 0;
-      mobileCare.style.setProperty('--care-progress', `${progress * 10}px`);
-    };
-    const move = direction => {
-      const current = rail.scrollLeft;
-      const stops = offsets();
-      const target = direction > 0 ? stops.find(stop => stop > current + 2) : stops.reverse().find(stop => stop < current - 2);
-      if (target !== undefined) rail.scrollTo({left:target, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
-    };
-    previous.addEventListener('click', () => move(-1));
-    next.addEventListener('click', () => move(1));
-    rail.addEventListener('keydown', event => {
-      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-      event.preventDefault();
-      move(event.key === 'ArrowRight' ? 1 : -1);
-    });
-    rail.addEventListener('scroll', updateCareControls, {passive:true});
-    new ResizeObserver(updateCareControls).observe(rail);
-    updateCareControls();
+  const careSection = document.querySelector('#care-benefits');
+  const positioning = document.querySelector('.positioning-section');
+  if (careSection && positioning) {
+    const desktopAnchor = careSection.nextElementSibling;
+    const narrow = matchMedia('(max-width:760px)');
+    const placeCareSection = () => (narrow.matches ? positioning : desktopAnchor).before(careSection);
+    narrow.addEventListener('change', placeCareSection);
+    placeCareSection();
   }
   const benefits = document.querySelector('.landing-benefits__rail');
   benefits?.addEventListener('keydown', event => {

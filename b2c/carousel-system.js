@@ -11,6 +11,8 @@ addEventListener('DOMContentLoaded',()=>{
   const host=nav.closest('.program-section,.experts,.articles-section,[data-review-carousel],.campaign-carousel,#how')||nav.parentElement;
   const state={host,last:performance.now()};states.set(nav,state);
   nav.addEventListener('click',e=>{if(e.isTrusted)state.last=performance.now()});
+  host.addEventListener('scroll',()=>{state.last=performance.now()},{capture:true,passive:true});
+  host.addEventListener('pointerdown',()=>{state.last=performance.now()},{passive:true});
   nav.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;const buttons=[...nav.querySelectorAll('button')];let index=buttons.indexOf(document.activeElement);if(index<0)return;e.preventDefault();index=e.key==='Home'?0:e.key==='End'?buttons.length-1:(index+(e.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;buttons[index].focus();buttons[index].click();state.last=performance.now()});
  });}
  const rails = new WeakSet();

@@ -52,24 +52,33 @@
 
   page.querySelectorAll('.opt-timeline details').forEach(details => { details.name = 'care-timeline'; });
   const quotesByProgramme = {rebody: 'weight', rehair: 'hair-loss', reflow: 're-flow'};
-  const quotes = (window.KraneReviews || []).filter(review =>
-    review.category === quotesByProgramme[key] && review.quote);
-  if (quotes.length) {
+  const reviews = (window.KraneReviews || []).filter(review =>
+    review.category === quotesByProgramme[key] && (review.quote || review.caption));
+  if (reviews.length) {
     const section = document.createElement('section');
     section.className = 'opt-feedback opt-wrap';
     section.setAttribute('aria-labelledby', 'programme-feedback-title');
-    section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail"></div>';
+    section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail" data-carousel-rail="ความคิดเห็น หน้า" tabindex="0"></div>';
     const rail = section.querySelector('.rebody-review-rail');
-    for (const review of quotes) {
+    for (const review of reviews) {
       const card = document.createElement('article');
       card.className = 'rebody-review-card';
       const title = document.createElement('h3');
       title.textContent = review.caption;
-      const quote = document.createElement('blockquote');
-      quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
+      const star = document.createElement('span');
+      star.className = 'programme-review-star';
+      star.textContent = '☆';
+      star.setAttribute('aria-hidden', 'true');
+      card.append(star, title);
+      if (review.quote) {
+        const quote = document.createElement('blockquote');
+        quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
+        card.append(quote);
+      }
       const author = document.createElement('small');
-      author.textContent = review.name.replace(/^คุณ(.).*$/, '$1***');
-      card.append(title, quote, author);
+      const age = review.profileIsSample === false && Number.isInteger(review.age) ? review.age + ' ปี' : '';
+      author.textContent = [review.name.replace(/^คุณ(.).*$/, '$1***'), age, review.province].filter(Boolean).join(' · ');
+      card.append(author);
       rail.append(card);
     }
     page.querySelector('.opt-interview').after(section);

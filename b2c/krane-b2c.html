@@ -3,16 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Keep this before the release redirect. Mobile Safari chooses the top
-     status/notch colour while parsing the head; if navigation happens first it
-     can retain its white fallback for the whole landing session. -->
-<meta name="theme-color" content="#5871B5">
+<meta name="theme-color" content="#F7F7F7">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261115-general-consult-v295";
+    const release = "20261115-mobile-polish";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -35,7 +32,6 @@
     const illustrationSet = url.searchParams.get('illustrationSet') === 'wash' ? 'wash' : 'mono';
     document.documentElement.dataset.landingCanvas = String(landing);
     document.documentElement.dataset.illustrationSet = illustrationSet;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', landing ? '#5871B5' : '#F7F7F7');
     if (/^https?:$/.test(url.protocol) && (url.searchParams.get("v") !== release || canonicalized)) {
       url.searchParams.set("v", release);
       window.location.replace(url.href);
@@ -62,9 +58,9 @@
 <meta name="twitter:image" content="/b2c/assets/landing-573/latest/hero-base.png">
 
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
-     design-tokens.css = colors/type/spacing  |  components.css?v=20261017-card-footer = reusable UI -->
+     design-tokens.css = colors/type/spacing  |  components.css?v=20261115-mobile-polish = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20261015-local-fonts">
-<link rel="stylesheet" href="components.css?v=20261115-chat-clinician">
+<link rel="stylesheet" href="components.css?v=20261115-mobile-polish">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -80,23 +76,9 @@
   /* prototype chrome only (not part of the product) */
   html{width:100%;max-width:none;height:100%;overflow:hidden;scrollbar-width:none;background:#F7F7F7}
   html::-webkit-scrollbar{display:none}
-  @media(max-width:760px){html[data-landing-canvas="true"]{background:#5871B5}}
   /* Keep the document canvas on the app surface so translucent browser chrome
      at the bottom stays light. The landing notch is painted separately below. */
   body{width:100vw;max-width:none;height:100%;overflow:hidden;background:var(--surface-page)}
-  /* Chrome on iOS paints its status area from the body's rendered canvas, not
-     from theme-color. Keep the canvas blue only at the top and app-light at
-     the bottom so the floating browser toolbar retains its existing colour. */
-  html[data-landing-canvas="true"] body{
-    --landing-notch-stop:max(env(safe-area-inset-top, 0px), 64px);
-    background-color:#5871B5;
-    background-image:linear-gradient(to bottom,
-      #5871B5 0,
-      #5871B5 var(--landing-notch-stop),
-      #F7F7F7 var(--landing-notch-stop),
-      #F7F7F7 100%);
-    background-attachment:fixed;
-  }
   /* Paint only the top safe area on the landing route. The page canvas stays
      on the app surface so a translucent mobile browser toolbar remains light. */
   html[data-landing-canvas="true"] body::before{
@@ -1262,7 +1244,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261115-directory-cards" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261115-mobile-polish" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
@@ -3845,6 +3827,7 @@
   <script src="article-data.js?v=20261115-topic-covers"></script>
   <script src="article-store.js?v=20261025-cms-publish"></script>
   <script src="article-mocks.js?v=20261023-read-time"></script>
+<script src="patient-date-picker.js?v=20261115-mobile-polish"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -7899,21 +7882,8 @@
     renderedIntakeContext = key;
   }
 
-  /* The landing is an embedded frame, so the status-bar strip is painted by
-     THIS document, not by the banner inside it. Keep the browser chrome on the
-     banner blue while that screen is up and on the app tone everywhere else. */
-  const THEME_COLOR_APP='#F7F7F7';
-  const THEME_COLOR_LANDING='#5871B5';
-  function syncThemeColor(id){
-    const meta=document.querySelector('meta[name="theme-color"]');
-    const color=id==='landing' ? THEME_COLOR_LANDING : THEME_COLOR_APP;
-    if(meta) meta.setAttribute('content',color);
-    /* Keep the root canvas light because iOS uses it behind the translucent
-       bottom toolbar. The landing-only body gradient and safe-area overlay
-       keep the notch blue without tinting the browser controls below. */
+  function syncLandingCanvas(id){
     document.documentElement.dataset.landingCanvas=String(id==='landing');
-    document.documentElement.style.backgroundColor=id==='landing' && matchMedia('(max-width:760px)').matches ? THEME_COLOR_LANDING : THEME_COLOR_APP;
-    document.body.style.backgroundColor=color;
   }
   function resetLandingViewport(){
     const frame=document.querySelector('#landing iframe');
@@ -10339,7 +10309,7 @@
       if(confirmBtn) confirmBtn.textContent = isProfile ? 'บันทึกข้อมูลประกัน' : 'ตรวจสอบสิทธิ์';
     }
     if(id === 'matching' || id === 'intake1' || id === 'intake-concern' || id === 'intake-general') updateSelectedCare();
-    syncThemeColor(id);
+    syncLandingCanvas(id);
     if(id==='address') syncFieldClearButtons();
     if(id === 'profile') isAuthenticated = true;
     // An active case starts when the patient actually has one: a treatment plan accepted
@@ -14065,9 +14035,7 @@
     });
   },1000);
 
-  /* Native iOS date text has inconsistent intrinsic width and alignment. Keep the
-     native picker as the full hit target, but render its value in a symmetric,
-     centred display layer so every DOB field stays inside the mobile frame. */
+  /* Keep the date input as the form value and draw its text consistently across browsers. */
   function formatPatientDate(value){
     // Written by script, so it takes the language from the page rather than
     // from the dictionary, which only swaps text that was in the markup.
@@ -14098,6 +14066,10 @@
   document.addEventListener('krane:languagechange',()=>{ try{ syncOrderCheckout(); }catch(_error){ /* Checkout is not on every screen. */ } });
   function openPatientDatePicker(input){
     if(!input || input.disabled || input.readOnly) return;
+    if(window.KranePatientDatePicker?.intercepts()){
+      window.KranePatientDatePicker.open(input);
+      return;
+    }
     input.focus({preventScroll:true});
     if(typeof input.showPicker==='function'){
       try{ input.showPicker(); }catch(_error){ /* Native focus remains as the fallback. */ }
@@ -14120,10 +14092,10 @@
       control.appendChild(display);
       input.addEventListener('input',() => syncPatientDateField(input));
       input.addEventListener('change',() => syncPatientDateField(input));
-      // Chromium desktop may only focus a fully transparent native date input.
-      // Explicitly open its picker so the entire visible control, including the
-      // centred value and calendar icon, is one reliable click target.
-      input.addEventListener('click',() => openPatientDatePicker(input));
+      input.addEventListener('click',event => {
+        if(window.KranePatientDatePicker?.intercepts()) event.preventDefault();
+        openPatientDatePicker(input);
+      });
       input.addEventListener('keydown',event => {
         if(event.key!=='Enter' && event.key!==' ') return;
         event.preventDefault();

@@ -42,12 +42,8 @@
   page.querySelectorAll('.opt-article-rail a').forEach(link => {
     link.querySelector('span').innerHTML = 'อ่าน 4 นาที <b aria-hidden="true">→</b>';
   });
-  const articleControls = document.createElement('div');
-  articleControls.className = 'opt-rail-controls rebody-article-controls';
-  articleControls.innerHTML = '<button type="button" data-scroll="-1" aria-label="บทความก่อนหน้า">‹</button><button type="button" data-scroll="1" aria-label="บทความถัดไป">›</button>';
   const articleRail = page.querySelector('.opt-article-rail');
   articleRail.dataset.carouselRail = 'บทความ หน้า';
-  articleRail.after(articleControls);
   // Native horizontal rails remain usable by touch, wheel, and the keyboard.
   page.querySelectorAll('.opt-story-rail,.opt-article-rail,.opt-comparison-rail').forEach(rail => {
     rail.tabIndex = 0;

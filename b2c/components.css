@@ -6303,3 +6303,28 @@ input.sr-only[type="file"]{width:1px!important;max-width:1px!important;height:1p
 /* Thai marks extend above compact floating-label line boxes. Preserve their
    baseline and horizontal ellipsis while giving glyphs vertical ink room. */
 .float-field .float-field__slot>label{padding-block:4px;margin-block:-4px;box-sizing:content-box}
+.float-field:not(.is-filled) .float-field__slot:not(:focus-within)>input:placeholder-shown+label{margin-block:0}
+
+/* The selected row stays at the centre while its column scrolls. */
+.patient-date-sheet {
+  position:fixed;inset:auto 0 0;margin:0 auto;width:min(100%,480px);max-width:none;
+  max-height:calc(100dvh - env(safe-area-inset-top,0px));overflow:auto;
+  padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));border:0;border-radius:28px 28px 0 0;
+  background:var(--color-surface);color:var(--color-ink);box-shadow:0 -8px 48px #17203326;
+}
+.patient-date-sheet::backdrop{background:#17203370}
+.patient-date-sheet__handle{width:32px;height:4px;margin:0 auto 18px;border-radius:4px;background:var(--color-line-strong)}
+.patient-date-sheet h2{margin:0 0 14px;font-size:20px}
+.patient-date-sheet__wheels{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:6px}
+.patient-date-sheet__label{text-align:center;color:var(--color-ink-2);font-size:13px;line-height:28px}
+.patient-date-sheet__wheel {
+  block-size:220px;padding-block:88px;text-align:center;overflow-y:auto;scrollbar-width:none;
+  overscroll-behavior:contain;scroll-snap-type:y mandatory;border-radius:12px;
+  background:linear-gradient(transparent 88px,var(--surface-sunken) 88px 132px,transparent 132px);
+}
+.patient-date-sheet__wheel>[role="option"] {
+  display:grid;place-items:center;min-height:44px;scroll-snap-align:center;
+  color:var(--color-ink-2);cursor:pointer;font-variant-numeric:tabular-nums;
+}
+.patient-date-sheet__wheel>[aria-selected="true"]{color:var(--color-ink);font-weight:600}
+.patient-date-sheet__actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}

@@ -2384,7 +2384,11 @@
       const end = view * 0.34;
       const span = Math.max(1, textHeight + (start - end) * 0.55);
       const progress = Math.min(1, Math.max(0, (start - textTop) / span));
-      const next = reducedMotionQuery.matches ? words.length : Math.round(progress * words.length);
+      const mobile = matchMedia("(max-width:760px)").matches;
+      const bounds = section.getBoundingClientRect();
+      const distance = Math.max(1, bounds.height - section.firstElementChild.offsetHeight);
+      const mobileProgress = Math.min(1, Math.max(0, -bounds.top / distance));
+      const next = reducedMotionQuery.matches ? words.length : Math.round((mobile ? mobileProgress : progress) * words.length);
       if (next === lit) return;
       lit = next;
       words.forEach((word, index) => word.classList.toggle("is-lit", index < next));
@@ -2467,6 +2471,7 @@
   function fillRail() {
     const sequence = group.getBoundingClientRect().width;
     if (!sequence || !rail.clientWidth) return;
+    track.style.setProperty("--marquee-distance", sequence + "px");
     const copies = Math.ceil(rail.clientWidth / sequence);
     while (track.children.length > copies + 1) track.lastElementChild.remove();
     while (track.children.length < copies + 1) {
@@ -2488,32 +2493,23 @@
   const render = () => {
     const en = document.documentElement.lang === 'en';
     if (toggle) {
-    toggle.hidden = reducedMotion.matches;
-    toggle.setAttribute('aria-pressed', String(paused));
-    toggle.textContent = paused
-      ? (en ? 'Resume automatic scrolling' : 'เริ่มการเลื่อนอัตโนมัติ')
-      : (en ? 'Pause automatic scrolling' : 'หยุดการเลื่อนอัตโนมัติ');
+      toggle.hidden = reducedMotion.matches;
+      toggle.textContent = paused
+        ? (en ? 'Resume automatic scrolling' : 'เริ่มการเลื่อนโลโก้อัตโนมัติ')
+        : (en ? 'Pause automatic scrolling' : 'หยุดการเลื่อนโลโก้อัตโนมัติ');
     }
-    rail.classList.toggle('is-animated', !reducedMotion.matches);
-    rail.querySelector('.trust-logo-marquee__track').style.animationPlayState=paused?'paused':'';
+    const running = !paused && !reducedMotion.matches;
+    rail.classList.toggle('is-animated', running);
+    rail.tabIndex = running ? -1 : 0;
+    if (running) rail.scrollLeft = 0;
     group.querySelectorAll('img').forEach(img => {
       img.alt = en ? img.dataset.badgeAltEn : img.dataset.badgeAltTh;
     });
   };
-  const pauseForManualScroll = () => {
-    if (!paused) { paused = true; render(); }
-  };
-  if (toggle) toggle.addEventListener('click', () => {
+  toggle?.addEventListener('click', () => {
     paused = !paused;
     render();
   });
-  rail.addEventListener('pointerdown', pauseForManualScroll, { passive:true });
-  rail.addEventListener('keydown', event => {
-    if (['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) pauseForManualScroll();
-  });
-  rail.addEventListener('wheel', event => {
-    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) pauseForManualScroll();
-  }, { passive:true });
   reducedMotion.addEventListener('change', render);
   document.addEventListener('krane:languagechange', render);
   render();
@@ -2571,7 +2567,7 @@
 
 /* Measure one complete repeated sequence, including its actual gap. */
 (()=>{
- const specs=[['.review-marquee','.review-marquee__set'],['.trust-logo-marquee__track','.trust-logo-marquee__group'],['.hero-draft__benefits',null],['.trust-grid--open',null],['.trust-strip__track','.trust-strip__group'],['.compliance__track',null],['.announcement__track',null]];
+ const specs=[['.review-marquee','.review-marquee__set'],['.hero-draft__benefits',null],['.trust-grid--open',null],['.trust-strip__track','.trust-strip__group'],['.compliance__track',null],['.announcement__track',null]];
  const measure=()=>specs.forEach(([selector,group])=>document.querySelectorAll(selector).forEach(track=>{
   const children=[...track.children],first=children[0];if(!first)return;
   const next=group?track.querySelectorAll(group)[1]:children.find(c=>c.classList.contains('is-clone')||c.getAttribute('aria-hidden')==='true');
@@ -2583,7 +2579,7 @@
 })();
 
 /* Keep page scrolling available over horizontal rails and review media. */
-(()=>{document.querySelectorAll("[data-expert-viewport],.review-collage").forEach(rail=>{
+(()=>{document.querySelectorAll(".review-collage").forEach(rail=>{
  // Release vertical trackpad gestures to the page instead of latching the rail.
  rail.addEventListener('wheel',event=>{
   if(event.ctrlKey||event.defaultPrevented||Math.abs(event.deltaY)<1)return;
@@ -2596,18 +2592,17 @@
 
 });})();
 
-/* Give each audience row its own short entrance when it first enters view. */
+/* Replay the checklist entrance after a row leaves the viewport. */
 (() => {
   if (!document.body.classList.contains("landing-release") || !("IntersectionObserver" in window)
       || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const rows = document.querySelectorAll(".care-chapter__fit li");
   const reveal = new IntersectionObserver(entries => {
-    entries.forEach(({target, isIntersecting}) => {
-      if (!isIntersecting) return;
-      target.classList.add("is-visible");
-      reveal.unobserve(target);
+    entries.forEach(({target, isIntersecting, intersectionRatio}) => {
+      if (!isIntersecting) target.classList.remove("is-visible");
+      else if (intersectionRatio >= .2) target.classList.add("is-visible");
     });
-  }, {threshold: .2});
+  }, {threshold: [0, .2]});
   rows.forEach(row => {
     row.classList.add("will-reveal");
     reveal.observe(row);
