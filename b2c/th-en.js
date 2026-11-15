@@ -26,7 +26,6 @@
     "คุณพา · 34 ปี · ปทุมธานี":"Pha · 34 · Pathum Thani",
     "คุณแป้ง · 28 ปี · ชลบุรี":"Pang · 28 · Chon Buri",
     "คุณ ต. · 35 ปี · กรุงเทพมหานคร":"T. · 35 · Bangkok",
-    "เว็บไซต์สาธิต · อายุ จังหวัด ระยะเวลา คะแนน และภาพ AI บางส่วนเป็นข้อมูลสมมติ ไม่ใช่ผลการรักษาที่รับรอง":"Demonstration website · Ages, provinces, durations, ratings and some AI images are illustrative, not verified treatment outcomes.",
 
     // Current landing and programme copy, including runtime media controls.
     "ปลดล็อกเวอร์ชันที่ดีที่สุดของคุณ":"Unlock your best self",
