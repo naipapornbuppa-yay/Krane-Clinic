@@ -32,9 +32,7 @@
   }).join('');
   const stories = section('opt-stories opt-wrap',
     '<div class="opt-section-head"><h2>ประสบการณ์จากผู้ใช้บริการ Krane</h2></div>'+
-    '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>'+
-    '<div class="opt-rail-controls"><button type="button" data-scroll="-1" aria-label="วิดีโอก่อนหน้า">‹</button>'+
-    '<button type="button" data-scroll="1" aria-label="วิดีโอถัดไป">›</button></div>');
+    '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>');
   const pairItems = ['hair-pha','hair-03'].map(key=>reviewData.find(r=>r.id===key)).filter(r=>r?.before&&r?.after);
   const pairs = pairItems.length ? pairItems.map(r=>'<article class="opt-pair"><div><img src="'+r.before+'" alt="ก่อน"><img src="'+r.after+'" alt="หลัง"></div><p>'+r.name+' · ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>').join('') : '<article class="opt-pair"><div>'+pic('before','ก่อน')+pic('after','หลัง')+'</div><p>ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>';
   const comparison = section('opt-comparison','<div class="opt-wrap"><h2>เรื่องราวก่อนและหลัง</h2><div class="opt-rail" data-rail>'+pairs+'</div></div>');
@@ -76,17 +74,8 @@
       const rail=arrow.closest('section').querySelector('[data-rail]');
       rail.scrollBy({left:rail.clientWidth*.65*Number(arrow.dataset.scroll),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
     }
-    const story=e.target.closest('[data-story]');
-    if(story){
-      const dialog=document.querySelector('#opt-story-dialog');
-      const id=story.dataset.story;
-      dialog.querySelector('video').src=reviewData.find(r=>r.id===id)?.src || 'assets/reviews/'+id+'.mp4';
-      dialog.showModal();
-    }
   });
   root.querySelectorAll('[data-single] details').forEach(item=>item.addEventListener('toggle',()=>{
     if(item.open) item.parentElement.querySelectorAll('details[open]').forEach(other=>{if(other!==item)other.open=false;});
   }));
-  const dialog=document.querySelector('#opt-story-dialog');
-  dialog.addEventListener('close',()=>{const video=dialog.querySelector('video');video.pause();video.removeAttribute('src');video.load();});
 })();

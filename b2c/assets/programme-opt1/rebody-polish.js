@@ -23,32 +23,20 @@
     button.append(avatar);
   });
   const storyRail = stories.querySelector('[data-rail]');
-  storyRail.dataset.carouselRail = 'วิดีโอรีวิว หน้า';
-  const syncStoryControls = () => {
-    const max = storyRail.scrollWidth - storyRail.clientWidth;
-    stories.querySelector('[data-scroll="-1"]').disabled = storyRail.scrollLeft < 2;
-    stories.querySelector('[data-scroll="1"]').disabled = storyRail.scrollLeft >= max - 2;
-  };
-  storyRail.addEventListener('scroll', syncStoryControls, {passive:true});
-  new ResizeObserver(syncStoryControls).observe(storyRail);
-  syncStoryControls();
-  const dialog = document.querySelector('#opt-story-dialog');
-  let lastStory;
-  page.addEventListener('click', event => {
-    const story = event.target.closest('[data-story]');
-    if (!story) return;
-    lastStory = story;
-    document.documentElement.classList.add('rebody-story-open');
-    dialog.querySelector('video').play().catch(() => {});
+  const items = [...storyRail.children].map(card => {
+    const review = window.KraneReviews.find(item => item.id === card.dataset.story);
+    return {...review, attribution:[review.name, review.province].filter(Boolean).join(' · ')};
   });
-  dialog.addEventListener('close', () => {
-    document.documentElement.classList.remove('rebody-story-open');
-    lastStory?.focus({preventScroll:true});
-  });
-  dialog.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+  window.KraneStoryMarquee.mount(storyRail);
+  storyRail.addEventListener('click', event => {
+    const card = event.target.closest('[data-story]');
+    if (!card) return;
+    const trigger = card.hasAttribute('data-story-copy')
+      ? storyRail.querySelector(`button[data-story="${card.dataset.story}"]:not([data-story-copy])`)
+      : card;
+    document.dispatchEvent(new CustomEvent('krane:open-review-stories', {
+      detail:{items, activeId:card.dataset.story, trigger},
+    }));
   });
 
   page.querySelectorAll('.opt-article-rail a').forEach(link => {

@@ -54,6 +54,8 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const quoteText = review => review.quote.replace(/<br\s*\/?\s*>/gi, ' ');
 
+  window.KraneStoryMarquee.mount(document.querySelector('.landing-review-mobile'));
+
   const previewCards = document.querySelectorAll('.landing-review-gallery button, .landing-review-mobile button');
   const previewsInView = new Set();
   const syncPreviews = () => {
