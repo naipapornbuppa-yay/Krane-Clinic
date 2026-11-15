@@ -4230,12 +4230,19 @@ html[lang="en"] .treatment-detail__programme-prefix::after{content:" "}
 /* Leading the record, the doctor block sits above the note rather than closing
    it, so its rule sits under it instead of over it (client, 11 Sep). */
 .treatment-care--lead{padding:0 0 var(--sp-4);border-top:0;border-bottom:1px solid var(--color-line)}
-.treatment-record__certificate{display:flex;flex-direction:column;gap:0;
-  padding-top:var(--sp-4);border-top:1px solid var(--color-line)}
-.treatment-record__certificate-card{min-height:64px}
-.treatment-record__certificate-go{flex:none;color:var(--color-ink-3);transition:transform var(--dur-micro) var(--ease-out)}
-.treatment-record__certificate-card:hover .treatment-record__certificate-go,
-.treatment-record__certificate-card:focus-visible .treatment-record__certificate-go{transform:translateX(3px)}
+#treatment-detail .treatment-documents-footer{
+  display:flex;justify-content:center;padding-block:var(--sp-3) max(var(--sp-3),env(safe-area-inset-bottom));
+  border-top:1px solid var(--color-line);background:var(--surface-page)
+}
+#treatment-detail .treatment-documents-footer .btn{max-width:600px}
+.treatment-documents-sheet{
+  position:fixed;inset:auto 0 0;margin:0 auto;padding:0;width:min(100%,480px);max-width:100%;
+  max-height:100dvh;border:0;border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  background:var(--color-surface);color:var(--color-ink)
+}
+.treatment-documents-sheet::backdrop{background:rgb(18 24 36 / 48%)}
+.treatment-documents-sheet__content{overflow-wrap:anywhere}
+.treatment-documents-sheet button:focus-visible{outline:2px solid var(--color-accent);outline-offset:-3px}
 
 /* My Documents: search first, then one date-sorted list. There are no document
    type tabs here because search must span every certificate, prescription and
@@ -5456,16 +5463,14 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-success__actions .btn{width:100%;height:48px}
 
 .postpay-tracking-topbar{min-height:68px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid #eceef2}
-/* With the help and share icons gone the title had only the back button beside
-   it and drifted right of centre. An empty cell the width of that button puts
-   it back in the middle of the bar (client, 23 Sep). */
-.postpay-tracking-topbar::after{content:"";display:block}
 .postpay-tracking-topbar>.back{position:static;transform:none;align-self:center}
 .postpay-tracking-topbar__title{display:flex;align-items:center;justify-content:center;min-width:0;text-align:center}
 .postpay-tracking-topbar__title strong{font-size:14px;line-height:1.35}
-.postpay-tracking-topbar__actions{display:flex;align-items:center;gap:2px}
-.postpay-tracking-topbar__actions button,.postpay-subpage-topbar>button:last-child{width:38px;height:38px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:var(--color-ink);cursor:pointer}
-.postpay-tracking-topbar__actions .ui-icon,.postpay-subpage-topbar>button:last-child .ui-icon{width:20px;height:20px}
+.postpay-tracking-topbar__help{width:44px;height:44px;display:grid;place-items:center;align-self:center;padding:0;border:0;border-radius:var(--control-radius);background:transparent;color:var(--color-accent);cursor:pointer}
+.postpay-tracking-topbar__help:hover{background:var(--color-accent-soft)}
+.postpay-tracking-topbar__help:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.postpay-subpage-topbar>button:last-child{width:38px;height:38px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:var(--color-ink);cursor:pointer}
+.postpay-tracking-topbar__help .ui-icon,.postpay-subpage-topbar>button:last-child .ui-icon{width:20px;height:20px}
 .postpay-tracking-body{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;gap:14px;padding:14px 14px 28px!important;overflow-y:auto!important;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;background:#f6f7f9}
 .postpay-tracking-body>*{flex:0 0 auto}
 .postpay-tracking-hero{overflow:hidden;border:1px solid rgba(18,24,36,.06);border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(18,24,36,.04),0 8px 24px rgba(18,24,36,.05)}
@@ -5537,7 +5542,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .postpay-delivery-instruction>span{display:flex;min-width:0;flex-direction:column;gap:1px}
 .postpay-delivery-instruction small{color:#657084;font-size:10px}
 .postpay-delivery-instruction strong{font-size:12px;font-weight:var(--fw-medium)}
-.postpay-tracking-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.postpay-tracking-actions{display:grid}
 /* Consistency pass, 22 Sep: 46px was its own size; these are full-width
    actions, so they take the standard control height. */
 .postpay-tracking-actions .btn{height:var(--control-h);min-height:var(--control-h);display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff}
