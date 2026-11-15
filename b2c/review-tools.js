@@ -248,27 +248,36 @@
       });
       const previews=[...global.document.querySelectorAll('.modal-layer[id], dialog[id]')].map(node=>({id:node.id,node}));
       [{id:'address-delete-confirm',title:'ยืนยันลบที่อยู่',text:'ต้องการลบที่อยู่นี้ใช่ไหม?',actions:['ยกเลิก','ลบที่อยู่']},{id:'red-flag-modal',title:'คำถามคัดกรองความปลอดภัย',text:'ตัวอย่างคำถามคัดกรอง · สูงสุด 3 คำถามต่อขั้นตอน',actions:['ไม่ใช่','ใช่','ถัดไป']}].forEach(item=>{if(!previews.some(p=>p.id===item.id))previews.push(item);});
+      previews.unshift(
+        {id:'cookie-notice',title:thai?'ประกาศคุกกี้':'Cookie notice',selector:'[data-cookie-banner]'},
+        {id:'cookie-preferences',title:thai?'ตั้งค่าคุกกี้':'Cookie settings',selector:'[data-cookie-preferences]'},
+      );
       previews.forEach(item=>{
         const link=global.document.createElement('a');link.href='#';link.dataset.modalPreview=item.id;
         link.textContent=item.title || item.node.querySelector('h1,h2,h3')?.textContent.trim() || item.id;
         link.addEventListener('click',event=>{
           event.preventDefault();event.stopPropagation();
+          const source=item.selector ? global.document.querySelector(item.selector) : item.node;
+          if(item.selector && !source) return;
           // The rail is a design gallery: replace the previous sample, never stack it.
           global.document.querySelectorAll('.review-modal-veil').forEach(veil=>veil.remove());
           global.document.querySelectorAll('.modal-layer').forEach(layer=>{layer.hidden=true;layer.setAttribute('aria-hidden','true');layer.style.removeProperty('visibility');});
           global.document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());
           global.document.body.classList.remove('modal-open');
-          const preview=global.document.createElement('dialog');preview.className='review-modal-preview';preview.setAttribute('aria-label',link.textContent);
+          const preview=global.document.createElement('dialog');preview.className='review-modal-preview';if(item.selector)preview.classList.add('review-cookie-preview');preview.setAttribute('aria-label',link.textContent);
           const close=global.document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','ปิดหน้าต่าง');close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
           
-          if(item.node){
-            const content=item.node.querySelector('.modal-dialog') || item.node;
+          if(source){
+            const content=source.querySelector('.modal-dialog') || source;
             const clone=content.cloneNode(true);clone.hidden=false;clone.removeAttribute('open');clone.removeAttribute('id');
-            clone.querySelectorAll('.shared-modal-close,.modal-dialog__close').forEach(el=>el.remove());
+            if(item.selector){clone.removeAttribute('aria-labelledby');clone.removeAttribute('aria-describedby');}
+            clone.querySelectorAll('.shared-modal-close,.modal-dialog__close,.krane-cookie-close').forEach(el=>el.remove());
             clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
             clone.querySelectorAll('button,input,select,textarea,a').forEach(el=>{el.removeAttribute('href');el.removeAttribute('autofocus');});
             clone.inert=true;
-            clone.style.cssText+=';display:block;position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';preview.append(clone);
+            clone.style.cssText+=';display:block;position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';
+            if(item.selector)clone.style.cssText+=';display:'+ (item.id==='cookie-notice' ? 'grid' : 'block') +';inset:auto;max-width:none';
+            preview.append(clone);
           }else{
             const title=global.document.createElement('h2');title.textContent=item.title;preview.append(title);
             const text=global.document.createElement('p');text.textContent=item.text;preview.append(text);
