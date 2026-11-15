@@ -7,7 +7,7 @@
   const heroMedia = {
     rebody:['rebody-hero-motion.m4v','body-hero.webp'],
     rehair:['rehair-hero-motion.mp4','hair-hero.webp'],
-    reflow:['reflow-hero-motion.mp4','flow-hero.webp']
+    reflow:['reflow-sprint-hero.mp4','reflow-sprint-hero.webp']
   };
   if (hero && heroMedia[key]) {
     const [source, poster] = heroMedia[key];
