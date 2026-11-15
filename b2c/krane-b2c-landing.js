@@ -2256,13 +2256,12 @@
   }
 
   const hero = document.querySelector(".hero");
-  const closing = document.querySelector(".closing");
   const mobileCta = document.querySelector("[data-mobile-cta]");
   let scrollFrame = 0;
 
   function updateMobileCta() {
     scrollFrame = 0;
-    if (!mobileCta || !hero || !closing) return;
+    if (!mobileCta || !hero) return;
     header?.classList.toggle("is-scrolled", window.scrollY > 24);
     const heroRect = hero.getBoundingClientRect();
     if (!reducedMotionQuery.matches) {
@@ -2274,10 +2273,7 @@
     } else {
       hero.style.setProperty("--hero-parallax", "0px");
     }
-    // Let visitors choose their care programme before starting an assessment.
-    mobileCta.href = 'krane-b2c.html?entry=direct&fresh=1#conditions';
-    const desktop = window.matchMedia("(min-width: 701px)").matches;
-    mobileCta.classList.toggle("is-visible", desktop || window.scrollY > 0);
+    mobileCta.classList.toggle("is-visible", heroRect.bottom <= 0);
   }
 
   function requestMobileCtaUpdate() {
