@@ -6,7 +6,10 @@
  const copy=v=>JSON.parse(JSON.stringify(v));
  function state(){const raw=localStorage.getItem(key);if(!raw)return empty();const s=JSON.parse(raw);if(s.version!==1||!s.cases)throw Error('ข้อมูลในเบราว์เซอร์อ่านไม่ได้ กรุณากู้คืนข้อมูลก่อนทำต่อ');return s;}
  function commit(fn){const s=copy(state()),revision=s.revision;const result=fn(s);if(state().revision!==revision)throw Error('ข้อมูลเปลี่ยนแล้ว กรุณาเปิดใหม่');s.revision++;localStorage.setItem(key,JSON.stringify(s));window.dispatchEvent(new Event('krane:clinical-change'));return copy(result??null);}
- const doctors=[{id:'DR-01',name:'แพทย์นรินทร์ ทานากะ'},{id:'DR-02',name:'แพทย์เอ (สาธิต)'}];
+ const doctors=[
+  {id:'DR-01',name:'แพทย์นรินทร์ ทานากะ',nameEn:'Dr. Narin Tanaka',licence:'42317'},
+  {id:'DR-02',name:'แพทย์เอ (สาธิต)',nameEn:'Dr. A (demo)'}
+ ];
  const doctorId=()=>sessionStorage.getItem('krane.clinical.doctor')||'DR-01';
  const cases=()=>{const map=new Map(legacy.cases().map(c=>[c.id,c]));Object.values(state().cases).forEach(c=>map.set(c.id,c));return [...map.values()];};
  const current=()=>cases().find(c=>c.id===api.id())||legacy.current();

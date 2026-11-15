@@ -73,7 +73,20 @@
    document.body.classList.toggle('clinical-confirmed-plan',Boolean(api.plan()));
    if(c.id!=='CONS-2041' && window.__clinicalAccountPatient!==c.patientId){window.__clinicalAccountPatient=c.patientId;const [first,...last]=(c.name||'').split(' ');for(const [id,value] of Object.entries({'account-first-name':first,'account-last-name':last.join(' '),'account-phone':c.contact?.phone||'','account-email':c.contact?.email||''})){const field=document.getElementById(id);if(field){field.value=value;field.setCustomValidity('');}}}
 
-   const room=block('#consult .screen__body','connection',T('สถานะห้องปรึกษา','Consultation room'));if(room)room.append(node('p',c.roomState==='disconnected'?T('แพทย์กำลังเชื่อมต่อใหม่ ข้อความของคุณยังอยู่ครบ','Your clinician is reconnecting. Messages remain saved.'):T('สนทนากับแพทย์ผู้ดูแลเคสนี้','Chat with the clinician assigned to this encounter')));
+   const clinician=api.doctors.find(d=>d.id===(c.doctorId||'DR-01'));
+   const clinicianName=clinician ? T(clinician.name,clinician.nameEn||clinician.name) : T('แพทย์ผู้ดูแล','Your clinician');
+   document.querySelectorAll('[data-chat-clinician-name]').forEach(el=>{el.textContent=clinicianName;});
+   document.querySelectorAll('[data-chat-clinician-licence]').forEach(el=>{
+    el.textContent=clinician?.licence ? T('ว.','Licence no. ')+clinician.licence : '';
+    el.hidden=!clinician?.licence;
+   });
+   document.querySelectorAll('[data-demo-clinician-portrait]').forEach(el=>{el.hidden=clinician?.id!=='DR-01';});
+   const connection=document.querySelector('[data-chat-reconnecting]');
+   if(connection){
+    const reconnecting=c.roomState==='disconnected';
+    connection.hidden=!reconnecting;
+    connection.textContent=reconnecting ? T('แพทย์กำลังเชื่อมต่อใหม่ ข้อความของคุณยังอยู่ครบ','Your clinician is reconnecting. Messages remain saved.') : '';
+   }
    const documentBox=block('#my-documents .screen__body','all-documents',T('เอกสารจากแพทย์','Documents from your clinician'));if(documentBox)documents(documentBox,c);
    const booking=block('#appointment-booked .screen__body','booking',T('นัดหมายของฉัน','My appointments'));if(booking){appointments.filter(a=>a.patientId===c.patientId&&a.status==='booked').forEach(a=>booking.append(node('p',format(a.at)+' · '+(api.doctors.find(d=>d.id===a.doctorId)?.name||a.doctorId))));}
   }

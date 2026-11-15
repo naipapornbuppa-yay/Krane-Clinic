@@ -12,7 +12,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261115-programme-picker-v293";
+    const release = "20261115-consult-picker-chat-v294";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -64,16 +64,16 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css?v=20261017-card-footer = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20261015-local-fonts">
-<link rel="stylesheet" href="components.css?v=20261115-programme-picker">
+<link rel="stylesheet" href="components.css?v=20261115-chat-clinician">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
 <script src="../krane-clinical-demo.js?v=20261012-sync"></script>
-<script src="../krane-clinical-workflow.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-workflow.js?v=20261115-chat-clinician"></script>
 <link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261017-workflow">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261017-binary-intake" defer></script>
+<script src="i18n.js?v=20261115-consult-topic" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -1272,7 +1272,7 @@
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">Choose a condition</span></div>
     <div class="screen__body stack-4">
       <div class="stack-2">
-        <h2 class="h1">What are you particularly concerned about?</h2>
+        <h2 class="h1">What would you like to discuss today?</h2>
       </div>
       <div class="choice-grid" data-category-list></div>
       <div class="choice-list" data-condition-list></div>
@@ -1955,8 +1955,9 @@
 
   <!-- ===================== CONSULT ROOM ===================== -->
   <section class="screen" id="consult" data-screen-code="SCR-010">
-    <div class="screen__top screen__top--chat"><button class="back" data-back>‹</button><div class="chat-doctor"><span class="doctor-value"><img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="" width="40" height="40"><span class="chat-doctor__meta"><strong>แพทย์<span data-doctor-name>นรินทร์</span></strong><span class="hint">ว.42317</span></span></span></div><button class="live-pill" type="button" data-live-pill data-go="video" hidden><i class="live-pill__dot" aria-hidden="true"></i><span data-live-pill-text>อยู่ในสาย</span></button></div>
+    <div class="screen__top screen__top--chat"><button class="back" data-back>‹</button><div class="chat-doctor"><span class="doctor-value"><img class="consult-doctor-photo" data-demo-clinician-portrait src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="" width="40" height="40"><span class="chat-doctor__meta"><strong data-chat-clinician-name>แพทย์นรินทร์ ทานากะ</strong><span class="hint" data-chat-clinician-licence>ว.42317</span></span></span></div><button class="live-pill" type="button" data-live-pill data-go="video" hidden><i class="live-pill__dot" aria-hidden="true"></i><span data-live-pill-text>อยู่ในสาย</span></button></div>
     <div class="screen__body chat-body" style="position:relative">
+      <p class="chat-connection" data-chat-reconnecting role="status" hidden></p>
       <!-- F13: chat and the call are one session. The live state now shows as a
            blinking pill beside the screen title, not as a bar inside the thread. -->
       <div class="bubble bubble--in bubble--lbl" data-from="Dr. Narin">Hi, I've reviewed your intake. A couple of quick questions before I recommend a plan.</div>
@@ -1988,7 +1989,7 @@
   <!-- ===================== CONNECTING (call edge state) ===================== -->
     <!-- ===================== CALL (KRANE-F13 · camera toggles voice-only in place, one screen) ===================== -->
   <section class="screen" id="video">
-    <div class="screen__top video-call-top checkout-brandbar"><div class="video-call-top__bar"><img class="checkout-brandbar__logo" src="../assets/brand-final/krane-lockup-blue.svg" width="473" height="72" alt="Krane Clinic"><button class="transition-stage__close" data-endcall data-go="consult" aria-label="วางสาย">×</button></div><div class="chat-doctor video-call-doctor"><span class="doctor-value"><img class="consult-doctor-photo" src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="" width="40" height="40"><span class="chat-doctor__meta"><strong>แพทย์<span data-doctor-name>นรินทร์</span></strong><span class="hint">ว.42317</span></span></span></div></div>
+    <div class="screen__top video-call-top checkout-brandbar"><div class="video-call-top__bar"><img class="checkout-brandbar__logo" src="../assets/brand-final/krane-lockup-blue.svg" width="473" height="72" alt="Krane Clinic"><button class="transition-stage__close" data-endcall data-go="consult" aria-label="วางสาย">×</button></div><div class="chat-doctor video-call-doctor"><span class="doctor-value"><img class="consult-doctor-photo" data-demo-clinician-portrait src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="" width="40" height="40"><span class="chat-doctor__meta"><strong data-chat-clinician-name>แพทย์นรินทร์ ทานากะ</strong><span class="hint" data-chat-clinician-licence>ว.42317</span></span></span></div></div>
     <div class="screen__body callstage callstage--live">
       <div class="call-self call-self--camera call-self--photo" data-call-self style="overflow:hidden;padding:0;place-items:stretch;background:#dceef8">
         <img class="call-self__image" src="assets/call-self-patient-v1.png" width="512" height="640" alt="ภาพของคุณระหว่างการปรึกษา" style="width:100%;height:100%;display:block;object-fit:cover;object-position:center 24%">
@@ -2003,9 +2004,9 @@
         <span class="call-fab__badge" data-consult-unread-badge hidden aria-hidden="true">1</span>
       </button>
       <div class="call-remote call-remote--video">
-        <img class="call-remote__video" src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="แพทย์นรินทร์พร้อมพูดคุยผ่านวิดีโอคอล">
+        <img class="call-remote__video" data-demo-clinician-portrait src="assets/consultation/doctor-video-live.jpg?v=20260920-float-v1" alt="">
         <div class="call-remote__identity">
-          <div class="call-name">Dr. Narin</div>
+          <div class="call-name" data-chat-clinician-name>แพทย์นรินทร์ ทานากะ</div>
           <div class="call-status" data-call-status>Video consultation · 02:14</div>
           <div class="call-note" data-camera-note hidden>Camera off. The consultation continues on voice and chat.</div>
         </div>
@@ -6005,26 +6006,6 @@
     }
   ];
 
-  function iconSvg(type){
-    // Category-specific drawings share the UI icon grid and stroke weight.
-    const categoryPaths={
-      hair:'<path d="M13 3c-3 2-3 5-2 8l1 4"/><path d="M8 10c0 3 1 5 0 7-1 3 1 5 3 5s4-2 3-5c-1-2-1-4-1-7"/><path d="M2 10h4m10 0h6"/><path d="M10 18c0 1 0 2 1 2"/>',
-      weight:'<path d="M6 3h12a2 2 0 0 1 2 2l2 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2L4 5a2 2 0 0 1 2-2Z"/><path d="M8 8a4 4 0 0 1 8 0v2H8V8Z"/><path d="m12 8 1.5-2M7 14v3m10-3v3"/>'
-    };
-    if(categoryPaths[type]) return `<svg class="ui-icon ui-icon--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${categoryPaths[type]}</svg>`;
-    /* One glyph per category. Skin, weight and hormones all used to share the
-       sparkle, which made three different services look like the same one. */
-    const icons = {
-      chat:'message-circle',
-      heart:'mars',
-      moon:'moon-star',
-      pulse:'sparkles',
-      skin:'sparkles',
-      hormone:'flask-conical'
-    };
-    return window.kraneIcon(icons[type] || icons.chat, 'ui-icon--md');
-  }
-
   /* Client, 20 Sep: the treatment page offers the three conditions Krane
      actually treats today, the same three the landing sells, plus a general
      consultation. The rest of the catalogue stays here for the condition
@@ -6047,7 +6028,7 @@
       const cards = liveCategories().map(cat => {
         const soon = cat.status === 'Soon';
         return `
-        <button class="choice-card${soon ? ' choice-card--soon' : ''}" data-category-card data-category-id="${cat.id}" ${soon ? 'disabled aria-disabled="true"' : `data-go="${cat.next || 'conditions'}"`}>
+        <button class="choice-card choice-card--programme${soon ? ' choice-card--soon' : ''}" data-category-card data-category-id="${cat.id}" ${soon ? 'disabled aria-disabled="true"' : `data-go="${cat.next || 'conditions'}"`}>
           <img class="cc-programme-image" src="${consultationProgrammeImages[cat.id]}" alt="" decoding="async">
           <span class="cc-body">
             <span class="cc-title-row"><span class="cc-title">${cat.programTitle || cat.title}</span>${soon ? '<span class="cc-soon">Soon</span>' : ''}</span>
@@ -6059,12 +6040,10 @@
       const general = consultationCatalog.find(cat => cat.general);
       const generalCard = general ? `
         <button class="choice-card choice-card--wide" data-category-card data-category-id="${general.id}" data-go="${general.next || 'intake1'}">
-          <span class="cc-icon">${iconSvg(general.icon)}</span>
           <span class="cc-body">
             <span class="cc-title-row"><span class="cc-title">${general.programTitle || general.title}</span></span>
             <span class="cc-category">${general.title}</span>
           </span>
-          <span class="cc-chev" aria-hidden="true"></span>
         </button>
       ` : '';
       categoryList.innerHTML = cards + generalCard;
@@ -14849,6 +14828,6 @@
 <script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
 <script src="../krane-chat-typing.js?v=20261115-typing"></script>
 <script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
-<script src="../krane-clinical-workspace.js?v=20261115-notifications"></script>
+<script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
 </body>
 </html>
