@@ -905,7 +905,7 @@
   const clearBannerSwapTimers = () => {
     swapTimers.forEach((timer) => window.clearTimeout(timer));
     swapTimers.clear();
-    swapBanners.forEach((banner) => banner.setFrame(true));
+    swapBanners.forEach((banner) => banner.setFrame(false));
   };
   const queueBannerSwap = (banner, delay, showProduct = true) => {
     const timer = window.setTimeout(() => {
