@@ -19,7 +19,11 @@
 }
 .programme-final [data-programme="rebody"] .opt-hero { background-image:url('body-hero.webp'); }
 .programme-final [data-programme="rehair"] .opt-hero { background-image:url('hair-hero.webp'); }
-.programme-final [data-programme="reflow"] .opt-hero { background-image:url('reflow-sprint-hero.webp'); }
+.programme-final [data-programme="reflow"] .opt-hero {
+  background-image:url('reflow-sprint-hero.webp');
+  background-position:center 22%;
+}
+.programme-final [data-programme="reflow"] .rebody-hero-video { object-position:center 22%; }
 .programme-final .opt-hero-badges li::before { content:none; }
 /* The pills stay within the visible part of the hero, above the timeline overlap. */
 .programme-final main[data-programme] .opt-hero-badges {
@@ -32,7 +36,7 @@
 .programme-final .opt-hero-badges img { width:clamp(13px,1vw,16px);height:auto; }
 .programme-final .rebody-hero-badge-icon { width:clamp(13px,1vw,16px);height:auto;flex-basis:auto; }
 .programme-final .opt-step-copy { padding-bottom:clamp(20px,2.6vw,40px); }
-.programme-final .opt-step-copy img { display:block;width:100%;object-fit:contain;background:transparent; }
+.programme-final .opt-step-copy img { display:block;width:100%;object-fit:cover;background:transparent; }
 .programme-final main[data-programme] .opt-feedback { padding:48px 0 36px; max-width:1200px; }
 .programme-final .rebody-review-header {
   display:grid; grid-template-columns:1fr auto; align-items:start; gap:12px 28px; min-height:0;
@@ -62,7 +66,8 @@
   padding-inline:max(24px,calc((100vw - 1200px)/2));
 }
 .programme-final .opt-story-rail .opt-story { flex:0 0 280px; height:420px; }
-.programme-final .opt-stories { overflow:visible; }
+.programme-final .opt-stories { overflow:visible;scroll-margin-top:28px; }
+.programme-final main[data-programme] { overflow-x:clip; }
 .programme-final .opt-rail { scroll-padding-inline:24px; }
 .programme-final .landing-benefits article { flex-basis:calc((100% - 48px)/3); }
 .programme-final .opt-faq-glass { color:#172033; }
@@ -79,8 +84,6 @@
   }
   .programme-final .opt-hero { height:392px; }
   .programme-final [data-programme="rehair"] .opt-hero { background-position:72% center; }
-  .programme-final [data-programme="reflow"] .opt-hero { background-position:center; }
-  .programme-final [data-programme="reflow"] .rebody-hero-video { object-position:center; }
   .programme-final main[data-programme] .opt-hero-badges { top:144px; left:20px; gap:22px; }
   .programme-final main[data-programme] .opt-hero-badges li { margin-left:0; }
   .programme-final main[data-programme] .opt-hero-badges li:nth-child(2) { margin-left:28px; }
@@ -107,4 +110,21 @@
   .programme-final .opt-timeline details[open] .opt-step-copy { animation:programme-step-in .28s ease-out both; }
   @keyframes programme-badge-float { 50% { transform:translateY(-4px); } }
   @keyframes programme-step-in { from { opacity:0; transform:translateY(-6px); } }
+}
+
+/* Keep the pills clear of the runner in the centre of the re:flow hero. */
+.programme-final main[data-programme="reflow"] .opt-hero-badges {
+  inset-inline:max(20px,calc((100% - 1200px) / 2));
+  width:auto;max-width:none;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  justify-items:start;column-gap:8px;
+}
+.programme-final main[data-programme="reflow"] .opt-hero-badges li { margin:0; }
+.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(2),
+.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(3) {
+  grid-column:2;justify-self:end;
+}
+.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(2) { grid-row:2; }
+.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(3) {
+  grid-row:3;margin-inline-end:clamp(8px,3.5vw,48px);
 }

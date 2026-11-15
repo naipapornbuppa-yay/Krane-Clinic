@@ -110,10 +110,7 @@
     rail.className = 'care-chapter__review-rail';
     rail.dataset.carouselRail = 'วิดีโอรีวิว หน้า';
     for (const item of items) {
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.dataset.landingReview = item.id;
-      card.setAttribute('aria-label', `ดูรีวิว ${item.name}`);
+      const card = document.createElement('article');
       const headline = document.createElement('strong');
       headline.textContent = item.caption;
       card.append(headline);
@@ -124,15 +121,14 @@
       }
       const author = document.createElement('span');
       author.className = 'care-chapter__review-author';
-      const image = document.createElement('img');
-      image.src = item.poster;
-      image.alt = '';
-      image.loading = 'lazy';
-      author.append(image, item.name);
-      const arrow = document.createElement('i');
-      arrow.textContent = '→';
-      arrow.setAttribute('aria-hidden', 'true');
-      author.append(arrow);
+      const initial = item.name.replace(/^คุณ\s*/, '').match(/[ก-ฮA-Z]/i)?.[0] || '–';
+      const avatar = document.createElement('span');
+      avatar.className = 'care-chapter__review-initial';
+      avatar.textContent = initial;
+      avatar.setAttribute('aria-hidden', 'true');
+      const age = item.profileIsSample === false && Number.isInteger(item.age) ? `${item.age} ปี` : '';
+      const identity = [`${initial}***`, age, item.province].filter(Boolean).join(' · ');
+      author.append(avatar, identity);
       card.append(author);
       rail.append(card);
     }
@@ -141,10 +137,9 @@
   }
 
   document.addEventListener('click', event => {
-    const button = event.target.closest('.landing-stories [data-landing-review], .care-chapter__reviews [data-landing-review]');
+    const button = event.target.closest('.landing-stories [data-landing-review]');
     if (!button) return;
-    const category = button.closest('[data-review-category]')?.dataset.reviewCategory;
-    const items = reviews.filter(item => !category || item.category === category).map(item => ({
+    const items = reviews.map(item => ({
       ...item, attribution:[item.name,item.province].filter(Boolean).join(' · '),
     }));
     if (!items.length) return;

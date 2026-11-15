@@ -32,7 +32,7 @@
   }).join('');
   const stories = section('opt-stories opt-wrap',
     '<div class="opt-section-head"><h2>ประสบการณ์จากผู้ใช้บริการ Krane</h2></div>'+
-    '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>');
+    '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>','programme-stories');
   const pairItems = ['hair-pha','hair-03'].map(key=>reviewData.find(r=>r.id===key)).filter(r=>r?.before&&r?.after);
   const pairs = pairItems.length ? pairItems.map(r=>'<article class="opt-pair"><div><img src="'+r.before+'" alt="ก่อน"><img src="'+r.after+'" alt="หลัง"></div><p>'+r.name+' · ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>').join('') : '<article class="opt-pair"><div>'+pic('before','ก่อน')+pic('after','หลัง')+'</div><p>ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>';
   const comparison = section('opt-comparison','<div class="opt-wrap"><h2>เรื่องราวก่อนและหลัง</h2><div class="opt-rail" data-rail>'+pairs+'</div></div>');
@@ -55,7 +55,7 @@
     ['เตรียมตัวก่อนปรึกษาแพทย์', ''],
     ['อ่านเรื่องสุขภาพเพิ่มเติม', '']
   ];
-  const articles = section('opt-articles','<div class="opt-wrap"><h2>บทความสุขภาพ</h2><a href="articles.html">อ่านเพิ่มเติม →</a><div class="opt-rail opt-article-rail" data-rail>'+articleData.map(([title,slug])=>'<a href="articles.html'+(slug?'?article='+slug:'')+'">'+pic('article')+'<div><small>บทความสุขภาพ</small><h3>'+title+'</h3><span>อ่านบทความ <b>→</b></span></div></a>').join('')+'</div></div>');
+  const articles = section('opt-articles','<div class="opt-wrap"><h2>บทความสุขภาพ</h2><a href="articles.html"><span>อ่านเพิ่มเติม</span> <i data-lucide="arrow-up-right" aria-hidden="true"></i></a><div class="opt-rail opt-article-rail" data-rail>'+articleData.map(([title,slug])=>'<a href="articles.html'+(slug?'?article='+slug:'')+'">'+pic('article')+'<div><small>บทความสุขภาพ</small><h3>'+title+'</h3><span>อ่านบทความ <b>→</b></span></div></a>').join('')+'</div></div>');
   const faqData = [
     ['Krane Clinic คืออะไร?','บริการปรึกษาแพทย์ทางไกล แพทย์ประเมินและให้คำแนะนำตามข้อมูลสุขภาพของแต่ละคน'],
     ['ทำแบบประเมินแล้วจะได้รับยาทุกคนไหม?','แพทย์จะพิจารณาจากข้อมูลสุขภาพและความเหมาะสมก่อนสั่งยา'],
