@@ -1001,12 +1001,12 @@
     "imageAlt": "ตรวจสอบกล่องบรรจุภัณฑ์ยา"
   },
   "library-hair-loss-01": {
-    "image": "assets/articles/new-20261115/library-hair-loss-01.jpg",
-    "imageAlt": "ผู้ชายค้นหาข้อมูลสุขภาพที่บ้าน"
+    "image": "assets/programme-opt1/hair-timeline-2.webp",
+    "imageAlt": "ผู้ชายตรวจดูแนวเส้นผมในกระจก"
   },
   "library-hair-loss-02": {
-    "image": "assets/articles/new-20261115/library-hair-loss-02.jpg",
-    "imageAlt": "แพทย์อธิบายแนวทางดูแลสุขภาพผ่านวิดีโอ"
+    "image": "assets/optimized-web/rehair-hand-on-head-20261115.webp",
+    "imageAlt": "ผู้ชายแหวกผมให้เห็นแนวไรผม"
   },
   "library-hair-loss-03": {
     "image": "assets/articles/new-20261115/library-hair-loss-03.jpg",
@@ -1017,24 +1017,24 @@
     "imageAlt": "ผู้หญิงถือวิตามิน"
   },
   "library-hair-loss-05": {
-    "image": "assets/articles/new-20261115/library-hair-loss-05.jpg",
-    "imageAlt": "ผู้ชายติดตามการดูแลกับแพทย์ออนไลน์"
+    "image": "assets/programme-opt1/hair-timeline-3.webp",
+    "imageAlt": "ผู้ชายสังเกตเส้นผมและติดตามผลการดูแล"
   },
   "library-obesity-01": {
     "image": "assets/articles/new-20261115/library-obesity-01.jpg",
     "imageAlt": "อาหารที่มีโปรตีนและผัก"
   },
   "library-obesity-02": {
-    "image": "assets/articles/new-20261115/library-obesity-02.jpg",
-    "imageAlt": "ผู้หญิงเตรียมรับประทานยา"
+    "image": "assets/optimized-web/weight-care-pens-redacted-hires-v2.webp",
+    "imageAlt": "ภาพประกอบปากกาฉีดยาที่ใช้ในการดูแลน้ำหนัก"
   },
   "library-obesity-03": {
     "image": "assets/articles/new-20261115/library-obesity-03.jpg",
     "imageAlt": "ผู้ชายใส่ใจอาการและสุขภาพของตนเอง"
   },
   "library-obesity-04": {
-    "image": "assets/articles/new-20261115/library-obesity-04.jpg",
-    "imageAlt": "ผู้ชายใช้บริการปรึกษาสุขภาพจากที่บ้าน"
+    "image": "assets/medicine/weight-sheet-v1/mounjaro-kwikpen.jpg",
+    "imageAlt": "กล่องบรรจุปากกาฉีดยา"
   },
   "library-obesity-05": {
     "image": "assets/articles/new-20261115/library-obesity-05.jpg",

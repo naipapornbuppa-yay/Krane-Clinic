@@ -7,35 +7,37 @@
 
   page.querySelector('.opt-timeline header p br').replaceWith(' ');
   const stories = page.querySelector('.opt-stories');
-  stories.querySelector('.opt-section-head').remove();
-  stories.setAttribute('aria-label', 'วิดีโอประสบการณ์จากผู้ใช้บริการ Krane');
-  stories.querySelectorAll('.opt-story').forEach(button => {
-    const title = button.querySelector('.opt-story-name');
-    button.setAttribute('aria-label', 'ดูวิดีโอประสบการณ์ของ ' + title.textContent);
-    const subtitle = document.createElement('small');
-    subtitle.textContent = 'ผู้ใช้บริการ Krane';
-    title.append(subtitle);
-    const avatar = button.querySelector('img').cloneNode();
-    avatar.className = 'rebody-story-avatar';
-    avatar.alt = '';
-    button.append(avatar);
-  });
-  const storyRail = stories.querySelector('[data-rail]');
-  const items = [...storyRail.children].map(card => {
-    const review = window.KraneReviews.find(item => item.id === card.dataset.story);
-    return {...review, attribution:[review.name, review.province].filter(Boolean).join(' · ')};
-  });
-  window.KraneStoryMarquee.mount(storyRail);
-  storyRail.addEventListener('click', event => {
-    const card = event.target.closest('[data-story]');
-    if (!card) return;
-    const trigger = card.hasAttribute('data-story-copy')
-      ? storyRail.querySelector(`button[data-story="${card.dataset.story}"]:not([data-story-copy])`)
-      : card;
-    document.dispatchEvent(new CustomEvent('krane:open-review-stories', {
-      detail:{items, activeId:card.dataset.story, trigger},
-    }));
-  });
+  if (stories) {
+    stories.querySelector('.opt-section-head').remove();
+    stories.setAttribute('aria-label', 'วิดีโอประสบการณ์จากผู้ใช้บริการ Krane');
+    stories.querySelectorAll('.opt-story').forEach(button => {
+      const title = button.querySelector('.opt-story-name');
+      button.setAttribute('aria-label', 'ดูวิดีโอประสบการณ์ของ ' + title.textContent);
+      const subtitle = document.createElement('small');
+      subtitle.textContent = 'ผู้ใช้บริการ Krane';
+      title.append(subtitle);
+      const avatar = button.querySelector('img').cloneNode();
+      avatar.className = 'rebody-story-avatar';
+      avatar.alt = '';
+      button.append(avatar);
+    });
+    const storyRail = stories.querySelector('[data-rail]');
+    const items = [...storyRail.children].map(card => {
+      const review = window.KraneReviews.find(item => item.id === card.dataset.story);
+      return {...review, attribution:[review.name, review.province].filter(Boolean).join(' · ')};
+    });
+    window.KraneStoryMarquee.mount(storyRail);
+    storyRail.addEventListener('click', event => {
+      const card = event.target.closest('[data-story]');
+      if (!card) return;
+      const trigger = card.hasAttribute('data-story-copy')
+        ? storyRail.querySelector(`button[data-story="${card.dataset.story}"]:not([data-story-copy])`)
+        : card;
+      document.dispatchEvent(new CustomEvent('krane:open-review-stories', {
+        detail:{items, activeId:card.dataset.story, trigger},
+      }));
+    });
+  }
 
   page.querySelectorAll('.opt-article-rail a').forEach(link => {
     link.querySelector('span').innerHTML = 'อ่าน 4 นาที <b aria-hidden="true">→</b>';

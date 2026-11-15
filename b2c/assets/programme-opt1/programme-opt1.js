@@ -64,7 +64,7 @@
     ['ใครเข้าถึงข้อมูลสุขภาพของฉันได้บ้าง?','ทีมที่เกี่ยวข้องใช้ข้อมูลตามความจำเป็นในการดูแล อ่านรายละเอียดในนโยบายความเป็นส่วนตัว']
   ];
   const faq = section('opt-faq','<div class="opt-wrap"><h2>คำถามที่พบบ่อย</h2><a href="faq.html">อ่านเพิ่มเติม →</a><div class="opt-faq-glass" data-single>'+faqData.map(([q,a])=>'<details><summary>'+q+'</summary><p>'+a+'</p></details>').join('')+'</div></div>','faq');
-  root.innerHTML = timeline+(id==='reflow'?'':comparison)+stories+interview+price+articles+faq;
+  root.innerHTML = timeline+(id==='reflow'?'':comparison+stories)+interview+price+articles+faq;
   if (benefits) root.querySelector('.opt-interview').before(benefits.content.cloneNode(true));
   root.querySelectorAll('a[href^="#"]').forEach(a => { a.href=location.pathname+location.search+a.getAttribute('href'); });
 

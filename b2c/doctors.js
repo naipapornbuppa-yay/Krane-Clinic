@@ -2,22 +2,29 @@
   const rail=document.querySelector('.doctor-directory__viewport');
   if(rail){
     const previous=document.querySelector('[data-directory-prev]'),next=document.querySelector('[data-directory-next]');
-    const sync=()=>{if(previous)previous.disabled=rail.scrollLeft<=2;if(next)next.disabled=rail.scrollLeft>=rail.scrollWidth-rail.clientWidth-2;};
-    const move=direction=>{const card=rail.querySelector('.doctor-directory-card');const gap=parseFloat(getComputedStyle(rail.firstElementChild).gap)||0;rail.scrollBy({left:direction*(card.offsetWidth+gap),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});};
+    const controls = document.querySelector('[data-directory-controls]');
+    const sync = () => {
+      const end = rail.scrollWidth - rail.clientWidth;
+      controls.hidden = end <= 2;
+      previous.disabled = rail.scrollLeft <= 2;
+      next.disabled = rail.scrollLeft >= end - 2;
+    };
+    const move=direction=>{const card=rail.querySelector('.doctor-directory-card');if(!card)return;const gap=parseFloat(getComputedStyle(rail.firstElementChild).gap)||0;rail.scrollBy({left:direction*(card.offsetWidth+gap),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});};
     previous?.addEventListener('click',()=>move(-1));next?.addEventListener('click',()=>move(1));
     rail.addEventListener('scroll',sync,{passive:true});window.addEventListener('resize',sync,{passive:true});
     rail.addEventListener('keydown',e=>{if(e.target!==rail||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();move(e.key==='ArrowRight'?1:-1);});
     requestAnimationFrame(sync);
+    window.lucide?.createIcons();
   }
   const profiles = {
-    "1": {name:"นพ. ไพรัช เกตุรัตนกุล ว.",role:"ผู้อำนวยการแพทย์",specialty:"อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ",education:"แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย",bio:"ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน",image:"assets/optimized-web/client-doctor-phairat.webp",w:954,h:1200},
-    "2": {name:"พญ. กรผกา ขันติโกสุม ว.",role:"แพทย์ที่ปรึกษา Krane · เส้นผมและผิวหนัง",specialty:"ตจวิทยา (ผิวหนัง)",education:"แพทยศาสตรบัณฑิต ศิริราชพยาบาล มหาวิทยาลัยมหิดล · วุฒิบัตรตจวิทยา จุฬาลงกรณ์มหาวิทยาลัย",bio:"ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน",image:"assets/optimized-web/client-doctor-ploy.webp",w:674,h:1200},
-    "3": {name:"อ.นพ. พหล สโรจวิสุทธิ์ ว.",role:"แพทย์ที่ปรึกษา Krane · การลดน้ำหนัก",specialty:"อายุรศาสตร์ · อนุสาขาโภชนศาสตร์คลินิก",education:"แพทยศาสตรบัณฑิต มหาวิทยาลัยรังสิต · วุฒิบัตรอายุรศาสตร์ และอนุสาขาโภชนศาสตร์คลินิก",bio:"ให้คำปรึกษาด้านการควบคุมน้ำหนักและโภชนศาสตร์คลินิก โดยทบทวนปัจจัยสุขภาพ เป้าหมาย และความเหมาะสมก่อนวางแผนร่วมกับผู้รับบริการ",image:"assets/optimized-web/IMG_8554-03.webp",w:1200,h:1600},
+    "1": {name:"นพ. ไพรัช เกตุรัตนกุล",role:"ผู้อำนวยการแพทย์",specialty:"อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ",education:"แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย",bio:"ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน",image:"assets/landing-figma-20261115/doctor-portrait-1.webp",w:954,h:1200},
+    "2": {name:"พญ. กรผกา ขันติโกสุม",role:"แพทย์ที่ปรึกษา Krane · เส้นผมและผิวหนัง",specialty:"ตจวิทยา (ผิวหนัง)",education:"แพทยศาสตรบัณฑิต ศิริราชพยาบาล มหาวิทยาลัยมหิดล · วุฒิบัตรตจวิทยา จุฬาลงกรณ์มหาวิทยาลัย",bio:"ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน",image:"assets/landing-figma-20261115/doctor-portrait-2.webp",w:674,h:1200},
+    "3": {name:"อ.นพ. พหล สโรจวิสุทธิ์ ว.",role:"แพทย์ที่ปรึกษา Krane · การลดน้ำหนัก",specialty:"อายุรศาสตร์ · อนุสาขาโภชนศาสตร์คลินิก",education:"แพทยศาสตรบัณฑิต มหาวิทยาลัยรังสิต · วุฒิบัตรอายุรศาสตร์ และอนุสาขาโภชนศาสตร์คลินิก",bio:"ให้คำปรึกษาด้านการควบคุมน้ำหนักและโภชนศาสตร์คลินิก โดยทบทวนปัจจัยสุขภาพ เป้าหมาย และความเหมาะสมก่อนวางแผนร่วมกับผู้รับบริการ",image:"assets/landing-figma-20261115/doctor-portrait-3.webp",w:901,h:1200},
     "4": {name:"อ.นพ. ชวลิต หงส์เลิศสกุล ว.",role:"แพทย์ที่ปรึกษา Krane · สุขภาพทางเพศ",specialty:"ศัลยศาสตร์ยูโรวิทยา",education:"ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",bio:"ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์",initials:"ชห"}
   };
   profiles["3"].name = "อ.นพ. พหล สโรจวิสุทธิ์";
   profiles["4"].name = "อ.นพ. ชวลิต หงส์เลิศสกุล";
-  Object.assign(profiles["4"], {image:"assets/optimized-web/IMG_8539.webp",w:1200,h:1600});
+  Object.assign(profiles["4"], {image:"assets/landing-figma-20261115/doctor-portrait-4.webp",w:901,h:1200});
   profiles["preview-a"] = profiles["4"];
   profiles["preview-b"] = profiles["3"];
   profiles['5']||={name:'นพ. กฤติน สกุลเชี่ยวชาญ',role:'แพทย์ผู้ออกแบบโปรแกรม re:flow',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',education:'',bio:'',initials:'กส'};

@@ -39,10 +39,11 @@
     const visible=articles.filter(article =>
       (filter==='all' || article.category===filter || (filter==='men' && article.category==='sexual-health')) &&
       (!query || [article.title,article.summary,article.categoryLabel,...article.tags].join(' ').toLocaleLowerCase('th').includes(query)));
-    feed.replaceChildren(...visible.map((sourceArticle,index) => {
+    feed.replaceChildren(...visible.map(sourceArticle => {
       const article=localized(sourceArticle);
       const button=el('button','article-teaser');
       button.type='button';button.dataset.go='article';button.dataset.articleId=article.id;
+      if(window.renderKraneArticleCard) return window.renderKraneArticleCard(button,article);
       const image=el('img','article-teaser__image');window.KraneArticleImage.bind(image,article);image.loading='lazy';image.width=1280;image.height=800;
       const body=el('span','article-teaser__body');
       body.append(el('span','article-teaser__meta',article.categoryLabel),

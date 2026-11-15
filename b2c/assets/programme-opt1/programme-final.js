@@ -51,18 +51,39 @@
   });
 
   page.querySelectorAll('.opt-timeline details').forEach(details => { details.name = 'care-timeline'; });
+  const quotesByProgramme = {rebody: 'weight', rehair: 'hair-loss', reflow: 're-flow'};
+  const quotes = (window.KraneReviews || []).filter(review =>
+    review.category === quotesByProgramme[key] && review.quote);
+  if (quotes.length) {
+    const section = document.createElement('section');
+    section.className = 'opt-feedback opt-wrap';
+    section.setAttribute('aria-labelledby', 'programme-feedback-title');
+    section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail"></div>';
+    const rail = section.querySelector('.rebody-review-rail');
+    for (const review of quotes) {
+      const card = document.createElement('article');
+      card.className = 'rebody-review-card';
+      const title = document.createElement('h3');
+      title.textContent = review.caption;
+      const quote = document.createElement('blockquote');
+      quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
+      const author = document.createElement('small');
+      author.textContent = review.name.replace(/^คุณ(.).*$/, '$1***');
+      card.append(title, quote, author);
+      rail.append(card);
+    }
+    page.querySelector('.opt-interview').after(section);
+  }
+
   const articleRail = page.querySelector('.opt-article-rail');
-  const articleIds = key === 'rehair'
-    ? Array.from({length:5}, (_, i) => 'library-hair-loss-0' + (i + 1))
-    : ['library-ed-01','library-obesity-02','library-hair-loss-01','library-ed-03','library-obesity-01'];
-  const articles = (window.KraneArticleSeed || []).filter(a=>articleIds.includes(a.id));
+  const categoryByProgramme = {rebody: 'weight', rehair: 'hair', reflow: 'sexual-health'};
+  const articles = (window.KraneArticleSeed || []).filter(article => article.category === categoryByProgramme[key]);
   if (articles.length) {
-    articleRail.replaceChildren(...articleIds.map(id=>articles.find(a=>a.id===id)).filter(Boolean).map(article=>{
+    articleRail.replaceChildren(...articles.map(article=>{
       const link = document.createElement('a');
       link.href = 'articles.html?article=' + encodeURIComponent(article.id);
       const img = document.createElement('img');
-      img.src = article.image;
-      img.alt = '';
+      window.KraneArticleImage.bind(img, article);
       img.loading = 'lazy';
       const panel = document.createElement('div');
       const category = document.createElement('small');

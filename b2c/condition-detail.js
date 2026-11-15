@@ -759,7 +759,7 @@
   const articlesSection = document.querySelector("[data-articles-section]");
   if (articles) {
     const libraryCategory={'hair-skin':'hair','sexual-health':'sexual-health',weight:'weight'}[data.category];
-    const supplied=(window.KraneArticleSeed||[]).filter(article=>article.contentStatus==='client-review'&&article.category===libraryCategory);
+    const supplied=(window.KraneArticleSeed||[]).filter(article=>article.category===libraryCategory);
     const matches=supplied.length?supplied:ARTICLES.filter((article) => article.tags.includes(data.category));
     if (!matches.length) {
       articlesSection?.remove();
