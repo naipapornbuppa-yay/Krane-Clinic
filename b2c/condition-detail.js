@@ -229,7 +229,7 @@
     "hair-loss": {
       category: "hair-skin",
       tone: "hair",
-      image: "assets/optimized-web/hair-asian-man-left-hand-final-v1.webp",
+      image: "assets/optimized-web/rehair-hand-on-head-20261115.webp",
       kicker: "ฟื้นฟูเส้นผม",
       hook: "รู้สาเหตุก่อน แล้วผมจะกลับมาถูกทาง",
       lead: "รูปแบบผมร่วง หนังศีรษะ ประวัติครอบครัว และความเครียด ช่วยให้แพทย์เลือกวิธีดูแลได้ตรงจุด",
