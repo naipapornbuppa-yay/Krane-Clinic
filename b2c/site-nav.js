@@ -29,9 +29,11 @@ const SITE_NAV_BRAND = {
    the frame. */
 const SITE_NAV_SERVICES = [
   ["condition-detail.html?condition=weight", "re:body"],
+  ["rebody-opt1/index.html", "rebody (opt1)"],
   ["condition-detail.html?condition=hair-loss", "re:hair"],
   ["rehair-opt1/index.html", "rehair (opt1)"],
   ["condition-detail.html?condition=re-flow", "re:flow"],
+  ["reflow-opt1/index.html", "reflow (opt1)"],
   ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
   ["krane-b2c.html#profile", "เติมยา", "profile"],
   ["krane-b2c.html?v=20260920-float-v1#upload-rx", "อัพโหลดใบสั่งยา", "upload-rx"]
