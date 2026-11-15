@@ -15,8 +15,8 @@
   stepPicture.append(mobileStep, stepImage);
 
   const stories = page.querySelector('.opt-stories');
-  stories.querySelector('h2').innerHTML = 'ประสบการณ์การดูแลน้ำหนัก<br>จากผู้ใช้บริการ Krane';
-  stories.querySelector('.opt-section-head ul').innerHTML = '<li><i data-lucide="badge-check" aria-hidden="true"></i>แพทย์ประเมินเป็นรายบุคคล</li><li><i data-lucide="clock" aria-hidden="true"></i>ปรึกษาออนไลน์จากที่ไหนก็ได้</li><li><i data-lucide="zap" aria-hidden="true"></i>รอรับสินค้าที่บ้านได้เลย</li>';
+  stories.querySelector('.opt-section-head').remove();
+  stories.setAttribute('aria-label', 'วิดีโอประสบการณ์จากผู้ใช้บริการ Krane');
   stories.querySelectorAll('.opt-story').forEach(button => {
     const title = button.querySelector('.opt-story-name');
     button.setAttribute('aria-label', 'ดูวิดีโอประสบการณ์ของ ' + title.textContent);

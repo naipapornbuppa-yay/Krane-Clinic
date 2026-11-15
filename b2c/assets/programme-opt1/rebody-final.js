@@ -110,6 +110,15 @@
     item.name = 'rebody-care-timeline';
     item.querySelector('summary .opt-eyebrow').textContent = months[index];
     item.querySelector('.opt-step-copy p').textContent = descriptions[index];
+    if (index > 0) {
+      const image = document.createElement('img');
+      image.src = 'assets/programme-opt1/rebody-timeline-step-' + (index + 1) + '.jpg';
+      image.alt = index === 1 ? 'มื้ออาหารพร้อมปลาและผัก' : 'เสื่อออกกำลังกายและดัมเบล';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      image.style.objectPosition = 'center';
+      item.querySelector('.opt-step-copy').append(image);
+    }
   });
   const caption = document.createElement('small');
   caption.textContent = 'ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล';
@@ -148,28 +157,11 @@
   video.setAttribute('aria-hidden', 'true');
   hero.prepend(video);
 
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'rebody-hero-toggle';
-  hero.append(toggle);
-
-  let userPreference;
   let inView = false;
   const sync = () => {
-    const wantsPlayback = userPreference ?? !reduce.matches;
-    if (inView && wantsPlayback && !document.hidden) video.play().catch(() => {});
+    if (inView && !reduce.matches && !document.hidden) video.play().catch(() => {});
     else video.pause();
   };
-  const updateButton = () => {
-    toggle.textContent = video.paused ? '▶' : 'Ⅱ';
-    toggle.setAttribute('aria-label', video.paused ? 'เล่นวิดีโอหน้าปก' : 'หยุดวิดีโอหน้าปก');
-  };
-  toggle.addEventListener('click', () => {
-    userPreference = video.paused;
-    sync();
-  });
-  video.addEventListener('play', updateButton);
-  video.addEventListener('pause', updateButton);
   reduce.addEventListener('change', sync);
   document.addEventListener('visibilitychange', sync);
   if ('IntersectionObserver' in window) {
@@ -181,5 +173,4 @@
     inView = true;
     sync();
   }
-  updateButton();
 })();
