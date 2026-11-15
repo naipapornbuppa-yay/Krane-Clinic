@@ -2526,12 +2526,17 @@
 /* The doctor directory uses native scrolling; dots follow reachable card starts. */
 (()=>{
  const rail=document.querySelector('[data-expert-viewport]');if(!rail)return;
- const cards=[...rail.querySelectorAll('.expert-card')];if(!cards.length)return;
+ const track=rail.querySelector('.expert-track');
+ const director=track?.querySelector('#doctor-1');
+ if(!director)return;
+ const mobile=matchMedia('(max-width: 760px)');
+ const arrange=()=>{if(mobile.matches)track.firstElementChild.after(director);else track.append(director);};
+ arrange();
  const dots=document.createElement('nav');dots.className='expert-dots';dots.setAttribute('aria-label','เลือกสไลด์ทีมแพทย์');rail.after(dots);
  let positions=[],frame=0;
  const sync=()=>{frame=0;let active=0;positions.forEach((x,i)=>{if(Math.abs(x-rail.scrollLeft)<Math.abs(positions[active]-rail.scrollLeft))active=i});[...dots.children].forEach((b,i)=>{b.classList.toggle('is-current',i===active);if(i===active)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')})};
- const measure=()=>{const max=Math.max(0,rail.scrollWidth-rail.clientWidth),origin=cards[0].getBoundingClientRect().left;positions=[];cards.forEach(card=>{const x=Math.min(max,Math.max(0,card.getBoundingClientRect().left-origin));if(!positions.some(p=>Math.abs(p-x)<2))positions.push(x)});dots.replaceChildren(...positions.map((x,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','ทีมแพทย์ สไลด์ที่ '+(i+1));b.addEventListener('click',()=>rail.scrollTo({left:x,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));return b}));dots.hidden=positions.length<2;sync()};
- rail.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(sync)},{passive:true});new ResizeObserver(measure).observe(rail);measure();
+ const measure=()=>{const cards=[...track.querySelectorAll('.expert-card')];const max=Math.max(0,rail.scrollWidth-rail.clientWidth),origin=cards[0].getBoundingClientRect().left;positions=[];cards.forEach(card=>{const x=Math.min(max,Math.max(0,card.getBoundingClientRect().left-origin));if(!positions.some(p=>Math.abs(p-x)<2))positions.push(x)});dots.replaceChildren(...positions.map((x,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','ทีมแพทย์ สไลด์ที่ '+(i+1));b.addEventListener('click',()=>rail.scrollTo({left:x,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));return b}));dots.hidden=positions.length<2;sync()};
+ rail.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(sync)},{passive:true});new ResizeObserver(measure).observe(rail);mobile.addEventListener('change',()=>{arrange();rail.scrollLeft=0;measure();});measure();
 })();
 
 /* Native controls on every landing review; manual pause and sound survive visibility changes. */

@@ -14,6 +14,36 @@
     window.dispatchEvent(new Event('krane-articles-changed'));
   }
   document.querySelectorAll('[data-landing-review]').forEach(button=>button.addEventListener('click',()=>{const items=(window.KraneReviews||[]).map(item=>({...item,attribution:[item.name,item.province].filter(Boolean).join(' · ')}));document.dispatchEvent(new CustomEvent('krane:open-review-stories',{detail:{items,activeId:button.dataset.landingReview,trigger:button}}));}));
+  const mobileCare = document.querySelector('.mobile-care-benefits');
+  if (mobileCare) {
+    const rail = mobileCare.querySelector('.mobile-care-benefits__rail');
+    const previous = mobileCare.querySelector('[data-care-prev]');
+    const next = mobileCare.querySelector('[data-care-next]');
+    const offsets = () => Array.from(rail.children, card => card.offsetLeft - rail.firstElementChild.offsetLeft);
+    const updateCareControls = () => {
+      const limit = rail.scrollWidth - rail.clientWidth;
+      previous.disabled = rail.scrollLeft <= 1;
+      next.disabled = rail.scrollLeft >= limit - 1;
+      const progress = limit > 0 ? rail.scrollLeft / limit : 0;
+      mobileCare.style.setProperty('--care-progress', `${progress * 6}px`);
+    };
+    const move = direction => {
+      const current = rail.scrollLeft;
+      const stops = offsets();
+      const target = direction > 0 ? stops.find(stop => stop > current + 2) : stops.reverse().find(stop => stop < current - 2);
+      if (target !== undefined) rail.scrollTo({left:target, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+    };
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    rail.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      event.preventDefault();
+      move(event.key === 'ArrowRight' ? 1 : -1);
+    });
+    rail.addEventListener('scroll', updateCareControls, {passive:true});
+    new ResizeObserver(updateCareControls).observe(rail);
+    updateCareControls();
+  }
   const benefits = document.querySelector('.landing-benefits__rail');
   benefits?.addEventListener('keydown', event => {
     const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
