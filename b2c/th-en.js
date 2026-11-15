@@ -824,6 +824,13 @@
     "เวลาทำการ 09:00-24:00 น.":"Open daily 09:00-24:00",
     "เปิดให้บริการทุกวัน":"Open every day",
     "เริ่มง่าย ๆ เพียง 3 ขั้นตอน":"Three simple steps",
+    "เริ่มง่าย ๆ เพียง 4 ขั้นตอน":"Four simple steps",
+    "ขั้นตอนการใช้บริการ 4 ขั้นตอน":"Four steps to use Krane Clinic",
+    "ขั้นตอนที่ 4 ติดตามผลและเติมยา":"Step 4: Follow up and refill",
+    "ขั้นตอนที่ 4":"Step 4",
+    "รับแผนการรักษาและรับยาที่แพทย์สั่งถึงบ้านในบรรจุภัณฑ์มิดชิด":"Get your care plan and have prescribed medicine delivered to your home in discreet packaging.",
+    "ติดตามผลและเติมยา":"Follow up and refill",
+    "ดูนัดติดตามกับแพทย์และขอเติมยาตามแผนการรักษาได้จากหน้าหลักของแอป":"Check your follow-up appointments and request refills under your care plan from the app home screen.",
     "เลือกเรื่องที่กังวลและตอบคำถามสุขภาพเบื้องต้น ใช้เวลาเพียง 1–2 นาที":"Choose what concerns you and answer a short health questionnaire. It takes just 1–2 minutes.",
     "มิติใหม่ในการลดน้ำหนัก":"A new approach to weight loss",
     /* The weight and hair sections split their headings and testimonial
