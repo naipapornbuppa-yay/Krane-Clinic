@@ -23,20 +23,10 @@ const SITE_NAV_BRAND = {
   height: 72,
   alt: "Krane Clinic"
 };
-/* "Our services": the treatment programmes first, then the three ways into
-   care that are not a programme. The app routes carry data-route so the
-   landing's iframe bridge can hand them to the shell instead of navigating
-   the frame. */
 const SITE_NAV_SERVICES = [
-  ["condition-detail.html?condition=weight", "re:body"],
-  ["rebody-opt1/index.html", "rebody (opt1)"],
-  ["condition-detail.html?condition=hair-loss", "re:hair"],
-  ["rehair-opt1/index.html", "rehair (opt1)"],
-  ["condition-detail.html?condition=re-flow", "re:flow"],
-  ["reflow-opt1/index.html", "reflow (opt1)"],
-  ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
-  ["krane-b2c.html#profile", "เติมยา", "profile"],
-  ["krane-b2c.html?v=20260920-float-v1#upload-rx", "อัพโหลดใบสั่งยา", "upload-rx"]
+  ["rebody-opt1/index.html", "re:body"],
+  ["rehair-opt1/index.html", "re:hair"],
+  ["reflow-opt1/index.html", "re:flow"],
 ];
 const SITE_NAV_LINKS = [
   ["krane-b2c-landing.html#how", "วิธีใช้งาน"],

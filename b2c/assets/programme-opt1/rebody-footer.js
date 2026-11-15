@@ -1,5 +1,5 @@
 (() => {
-  const page = document.querySelector('main[data-programme="rebody"]');
+  const page = document.querySelector('main[data-programme]');
   if (!page) return;
   document.body.classList.add('rebody-final-page');
   const readMore = page.querySelector('.opt-faq .opt-wrap > a');

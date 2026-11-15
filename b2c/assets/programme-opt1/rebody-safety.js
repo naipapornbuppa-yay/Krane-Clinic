@@ -161,15 +161,15 @@
     open(condition,trigger);
   });
   const installFaqCta = () => {
-    const wrap = document.querySelector('main[data-programme="rebody"] .opt-faq > .opt-wrap');
+    const wrap = document.querySelector('main[data-programme] .opt-faq > .opt-wrap');
     if (!wrap || wrap.querySelector('[data-safety-open]')) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'rebody-safety-cta';
-    button.dataset.safetyOpen = 'weight';
+    button.dataset.safetyOpen = wrap.closest('main').dataset.programme;
     button.setAttribute('aria-haspopup','dialog');
     button.setAttribute('aria-controls','krane-safety-dialog');
-    button.innerHTML = '<i data-lucide="shield-alert" aria-hidden="true"></i><span><strong>ข้อควรระวังสำคัญ</strong><small>สิ่งที่ควรรู้ก่อนเริ่มใช้ยากลุ่ม GLP-1</small></span><i data-lucide="arrow-right" aria-hidden="true"></i>';
+    button.innerHTML = '<i data-lucide="shield-alert" aria-hidden="true"></i><span><strong>ข้อควรระวังสำคัญ</strong><small>สิ่งที่ควรรู้ก่อนเริ่มใช้บริการ</small></span><i data-lucide="arrow-right" aria-hidden="true"></i>';
     wrap.insertBefore(button,wrap.querySelector('.opt-faq-glass'));
     window.lucide?.createIcons();
   };

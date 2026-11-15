@@ -4,9 +4,9 @@
   const groups = [
     { id: 'services', title: ['บริการของเรา', 'Our Service'], items: [
       ['ปรึกษาอาการทั่วไป', 'General Consultation', 'general-consultation.html'],
-      ['re:body', 're:body', 'condition-detail.html?condition=weight'],
-      ['re:hair', 're:hair', 'condition-detail.html?condition=hair-loss'],
-      ['re:flow', 're:flow', 'condition-detail.html?condition=re-flow'],
+      ['re:body', 're:body', 'rebody-opt1/index.html'],
+      ['re:hair', 're:hair', 'rehair-opt1/index.html'],
+      ['re:flow', 're:flow', 'reflow-opt1/index.html'],
       ['เติมยาออนไลน์', 'Online Refills', 'online-refills.html'],
       ['สั่งยาตามใบสั่งแพทย์', 'Prescription Delivery', 'prescription-delivery.html']
     ] },

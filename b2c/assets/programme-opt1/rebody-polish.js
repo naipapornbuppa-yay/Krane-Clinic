@@ -1,11 +1,12 @@
 (() => {
-  const page = document.querySelector('main[data-programme="rebody"]');
+  const page = document.querySelector('main[data-programme]');
   if (!page) return;
   document.body.classList.add('rebody-page');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const scrollBehavior = () => reduce.matches ? 'instant' : 'smooth';
 
-  page.querySelector('.opt-timeline h2').innerHTML = 're:body<br> ไทม์ไลน์การดูแล';
+  const title = page.querySelector('.opt-timeline h2');
+  title.querySelector('br')?.after(' ');
   page.querySelector('.opt-timeline header p br').replaceWith(' ');
   const stories = page.querySelector('.opt-stories');
   stories.querySelector('.opt-section-head').remove();
@@ -55,13 +56,12 @@
     const bounds = dialog.getBoundingClientRect();
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
   });
-  page.querySelector('.opt-interview-media h2').innerHTML = '<strong>แข็ง</strong>แรงอย่างมั่นใจ<br>ดูแลอย่างเป็นส่วนตัว';
 
   const reviews = page.querySelector('.opt-feedback');
   reviews.innerHTML = `
-    <div class="rebody-review-header"><h2>ประสบการณ์เล็ก ๆ<br>ที่ช่วยให้ตัดสินใจง่ายขึ้น</h2><div class="rebody-review-rating" aria-label="คะแนนตัวอย่าง 4.8 จาก 5"><strong>4.8<small> / 5</small></strong><span>★★★★★<small>100 การประเมิน</small></span></div></div>
+    <div class="rebody-review-header"><h2>ความคิดเห็น</h2><div class="rebody-review-rating" aria-label="คะแนนตัวอย่าง 4.8 จาก 5"><strong>4.8<small> / 5</small></strong><span>★★★★★<small>100 การประเมิน</small></span></div></div>
     <p class="rebody-review-disclosure">ตัวอย่างสมมติสำหรับแสดงหน้าจอ · คะแนนและความคิดเห็นไม่ใช่รีวิวจากผู้รับบริการจริง</p>
-    <div class="rebody-review-toolbar"><h3>ความคิดเห็น</h3><label>เรียงตาม <select data-body-sort><option value="latest">ล่าสุด</option><option value="top">คะแนนสูงสุด</option><option value="oldest">เก่าสุด</option></select></label></div>
+    <div class="rebody-review-toolbar"><label>เรียงตาม <select data-body-sort><option value="latest">ล่าสุด</option><option value="top">คะแนนสูงสุด</option><option value="oldest">เก่าสุด</option></select></label></div>
     <div class="rebody-review-filters" aria-label="กรองตามคะแนน">${[0,5,4,3,2,1].map(score => `<button type="button" data-body-score="${score}" aria-pressed="${!score}">${score ? score + ' ★' : 'ทั้งหมด'}</button>`).join('')}</div>
     <div class="rebody-review-rail" aria-label="ความคิดเห็น เลื่อนเพื่ออ่านเพิ่มเติม" tabindex="0"></div><p class="visually-hidden" data-review-status role="status"></p>
     <div class="rebody-review-pages" aria-label="เลื่อนความคิดเห็น"></div>`;
@@ -69,10 +69,15 @@
     {score:5,title:'เข้าใจแผนก่อนเริ่ม',text:'ขั้นตอนเข้าใจง่าย คุณหมออธิบายแนวทางและตอบคำถามได้ชัดเจน',name:'ก***',avatar:'ก',day:22},
     {score:5,title:'ปรึกษาได้จากที่บ้าน',text:'ปรึกษาจากที่บ้านได้สะดวก ดูรายละเอียดแผนและค่าใช้จ่ายก่อนตัดสินใจได้',name:'พ***',avatar:'พ',day:18},
     {score:4,title:'ข้อมูลชัดเจน พร้อมติดตาม',text:'ข้อมูลการรับยาอ่านเข้าใจง่าย อยากให้การแจ้งเตือนนัดติดตามเห็นชัดขึ้นอีกนิด',name:'น***',avatar:'น',day:12},
-    {score:5,title:'อ่านขั้นตอนได้ง่าย',text:'หน้าตัวอย่างจัดลำดับขั้นตอนได้ชัดเจน ปุ่มกดไม่ทำให้งงง่าย',name:'Demo 04',avatar:'D',day:11}
+    {score:5,title:'อ่านขั้นตอนได้ง่าย',text:'หน้าตัวอย่างจัดลำดับขั้นตอนได้ชัดเจน ปุ่มกดไม่ทำให้งงง่าย',name:'ม***',avatar:'ม',day:11},
+    {score:4,title:'นัดหมายสะดวก',text:'จองคิวง่าย มีเตือนก่อนนัด อยากได้รอบวันหยุดเพิ่ม',name:'ส***',avatar:'ส',day:8}
   ];
   const reviewRail = reviews.querySelector('.rebody-review-rail');
   const reviewPages = reviews.querySelector('.rebody-review-pages');
+  reviews.querySelector('.rebody-review-header').prepend(reviews.querySelector('h2'));
+  const sort = reviews.querySelector('.rebody-review-toolbar label');
+  reviews.querySelector('.rebody-review-header').append(sort);
+  reviews.querySelector('.rebody-review-toolbar').remove();
   let score = 0;
   const syncReviewPages = () => {
     const max = Math.max(0, reviewRail.scrollWidth - reviewRail.clientWidth);

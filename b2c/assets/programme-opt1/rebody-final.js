@@ -1,5 +1,5 @@
 (() => {
-  const page = document.querySelector('main[data-programme="rebody"]');
+  const page = document.querySelector('main:is([data-programme="rebody"],[data-programme="rehair"])');
   if (!page) return;
 
   const timeline = page.querySelector('.opt-timeline-list');
@@ -90,9 +90,7 @@
     new IntersectionObserver(([entry]) => { marqueeVisible = entry.isIntersecting; syncMarquee(); }).observe(comparisons);
   }
   buildMarquee();
-  page.querySelector('.opt-price-band').style.setProperty(
-    '--price-photo', 'url(assets/programme-opt1/rebody-price-banner.webp)'
-  );
+  if (page.dataset.programme !== 'rebody') return;
   const months = ['เดือนที่ 1', 'เดือนที่ 2–3', '4 เดือนขึ้นไป'];
   const descriptions = [
     'แพทย์ประจำตัวจะประเมินสุขภาพ ตั้งเป้าหมายร่วมกับคุณ และเริ่มแผนดูแลอย่างค่อยเป็นค่อยไป ช่วงแรกร่างกายกำลังปรับตัว บางคนอาจรู้สึกอิ่มเร็วขึ้นหรือคลื่นไส้เล็กน้อย ซึ่งพบได้และมักดีขึ้นเอง หากกังวล นัดปรึกษาแพทย์ประจำตัวได้เสมอ',
