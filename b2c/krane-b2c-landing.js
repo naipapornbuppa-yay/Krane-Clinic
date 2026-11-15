@@ -2412,7 +2412,7 @@
      handler only moves a count, so nothing is measured per frame. */
   (function litPositioningStatement() {
     const section = document.querySelector(".positioning-section");
-    if (!section) return;
+    if (!section || document.body.classList.contains("landing-release")) return;
     const lines = [...section.querySelectorAll("p, h2")];
     if (!lines.length) return;
 

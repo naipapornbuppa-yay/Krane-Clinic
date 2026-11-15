@@ -7,14 +7,6 @@
 
   page.querySelector('.opt-timeline h2').innerHTML = 're:body<br> ไทม์ไลน์การดูแล';
   page.querySelector('.opt-timeline header p br').replaceWith(' ');
-  const stepImage = page.querySelector('.opt-step-copy img');
-  const stepPicture = document.createElement('picture');
-  const mobileStep = document.createElement('source');
-  mobileStep.media = '(max-width:700px)';
-  mobileStep.srcset = 'assets/programme-opt1/body-doctor.webp';
-  stepImage.replaceWith(stepPicture);
-  stepPicture.append(mobileStep, stepImage);
-
   const stories = page.querySelector('.opt-stories');
   stories.querySelector('.opt-section-head').remove();
   stories.setAttribute('aria-label', 'วิดีโอประสบการณ์จากผู้ใช้บริการ Krane');

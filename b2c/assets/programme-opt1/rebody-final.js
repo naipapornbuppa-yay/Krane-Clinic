@@ -103,15 +103,7 @@
     item.name = 'rebody-care-timeline';
     item.querySelector('summary .opt-eyebrow').textContent = months[index];
     item.querySelector('.opt-step-copy p').textContent = descriptions[index];
-    if (index > 0) {
-      const image = document.createElement('img');
-      image.src = 'assets/programme-opt1/rebody-timeline-step-' + (index + 1) + '.jpg';
-      image.alt = index === 1 ? 'มื้ออาหารพร้อมปลาและผัก' : 'เสื่อออกกำลังกายและดัมเบล';
-      image.loading = 'lazy';
-      image.decoding = 'async';
-      image.style.objectPosition = 'center';
-      item.querySelector('.opt-step-copy').append(image);
-    }
+
   });
   const caption = document.createElement('small');
   caption.textContent = 'ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล';
