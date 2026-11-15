@@ -248,14 +248,8 @@
       });
       const previews=[...global.document.querySelectorAll('.modal-layer[id], dialog[id]')].map(node=>({id:node.id,node}));
       [{id:'address-delete-confirm',title:'ยืนยันลบที่อยู่',text:'ต้องการลบที่อยู่นี้ใช่ไหม?',actions:['ยกเลิก','ลบที่อยู่']},{id:'red-flag-modal',title:'คำถามคัดกรองความปลอดภัย',text:'ตัวอย่างคำถามคัดกรอง · สูงสุด 3 คำถามต่อขั้นตอน',actions:['ไม่ใช่','ใช่','ถัดไป']}].forEach(item=>{if(!previews.some(p=>p.id===item.id))previews.push(item);});
-      const cookiePolicy = global.document.createElement('a');
-      cookiePolicy.href = 'cookies.html';
-      cookiePolicy.target = '_blank';
-      cookiePolicy.rel = 'noopener';
-      cookiePolicy.textContent = thai ? 'นโยบายคุกกี้ (เต็มหน้า)' : 'Cookie policy (full page)';
-      body.append(cookiePolicy);
-
       previews.unshift(
+        {id:'cookie-policy',title:thai?'นโยบายคุกกี้':'Cookie policy',documentPath:'cookies.html'},
         {id:'cookie-notice',title:thai?'ประกาศคุกกี้':'Cookie notice',selector:'[data-cookie-banner]'},
         {id:'cookie-preferences',title:thai?'ตั้งค่าคุกกี้':'Cookie settings',selector:'[data-cookie-preferences]'},
       );
@@ -271,7 +265,7 @@
           global.document.querySelectorAll('.modal-layer').forEach(layer=>{layer.hidden=true;layer.setAttribute('aria-hidden','true');layer.style.removeProperty('visibility');});
           global.document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());
           global.document.body.classList.remove('modal-open');
-          const preview=global.document.createElement('dialog');preview.className='review-modal-preview';if(item.selector)preview.classList.add('review-cookie-preview');preview.setAttribute('aria-label',link.textContent);
+          const preview=global.document.createElement('dialog');preview.className='review-modal-preview';if(item.selector||item.documentPath)preview.classList.add('review-cookie-preview');preview.setAttribute('aria-label',link.textContent);
           const close=global.document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','ปิดหน้าต่าง');close.className='review-modal-preview__close';close.onclick=()=>preview.close();preview.append(close);
           
           if(source){
@@ -285,10 +279,39 @@
             clone.style.cssText+=';display:block;position:relative;transform:none;max-height:none;width:100%;margin:0;box-shadow:none';
             if(item.selector)clone.style.cssText+=';display:'+ (item.id==='cookie-notice' ? 'grid' : 'block') +';inset:auto;max-width:none';
             preview.append(clone);
+          }else if(item.documentPath){
+            const content=global.document.createElement('div');
+            content.className='review-cookie-policy__content';
+            content.setAttribute('aria-busy','true');
+            content.textContent=thai?'กำลังโหลดนโยบายคุกกี้…':'Loading cookie policy…';
+            preview.append(content);
+            global.fetch(item.documentPath).then(response=>{
+              if(!response.ok) throw new Error('Cookie policy request failed');
+              return response.text();
+            }).then(markup=>{
+              const policy=new global.DOMParser().parseFromString(markup,'text/html');
+              const heading=policy.querySelector('main h1');
+              const reading=policy.querySelector('main .info-reading');
+              if(!heading || !reading) throw new Error('Cookie policy content missing');
+              const title=global.document.createElement('h2');
+              title.textContent=heading.textContent;
+              reading.querySelector('[data-cookie-settings]')?.remove();
+              content.lang=heading.closest('[lang]')?.lang || policy.documentElement.lang;
+              content.replaceChildren(title,reading);
+            }).catch(()=>{
+              content.textContent=thai?'โหลดนโยบายคุกกี้ไม่สำเร็จ กรุณาปิดแล้วเปิดอีกครั้ง':'Could not load the cookie policy. Close and reopen it to retry.';
+            }).finally(()=>content.removeAttribute('aria-busy'));
           }else{
             const title=global.document.createElement('h2');title.textContent=item.title;preview.append(title);
             const text=global.document.createElement('p');text.textContent=item.text;preview.append(text);
             item.actions.forEach(label=>{const button=global.document.createElement('button');button.className='btn';button.textContent=label;button.disabled=true;preview.append(button);});
+          }
+          if(item.documentPath){
+            preview.classList.add('review-cookie-policy');
+            preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});
+            global.document.body.append(preview);
+            preview.showModal();
+            return;
           }
           preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
         });body.append(link);
