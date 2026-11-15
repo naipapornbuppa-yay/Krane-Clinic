@@ -333,7 +333,7 @@
     ["คุยเรื่องสุขภาพผู้ชาย", "Talk about men's health"], ["ปรึกษาแพทย์ออนไลน์", "Consult online"], ["กลับมาใกล้ชิดอย่างมั่นใจ", "Feel close again with confidence"],
     ["*แนวทางการดูแลและตัวเลือกยาขึ้นอยู่กับการประเมินของแพทย์", "*Care and medication options depend on a doctor's assessment."],
     ["เราคือ แพลตฟอร์มให้บริการแพทย์ทางไกล ที่ออกแบบมาเพื่อช่วยให้คุณ", "We are a telemedicine platform designed to help you"],
-    ["บรรลุเป้าหมายสุขภาพ", "reach your health goals"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
+    ["แพลตฟอร์ม", "A platform"], ["ที่ออกแบบมา", "designed"], ["เพื่อช่วยให้คุณ", "to help you"], ["บรรลุเป้าหมายสุขภาพ", "reach your health goals"], ["ที่ได้รับอนุญาต", "built for ongoing care"],
     ["ดูแลครบในที่เดียว", "Complete care in one place"], ["คลินิกที่ได้รับอนุญาต", "Licensed clinic"],
     ["ให้บริการแพทย์ทางไกลโดยแพทย์ที่มีใบอนุญาต", "Telemedicine care provided by licensed doctors"], ["ยาแท้ จัดส่งถึงบ้าน", "Authentic medicine, delivered home"],
     ["จัดส่งโดยเครือข่ายร้านยาฟาสซิโน พร้อมบรรจุภัณฑ์มิดชิด", "Delivered through the Fascino pharmacy network in discreet packaging"],
@@ -2401,57 +2401,43 @@
      handler only moves a count, so nothing is measured per frame. */
   (function litPositioningStatement() {
     const section = document.querySelector(".positioning-section");
-    if (!section || document.body.classList.contains("landing-release")) return;
-    const lines = [...section.querySelectorAll("p, h2")];
+    const lines = [...(section?.querySelectorAll("p, h2") || [])];
     if (!lines.length) return;
 
-    /* Thai does not put spaces between words, so splitting on whitespace lit the
-       whole sentence in four jumps. Intl.Segmenter finds real Thai word
-       boundaries without cutting through a cluster and stranding its tone mark;
-       whitespace is the fallback where it is missing. */
     const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
       ? new Intl.Segmenter("th", { granularity: "word" })
       : null;
-    const segment = (text) => segmenter
-      ? [...segmenter.segment(text)].map((part) => part.segment)
-      : text.split(/(\s+)/);
-
-    /* Rebuilt per language (19 Sep): it used to be split once in whichever
-       language loaded, so switching left the other language's words behind.
-       Thai splits on real word boundaries, English on spaces. */
-    const sources = lines.map((line) => line.textContent);
+    const sources = lines.map(line => [...line.childNodes].map(node => node.cloneNode(true)));
     let words = [];
     function build(lang) {
       words = [];
       lines.forEach((line, index) => {
-        const thai = sources[index];
-        const english = lang === "en" && typeof draftEnglishText !== "undefined" ? draftEnglishText.get(thai.trim()) : null;
-        const parts = english ? english.split(/(\s+)/) : segment(thai);
-        line.textContent = "";
-        parts.forEach((part) => {
-          if (!part.trim()) {
-            line.append(part);
-            return;
-          }
-          const word = document.createElement("span");
-          word.className = "positioning-word";
-          word.textContent = part;
-          line.append(word);
-          words.push(word);
+        line.replaceChildren(...sources[index].map(node => node.cloneNode(true)));
+        const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+        textNodes.forEach(node => {
+          const thai = node.textContent;
+          const english = lang === "en" ? draftEnglishText.get(thai.trim()) : null;
+          const copy = english || thai;
+          const parts = !english && segmenter
+            ? [...segmenter.segment(copy)].map(part => part.segment)
+            : copy.split(/(\s+)/);
+          const fragment = document.createDocumentFragment();
+          parts.forEach(part => {
+            if (!part.trim()) { fragment.append(part); return; }
+            const word = document.createElement("span");
+            word.className = "positioning-word";
+            word.textContent = part;
+            fragment.append(word);
+            words.push(word);
+          });
+          node.replaceWith(fragment);
         });
       });
     }
     build(document.documentElement.lang === "en" ? "en" : "th");
     section.classList.add("is-lit-ready");
-
-    if (reducedMotionQuery.matches) {
-      words.forEach((word) => word.classList.add("is-lit"));
-      document.addEventListener("krane:languagechange", (event) => {
-        build(event.detail && event.detail.lang);
-        words.forEach((word) => word.classList.add("is-lit"));
-      });
-      return;
-    }
 
     let lit = -1;
     let frame = 0;
@@ -2471,7 +2457,7 @@
       const end = view * 0.34;
       const span = Math.max(1, textHeight + (start - end) * 0.55);
       const progress = Math.min(1, Math.max(0, (start - textTop) / span));
-      const next = Math.round(progress * words.length);
+      const next = reducedMotionQuery.matches ? words.length : Math.round(progress * words.length);
       if (next === lit) return;
       lit = next;
       words.forEach((word, index) => word.classList.toggle("is-lit", index < next));
@@ -2480,6 +2466,7 @@
 
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
+    reducedMotionQuery.addEventListener?.("change", schedule);
     document.addEventListener("krane:languagechange", (event) => {
       build(event.detail && event.detail.lang);
       lit = -1;
@@ -2549,11 +2536,26 @@
   const toggle = document.querySelector('.trust-badges__toggle');
   if (!rail) return;
   const group = rail.querySelector('.trust-logo-marquee__group');
-  const clone = group.cloneNode(true);
-  clone.setAttribute('aria-hidden', 'true');
-  clone.setAttribute('inert', '');
-  clone.querySelectorAll('img').forEach(img => { img.alt = ''; });
-  rail.querySelector('.trust-logo-marquee__track').append(clone);
+  const track = rail.querySelector('.trust-logo-marquee__track');
+  function fillRail() {
+    const sequence = group.getBoundingClientRect().width;
+    if (!sequence || !rail.clientWidth) return;
+    const copies = Math.ceil(rail.clientWidth / sequence);
+    while (track.children.length > copies + 1) track.lastElementChild.remove();
+    while (track.children.length < copies + 1) {
+      const clone = group.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute('inert', '');
+      clone.querySelectorAll('img').forEach(img => { img.alt = ''; });
+      track.append(clone);
+    }
+  }
+  fillRail();
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(fillRail);
+    observer.observe(rail);
+    observer.observe(group);
+  }
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let paused = false;
   const render = () => {
@@ -2661,3 +2663,21 @@
 
 
 });})();
+
+/* Give each audience row its own short entrance when it first enters view. */
+(() => {
+  if (!document.body.classList.contains("landing-release") || !("IntersectionObserver" in window)
+      || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const rows = document.querySelectorAll(".care-chapter__fit li");
+  const reveal = new IntersectionObserver(entries => {
+    entries.forEach(({target, isIntersecting}) => {
+      if (!isIntersecting) return;
+      target.classList.add("is-visible");
+      reveal.unobserve(target);
+    });
+  }, {threshold: .2});
+  rows.forEach(row => {
+    row.classList.add("will-reveal");
+    reveal.observe(row);
+  });
+})();
