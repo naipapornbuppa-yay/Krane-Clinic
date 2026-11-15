@@ -64,7 +64,7 @@
 <!-- TRUE SINGLE SOURCE: edit these two files to re-skin everything.
      design-tokens.css = colors/type/spacing  |  components.css?v=20261017-card-footer = reusable UI -->
 <link rel="stylesheet" href="design-tokens.css?v=20261015-local-fonts">
-<link rel="stylesheet" href="components.css?v=20261030-doctor-header">
+<link rel="stylesheet" href="components.css?v=20261115-related-documents">
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
@@ -275,9 +275,6 @@
 .treatment-folder__tabs button[aria-selected="true"]{background:white;color:#395AA4;font-weight:600}
 .treatment-folder__tabs button:focus-visible{outline:2px solid #395AA4;outline-offset:-3px}
 
-#treatment-detail .treatment-record__certificate-card{border:1px solid #d7deec;box-shadow:0 4px 12px rgba(32,48,82,.09);cursor:pointer}
-#treatment-detail .treatment-record__certificate-card:hover{border-color:#395AA4;box-shadow:0 6px 18px rgba(32,48,82,.13)}
-#treatment-detail .treatment-record__certificate-card:focus-visible{outline:2px solid #395AA4;outline-offset:3px}
 #treatment-visit-history{margin-top:24px;border-top:1px solid #e1e5ec;padding-top:20px}
 #treatment-visit-history summary{cursor:pointer;font-weight:600;padding:8px 0}
 #treatment-visit-history .doc-row{width:100%;margin-top:12px;border:1px solid #d7deec;text-align:left;padding:16px;color:var(--color-ink);background:white}
@@ -2717,9 +2714,7 @@
     <div class="screen__top postpay-tracking-topbar">
       <button class="back" data-go="profile" aria-label="กลับหน้าหลัก">‹</button>
       <span class="postpay-tracking-topbar__title"><strong>คำสั่งซื้อ #KR-10293</strong></span>
-      <!-- Client, 23 Sep: no help or share icons up here. Help is already a
-           labelled button further down the screen, and sharing a tracking link
-           was never something this prototype needed to offer. -->
+      <button class="postpay-tracking-topbar__help" type="button" data-postpay-help aria-label="ขอความช่วยเหลือ" title="ขอความช่วยเหลือ"><i data-lucide="headphones" class="ui-icon" aria-hidden="true"></i></button>
     </div>
     <div class="screen__body postpay-tracking-body">
       <section class="postpay-tracking-hero">
@@ -2774,7 +2769,9 @@
         <a class="btn btn--ghost btn--sm" data-tracking-official href="https://track.thailandpost.com/" target="_blank" rel="noopener noreferrer">ติดตามบนเว็บไซต์ขนส่ง <i data-lucide="external-link" class="ui-icon ui-icon--sm" aria-hidden="true"></i></a>
       </div>
 
-      <div class="postpay-tracking-actions"><button class="btn btn--ghost" type="button" data-postpay-help><i data-lucide="headphones" class="ui-icon" aria-hidden="true"></i>ขอความช่วยเหลือ</button><button class="btn btn--ghost" type="button" data-doc-open="receipt"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i>ใบเสร็จ</button></div>
+    </div>
+    <div class="screen__footer related-documents-footer">
+      <button class="btn btn--primary" type="button" data-related-documents-open aria-haspopup="dialog" aria-controls="related-documents-sheet"><i data-lucide="files" class="ui-icon" aria-hidden="true"></i>เอกสารที่เกี่ยวข้อง</button>
     </div>
   </section>
 
@@ -2974,13 +2971,9 @@
   <section class="screen screen--web" id="treatment-detail" data-screen-code="SCR-051A">
     <div class="screen__top"><button class="back" data-back>‹</button><span class="ttl">ข้อมูลการรักษา</span><span class="grow"></span></div>
     <div class="screen__body treatment-detail stack-3">
-      <!-- Treatment detail has two destinations: the clinical plan and the
-           medicine list. Documents have their own searchable library in the
-           profile; the certificate for this treatment remains at the end of
-           the plan where it belongs. -->
       <div class="partner-binary partner-binary--accent treatment-detail__switch" role="tablist" aria-label="ข้อมูลการรักษา">
         <button class="partner-binary__option is-active" type="button" role="tab" aria-selected="true" aria-controls="treatment-plan-panel" data-treatment-tab="plan"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i><span>แผนการรักษา</span></button>
-        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>ใบสั่งยา</span></button>
+        <button class="partner-binary__option" type="button" role="tab" aria-selected="false" aria-controls="treatment-medicine-panel" data-treatment-tab="medicine"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i><span>รายการยา</span></button>
       </div>
 
       <section class="treatment-detail__panel" id="treatment-plan-panel" role="tabpanel" data-treatment-panel="plan">
@@ -3023,13 +3016,6 @@
               <ul class="doc-summary-list" data-treatment-planlist></ul>
             </div>
           </div>
-          <section class="treatment-record__certificate" aria-label="เอกสารการรักษา">
-            <button class="doc-row treatment-record__certificate-card" type="button" data-doc-open="cert" aria-label="เปิดใบรับรองแพทย์">
-              <span class="doc-row__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span>
-              <span class="doc-row__body"><strong>ใบรับรองแพทย์</strong></span>
-              <i data-lucide="chevron-right" class="ui-icon ui-icon--sm treatment-record__certificate-go" aria-hidden="true"></i>
-            </button>
-          </section>
         </article>
       </section>
 
@@ -3071,6 +3057,9 @@
         </article>
       </section>
 
+    </div>
+    <div class="screen__footer related-documents-footer">
+      <button class="btn btn--primary" type="button" data-related-documents-open aria-haspopup="dialog" aria-controls="related-documents-sheet"><i data-lucide="files" class="ui-icon" aria-hidden="true"></i>เอกสารที่เกี่ยวข้อง</button>
     </div>
   </section>
 
@@ -3806,10 +3795,21 @@
       <button type="button" data-postpay-chat><span class="postpay-help-dialog__icon"><i data-lucide="messages-square" class="ui-icon" aria-hidden="true"></i></span><span><strong>แชตกับทีมดูแล Krane</strong><small>ตอบกลับภายในประมาณ 2 นาที</small></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
       <a href="tel:+6620000000"><span class="postpay-help-dialog__icon"><i data-lucide="phone" class="ui-icon" aria-hidden="true"></i></span><span><strong>โทรหาร้านขายยา</strong><small>กรณีต้องการสอบถามเรื่องการจัดยา</small></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></a>
       <button type="button" data-postpay-help-topic="delivery"><span class="postpay-help-dialog__icon"><i data-lucide="truck" class="ui-icon" aria-hidden="true"></i></span><span><strong>ปัญหาการจัดส่ง</strong><small>ที่อยู่ เวลา หรือการติดต่อไรเดอร์</small></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
-      <button type="button" data-doc-open="receipt" data-postpay-help-close><span class="postpay-help-dialog__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span><span><strong>ใบเสร็จและการชำระเงิน</strong><small>เปิดดูเอกสารการชำระเงิน</small></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
     </div>
   </section>
 </div>
+
+<dialog id="related-documents-sheet" class="related-documents-sheet" aria-labelledby="related-documents-title">
+  <div class="related-documents-sheet__content">
+    <span class="payment-item-dialog__grabber" aria-hidden="true"></span>
+    <header class="payment-item-dialog__header"><h2 id="related-documents-title">เอกสารที่เกี่ยวข้อง</h2><button class="payment-item-dialog__close" type="button" data-related-documents-close aria-label="ปิด" autofocus><i data-lucide="x" class="ui-icon" aria-hidden="true"></i></button></header>
+    <div class="postpay-help-dialog__body">
+      <button type="button" data-doc-open="receipt"><span class="postpay-help-dialog__icon"><i data-lucide="receipt-text" class="ui-icon" aria-hidden="true"></i></span><span><strong>ใบเสร็จ</strong></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
+      <button type="button" data-doc-open="rx"><span class="postpay-help-dialog__icon"><i data-lucide="pill" class="ui-icon" aria-hidden="true"></i></span><span><strong>ใบสั่งยา</strong></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
+      <button type="button" data-doc-open="cert"><span class="postpay-help-dialog__icon"><i data-lucide="clipboard-list" class="ui-icon" aria-hidden="true"></i></span><span><strong>ใบรับรองแพทย์</strong></span><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</dialog>
 
 <div class="modal-layer" id="refill-sheet" hidden aria-hidden="true">
   <button class="modal-layer__scrim" type="button" data-refill-sheet-close aria-label="ปิดตัวเลือกเติมยา"></button>
@@ -7648,6 +7648,10 @@
     journeyActive=true;
     show('intake-general');
   }
+  const relatedDocumentsSheet=document.getElementById('related-documents-sheet');
+  relatedDocumentsSheet.addEventListener('click',e=>{
+    if(e.target===relatedDocumentsSheet || e.target.closest('[data-related-documents-close]')) relatedDocumentsSheet.close();
+  });
   function setTreatmentDetailTab(name='plan'){
     const detail=document.getElementById('treatment-detail');
     if(!detail) return;
@@ -11375,6 +11379,10 @@
   }
   // navigation
   document.body.addEventListener('click', e => {
+    if(e.target.closest('[data-related-documents-open]')){
+      if(!relatedDocumentsSheet.open) relatedDocumentsSheet.showModal();
+      return;
+    }
     const treatmentTab=e.target.closest('[data-treatment-tab]');
     if(treatmentTab){ setTreatmentDetailTab(treatmentTab.dataset.treatmentTab); return; }
     const followUpCaseOpen=e.target.closest('[data-followup-case-open]');
@@ -12524,6 +12532,17 @@
     /* Open issued PDFs directly; the treatment record contains medicine details. */
     const docOpen = e.target.closest('[data-doc-open]');
     if(docOpen){
+      const fromDocumentsSheet=docOpen.closest('#related-documents-sheet');
+      if(fromDocumentsSheet){
+        relatedDocumentsSheet.close();
+        if(docOpen.dataset.docOpen==='rx'){
+          if(!document.querySelector('#treatment-detail.active')) show('treatment-detail');
+          setTreatmentDetailTab('medicine');
+          document.querySelector('#treatment-detail .screen__body').scrollTop=0;
+          document.querySelector('[data-treatment-tab="medicine"]').focus({preventScroll:true});
+          return;
+        }
+      }
       const documentUrls={receipt:'assets/documents-v1/receipt-v3.pdf',cert:'assets/documents-v1/medical-certificate-v3.pdf'};
       const file=documentUrls[docOpen.dataset.docOpen];
       if(file) window.open(file,'_blank','noopener');
@@ -14899,6 +14918,6 @@
 <script src="modal-chrome.js?v=20261013-consistent"></script>
 <script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
-<script src="../krane-clinical-workspace.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-workspace.js?v=20261115-activity"></script>
 </body>
 </html>
