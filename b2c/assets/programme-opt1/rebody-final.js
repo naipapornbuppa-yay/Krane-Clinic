@@ -79,7 +79,7 @@
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     const direction = event.key === 'ArrowRight' ? 1 : -1;
-    const step = cards[0]?.getBoundingClientRect().width || 300;
+    const step = (cards[0]?.getBoundingClientRect().width || 300) + parseFloat(getComputedStyle(track.firstElementChild).columnGap || 0);
     const animation = track.getAnimations()[0];
     if (animation) {
       marqueePaused = true;
@@ -145,7 +145,7 @@
   let inView = false;
   const sync = () => {
     const wantsPlayback = userPreference ?? !reduce.matches;
-    if (inView && wantsPlayback) video.play().catch(() => {});
+    if (inView && wantsPlayback && !document.hidden) video.play().catch(() => {});
     else video.pause();
   };
   const updateButton = () => {
@@ -159,6 +159,7 @@
   video.addEventListener('play', updateButton);
   video.addEventListener('pause', updateButton);
   reduce.addEventListener('change', sync);
+  document.addEventListener('visibilitychange', sync);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
