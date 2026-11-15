@@ -264,7 +264,7 @@
       previous.disabled = rail.scrollLeft <= 1;
       next.disabled = rail.scrollLeft >= limit - 1;
       const progress = limit > 0 ? rail.scrollLeft / limit : 0;
-      mobileCare.style.setProperty('--care-progress', `${progress * 6}px`);
+      mobileCare.style.setProperty('--care-progress', `${progress * 10}px`);
     };
     const move = direction => {
       const current = rail.scrollLeft;

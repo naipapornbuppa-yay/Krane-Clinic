@@ -4,7 +4,6 @@
 
   const timeline = page.querySelector('.opt-timeline-list');
   const comparisons = page.querySelector('.opt-comparison [data-rail]');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const reviewData = window.KraneReviews || [];
   const cards = Array.from(comparisons.children);
   cards.forEach((card, index) => {
@@ -31,65 +30,6 @@
     copy.append(quote, name);
     card.append(copy);
   });
-  comparisons.className = 'rebody-marquee';
-  comparisons.removeAttribute('data-rail');
-  comparisons.setAttribute('role', 'region');
-  comparisons.setAttribute('aria-label', 'เรื่องราวก่อนและหลัง ใช้ปุ่มลูกศรซ้ายหรือขวาเพื่อเลื่อนดู');
-  comparisons.tabIndex = 0;
-  const track = document.createElement('div');
-  track.className = 'rebody-marquee-track';
-  comparisons.replaceChildren(track);
-  let marqueePaused = false;
-  let marqueeVisible = !('IntersectionObserver' in window);
-  const syncMarquee = () => {
-    comparisons.classList.toggle('is-running', marqueeVisible && !marqueePaused && !reduce.matches && !document.hidden);
-  };
-  const duplicate = node => {
-    const copy = node.cloneNode(true);
-    copy.setAttribute('aria-hidden', 'true');
-    copy.inert = true;
-    return copy;
-  };
-  let lastWidth = 0;
-  const buildMarquee = () => {
-    if (!comparisons.clientWidth) return;
-    lastWidth = comparisons.clientWidth;
-    const set = document.createElement('div');
-    set.className = 'rebody-marquee-set';
-    set.append(...cards);
-    track.replaceChildren(set);
-    if (!reduce.matches && cards.length) {
-      while (set.getBoundingClientRect().width < lastWidth) {
-        cards.forEach(card => set.append(duplicate(card)));
-      }
-      track.style.setProperty('--marquee-duration', set.getBoundingClientRect().width / 28 + 's');
-      track.append(duplicate(set));
-    }
-    syncMarquee();
-  };
-  comparisons.addEventListener('keydown', event => {
-    if (event.key === ' ') { event.preventDefault(); marqueePaused = !marqueePaused; syncMarquee(); return; }
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    event.preventDefault();
-    const direction = event.key === 'ArrowRight' ? 1 : -1;
-    const step = (cards[0]?.getBoundingClientRect().width || 300) + parseFloat(getComputedStyle(track.firstElementChild).columnGap || 0);
-    const animation = track.getAnimations()[0];
-    if (animation) {
-      marqueePaused = true;
-      syncMarquee();
-      const duration = Number(animation.effect.getTiming().duration);
-      animation.currentTime = (Number(animation.currentTime) + direction * step / 28 * 1000 + duration) % duration;
-    } else comparisons.scrollBy({left:direction * step, behavior:'instant'});
-  });
-  reduce.addEventListener('change', buildMarquee);
-  document.addEventListener('visibilitychange', syncMarquee);
-  if ('ResizeObserver' in window) {
-    new ResizeObserver(() => { if (comparisons.clientWidth !== lastWidth) buildMarquee(); }).observe(comparisons);
-  } else window.addEventListener('resize', buildMarquee);
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => { marqueeVisible = entry.isIntersecting; syncMarquee(); }).observe(comparisons);
-  }
-  buildMarquee();
   if (page.dataset.programme === 'rebody') {
     const months = ['เดือนที่ 1', 'เดือนที่ 2–3', '4 เดือนขึ้นไป'];
     const descriptions = [

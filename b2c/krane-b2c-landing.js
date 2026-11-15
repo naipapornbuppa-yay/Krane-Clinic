@@ -2273,7 +2273,7 @@
     } else {
       hero.style.setProperty("--hero-parallax", "0px");
     }
-    mobileCta.classList.toggle("is-visible", heroRect.bottom <= 0);
+    mobileCta.classList.toggle("is-visible", window.scrollY > 0);
   }
 
   function requestMobileCtaUpdate() {

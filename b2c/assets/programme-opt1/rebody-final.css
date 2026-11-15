@@ -96,9 +96,12 @@
 [data-programme] .opt-comparison { padding-block:24px 48px; overflow:hidden; }
 [data-programme] .opt-comparison > .opt-wrap { position:relative; max-width:1152px; }
 [data-programme] .opt-comparison h2 { margin:0 48px 18px 0; font-size:38px; line-height:51px; letter-spacing:0; }
-.rebody-marquee { overflow:hidden; width:100vw; margin-inline:calc(50% - 50vw); }
-.rebody-marquee-track { display:flex; width:max-content; }
-.rebody-marquee-set { display:flex; flex-shrink:0; gap:24px; padding-right:24px; }
+[data-programme] .opt-comparison-rail {
+  width:100vw; margin-inline:calc(50% - 50vw);
+  padding:4px max(24px,calc((100vw - 1152px)/2)) 10px;
+  scroll-padding-inline:max(24px,calc((100vw - 1152px)/2));
+}
+[data-programme] .opt-comparison-rail:focus-visible { outline:2px solid var(--opt-blue); outline-offset:-2px; }
 [data-programme] .opt-comparison .opt-pair {
   flex:0 0 420px; width:420px; min-width:0; min-height:443px; border-radius:20px;
   box-shadow:0 3px 12px #1a1e280a;
@@ -111,21 +114,10 @@
 [data-programme] .opt-pair .rebody-pair-copy { display:flex; flex-direction:column; gap:26px; padding:24px 26px; }
 .rebody-pair-copy blockquote { margin:0; min-height:62px; font:400 18px/31px var(--opt-display); }
 [data-programme] .opt-pair .rebody-pair-copy p { margin:0; padding:0; color:#4b5263; font:400 14px/24px var(--opt-display); }
-@keyframes rebody-marquee { to { transform:translateX(-50%); } }
-@media (prefers-reduced-motion:no-preference) {
-  .rebody-marquee-track { animation:rebody-marquee var(--marquee-duration,60s) linear infinite; animation-play-state:paused; }
-  .rebody-marquee.is-running .rebody-marquee-track { animation-play-state:running; }
-  .rebody-marquee:hover .rebody-marquee-track,
-  .rebody-marquee:focus-within .rebody-marquee-track { animation-play-state:paused; }
-}
-@media (prefers-reduced-motion:reduce) {
-  .rebody-marquee { overflow-x:auto; }
-  .rebody-marquee [aria-hidden="true"] { display:none; }
-}
 @media (max-width:700px) {
   [data-programme] .opt-comparison h2 { font-size:25px; line-height:1.5; }
   [data-programme] .opt-comparison .opt-pair { flex-basis:300px; width:300px; min-height:0; }
-  .rebody-marquee-set { gap:16px; padding-right:16px; }
+  [data-programme] .opt-comparison-rail { gap:16px; }
   [data-programme] .opt-pair .rebody-pair-images { height:224px; }
   [data-programme] .opt-pair .rebody-pair-copy { gap:20px; padding:20px; }
   .rebody-pair-copy blockquote { min-height:81px; font-size:16px; line-height:27px; }

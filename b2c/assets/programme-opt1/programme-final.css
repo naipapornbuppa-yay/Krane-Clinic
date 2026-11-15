@@ -13,6 +13,9 @@
 .programme-final main[data-programme] { display:block; background:#fff; }
 .programme-final main[data-programme] .opt-stage { background:#efefef; }
 .programme-final main[data-programme] .opt-timeline { background:#fff; }
+.programme-final .opt-timeline-brand,
+.programme-final .opt-timeline-label { display:block; line-height:1.3; }
+.programme-final .opt-timeline-label { margin-top:4px; font-size:.72em; }
 .programme-final .opt-hero { display:block; }
 @media (min-width:761px) {
   .programme-final main[data-programme] .opt-timeline { grid-template-columns:minmax(0,36fr) minmax(0,64fr); }
@@ -73,9 +76,6 @@
 .programme-final .opt-faq-glass { color:#172033; }
 .programme-final .opt-faq-glass p { font-size:14px; }
 .programme-final .pricing-card__image .pricing-card__hair { object-position:57% 38%; }
-@media (min-width:761px) {
-  .programme-final .opt-interview-media>.opt-wrap { align-items:end; }
-}
 @media (max-width:760px) {
   .opt-page.programme-final .opt-announcement { min-height:34px; font-size:11px; }
   .opt-page.programme-final .site-header {
@@ -83,15 +83,21 @@
     min-height:54px; border-radius:999px; background:#fff;
   }
   .programme-final .opt-hero { height:392px; }
-  .programme-final [data-programme="rehair"] .opt-hero { background-position:72% center; }
+  .programme-final [data-programme="rehair"] .opt-hero { height:354px; background-position:70% center; }
+  .programme-final [data-programme="rehair"] .rebody-hero-video { object-position:70% center; }
   .programme-final main[data-programme] .opt-hero-badges { top:144px; left:20px; gap:22px; }
   .programme-final main[data-programme] .opt-hero-badges li { margin-left:0; }
-  .programme-final main[data-programme] .opt-hero-badges li:nth-child(2) { margin-left:28px; }
-  .programme-final main[data-programme] .opt-hero-badges li:nth-child(3) { margin-left:10px; }
-  .programme-final main[data-programme] .opt-timeline { margin-top:-28px; }
-  .programme-final main[data-programme] .opt-timeline h2 { white-space:normal; }
-  .programme-final main[data-programme] .opt-timeline h2 br { display:initial; }
-  .programme-final .opt-story-rail .opt-story { flex-basis:min(310px,calc(100vw - 48px)); height:465px; }
+  .programme-final main[data-programme]:not([data-programme="reflow"]) .opt-hero-badges li:nth-child(2) { margin-left:28px; }
+  .programme-final main[data-programme]:not([data-programme="reflow"]) .opt-hero-badges li:nth-child(3) { margin-left:10px; }
+  .programme-final main[data-programme] .opt-timeline { margin-top:-44px; }
+  .programme-final main[data-programme] .opt-stories { padding-block:20px 24px; }
+  .programme-final .opt-story-rail .opt-story {
+    flex-basis:clamp(164px, 52vw, 225px); height:auto; aspect-ratio:2/3; border-radius:14px;
+  }
+  .programme-final .opt-story .rebody-story-avatar { top:14px; left:14px; width:28px; height:28px; }
+  .programme-final .opt-story .opt-story-name { top:14px; left:50px; right:8px; font-size:12px; line-height:16px; }
+  .programme-final .opt-story .opt-story-name small { font-size:11px; }
+  .programme-final .opt-story .opt-story-caption { inset:auto 14px 14px; font-size:14px; line-height:1.4; }
   .programme-final main[data-programme] .opt-feedback { padding:28px 0; width:calc(100% - 48px); }
   .programme-final .rebody-review-header { gap:12px; }
   .programme-final .rebody-review-rating { justify-content:flex-start; }
@@ -99,9 +105,7 @@
   .programme-final .rebody-review-card { flex-basis:min(294px,90%); }
   .programme-final .opt-interview-media { height:420px; }
   .programme-final .opt-editorial-brand { font-size:15px; }
-  .programme-final .opt-editorial-actions .opt-cta { margin-top:14px; }
   .programme-final .landing-benefits article { flex-basis:min(310px,calc(100% - 32px));height:439px; }
-  .programme-final .opt-faq::before { height:322px; }
 }
 @media (prefers-reduced-motion:no-preference) {
   .programme-final .opt-hero-badges li { animation:programme-badge-float 6s ease-in-out infinite; }
@@ -112,19 +116,14 @@
   @keyframes programme-step-in { from { opacity:0; transform:translateY(-6px); } }
 }
 
-/* Keep the pills clear of the runner in the centre of the re:flow hero. */
+/* Alternate on either side of the runner, inside the hero's safe area. */
 .programme-final main[data-programme="reflow"] .opt-hero-badges {
-  inset-inline:max(20px,calc((100% - 1200px) / 2));
-  width:auto;max-width:none;
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  justify-items:start;column-gap:8px;
+  inset-inline:clamp(16px,18vw,260px);
+  width:auto; max-width:none; display:grid; grid-template-columns:minmax(0,1fr);
+  justify-items:start; row-gap:clamp(12px,1.7vw,26px);
 }
 .programme-final main[data-programme="reflow"] .opt-hero-badges li { margin:0; }
-.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(2),
-.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(3) {
-  grid-column:2;justify-self:end;
-}
-.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(2) { grid-row:2; }
-.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(3) {
-  grid-row:3;margin-inline-end:clamp(8px,3.5vw,48px);
+.programme-final main[data-programme="reflow"] .opt-hero-badges li:nth-child(2) { justify-self:end; }
+@media (max-width:760px) {
+  .programme-final main[data-programme="reflow"] .opt-hero-badges { inset-inline:24px; row-gap:16px; }
 }

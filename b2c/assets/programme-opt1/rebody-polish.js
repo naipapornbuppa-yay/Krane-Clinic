@@ -5,8 +5,6 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const scrollBehavior = () => reduce.matches ? 'instant' : 'smooth';
 
-  const title = page.querySelector('.opt-timeline h2');
-  title.querySelector('br')?.after(' ');
   page.querySelector('.opt-timeline header p br').replaceWith(' ');
   const stories = page.querySelector('.opt-stories');
   stories.querySelector('.opt-section-head').remove();
@@ -49,7 +47,7 @@
   articleRail.dataset.carouselRail = 'บทความ หน้า';
   articleRail.after(articleControls);
   // Native horizontal rails remain usable by touch, wheel, and the keyboard.
-  page.querySelectorAll('.opt-story-rail,.opt-article-rail').forEach(rail => {
+  page.querySelectorAll('.opt-story-rail,.opt-article-rail,.opt-comparison-rail').forEach(rail => {
     rail.tabIndex = 0;
     rail.addEventListener('keydown', event => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;

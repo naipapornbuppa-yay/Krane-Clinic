@@ -19,7 +19,7 @@
     reflow:'แพทย์ประจำตัวจะประเมินสุขภาพ ประวัติการใช้ยา และปัจจัยที่อาจเกี่ยวข้อง เช่น ความดันหรือน้ำตาลในเลือด ก่อนออกแบบแผนดูแลเฉพาะบุคคล ยาจัดส่งถึงบ้านในบรรจุภัณฑ์ที่เป็นส่วนตัว'
   };
   if (firstStep[id]) stepsCopy[0] = firstStep[id];
-  const timeline = section('opt-stage','<div class="opt-hero"><h1 class="visually-hidden">'+data.brand+' · '+data.name+'</h1><ul class="opt-hero-badges"><li>แพทย์ดูแลเป็นรายบุคคล</li><li>เริ่มต้นปรึกษาออนไลน์</li><li>ติดตามและปรับแผนได้</li></ul></div><div class="opt-wrap opt-timeline"><header><h2>'+data.brand+'<br>ไทม์ไลน์การดูแล</h2><p>ช่วงเวลาการดูแล<br>ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล</p></header><div class="opt-timeline-list" data-single>'+data.timeline.map((label,i)=>'<details '+(!i?'open':'')+'><summary><span class="opt-eyebrow">'+periods[i]+'</span><strong>'+label+'</strong></summary><div class="opt-step-copy"><p>'+stepsCopy[i]+'</p>'+pic(data.key+'-timeline-'+(i+1),data.brand+' · '+label)+'</div></details>').join('')+'</div></div>','steps');
+  const timeline = section('opt-stage','<div class="opt-hero"><h1 class="visually-hidden">'+data.brand+' · '+data.name+'</h1><ul class="opt-hero-badges"><li>แพทย์ดูแลเป็นรายบุคคล</li><li>เริ่มต้นปรึกษาออนไลน์</li><li>ติดตามและปรับแผนได้</li></ul></div><div class="opt-wrap opt-timeline"><header><h2><span class="opt-timeline-brand">'+data.brand+'</span> <span class="opt-timeline-label">ไทม์ไลน์การดูแล</span></h2><p>ช่วงเวลาการดูแล<br>ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล</p></header><div class="opt-timeline-list" data-single>'+data.timeline.map((label,i)=>'<details '+(!i?'open':'')+'><summary><span class="opt-eyebrow">'+periods[i]+'</span><strong>'+label+'</strong></summary><div class="opt-step-copy"><p>'+stepsCopy[i]+'</p>'+pic(data.key+'-timeline-'+(i+1),data.brand+' · '+label)+'</div></details>').join('')+'</div></div>','steps');
   const reviewData = window.KraneReviews || [];
   const storyIds = ['weight-02','weight-04','weight-05','hair-pha','hair-03','confidence-real-med'];
   const storyMarkup = storyIds.map(reviewId => {
@@ -35,7 +35,7 @@
     '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>','programme-stories');
   const pairItems = ['hair-pha','hair-03'].map(key=>reviewData.find(r=>r.id===key)).filter(r=>r?.before&&r?.after);
   const pairs = pairItems.length ? pairItems.map(r=>'<article class="opt-pair"><div><img src="'+r.before+'" alt="ก่อน"><img src="'+r.after+'" alt="หลัง"></div><p>'+r.name+' · ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>').join('') : '<article class="opt-pair"><div>'+pic('before','ก่อน')+pic('after','หลัง')+'</div><p>ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>';
-  const comparison = section('opt-comparison','<div class="opt-wrap"><h2>เรื่องราวก่อนและหลัง</h2><div class="opt-rail" data-rail>'+pairs+'</div></div>');
+  const comparison = section('opt-comparison','<div class="opt-wrap"><h2>เรื่องราวก่อนและหลัง</h2><div class="opt-rail opt-comparison-rail" data-rail data-carousel-rail="เรื่องราวก่อนและหลัง หน้า" role="region" aria-label="เรื่องราวก่อนและหลัง ใช้ปุ่มลูกศรซ้ายหรือขวาเพื่อเลื่อนดู">'+pairs+'</div></div>');
   const benefits = document.querySelector('#programme-care-benefits');
   const captions = {
     rebody: ['re:flow', '<strong>แข็ง</strong>แรงอย่างมั่นใจ'],
