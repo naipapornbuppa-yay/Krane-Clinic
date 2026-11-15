@@ -22,16 +22,10 @@
     avatar.alt = '';
     button.append(avatar);
   });
-  const progress = document.createElement('div');
-  progress.className = 'rebody-story-progress';
-  progress.setAttribute('aria-hidden', 'true');
-  progress.innerHTML = '<span></span>';
-  stories.querySelector('.opt-rail-controls').prepend(progress);
   const storyRail = stories.querySelector('[data-rail]');
+  storyRail.dataset.carouselRail = 'วิดีโอรีวิว หน้า';
   const syncStoryControls = () => {
     const max = storyRail.scrollWidth - storyRail.clientWidth;
-    const position = max > 0 ? storyRail.scrollLeft / max : 0;
-    progress.firstElementChild.style.transform = 'translateX(' + position * 200 + '%)';
     stories.querySelector('[data-scroll="-1"]').disabled = storyRail.scrollLeft < 2;
     stories.querySelector('[data-scroll="1"]').disabled = storyRail.scrollLeft >= max - 2;
   };
@@ -63,7 +57,9 @@
   const articleControls = document.createElement('div');
   articleControls.className = 'opt-rail-controls rebody-article-controls';
   articleControls.innerHTML = '<button type="button" data-scroll="-1" aria-label="บทความก่อนหน้า">‹</button><button type="button" data-scroll="1" aria-label="บทความถัดไป">›</button>';
-  page.querySelector('.opt-article-rail').after(articleControls);
+  const articleRail = page.querySelector('.opt-article-rail');
+  articleRail.dataset.carouselRail = 'บทความ หน้า';
+  articleRail.after(articleControls);
   // Native horizontal rails remain usable by touch, wheel, and the keyboard.
   page.querySelectorAll('.opt-story-rail,.opt-article-rail').forEach(rail => {
     rail.tabIndex = 0;

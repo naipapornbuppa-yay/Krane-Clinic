@@ -29,27 +29,4 @@
       summaries[next].focus();
     });
   });
-  // The approved footer uses open link columns at every size.
-  // Reuse the shared links and copy, while removing disclosure-only behavior.
-  const footer = document.querySelector('[data-site-footer]');
-  const showLinkColumns = () => {
-    if (!footer?.querySelector('details.kf__group')) return false;
-    footer.querySelectorAll('details.kf__group').forEach(details => {
-      const section = document.createElement('section');
-      section.className = details.className;
-      const heading = details.querySelector('h2');
-      const links = details.querySelector('ul');
-      heading.id = links.id + '-heading';
-      section.setAttribute('aria-labelledby', heading.id);
-      section.append(heading, links);
-      details.replaceWith(section);
-    });
-    return true;
-  };
-  if (footer && !showLinkColumns()) {
-    const observer = new MutationObserver(() => {
-      if (showLinkColumns()) observer.disconnect();
-    });
-    observer.observe(footer, {childList:true});
-  }
 })();

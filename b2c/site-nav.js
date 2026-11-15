@@ -24,9 +24,9 @@ const SITE_NAV_BRAND = {
   alt: "Krane Clinic"
 };
 const SITE_NAV_SERVICES = [
-  ["condition-detail.html?condition=weight", "re:body"],
-  ["condition-detail.html?condition=hair-loss", "re:hair"],
-  ["condition-detail.html?condition=re-flow", "re:flow"],
+  ["rebody-opt1/index.html", "re:body"],
+  ["rehair-opt1/index.html", "re:hair"],
+  ["reflow-opt1/index.html", "re:flow"],
   ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
   ["krane-b2c.html#profile", "เติมยา", "profile"],
   ["krane-b2c.html?v=20260920-float-v1#upload-rx", "อัพโหลดใบสั่งยา", "upload-rx"]

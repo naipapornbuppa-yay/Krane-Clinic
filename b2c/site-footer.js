@@ -53,9 +53,8 @@
   function render() {
     const mobile = window.matchMedia('(max-width: 760px)');
     document.querySelectorAll('[data-site-footer]').forEach((footer, footerIndex) => {
-      const flush = footer.dataset.footerLayout === 'flush';
       const social = (name, index) => {
-        const icon = flush ? footerIcon(name.toLowerCase()) : '';
+        const icon = footerIcon(name.toLowerCase());
         const artwork = name === 'LINE' && icon ? '<span class="kf__line" aria-hidden="true">' + icon + '<span>LINE</span></span>' : icon;
         return unavailable('social.' + index, [name, name], artwork);
       };
@@ -63,7 +62,7 @@
         const id = 'krane-footer-' + footerIndex + '-' + group.id;
         return '<details class="kf__group" data-footer-group><summary aria-controls="' + id + '"><h2>' + label(group.id, group.title) + '</h2>' + chevron + '</summary><ul id="' + id + '">' + group.items.map((item, index) => '<li>' + link(item, group.id + '.' + index) + '</li>').join('') + '</ul></details>';
       }).join('');
-      footer.innerHTML = '<div class="kf__main"><div class="kf__brand"><a class="kf__wordmark" href="krane-b2c-landing.html#top" aria-label="Krane Clinic"><img class="brand-lockup" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" loading="lazy" alt="Krane Clinic"></a><p>' + label('description', copy.description) + '</p><div class="kf__contact"><a href="mailto:support@kraneclinic.com">' + (flush ? footerIcon('email') : '') + 'support@kraneclinic.com</a><a href="tel:+66613840206">' + (flush ? footerIcon('phone') : '') + '061-384-0206</a></div><small class="kf__licence">' + label('licence', copy.licence) + '</small><small>' + label('disclaimer', copy.disclaimer) + '</small></div><nav class="kf__links">' + groupsMarkup + '</nav></div><div class="kf__bottom"><div class="kf__social"><span class="kf__sr-only">' + label('social', copy.social) + '</span>' + socials.map(social).join('') + '</div><span class="kf__copyright">Copyright © 2026 kraneclinic.com All rights reserved.</span></div>';
+      footer.innerHTML = '<div class="kf__main"><div class="kf__brand"><a class="kf__wordmark" href="krane-b2c-landing.html#top" aria-label="Krane Clinic"><img class="brand-lockup" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" loading="lazy" alt="Krane Clinic"></a><p>' + label('description', copy.description) + '</p><div class="kf__contact"><a href="mailto:support@kraneclinic.com">' + footerIcon('email') + 'support@kraneclinic.com</a><a href="tel:+66613840206">' + footerIcon('phone') + '061-384-0206</a></div><small class="kf__licence">' + label('licence', copy.licence) + '</small><small class="kf__disclaimer">' + label('disclaimer', copy.disclaimer) + '</small></div><nav class="kf__links">' + groupsMarkup + '</nav></div><div class="kf__bottom"><div class="kf__social"><span class="kf__sr-only">' + label('social', copy.social) + '</span>' + socials.map(social).join('') + '</div><span class="kf__copyright"><span class="kf__copyright-prefix">Copyright </span>© 2026 kraneclinic.com All rights reserved.</span></div>';
       // Keep the programme action bar from covering footer navigation.
       const actionBar = document.querySelector('.cd-stickybar');
       if (actionBar && 'IntersectionObserver' in window) {

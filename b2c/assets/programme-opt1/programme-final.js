@@ -3,6 +3,38 @@
   if (!page) return;
   document.body.classList.add('programme-final');
   const key = page.dataset.programme;
+  const hero = page.querySelector('.opt-hero');
+  const heroMedia = {
+    rebody:['rebody-hero-motion.m4v','body-hero.webp'],
+    rehair:['rehair-hero-motion.mp4','hair-hero.webp'],
+    reflow:['reflow-hero-motion.mp4','flow-hero.webp']
+  };
+  if (hero && heroMedia[key]) {
+    const [source, poster] = heroMedia[key];
+    const video = document.createElement('video');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    video.className = 'rebody-hero-video';
+    video.src = 'assets/programme-opt1/' + source;
+    video.poster = 'assets/programme-opt1/' + poster;
+    video.muted = video.defaultMuted = video.loop = video.playsInline = true;
+    video.preload = 'none';
+    video.setAttribute('aria-hidden', 'true');
+    hero.prepend(video);
+    let inView = !('IntersectionObserver' in window);
+    const sync = () => {
+      const play = inView && !document.hidden && !reduce.matches;
+      hero.classList.toggle('is-motion-active', play);
+      if (play) video.play().catch(() => {});
+      else video.pause();
+    };
+    if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      sync();
+    }).observe(hero);
+    document.addEventListener('visibilitychange', sync);
+    reduce.addEventListener('change', sync);
+    sync();
+  }
   const labels = {
     rebody: ['ออนไลน์ 100%', 'แผนการรักษาเฉพาะบุคคล', 'จัดส่งแบบควบคุมอุณหภูมิ'],
     rehair: ['ออนไลน์ 100%', 'มีแพทย์ประจำตัว', 'เติมยาออนไลน์'],

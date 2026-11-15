@@ -117,35 +117,4 @@
     observer.observe(timeline);
   }
 
-  const hero = page.querySelector('.opt-hero');
-  const video = document.createElement('video');
-  video.className = 'rebody-hero-video';
-  const hair = page.dataset.programme === 'rehair';
-  video.src = 'assets/programme-opt1/' + (hair ? 'rehair-hero-motion.mp4' : 'rebody-hero-motion.m4v');
-  video.poster = 'assets/programme-opt1/' + (hair ? 'hair-hero.webp' : 'body-hero.webp');
-  video.defaultMuted = true;
-  video.muted = true;
-  video.loop = true;
-  video.playsInline = true;
-  video.preload = 'none';
-  video.setAttribute('aria-hidden', 'true');
-  hero.prepend(video);
-
-  let inView = false;
-  const sync = () => {
-    hero.classList.toggle('is-motion-active', inView && !document.hidden && !reduce.matches);
-    if (inView && !reduce.matches && !document.hidden) video.play().catch(() => {});
-    else video.pause();
-  };
-  reduce.addEventListener('change', sync);
-  document.addEventListener('visibilitychange', sync);
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      sync();
-    }).observe(hero);
-  } else {
-    inView = true;
-    sync();
-  }
 })();
