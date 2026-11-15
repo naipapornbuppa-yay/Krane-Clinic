@@ -13,6 +13,17 @@
     }
     window.dispatchEvent(new Event('krane-articles-changed'));
   }
+  const smallScreen = matchMedia('(max-width: 760px)');
+  const highlights = document.querySelector('.hero-draft__marquee');
+  const placeHighlights = () => {
+    const slot = document.querySelector(smallScreen.matches ? '.hero-mobile-benefits' : '.hero-draft__intro');
+    slot.prepend(highlights);
+  };
+  if (highlights) {
+    placeHighlights();
+    smallScreen.addEventListener('change', placeHighlights);
+  }
+
   const gallery = document.querySelector('.landing-review-gallery');
   if (gallery) {
     for (const column of gallery.children) {
@@ -38,18 +49,174 @@
     gallery.classList.add('is-looping');
     new IntersectionObserver(([entry]) => gallery.classList.toggle('is-in-view', entry.isIntersecting)).observe(gallery);
   }
-  document.querySelectorAll('.landing-stories').forEach(stories => {
-    stories.addEventListener('click', event => {
-      const button = event.target.closest('[data-landing-review]');
-      if (!button) return;
-      const items = (window.KraneReviews || []).map(item => ({...item, attribution:[item.name,item.province].filter(Boolean).join(' · ')}));
-      document.dispatchEvent(new CustomEvent('krane:open-review-stories', {detail:{items,activeId:button.dataset.landingReview,trigger:button}}));
+  const reviews = window.KraneReviews || [];
+  const programmeNames = { weight: 're:body', 'hair-loss': 're:hair', 're-flow': 're:flow' };
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const quoteText = review => review.quote.replace(/<br\s*\/?\s*>/gi, ' ');
+
+  const previewCards = document.querySelectorAll('.landing-review-gallery button, .landing-review-mobile button');
+  const previewsInView = new Set();
+  const syncPreviews = () => {
+    const canPlay = !document.hidden && !reducedMotion.matches &&
+      !document.documentElement.classList.contains('pc-story-is-open');
+    for (const card of previewCards) {
+      let video = card.querySelector('video');
+      if (!canPlay || !previewsInView.has(card)) {
+        video?.pause();
+        continue;
+      }
+      if (!video) {
+        const review = reviews.find(item => item.id === card.dataset.landingReview);
+        if (!review) continue;
+        video = document.createElement('video');
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.loop = true;
+        video.preload = 'none';
+        video.setAttribute('aria-hidden', 'true');
+        video.src = review.src.replace(/\.mp4$/, '-preview.mp4');
+        video.addEventListener('playing', () => video.classList.add('is-playing'), {once:true});
+        card.prepend(video);
+      }
+      if (video.paused) video.play().catch(() => {});
+    }
+  };
+  if (previewCards.length) {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) previewsInView.add(entry.target);
+        else previewsInView.delete(entry.target);
+      }
+      syncPreviews();
+    }, {threshold:0.15});
+    previewCards.forEach(card => observer.observe(card));
+    document.addEventListener('visibilitychange', syncPreviews);
+    reducedMotion.addEventListener('change', syncPreviews);
+    new MutationObserver(syncPreviews).observe(document.documentElement, {attributes:true, attributeFilter:['class']});
+  }
+
+  for (const chapter of document.querySelectorAll('.care-chapter[data-review-category]')) {
+    const category = chapter.dataset.reviewCategory;
+    const items = reviews.filter(review => review.category === category);
+    if (!items.length) continue;
+    const section = document.createElement('div');
+    section.className = 'care-chapter__reviews';
+    const title = document.createElement('h3');
+    title.textContent = 'ความคิดเห็น';
+    const rail = document.createElement('div');
+    rail.className = 'care-chapter__review-rail';
+    rail.dataset.carouselRail = 'วิดีโอรีวิว หน้า';
+    for (const item of items) {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.dataset.landingReview = item.id;
+      card.setAttribute('aria-label', `ดูรีวิว ${item.name}`);
+      const headline = document.createElement('strong');
+      headline.textContent = item.caption;
+      card.append(headline);
+      if (item.quote) {
+        const quote = document.createElement('blockquote');
+        quote.textContent = `“${quoteText(item)}”`;
+        card.append(quote);
+      }
+      const author = document.createElement('span');
+      author.className = 'care-chapter__review-author';
+      const image = document.createElement('img');
+      image.src = item.poster;
+      image.alt = '';
+      image.loading = 'lazy';
+      author.append(image, item.name);
+      const arrow = document.createElement('i');
+      arrow.textContent = '→';
+      arrow.setAttribute('aria-hidden', 'true');
+      author.append(arrow);
+      card.append(author);
+      rail.append(card);
+    }
+    section.append(title, rail);
+    chapter.querySelector('.care-chapter__note').before(section);
+  }
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('.landing-stories [data-landing-review], .care-chapter__reviews [data-landing-review]');
+    if (!button) return;
+    const category = button.closest('[data-review-category]')?.dataset.reviewCategory;
+    const items = reviews.filter(item => !category || item.category === category).map(item => ({
+      ...item, attribution:[item.name,item.province].filter(Boolean).join(' · '),
+    }));
+    if (!items.length) return;
+    document.dispatchEvent(new CustomEvent('krane:open-review-stories', {
+      detail:{items, activeId:button.dataset.landingReview, trigger:button},
+    }));
+  });
+
+  const quotes = document.querySelector('.landing-story-quotes');
+  const quoteReviews = reviews.filter(item => item.quote);
+  if (quotes && quoteReviews.length > 1) {
+    const slides = quotes.querySelector('.landing-story-quotes__slides');
+    const dots = quotes.querySelector('.landing-story-quotes__dots');
+    const panels = quoteReviews.map(item => {
+      const panel = document.createElement('div');
+      panel.className = 'landing-story-quotes__slide';
+      const quote = document.createElement('blockquote');
+      quote.textContent = `“${quoteText(item)}”`;
+      const attribution = document.createElement('footer');
+      const programme = document.createElement('span');
+      programme.textContent = `ผู้ใช้บริการ Krane ${programmeNames[item.category]}`;
+      attribution.append(item.name, ' ', programme);
+      panel.append(quote, attribution);
+      return panel;
     });
-    document.addEventListener('krane:languagechange', () => {
-      const dots = document.querySelector('.landing-article-dots');
-      if (!dots) return;
-      dots.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Article pages' : 'เลือกหน้าบทความ');
-    });
+    let current = 0;
+    let timer;
+    let inView = false;
+    const show = index => {
+      current = index;
+      panels.forEach((panel, i) => {
+        panel.classList.toggle('is-current', i === index);
+        panel.setAttribute('aria-hidden', String(i !== index));
+        dots.children[i].setAttribute('aria-current', String(i === index));
+      });
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      if (!inView || document.hidden || reducedMotion.matches ||
+          quotes.matches(':hover, :focus-within') || document.querySelector('.pc-story-viewer[open]')) return;
+      timer = setTimeout(() => {
+        show((current + 1) % panels.length);
+        schedule();
+      }, 6500);
+    };
+    slides.replaceChildren(...panels);
+    dots.replaceChildren(...quoteReviews.map((item, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `คำพูดจาก ${item.name}`);
+      dot.addEventListener('click', () => {
+        show(i);
+        schedule();
+      });
+      return dot;
+    }));
+    dots.hidden = false;
+    show(0);
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      schedule();
+    }, {threshold:0.2}).observe(quotes);
+    for (const event of ['pointerenter','pointerleave','focusin']) quotes.addEventListener(event, schedule);
+    quotes.addEventListener('focusout', () => queueMicrotask(schedule));
+    document.addEventListener('visibilitychange', schedule);
+    reducedMotion.addEventListener('change', schedule);
+    const viewer = document.querySelector('.pc-story-viewer');
+    if (viewer) new MutationObserver(schedule).observe(viewer, {attributes:true, attributeFilter:['open']});
+  }
+
+  document.addEventListener('krane:languagechange', () => {
+    const dots = document.querySelector('.landing-article-dots');
+    if (!dots) return;
+    dots.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Article pages' : 'เลือกหน้าบทความ');
   });
   const articleDots = document.querySelector('.landing-article-dots');
   if (rail && articleDots) {

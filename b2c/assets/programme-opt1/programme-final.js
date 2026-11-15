@@ -52,7 +52,9 @@
 
   page.querySelectorAll('.opt-timeline details').forEach(details => { details.name = 'care-timeline'; });
   const articleRail = page.querySelector('.opt-article-rail');
-  const articleIds = ['library-ed-01','library-obesity-02','library-hair-loss-01','library-ed-03','library-obesity-01'];
+  const articleIds = key === 'rehair'
+    ? Array.from({length:5}, (_, i) => 'library-hair-loss-0' + (i + 1))
+    : ['library-ed-01','library-obesity-02','library-hair-loss-01','library-ed-03','library-obesity-01'];
   const articles = (window.KraneArticleSeed || []).filter(a=>articleIds.includes(a.id));
   if (articles.length) {
     articleRail.replaceChildren(...articleIds.map(id=>articles.find(a=>a.id===id)).filter(Boolean).map(article=>{
@@ -68,10 +70,16 @@
       const title = document.createElement('h3');
       title.textContent = article.title;
       const action = document.createElement('span');
-      action.textContent = 'อ่าน ' + (article.minutes || 4) + ' นาที →';
+      action.className = 'opt-article-action';
+      action.append('อ่าน ' + (article.minutes || 4) + ' นาที');
+      const arrow = document.createElement('i');
+      arrow.dataset.lucide = 'arrow-right';
+      arrow.setAttribute('aria-hidden', 'true');
+      action.append(arrow);
       panel.append(category,title,action);
       link.append(img,panel);
       return link;
     }));
+    window.lucide?.createIcons({attrs:{'stroke-width':1.65}});
   }
 })();
