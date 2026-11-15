@@ -49,7 +49,6 @@
     '<div class="opt-interview-media" data-editorial="'+data.key+'">'+pic(data.key+'-doctor')+
     '<div class="opt-wrap"><div><p class="opt-editorial-brand">'+interviewBrand+'</p><h2>'+interviewTitle+
     '</h2></div><div class="opt-editorial-actions">'+cta('เริ่มปรึกษา')+'</div></div></div>');
-  const feedback = section('opt-feedback opt-wrap','<div class="opt-feedback-inner"><header><div><h2>ประสบการณ์เล็ก ๆ<br>ที่ช่วยให้ตัดสินใจง่ายขึ้น</h2><p>ตัวอย่างรีวิวและคะแนนเพื่อแสดงรูปแบบ · ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></div><div class="opt-rating">4.8<small> / 5</small> <span>★★★★★</span></div></header><div class="opt-filter-heading"><h3>ความคิดเห็น</h3><label><span class="visually-hidden">เรียงรีวิว</span><select data-sort><option value="latest">ล่าสุด</option><option value="top">คะแนนสูงสุด</option></select></label></div><div class="opt-filters" aria-label="กรองตามคะแนน">'+['ทั้งหมด',5,4,3,2,1].map((n,i)=>'<button type="button" data-score="'+(i?n:0)+'" aria-pressed="'+!i+'">'+n+(i?' ★':'')+'</button>').join('')+'</div><div class="opt-rail opt-feedback-rail" data-rail aria-live="polite"></div><div class="opt-rail-controls"><button data-scroll="-1" aria-label="ก่อนหน้า">‹</button><button data-scroll="1" aria-label="ถัดไป">›</button></div></div>','reviews');
   const price = section('opt-price','', 'program-pricing');
   const articleData = [
     ['ผมร่วงแบบไหนควรพบแพทย์?', 'library-hair-loss-03'],
@@ -67,32 +66,11 @@
     ['ใครเข้าถึงข้อมูลสุขภาพของฉันได้บ้าง?','ทีมที่เกี่ยวข้องใช้ข้อมูลตามความจำเป็นในการดูแล อ่านรายละเอียดในนโยบายความเป็นส่วนตัว']
   ];
   const faq = section('opt-faq','<div class="opt-wrap"><h2>คำถามที่พบบ่อย</h2><a href="faq.html">อ่านเพิ่มเติม →</a><div class="opt-faq-glass" data-single>'+faqData.map(([q,a])=>'<details><summary>'+q+'</summary><p>'+a+'</p></details>').join('')+'</div></div>','faq');
-  root.innerHTML = timeline+(id==='reflow'?'':comparison)+stories+interview+feedback+price+articles+faq;
+  root.innerHTML = timeline+(id==='reflow'?'':comparison)+stories+interview+price+articles+faq;
   if (benefits) root.querySelector('.opt-interview').before(benefits.content.cloneNode(true));
   root.querySelectorAll('a[href^="#"]').forEach(a => { a.href=location.pathname+location.search+a.getAttribute('href'); });
 
-  const reviewCards = [
-    { score:5, name:'ผู้ใช้บริการ Krane', date:'22 ต.ค. 2569', text:'คุณหมออธิบายให้เข้าใจและช่วยวางแผนที่ทำต่อได้' },
-    { score:5, name:'ผู้ใช้บริการ Krane', date:'21 ต.ค. 2569', text:'ปรึกษากับคุณหมอออนไลน์ได้จากที่บ้าน' },
-    { score:4, name:'ผู้ใช้บริการ Krane', date:'20 ต.ค. 2569', text:'สอบถามรายละเอียดและติดตามการดูแลได้สะดวก' },
-    { score:4, name:'ผู้ใช้บริการ Krane', date:'19 ต.ค. 2569', text:'เลือกเวลาปรึกษาที่สะดวกได้' },
-  ];
-  let score = 0;
-  const reviewRail=root.querySelector('.opt-feedback-rail');
-  const renderReview=()=>{
-    const list=reviewCards.filter(r=>!score||r.score===score);
-    if(root.querySelector('[data-sort]').value==='top')list.sort((a,b)=>b.score-a.score);
-    reviewRail.innerHTML=list.length?list.map(r=>'<article><span class="opt-stars">'+ '★'.repeat(r.score) +'☆'.repeat(5-r.score)+'</span><p>“'+r.text+'”</p><small>'+r.name+' · '+r.date+'</small></article>').join(''):'<p class="opt-empty">ไม่มีรีวิวในคะแนนนี้</p>';
-  };
-  renderReview();
-  root.querySelector('[data-sort]').addEventListener('change',renderReview);
   root.addEventListener('click',e=>{
-    const filter=e.target.closest('[data-score]');
-    if(filter){
-      score=Number(filter.dataset.score);
-      root.querySelectorAll('[data-score]').forEach(b=>b.setAttribute('aria-pressed',String(b===filter)));
-      renderReview();
-    }
     const arrow=e.target.closest('[data-scroll]');
     if(arrow){
       const rail=arrow.closest('section').querySelector('[data-rail]');

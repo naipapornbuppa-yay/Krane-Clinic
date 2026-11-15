@@ -90,22 +90,23 @@
     new IntersectionObserver(([entry]) => { marqueeVisible = entry.isIntersecting; syncMarquee(); }).observe(comparisons);
   }
   buildMarquee();
-  if (page.dataset.programme !== 'rebody') return;
-  const months = ['เดือนที่ 1', 'เดือนที่ 2–3', '4 เดือนขึ้นไป'];
-  const descriptions = [
-    'แพทย์ประจำตัวจะประเมินสุขภาพ ตั้งเป้าหมายร่วมกับคุณ และเริ่มแผนดูแลอย่างค่อยเป็นค่อยไป ช่วงแรกร่างกายกำลังปรับตัว บางคนอาจรู้สึกอิ่มเร็วขึ้นหรือคลื่นไส้เล็กน้อย ซึ่งพบได้และมักดีขึ้นเอง หากกังวล นัดปรึกษาแพทย์ประจำตัวได้เสมอ',
-    'แพทย์จะติดตามผลและปรับแผนให้เหมาะกับร่างกายของคุณ พร้อมวางแผนการกินและการออกกำลังกายเฉพาะบุคคล',
-    'ทบทวนผลกับแพทย์และวางแผนระยะยาว เพื่อให้ดูแลพฤติกรรมการกินและการออกกำลังกายได้อย่างต่อเนื่อง',
-  ];
-  timeline.querySelectorAll('details').forEach((item, index) => {
-    item.name = 'rebody-care-timeline';
-    item.querySelector('summary .opt-eyebrow').textContent = months[index];
-    item.querySelector('.opt-step-copy p').textContent = descriptions[index];
+  if (page.dataset.programme === 'rebody') {
+    const months = ['เดือนที่ 1', 'เดือนที่ 2–3', '4 เดือนขึ้นไป'];
+    const descriptions = [
+      'แพทย์ประจำตัวจะประเมินสุขภาพ ตั้งเป้าหมายร่วมกับคุณ และเริ่มแผนดูแลอย่างค่อยเป็นค่อยไป ช่วงแรกร่างกายกำลังปรับตัว บางคนอาจรู้สึกอิ่มเร็วขึ้นหรือคลื่นไส้เล็กน้อย ซึ่งพบได้และมักดีขึ้นเอง หากกังวล นัดปรึกษาแพทย์ประจำตัวได้เสมอ',
+      'แพทย์จะติดตามผลและปรับแผนให้เหมาะกับร่างกายของคุณ พร้อมวางแผนการกินและการออกกำลังกายเฉพาะบุคคล',
+      'ทบทวนผลกับแพทย์และวางแผนระยะยาว เพื่อให้ดูแลพฤติกรรมการกินและการออกกำลังกายได้อย่างต่อเนื่อง',
+    ];
+    timeline.querySelectorAll('details').forEach((item, index) => {
+      item.name = 'rebody-care-timeline';
+      item.querySelector('summary .opt-eyebrow').textContent = months[index];
+      item.querySelector('.opt-step-copy p').textContent = descriptions[index];
 
-  });
-  const caption = document.createElement('small');
-  caption.textContent = 'ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล';
-  timeline.querySelector('.opt-step-copy').append(caption);
+    });
+    const caption = document.createElement('small');
+    caption.textContent = 'ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล';
+    timeline.querySelector('.opt-step-copy').append(caption);
+  }
 
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(([entry]) => {
@@ -117,22 +118,12 @@
   }
 
   const hero = page.querySelector('.opt-hero');
-  hero.querySelectorAll('.opt-hero-badges li').forEach(badge => {
-    const icon = document.createElement('img');
-    icon.src = 'assets/programme-opt1/rebody-hero-badge.svg';
-    icon.alt = '';
-    icon.width = 24;
-    icon.height = 24;
-    const wrapper = document.createElement('span');
-    wrapper.className = 'rebody-hero-badge-icon';
-    wrapper.setAttribute('aria-hidden', 'true');
-    wrapper.append(icon);
-    badge.prepend(wrapper);
-  });
   const video = document.createElement('video');
   video.className = 'rebody-hero-video';
-  video.src = 'assets/programme-opt1/rebody-hero-motion.m4v';
-  video.poster = 'assets/programme-opt1/body-hero.webp';
+  const hair = page.dataset.programme === 'rehair';
+  video.src = 'assets/programme-opt1/' + (hair ? 'rehair-hero-motion.mp4' : 'rebody-hero-motion.m4v');
+  video.poster = 'assets/programme-opt1/' + (hair ? 'hair-hero.webp' : 'body-hero.webp');
+  video.defaultMuted = true;
   video.muted = true;
   video.loop = true;
   video.playsInline = true;

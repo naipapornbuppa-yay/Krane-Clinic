@@ -13,7 +13,82 @@
     }
     window.dispatchEvent(new Event('krane-articles-changed'));
   }
-  document.querySelectorAll('[data-landing-review]').forEach(button=>button.addEventListener('click',()=>{const items=(window.KraneReviews||[]).map(item=>({...item,attribution:[item.name,item.province].filter(Boolean).join(' · ')}));document.dispatchEvent(new CustomEvent('krane:open-review-stories',{detail:{items,activeId:button.dataset.landingReview,trigger:button}}));}));
+  const gallery = document.querySelector('.landing-review-gallery');
+  if (gallery) {
+    for (const column of gallery.children) {
+      const track = document.createElement('div');
+      track.className = 'landing-review-track';
+      const cycle = document.createElement('div');
+      cycle.className = 'landing-review-cycle';
+      const seen = new Set();
+      for (const review of [...column.children]) {
+        if (!seen.has(review.dataset.landingReview)) cycle.append(review);
+        seen.add(review.dataset.landingReview);
+      }
+      track.append(cycle);
+      for (let i = 0; i < 2; i++) {
+        const copy = cycle.cloneNode(true);
+        copy.dataset.copy = '';
+        copy.setAttribute('aria-hidden', 'true');
+        copy.querySelectorAll('button').forEach(button => button.tabIndex = -1);
+        track.append(copy);
+      }
+      column.replaceChildren(track);
+    }
+    gallery.classList.add('is-looping');
+    new IntersectionObserver(([entry]) => gallery.classList.toggle('is-in-view', entry.isIntersecting)).observe(gallery);
+  }
+  document.querySelectorAll('.landing-stories').forEach(stories => {
+    stories.addEventListener('click', event => {
+      const button = event.target.closest('[data-landing-review]');
+      if (!button) return;
+      const items = (window.KraneReviews || []).map(item => ({...item, attribution:[item.name,item.province].filter(Boolean).join(' · ')}));
+      document.dispatchEvent(new CustomEvent('krane:open-review-stories', {detail:{items,activeId:button.dataset.landingReview,trigger:button}}));
+    });
+    document.addEventListener('krane:languagechange', () => {
+      const dots = document.querySelector('.landing-article-dots');
+      if (!dots) return;
+      dots.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Article pages' : 'เลือกหน้าบทความ');
+    });
+  });
+  const articleDots = document.querySelector('.landing-article-dots');
+  if (rail && articleDots) {
+    let stops = [];
+    const sync = () => {
+      if (!stops.length) return;
+      const active = stops.reduce((best, left, i) => Math.abs(left - rail.scrollLeft) < Math.abs(stops[best] - rail.scrollLeft) ? i : best, 0);
+      Array.from(articleDots.children).forEach((button, i) => {
+        button.classList.toggle('is-current', i === active);
+        button.setAttribute('aria-current', i === active ? 'true' : 'false');
+      });
+    };
+    const measure = () => {
+      const cards = [...rail.children];
+      const max = rail.scrollWidth - rail.clientWidth;
+      if (cards.length < 2 || max < 2) { articleDots.hidden = true; return; }
+      const origin = cards[0].offsetLeft;
+      const step = cards[1].offsetLeft - origin;
+      if (step < 1) return;
+      const perPage = Math.max(1, Math.floor(rail.clientWidth / step));
+      stops = cards.filter((_, i) => i % perPage === 0).map(card => card.offsetLeft - origin).filter(left => left < max - 2);
+      stops.push(max);
+      if (articleDots.childElementCount !== stops.length) {
+        articleDots.replaceChildren(...stops.map((_, i) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.setAttribute('aria-label', 'บทความ หน้าที่ ' + (i + 1));
+          button.addEventListener('click', () => rail.scrollTo({left:stops[i],behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}));
+          return button;
+        }));
+      }
+      articleDots.hidden = false;
+      sync();
+    };
+    rail.addEventListener('scroll', sync, {passive:true});
+    new ResizeObserver(measure).observe(rail);
+    new MutationObserver(measure).observe(rail, {childList:true});
+    measure();
+  }
   const mobileCare = document.querySelector('.mobile-care-benefits');
   if (mobileCare) {
     const rail = mobileCare.querySelector('.mobile-care-benefits__rail');

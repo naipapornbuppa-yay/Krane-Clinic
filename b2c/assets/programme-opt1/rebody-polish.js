@@ -57,62 +57,6 @@
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
   });
 
-  const reviews = page.querySelector('.opt-feedback');
-  reviews.innerHTML = `
-    <div class="rebody-review-header"><h2>ความคิดเห็น</h2><div class="rebody-review-rating" aria-label="คะแนนตัวอย่าง 4.8 จาก 5"><strong>4.8<small> / 5</small></strong><span>★★★★★<small>100 การประเมิน</small></span></div></div>
-    <p class="rebody-review-disclosure">ตัวอย่างสมมติสำหรับแสดงหน้าจอ · คะแนนและความคิดเห็นไม่ใช่รีวิวจากผู้รับบริการจริง</p>
-    <div class="rebody-review-toolbar"><label>เรียงตาม <select data-body-sort><option value="latest">ล่าสุด</option><option value="top">คะแนนสูงสุด</option><option value="oldest">เก่าสุด</option></select></label></div>
-    <div class="rebody-review-filters" aria-label="กรองตามคะแนน">${[0,5,4,3,2,1].map(score => `<button type="button" data-body-score="${score}" aria-pressed="${!score}">${score ? score + ' ★' : 'ทั้งหมด'}</button>`).join('')}</div>
-    <div class="rebody-review-rail" aria-label="ความคิดเห็น เลื่อนเพื่ออ่านเพิ่มเติม" tabindex="0"></div><p class="visually-hidden" data-review-status role="status"></p>
-    <div class="rebody-review-pages" aria-label="เลื่อนความคิดเห็น"></div>`;
-  const sampleReviews = [
-    {score:5,title:'เข้าใจแผนก่อนเริ่ม',text:'ขั้นตอนเข้าใจง่าย คุณหมออธิบายแนวทางและตอบคำถามได้ชัดเจน',name:'ก***',avatar:'ก',day:22},
-    {score:5,title:'ปรึกษาได้จากที่บ้าน',text:'ปรึกษาจากที่บ้านได้สะดวก ดูรายละเอียดแผนและค่าใช้จ่ายก่อนตัดสินใจได้',name:'พ***',avatar:'พ',day:18},
-    {score:4,title:'ข้อมูลชัดเจน พร้อมติดตาม',text:'ข้อมูลการรับยาอ่านเข้าใจง่าย อยากให้การแจ้งเตือนนัดติดตามเห็นชัดขึ้นอีกนิด',name:'น***',avatar:'น',day:12},
-    {score:5,title:'อ่านขั้นตอนได้ง่าย',text:'หน้าตัวอย่างจัดลำดับขั้นตอนได้ชัดเจน ปุ่มกดไม่ทำให้งงง่าย',name:'ม***',avatar:'ม',day:11},
-    {score:4,title:'นัดหมายสะดวก',text:'จองคิวง่าย มีเตือนก่อนนัด อยากได้รอบวันหยุดเพิ่ม',name:'ส***',avatar:'ส',day:8}
-  ];
-  const reviewRail = reviews.querySelector('.rebody-review-rail');
-  const reviewPages = reviews.querySelector('.rebody-review-pages');
-  reviews.querySelector('.rebody-review-header').prepend(reviews.querySelector('h2'));
-  const sort = reviews.querySelector('.rebody-review-toolbar label');
-  reviews.querySelector('.rebody-review-header').append(sort);
-  reviews.querySelector('.rebody-review-toolbar').remove();
-  let score = 0;
-  const syncReviewPages = () => {
-    const max = Math.max(0, reviewRail.scrollWidth - reviewRail.clientWidth);
-    const count = max < 2 ? 1 : Math.ceil(max / reviewRail.clientWidth) + 1;
-    const active = max ? Math.round(reviewRail.scrollLeft / max * (count - 1)) : 0;
-    if (reviewPages.childElementCount !== count) reviewPages.replaceChildren(...Array.from({length:count}, (_, index) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.setAttribute('aria-label', 'ความคิดเห็นชุดที่ ' + (index + 1));
-      button.addEventListener('click', () => {
-        const maxScroll = reviewRail.scrollWidth - reviewRail.clientWidth;
-        reviewRail.scrollTo({left:count > 1 ? maxScroll * index / (count - 1) : 0, behavior:scrollBehavior()});
-      });
-      return button;
-    }));
-    Array.from(reviewPages.children).forEach((button, index) => button.setAttribute('aria-current', String(index === active)));
-  };
-  const renderReviews = () => {
-    const sort = reviews.querySelector('[data-body-sort]').value;
-    const list = sampleReviews.filter(item => !score || item.score === score).sort((a,b) => sort === 'oldest' ? a.day - b.day : sort === 'top' ? b.score - a.score || b.day - a.day : b.day - a.day);
-    reviewRail.innerHTML = list.map(item => `<article class="rebody-review-card"><span class="rebody-review-stars" aria-label="${item.score} จาก 5 ดาว">${'★'.repeat(item.score)}${'☆'.repeat(5-item.score)}</span><h3>${item.title}</h3><blockquote>“${item.text}”</blockquote><small>ตัวอย่างสมมติ</small><div class="rebody-review-person"><span class="rebody-review-avatar" aria-hidden="true">${item.avatar}</span><div><strong>${item.name}</strong><time datetime="2026-10-${item.day}">${item.day} ต.ค. 2569</time></div></div></article>`).join('') || '<p class="opt-empty">ไม่มีรีวิวในคะแนนนี้</p>';
-    reviewRail.scrollLeft = 0;
-    reviews.querySelector('[data-review-status]').textContent = 'แสดงความคิดเห็น ' + list.length + ' รายการ';
-    syncReviewPages();
-  };
-  reviews.querySelector('[data-body-sort]').addEventListener('change', renderReviews);
-  reviews.querySelectorAll('[data-body-score]').forEach(button => button.addEventListener('click', () => {
-    score = Number(button.dataset.bodyScore);
-    reviews.querySelectorAll('[data-body-score]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-    renderReviews();
-  }));
-  reviewRail.addEventListener('scroll', syncReviewPages, {passive:true});
-  new ResizeObserver(syncReviewPages).observe(reviewRail);
-  renderReviews();
-
   page.querySelectorAll('.opt-article-rail a').forEach(link => {
     link.querySelector('span').innerHTML = 'อ่าน 4 นาที <b aria-hidden="true">→</b>';
   });
@@ -121,7 +65,7 @@
   articleControls.innerHTML = '<button type="button" data-scroll="-1" aria-label="บทความก่อนหน้า">‹</button><button type="button" data-scroll="1" aria-label="บทความถัดไป">›</button>';
   page.querySelector('.opt-article-rail').after(articleControls);
   // Native horizontal rails remain usable by touch, wheel, and the keyboard.
-  page.querySelectorAll('.opt-story-rail,.opt-article-rail,.rebody-review-rail').forEach(rail => {
+  page.querySelectorAll('.opt-story-rail,.opt-article-rail').forEach(rail => {
     rail.tabIndex = 0;
     rail.addEventListener('keydown', event => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
