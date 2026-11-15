@@ -6,6 +6,7 @@
   const scrollBehavior = () => reduce.matches ? 'instant' : 'smooth';
 
   page.querySelector('.opt-timeline h2').innerHTML = 're:body<br> ไทม์ไลน์การดูแล';
+  page.querySelector('.opt-timeline header p br').replaceWith(' ');
   const stepImage = page.querySelector('.opt-step-copy img');
   const stepPicture = document.createElement('picture');
   const mobileStep = document.createElement('source');

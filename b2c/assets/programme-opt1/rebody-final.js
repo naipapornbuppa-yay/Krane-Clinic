@@ -39,17 +39,10 @@
   const track = document.createElement('div');
   track.className = 'rebody-marquee-track';
   comparisons.replaceChildren(track);
-  const pause = document.createElement('button');
-  pause.type = 'button';
-  pause.className = 'rebody-marquee-toggle';
-  comparisons.before(pause);
   let marqueePaused = false;
   let marqueeVisible = !('IntersectionObserver' in window);
   const syncMarquee = () => {
     comparisons.classList.toggle('is-running', marqueeVisible && !marqueePaused && !reduce.matches && !document.hidden);
-    pause.textContent = marqueePaused ? '▶' : 'Ⅱ';
-    pause.setAttribute('aria-label', marqueePaused ? 'เล่นการเลื่อนภาพก่อนและหลัง' : 'หยุดการเลื่อนภาพก่อนและหลัง');
-    pause.setAttribute('aria-pressed', String(marqueePaused));
   };
   const duplicate = node => {
     const copy = node.cloneNode(true);
@@ -74,8 +67,8 @@
     }
     syncMarquee();
   };
-  pause.addEventListener('click', () => { marqueePaused = !marqueePaused; syncMarquee(); });
   comparisons.addEventListener('keydown', event => {
+    if (event.key === ' ') { event.preventDefault(); marqueePaused = !marqueePaused; syncMarquee(); return; }
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     const direction = event.key === 'ArrowRight' ? 1 : -1;
@@ -159,6 +152,7 @@
 
   let inView = false;
   const sync = () => {
+    hero.classList.toggle('is-motion-active', inView && !document.hidden && !reduce.matches);
     if (inView && !reduce.matches && !document.hidden) video.play().catch(() => {});
     else video.pause();
   };
