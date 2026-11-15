@@ -39,7 +39,7 @@
   };
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const label = (key, words, className = '') => '<span class="' + className + '" data-i18n="footer.' + key + '" data-footer-copy data-th="' + escape(words[0]) + '" data-en="' + escape(words[1]) + '">' + escape(words[0]) + '</span>';
-  const unavailable = (key, words) => '<span class="kf__pending" role="link" aria-disabled="true">' + label(key, words) + label(key + '.unavailable', copy.unavailable, 'kf__sr-only') + '</span>';
+  const unavailable = (key, words, icon = '') => '<span class="kf__pending" role="link" aria-disabled="true">' + icon + label(key, words, icon ? 'kf__sr-only' : '') + label(key + '.unavailable', copy.unavailable, 'kf__sr-only') + '</span>';
   const link = (item, key) => {
     const [th, en, href, route] = item;
     if (!href) return unavailable(key, [th, en]);
@@ -47,14 +47,23 @@
   };
   const chevron = '<svg class="kf__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 
+  const footerIcon = name => '<img src="assets/landing-figma-20261115/footer-' + name + '.svg" alt="" loading="lazy">';
+  const socials = ['Facebook', 'Instagram', 'YouTube', 'TikTok', 'LINE', 'X'];
+
   function render() {
     const mobile = window.matchMedia('(max-width: 760px)');
     document.querySelectorAll('[data-site-footer]').forEach((footer, footerIndex) => {
+      const flush = footer.dataset.footerLayout === 'flush';
+      const social = (name, index) => {
+        const icon = flush ? footerIcon(name.toLowerCase()) : '';
+        const artwork = name === 'LINE' && icon ? '<span class="kf__line" aria-hidden="true">' + icon + '<span>LINE</span></span>' : icon;
+        return unavailable('social.' + index, [name, name], artwork);
+      };
       const groupsMarkup = groups.map(group => {
         const id = 'krane-footer-' + footerIndex + '-' + group.id;
         return '<details class="kf__group" data-footer-group><summary aria-controls="' + id + '"><h2>' + label(group.id, group.title) + '</h2>' + chevron + '</summary><ul id="' + id + '">' + group.items.map((item, index) => '<li>' + link(item, group.id + '.' + index) + '</li>').join('') + '</ul></details>';
       }).join('');
-      footer.innerHTML = '<div class="kf__main"><div class="kf__brand"><a class="kf__wordmark" href="krane-b2c-landing.html#top" aria-label="Krane Clinic"><img class="brand-lockup" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" loading="lazy" alt="Krane Clinic"></a><p>' + label('description', copy.description) + '</p><div class="kf__contact"><a href="mailto:support@kraneclinic.com">support@kraneclinic.com</a><a href="tel:+66613840206">061-384-0206</a></div><small class="kf__licence">' + label('licence', copy.licence) + '</small><small>' + label('disclaimer', copy.disclaimer) + '</small></div><nav class="kf__links">' + groupsMarkup + '</nav></div><div class="kf__bottom"><div class="kf__social"><span class="kf__sr-only">' + label('social', copy.social) + '</span>' + ['Facebook', 'Instagram', 'YouTube', 'TikTok', 'LINE', 'X'].map((name, index) => unavailable('social.' + index, [name, name])).join('') + '</div><span class="kf__copyright">Copyright © 2026 kraneclinic.com All rights reserved.</span></div>';
+      footer.innerHTML = '<div class="kf__main"><div class="kf__brand"><a class="kf__wordmark" href="krane-b2c-landing.html#top" aria-label="Krane Clinic"><img class="brand-lockup" src="../assets/brand-final/krane-lockup.svg" width="473" height="72" loading="lazy" alt="Krane Clinic"></a><p>' + label('description', copy.description) + '</p><div class="kf__contact"><a href="mailto:support@kraneclinic.com">' + (flush ? footerIcon('email') : '') + 'support@kraneclinic.com</a><a href="tel:+66613840206">' + (flush ? footerIcon('phone') : '') + '061-384-0206</a></div><small class="kf__licence">' + label('licence', copy.licence) + '</small><small>' + label('disclaimer', copy.disclaimer) + '</small></div><nav class="kf__links">' + groupsMarkup + '</nav></div><div class="kf__bottom"><div class="kf__social"><span class="kf__sr-only">' + label('social', copy.social) + '</span>' + socials.map(social).join('') + '</div><span class="kf__copyright">Copyright © 2026 kraneclinic.com All rights reserved.</span></div>';
       // Keep the programme action bar from covering footer navigation.
       const actionBar = document.querySelector('.cd-stickybar');
       if (actionBar && 'IntersectionObserver' in window) {
