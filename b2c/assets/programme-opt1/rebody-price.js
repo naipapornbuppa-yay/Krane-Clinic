@@ -1,42 +1,25 @@
 (() => {
   const section = document.querySelector('[data-programme="rebody"] .opt-price');
-  if (!section || section.classList.contains('rebody-pricing')) return;
-  const intake = section.querySelector('a.opt-cta')?.getAttribute('href') || 'krane-b2c.html?entry=direct&fresh=1&category=weight#intake1';
+  if (!section || section.dataset.pricingSource === 'pricing.html') return;
   section.classList.add('rebody-pricing');
+  section.dataset.pricingSource = 'pricing.html';
   section.setAttribute('aria-labelledby', 'rebody-price-title');
-  section.innerHTML = `
-    <div class="opt-wrap">
-      <h2 id="rebody-price-title">รู้ราคาก่อน ทุกขั้นตอน</h2>
-      <article class="rebody-pricing-card" aria-label="ราคาและการดูแล re:body">
-        <div class="rebody-pricing-photo">
-          <img src="assets/programme-opt1/body-doctor.webp" alt="แพทย์ผู้ให้คำปรึกษาด้านการดูแลน้ำหนัก" loading="lazy" decoding="async">
-          <header><h3>re:body</h3><p>ดูแลน้ำหนัก กับแผนเฉพาะตัว</p></header>
-        </div>
-        <div class="rebody-pricing-content">
-          <div class="rebody-pricing-rates">
-            <p class="rebody-pricing-eyebrow">เริ่มต้น</p>
-            <dl>
-              <div class="rebody-pricing-rate"><dt>ค่าปรึกษาแพทย์<small>ปรึกษาออนไลน์</small></dt><dd><span>฿</span><strong>350</strong><small>/ ครั้ง</small></dd></div>
-              <div class="rebody-pricing-rate"><dt>ค่าจัดส่ง<small>ตรวจสอบก่อนยืนยัน</small></dt><dd><span>฿</span><strong>50</strong><small>/ ครั้ง</small></dd></div>
-            </dl>
-          </div>
-          <div class="rebody-pricing-consult">
-            <div class="rebody-pricing-benefits">
-              <h4>จุดเด่นของโปรแกรม</h4>
-              <ul>
-                <li><i data-lucide="search" aria-hidden="true"></i><span>แพทย์ประเมินสุขภาพรายบุคคล</span></li>
-                <li><i data-lucide="clipboard-list" aria-hidden="true"></i><span>วางแผนดูแลให้เหมาะกับคุณ</span></li>
-                <li><i data-lucide="calendar-days" aria-hidden="true"></i><span>นัดติดตามกับแพทย์ประจำตัว</span></li>
-                <li><i data-lucide="refresh-cw" aria-hidden="true"></i><span>ทบทวนและปรับแผนร่วมกับแพทย์</span></li>
-                <li><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i><span>ติดตามความคืบหน้าได้ที่โปรไฟล์</span></li>
-              </ul>
-            </div>
-            <a class="opt-cta rebody-pricing-action">เริ่มปรึกษาแพทย์</a>
-            <p class="rebody-pricing-note">เลือกแผนหลังแพทย์ประเมิน และตรวจสอบค่าใช้จ่ายก่อนยืนยันคำสั่งซื้อ<br><a href="pricing.html">ดูรายละเอียดราคา →</a></p>
-          </div>
-        </div>
-      </article>
-    </div>`;
-  section.querySelector('.rebody-pricing-action').setAttribute('href', intake);
-  window.lucide?.createIcons({ attrs: { 'stroke-width': 1.5 } });
+  // Reuse the re:body card from pricing.html on gh-pages, including its supplied image,
+  // rates, benefit icons and destination. Only layout wrappers differ.
+  section.innerHTML = '<div class="opt-wrap"><h2 id="rebody-price-title">รู้ราคาก่อน ทุกขั้นตอน</h2>' +
+    "<article class=\"pricing-card\">\n<div class=\"pricing-card__image pricing-card__image--weight\"><img class=\"pricing-card__waist\" src=\"assets/product-hero/weight-care-waist-crop-v2.png\" width=\"1536\" height=\"1024\" loading=\"lazy\" decoding=\"async\" alt=\"\"><header>\n<h3>re:body</h3>\n<p class=\"\">ดูแลและควบคุมน้ำหนัก</p>\n</header></div>\n<div class=\"pricing-rates\">\n<p class=\"pricing-eyebrow\">เริ่มต้น</p>\n<div class=\"pricing-rate\">\n<div>\n<h4>ยาฉีดชนิดปากกา</h4>\n<small>ขนาดเริ่มต้น 1 ด้าม</small>\n</div>\n<p class=\"pricing-amount\">\n<span>฿</span>\n<strong>9,999</strong>\n<small>/ เดือน <sup>*</sup>\n</small>\n</p>\n</div>\n</div>\n<div class=\"pricing-benefits\">\n<h4>จุดเด่นของโปรแกรม</h4>\n<ul>\n<li>\n<i data-lucide=\"target\" aria-hidden=\"true\">\n</i>\n<span>แพทย์ช่วยตั้งเป้าหมายที่ทำได้จริง</span>\n</li>\n<li>\n<i data-lucide=\"leaf\" aria-hidden=\"true\">\n</i>\n<span>แผนการกินและออกกำลังกายเฉพาะคุณ</span>\n</li>\n<li>\n<i data-lucide=\"calendar\" aria-hidden=\"true\">\n</i>\n<span>นัดติดตามผลกับแพทย์ประจำตัว</span>\n</li>\n<li>\n<i data-lucide=\"refresh-cw\" aria-hidden=\"true\">\n</i>\n<span>เติมยาออนไลน์ได้สะดวก เมื่อแพทย์อนุมัติ</span>\n</li>\n<li>\n<i data-lucide=\"chart-no-axes-combined\" aria-hidden=\"true\">\n</i>\n<span>ติดตามความคืบหน้าได้ที่โปรไฟล์</span>\n</li>\n</ul>\n</div>\n<div class=\"pricing-actions\">\n<a class=\"pricing-action\" href=\"condition-detail.html?condition=weight\" target=\"_parent\">ดูโปรแกรม</a>\n</div>\n</article>" +
+    '</div>';
+  const card = section.querySelector('.pricing-card');
+  card.setAttribute('aria-label', 'ราคาโปรแกรม re:body');
+  const content = document.createElement('div');
+  content.className = 'pricing-card__content';
+  const consultation = document.createElement('div');
+  consultation.className = 'pricing-card__consult';
+  const footnote = document.createElement('p');
+  footnote.className = 'pricing-footnote';
+  footnote.textContent = "* ราคาค่ายายังไม่รวมค่าปรึกษาแพทย์และค่าจัดส่ง · บัญชีใหม่ปรึกษาครั้งแรกฟรี";
+  consultation.append(card.querySelector('.pricing-benefits'), card.querySelector('.pricing-actions'), footnote);
+  content.append(card.querySelector('.pricing-rates'), consultation);
+  card.append(content);
+  window.lucide?.createIcons({ attrs: { 'stroke-width': 1.6 } });
 })();

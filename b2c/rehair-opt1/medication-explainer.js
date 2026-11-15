@@ -76,7 +76,12 @@
     }
     previous.addEventListener('click', () => move(-1)); next.addEventListener('click', () => move(1));
     const disclaimer = document.createElement('p'); disclaimer.className = 'medication-explainer__disclaimer';
-    const safety = document.createElement('a'); safety.className = 'medication-explainer__safety'; safety.href = '../glp1-safety.html?condition=hair-loss';
+    const safety = document.createElement('a'); safety.className = 'medication-explainer__safety'; safety.href = '../condition-detail.html?condition=hair-loss#precautions';
+    if (window.KraneSafety) {
+      safety.dataset.safetyOpen = 'hair-loss';
+      safety.setAttribute('aria-haspopup', 'dialog');
+      safety.setAttribute('aria-controls', 'krane-safety-dialog');
+    }
     section.append(header, rail, controls, disclaimer, safety); host.append(section);
     const language = () => document.documentElement.lang === 'en' ? 'en' : 'th';
     function setOpen(index, open) {

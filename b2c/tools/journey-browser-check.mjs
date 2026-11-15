@@ -48,7 +48,16 @@ await p.waitForFunction(l=>document.documentElement.lang===l,lang);
 
 const safety=p.locator('.cd-safety-link');await safety.scrollIntoViewIfNeeded();
 if(condition==='hair-loss')assert.equal(await p.locator('[data-safety]').innerText(),lang==='th'?'ข้อมูลความปลอดภัยสำหรับโปรแกรมดูแลเส้นผม':'Safety information for the hair care programme');
-assert.equal(new URL(await safety.getAttribute('href'),p.url()).searchParams.get('condition'),condition);await safety.screenshot({path:`${output}/${condition}-${lang}-${width}-safety.png`});
+assert.equal(await safety.getAttribute('data-safety-open'),condition);
+const pageUrl=p.url();await safety.click();
+const drawer=p.locator('#krane-safety-dialog');await drawer.waitFor({state:'visible'});
+assert.equal(p.url(),pageUrl,'Safety opens without leaving the programme');
+assert.equal(await drawer.locator('#ks-urgent').count(),1);
+assert.ok((await drawer.locator('#ks-page-title').innerText()).includes(condition==='hair-loss'?'re:hair':condition==='re-flow'?'re:flow':'GLP'));
+assert(!(await drawer.evaluate(e=>e.scrollWidth>e.clientWidth)),'Safety drawer horizontal overflow');
+await drawer.screenshot({path:`${output}/${condition}-${lang}-${width}-safety.png`});
+await p.keyboard.press('Escape');await drawer.waitFor({state:'hidden'});
+assert(await safety.evaluate(e=>e===document.activeElement),'Safety close restores trigger focus');
 for(const section of ['overview','steps','price']){await p.locator(`[data-cd-tab="${section}"]`).click();await p.locator(`[data-cd-panel="${section}"]`).waitFor({state:'visible'});}
 await p.locator('.condition-hero [data-intake-link]').click();await p.locator('#intake1.active').waitFor();
 assert.deepEqual(errors,[],'Browser errors');assert.deepEqual(missing,[],'Missing local assets');results.push({condition,lang,width,status:'pass',errors,missing,mockRequests});console.log('PASS',condition,lang,width);

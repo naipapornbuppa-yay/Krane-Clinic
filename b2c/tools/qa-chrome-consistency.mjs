@@ -29,7 +29,7 @@ try {
   for (const width of (process.env.QA_WIDTH ? [Number(process.env.QA_WIDTH)] : [320, 360, 390, 768, 1100, 1440])) {
     const context=await browser.newContext({viewport:{width,height:900}});await necessaryConsent(context);const page=await context.newPage();
     page.setDefaultTimeout(30000*qaTimeoutFactor);page.setDefaultNavigationTimeout(30000*qaTimeoutFactor);
-    for (const route of ['krane-b2c-landing.html', 'condition-detail.html?condition=weight', 'doctors.html', 'glp1-safety.html']) {
+    for (const route of ['krane-b2c-landing.html', 'condition-detail.html?condition=weight', 'doctors.html']) {
       await page.goto(base + route, { waitUntil:'domcontentloaded' });
       await page.locator('.site-header .brand-lockup').waitFor();
       results.push(await page.evaluate(({route,width}) => {
@@ -76,7 +76,7 @@ try {
     await context.close();
   }
   const failures = [];
-  const publicRoutes = new Set(['krane-b2c-landing.html','condition-detail.html?condition=weight','doctors.html','glp1-safety.html']);
+  const publicRoutes = new Set(['krane-b2c-landing.html','condition-detail.html?condition=weight','doctors.html']);
   const detailRoutes = new Set(['doctor-detail.html','advisor-detail.html']);
   const brandedStages = new Set(['intake1','intake-concern','intake-general','partner-idcard','partner-patient-info','partner-insurance','consultpay','payment']);
   const navStages = new Set(['profile','activity','notifications','settings','empty-activities']);

@@ -611,12 +611,18 @@
   setText("[data-medical-note]", data.medicalNote);
   setText("[data-safety]", data.safety);
   const programmeSafetyLink=document.querySelector('.cd-safety-link');
-  if(programmeSafetyLink) programmeSafetyLink.href='glp1-safety.html?condition='+encodeURIComponent(data.category==='hair-skin'?'hair-loss':data.category==='sexual-health'?'re-flow':'weight');
+  if(programmeSafetyLink) {
+    programmeSafetyLink.href = '#precautions';
+    programmeSafetyLink.dataset.safetyOpen = data.category==='hair-skin'?'hair-loss':data.category==='sexual-health'?'re-flow':'weight';
+    programmeSafetyLink.setAttribute('aria-haspopup','dialog');
+  }
   setText("[data-closing-kicker]", `พร้อมเริ่มดูแล${data.kicker.replace("ดูแล", "").trim() || "สุขภาพ"}`);
 
   const safetyLink = document.querySelector(".safety__button");
   if (safetyLink && key === "weight") {
-    safetyLink.href = "glp1-safety.html";
+    safetyLink.href = "#precautions";
+    safetyLink.dataset.safetyOpen = 'weight';
+    safetyLink.setAttribute('aria-haspopup','dialog');
     safetyLink.textContent = "อ่านข้อมูลความปลอดภัย";
   }
 
@@ -899,3 +905,4 @@
     }, { once: true });
   }
 })();
+

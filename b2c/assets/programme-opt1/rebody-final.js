@@ -27,7 +27,7 @@
     const quote = document.createElement('blockquote');
     quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
     const name = card.querySelector('p');
-    name.textContent = review.name + ' · ' + review.age + ' ปี · ' + review.occupation;
+    name.textContent = [review.name, review.age + ' ปี', review.province].filter(Boolean).join(' · ');
     copy.append(quote, name);
     card.append(copy);
   });
@@ -125,6 +125,18 @@
   }
 
   const hero = page.querySelector('.opt-hero');
+  hero.querySelectorAll('.opt-hero-badges li').forEach(badge => {
+    const icon = document.createElement('img');
+    icon.src = 'assets/programme-opt1/rebody-hero-badge.svg';
+    icon.alt = '';
+    icon.width = 24;
+    icon.height = 24;
+    const wrapper = document.createElement('span');
+    wrapper.className = 'rebody-hero-badge-icon';
+    wrapper.setAttribute('aria-hidden', 'true');
+    wrapper.append(icon);
+    badge.prepend(wrapper);
+  });
   const video = document.createElement('video');
   video.className = 'rebody-hero-video';
   video.src = 'assets/programme-opt1/rebody-hero-motion.m4v';
