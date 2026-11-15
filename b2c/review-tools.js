@@ -248,6 +248,13 @@
       });
       const previews=[...global.document.querySelectorAll('.modal-layer[id], dialog[id]')].map(node=>({id:node.id,node}));
       [{id:'address-delete-confirm',title:'ยืนยันลบที่อยู่',text:'ต้องการลบที่อยู่นี้ใช่ไหม?',actions:['ยกเลิก','ลบที่อยู่']},{id:'red-flag-modal',title:'คำถามคัดกรองความปลอดภัย',text:'ตัวอย่างคำถามคัดกรอง · สูงสุด 3 คำถามต่อขั้นตอน',actions:['ไม่ใช่','ใช่','ถัดไป']}].forEach(item=>{if(!previews.some(p=>p.id===item.id))previews.push(item);});
+      const cookiePolicy = global.document.createElement('a');
+      cookiePolicy.href = 'cookies.html';
+      cookiePolicy.target = '_blank';
+      cookiePolicy.rel = 'noopener';
+      cookiePolicy.textContent = thai ? 'นโยบายคุกกี้ (เต็มหน้า)' : 'Cookie policy (full page)';
+      body.append(cookiePolicy);
+
       previews.unshift(
         {id:'cookie-notice',title:thai?'ประกาศคุกกี้':'Cookie notice',selector:'[data-cookie-banner]'},
         {id:'cookie-preferences',title:thai?'ตั้งค่าคุกกี้':'Cookie settings',selector:'[data-cookie-preferences]'},
