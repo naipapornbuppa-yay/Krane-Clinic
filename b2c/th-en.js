@@ -297,6 +297,8 @@
     "จากมุมมองของผู้รับบริการ":"from participants' perspectives",
     "คะแนนจำลอง":"Illustrative rating",
     "100 การประเมิน":"100 ratings",
+    "รีวิวตัวอย่าง":"Sample review",
+    "ข้อมูลสมมติ":"Fictional example",
     "ความคิดเห็น":"Comments",
     "เรียงตาม":"Sort by",
     "ล่าสุด":"Newest",

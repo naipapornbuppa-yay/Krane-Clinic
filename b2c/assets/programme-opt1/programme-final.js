@@ -52,8 +52,7 @@
 
   page.querySelectorAll('.opt-timeline details').forEach(details => { details.name = 'care-timeline'; });
   const quotesByProgramme = {rebody: 'weight', rehair: 'hair-loss', reflow: 're-flow'};
-  const reviews = (window.KraneReviews || []).filter(review =>
-    review.category === quotesByProgramme[key] && (review.quote || review.caption));
+  const reviews = window.KraneProgrammeReviews(quotesByProgramme[key]);
   if (reviews.length) {
     const section = document.createElement('section');
     section.className = 'opt-feedback opt-wrap';

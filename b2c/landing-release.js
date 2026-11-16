@@ -100,7 +100,7 @@
 
   for (const chapter of document.querySelectorAll('.care-chapter[data-review-category]')) {
     const category = chapter.dataset.reviewCategory;
-    const items = reviews.filter(review => review.category === category);
+    const items = window.KraneProgrammeReviews(category);
     if (!items.length) continue;
     const section = document.createElement('div');
     section.className = 'care-chapter__reviews';
