@@ -1005,8 +1005,8 @@
     "imageAlt": "ผู้ชายตรวจดูแนวเส้นผมในกระจก"
   },
   "library-hair-loss-02": {
-    "image": "assets/optimized-web/rehair-hand-on-head-20261115.webp",
-    "imageAlt": "ผู้ชายแหวกผมให้เห็นแนวไรผม"
+    "image": "assets/articles/new-20261115/library-hair-loss-02.jpg",
+    "imageAlt": "แพทย์สวมชุดหูฟังขณะให้คำปรึกษาออนไลน์"
   },
   "library-hair-loss-03": {
     "image": "assets/articles/new-20261115/library-hair-loss-03.jpg",
