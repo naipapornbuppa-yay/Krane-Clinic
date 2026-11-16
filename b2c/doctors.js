@@ -37,49 +37,88 @@
     if(profile.image){const image=document.createElement("img");image.src=profile.image;image.alt=profile.name;image.width=profile.w||674;image.height=profile.h||1200;media.replaceChildren(image);media.classList.remove("doctor-profile-dialog__media--identity");return;}
     const identity=document.createElement("span");identity.className="doctor-profile-dialog__identity";const initials=document.createElement("b");initials.textContent=profile.initials;const label=document.createElement("small");label.textContent=profile.specialty;identity.append(initials,label);media.replaceChildren(identity);media.classList.add("doctor-profile-dialog__media--identity");
   }
-  function openProfile(trigger){if(!dialog||typeof dialog.showModal!=="function")return;const profile=profiles[trigger.dataset.doctorId];if(!profile)return;returnFocus=trigger;renderMedia(profile);name.textContent=profile.name;role.textContent=profile.role;bio.textContent=profile.bio;specialty.textContent=profile.specialty;education.textContent=profile.education;education.closest('div').style.display=profile.education?'':'none';bio.style.display=profile.bio?'':'none';document.body.classList.add("doctor-dialog-open");dialog.classList.add("is-opening");dialog.showModal();requestAnimationFrame(()=>closeButton?.focus());}
-  document.querySelectorAll("[data-doctor-open]").forEach((trigger)=>{trigger.addEventListener("click",(event)=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(!dialog||typeof dialog.showModal!=="function")return;event.preventDefault();openProfile(trigger);});});
-  const requestedDoctor=new URLSearchParams(location.search).get('doctor');
-  if(requestedDoctor && Object.hasOwn(profiles,requestedDoctor)){
-    const trigger=[...document.querySelectorAll('[data-doctor-open]')].find(item=>item.dataset.doctorId===requestedDoctor) || {dataset:{doctorId:requestedDoctor},focus:()=>document.querySelector('.public-back')?.focus()};
-    openProfile(trigger);
+  function openProfile(trigger) {
+    if (!dialog || typeof dialog.showModal !== "function") return false;
+    const profile = profiles[trigger.dataset.doctorId];
+    if (!profile) return false;
+    if (dialog.open) return true;
+    resetDrag();
+    returnFocus = trigger;
+    renderMedia(profile);
+    name.textContent = profile.name;
+    role.textContent = profile.role;
+    bio.textContent = profile.bio;
+    bio.hidden = !profile.bio;
+    specialty.textContent = profile.specialty;
+    education.textContent = profile.education;
+    education.closest("div").hidden = !profile.education;
+    dialog.classList.add("is-opening");
+    dialog.showModal();
+    document.body.classList.add("doctor-dialog-open");
+    dialog.scrollTop = 0;
+    closeButton?.focus({ preventScroll: true });
+    return true;
   }
-  dialog?.addEventListener("animationend",()=>dialog.classList.remove("is-opening"));
-  closeButton?.addEventListener("click",()=>dialog?.close());
-  dialog?.addEventListener("click",(event)=>{if(event.target===dialog)dialog.close();});
-  dialog?.addEventListener("close",()=>{document.body.classList.remove("doctor-dialog-open");resetDrag();returnFocus?.focus();});
+  document.querySelectorAll("[data-doctor-open]").forEach(trigger => {
+    trigger.addEventListener("click", event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (openProfile(trigger)) event.preventDefault();
+    });
+  });
 
-  /* Swipe right to dismiss. The panel scrolls vertically, so a gesture only
-     becomes a dismissal once it is clearly horizontal — otherwise a normal
-     scroll would drag the sheet sideways. */
-  let dragId=null,startX=0,startY=0,dx=0,axis="";
-  function resetDrag(){
-    dragId=null;dx=0;axis="";
-    if(!dialog) return;
-    dialog.classList.remove("is-opening","is-dragging","is-settling","is-dismissing");
-    dialog.style.transform="";
-  }
-  function settle(){
-    if(!dialog) return;
-    dialog.classList.remove("is-dragging");
-    const width=dialog.getBoundingClientRect().width || 1;
-    if(dx > Math.min(120,width*0.28)){
-      dialog.classList.add("is-dismissing");
-      dialog.style.transform="";
-      const done=()=>{dialog.removeEventListener("transitionend",done);dialog.close();};
-      dialog.addEventListener("transitionend",done);
-      window.setTimeout(done,320);
-      return;
+  dialog?.addEventListener("animationend", event => {
+    if (event.target === dialog && event.animationName === "doctor-dialog-enter") {
+      dialog.classList.remove("is-opening");
     }
-    dialog.classList.add("is-settling");
-    dialog.style.transform="translateX(0)";
-    const clear=()=>{dialog.removeEventListener("transitionend",clear);dialog.classList.remove("is-settling");dialog.style.transform="";};
-    dialog.addEventListener("transitionend",clear);
-    window.setTimeout(clear,320);
-    dragId=null;axis="";dx=0;
+  });
+  closeButton?.addEventListener("click", () => dialog.close());
+  dialog?.addEventListener("click", event => {
+    if (event.target !== dialog) return;
+    const bounds = dialog.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+  });
+  dialog?.addEventListener("close", () => {
+    if (dialog.open) return;
+    document.body.classList.remove("doctor-dialog-open");
+    resetDrag();
+    returnFocus?.focus({ preventScroll: true });
+    returnFocus = null;
+  });
+
+  // Keep vertical scrolling independent of horizontal swipe dismissal.
+  let dragId = null, startX = 0, startY = 0, dx = 0, axis = "";
+  let cancelTransition = null;
+  function resetDrag() {
+    cancelTransition?.();
+    dragId = null;
+    dx = 0;
+    axis = "";
+    if (!dialog) return;
+    dialog.classList.remove("is-opening", "is-dragging", "is-settling", "is-dismissing");
+    dialog.style.transform = "";
+  }
+  function settle() {
+    const dismiss = dx > Math.min(120, dialog.getBoundingClientRect().width * 0.28);
+    dragId = null;
+    dialog.classList.add(dismiss ? "is-dismissing" : "is-settling");
+    dialog.classList.remove("is-dragging");
+    dialog.style.transform = "";
+    const finish = event => {
+      if (event && (event.target !== dialog || event.propertyName !== "transform")) return;
+      if (dismiss && dialog.open) dialog.close();
+      resetDrag();
+    };
+    const timer = window.setTimeout(finish, 280);
+    dialog.addEventListener("transitionend", finish);
+    cancelTransition = () => {
+      window.clearTimeout(timer);
+      dialog.removeEventListener("transitionend", finish);
+      cancelTransition = null;
+    };
   }
   dialog?.addEventListener("pointerdown",(event)=>{
-    if(event.pointerType==="mouse" || dragId!==null) return;
+    if(event.pointerType==="mouse" || dragId!==null || cancelTransition) return;
     if(event.target.closest("a,button")) return;
     dragId=event.pointerId;startX=event.clientX;startY=event.clientY;dx=0;axis="";
   });
@@ -105,6 +144,15 @@
       settle();
     });
   });
+  const requestedDoctor = new URLSearchParams(location.search).get("doctor");
+  if (requestedDoctor && Object.hasOwn(profiles, requestedDoctor)) {
+    const trigger = [...document.querySelectorAll("[data-doctor-open]")]
+      .find(item => item.dataset.doctorId === requestedDoctor);
+    openProfile(trigger || {
+      dataset: { doctorId: requestedDoctor },
+      focus: options => document.querySelector(".public-back")?.focus(options),
+    });
+  }
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
     const stories=document.querySelectorAll('.doctor-work__story');
     const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{entry.target.classList.toggle('is-revealed',entry.isIntersecting);entry.target.classList.toggle('is-above',!entry.isIntersecting&&entry.boundingClientRect.bottom<0);});},{threshold:.12});

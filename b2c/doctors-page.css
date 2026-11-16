@@ -1,4 +1,5 @@
 /* Directory and profile composition; shared foundations live in public-care.css. */
+body.doctors-index-page{--public-canvas:var(--public-surface)}
 body.public-care-page .detail-page{max-width:1440px;margin:auto;padding:24px var(--public-gutter) 48px;gap:0}
 .doctors-index-page .doctor-directory{--expert-card-width:268px;--expert-photo-height:300px;margin:0;padding:0 0 48px;background:transparent;border-radius:0}
 .doctor-directory__title{margin:0 0 24px;font-size:clamp(28px,3.2vw,42px);line-height:1.35;letter-spacing:-.025em}
@@ -56,7 +57,7 @@ body.public-care-page .detail-page{max-width:1440px;margin:auto;padding:24px var
 .public-care-page .doctor-profile-dialog__media img{object-fit:contain;object-position:center bottom}
 .public-care-page .doctor-profile-dialog__content{padding:28px 32px}
 .public-care-page .doctor-profile-dialog__content h2{font-size:28px;line-height:1.4;letter-spacing:-.02em}
-.public-care-page .doctor-profile-dialog__close{position:absolute;top:16px;right:16px;width:44px;height:44px;background:var(--color-field);color:var(--public-text);border-radius:50%;z-index:2}
+.public-care-page .doctor-profile-dialog__close{position:fixed;top:16px;right:16px;width:44px;height:44px;background:var(--color-field);color:var(--public-text);border-radius:50%;z-index:2}
 .public-care-page .doctor-profile-dialog__grab{display:none}
 .public-care-page .doctor-profile-dialog__bio{font-size:14px;line-height:1.8}
 @media(max-width:760px){
@@ -115,4 +116,11 @@ body.doctor-detail-page.public-care-page .doctor-work__copy p,body.doctor-detail
 
 .public-care-page dialog.doctor-profile-dialog.is-dismissing{transform:translateX(100%)}
 
-@media(prefers-reduced-motion:no-preference){.public-care-page dialog.doctor-profile-dialog[open].is-opening{animation:doctor-dialog-enter .28s cubic-bezier(.2,.8,.2,1)}}
+/* Keep the profile entrance independent of the shared menu animation. */
+.public-care-page dialog.doctor-profile-dialog[open]{animation:none}
+@media(prefers-reduced-motion:no-preference){
+  .public-care-page dialog.doctor-profile-dialog[open].is-opening{animation:doctor-dialog-enter .28s cubic-bezier(.2,.8,.2,1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .public-care-page dialog.doctor-profile-dialog[open]::backdrop{animation:none}
+}
