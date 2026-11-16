@@ -65,7 +65,9 @@
       card.className = 'rebody-review-card';
       const title = document.createElement('h3');
       title.textContent = review.caption;
-      card.append(window.KraneReviewStars(review.rating, 'programme-review-star'), title);
+      const stars = window.KraneReviewStars(review.rating, 'programme-review-star');
+      if (stars) card.append(stars);
+      card.append(title);
       if (review.quote) {
         const quote = document.createElement('blockquote');
         quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';

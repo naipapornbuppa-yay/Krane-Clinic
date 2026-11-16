@@ -113,7 +113,9 @@
       const card = document.createElement('article');
       const headline = document.createElement('strong');
       headline.textContent = item.caption;
-      card.append(window.KraneReviewStars(item.rating, 'care-chapter__review-star'), headline);
+      const stars = window.KraneReviewStars(item.rating, 'care-chapter__review-star');
+      if (stars) card.append(stars);
+      card.append(headline);
       if (item.quote) {
         const quote = document.createElement('blockquote');
         quote.textContent = `“${quoteText(item)}”`;
