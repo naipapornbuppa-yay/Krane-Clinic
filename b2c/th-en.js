@@ -1387,6 +1387,7 @@
     "ข้อมูลความปลอดภัยที่สำคัญ":"Important safety information",
     "สิ่งที่ควรรู้ก่อนเริ่มการดูแลและใช้ยาตามแผนของแพทย์":"What to know before starting care and taking medicine to a doctor's plan",
     "อ่านเพิ่มเติม":"Read more",
+    "อ่านรายละเอียด":"Read details",
     "อ่านข้อมูลความปลอดภัย":"Read the safety information",
     "ต้องใช้ยาทุกคนไหม":"Does everyone need medicine?",
     "ไม่จำเป็น แพทย์จะเริ่มจากเป้าหมาย ประวัติสุขภาพ และสิ่งที่คุณเคยลอง ก่อนพิจารณาว่ายาช่วยได้หรือไม่":"Not necessarily. The doctor starts from your goals, your health history and what you have already tried, before considering whether medicine would help.",

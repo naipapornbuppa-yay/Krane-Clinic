@@ -22,7 +22,10 @@
       headline.append(line);
     }
 
-    banner.querySelector('.care-chapter__cta--details').href = detailsPage;
+    banner.querySelectorAll('.care-chapter__cta--details, .care-chapter__mobile-details').forEach(link => {
+      link.href = detailsPage;
+    });
+    banner.querySelector('.care-chapter__mobile-details').setAttribute('aria-describedby', title.id);
     const start = banner.querySelector('.care-chapter__cta--start');
     start.href = `krane-b2c.html?entry=direct&fresh=1&category=${intakeCategory}#intake1`;
     start.dataset.category = intakeCategory;
