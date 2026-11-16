@@ -108,32 +108,9 @@
     title.textContent = 'ความคิดเห็น';
     const rail = document.createElement('div');
     rail.className = 'care-chapter__review-rail';
-    rail.dataset.carouselRail = 'วิดีโอรีวิว หน้า';
-    for (const item of items) {
-      const card = document.createElement('article');
-      const headline = document.createElement('strong');
-      headline.textContent = item.caption;
-      const stars = window.KraneReviewStars(item.rating, 'care-chapter__review-star');
-      if (stars) card.append(stars);
-      card.append(headline);
-      if (item.quote) {
-        const quote = document.createElement('blockquote');
-        quote.textContent = `“${quoteText(item)}”`;
-        card.append(quote);
-      }
-      const author = document.createElement('span');
-      author.className = 'care-chapter__review-author';
-      const initial = item.name.replace(/^คุณ\s*/, '').match(/[ก-ฮA-Z]/i)?.[0] || '–';
-      const avatar = document.createElement('span');
-      avatar.className = 'care-chapter__review-initial';
-      avatar.textContent = initial;
-      avatar.setAttribute('aria-hidden', 'true');
-      const age = item.profileIsSample === false && Number.isInteger(item.age) ? `${item.age} ปี` : '';
-      const identity = [`${initial}***`, age, item.province].filter(Boolean).join(' · ');
-      author.append(avatar, identity);
-      card.append(author);
-      rail.append(card);
-    }
+    rail.dataset.carouselRail = 'ความคิดเห็น หน้า';
+    rail.tabIndex = 0;
+    for (const item of items) rail.append(window.KraneReviewCard(item));
     section.append(title, rail);
     chapter.querySelector('.care-chapter__note').before(section);
   }

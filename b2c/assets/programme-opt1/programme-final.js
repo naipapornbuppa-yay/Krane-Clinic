@@ -60,25 +60,7 @@
     section.setAttribute('aria-labelledby', 'programme-feedback-title');
     section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail" data-carousel-rail="ความคิดเห็น หน้า" tabindex="0"></div>';
     const rail = section.querySelector('.rebody-review-rail');
-    for (const review of reviews) {
-      const card = document.createElement('article');
-      card.className = 'rebody-review-card';
-      const title = document.createElement('h3');
-      title.textContent = review.caption;
-      const stars = window.KraneReviewStars(review.rating, 'programme-review-star');
-      if (stars) card.append(stars);
-      card.append(title);
-      if (review.quote) {
-        const quote = document.createElement('blockquote');
-        quote.textContent = '“' + review.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
-        card.append(quote);
-      }
-      const author = document.createElement('small');
-      const age = review.profileIsSample === false && Number.isInteger(review.age) ? review.age + ' ปี' : '';
-      author.textContent = [review.name.replace(/^คุณ(.).*$/, '$1***'), age, review.province].filter(Boolean).join(' · ');
-      card.append(author);
-      rail.append(card);
-    }
+    for (const review of reviews) rail.append(window.KraneReviewCard(review));
     page.querySelector('.opt-interview').after(section);
   }
 
