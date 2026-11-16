@@ -2764,15 +2764,27 @@ body.modal-open{overflow:hidden}
 .choice-grid .choice-card{min-height:calc(var(--category-image-size) + 2px);flex-direction:row;align-items:center;gap:var(--sp-3);border-radius:var(--radius-lg);padding:var(--sp-4);box-shadow:none}
 .choice-grid .choice-card--programme{padding:0 var(--sp-4) 0 0}
 .choice-card--programme .cc-body{padding-block:var(--sp-2)}
-.choice-card--programme .cc-programme-image{
+.choice-card--programme .cc-programme-media{
   display:block;
   flex:none;
   width:var(--category-image-size);
-  height:var(--category-image-size);
-  align-self:start;
-  object-fit:cover;
+  aspect-ratio:1;
+  overflow:hidden;
   background:var(--color-bg-soft);
 }
+.choice-card--programme .cc-programme-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.choice-card--programme[data-category-id="general"] .cc-programme-image{
+  object-position:70% center;
+  transform:scale(1.24);
+}
+.choice-card--programme[data-category-id="hair-skin"] .cc-programme-image{object-position:68% center}
+.choice-card--programme[data-category-id="weight"] .cc-programme-image{transform:scale(1.18)}
+.choice-card--programme[data-category-id="sexual-health"] .cc-programme-image{object-position:90% center}
 .choice-list .choice-card{
   min-height:68px;
   padding:var(--sp-4);
@@ -5176,6 +5188,7 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
   line-height:1.2;
   color:var(--color-ink-3);
 }
+#intake-general .float-field--label-as-placeholder:not(.is-filled) .float-field__slot>label{margin-block:0}
 .float-field.float-field--label-as-placeholder:not(.is-filled):focus-within .float-field__slot>label{
   color:var(--color-accent)
 }
@@ -5363,6 +5376,9 @@ html.is-demo-embed::-webkit-scrollbar,html.is-demo-embed *::-webkit-scrollbar{di
 .float-field .date-control:focus-within .date-control__display{border-color:transparent;box-shadow:none}
 /* Intake DOB shows just the date format while empty; its title rises only
    after a date is selected. The native input keeps its accessible name. */
+#intake-general .date-control__display{grid-template-columns:minmax(0,1fr) 20px}
+#intake-general .date-control__display>span:first-child{display:none}
+#intake-general .date-control__value{text-align:start}
 .float-field--date-placeholder-only:not(.is-filled) .float-field__slot>label{display:none}
 .float-field--date-placeholder-only:not(.is-filled) .date-control__value{transform:none}
 /* An invalid field turns the whole box red, the way the password box does. */
