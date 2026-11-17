@@ -1,0 +1,33 @@
+name: Figma responsive reference
+on:
+  push:
+    branches: [qa/figma-responsive-reference-20261117]
+    paths: [b2c/tools/capture-public-overlays.mjs, b2c/tools/capture-tablet-base-fixture.mjs, .github/workflows/figma-responsive-reference.yml]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci --no-audit --no-fund && npx playwright install --with-deps chromium
+      - run: |
+          git fetch --depth=1 origin 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+          git worktree add --detach "$RUNNER_TEMP/approved-source" 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+      - run: node b2c/tools/capture-tablet-base-fixture.mjs "$RUNNER_TEMP/approved-source"
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/figma-reference/tablet
+      - run: node b2c/tools/capture-public-overlays.mjs "$RUNNER_TEMP/approved-source"
+        if: always()
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/figma-reference/overlays
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: figma-responsive-reference
+          path: ${{ runner.temp }}/figma-reference
+          retention-days: 14
