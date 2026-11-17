@@ -33,6 +33,11 @@ jobs:
         env:
           QA_OUTPUT: ${{ runner.temp }}/landing-comparison
         run: node b2c/tools/capture-approved-programmes.mjs "$RUNNER_TEMP/landing-baseline"
+      - name: Capture static approved ready-state fixture
+        if: always()
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/landing-comparison
+        run: node b2c/tools/capture-ready-fixture.mjs "$RUNNER_TEMP/landing-baseline"
       - name: Retain screenshots and comparison results
         if: always()
         uses: actions/upload-artifact@v4
