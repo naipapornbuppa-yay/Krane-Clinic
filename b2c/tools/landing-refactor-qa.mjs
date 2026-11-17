@@ -37,6 +37,11 @@ try {
      await p.evaluate(th=>window.postMessage({krane:'lang',th},'*'),th);
      await p.waitForFunction(th=>document.documentElement.lang===(th?'th':'en'),th);
      await p.waitForFunction(th=>document.querySelector('#hero-title').textContent.trim()===(th?'ปลดล็อกเวอร์ชั่นที่ดีที่สุดของคุณ':'Unlock your best self'),th);
+     await p.waitForFunction(th=>{
+      const province=[...document.querySelectorAll('.public-review-card__meta small span')].find(e=>['กรุงเทพมหานคร','Bangkok'].includes(e.textContent));
+      const attribution=document.querySelector('.landing-story-quotes__slide footer span');
+      return province?.textContent===(th?'กรุงเทพมหานคร':'Bangkok') && attribution?.textContent.startsWith(th?'ผู้ใช้บริการ Krane':'Krane service user');
+     },th);
     }
    }
    captures.push({...state,errors,failed});await ctx.close();
