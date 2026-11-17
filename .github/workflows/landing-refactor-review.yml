@@ -28,6 +28,11 @@ jobs:
         env:
           QA_OUTPUT: ${{ runner.temp }}/landing-comparison
         run: npm run check:landing-refactor -- "$RUNNER_TEMP/landing-baseline" "$GITHUB_WORKSPACE"
+      - name: Capture approved programme references for Figma
+        if: always()
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/landing-comparison
+        run: node b2c/tools/capture-approved-programmes.mjs "$RUNNER_TEMP/landing-baseline"
       - name: Retain screenshots and comparison results
         if: always()
         uses: actions/upload-artifact@v4

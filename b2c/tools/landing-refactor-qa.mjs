@@ -15,7 +15,7 @@ const servers=[];const bases=[];const results=[];
 try {
  for(const root of roots){const s=createServer(async(req,res)=>{try{const f=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://local').pathname));if(relative(root,f).startsWith('..'))throw Error('outside');res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.mp4':'video/mp4','.woff2':'font/woff2'})[extname(f)]||'application/octet-stream');res.end(await readFile(f))}catch{res.writeHead(404).end()}});await new Promise(r=>s.listen(0,'127.0.0.1',r));servers.push(s);bases.push(`http://127.0.0.1:${s.address().port}`)}
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox']});
- try{for(const width of [390,768,1440])for(const lang of ['th','en']){
+ try{for(const width of [390,768,1440,1512])for(const lang of ['th','en']){
   const captures=[];
   for(let i=0;i<2;i++){
    const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});await necessaryConsent(ctx);const p=await ctx.newPage();const errors=[],failed=[];
