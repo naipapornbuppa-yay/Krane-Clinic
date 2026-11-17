@@ -44,3 +44,10 @@ Use Git history for superseded versions. The former workspace copy was archived 
 - Prefer hands, skin macro details, hair/scalp crops without a face, body crops without a head, products, and treatment objects.
 - A full face is allowed only for an authentic person photo supplied by the client with confirmed provenance.
 - Doctor-profile mockups are the sole exception to the generated-face restriction.
+
+## Landing maintenance
+
+Read [the 17 November landing cleanup handoff](handoff/LANDING-CLEANUP-2026-11-17.md)
+for source ownership, verification limits, and the separate review-branch scope.
+Run `npm run check:landing-css` before handing off landing stylesheet changes.
+Do not append a new override layer or strip `!important` without browser coverage.

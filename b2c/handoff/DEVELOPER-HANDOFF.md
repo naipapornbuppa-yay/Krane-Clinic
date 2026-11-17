@@ -1,5 +1,7 @@
 # Krane B2C developer handoff
 
+**Landing source update (17 November 2026):** [Isolated cleanup and verification limits](LANDING-CLEANUP-2026-11-17.md). This does not change the accepted patient-app scope or approve the landing for production. The October behavior snapshot below remains historical.
+
 **Latest behavior:** [11 October evening B2C addendum](LATEST-B2C-HANDOFF.md) covers program pause, review success, folder/history, modal chrome, statuses, booking and final-logo PDFs. It supersedes conflicting earlier descriptions.
 
 **Snapshot:** 11 October 2026, `gh-pages` prototype. This is a static, interactive review build, **not** a production patient system. Do not enter real patient data. The source of truth for B2C work is this repository's `b2c/` directory; copies under workspace `Output/` and `site/` are not deployment sources.
