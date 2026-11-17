@@ -2,7 +2,7 @@ name: Figma responsive reference
 on:
   push:
     branches: [qa/figma-responsive-reference-20261117]
-    paths: [b2c/tools/capture-public-overlays.mjs, b2c/tools/capture-tablet-base-fixture.mjs, .github/workflows/figma-responsive-reference.yml]
+    paths: [b2c/tools/capture-public-tablet-pages.mjs, b2c/tools/capture-public-overlays.mjs, b2c/tools/capture-tablet-base-fixture.mjs, .github/workflows/figma-responsive-reference.yml]
 permissions:
   contents: read
 jobs:
@@ -25,6 +25,10 @@ jobs:
         if: always()
         env:
           QA_OUTPUT: ${{ runner.temp }}/figma-reference/overlays
+      - run: node b2c/tools/capture-public-tablet-pages.mjs "$RUNNER_TEMP/approved-source"
+        if: always()
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/figma-reference/public-tablet
       - uses: actions/upload-artifact@v4
         if: always()
         with:
