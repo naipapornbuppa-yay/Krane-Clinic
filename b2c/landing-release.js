@@ -139,8 +139,7 @@
       quote.textContent = `“${quoteText(item)}”`;
       const attribution = document.createElement('footer');
       const programme = document.createElement('span');
-      // Preserve the existing verified translation key separately from the brand.
-      programme.append(document.createTextNode('ผู้ใช้บริการ Krane'), document.createTextNode(` ${programmeNames[item.category]}`));
+      programme.textContent = `ผู้ใช้บริการ Krane ${programmeNames[item.category]}`;
       attribution.append(item.name, ' ', programme);
       panel.append(quote, attribution);
       return panel;

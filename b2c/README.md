@@ -47,6 +47,11 @@ Use Git history for superseded versions. The former workspace copy was archived 
 
 ## Landing maintenance
 
+**Confirmed design is locked:** preserve landing/programme appearance, copy and
+behavior. Only separately scoped responsive improvements are permitted. This
+maintenance branch includes no responsive or visual redesign. Figma parity uses
+confirmed live baseline `1db34f9cb4a762df4fe6dde00d6a8889b1761240`.
+
 Read [the 17 November landing cleanup handoff](handoff/LANDING-CLEANUP-2026-11-17.md)
 for source ownership, verification limits, and the separate review-branch scope.
 Run `npm run check:landing-css` before handing off landing stylesheet changes.

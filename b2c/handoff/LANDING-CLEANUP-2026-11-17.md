@@ -1,82 +1,90 @@
-# Landing cleanup: isolated review branch, 17 November 2026
+# Landing code cleanup and locked-design handoff
 
-## Scope and status
+Updated 17 November 2026 after the owner's latest direction.
 
-Baseline: `gh-pages` at `1db34f9cb4a762df4fe6dde00d6a8889b1761240`.
+## Approved boundary
+
+**The landing and programme designs are confirmed. Do not change their appearance,
+copy, components, interactions or behavior.** Only necessary responsive adjustments
+are permitted by the latest direction, and none is included in this cleanup.
+Earlier requests concerning the marquee, details-link spacing/underline, article
+cards and motion controls must not be reapplied over the confirmed design.
+
+Baseline: live `gh-pages` commit `1db34f9cb4a762df4fe6dde00d6a8889b1761240`.
 Review branch: `refactor/landing-cleanup-20261117`.
-This is source cleanup, **not a redesign, production approval, or deployment**.
-The landing remains WIP and outside the previously accepted patient-app handoff.
-No authentication, clinical, payment, insurance or server integration is added here.
+This branch has **not been merged or deployed**. The live branch is untouched.
+The source comparison must use the exact baseline above, not a historical Figma
+composition or an older contract's implied layout.
 
-The live landing is real HTML/CSS/JavaScript, not just a Figma image. Its existing
-markup, scripts, imagery, routes, translation behavior, event handlers and shared
-components are retained byte-for-byte in this change. This work does not require a
-new frontend framework. A future integration can reuse those assets and behaviors.
+## Current changes: maintenance only
 
-## What changed
+- Main landing CSS: **441,750 → 348,007 bytes**, a **21.2% reduction**.
+- Removed 802 selector branches requiring 40 explicitly audited retired classes,
+  and 83 exact duplicate declarations. Active markup, JavaScript, translations,
+  assets, routes and stylesheet order remain the baseline versions.
+- Added reproducible cleanup, seven focused tests, a retired-class source guard,
+  pinned development dependencies and a lockfile. No new public runtime package.
+- Added a read-only CI baseline comparison and screenshot artifacts at
+  390/768/1440 widths in Thai and English.
+- Corrected two stale test expectations only: settings-left/accept-right cookie
+  buttons and the existing re:hair page title. No UI was changed for those tests.
 
-- Removed 802 selector branches that require one of 40 explicitly reviewed,
-  retired classes. Those class names are absent from repository runtime HTML,
-  JavaScript, TypeScript, JSON and SVG sources, including outside `b2c/`.
-- Removed 83 exact duplicate declarations, retaining their later cascade position.
-- Main landing CSS: **441,750 → 348,007 bytes**, a **93,743-byte (21.2%) reduction**.
-- Added a repeatable cleanup tool, seven focused unit tests, a retired-class
-  reference guard, and a baseline/candidate browser comparison script.
-- Pinned the CSS parsers as development-only dependencies with a lockfile. They do
-  not run in or add requests to the public website.
+The retired-class list lives in `tools/landing-css-cleanup.mjs`. The repository
+runtime-source scan includes HTML, JS/TS, JSON and SVG outside `b2c/` as well.
+Only listed top-level class anchors can remove a selector branch. Classes inside
+`:not()`, `:is()`, `:has()` etc. are not treated as absence evidence. Active branches
+of mixed selector lists remain. Duplicate cleanup retains the final cascade
+position and preserves differing fallbacks, importance, specificity, conditional
+rules, shorthand/longhand interactions and animations. It does not strip all
+`!important`, reorder rules or introduce cascade layers.
 
-The explicit retired-class list is in `tools/landing-css-cleanup.mjs`. This is not
-an automatic purge of everything absent from one screenshot. A selector is removed
-only if a top-level class in that selector is on the reviewed list. Classes nested
-inside `:not()`, `:is()`, `:has()` etc. are not used as absence evidence. Mixed
-selector lists retain their active branches.
+## Version history and explicit reversions
 
-Duplicate cleanup preserves different fallback values, `!important`, selector
-specificity, source order, media/supports/container conditions, animations and
-shorthand/longhand relationships. It does not move rules into layers or combine
-stylesheets. Dynamic state classes such as `is-current`, `is-visible` and
-`motion-enabled` are retained. The landing scripts' generated class names were
-reviewed; the source scan is an additional guard, not proof about arbitrary future
-CMS/server-generated markup.
+- `bcd64c9`: initial maintenance cleanup.
+- `097344e`: cleanup plus CI/test corrections. Its browser comparison passed and
+  independent comparison found all six screenshot pairs pixel-identical to the
+  live baseline.
+- `f5fc91a` / `3032580`: temporarily added wiring for existing English translations
+  and language-roundtrip tests in this review branch only. Although their scoped
+  checks passed, they changed confirmed copy. **Those runtime changes and their
+  special comparison allowances have been reverted in the current branch.**
+- The earlier three visual corrections and proposed review-pause control were
+  stopped before publication. They are not included in the current branch.
 
-## Ownership: where to make the next change
+Git history preserves the stages; their existence is not permission to restore
+superseded changes. Do not merge an intermediate translation or design-fix commit
+instead of the final locked-design version.
 
-| Concern | Owner |
-| --- | --- |
-| Landing section markup and links | `krane-b2c-landing.html` |
-| Existing landing behavior/localization | `krane-b2c-landing.js` |
-| Landing foundation and legacy active styles | `krane-b2c-landing.css` |
-| Current release composition and its behaviors | `landing-release.css`, `landing-release.js` |
-| Navigation | `site-header.css`, `site-header.js`, `site-nav.js` |
-| Article cards | `article-cards.css`, shared article renderer/store |
-| Footer | `site-footer.css`, `site-footer.js` |
-| Design values | `design-tokens.css` |
+## Verification and limitations
 
-Edit the owning rule; do not append another “final override”. Do not remove
-`!important` wholesale: active competing rules still need a browser-tested
-consolidation pass. Keep stylesheet order unchanged until that pass has coverage.
-The remaining large stylesheet and release overrides are known debt, not described
-as solved by this first cleanup. Do not restore an old class without reviewing its
-styles and updating the explicit retired list.
+Known evidence for the maintenance-only source:
 
-## Verification
+- 7/7 CSS cleanup tests and idempotence/reference checks pass.
+- Existing string contract: 87 IDs pass.
+- Independent source comparison: 8,962 retained declaration entries equivalent.
+- Six baseline/candidate screenshot pairs at `097344e` were pixel-identical, with
+  identical section geometry, text and links; no page overflow, missing resources,
+  broken images or browser runtime errors.
+- Cookie consent CI passes 399 checks, with no third-party requests observed.
 
-Passed locally:
+The newest revert commit requires its own CI result; use the commit shown on the
+branch and its Actions run rather than treating an older green run as current.
 
-- `npm run check:landing-css`: 7 tests, current-source reference guard, CSS parse
-  and idempotence checks.
-- `npm run check:strings`: existing string contract.
-- Source parity: 35 IDs, 31 links, 62 images and 223 non-script text nodes unchanged; landing markup, JavaScript and assets byte-identical.
-- Independent CSS comparison: 8,962 retained active declaration entries match in cascade order after removing reviewed retired branches and exact duplicates.
-- Existing aggregate check: 1/9 stages passes (static privacy-envelope motion contract); 8 browser stages are blocked at Chromium startup, not product assertion failures.
+**The whole legacy UI suite is not green.** Seven stages still fail after the two
+safe assertion corrections. Some target retired compositions; others identify
+remaining untranslated strings or historical interaction expectations. Do not
+remove locked requirements or change confirmed UI just to make this suite pass.
+Record a requirement decision separately before changing those tests or behavior.
+Pixel parity proves preservation of the baseline, not that every baseline feature
+is production-ready. New sample-review/medical English, identity, payments,
+clinical APIs and other backend integrations remain outside this maintenance
+change. No medical wording, credentials or patient facts have been invented.
 
-**Not visually approved:** the available local browser cannot launch because its
-socket operation is blocked. Thus desktop/mobile screenshots, keyboard behavior,
-interactive flows, animation and language-switch rendering are pending. Existing
-aggregate browser gates cannot be treated as passing. Static equivalence is not a
-substitute for seeing the page. Do not merge/deploy solely on this report.
+Earlier November handoff explicitly identified the landing as unfinished at that
+time. The latest direction locks its design; it does not retrospectively make the
+old production/integration checklist complete.
 
-On a machine with Chromium support:
+## Reproducible review
 
 ```sh
 npm ci
@@ -84,60 +92,30 @@ npx playwright install chromium
 npm run check:landing-css
 npm run check:strings
 npm run check:ui
-# Preserve the original baseline outside the candidate checkout:
 git worktree add --detach ../krane-landing-baseline 1db34f9cb4a762df4fe6dde00d6a8889b1761240
 npm run check:landing-refactor -- ../krane-landing-baseline .
 ```
 
-The comparison creates screenshots and JSON evidence at 390/768/1440 widths in
-Thai and English. Review section geometry, overflow, images and screenshots, then
-exercise header/dropdowns, language selection, article rails, doctor drawer open/
-close and focus return, review/video controls, FAQ and all CTA receiving routes.
-Test normal motion separately: comparison screenshots use reduced motion for
-repeatability. Capture any pre-existing failures separately from regressions.
+The comparison stores raw screenshots and JSON, normalizing only the temporary
+server origin in links. It does not allow special English changes or mask content.
+Review artifacts and use current-feature tests separately for normal animation,
+repeated interactions, focus/keyboard, navigation and responsive edge cases.
+The CI workflow has read-only repository permissions and cannot deploy.
 
-## Next safe integration step
+## Source ownership
 
-Agree the developer's target stack/CMS and what will be reused before deciding on
-further migration. Replace prototype APIs only where needed. Refactor one active
-component at a time with visual/interaction coverage, rather than rewriting the
-whole landing or adding another competing override file. Retest the accepted
-patient-app flows separately before any production release.
+| Concern | Owner |
+| --- | --- |
+| Landing markup/routes | `krane-b2c-landing.html` |
+| Landing behavior/localization | `krane-b2c-landing.js` |
+| Landing foundations | `krane-b2c-landing.css` |
+| Confirmed release composition | `landing-release.css`, `landing-release.js` |
+| Navigation | `site-header.css`, `site-header.js`, `site-nav.js` |
+| Article cards | `article-cards.css`, article renderer/store |
+| Footer | `site-footer.css`, `site-footer.js` |
+| Brand values | `design-tokens.css` |
 
-## Follow-up verification and narrowly scoped repairs
-
-The byte-identical HTML/JS statement above applies to the first cleanup commit
-`bcd64c9`. Subsequent review commits add the following intentional changes:
-
-- CI now runs the baseline comparison at three widths in both languages, retains
-  screenshots/JSON as artifacts, and has read-only repository permissions. It
-  cannot deploy. Server-local origins are normalized only in link comparison.
-- Initial CI capture at `fac106b` shows exact text and section geometry equality
-  in all six combinations, with no candidate overflow/new errors/new missing
-  resources. Its assertion failure was caused solely by differing server ports in
-  two cookie-policy URLs; the harness now compares their identical paths.
-- Cookie QA now checks the existing settings-left/accept-right layout and verifies
-  names, enabled state and geometry. Rehair QA uses the current page title. Other
-  historical contract requirements are not removed to force a green run.
-- The split hero reuses the already-present “Unlock your best self” translation.
-  Review metadata fields and the “Krane service user” attribution now remain
-  separately translatable text nodes. The translation controller preserves the
-  original Thai source when a dynamic node was already translated, preventing
-  repeated language changes from caching English as Thai.
-- The comparison reports raw text equality separately from the explicit expected
-  English fixes. Thai text must remain identical. Screenshots are not masked or
-  rewritten; geometry, links and new runtime/resource errors remain checked.
-
-Full UI CI at `bcd64c9` actually launched Chromium: its 20/193 contract failures and
-8 failing stages exactly match baseline `1db34f9`. It is not a successful gate.
-Some tests target retired compositions, but missing translations and lost
-interaction guarantees must not be dismissed as stale assertions. The existing
-vertical-wall test expects a persistent pause control not present in the current
-wall; hover/focus/reduced-motion behavior alone is not a replacement for that
-requirement.
-
-The new sample-review captions/quotes, certain doctor credentials/labels,
-accessibility strings and remaining mixed-language fields still require reviewed
-English wording. No medical claims, credentials, names or sample-review quotes
-have been invented or rewritten here. Read the newest CI artifacts before merging;
-these partial fixes do not establish production readiness or complete translation.
+Edit the owning component, not another “final override”. Preserve the confirmed
+version; any future responsive adjustment must have narrow viewport-specific
+scope and before/after evidence. Do not use this cleanup as authorization to
+redesign, translate copy, migrate frameworks, merge or deploy.
