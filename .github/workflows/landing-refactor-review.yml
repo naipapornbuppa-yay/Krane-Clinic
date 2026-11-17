@@ -1,0 +1,38 @@
+name: Landing baseline comparison
+
+# Review evidence only. This workflow cannot deploy or write repository contents.
+on:
+  push:
+    branches: ['refactor/landing-cleanup-20261117']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install pinned test dependencies
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Preserve original landing baseline
+        run: |
+          git fetch --depth=1 origin 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+          git worktree add --detach "$RUNNER_TEMP/landing-baseline" 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+      - name: Compare Thai and English desktop and mobile
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/landing-comparison
+        run: npm run check:landing-refactor -- "$RUNNER_TEMP/landing-baseline" "$GITHUB_WORKSPACE"
+      - name: Retain screenshots and comparison results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-baseline-comparison
+          path: ${{ runner.temp }}/landing-comparison
+          retention-days: 14
+          if-no-files-found: warn
