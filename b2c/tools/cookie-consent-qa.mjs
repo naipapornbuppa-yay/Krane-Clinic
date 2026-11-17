@@ -62,7 +62,13 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(bannerBox.height<=(width<=760?560:160),'Notice stays compact');
  check(await p.locator('.krane-cookie-sheet').evaluate(e=>e.matches(':modal')),'Notice uses native modal');
  await p.keyboard.press('Tab');check(await banner(p).evaluate(e=>e.contains(document.activeElement)),'Notice traps keyboard focus');
- check(await banner(p).locator('button').evaluateAll(buttons=>buttons.length===2&&buttons[0].dataset.cookieAction==='accept'&&buttons[1].dataset.cookieAction==='open'&&Math.abs(buttons[0].getBoundingClientRect().top-buttons[1].getBoundingClientRect().top)<1),'Notice offers two side-by-side actions');
+ // Current notice intentionally places settings left and the primary accept action right.
+ // Keep both actions, accessible names, touch targets and all behavior checks below.
+ check(await banner(p).locator('button').evaluateAll(buttons=>{
+  if(buttons.length!==2||buttons[0].dataset.cookieAction!=='open'||buttons[1].dataset.cookieAction!=='accept')return false;
+  const [settings,accept]=buttons.map(button=>button.getBoundingClientRect());
+  return buttons.every(button=>!button.disabled&&!!(button.getAttribute('aria-label')||button.textContent).trim())&&Math.abs(settings.top-accept.top)<1&&settings.right<=accept.left;
+ }),'Notice keeps accessible settings left and primary accept right on one row');
  check(await banner(p).locator('button').evaluateAll(es=>es.filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44})),'Notice actions retain 44px targets');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
  check((await banner(p).locator('a').boundingBox()).height>=44,'Banner policy link has a 44px touch target');

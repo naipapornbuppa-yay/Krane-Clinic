@@ -23,7 +23,7 @@ try {
    await p.goto(`${bases[i]}/b2c/krane-b2c-landing.html?lang=${lang}`,{waitUntil:'networkidle'});await p.evaluate(()=>document.fonts.ready);
    await p.locator('img').evaluateAll(async es=>{for(const e of es){e.loading='eager';await e.decode().catch(()=>{})}});
    await p.evaluate(()=>{for(const video of document.querySelectorAll('video')){video.pause();video.currentTime=0;}});
-   const state=await p.evaluate(()=>({text:document.body.innerText,overflow:document.documentElement.scrollWidth>innerWidth,sections:[...document.querySelectorAll('main section[id], main>section')].map(e=>{const r=e.getBoundingClientRect();return{id:e.id,x:r.x,y:r.y+scrollY,w:r.width,h:r.height}}),links:[...document.querySelectorAll('a[href]')].map(e=>({text:e.textContent.trim(),href:e.getAttribute('href')})),brokenImages:[...document.images].filter(e=>e.currentSrc&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
+   const state=await p.evaluate(()=>({text:document.body.innerText,overflow:document.documentElement.scrollWidth>innerWidth,sections:[...document.querySelectorAll('main section[id], main>section')].map(e=>{const r=e.getBoundingClientRect();return{id:e.id,x:r.x,y:r.y+scrollY,w:r.width,h:r.height}}),links:[...document.querySelectorAll('a[href]')].map(e=>({text:e.textContent.trim(),href:e.getAttribute('href')?.replace(location.origin,'')})),brokenImages:[...document.images].filter(e=>e.currentSrc&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
    await p.screenshot({path:`${out}/${i?'candidate':'baseline'}-${lang}-${width}.png`,fullPage:true,animations:'disabled'});
    captures.push({...state,errors,failed});await ctx.close();
   }

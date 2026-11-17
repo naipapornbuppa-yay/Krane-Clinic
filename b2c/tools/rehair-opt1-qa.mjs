@@ -17,7 +17,7 @@ try {for(const width of [390,800,1440])for(const lang of ['th','en']){
  await page.goto(`http://127.0.0.1:${server.address().port}/b2c/rehair-opt1/index.html`,{waitUntil:'networkidle'});
  if(lang==='en')await page.locator('#language').click();
  await page.evaluate(()=>document.fonts.ready);
- check(await page.title()==='rehair (opt1) | Krane','page title');
+ check(await page.title()==='re:hair | Krane Clinic','page title');
  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no page horizontal overflow');
  check(await page.locator('.eyebrow,.medication-explainer__eyebrow').count()===0,'no eyebrow nodes');
  check(await page.locator('h1').evaluate((el,lang)=>getComputedStyle(el).fontFamily.includes(lang==='th'?'Prompt':'IBM Plex Sans'),lang),'brand display font');
