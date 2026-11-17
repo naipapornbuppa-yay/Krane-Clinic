@@ -1,0 +1,29 @@
+name: Ready fixture reference
+on:
+  push:
+    branches: [refactor/landing-cleanup-20261117]
+    paths: [b2c/tools/capture-ready-fixture.mjs, .github/workflows/ready-fixture-reference.yml]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci --no-audit --no-fund && npx playwright install --with-deps chromium
+      - run: |
+          git fetch --depth=1 origin 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+          git worktree add --detach "$RUNNER_TEMP/approved-source" 1db34f9cb4a762df4fe6dde00d6a8889b1761240
+      - run: node b2c/tools/capture-ready-fixture.mjs "$RUNNER_TEMP/approved-source"
+        env:
+          QA_OUTPUT: ${{ runner.temp }}/ready-reference
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ready-fixture-reference
+          path: ${{ runner.temp }}/ready-reference
+          retention-days: 14
