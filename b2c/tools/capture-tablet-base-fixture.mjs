@@ -115,6 +115,7 @@ try{for(const [key,id,modal,sampleWidth=768] of samples){
   await page.addScriptTag({url:origin+'/b2c/treatment-folders.js'});
   await page.evaluate(()=>{const p=document.getElementById('profile');p.querySelector('[data-followup-toast]').hidden=false;p.querySelector('[data-home-cta]').hidden=true;});
  }
+ await page.addScriptTag({url:origin+'/b2c/i18n.js'});await page.evaluate(()=>window.kraneSetLang(true));
  await page.addScriptTag({url:origin+'/b2c/b2c-icons.js'});
  await page.addScriptTag({url:origin+'/b2c/assets/lucide.min.js'});await page.evaluate(()=>window.lucide.createIcons({attrs:{'stroke-width':1.8}}));await page.evaluate(()=>document.fonts.ready);
  if(key==='social-date-open'){await page.evaluate(()=>{const input=document.getElementById('social-birth-date');if(!window.KranePatientDatePicker?.intercepts())throw Error('Expected coarse-pointer date sheet');window.KranePatientDatePicker.open(input);});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));}
