@@ -103,3 +103,41 @@ further migration. Replace prototype APIs only where needed. Refactor one active
 component at a time with visual/interaction coverage, rather than rewriting the
 whole landing or adding another competing override file. Retest the accepted
 patient-app flows separately before any production release.
+
+## Follow-up verification and narrowly scoped repairs
+
+The byte-identical HTML/JS statement above applies to the first cleanup commit
+`bcd64c9`. Subsequent review commits add the following intentional changes:
+
+- CI now runs the baseline comparison at three widths in both languages, retains
+  screenshots/JSON as artifacts, and has read-only repository permissions. It
+  cannot deploy. Server-local origins are normalized only in link comparison.
+- Initial CI capture at `fac106b` shows exact text and section geometry equality
+  in all six combinations, with no candidate overflow/new errors/new missing
+  resources. Its assertion failure was caused solely by differing server ports in
+  two cookie-policy URLs; the harness now compares their identical paths.
+- Cookie QA now checks the existing settings-left/accept-right layout and verifies
+  names, enabled state and geometry. Rehair QA uses the current page title. Other
+  historical contract requirements are not removed to force a green run.
+- The split hero reuses the already-present “Unlock your best self” translation.
+  Review metadata fields and the “Krane service user” attribution now remain
+  separately translatable text nodes. The translation controller preserves the
+  original Thai source when a dynamic node was already translated, preventing
+  repeated language changes from caching English as Thai.
+- The comparison reports raw text equality separately from the explicit expected
+  English fixes. Thai text must remain identical. Screenshots are not masked or
+  rewritten; geometry, links and new runtime/resource errors remain checked.
+
+Full UI CI at `bcd64c9` actually launched Chromium: its 20/193 contract failures and
+8 failing stages exactly match baseline `1db34f9`. It is not a successful gate.
+Some tests target retired compositions, but missing translations and lost
+interaction guarantees must not be dismissed as stale assertions. The existing
+vertical-wall test expects a persistent pause control not present in the current
+wall; hover/focus/reduced-motion behavior alone is not a replacement for that
+requirement.
+
+The new sample-review captions/quotes, certain doctor credentials/labels,
+accessibility strings and remaining mixed-language fields still require reviewed
+English wording. No medical claims, credentials, names or sample-review quotes
+have been invented or rewritten here. Read the newest CI artifacts before merging;
+these partial fixes do not establish production readiness or complete translation.

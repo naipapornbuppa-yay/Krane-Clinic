@@ -70,6 +70,8 @@
       discreet: "Discreet delivery nationwide",
       heroEyebrow: "Online medical clinic",
       heroTitle: "Consult a doctor online.<br>Continue your care at home.",
+      // Existing th-en.js translation, split to preserve current heading layout.
+      heroCurrentTitle: "<span>Unlock </span><span>your best self</span>",
       heroLead: "Start with your concern, speak with a licensed doctor, receive a personal treatment plan and get medicine delivered discreetly.",
       heroJourneyAssess: "Choose your health concern",
       heroJourneyConsult: "Consult a doctor online",
@@ -500,7 +502,9 @@
     nodes.forEach((node) => {
       const parent = node.parentElement;
       if (!parent || parent.closest("script,style,[data-i18n]")) return;
-      if (node.__kraneThai == null) node.__kraneThai = node.nodeValue;
+      // Dynamically inserted nodes may already have been translated by th-en.js.
+      // Cache its Thai source, not English, so repeated language switches restore it.
+      if (node.__kraneThai == null) node.__kraneThai = node.__thSrc ?? node.nodeValue;
       if (lang === "th") { node.nodeValue = node.__kraneThai; return; }
       const source = node.__kraneThai;
       const trimmed = source.trim();

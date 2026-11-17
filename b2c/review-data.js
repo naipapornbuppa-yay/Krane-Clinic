@@ -78,8 +78,15 @@ window.KraneReviewCard = function (review) {
   author.textContent = review.isSample ? (english ? 'Sample review' : 'รีวิวตัวอย่าง') : `${initial}***`;
   const details = document.createElement('small');
   const age = review.profileIsSample === false && Number.isInteger(review.age) ? `${review.age} ปี` : '';
-  details.textContent = [review.isSample && (english ? 'Fictional example' : 'ข้อมูลสมมติ'), age, review.province, !rated && (english ? 'No rating yet' : 'ยังไม่มีคะแนน')]
-    .filter(Boolean).join(' · ');
+  // Keep each field in its own text node so the exact-string TH/EN layer can
+  // translate existing province/age labels instead of an unknown joined string.
+  const detailParts = [review.isSample && (english ? 'Fictional example' : 'ข้อมูลสมมติ'), age, review.province, !rated && (english ? 'No rating yet' : 'ยังไม่มีคะแนน')].filter(Boolean);
+  detailParts.forEach((part, index) => {
+    if (index) details.append(' · ');
+    const field = document.createElement('span');
+    field.textContent = part;
+    details.append(field);
+  });
   identity.append(author, details);
   meta.append(avatar, identity);
   card.append(meta);

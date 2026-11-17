@@ -8,6 +8,13 @@ import {createServer} from 'node:http';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,relative} from 'node:path';
 import assert from 'node:assert/strict';
+// Explicit expected English-only fixes reuse translations already in th-en.js.
+// Raw equality remains reported; screenshots are never masked or rewritten.
+function expectedEnglishText(text) {
+ return text.replace(/ปลดล็อก(\n?)เวอร์ชั่นที่ดีที่สุดของคุณ/g, (_, line) => `Unlock${line || ' '}your best self`)
+   .replaceAll('กรุงเทพมหานคร', 'Bangkok').replaceAll('นนทบุรี', 'Nonthaburi')
+   .replaceAll('ผู้ใช้บริการ Krane', 'Krane service user');
+}
 const roots=process.argv.slice(2,4).map(p=>resolve(p));
 if(roots.length!==2)throw Error('Supply baseline and candidate directories');
 const out=resolve(process.env.QA_OUTPUT||'/tmp/krane-refactor-qa');await mkdir(out,{recursive:true});
@@ -25,11 +32,18 @@ try {
    await p.evaluate(()=>{for(const video of document.querySelectorAll('video')){video.pause();video.currentTime=0;}});
    const state=await p.evaluate(()=>({text:document.body.innerText,overflow:document.documentElement.scrollWidth>innerWidth,sections:[...document.querySelectorAll('main section[id], main>section')].map(e=>{const r=e.getBoundingClientRect();return{id:e.id,x:r.x,y:r.y+scrollY,w:r.width,h:r.height}}),links:[...document.querySelectorAll('a[href]')].map(e=>({text:e.textContent.trim(),href:e.getAttribute('href')?.replace(location.origin,'')})),brokenImages:[...document.images].filter(e=>e.currentSrc&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
    await p.screenshot({path:`${out}/${i?'candidate':'baseline'}-${lang}-${width}.png`,fullPage:true,animations:'disabled'});
+   if (i === 1 && await p.locator('#hero-title[data-i18n="heroCurrentTitle"]').count()) {
+    for (const th of [true,false,true,false]) {
+     await p.evaluate(th=>window.postMessage({krane:'lang',th},'*'),th);
+     await p.waitForFunction(th=>document.documentElement.lang===(th?'th':'en'),th);
+     await p.waitForFunction(th=>document.querySelector('#hero-title').textContent.trim()===(th?'ปลดล็อกเวอร์ชั่นที่ดีที่สุดของคุณ':'Unlock your best self'),th);
+    }
+   }
    captures.push({...state,errors,failed});await ctx.close();
   }
-  const [a,b]=captures;const compare={width,lang,textEqual:a.text===b.text,linksEqual:JSON.stringify(a.links)===JSON.stringify(b.links),sectionsEqual:JSON.stringify(a.sections)===JSON.stringify(b.sections),newErrors:b.errors.filter(e=>!a.errors.includes(e)),candidateOverflow:b.overflow,newMissing:b.failed.filter(e=>!a.failed.some(x=>x.url===e.url)),baseline:a,candidate:b};results.push(compare);
+  const [a,b]=captures;const compare={width,lang,textEqual:a.text===b.text,expectedTextEqual:(lang==='en'?expectedEnglishText(a.text):a.text)===b.text,linksEqual:JSON.stringify(a.links)===JSON.stringify(b.links),sectionsEqual:JSON.stringify(a.sections)===JSON.stringify(b.sections),newErrors:b.errors.filter(e=>!a.errors.includes(e)),candidateOverflow:b.overflow,newMissing:b.failed.filter(e=>!a.failed.some(x=>x.url===e.url)),baseline:a,candidate:b};results.push(compare);
  }}finally{await browser.close()}
  await writeFile(`${out}/results.json`,JSON.stringify(results,null,2));
- assert(results.every(r=>r.textEqual&&r.linksEqual&&r.sectionsEqual&&!r.newErrors.length&&!r.newMissing.length),'Content/geometry/runtime regression; inspect results.json');
+ assert(results.every(r=>r.expectedTextEqual&&r.linksEqual&&r.sectionsEqual&&!r.newErrors.length&&!r.newMissing.length),'Content/geometry/runtime regression; inspect results.json');
  console.log('PASS content/link/section-geometry/error checks. Screenshots and full interactions still require review.');
 }finally{for(const s of servers)await new Promise(r=>s.close(r))}
