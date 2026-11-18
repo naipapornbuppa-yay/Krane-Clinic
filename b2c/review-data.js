@@ -47,11 +47,13 @@ window.KraneReviewCard = function (review) {
   const english = document.documentElement.lang === 'en';
   const stars = document.createElement('span');
   stars.className = 'public-review-card__stars';
-  stars.textContent = rated ? '★'.repeat(rating) + '☆'.repeat(5 - rating) : '☆☆☆☆☆';
+  stars.textContent = rated ? '★'.repeat(rating) + '☆'.repeat(5 - rating) : '★★★★★';
   if (rated) {
     stars.setAttribute('role', 'img');
     stars.setAttribute('aria-label', english ? `${rating} out of 5 stars` : `คะแนน ${rating} จาก 5 ดาว`);
   } else {
+    // Filled stars are decorative when the source has no submitted score.
+    // Do not invent a rating or include this review in rating aggregates.
     stars.setAttribute('aria-hidden', 'true');
     stars.classList.add('is-unrated');
   }

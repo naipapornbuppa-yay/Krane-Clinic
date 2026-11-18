@@ -33,7 +33,7 @@
   const stories = section('opt-stories opt-wrap',
     '<div class="opt-section-head"><h2>ประสบการณ์จากผู้ใช้บริการ Krane</h2></div>'+
     '<div class="opt-rail opt-story-rail" data-rail>'+storyMarkup+'</div>','programme-stories');
-  const pairItems = ['hair-pha','hair-03'].map(key=>reviewData.find(r=>r.id===key)).filter(r=>r?.before&&r?.after);
+  const pairItems = (id === 'rebody' ? ['weight-02','weight-04','weight-05'] : ['hair-pha','hair-03']).map(key=>reviewData.find(r=>r.id===key)).filter(r=>r?.before&&r?.after);
   const pairs = pairItems.length ? pairItems.map(r=>'<article class="opt-pair"><div><img src="'+r.before+'" alt="ก่อน"><img src="'+r.after+'" alt="หลัง"></div><p>'+r.name+' · ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>').join('') : '<article class="opt-pair"><div>'+pic('before','ก่อน')+pic('after','หลัง')+'</div><p>ผลลัพธ์แตกต่างกันในแต่ละบุคคล</p></article>';
   const comparison = section('opt-comparison','<div class="opt-wrap"><h2>เรื่องราวก่อนและหลัง</h2><div class="opt-rail opt-comparison-rail" data-rail data-carousel-rail="เรื่องราวก่อนและหลัง หน้า" role="region" aria-label="เรื่องราวก่อนและหลัง ใช้ปุ่มลูกศรซ้ายหรือขวาเพื่อเลื่อนดู">'+pairs+'</div></div>');
   const benefits = document.querySelector('#programme-care-benefits');

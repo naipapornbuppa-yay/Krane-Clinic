@@ -3,20 +3,15 @@ const article=window.kraneArticleMock.articles.find(a=>a.id===reading.dataset.ar
 const en=document.documentElement.lang==='en',header=reading.querySelector('.library-hero--reading'),credits=reading.querySelector('[data-article-byline]');header.querySelector('.library-hero__copy').append(credits);
 const heroImage=header.querySelector('[data-article-hero]'),heroMedia=header.querySelector('.library-hero__media');
 const titleText=article.title.toLowerCase();
-const weightCutouts={'library-obesity-02':['assets/medicine/weight-diecut-v1/mounjaro-kwikpen-diecut-v1.png','ปากกายา Mounjaro KwikPen'],'library-obesity-04':['assets/medicine/weight-diecut-v1/ozempic-pens-diecut-v1.png','ปากกายา Ozempic']};
-const product=weightCutouts[article.id] || (titleText.includes('sildenafil')?['assets/medicine/ed-sheet-v1/sildenafil-tablet-hires.jpg','ภาพถ่ายเม็ดยา sildenafil ด้านที่มีตรา Pfizer']:titleText.includes('tadalafil')?['assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png','เม็ดยา tadalafil ตราสัญลักษณ์ C20']:null);
-const hasPhoto=!!product || (article.image && article.image!==window.KraneArticleImage.placeholder);
-header.classList.toggle('has-editorial-photo',!!hasPhoto);heroMedia.hidden=!hasPhoto;heroMedia.classList.toggle('is-product',!!product&&!titleText.includes('sildenafil'));
-reading.querySelector('.article-photo-credit')?.remove();if(titleText.includes('sildenafil')){const credit=document.createElement('p');credit.className='article-photo-credit';credit.innerHTML='Photo: Tim Reckmann · <a href="https://commons.wikimedia.org/wiki/File:Viagra_Tablette.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>';header.after(credit);}
-if(product){heroImage.src=product[0];heroImage.alt=product[1];}else window.KraneArticleImage.bind(heroImage,article);
-const hairComparison=titleText.includes('finasteride')&&titleText.includes('minoxidil');
-heroMedia.querySelector('.article-medicine-pair')?.remove();heroMedia.classList.toggle('has-medicine-pair',hairComparison);heroImage.hidden=hairComparison;
-if(hairComparison){
- const pair=document.createElement('div');pair.className='article-medicine-pair';
- [['propecia-bottle-current.jpg','Propecia · finasteride 1 mg'],['rogaine-bottle-official.png','Rogaine · minoxidil 5%']].forEach(([file,label])=>{const item=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');img.src='assets/medicine/condition-real-v1/'+file;img.alt=label;caption.textContent=label;item.append(img,caption);pair.append(item)});
- heroMedia.append(pair);
- const credit=document.createElement('p');credit.className='article-photo-credit';credit.innerHTML='ภาพผลิตภัณฑ์: <a href="https://www.henryschein.com/Products/1406711_US_Front_01_600x600.jpg" target="_blank" rel="noopener">Henry Schein</a> · <a href="https://www.rogaine.com/" target="_blank" rel="noopener">Rogaine</a>';header.after(credit);
-}
+// Cards and reading pages share the exact editorial cover source.
+const hasPhoto=article.image && article.image!==window.KraneArticleImage.placeholder;
+header.classList.toggle('has-editorial-photo',!!hasPhoto);
+heroMedia.hidden=!hasPhoto;
+heroMedia.classList.remove('is-product','has-medicine-pair');
+heroMedia.querySelector('.article-medicine-pair')?.remove();
+reading.querySelector('.article-photo-credit')?.remove();
+heroImage.hidden=false;
+window.KraneArticleImage.bind(heroImage,article);
 
 const body=reading.querySelector('[data-article-body]'),takeaways=body.querySelector('.article-reading__section--summary');if(takeaways){
 body.prepend(takeaways);

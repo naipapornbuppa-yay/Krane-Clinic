@@ -235,7 +235,7 @@
       closingTitle: "Consult a doctor today",
       closingLead: "Complete a five-minute digital assessment and begin a direct medical conversation with a specialist.",
       consultNow: "Consult a doctor",
-      footerIntro: "Premium clinical solutions for modern men, powered by medical science and personalised to support your health journey.",
+      footerIntro: "Premium clinical solutions for modern life, powered by medical science and personalised to support your health journey.",
       hairTitlePrefix: "Proven care for ",
       hairTitleEmphasis: "thicker hair",
       hairTitleSuffix: "",
@@ -408,7 +408,7 @@
     ["ประสบการณ์ที่ติดตามได้", "Progress you can track"],
     ["จากความกังวลสู่แผนดูแลที่ชัดเจน", "From concern to a clear care plan"],
     ["ทำไมต้อง", "Why"],
-    ["การดูแลสุขภาพสำหรับผู้ชายยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ", "Modern men's healthcare grounded in medical science, with personalised plans designed around you."],
+    ["การดูแลสุขภาพสำหรับคนยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ", "Modern men's healthcare grounded in medical science, with personalised plans designed around you."],
     ["มิติใหม่ในการ", "A new approach to"], ["ลดน้ำหนัก", "weight loss"],
     ["แบบรับประทาน", "Oral"], ["GLP-1 แบบรับประทาน", "Oral GLP-1"],
     ["ตัวเลือกแบบเม็ดที่แพทย์อาจพิจารณาตามสุขภาพและเป้าหมาย", "A tablet option a doctor may consider based on your health and goals"],
@@ -1993,8 +1993,16 @@
     expertDialogName.textContent = profile.name;
     expertDialogRole.textContent = profile.role;
     expertDialogBio.textContent = profile.bio;
-    expertDialogSpecialty.textContent = profile.specialty;
-    expertDialogEducation.textContent = profile.education;
+    const fillPills = (target, value) => {
+      target.replaceChildren(...value.split(' · ').filter(Boolean).map(text => {
+        const pill = document.createElement('span');
+        pill.className = 'expert-dialog__pill';
+        pill.textContent = text;
+        return pill;
+      }));
+    };
+    fillPills(expertDialogSpecialty, profile.specialty);
+    fillPills(expertDialogEducation, profile.education);
     // The sheet no longer carries a CTA; keep the link in sync if one returns.
     if (expertDetailLink) expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
     document.body.classList.add("expert-open");

@@ -736,7 +736,7 @@
     "minutes": 5,
     "title": "semaglutide หรือ tirzepatide? สองตัวนี้ต่างกันอย่างไร",
     "summary": "ทั้งสองตัวเป็นยาฉีดสัปดาห์ละครั้งในกลุ่มเดียวกัน ต่างกันที่จำนวนฮอร์โมนที่ยาทำงานผ่าน",
-    "image": "assets/medicine/weight-sheet-v1/mounjaro-kwikpen.jpg",
+    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
     "imageAlt": "ภาพถ่ายประกอบบทความสุขภาพ",
     "byline": "Krane Editorial · ต้นฉบับสำหรับตรวจทาน ต.ค. 2569",
     "author": {
@@ -1025,16 +1025,16 @@
     "imageAlt": "อาหารที่มีโปรตีนและผัก"
   },
   "library-obesity-02": {
-    "image": "assets/optimized-web/weight-care-pens-redacted-hires-v2.webp",
-    "imageAlt": "ภาพประกอบปากกาฉีดยาที่ใช้ในการดูแลน้ำหนัก"
+    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "imageAlt": "การดูแลสุขภาพและน้ำหนักในชีวิตประจำวัน"
   },
   "library-obesity-03": {
     "image": "assets/articles/new-20261115/library-obesity-03.jpg",
     "imageAlt": "ผู้ชายใส่ใจอาการและสุขภาพของตนเอง"
   },
   "library-obesity-04": {
-    "image": "assets/medicine/weight-sheet-v1/mounjaro-kwikpen.jpg",
-    "imageAlt": "กล่องบรรจุปากกาฉีดยา"
+    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
+    "imageAlt": "การดูแลสุขภาพและน้ำหนักในชีวิตประจำวัน"
   },
   "library-obesity-05": {
     "image": "assets/articles/new-20261115/library-obesity-05.jpg",

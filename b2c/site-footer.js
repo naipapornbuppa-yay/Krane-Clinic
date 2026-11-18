@@ -31,7 +31,7 @@
     ] }
   ];
   const copy = {
-    description: ['การดูแลสุขภาพสำหรับผู้ชายยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ', 'Healthcare for modern men, grounded in medical science, with a personal plan designed around you.'],
+    description: ['การดูแลสุขภาพสำหรับคนยุคใหม่ บนพื้นฐานวิทยาศาสตร์การแพทย์ พร้อมแผนเฉพาะบุคคลที่ออกแบบให้เหมาะกับคุณ', 'Healthcare for modern life, grounded in medical science, with a personal plan designed around you.'],
     licence: ['เครน คลินิกเวชกรรม 10101017669', 'Krane Medical Clinic, licence 10101017669'],
     disclaimer: ['*บริการการแพทย์ทางไกลให้บริการโดยแพทย์ที่มีใบอนุญาต ตัวเลือกการสั่งยาขึ้นอยู่กับการประเมินทางคลินิก ข้อมูลบนเว็บไซต์นี้มีวัตถุประสงค์เพื่อให้ข้อมูลเท่านั้นและไม่ทดแทนคำแนะนำทางการแพทย์', '*Telemedicine is provided by licensed doctors. Prescribing options depend on clinical assessment. The information on this site is for information only and does not replace medical advice.'],
     unavailable: [' — ยังไม่พร้อมใช้งาน', ' — unavailable'],
