@@ -34,14 +34,16 @@
     const physician=review?.physician,confirmed=review?.medicalStatus==='reviewed';
     // Names/status: supplied manuscript metadata in article-data.js.
     // Specialties: client Doctor info sheet mirrored in doctor-source.js (17 Oct 2026).
-    // No license number was supplied. Never invent one or infer a review from category alone.
+    // ATier publishes this license for the named physician; not an official registry-status check.
+    // Source: https://atierwellness.com/our-team/dr-kornphaka-kantikosum/
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
+    const confirmedHairReviewer=confirmed&&/^library-hair-loss-0[1-5]$/.test(article.id)&&physician?.th==='พญ. กรผกา ขันติโกสุม'&&physician?.en==='Dr. Kornphaka Kantikosum';
     const specialty=physician?(hair?(en?'Dermatology · Hair and scalp disorders · Hair restoration surgery':'ตจวิทยา · โรคเส้นผมและหนังศีรษะ · ศัลยกรรมปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
     const reviewer=card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
       specialty,
-      physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
+      confirmedHairReviewer?(en?'Medical license: 47576 (published by ATier)':'ใบประกอบวิชาชีพ ว. 47576 (ข้อมูลจาก ATier)'):physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
       !confirmed?(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน'):null
-    ],confirmed&&hair&&physician?'assets/landing-573/doctors/client-doctor-ploy.png':'');
+    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'');
     return [reviewer,writer];
   }
   function renderFeed(){

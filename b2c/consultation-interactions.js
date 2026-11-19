@@ -46,7 +46,7 @@
     screen.querySelectorAll('.rx-card,[data-plan-card]').forEach(card=>{
       if(card.querySelector('.consult-rx-open'))return;
       const b=node('button',t('เปิดดูรายละเอียดใบสั่งยา','View prescription details'),'btn btn--secondary consult-rx-open');b.type='button';
-      b.onclick=()=>{open(t('รายละเอียดใบสั่งยา · ตัวอย่าง','Prescription details · Demo'),b);const copy=card.cloneNode(true);copy.querySelectorAll('button').forEach(n=>n.remove());dialog.append(node('div',copy.innerText||copy.textContent,'consult-rx-content'));actions();};card.append(b);
+      b.onclick=()=>{open(t('รายละเอียดใบสั่งยา · ตัวอย่าง','Prescription details · Demo'),b);const buttonLabels=new Set(Array.from(card.querySelectorAll('button'),el=>el.innerText.trim()));const details=card.innerText.split('\n').filter(line=>!buttonLabels.has(line.trim())).join('\n');dialog.append(node('div',details,'consult-rx-content'));actions();};card.append(b);
     });
   }
   const observer=new MutationObserver(enhanceRx);observer.observe(screen.querySelector('.chat-body'),{childList:true,subtree:true});enhanceRx();labels();
