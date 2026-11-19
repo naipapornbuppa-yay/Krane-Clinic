@@ -86,6 +86,7 @@
   function filterOptions(record){
     if(!record.search)return;
     var query=record.search.value.trim().toLocaleLowerCase();
+    record.clear.hidden=record.search.value.length===0;
     var count=0;
     record.options.forEach(function(option){
       option.hidden=!option.textContent.toLocaleLowerCase().includes(query);
@@ -102,7 +103,7 @@
     record.menu.replaceChildren();
     if(record.search){
       record.list.replaceChildren();
-      record.menu.append(record.search,record.list,record.empty);
+      record.menu.append(record.searchRow,record.list,record.empty);
     }
     record.options=Array.from(record.select.options).map(function(nativeOption,index){
       // Retain the native placeholder for required-field validation, never as a choice.
@@ -206,7 +207,7 @@
     if(select.hasAttribute('data-searchable-select'))trigger.setAttribute('aria-haspopup','dialog');
     trigger.setAttribute('aria-controls',menu.id);
 
-    var search=null,empty=null;
+    var search=null,searchRow=null,clear=null,empty=null;
     var list=menu;
     if(select.hasAttribute('data-searchable-select')){
       list=document.createElement('div');
@@ -214,7 +215,9 @@
       list.id=menu.id+'-options';
       list.setAttribute('role','listbox');
       search=document.createElement('input');
-      search.type='search';
+      // Avoid browser-specific blue cancel glyphs: use one consistent SVG button.
+      search.type='text';
+      search.setAttribute('role','searchbox');
       search.className='custom-select__search';
       search.placeholder='พิมพ์เพื่อค้นหา';
       /* The field label is already in whatever language is showing, so a
@@ -225,6 +228,15 @@
       search.setAttribute('aria-controls',list.id);
       search.autocomplete='off';
       search.inputMode=select.id==='addressMapPostcode'?'numeric':'text';
+      searchRow=document.createElement('div');
+      searchRow.className='custom-select__search-row';
+      clear=document.createElement('button');
+      clear.type='button';
+      clear.hidden=true;
+      clear.className='custom-select__clear';
+      clear.setAttribute('aria-label',searchEn?'Clear search':'ล้างคำค้นหา');
+      clear.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg>';
+      searchRow.append(search,clear);
       empty=document.createElement('p');
       empty.className='custom-select__empty';
       empty.textContent='ไม่พบรายการที่ตรงกัน';
@@ -256,11 +268,12 @@
     select.tabIndex=-1;
     select.setAttribute('aria-hidden','true');
 
-    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,list:list,scrim:scrim,search:search,empty:empty,options:[]};
+    var record={root:root,select:select,trigger:trigger,value:value,menu:menu,list:list,scrim:scrim,search:search,searchRow:searchRow,clear:clear,empty:empty,options:[]};
     enhanced.push(record);
     refreshOptions(record);
 
     if(search){
+      clear.addEventListener('click',function(){search.value='';filterOptions(record);search.focus()});
       search.addEventListener('input',function(){filterOptions(record)});
       search.addEventListener('keydown',function(event){
         if(event.key==='Escape'){event.preventDefault();closeSelect(record,true)}
