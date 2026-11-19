@@ -18,11 +18,19 @@
   }
   function articleCredits(article){
     const en=document.documentElement.lang==='en';
-    const card=(role,name,notes=[],photo='')=>{
+    const card=(role,name,notes=[],photo='',license=false)=>{
       const item=el('div','article-credit'),copy=el('span','article-credit__copy');
       // Portraits belong only to a confirmed medical reviewer, never the writer.
       if(photo){const avatar=el('img','article-credit__avatar');avatar.src=photo;avatar.alt=name;avatar.width=48;avatar.height=48;item.append(avatar);}
-      copy.append(el('small','',role),el('strong','',name));
+      const identity=el('span','article-credit__identity');
+      identity.append(el('strong','',name));
+      if(license){
+        const link=el('a','article-credit__license',en?'License 47576':'ว. 47576');
+        link.href='https://atierwellness.com/our-team/dr-kornphaka-kantikosum/';
+        link.title=en?'License number published by ATier; not an official registry verification':'เลขใบประกอบวิชาชีพจาก ATier ไม่ใช่ผลตรวจสอบทะเบียนแพทยสภา';
+        identity.append(link);
+      }
+      copy.append(el('small','',role),identity);
       notes.filter(Boolean).forEach(note=>copy.append(el('span','',note)));
       item.append(copy);return item;
     };
@@ -30,7 +38,7 @@
     const editorial=article.contentStatus==='client-review'||review?.writer==='Krane Editorial';
     const writerName=editorial?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author?.isMock?(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน'):article.author?.name||(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน');
     const occupation=editorial?(en?'Editorial team':'ทีมบรรณาธิการ'):article.author?.occupation||(en?'Occupation not supplied':'ยังไม่ระบุอาชีพ');
-    const writer=card(en?'Written by':'ผู้เขียน',writerName,[occupation]);
+    const writer=card(en?'Written by':'ผู้เขียน',writerName,editorial?[]:[occupation]);
     const physician=review?.physician,confirmed=review?.medicalStatus==='reviewed';
     // Names/status: supplied manuscript metadata in article-data.js.
     // Specialties: client Doctor info sheet mirrored in doctor-source.js (17 Oct 2026).
@@ -38,12 +46,12 @@
     // Source: https://atierwellness.com/our-team/dr-kornphaka-kantikosum/
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
     const confirmedHairReviewer=confirmed&&/^library-hair-loss-0[1-5]$/.test(article.id)&&physician?.th==='พญ. กรผกา ขันติโกสุม'&&physician?.en==='Dr. Kornphaka Kantikosum';
-    const specialty=physician?(hair?(en?'Dermatology · Hair and scalp disorders · Hair restoration surgery':'ตจวิทยา · โรคเส้นผมและหนังศีรษะ · ศัลยกรรมปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
-    const reviewer=card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
+    const specialty=physician?(hair?(en?'Dermatology · Hair/scalp · Hair transplant':'ตจวิทยา · เส้นผม/หนังศีรษะ · ปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
+    const reviewer=card(en?'Medical reviewer':'แพทย์ผู้ตรวจทาน',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
       specialty,
-      confirmedHairReviewer?(en?'Medical license: 47576 (published by ATier)':'ใบประกอบวิชาชีพ ว. 47576 (ข้อมูลจาก ATier)'):physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
+      !confirmedHairReviewer&&physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
       !confirmed?(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน'):null
-    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'');
+    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'',confirmedHairReviewer);
     return [reviewer,writer];
   }
   function renderFeed(){

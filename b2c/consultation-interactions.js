@@ -42,11 +42,45 @@
     add.onclick=()=>{if(!pending)return;const file=pending,id=crypto.randomUUID();files.set(id,file);const bubble=node('div',undefined,'bubble bubble--out consult-file-bubble');bubble.dataset.localFile=id;const b=node('button',file.name);b.type='button';b.onclick=()=>{open(file.name,b);preview(file);actions();};bubble.append(b,node('div',t('เฉพาะแท็บนี้ · ยังไม่ได้ส่งถึงแพทย์','This tab only · Not sent to a doctor'),'consult-file-note'));screen.querySelector('.chat-body').append(bubble);close();bubble.scrollIntoView({block:'nearest'});};
     dialog.append(input,error);actions(add);
   };
+  function renderRxDetails(card){
+    const rows=Array.from(card.querySelectorAll('.plan-item'));
+    const content=node('div',undefined,'consult-rx-summary');
+    if(!rows.length){
+      const labels=new Set(Array.from(card.querySelectorAll('button'),el=>el.innerText.trim()));
+      content.append(node('div',card.innerText.split('\n').filter(line=>!labels.has(line.trim())).join('\n'),'consult-rx-content'));
+      return content;
+    }
+    const badge=card.querySelector('.badge');
+    if(badge)content.append(node('p',badge.textContent.trim(),'consult-rx-caption'));
+    const list=node('ul',undefined,'consult-rx-list');
+    rows.forEach(source=>{
+      const row=node('li',undefined,'consult-rx-item');
+      const body=node('div',undefined,'consult-rx-description');
+      const grow=source.querySelector('.grow');
+      const name=grow?.firstElementChild;
+      const gist=source.querySelector('.plan-item__gist');
+      body.append(node('strong',name?.textContent.trim()||grow?.textContent.trim()||'', 'consult-rx-name'));
+      if(gist)body.append(node('p',gist.textContent.trim(),'consult-rx-directions'));
+      const meta=node('div',undefined,'consult-rx-meta');
+      const price=source.querySelector('.checkout-order__price');
+      const quantity=source.querySelector('.delivery-item__quantity');
+      if(price)meta.append(node('span',price.textContent.trim(),'consult-rx-price'));
+      if(quantity)meta.append(node('span',quantity.textContent.trim(),'consult-rx-quantity'));
+      row.append(body,meta);list.append(row);
+    });
+    content.append(list);
+    Array.from(card.children).filter(el=>!el.matches('.plan-item,button')&&!el.querySelector('.badge')).forEach(el=>{
+      if(el.querySelector('button'))return;
+      const text=el.innerText.trim();
+      if(text)content.append(node('p',text,'consult-file-note'));
+    });
+    return content;
+  }
   function enhanceRx(){
     screen.querySelectorAll('.rx-card,[data-plan-card]').forEach(card=>{
       if(card.querySelector('.consult-rx-open'))return;
       const b=node('button',t('เปิดดูรายละเอียดใบสั่งยา','View prescription details'),'btn btn--secondary consult-rx-open');b.type='button';
-      b.onclick=()=>{open(t('รายละเอียดใบสั่งยา · ตัวอย่าง','Prescription details · Demo'),b);const buttonLabels=new Set(Array.from(card.querySelectorAll('button'),el=>el.innerText.trim()));const details=card.innerText.split('\n').filter(line=>!buttonLabels.has(line.trim())).join('\n');dialog.append(node('div',details,'consult-rx-content'));actions();};card.append(b);
+      b.onclick=()=>{open(t('รายละเอียดใบสั่งยา · ตัวอย่าง','Prescription details · Demo'),b);dialog.append(renderRxDetails(card));actions();};card.append(b);
     });
   }
   const observer=new MutationObserver(enhanceRx);observer.observe(screen.querySelector('.chat-body'),{childList:true,subtree:true});enhanceRx();labels();
