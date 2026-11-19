@@ -1,6 +1,8 @@
 /* Same-origin frontend demo adapter. No authentication, backend or medical rules. */
 (() => {
-  const prefix='krane.clinical.v1.';
+ const guest=location.hostname==='naipapornbuppa-yay.github.io' && location.pathname==='/Krane-Clinic/b2c/krane-b2c.html' && new URLSearchParams(location.search).get('sandbox')==='guest';
+ const gkey=k=>guest?'krane.guest-sandbox.v1:'+k:k;
+  const prefix=gkey('krane.clinical.v1.');
   const role=document.body?.classList.contains('role-doctor')?'doctor':location.pathname.includes('cms-doctor')?'doctor':'patient';
   const activeKey=prefix+role+'.active';
   const defaultCase={id:'CONS-2041',patientId:'PT-2041',name:'Mali S. (Demo)',category:'hair-skin',status:'waiting',answers:[],appointmentAt:null};

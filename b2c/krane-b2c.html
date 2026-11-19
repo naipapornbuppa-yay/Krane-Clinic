@@ -64,8 +64,8 @@
 <link rel="stylesheet" href="custom-select.css?v=20260928-address-cleanup-v158">
 <link rel="stylesheet" href="state-illustrations.css?v=20260920-float-v1">
 <link rel="stylesheet" href="platform-compat.css?v=20260920-float-v1">
-<script src="../krane-clinical-demo.js?v=20261012-sync"></script>
-<script src="../krane-clinical-workflow.js?v=20261115-chat-clinician"></script>
+<script src="../krane-clinical-demo.js?v=20261119-guest"></script>
+<script src="../krane-clinical-workflow.js?v=20261119-guest"></script>
 <link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261017-workflow">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
@@ -1206,7 +1206,7 @@
 <link rel="stylesheet" href="treatment-folders.css?v=20261013-resume-edit">
 <link rel="stylesheet" href="modal-chrome.css?v=20261013-toast-gallery">
 <link rel="stylesheet" href="article-reading.css?v=20261119-checklist">
-<script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261119-typing-inline"><link rel="stylesheet" href="consultation-interactions.css?v=20261119">
+<script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261119-typing-inline"><link rel="stylesheet" href="consultation-interactions.css?v=20261119-compact">
 </head>
 <body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="krane-folder-pocket" clipPathUnits="objectBoundingBox"><path d="M0 .09 C0 .035 .02 0 .055 0 H.21 C.24 0 .255 .015 .275 .04 C.295 .065 .305 .07 .335 .07 H.94 C.978 .07 1 .105 1 .16 V.91 C1 .965 .978 1 .94 1 H.06 C.022 1 0 .965 0 .91 Z"/></clipPath><symbol id="krane-delivery-motorcycle" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></symbol><symbol id="krane-delivery-truck" viewBox="0 0 24 24"><path d="M1 3h14v14H1zM15 8h4l3 4v5h-7"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/></symbol></defs></svg>
@@ -3990,15 +3990,19 @@
     if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus()}
     if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus()}
   });
-  const FLOW_STATE_KEY = 'krane-p01-flow-state-v1';
-  const AUTH_PROFILE_KEY = 'krane-auth-profile-v1';
-  const DRAFT_KEY = 'krane-p01-intake-draft-v2';
-  const CONSENT_RECORD_KEY = 'krane-p01-consent-records-v1';
-  const FOLLOWUP_RECORD_KEY = 'krane-p01-followup-record-v1';
-  const QUEUE_KEY='krane-pending-consultation-v1';
+  // Resolve isolation BEFORE restoring pendingQueue, flow, draft or auth.
+  const STATIC_GUEST_URL = location.hostname==='naipapornbuppa-yay.github.io' && location.pathname==='/Krane-Clinic/b2c/krane-b2c.html' && new URLSearchParams(location.search).get('sandbox')==='guest';
+  const GUEST_STORAGE_PREFIX='krane.guest-sandbox.v1:';
+  function guestStorageKey(key){return STATIC_GUEST_URL && !key.startsWith(GUEST_STORAGE_PREFIX) ? GUEST_STORAGE_PREFIX+key : key;}
+  const FLOW_STATE_KEY = guestStorageKey('krane-p01-flow-state-v1');
+  const AUTH_PROFILE_KEY = guestStorageKey('krane-auth-profile-v1');
+  const DRAFT_KEY = guestStorageKey('krane-p01-intake-draft-v2');
+  const CONSENT_RECORD_KEY = guestStorageKey('krane-p01-consent-records-v1');
+  const FOLLOWUP_RECORD_KEY = guestStorageKey('krane-p01-followup-record-v1');
+  const QUEUE_KEY=guestStorageKey('krane-pending-consultation-v1');
   const queuePreview=new URLSearchParams(location.search).has('demoStage');
   let queueDismissOnce=false;
-  let pendingQueue=queuePreview ? null : readLocalJson(QUEUE_KEY);
+  let pendingQueue=(queuePreview || (STATIC_GUEST_URL && new URLSearchParams(location.search).get('fresh')==='1')) ? null : readLocalJson(QUEUE_KEY);
   if(!pendingQueue?.startedAt) pendingQueue=null;
   if(pendingQueue?.session){
     Object.entries(pendingQueue.session).forEach(([key,value]) => {
@@ -4159,7 +4163,7 @@
      reachable: ?address=saved (or localStorage kraneDemoSavedAddress) restores
      the pre-filled state for demoing a returning patient. */
   const wantSavedAddress = /(?:\?|&)address=saved\b/.test(location.search)
-    || (()=>{ try{ return localStorage.getItem('kraneDemoSavedAddress')==='1' }catch(e){ return false } })();
+    || (()=>{ try{ return localStorage.getItem(guestStorageKey('kraneDemoSavedAddress'))==='1' }catch(e){ return false } })();
   if(wantSavedAddress){
     // An explicit returning-patient QA route must win even when this tab has
     // already passed an older checkout migration.
@@ -4181,16 +4185,16 @@
     flowState.orderState.checkoutFlowVersion='pharmacy-precheckout-v4';
   }
   function readSessionJson(key){
-    try { return JSON.parse(sessionStorage.getItem(key) || '{}'); } catch(error) { return {}; }
+    try { return JSON.parse(sessionStorage.getItem(guestStorageKey(key)) || '{}'); } catch(error) { return {}; }
   }
   function writeSessionJson(key,value){
-    try { sessionStorage.setItem(key,JSON.stringify(value)); } catch(error) {}
+    try { sessionStorage.setItem(guestStorageKey(key),JSON.stringify(value)); } catch(error) {}
   }
   function readLocalJson(key){
-    try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(error) { return {}; }
+    try { return JSON.parse(localStorage.getItem(guestStorageKey(key)) || '{}'); } catch(error) { return {}; }
   }
   function writeLocalJson(key,value){
-    try { localStorage.setItem(key,JSON.stringify(value)); } catch(error) {}
+    try { localStorage.setItem(guestStorageKey(key),JSON.stringify(value)); } catch(error) {}
   }
   /* The landing runs this app inside the how-it-works phone with ?demoStage=,
      and that copy seeds a signed-in journey so the screens have something to
@@ -4208,13 +4212,25 @@
      sliced mid-line by the bezel. The demo copy marks itself so the stylesheet
      can keep a home-indicator sized band clear at the bottom. */
   if(IS_DEMO_EMBED) document.documentElement.classList.add('is-demo-embed');
+  function isStaticGuestWalkthrough(){
+    return location.hostname==='naipapornbuppa-yay.github.io' && location.pathname==='/Krane-Clinic/b2c/krane-b2c.html'
+      && new URLSearchParams(location.search).get('sandbox')==='guest'
+      && window.KraneClinical?.id()==='CONS-2041' && !flowState.sharedEncounterId;
+  }
+  document.addEventListener('click',event=>{
+    if(!event.target.closest('[data-static-guest-account]')||!isStaticGuestWalkthrough())return;
+    // In-memory synthetic identity only; never sign in, register, send OTP or store auth.
+    Object.assign(flowState,{accountCreated:true,otpVerified:true,passwordSet:true,patientInfoComplete:true,
+      identityVerified:true,returningIdentityValid:true,patientName:'Guest Demo',profileDisplayName:'Guest Demo',authProvider:'static-guest'});
+    show(nextAfterAuthentication(postAuthNext));
+  });
   // Explicit fixture-only walkthrough. Never accelerates a shared encounter.
   function isFixtureWalkthrough(){
-    return IS_DEMO_EMBED && new URLSearchParams(location.search).get('demoMode')==='walkthrough'
+    return (isStaticGuestWalkthrough() || (IS_DEMO_EMBED && new URLSearchParams(location.search).get('demoMode')==='walkthrough'))
       && window.KraneClinical?.id()==='CONS-2041';
   }
 
-  function persistFlowState(){ if(IS_DEMO_EMBED) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
+  function persistFlowState(){ if(IS_DEMO_EMBED || isStaticGuestWalkthrough()) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
     delete flowState.sharedEncounterId;
     delete flowState.orderState.clinicalPrescription;
@@ -10178,7 +10194,7 @@
        selected service's authored questions, not the generic base markup. */
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
-    if(!IS_DEMO_EMBED && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
+    if(!IS_DEMO_EMBED && !isStaticGuestWalkthrough() && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
       try {
         const answers=window.KraneClinical.captureIntake();
         const c=window.KraneClinical.create({patientId:flowState.clinicalPatientId||undefined,name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,contact:{phone:flowState.partnerPhone||flowState.verifiedPhone||'',email:flowState.email||''},answers,attachments:window.KraneClinicalAssets?.attachments()||[],channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,consentRecord:consentLedger(),entitlement:flowState.partnerPaymentMethod||'',consultationPayment:flowState.consultationPaid?'paid':flowState.consultationFeeAcknowledged?'acknowledged':'pending',appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;flowState.clinicalPatientId=c.patientId;persistFlowState();
@@ -10863,7 +10879,7 @@
        unwatchable demo — nobody sits through it to see what happens next. It
        is fifteen seconds: long enough to read the screen and see the clock
        move, short enough to walk someone through the journey. */
-    const admissionDelay=pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
+    const admissionDelay=isStaticGuestWalkthrough() ? 1500 : pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
       ? (reduceMotion ? 400 : isFixtureWalkthrough() ? 1500 : 4200)
       : Math.max(0,pendingQueue.startedAt+QUEUE_ADMIT_MS-Date.now());
     if(unavailable) return;
@@ -11006,7 +11022,7 @@
            to "create an account". The case the reset is for is a half-finished
            sign-up left in the tab by someone else, not a completed one: the
            account survives, the journey does not. */
-        const keepAccount=signedIn();
+        const keepAccount=signedIn() && (!STATIC_GUEST_URL || flowState.authProvider==='static-guest');
         const account=keepAccount ? {
           patientName:flowState.patientName,
           verifiedPhone:flowState.verifiedPhone,
@@ -11913,14 +11929,14 @@
           flowState.consentsComplete=true;
           // Consent starts a fresh pre-doctor confirmation cycle. Keep the
           // saved values, but require the patient to review and submit them.
-          if(flowState.draftReady) flowState.patientInfoComplete=false;
+          if(flowState.draftReady && !isStaticGuestWalkthrough()) flowState.patientInfoComplete=false;
         }
         // Personal details must be reviewed immediately after consent, including
         // for returning patients. Only after that confirmation may the route open
         // general health or continue toward doctor matching.
         const consentNext = consentSource==='partner'
           ? 'partner-idcard'
-          : (!flowState.draftReady
+          : ((!flowState.draftReady || isStaticGuestWalkthrough())
               ? nextAfterAuthentication()
               : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
@@ -14813,5 +14829,5 @@
 <script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
 <script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
-<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261119"></script><script src="demo-walkthrough-label.js?v=20261119"></script></body>
+<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261119-compact"></script><script src="demo-walkthrough-label.js?v=20261119-guest"></script></body>
 </html>

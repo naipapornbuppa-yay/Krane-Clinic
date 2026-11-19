@@ -12,7 +12,7 @@
     const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',paths[symbol]);svg.append(path);return svg;
   }
   function normalize(root) {
-    if(root.nodeType!==1 || root.closest('svg,script,style,textarea,[contenteditable]'))return;
+    if(!root || root.nodeType!==1 || root.closest('svg,script,style,textarea,[contenteditable]'))return;
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const matches=[];
     while(walker.nextNode()) {
       const node=walker.currentNode;
