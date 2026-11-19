@@ -32,6 +32,7 @@
     en: {
       announcementPromo: "Special! Create an account today for a free consultation and delivery",
       announcementPromoCta: "Start now",
+      howVideoPreview: "Video consultation preview",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",
       announcementLicensed: "Licensed doctors",

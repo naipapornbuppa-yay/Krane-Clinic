@@ -146,10 +146,19 @@ for(const width of [390,800,1024,1440]){
      await receiving.close();
     }
    }
-   const images=p.locator('.figma-how__recording img');
-   for(let i=0;i<3;i++){const image=images.nth(i);await image.scrollIntoViewIfNeeded();await image.evaluate(e=>{e.loading='eager'});await p.waitForFunction(i=>{const e=document.querySelectorAll('.figma-how__recording img')[i];return e.complete&&e.naturalWidth>0},i);check(await image.evaluate(e=>e.currentSrc.endsWith('.png?v=20261026-hires')),'Reduced-motion app recording '+i)}
-   await p.locator('[data-how-go="2"]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='2');check(await p.locator('[data-how-slide]').nth(2).getAttribute('aria-hidden')==='false','Third how step selectable');
-   await p.locator('[data-how-prev]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='1');check(await p.locator('[data-how-slide]').nth(1).getAttribute('aria-hidden')==='false','How previous control');
+   const steps=p.locator('[data-how-slide]'),expectedPreviews=['assessment','video-consultation','delivery','follow-up'];
+   check(await steps.count()===expectedPreviews.length,'Four approved how steps including follow-up');
+   for(const [i,stem] of expectedPreviews.entries()){
+    const step=steps.nth(i),image=step.locator('.figma-how__recording img');
+    await p.locator('[data-how-go="'+i+'"]').click();
+    await p.waitForFunction(i=>document.querySelector('#how').dataset.howActive===String(i),i);
+    check(await step.getAttribute('aria-hidden')==='false','How step '+(i+1)+' selectable');
+    await image.evaluate(e=>{e.loading='eager'});
+    await p.waitForFunction(i=>{const e=document.querySelectorAll('[data-how-slide]')[i].querySelector('.figma-how__recording img');return e.complete&&e.naturalWidth>0},i);
+    check(await image.evaluate((e,stem)=>new URL(e.currentSrc).pathname.endsWith('/'+stem+'.png')&&new URL(e.src).pathname.endsWith('/'+stem+'.gif'),stem),stem+' uses reduced-motion still and matching normal-motion preview');
+   }
+   check(await p.locator('.how-video-preview-label').textContent()==='Video consultation preview','Video consultation preview label is localized in EN');
+   await p.locator('[data-how-prev]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='2');check(await steps.nth(2).getAttribute('aria-hidden')==='false','How previous moves from follow-up to delivery');
    // The landscape interview has its own player; selfie stories use the rail viewer.
    const interviewOpener=p.locator('#weight-program .pc-main-media .pc-story-open');
    await interviewOpener.click();await p.locator('.pc-interview-player[open]').waitFor();
