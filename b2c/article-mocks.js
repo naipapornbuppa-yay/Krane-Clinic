@@ -18,19 +18,31 @@
   }
   function articleCredits(article){
     const en=document.documentElement.lang==='en';
-    const card=(role,name,photo,initials,note)=>{
-      const item=el('div','article-credit'),avatar=photo?el('img','article-credit__avatar'):el('span','article-credit__avatar',initials);
-      if(photo){avatar.src=photo;avatar.alt='';avatar.width=48;avatar.height=48;}
-      const copy=el('span','article-credit__copy');copy.append(el('small','',role),el('strong','',name));item.append(avatar,copy);return item;
+    const card=(role,name,notes=[],photo='')=>{
+      const item=el('div','article-credit'),copy=el('span','article-credit__copy');
+      // Portraits belong only to a confirmed medical reviewer, never the writer.
+      if(photo){const avatar=el('img','article-credit__avatar');avatar.src=photo;avatar.alt=name;avatar.width=48;avatar.height=48;item.append(avatar);}
+      copy.append(el('small','',role),el('strong','',name));
+      notes.filter(Boolean).forEach(note=>copy.append(el('span','',note)));
+      item.append(copy);return item;
     };
-    const writer=card(en?'Written by':'ผู้เขียน',article.contentStatus==='client-review'?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author.name,article.contentStatus==='client-review'?'../assets/brand-final/krane-logomark.svg':article.author.photo,'K',en?'Editorial team':'ทีมบรรณาธิการ');
-    if(article.contentStatus==='client-review')writer.querySelector('img')?.classList.add('article-credit__avatar--brand');
-    // Only use named reviewers present in the supplied manuscript headers.
+    const review=article.editorialReview;
+    const editorial=article.contentStatus==='client-review'||review?.writer==='Krane Editorial';
+    const writerName=editorial?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author?.isMock?(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน'):article.author?.name||(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน');
+    const occupation=editorial?(en?'Editorial team':'ทีมบรรณาธิการ'):article.author?.occupation||(en?'Occupation not supplied':'ยังไม่ระบุอาชีพ');
+    const writer=card(en?'Written by':'ผู้เขียน',writerName,[occupation]);
+    const physician=review?.physician,confirmed=review?.medicalStatus==='reviewed';
+    // Names/status: supplied manuscript metadata in article-data.js.
+    // Specialties: client Doctor info sheet mirrored in doctor-source.js (17 Oct 2026).
+    // No license number was supplied. Never invent one or infer a review from category alone.
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
-    const reviewer=hair?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Kornphaka Kantikosum':'พญ. กรผกา ขันติโกสุม','assets/landing-573/doctors/client-doctor-ploy.png','',en?'Dermatology':'ตจวิทยา (ผิวหนัง)'):weight?card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',en?'Dr. Phahol Sarojvisut':'อ.นพ. พหล สโรจวิสุทธิ์','','พส',en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):card(en?'Medical / pharmacy reviewer':'ผู้ตรวจทานทางการแพทย์หรือเภสัชกรรม',en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน','','—',en?'Not specified in the manuscript':'ต้นฉบับยังไม่ได้ระบุชื่อ');
-    if(!article.editorialReview)return [writer,reviewer];
-    const pharmacist=card(en?'Pharmacy review':'ผู้ตรวจทานข้อมูลยา',en?'Reviewer not yet confirmed':'รอยืนยันชื่อเภสัชกร','','—',en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน');
-    return [writer,pharmacist];
+    const specialty=physician?(hair?(en?'Dermatology · Hair and scalp disorders · Hair restoration surgery':'ตจวิทยา · โรคเส้นผมและหนังศีรษะ · ศัลยกรรมปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
+    const reviewer=card(en?'Medical reviewer':'ผู้ตรวจทานทางการแพทย์',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
+      specialty,
+      physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
+      !confirmed?(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน'):null
+    ],confirmed&&hair&&physician?'assets/landing-573/doctors/client-doctor-ploy.png':'');
+    return [reviewer,writer];
   }
   function renderFeed(){
     const feed=document.querySelector('[data-article-feed]');

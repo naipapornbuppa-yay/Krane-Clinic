@@ -30,7 +30,7 @@
 
   const translations = {
     en: {
-      announcementPromo: "Special! Join today and consult for free",
+      announcementPromo: "Special! Create an account today for a free consultation and delivery",
       announcementPromoCta: "Start now",
       announcementDelivery: "Nationwide medicine delivery",
       announcementPrivate: "Private 1-to-1 doctor consultation",

@@ -554,10 +554,24 @@
     .state-view__tile--cutout>.krane-state-art,
     .state-view__tile--cutout>.krane-state-hatch-stack{width:72%;height:72%}
     #waitroom .state-view__tile--cutout>.krane-state-art{width:78%;height:78%}
-    .state-view__visual--loading .krane-state-art,
-    .state-view__visual--loading .krane-state-hatch-layer{
-      transform-origin:center;
-      animation:loading-illustration-float 3.2s var(--ease-inout) infinite
+    /* App loading states share a restrained CI-blue indicator. Keep the
+       underlying state artwork for non-loading/error states and runtime hooks. */
+    .screen .state-view__visual.state-view__visual--loading {
+      width:64px!important;height:64px!important;min-height:64px;
+      aspect-ratio:1;display:grid;place-items:center;background:none;
+      border:0;box-shadow:none;isolation:isolate;
+    }
+    .screen .state-view__visual--loading > * {display:none!important}
+    .screen .state-view__visual--loading::before {display:none!important}
+    .screen .state-view__visual--loading::after {
+      content:"";position:static;display:block;width:40px;height:40px;
+      border:3px solid #e7eefb;border-top-color:var(--brand,#395aa4);
+      border-radius:50%;background:none;box-shadow:none;
+      animation:krane-app-loading .9s linear infinite;
+    }
+    @keyframes krane-app-loading {to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){
+      .screen .state-view__visual--loading::after{animation:none}
     }
     @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
@@ -1186,8 +1200,8 @@
 </style>
 <link rel="stylesheet" href="treatment-folders.css?v=20261013-resume-edit">
 <link rel="stylesheet" href="modal-chrome.css?v=20261013-toast-gallery">
-<link rel="stylesheet" href="article-reading.css?v=20261115-credit-row">
-<script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261115-typing">
+<link rel="stylesheet" href="article-reading.css?v=20261119-checklist">
+<script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261119-typing-inline"><link rel="stylesheet" href="consultation-interactions.css?v=20261119">
 </head>
 <body class="hide-feat">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="krane-folder-pocket" clipPathUnits="objectBoundingBox"><path d="M0 .09 C0 .035 .02 0 .055 0 H.21 C.24 0 .255 .015 .275 .04 C.295 .065 .305 .07 .335 .07 H.94 C.978 .07 1 .105 1 .16 V.91 C1 .965 .978 1 .94 1 H.06 C.022 1 0 .965 0 .91 Z"/></clipPath><symbol id="krane-delivery-motorcycle" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></symbol><symbol id="krane-delivery-truck" viewBox="0 0 24 24"><path d="M1 3h14v14H1zM15 8h4l3 4v5h-7"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/></symbol></defs></svg>
@@ -3501,8 +3515,6 @@
   <section class="screen" id="preloader">
     <div class="screen__body state-view center" role="status" aria-live="polite">
       <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-        <span class="state-view__tile state-view__tile--cutout loading-illustration" data-loader="paper-crane" aria-hidden="true"><img class="krane-state-art ks-paper-crane-live" src="assets/state-editorial-v5-ink/loading-info-frames-v1/frame-01.png?v=20261010-shared-views-v272" alt=""></span>
-        <span class="state-view__badge"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
     </div>
@@ -3821,12 +3833,12 @@
 
 
   <script src="assets/lucide.min.js?v=20260920-float-v1"></script>
-  <script src="b2c-icons.js?v=20261011-light-notification-icons"></script>
+  <script src="b2c-icons.js?v=20261119-checklist"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
   <script src="shared-view-components.js?v=20261010-shared-views-v272"></script>
   <script src="article-data.js?v=20261118-mobile-review"></script>
   <script src="article-store.js?v=20261025-cms-publish"></script>
-  <script src="article-mocks.js?v=20261023-read-time"></script>
+  <script src="article-mocks.js?v=20261119-checklist"></script>
 <script src="patient-date-picker.js?v=20261115-mobile-polish"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -10737,22 +10749,6 @@
     if(!c) return;
     syncConsultationPaymentAmount();
   });
-  // A single img swaps preloaded frames. The old SVG <use> clone could paint
-  // several CSS-animated layers at once in some browsers.
-  const craneImage=document.querySelector('[data-loader="paper-crane"] .ks-paper-crane-live');
-  if(craneImage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const craneFrames=Array.from({length:5},(_,i)=>`assets/state-editorial-v5-ink/loading-info-frames-v1/frame-0${i+1}.png?v=20261010-shared-views-v272`);
-    Promise.all(craneFrames.map(src=>new Promise(resolve=>{
-      const frame=new Image();frame.onload=()=>resolve(src);frame.onerror=()=>resolve(null);frame.src=src;
-    }))).then(frames=>{
-      const ready=frames.filter(Boolean);if(ready.length<2)return;
-      let craneFrame=0;
-      setInterval(()=>{
-        if(document.hidden || !document.getElementById('preloader')?.classList.contains('active'))return;
-        craneFrame=(craneFrame+1)%ready.length;craneImage.src=ready[craneFrame];
-      },360);
-    });
-  }
   // waiting room reset + doctor-admits simulation (v3: no entering a blank room)
   function paintElapsedTimer(timer,elapsedSeconds){
     if(!timer) return;
@@ -14803,8 +14799,8 @@
 <script src="treatment-pause.js?v=20261017-workflow"></script>
 <script src="modal-chrome.js?v=20261013-consistent"></script>
 <script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
-<script src="../krane-chat-typing.js?v=20261115-typing"></script>
+<script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
 <script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
-<script src="ui-arrows.js?v=20261118" defer></script></body>
+<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261119"></script></body>
 </html>

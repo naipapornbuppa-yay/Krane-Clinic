@@ -31,7 +31,8 @@
   status.className = 'krane-chat-typing__sr';
   status.setAttribute('role', 'status');
   bar.append(status);
-  anchor.before(bar);
+  const stagedIndicator = screen.querySelector(".chat-body > [data-typing]");
+  (stagedIndicator || anchor).before(bar);
 
   function render() {
     const shown = [other, role].filter(who => active.get(who) || preview === who);

@@ -58,6 +58,10 @@
   }
 
   function normalize() {
+    // Use the same person contour in the desktop header and mobile account tab.
+    document.querySelectorAll('.profile-shell-nav__account-avatar').forEach(function (node) {
+      setNavPairedIcon(node, 'user-round', false);
+    });
     document.querySelectorAll('.screen__top .back').forEach(function (node) {
       setIcon(node, 'arrow-left', 'ui-icon--md');
       if (!node.hasAttribute('aria-label')) node.setAttribute('aria-label', 'Back');
