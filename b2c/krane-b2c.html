@@ -4203,6 +4203,12 @@
      sliced mid-line by the bezel. The demo copy marks itself so the stylesheet
      can keep a home-indicator sized band clear at the bottom. */
   if(IS_DEMO_EMBED) document.documentElement.classList.add('is-demo-embed');
+  // Explicit fixture-only walkthrough. Never accelerates a shared encounter.
+  function isFixtureWalkthrough(){
+    return IS_DEMO_EMBED && new URLSearchParams(location.search).get('demoMode')==='walkthrough'
+      && window.KraneClinical?.id()==='CONS-2041';
+  }
+
   function persistFlowState(){ if(IS_DEMO_EMBED) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
     delete flowState.sharedEncounterId;
@@ -10526,7 +10532,7 @@
            doctorAvailable set at route entry, so a deep link straight to
            #matching fails to match for sexual health too. */
         replaceCurrent(doctorAvailable && !needsAppointment() ? 'consultpay' : 'appointment');
-      }, 10000);
+      }, isFixtureWalkthrough() ? 1500 : 10000);
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
@@ -10853,7 +10859,7 @@
        is fifteen seconds: long enough to read the screen and see the clock
        move, short enough to walk someone through the journey. */
     const admissionDelay=pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
-      ? (reduceMotion ? 400 : 4200)
+      ? (reduceMotion ? 400 : isFixtureWalkthrough() ? 1500 : 4200)
       : Math.max(0,pendingQueue.startedAt+QUEUE_ADMIT_MS-Date.now());
     if(unavailable) return;
     // Shared encounters are admitted by the doctor, never by the fixture timer.
@@ -14802,5 +14808,5 @@
 <script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
 <script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
-<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261119"></script></body>
+<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261119"></script><script src="demo-walkthrough-label.js?v=20261119"></script></body>
 </html>
