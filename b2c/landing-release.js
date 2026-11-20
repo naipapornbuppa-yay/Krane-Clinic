@@ -149,7 +149,6 @@
     let inView = false;
     let quoteFrame = 0;
     let touching = false;
-    const narrow = matchMedia('(max-width:760px)');
     const hover = matchMedia('(hover:hover)');
     const mark = index => {
       current = index;
@@ -160,9 +159,9 @@
       });
     };
     const show = (index, animate = true) => {
-      if (narrow.matches) {
-        slides.scrollTo({left: index * slides.clientWidth, behavior: animate && !reducedMotion.matches ? 'smooth' : 'instant'});
-      } else mark(index);
+      const behavior = animate && !reducedMotion.matches ? 'smooth' : 'instant';
+      slides.scrollTo({left: index * slides.clientWidth, behavior});
+      if (behavior === 'instant') mark(index);
     };
     const schedule = () => {
       clearTimeout(timer);
@@ -176,10 +175,18 @@
       }, 6500);
     };
     slides.replaceChildren(...panels);
+    slides.tabIndex = 0;
+    slides.setAttribute('role', 'group');
+    const syncQuoteLabels = () => {
+      const en = document.documentElement.lang === 'en';
+      slides.setAttribute('aria-label', en ? 'Member testimonials' : 'คำพูดจากผู้ใช้บริการ');
+      dots.setAttribute('aria-label', en ? 'Choose a testimonial' : 'เลือกคำพูดจากผู้ใช้บริการ');
+      Array.from(dots.children).forEach((dot, i) =>
+        dot.setAttribute('aria-label', en ? `Testimonial ${i + 1} of ${panels.length}` : `คำพูดจาก ${quoteReviews[i].name}`));
+    };
     dots.replaceChildren(...quoteReviews.map((item, i) => {
       const dot = document.createElement('button');
       dot.type = 'button';
-      dot.setAttribute('aria-label', `คำพูดจาก ${item.name}`);
       dot.addEventListener('click', () => {
         show(i);
         schedule();
@@ -187,9 +194,18 @@
       return dot;
     }));
     dots.hidden = false;
+    syncQuoteLabels();
+    document.addEventListener('krane:languagechange', syncQuoteLabels);
     mark(0);
+    slides.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      const targets = {ArrowLeft: current - 1, ArrowRight: current + 1, Home: 0, End: panels.length - 1};
+      if (!Object.hasOwn(targets, event.key)) return;
+      event.preventDefault();
+      show(Math.max(0, Math.min(panels.length - 1, targets[event.key])), false);
+      schedule();
+    });
     slides.addEventListener('scroll', () => {
-      if (!narrow.matches) return;
       if (!quoteFrame) quoteFrame = requestAnimationFrame(() => {
         quoteFrame = 0;
         const index = Math.round(slides.scrollLeft / (slides.clientWidth || 1));
@@ -202,7 +218,6 @@
     const finishTouch = () => { touching = false; schedule(); };
     slides.addEventListener('touchend', finishTouch, {passive:true});
     slides.addEventListener('touchcancel', finishTouch, {passive:true});
-    narrow.addEventListener('change', () => show(current, false));
     new ResizeObserver(() => show(current, false)).observe(slides);
     new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;

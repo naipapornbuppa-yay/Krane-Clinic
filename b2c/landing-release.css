@@ -334,13 +334,17 @@ html[lang="en"] body#landing-page.landing-release.landing-figma-draft #services.
 .care-chapter__review-rail {
   display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
 }
-.landing-story-quotes__slides { display:grid; }
-.landing-story-quotes__slide { grid-area:1 / 1;visibility:hidden;opacity:0;transition:opacity .28s ease; }
-.landing-story-quotes__slide.is-current { visibility:visible;opacity:1; }
+.landing-story-quotes,.landing-story-quotes__slides { min-width:0; }
+.landing-story-quotes__slides {
+  display:flex;width:100%;overflow-x:auto;scrollbar-width:none;
+  scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;
+}
+.landing-story-quotes__slide {
+  flex:0 0 100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;
+}
+.landing-story-quotes__slides::-webkit-scrollbar { display:none; }
+.landing-story-quotes__slides:focus-visible { outline:2px solid #395aa4;outline-offset:3px; }
 @media (max-width:760px) {
-  .landing-story-quotes__slides { display:flex;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain; }
-  .landing-story-quotes__slide { flex:0 0 100%;min-width:0;opacity:1;visibility:visible;scroll-snap-align:start;scroll-snap-stop:always; }
-  .landing-story-quotes__slides::-webkit-scrollbar { display:none; }
   body#landing-page.landing-release { padding-bottom:0; }
   body#landing-page.landing-release footer.krane-footer { padding-bottom:calc(96px + env(safe-area-inset-bottom,0px)); }
 }
