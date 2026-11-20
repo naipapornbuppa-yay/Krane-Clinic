@@ -42,17 +42,17 @@
    if(visit.followup){const row=card.querySelector('.followup-row:last-child strong');row.textContent=visit.followup;}
   }
   card.addEventListener('treatment-record-open',()=>{
-   const certificate=document.querySelector('#treatment-detail .treatment-record__certificate-card');
-   if(!certificate)return;
-   document.getElementById('treatment-visit-history')?.remove();
+   // The certificate moved to the sticky Related Documents footer.
+   // Visit history belongs to the plan itself, independently of that CTA.
+   const plan=document.querySelector('#treatment-plan-panel');
+   if(!plan)return;
    const history=document.createElement('details');history.id='treatment-visit-history';
    const summary=document.createElement('summary');summary.innerHTML='<span>ประวัติการปรึกษา</span>'+window.kraneIcon('chevron-down','ui-icon--sm');history.append(summary);
    const current=Number(card.dataset.consultationNumber);
    const other=visits.map((visit,index)=>({visit,index})).reverse();
    if(!other.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='ยังไม่มีการปรึกษาครั้งก่อน';history.append(empty);}
    other.forEach(({visit,index})=>{const button=document.createElement('button');button.type='button';button.className='doc-row treatment-record__certificate-card';const title=document.createElement('strong');title.textContent='ปรึกษาวันที่ '+(visit.treatmentDate||'');button.append(title);button.setAttribute('aria-current',String(visit.number===current));button.onclick=()=>{select(index);card.click();document.querySelector('#treatment-detail .screen__body')?.scrollTo({top:0,behavior:'smooth'});};history.append(button);});
-   certificate.after(history);
-   window.kraneTreatmentPause?.attach(card,history);
+   plan.append(history);
   });
   let opening=false, replay=false;
   card.addEventListener('click',event=>{
@@ -69,6 +69,11 @@
   folder.selectLatest=()=>select(visits.length-1);
   select(visits.length-1);
  }
+ // The same detail screen also serves records opened from Activities.
+ // Clear the preceding program's history before the selected card renders.
+ document.addEventListener('treatment-record-open',()=>{
+  document.getElementById('treatment-visit-history')?.remove();
+ },true);
  function init(){document.querySelectorAll('#profile .treatment-card').forEach(mount);}
  new MutationObserver(()=>{if(document.querySelector('#profile.active'))document.querySelectorAll('.treatment-folder').forEach(folder=>folder.selectLatest?.());}).observe(document.getElementById('profile'),{attributes:true,attributeFilter:['class']});
  window.kraneTreatmentFolders={mount,init,outline};
