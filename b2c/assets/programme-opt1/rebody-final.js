@@ -5,8 +5,39 @@
   const timeline = page.querySelector('.opt-timeline-list');
   const comparisons = page.querySelector('.opt-comparison [data-rail]');
   const reviewData = window.KraneReviews || [];
-  const cards = Array.from(comparisons.children);
+  const cards = Array.from(comparisons?.children || []);
+  const weightPairs = reviewData.filter(item => item.category === 'weight' && item.before && item.after);
   cards.forEach((card, index) => {
+    if (page.dataset.programme === 'rebody') {
+      const images = card.firstElementChild;
+      const photos = Array.from(images.children);
+      if (photos.length !== 2) return;
+      // The data keys, not the card index or a different programme's reviews,
+      // establish the order of this pair. Profile/sample durations aren't evidence.
+      const pair = weightPairs.find(item =>
+        photos[0].getAttribute('src') === item.before &&
+        photos[1].getAttribute('src') === item.after);
+      images.className = 'rebody-pair-images';
+      photos.forEach((photo, position) => {
+        const figure = document.createElement('figure');
+        photo.alt = pair ? (position ? 'ภาพหลัง' : 'ภาพก่อน') : 'ภาพเปรียบเทียบ';
+        photo.decoding = 'async';
+        photo.replaceWith(figure);
+        figure.append(photo);
+        if (pair) {
+          const label = document.createElement('figcaption');
+          label.textContent = position ? 'หลัง' : 'ก่อน';
+          figure.append(label);
+        }
+      });
+      const copy = document.createElement('div');
+      copy.className = 'rebody-pair-copy';
+      const note = card.querySelector('p');
+      note.textContent = 'ผลลัพธ์แตกต่างกันในแต่ละบุคคล';
+      copy.append(note);
+      card.append(copy);
+      return;
+    }
     const review = reviewData.find(item => item.id === ['hair-pha', 'hair-03'][index]);
     if (!review) return;
     const images = card.firstElementChild;
