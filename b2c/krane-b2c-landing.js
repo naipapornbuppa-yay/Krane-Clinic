@@ -1971,7 +1971,7 @@
       bio: "ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์"
     }
   };
-  Object.entries(window.KraneDoctorSource||{}).forEach(([id,record])=>{expertProfiles[id]={...expertProfiles[id],...record,education:[record.education,...record.training].join(" · "),bio:record.bio+" ปัจจุบัน: "+record.workplaces.join(" · ")};});
+  Object.entries(window.KraneDoctorSource||{}).forEach(([id,record])=>{expertProfiles[id]={...expertProfiles[id],...record,education:[record.education,...(record.training||[])],bio:(id==="2"?"เทคนิคปลูกผม FUE/DHI และหัตถการด้านผิวหนัง":record.bio)+" ปัจจุบัน: "+(record.workplaces||[]).join(" · ")};});
   const expertDialog = document.querySelector("[data-expert-dialog]");
   const expertDialogClose = document.querySelector("[data-expert-close]");
   const expertDialogMedia = document.querySelector("[data-expert-dialog-media]");
@@ -2003,7 +2003,15 @@
       }));
     };
     fillPills(expertDialogSpecialty, profile.specialty);
-    fillPills(expertDialogEducation, profile.education);
+    const educationRows=Array.isArray(profile.education)?profile.education:(profile.education||"").split(" · ");
+    const educationList=document.createElement("ul");
+    educationList.className="expert-dialog__education-list";
+    educationRows.filter(Boolean).forEach(text=>{
+      const item=document.createElement("li");
+      item.textContent=text;
+      educationList.append(item);
+    });
+    expertDialogEducation.replaceChildren(educationList);
     // The sheet no longer carries a CTA; keep the link in sync if one returns.
     if (expertDetailLink) expertDetailLink.href = `doctor-detail.html?doctor=${id}`;
     document.body.classList.add("expert-open");

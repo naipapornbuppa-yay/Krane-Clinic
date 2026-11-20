@@ -1033,8 +1033,8 @@
     "imageAlt": "ผู้ชายใส่ใจอาการและสุขภาพของตนเอง"
   },
   "library-obesity-04": {
-    "image": "assets/articles/editorial-v1/safe-weight-loss.jpg",
-    "imageAlt": "การดูแลสุขภาพและน้ำหนักในชีวิตประจำวัน"
+    "image": "assets/articles/new-20261115/library-obesity-04.jpg",
+    "imageAlt": "ผู้ชายดูโทรศัพท์ขณะนั่งบนโซฟา"
   },
   "library-obesity-05": {
     "image": "assets/articles/new-20261115/library-obesity-05.jpg",
