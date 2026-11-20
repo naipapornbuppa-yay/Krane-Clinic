@@ -118,7 +118,7 @@ window.KraneFictionalReviewGroup = (category, railClass, heading) => {
     ));
   }
   render();
-  document.addEventListener('krane:languagechange', render);
+  new MutationObserver(render).observe(document.documentElement, {attributes:true, attributeFilter:['lang']});
   return group;
 };
 
