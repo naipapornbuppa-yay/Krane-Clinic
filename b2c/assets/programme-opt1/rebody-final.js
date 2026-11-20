@@ -34,6 +34,17 @@
       copy.className = 'rebody-pair-copy';
       const note = card.querySelector('p');
       note.textContent = 'ผลลัพธ์แตกต่างกันในแต่ละบุคคล';
+      // Use released text only when it is attached to this exact photo pair.
+      if (pair?.quote || pair?.caption) {
+        const lead = document.createElement(pair.quote ? 'blockquote' : 'h3');
+        if (pair.quote) {
+          lead.textContent = '“' + pair.quote.replace(/<br\s*\/?\s*>/gi, ' ') + '”';
+        } else {
+          lead.className = 'rebody-pair-headline';
+          lead.textContent = pair.caption;
+        }
+        copy.append(lead);
+      }
       copy.append(note);
       card.append(copy);
       return;

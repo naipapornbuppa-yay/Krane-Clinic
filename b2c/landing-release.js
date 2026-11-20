@@ -111,7 +111,11 @@
     rail.dataset.carouselRail = 'ความคิดเห็น หน้า';
     rail.tabIndex = 0;
     for (const item of items) rail.append(window.KraneReviewCard(item));
-    section.append(title, rail);
+    section.append(title);
+    const demo = window.KraneFictionalReviewGroup(category, 'care-chapter__review-rail');
+    if (demo) section.append(demo);
+    const supplied = window.KraneSuppliedReviewGroup(rail);
+    section.append(supplied);
     chapter.querySelector('.care-chapter__note').before(section);
   }
 

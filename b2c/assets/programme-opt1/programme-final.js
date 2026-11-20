@@ -60,6 +60,10 @@
     section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail" data-carousel-rail="ความคิดเห็น หน้า" tabindex="0"></div>';
     const rail = section.querySelector('.rebody-review-rail');
     for (const review of reviews) rail.append(window.KraneReviewCard(review));
+    const demo = window.KraneFictionalReviewGroup(quotesByProgramme[key], 'rebody-review-rail');
+    const supplied = window.KraneSuppliedReviewGroup(rail);
+    if (demo) section.append(demo);
+    section.append(supplied);
     page.querySelector('.opt-interview').after(section);
   }
 
