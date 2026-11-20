@@ -52,8 +52,22 @@
 
 .custom-select__value{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .custom-select.is-placeholder .custom-select__value{color:var(--color-ink-3);font-weight:var(--fw-regular)}
-.custom-select__chevron{width:9px;height:9px;flex:none;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform var(--dur-base) var(--ease-out)}
-.custom-select.is-open .custom-select__chevron{transform:translateY(2px) rotate(225deg)}
+.custom-select__chevron{
+  width:16px;height:16px;flex:none;border:0;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 5.75 4.5 4.5 4.5-4.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 5.75 4.5 4.5 4.5-4.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  transform:none;transition:transform var(--dur-base) var(--ease-out)
+}
+.custom-select.is-open .custom-select__chevron{transform:rotate(180deg)}
+.float-field .custom-select__chevron{transform:translateY(-50%)}
+.float-field .custom-select.is-open .custom-select__chevron{transform:translateY(-50%) rotate(180deg)}
+
+/* The Thai glyph padding still allows tone marks to breathe. Only remove its
+   compensating margin when the label is the centered, single-line placeholder. */
+.float-field.float-field--label-as-placeholder:not(.is-filled):has(select.select) .float-field__slot>label{
+  margin-block:0
+}
+.float-field.float-field--label-as-placeholder:not(.is-filled) .custom-select__trigger{padding-block:0}
 .custom-select__scrim{display:none}
 
 .custom-select__menu{
