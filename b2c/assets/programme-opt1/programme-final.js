@@ -52,18 +52,14 @@
 
   page.querySelectorAll('.opt-timeline details').forEach(details => { details.name = 'care-timeline'; });
   const quotesByProgramme = {rebody: 'weight', rehair: 'hair-loss', reflow: 're-flow'};
-  const reviews = window.KraneProgrammeReviews(quotesByProgramme[key]);
-  if (reviews.length) {
-    const section = document.createElement('section');
-    section.className = 'opt-feedback opt-wrap';
-    section.setAttribute('aria-labelledby', 'programme-feedback-title');
-    section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title">ความคิดเห็น</h2></header><div class="rebody-review-rail" data-carousel-rail="ความคิดเห็น หน้า" tabindex="0"></div>';
-    const rail = section.querySelector('.rebody-review-rail');
-    for (const review of reviews) rail.append(window.KraneReviewCard(review));
-    const demo = window.KraneFictionalReviewGroup(quotesByProgramme[key], 'rebody-review-rail');
-    const supplied = window.KraneSuppliedReviewGroup(rail);
-    if (demo) section.append(demo);
-    section.append(supplied);
+  const section = document.createElement('section');
+  section.className = 'opt-feedback opt-wrap';
+  section.setAttribute('aria-labelledby', 'programme-feedback-title');
+  section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title"></h2></header>';
+  const title = section.querySelector('#programme-feedback-title');
+  const demo = window.KraneFictionalReviewGroup(quotesByProgramme[key], 'rebody-review-rail', title);
+  if (demo) {
+    section.append(demo);
     page.querySelector('.opt-interview').after(section);
   }
 

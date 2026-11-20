@@ -100,23 +100,14 @@
 
   for (const chapter of document.querySelectorAll('.care-chapter[data-review-category]')) {
     const category = chapter.dataset.reviewCategory;
-    const items = window.KraneProgrammeReviews(category);
-    if (!items.length) continue;
     const section = document.createElement('div');
     section.className = 'care-chapter__reviews';
     const title = document.createElement('h3');
-    title.textContent = 'ความคิดเห็น';
-    const rail = document.createElement('div');
-    rail.className = 'care-chapter__review-rail';
-    rail.dataset.carouselRail = 'ความคิดเห็น หน้า';
-    rail.tabIndex = 0;
-    for (const item of items) rail.append(window.KraneReviewCard(item));
-    section.append(title);
-    const demo = window.KraneFictionalReviewGroup(category, 'care-chapter__review-rail');
-    if (demo) section.append(demo);
-    const supplied = window.KraneSuppliedReviewGroup(rail);
-    section.append(supplied);
-    chapter.querySelector('.care-chapter__note').before(section);
+    const demo = window.KraneFictionalReviewGroup(category, 'care-chapter__review-rail', title);
+    if (demo) {
+      section.append(title, demo);
+      chapter.querySelector('.care-chapter__note').before(section);
+    }
   }
 
   document.addEventListener('click', event => {

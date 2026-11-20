@@ -19,7 +19,7 @@ window.KraneReviewCard = function (review) {
     stars.setAttribute('aria-label', english ? `${rating} out of 5 stars` : `คะแนน ${rating} จาก 5 ดาว`);
     card.append(stars);
   }
-  const localized = (value) => typeof value === 'string' ? value : value[english ? 'en' : 'th'];
+  const localized = (value) => typeof value === 'string' ? value : value?.[english ? 'en' : 'th'] || '';
   const headline = document.createElement('strong');
   headline.textContent = localized(review.caption);
   card.append(headline);
@@ -42,7 +42,7 @@ window.KraneReviewCard = function (review) {
   author.textContent = `${initial}***`;
   const details = document.createElement('small');
   const age = review.profileIsSample === false && Number.isInteger(review.age) ? `${review.age} ปี` : '';
-  details.textContent = [age, review.province].filter(Boolean).join(' · ');
+  details.textContent = [age, localized(review.province)].filter(Boolean).join(' · ');
   identity.append(author);
   if (details.textContent) identity.append(details);
   meta.append(avatar, identity);
@@ -80,26 +80,40 @@ const kraneFictionalReviewCopy = {
   ],
 };
 
+// Locations belong to fictional aliases only, not to the supplied patient stories.
+const kraneFictionalProvinces = [
+  {th:'กรุงเทพมหานคร', en:'Bangkok'}, {th:'นนทบุรี', en:'Nonthaburi'},
+  {th:'เชียงใหม่', en:'Chiang Mai'}, {th:'ชลบุรี', en:'Chon Buri'},
+  {th:'ปทุมธานี', en:'Pathum Thani'}, {th:'ขอนแก่น', en:'Khon Kaen'},
+];
+
 let kraneFictionalReviewGroupId = 0;
-window.KraneFictionalReviewGroup = (category, railClass) => {
+window.KraneFictionalReviewGroup = (category, railClass, heading) => {
   const entries = kraneFictionalReviewCopy[category];
   if (!entries?.length) return null;
   const group = document.createElement('section');
   group.className = 'public-review-demo';
-  const label = document.createElement('h4');
+  const label = document.createElement(heading ? 'p' : 'h4');
   label.className = 'public-review-demo__label';
   label.id = 'fictional-review-group-' + (++kraneFictionalReviewGroupId);
-  group.setAttribute('aria-labelledby', label.id);
+  if (heading) {
+    heading.id ||= label.id + '-title';
+    group.setAttribute('aria-labelledby', heading.id);
+    group.setAttribute('aria-describedby', label.id);
+  } else {
+    group.setAttribute('aria-labelledby', label.id);
+  }
   const rail = document.createElement('div');
   rail.className = railClass;
   rail.tabIndex = 0;
   group.append(label, rail);
   function render() {
     const en = document.documentElement.lang === 'en';
+    if (heading) heading.textContent = en ? 'What our patients say' : 'เสียงจากผู้ใช้บริการ';
     label.textContent = en ? 'Fictional reviews for demo' : 'รีวิวจำลองเพื่อสาธิต';
     rail.dataset.carouselRail = en ? 'Reviews, page' : 'ความคิดเห็น หน้า';
     rail.replaceChildren(...entries.map(([rating, captionTh, captionEn, quoteTh, quoteEn], index) =>
-      window.KraneReviewCard({name: 'ABCDEF'[index], rating,
+      window.KraneReviewCard({name: 'ABCDEF'[index], rating, province: kraneFictionalProvinces[index],
         caption: {th:captionTh, en:captionEn}, quote: {th:quoteTh, en:quoteEn}})
     ));
   }
