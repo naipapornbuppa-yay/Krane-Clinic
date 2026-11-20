@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261120-demo-five";
+    const release = "20261120-demo-five-ed-home";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -4244,7 +4244,7 @@
     delete flowState.addressDraft;
     delete flowState.addressSearchDraft;
     Object.assign(flowState,{
-      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,appointmentWhen:"",appointmentAt:"",
+      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,appointmentWhen:"",appointmentAt:"",pendingEdBookingHomeAt:"", 
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
       phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
@@ -9249,7 +9249,6 @@
         showActionToast('เลือกเวลาที่สะดวกก่อน','warning');
         return;
       }
-      flowState.appointmentWhen=`${appointmentDay} ${appointmentSlot}`;
       const days=[...document.querySelectorAll('#appointment [data-appointment-day]')];
       const dayIndex=days.findIndex(day=>day.getAttribute('aria-checked')==='true');
       const scheduledAt=new Date();
@@ -9257,7 +9256,9 @@
       const [hours,minutes]=appointmentSlot.split(':').map(Number);
       scheduledAt.setHours(hours,minutes,0,0);
       if(flowState.sharedEncounterId){try{window.KraneClinical.book(scheduledAt.toISOString());}catch(error){showActionToast(error.message,'warning');renderAppointmentSlots();return;}}
+      flowState.appointmentWhen=`${appointmentDay} ${appointmentSlot}`;
       flowState.appointmentAt=scheduledAt.toISOString();
+      flowState.pendingEdBookingHomeAt=flowState.entryChannel==='direct' && needsAppointment() ? flowState.appointmentAt : '';
       pendingQueue=null;
       if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
       persistFlowState();
@@ -9444,6 +9445,34 @@
       : covered
         ? `${baht(CONSULTATION_FEE_BAHT)} อยู่ในสิทธิ์`
       : `${baht(CONSULTATION_FEE_BAHT)} ชำระแล้ว`;
+  }
+  function ensureSharedConsultationFor(id){
+    if(!IS_DEMO_EMBED && !isStaticGuestWalkthrough() && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
+      try {
+        const answers=window.KraneClinical.captureIntake();
+        const c=window.KraneClinical.create({patientId:flowState.clinicalPatientId||undefined,name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,contact:{phone:flowState.partnerPhone||flowState.verifiedPhone||'',email:flowState.email||''},answers,attachments:window.KraneClinicalAssets?.attachments()||[],channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,consentRecord:consentLedger(),entitlement:flowState.partnerPaymentMethod||'',consultationPayment:flowState.consultationPaid?'paid':flowState.consultationFeeAcknowledged?'acknowledged':'pending',appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;flowState.clinicalPatientId=c.patientId;persistFlowState();
+      } catch(error) { showActionToast(error.message||'บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning');return false; }
+    }
+    return true;
+  }
+  function pendingEdBookingHome(){
+    return Boolean(flowState.pendingEdBookingHomeAt && flowState.pendingEdBookingHomeAt===flowState.appointmentAt
+      && flowState.entryChannel==='direct' && needsAppointment());
+  }
+  function finishConsultationHandoff(){
+    const target=consultationHandoffTarget();
+    if(target!=='appointment-booked' || !pendingEdBookingHome()){ show(target); return; }
+    if(!ensureSharedConsultationFor('appointment-booked')) return;
+    const appointmentAt=flowState.appointmentAt;
+    flowState.pendingEdBookingHomeAt='';
+    persistFlowState();
+    show('profile');
+    if(!document.querySelector('#profile.active')) return;
+    const thai=document.documentElement.lang==='th';
+    const date=new Date(appointmentAt);
+    const when=Number.isFinite(date.getTime())
+      ? new Intl.DateTimeFormat(thai?'th-TH':'en-GB',{dateStyle:'medium',timeStyle:'short'}).format(date) : '';
+    showActionToast((thai?'จองเวลาปรึกษาแล้ว':'Consultation booked')+(when?' · '+when:''),'success');
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
@@ -10201,12 +10230,7 @@
        selected service's authored questions, not the generic base markup. */
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
-    if(!IS_DEMO_EMBED && !isStaticGuestWalkthrough() && ['waitroom','appointment-booked'].includes(id) && flowState.draftReady && !flowState.sharedEncounterId){
-      try {
-        const answers=window.KraneClinical.captureIntake();
-        const c=window.KraneClinical.create({patientId:flowState.clinicalPatientId||undefined,name:flowState.partnerName||flowState.patientName||flowState.profileDisplayName||'ผู้ป่วยสาธิต',category:selectedCategoryId,condition:selectedConditionId,contact:{phone:flowState.partnerPhone||flowState.verifiedPhone||'',email:flowState.email||''},answers,attachments:window.KraneClinicalAssets?.attachments()||[],channel:flowState.entryChannel,health:flowState.entryChannel==='partner'?flowState.partnerHealth:null,concern:flowState.partnerConcern||'',consent:flowState.consentsComplete||flowState.partnerConsentComplete,consentRecord:consentLedger(),entitlement:flowState.partnerPaymentMethod||'',consultationPayment:flowState.consultationPaid?'paid':flowState.consultationFeeAcknowledged?'acknowledged':'pending',appointmentAt:flowState.appointmentAt||null});flowState.sharedEncounterId=c.id;flowState.clinicalPatientId=c.patientId;persistFlowState();
-      } catch(error) { showActionToast(error.message||'บันทึกเคสไม่ได้ กรุณาลองอีกครั้ง','warning');return; }
-    }
+    if(!ensureSharedConsultationFor(id)) return;
     if(id==='payment-success' && flowState.orderState.clinicalPrescription){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
     if(id==='articles') window.kraneArticleMock?.renderFeed();
     if(id==='article') window.kraneArticleMock?.renderDetail();
@@ -12410,7 +12434,7 @@
         return;
       }
       if(go.dataset.go === 'consultpay'){
-        show(consultationHandoffTarget());
+        finishConsultationHandoff();
         return;
       }
       if(go.dataset.go === 'payment' && !go.hasAttribute('data-keep-payment-total')) setMedicationCheckoutContext();
@@ -12691,10 +12715,10 @@
   // consultation Pay -> open the gateway on whichever method the patient picked
   document.body.addEventListener('click', e => {
     if(!e.target.closest('[data-consultpay-go]')) return;
-    if(document.getElementById('consultpay')?.dataset.checkoutMode==='fee-notice'){
+    if(document.getElementById('consultpay')?.dataset.checkoutMode==='fee-notice' || (pendingEdBookingHome() && consultationBalanceDue()<=0)){
       flowState.consultationFeeAcknowledged=true;
       persistFlowState();
-      show(consultationHandoffTarget());
+      finishConsultationHandoff();
       return;
     }
     const sel = document.querySelector('#consultpay .option[aria-selected="true"]');
@@ -12709,7 +12733,7 @@
       flowState.consultationPaid=true;
       flowState.paymentResolution='consultation-paid';
       persistFlowState();
-      show(consultationHandoffTarget());
+      finishConsultationHandoff();
       return;
     }
     if(event.target.closest('[data-consult-payment-retry]')){
