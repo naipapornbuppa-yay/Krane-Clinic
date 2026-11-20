@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261116-intake-alerts";
+    const release = "20261120-demo-five";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -4234,6 +4234,8 @@
     return (isStaticGuestWalkthrough() || (IS_DEMO_EMBED && new URLSearchParams(location.search).get('demoMode')==='walkthrough'))
       && window.KraneClinical?.id()==='CONS-2041';
   }
+
+  function isTimedQueueDemo(){ return !flowState.sharedEncounterId && isFixtureWalkthrough(); }
 
   function persistFlowState(){ if(IS_DEMO_EMBED || isStaticGuestWalkthrough()) return; writeSessionJson(FLOW_STATE_KEY,flowState); }
   function resetRequiredFlow(){
@@ -10528,6 +10530,8 @@
     const mScr = document.getElementById('matching');
     if(id === 'matching' && mScr){
       const countdown=mScr.querySelector('[data-matching-countdown]');
+      const demoMatching=isTimedQueueDemo();
+      const matchingDelay=demoMatching ? DEMO_MATCH_WAIT_MS : 10000;
       let elapsedSeconds=0;
       const syncMatchingTimer=() => {
         paintElapsedTimer(countdown,elapsedSeconds);
@@ -10543,13 +10547,13 @@
         }
         elapsedSeconds+=1;
         syncMatchingTimer();
-        if(elapsedSeconds>=10) clearInterval(matchCountdownTimer);
+        if(elapsedSeconds>=matchingDelay/1000) clearInterval(matchCountdownTimer);
       },1000);
       // Available? YES -> apply the consultation balance gate. Fully covered partner
       // consultations enter the waiting room; self-pay or any excess opens checkout.
       // NO -> availability page to pick a slot, where the same gate runs on continue.
       matchTimer = setTimeout(() => {
-        if(!mScr.classList.contains('active')) return;
+        if(!mScr.classList.contains('active') || (demoMatching && !isTimedQueueDemo())) return;
         /* Item 4 (04/08 deck): the cost is always announced on SCR-008 after
            matching, including when insurance covers it and the balance is 0.
            consultationHandoffTarget() skipped straight to the waiting room in
@@ -10558,7 +10562,7 @@
            doctorAvailable set at route entry, so a deep link straight to
            #matching fails to match for sexual health too. */
         replaceCurrent(doctorAvailable && !needsAppointment() ? 'consultpay' : 'appointment');
-      }, isFixtureWalkthrough() ? 1500 : 10000);
+      }, matchingDelay);
     }
     // Pharmacy and stock confirmation happens before bank payment. A decline
     // reroutes automatically; after three branches checkout offers postal fulfilment.
@@ -10884,17 +10888,19 @@
        unwatchable demo — nobody sits through it to see what happens next. It
        is fifteen seconds: long enough to read the screen and see the clock
        move, short enough to walk someone through the journey. */
-    const admissionDelay=isStaticGuestWalkthrough() ? 1500 : pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
-      ? (reduceMotion ? 400 : isFixtureWalkthrough() ? 1500 : 4200)
+    const demoWaiting=isTimedQueueDemo();
+    const admissionDelay=demoWaiting ? DEMO_MATCH_WAIT_MS : pendingQueue.readyAt ? 0 : (queuePreview || flowConfig.get('wait')==='ready')
+      ? (reduceMotion ? 400 : 4200)
       : Math.max(0,pendingQueue.startedAt+QUEUE_ADMIT_MS-Date.now());
     if(unavailable) return;
     // Shared encounters are admitted by the doctor, never by the fixture timer.
-    if(window.KraneClinical?.id() && window.KraneClinical.id() !== 'CONS-2041') return;
+    const isSharedWait=()=>Boolean(flowState.sharedEncounterId || (window.KraneClinical?.id() && window.KraneClinical.id()!=='CONS-2041'));
+    if(isSharedWait()) return;
     waitTimer = setTimeout(() => {
-      if(!w.classList.contains('active')) return;
+      if(!w.classList.contains('active') || isSharedWait() || (demoWaiting && !isTimedQueueDemo())) return;
       clearInterval(waitCountdownTimer);
       if(!pendingQueue.readyAt){
-        pendingQueue.readyAt=(queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+QUEUE_ADMIT_MS;
+        pendingQueue.readyAt=(demoWaiting || queuePreview || flowConfig.get('wait')==='ready') ? Date.now() : pendingQueue.startedAt+QUEUE_ADMIT_MS;
         savePendingQueue();
       }
       w.querySelector('[data-queue-book]').hidden=true;
@@ -10923,6 +10929,7 @@
   const WAITROOM_ENTRY_WINDOW = 5 * 60;
   /* How long the queue runs before the doctor opens the room. */
   const QUEUE_ADMIT_MS = 15000;
+  const DEMO_MATCH_WAIT_MS = 5000;
   let waitEntryTimer = null;
   function stopWaitroomEntryWindow(){
     clearInterval(waitEntryTimer);
