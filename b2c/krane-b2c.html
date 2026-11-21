@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261121-checklist-polish";
+    const release = "20261121-article-booking";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -28,6 +28,20 @@
       canonicalized = true;
     }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
+    // Public Pages is a review build. Isolate only a new programme launch,
+    // before any account or queue state is restored. A resumed/shared queue,
+    // Partner flow, or another host must never become a timed guest case.
+    if (url.origin === 'https://naipapornbuppa-yay.github.io'
+        && url.pathname === '/Krane-Clinic/b2c/krane-b2c.html'
+        && initialRoute === 'intake1'
+        && url.searchParams.get('entry') === 'direct'
+        && url.searchParams.get('fresh') === '1'
+        && !url.searchParams.has('sandbox')
+        && !url.searchParams.has('demoStage')
+        && ['weight', 'hair-skin', 'sexual-health'].includes(url.searchParams.get('category'))) {
+      url.searchParams.set('sandbox', 'guest');
+      canonicalized = true;
+    }
     const landing = initialRoute === 'landing';
     const illustrationSet = url.searchParams.get('illustrationSet') === 'wash' ? 'wash' : 'mono';
     document.documentElement.dataset.landingCanvas = String(landing);
@@ -1228,8 +1242,8 @@
 }
 </style>
 <link rel="stylesheet" href="treatment-folders.css?v=20261013-resume-edit">
-<link rel="stylesheet" href="modal-chrome.css?v=20261013-toast-gallery">
-<link rel="stylesheet" href="article-reading.css?v=20261119-checklist">
+<link rel="stylesheet" href="modal-chrome.css?v=20261121-article-booking">
+<link rel="stylesheet" href="article-reading.css?v=20261121-article-license">
 <script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261120-incoming-bubble"><link rel="stylesheet" href="consultation-interactions.css?v=20261120-face-time-pip">
 </head>
 <body class="hide-feat">
@@ -1287,7 +1301,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261121-checklist-polish" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261121-article-booking" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
@@ -2837,6 +2851,12 @@
   </section>
 
   <!-- ===================== PROFILE (home, bottom nav) ===================== -->
+  <style>
+    #profile .ed-booking-banner{display:flex;align-items:center;gap:12px;padding:14px 16px;border:0;border-radius:14px;background:#edf7f0;color:#17543b}
+    .ed-booking-banner>[data-ed-booking-copy]{display:grid;gap:2px;min-width:0}
+    .ed-booking-banner>[data-ed-booking-copy]>span{font-size:var(--fs-sm)}
+    [data-ed-booking-surface][hidden]{display:none!important}
+  </style>
   <section class="screen screen--web" id="profile">
     <header class="screen__top profile-shell-nav">
       <a class="profile-shell-nav__brand" href="krane-b2c-landing.html?preview=20260903-nav-capsule-v1#top" aria-label="Krane Clinic home">
@@ -2887,6 +2907,9 @@
       </div>
     </header>
     <div class="screen__body stack-5">
+      <section class="ed-booking-banner" data-ed-booking-surface hidden role="status">
+        <i data-lucide="calendar-check" class="ui-icon" aria-hidden="true"></i><span data-ed-booking-copy><strong data-ed-booking-title></strong><span data-ed-booking-when></span></span>
+      </section>
       <!-- Follow-up is not a quick action any more (client, 17 Sep): the banner below
            already carries the booked visit, and the list stays in the menu. -->
       <section class="profile-quick" aria-label="เมนูด่วน">
@@ -3129,6 +3152,10 @@
         <button class="partner-binary__option activity-filter" type="button" role="tab" aria-selected="false" data-activity-filter="order"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i><span>รายการสั่งซื้อ</span></button>
       </div>
       <div class="activity-list" data-activity-list>
+        <article class="activity-card activity-card--program" data-activity-type="program" data-ed-booking-surface hidden>
+          <span class="activity-card__head"><span class="activity-card__tags"><span class="activity-card__type"><i data-lucide="calendar-check" class="ui-icon ui-icon--sm" aria-hidden="true"></i>re:flow</span></span><span class="activity-card__date" data-ed-booking-when></span></span>
+          <span class="activity-card__foot"><strong data-ed-booking-title></strong></span>
+        </article>
         <button class="activity-card" type="button" data-activity-type="order" data-go="tracking" aria-label="เปิดคำสั่งซื้อ #KR-10293">
           <span class="activity-card__head">
             <span class="activity-card__tags"><span class="activity-card__type activity-card__type--medicine"><i data-lucide="pill" class="ui-icon ui-icon--sm" aria-hidden="true"></i>ยา</span><span class="badge badge--active" data-order-progress-badge>กำลังจัดส่ง</span></span>
@@ -3202,6 +3229,9 @@
   <section class="screen" id="notifications">
     <div class="screen__top"><span class="ttl">Notifications</span><span class="grow"></span><button class="btn btn--ghost btn--sm" data-mark-read>Mark all read</button></div>
     <div class="screen__body stack-4">
+      <article class="notif" data-ed-booking-surface data-ed-booking-notification hidden>
+        <span class="ic" aria-hidden="true"><i data-lucide="calendar-check" class="ui-icon"></i></span><span class="grow"><span class="n-title" data-ed-booking-title></span><span class="n-body" data-ed-booking-when></span></span>
+      </article>
       <div class="section-label">11 ต.ค. 2026</div>
 <button data-notification-icon="check" class="notif" type="button" data-mock-delivery="same-day" data-mock-status="Order received" data-go="tracking"><span class="ic" style="background:#e7eefb;color:#395aa4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span class="grow"><span class="n-title">รับคำสั่งซื้อแล้ว · ส่งภายในวัน</span><span class="hint">ดูความคืบหน้าคำสั่งซื้อ</span></span></button>
 <button data-notification-icon="check" class="notif" type="button" data-mock-delivery="same-day" data-mock-status="Pharmacy accepted" data-go="tracking"><span class="ic" style="background:#e7eefb;color:#395aa4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span class="grow"><span class="n-title">ร้านยายืนยันรายการแล้ว · ส่งภายในวัน</span><span class="hint">ดูความคืบหน้าคำสั่งซื้อ</span></span></button>
@@ -3865,9 +3895,9 @@
   <script src="b2c-icons.js?v=20261119-checklist"></script>
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
   <script src="shared-view-components.js?v=20261010-shared-views-v272"></script>
-  <script src="article-data.js?v=20261118-mobile-review"></script>
+  <script src="article-data.js?v=20261121-ed-02-distinct"></script>
   <script src="article-store.js?v=20261025-cms-publish"></script>
-  <script src="article-mocks.js?v=20261121-writer-profession"></script>
+  <script src="article-mocks.js?v=20261121-article-license"></script>
 <script src="patient-date-picker.js?v=20261121-mobile-dob"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
@@ -7651,6 +7681,7 @@
   window.setInterval(() => {
     const active=document.querySelector('.screen.active');
     if(active && (active.id==='profile')) syncHomeFollowUpCta();
+    if(active && ['profile','notifications','activity'].includes(active.id)) syncEdBookingSurfaces();
   },1000);
 
   function beginAssignedDoctorFlow(category){
@@ -9295,6 +9326,10 @@
       pendingQueue=null;
       if(!queuePreview) try{localStorage.removeItem(QUEUE_KEY)}catch(_){}
       persistFlowState();
+      if(pendingEdBookingHome() && flowState.directGeneralHealthComplete && consultationBalanceDue()<=0){
+        finishConsultationHandoff();
+        return;
+      }
       show('consultpay');
     }
   });
@@ -9492,20 +9527,41 @@
     return Boolean(flowState.pendingEdBookingHomeAt && flowState.pendingEdBookingHomeAt===flowState.appointmentAt
       && flowState.entryChannel==='direct' && needsAppointment());
   }
+  const ED_BOOKING_FEEDBACK_KEY=guestStorageKey('krane-direct-booking-feedback-v1');
+  function readEdBookingFeedback(){
+    const local=flowState.edBookingFeedback;
+    // Explicit fixtures don't persist the entire flow. Only this date/read pair
+    // stays in their existing guest session namespace, not a patient record.
+    const saved=local || (isFixtureWalkthrough() ? readSessionJson(ED_BOOKING_FEEDBACK_KEY) : null);
+    return saved && saved.at && Number.isFinite(Date.parse(saved.at)) ? saved : null;
+  }
+  function saveEdBookingFeedback(record){
+    flowState.edBookingFeedback=record;
+    if(isFixtureWalkthrough()) writeSessionJson(ED_BOOKING_FEEDBACK_KEY,record);
+    persistFlowState();
+  }
+  function syncEdBookingSurfaces(){
+    const booking=readEdBookingFeedback();
+    const thai=document.documentElement.lang==='th';
+    const title=thai?'จองเวลาปรึกษาแล้ว':'Consultation booked';
+    const when=booking ? new Intl.DateTimeFormat(thai?'th-TH':'en-GB',{dateStyle:'medium',timeStyle:'short'}).format(new Date(booking.at)) : '';
+    const activityFilter=document.querySelector('#activity [data-activity-filter][aria-selected="true"]')?.dataset.activityFilter || 'all';
+    document.querySelectorAll('[data-ed-booking-surface]').forEach(node=>{
+      node.hidden=!booking || (node.hasAttribute('data-activity-type') && !['all','program'].includes(activityFilter));
+      node.querySelector('[data-ed-booking-title]').textContent=booking ? title : '';
+      node.querySelector('[data-ed-booking-when]').textContent=when;
+      if(node.hasAttribute('data-ed-booking-notification')) node.classList.toggle('notif--unread',Boolean(booking&&!booking.read));
+    });
+  }
   function finishConsultationHandoff(){
     const target=consultationHandoffTarget();
     if(target!=='appointment-booked' || !pendingEdBookingHome()){ show(target); return; }
     if(!ensureSharedConsultationFor('appointment-booked')) return;
-    const appointmentAt=flowState.appointmentAt;
+    const at=flowState.appointmentAt;
+    const previous=readEdBookingFeedback();
     flowState.pendingEdBookingHomeAt='';
-    persistFlowState();
+    saveEdBookingFeedback(previous?.at===at ? previous : {at,read:false});
     show('profile');
-    if(!document.querySelector('#profile.active')) return;
-    const thai=document.documentElement.lang==='th';
-    const date=new Date(appointmentAt);
-    const when=Number.isFinite(date.getTime())
-      ? new Intl.DateTimeFormat(thai?'th-TH':'en-GB',{dateStyle:'medium',timeStyle:'short'}).format(date) : '';
-    showActionToast((thai?'จองเวลาปรึกษาแล้ว':'Consultation booked')+(when?' · '+when:''),'success');
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
@@ -10275,6 +10331,7 @@
     }
     if(id==='tracking') startTrackingDemoWalk(); else stopTrackingDemoWalk();
     if(id==='notifications') syncDeliveryNotification();
+    if(['profile','notifications','activity'].includes(id)) syncEdBookingSurfaces();
     if(id==='my-documents') refreshMyDocuments();
     if(INTAKE_DRAFT_SCREENS.includes(id)) syncIntakeDropdownContinue(id);
     if(id==='partner-patient-info' || (['intake-concern','intake-general'].includes(id) && flowState.entryChannel==='partner')) restorePartnerFields();
@@ -12220,12 +12277,13 @@
       });
       let shown=0;
       document.querySelectorAll('#activity [data-activity-type]').forEach(card => {
-        const match=want==='all' || card.dataset.activityType===want;
+        const match=(want==='all' || card.dataset.activityType===want) && (!card.hasAttribute('data-ed-booking-surface') || Boolean(readEdBookingFeedback()));
         card.hidden=!match;
         if(match) shown+=1;
       });
       const empty=document.querySelector('[data-activity-empty]');
       if(empty) empty.hidden=shown>0;
+      syncEdBookingSurfaces();
       return;
     }
     /* There is no dispatch map behind the prototype, so the button says where
@@ -12347,6 +12405,8 @@
     }
     const markRead = e.target.closest('[data-mark-read]');
     if(markRead){
+      const booking=readEdBookingFeedback();
+      if(booking && !booking.read) saveEdBookingFeedback({...booking,read:true});
       document.querySelectorAll('#notifications .notif--unread').forEach(n => n.classList.remove('notif--unread'));
       markRead.textContent = 'อ่านทั้งหมดแล้ว';
       markRead.disabled = true;
@@ -14906,7 +14966,7 @@
 <script src="modal-chrome.js?v=20261013-consistent"></script>
 <script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
 <script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
-<script src="../krane-clinical-requests.js?v=20261017-workflow"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
+<script src="../krane-clinical-requests.js?v=20261121-hide-empty-patient"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
 <script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261120-remove-rx-modal"></script><script src="demo-walkthrough-label.js?v=20261120-guest-inline"></script><script src="order-reference-copy.js?v=20261120-order-copy" defer></script><script src="treatment-archive.js?v=20261120" defer></script></body>
 </html>
