@@ -10,9 +10,60 @@
   const daysInMonth = (year, month) => new Date(year, month, 0).getDate();
   const range = (first, last) => Array.from({length:last - first + 1}, (_, i) => first + i);
   let sheet;
+  const triggers = new WeakMap();
+  const intercepts = () => mobile.matches && typeof window.HTMLDialogElement?.prototype.showModal === 'function';
+
+  // Mobile Safari can open the native calendar when the date input receives
+  // focus, before any click handler can cancel it. The real button is the only
+  // interactive control in wheel mode; the original input still stores and
+  // validates the form value. Desktop keeps the original native affordance.
+  function enhance(input) {
+    const control = input.closest('.date-control');
+    if (!control || triggers.has(input)) return;
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'patient-date-trigger';
+    trigger.setAttribute('aria-haspopup', 'dialog');
+    trigger.style.cssText = 'position:absolute;z-index:3;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:inherit;background:transparent;cursor:pointer;touch-action:manipulation';
+    const originalDisplay = input.style.display;
+    const originalTabIndex = input.getAttribute('tabindex');
+    function update() {
+      const useWheel = intercepts();
+      const label = input.closest('.float-field')?.querySelector('label')?.textContent?.trim() || 'Date of birth';
+      const value = input.value ? dateParts(input.value).reverse().map(n => String(n).padStart(2, '0')).join(' / ') : '';
+      trigger.setAttribute('aria-label', value ? label + ', ' + value : label);
+      trigger.disabled = input.disabled || input.readOnly;
+      trigger.style.display = useWheel ? 'block' : 'none';
+      input.style.display = useWheel ? 'none' : originalDisplay;
+      if (useWheel) input.tabIndex = -1;
+      else if (originalTabIndex === null) input.removeAttribute('tabindex');
+      else input.setAttribute('tabindex', originalTabIndex);
+    }
+    triggers.set(input, trigger);
+    control.appendChild(trigger);
+    trigger.addEventListener('click', () => {
+      if (intercepts() && !input.disabled && !input.readOnly) window.KranePatientDatePicker.open(input);
+    });
+    input.addEventListener('invalid', event => {
+      if (!intercepts()) return;
+      event.preventDefault();
+      trigger.focus({preventScroll:true});
+    });
+    input.addEventListener('input', update);
+    input.addEventListener('change', update);
+    document.addEventListener('krane:languagechange', update);
+    if (mobile.addEventListener) mobile.addEventListener('change', update);
+    else mobile.addListener(update);
+    new MutationObserver(update).observe(input,{attributes:true,attributeFilter:['readonly','disabled']});
+    update();
+  }
+  function focus(input) {
+    if (!input) return;
+    (intercepts() && triggers.get(input) || input).focus({preventScroll:true});
+  }
 
   window.KranePatientDatePicker = {
-    intercepts: () => mobile.matches && typeof window.HTMLDialogElement?.prototype.showModal === 'function',
+    intercepts, enhance, focus,
     open(input) {
       if (sheet?.open) return;
       const english = document.documentElement.lang === 'en';
@@ -127,7 +178,7 @@
       sheet.addEventListener('close', () => {
         sheet.remove();
         sheet = null;
-        input.focus({preventScroll:true});
+        focus(input);
       }, {once:true});
       document.body.append(sheet);
       sheet.showModal();
