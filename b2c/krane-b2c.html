@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261121-mobile-dob";
+    const release = "20261121-mobile-date-spacing";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -1203,6 +1203,31 @@
 #settings .screen__body .ic, #settings .screen__body .avatar { background: #e7eefb; color: #395aa4; }
 #settings .screen__body .chev { color: #395aa4; }
 </style>
+<style>
+/* The two-column confirmation form has no room for the empty centering slot. */
+@media (max-width:760px) {
+  #social-confirm [data-social-dob] .date-control__display {
+    grid-template-columns:minmax(0,1fr) 18px;
+    gap:6px;
+  }
+  #social-confirm [data-social-dob] .date-control__display>span:first-child {
+    display:none;
+  }
+  #social-confirm [data-social-dob] .date-control__value {
+    text-align:left;
+    overflow:visible;
+    text-overflow:clip;
+    font-size:clamp(12px, 3.8vw, 16px);
+  }
+  #social-confirm [data-social-dob] .date-control__icon {
+    width:18px;
+    height:18px;
+  }
+}
+@media (max-width:360px) {
+  #social-confirm [data-social-dob] .float-field__box {padding-inline:12px;}
+}
+</style>
 <link rel="stylesheet" href="treatment-folders.css?v=20261013-resume-edit">
 <link rel="stylesheet" href="modal-chrome.css?v=20261013-toast-gallery">
 <link rel="stylesheet" href="article-reading.css?v=20261119-checklist">
@@ -1713,7 +1738,7 @@
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-first-name" autocomplete="given-name" placeholder=" "><label for="social-first-name">First name</label></span></div></div>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-last-name" autocomplete="family-name" placeholder=" "><label for="social-last-name">Last name</label></span></div></div>
       </div>
-      <div class="auth-name-grid"><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-birth-date" type="date" autocomplete="bday" required><label for="social-birth-date">Date of birth</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-phone" type="tel" autocomplete="tel" placeholder=" "><label for="social-phone">Phone number</label></span></div></div></div>
+      <div class="auth-name-grid"><div class="field float-field" data-social-dob><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-birth-date" type="date" autocomplete="bday" required><label for="social-birth-date">Date of birth</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-phone" type="tel" autocomplete="tel" placeholder=" "><label for="social-phone">Phone number</label></span></div></div></div>
       <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-email" type="email" autocomplete="email" data-auth-email-input placeholder=" "><label for="social-email">Email</label></span></div></div>
       <label class="auth-check"><span class="check"><input type="checkbox" checked><span class="box"></span></span><span class="hint">I confirm these details are mine and may be used for appointment updates, prescriptions and delivery.</span></label>
     </div>
