@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261120-demo-five-ed-home";
+    const release = "20261121-demo-handoff";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -1263,7 +1263,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261120-doctor-article" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261121-demo-handoff" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
@@ -9067,6 +9067,11 @@
     refillSheet.setAttribute('aria-hidden','true');
     document.body.classList.remove('modal-open');
   }
+  function canSyncClinicalOrder(){
+    const order=flowState.orderState;
+    return order.checkoutOrigin!=='refill' && Boolean(order.clinicalPrescription?.id
+      && order.clinicalPrescription.id===window.KraneClinical?.plan()?.id);
+  }
   function startRefill(choice){
     const picks = choice==='all'
       ? availableRefillKeys()
@@ -9079,6 +9084,10 @@
       });
     });
     const refillMedicineKeys=[...new Set(picks.flatMap(key => Object.keys(REFILL_PRESCRIPTIONS[key].quantities)))];
+    // A refill starts a new basket, not a payment against an earlier consultation.
+    delete flowState.orderState.clinicalPrescription;
+    document.querySelectorAll('[data-clinical-order-item]').forEach(row => row.remove());
+    Object.keys(MEDICINE_PRICES).filter(key => key.startsWith('clinical-')).forEach(key => delete MEDICINE_PRICES[key]);
     Object.assign(flowState.orderState,{
       quantities,
       checkoutOrigin:'refill',
@@ -10231,12 +10240,12 @@
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) renderIntakeQuestions();
     if(INTAKE_ONE_QUESTION_SCREENS.includes(id)) setupIntakeQuestionPages(id);
     if(!ensureSharedConsultationFor(id)) return;
-    if(id==='payment-success' && flowState.orderState.clinicalPrescription){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
+    if(id==='payment-success' && canSyncClinicalOrder()){try{window.KraneClinical.patch({orderStatus:'paid'});}catch{showActionToast('ส่งสถานะการชำระเงินไม่ได้ กรุณาลองอีกครั้ง','warning');}}
     if(id==='articles') window.kraneArticleMock?.renderFeed();
     if(id==='article') window.kraneArticleMock?.renderDetail();
     ensureAppBarLockup(id);
     if(id==='intake-general') window.setTimeout(() => syncFrequencySliders(),0);
-    if(id==='tracking' || id==='activity' || id==='order-summary'){syncTrackingDelivery();if(flowState.orderState.clinicalPrescription?.id===window.KraneClinical.plan()?.id){try{window.KraneClinical.orderUpdate({deliveryStatus:orderFulfilmentStatus(),deliveryMethod:flowState.orderState.deliveryMethod,paidAmount:flowState.orderState.paidAmount||0});}catch(error){showActionToast(error.message,'warning');}}}
+    if(id==='tracking' || id==='activity' || id==='order-summary'){syncTrackingDelivery();if(canSyncClinicalOrder()){try{window.KraneClinical.orderUpdate({deliveryStatus:orderFulfilmentStatus(),deliveryMethod:flowState.orderState.deliveryMethod,paidAmount:flowState.orderState.paidAmount||0});}catch(error){showActionToast(error.message,'warning');}}}
     if(id==='tracking' && orderFulfilmentStatus()==='Delivered' && !flowState.csatDone){
       requestAnimationFrame(()=>{if(document.querySelector('#tracking.active'))openCsatModal('tracking');});
     }
@@ -14205,7 +14214,12 @@
     if(showcaseChat) document.getElementById('consult')?.classList.add('consult--showcase-chat');
     if(demoCategory) setSelectedCategory(demoCategory);
     if(demoStage){
-      seedPartnerStage(demoStage);
+      // Some checkpoints are shared with Partner. An explicit guest direct
+      // walkthrough must keep its direct route; ordinary previews keep their
+      // established seed, and partner walkthroughs are not affected.
+      const directGuestDemo=STATIC_GUEST_URL && params.get('entry')==='direct' && params.get('demoMode')==='walkthrough';
+      if(directGuestDemo) flowState.entryChannel='direct';
+      else seedPartnerStage(demoStage);
       seedClinicalDemoStage(demoStage);
       window.kraneDemoStage=demoStage;
     }
