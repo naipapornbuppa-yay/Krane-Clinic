@@ -4,9 +4,11 @@
  const el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n};
  function render(){
   const parent=document.querySelector(api.role==='doctor'?'#followups':'#notifications .screen__body');if(!parent)return;
-  let box=parent.querySelector('[data-clinical-requests]');if(!box){box=el('section');box.dataset.clinicalRequests='';box.className=api.role==='doctor'?'panel stack':'card stack';box.style.cssText='padding:20px;margin:16px 0;overflow-wrap:anywhere';parent.prepend(box);}
-  box.replaceChildren(el('h3','คำขอทบทวนใบสั่งยา'));
+  let box=parent.querySelector('[data-clinical-requests]');
   const rows=api.records('request').filter(r=>api.role==='doctor'||r.patientId===api.current().patientId);
+  if(api.role!=='doctor' && !rows.length){box?.remove();return;}
+  if(!box){box=el('section');box.dataset.clinicalRequests='';box.className=api.role==='doctor'?'panel stack':'card stack';box.style.cssText='padding:20px;margin:16px 0;overflow-wrap:anywhere';parent.prepend(box);}
+  box.replaceChildren(el('h3','คำขอทบทวนใบสั่งยา'));
   if(!rows.length)box.append(el('p','ยังไม่มีคำขอ'));
   for(const r of rows){const card=el('div');card.className='stack';card.append(el('b',r.name+' · '+r.kind),el('p',({pending:'รอทบทวน',reviewing:'รับทบทวนแล้ว',completed:'ทบทวนเสร็จแล้ว',declined:'ส่งกลับ'}[r.status])+' · '+(r.reason||r.note||'')));
    if(r.file){const link=el('a','ดาวน์โหลดใบสั่งยา');link.href=r.file;link.download='prescription';card.append(link);}
