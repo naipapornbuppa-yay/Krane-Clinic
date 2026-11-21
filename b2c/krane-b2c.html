@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
   (() => {
-    const release = "20261121-article-booking";
+    const release = "20261121-main-handoff";
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
@@ -33,12 +33,13 @@
     // Partner flow, or another host must never become a timed guest case.
     if (url.origin === 'https://naipapornbuppa-yay.github.io'
         && url.pathname === '/Krane-Clinic/b2c/krane-b2c.html'
-        && initialRoute === 'intake1'
+        && (initialRoute === 'conditions' ||
+            (initialRoute === 'intake1' && ['weight', 'hair-skin', 'sexual-health'].includes(url.searchParams.get('category'))))
         && url.searchParams.get('entry') === 'direct'
         && url.searchParams.get('fresh') === '1'
         && !url.searchParams.has('sandbox')
         && !url.searchParams.has('demoStage')
-        && ['weight', 'hair-skin', 'sexual-health'].includes(url.searchParams.get('category'))) {
+        && !url.searchParams.has('demoStatus')) {
       url.searchParams.set('sandbox', 'guest');
       canonicalized = true;
     }
@@ -1301,7 +1302,7 @@
        It is embedded here so landing CTAs route into the same patient flow.
        Its CTAs ("start your consultation") link into this prototype's app flow (#intake1 / #signup). -->
   <section class="screen active screen--web" id="landing" style="padding:env(safe-area-inset-top, 0px) 0 0;background:var(--color-promo-bar, #5871B5)">
-    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261121-article-booking" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
+    <iframe title="Krane B2C landing" src="krane-b2c-landing.html?v=20261121-main-handoff" style="flex:1 1 100%;width:100%;max-width:none;min-width:0;height:100%;border:0;display:block;background:var(--color-bg)"></iframe>
   </section>
 
   <!-- ===================== CATEGORY SELECTION REMOVED =====================
