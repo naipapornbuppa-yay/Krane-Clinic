@@ -38,7 +38,7 @@
     const editorial=article.contentStatus==='client-review'||review?.writer==='Krane Editorial';
     const writerName=editorial?(en?'Krane Editorial':'ทีมบรรณาธิการ Krane'):article.author?.isMock?(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน'):article.author?.name||(en?'Writer to be confirmed':'รอยืนยันชื่อผู้เขียน');
     const occupation=editorial?(en?'Editorial team':'ทีมบรรณาธิการ'):article.author?.occupation||(en?'Occupation not supplied':'ยังไม่ระบุอาชีพ');
-    const writer=card(en?'Written by':'ผู้เขียน',writerName,editorial?[]:[occupation]);
+    const writer=card(en?'Written by':'ผู้เขียน',writerName,[occupation]);
     const physician=review?.physician,confirmed=review?.medicalStatus==='reviewed';
     // Names/status: supplied manuscript metadata in article-data.js.
     // Specialties: client Doctor info sheet mirrored in doctor-source.js (17 Oct 2026).
