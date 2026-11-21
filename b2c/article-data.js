@@ -985,8 +985,9 @@
     "imageAlt": "ผู้รับบริการปรึกษาแพทย์ออนไลน์เรื่องการใช้ยา"
   },
   "library-ed-02": {
-    "image": "assets/articles/new-20261115/library-ed-02.jpg",
-    "imageAlt": "แพทย์ให้คำปรึกษาและใบสั่งยาออนไลน์"
+    "image": "assets/articles/new-20261115/library-hair-loss-01.jpg",
+    "imageAlt": "ผู้ชายนั่งอยู่หน้าแท็บเล็ตที่โต๊ะในบ้าน",
+    "imageAltEn": "Man sitting at a table with a tablet at home"
   },
   "library-ed-03": {
     "image": "assets/articles/new-20261115/library-ed-03.jpg",
@@ -1047,7 +1048,7 @@
   window.KraneArticleImage = {
     placeholder,
     bind(image, article) {
-      image.alt = article.imageAlt || '';
+      image.alt = (document.documentElement.lang === 'en' && article.imageAltEn) || article.imageAlt || '';
       image.onerror = () => { image.onerror = null; image.src = placeholder; image.alt = ''; };
       image.src = article.image || placeholder;
     }
