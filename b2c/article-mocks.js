@@ -18,18 +18,13 @@
   }
   function articleCredits(article){
     const en=document.documentElement.lang==='en';
-    const card=(role,name,notes=[],photo='',license=false)=>{
+    const card=(role,name,notes=[],photo='',license='')=>{
       const item=el('div','article-credit'),copy=el('span','article-credit__copy');
       // Portraits belong only to a confirmed medical reviewer, never the writer.
       if(photo){const avatar=el('img','article-credit__avatar');avatar.src=photo;avatar.alt=name;avatar.width=48;avatar.height=48;item.append(avatar);}
       const identity=el('span','article-credit__identity');
       identity.append(el('strong','',name));
-      if(license){
-        const link=el('a','article-credit__license',en?'License 47576':'ว. 47576');
-        link.href='https://atierwellness.com/our-team/dr-kornphaka-kantikosum/';
-        link.title=en?'License number published by ATier; not an official registry verification':'เลขใบประกอบวิชาชีพจาก ATier ไม่ใช่ผลตรวจสอบทะเบียนแพทยสภา';
-        identity.append(link);
-      }
+      if(license) identity.append(el('span','article-credit__license',license));
       copy.append(el('small','',role),identity);
       notes.filter(Boolean).forEach(note=>copy.append(el('span','',note)));
       item.append(copy);return item;
@@ -47,11 +42,12 @@
     const hair=article.id.startsWith('library-hair-loss-'),weight=article.id.startsWith('library-obesity-');
     const confirmedHairReviewer=confirmed&&/^library-hair-loss-0[1-5]$/.test(article.id)&&physician?.th==='พญ. กรผกา ขันติโกสุม'&&physician?.en==='Dr. Kornphaka Kantikosum';
     const specialty=physician?(hair?(en?'Dermatology · Hair/scalp · Hair transplant':'ตจวิทยา · เส้นผม/หนังศีรษะ · ปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
+    const license=confirmedHairReviewer?(en?'License 47576':'ว. 47576'):
+      physician?(en?'Medical license pending verification':'เลข ว. รอยืนยัน'):'';
     const reviewer=card(en?'Medical reviewer':'แพทย์ผู้ตรวจทาน',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
       specialty,
-      !confirmedHairReviewer&&physician?(en?'Medical license number not supplied':'ยังไม่ได้รับเลขใบประกอบวิชาชีพ'):null,
       !confirmed?(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน'):null
-    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'',confirmedHairReviewer);
+    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'',license);
     return [reviewer,writer];
   }
   function renderFeed(){
