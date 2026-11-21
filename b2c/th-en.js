@@ -1601,6 +1601,44 @@
   (window.KraneArticleSeed||[]).forEach(function(article){
     if(article.en){EN[article.title]=article.en.title;EN[article.summary]=article.en.summary;}
   });
+  var landingCopy = document.querySelector(".landing-figma-draft") ? {
+    "ปลดล็อก": "Unlock",
+    "เวอร์ชั่นที่ดีที่สุดของคุณ": "your best self",
+    "จัดส่งแบบควบคุมอุณหภูมิ": "Temperature-controlled delivery",
+    "ลองเดโม": "Try demo",
+    "หมายเหตุ: ผลลัพธ์และความเหมาะสมของการรักษาขึ้นอยู่กับแต่ละบุคคล แพทย์จะประเมินข้อมูลสุขภาพก่อนเริ่มการดูแล": "Results and treatment suitability vary by person. Your doctor will review your health information before care begins.",
+    "ขึ้นด้วยวิธีที่มีงานวิจัยรองรับ": " with evidence-based care",
+    "แพทย์นรินทร์ ทานากะ": "Dr Narin Tanaka",
+    "นัดติดตามครั้งถัดไป": "Next follow-up",
+    "16 พ.ย. 2026": "16 Nov 2026",
+    "คุณฝน": "Fon",
+    "มากกว่า 95% ของผู้ใช้งานประทับใจในบริการ": "More than 95% of users were satisfied with the service",
+    "ผู้ใช้บริการ Krane re:body": "Krane re:body member",
+    "ผู้ใช้บริการ Krane re:hair": "Krane re:hair member",
+    "ผู้ใช้บริการ Krane re:flow": "Krane re:flow member",
+    "ว. รอยืนยัน": "Medical licence pending verification",
+    "อายุรศาสตร์": "Internal medicine",
+    "โรคระบบการหายใจ": "Respiratory medicine",
+    "สิ่งที่ควรรู้ก่อนเริ่มใช้บริการ": "What to know before getting started",
+    "วิดีโอรีวิวจากสมาชิก": "Member video reviews",
+    "ผู้ชายตรวจดูแนวเส้นผมในกระจก": "Man checking his hairline in a mirror",
+    "แพทย์สวมชุดหูฟังขณะให้คำปรึกษาออนไลน์": "Doctor wearing a headset during an online consultation",
+    "แพทย์ให้คำปรึกษาการใช้ยาผ่านคอมพิวเตอร์": "Doctor advising on medication over a computer",
+    "ผู้หญิงถือวิตามิน": "Woman holding vitamins",
+    "ผู้ชายสังเกตเส้นผมและติดตามผลการดูแล": "Man checking his hair and tracking his progress",
+    "อาหารที่มีโปรตีนและผัก": "Protein-rich food with vegetables",
+    "การดูแลสุขภาพและน้ำหนักในชีวิตประจำวัน": "Daily health and weight management",
+    "ผู้ชายใส่ใจอาการและสุขภาพของตนเอง": "Man paying attention to his symptoms and health",
+    "ผู้ชายดูโทรศัพท์ขณะนั่งบนโซฟา": "Man looking at his phone on a sofa",
+    "ผู้ชายออกกำลังกายเพื่อรักษากล้ามเนื้อ": "Man exercising to maintain muscle",
+    "ผู้รับบริการปรึกษาแพทย์ออนไลน์เรื่องการใช้ยา": "Patient consulting a doctor online about medication",
+    "แพทย์ให้คำปรึกษาและใบสั่งยาออนไลน์": "Doctor providing online advice and prescriptions",
+    "ผู้ชายพักผ่อนและกังวลเกี่ยวกับสุขภาพ": "Man resting and concerned about his health",
+    "ผู้ชายพักหลังออกกำลังกาย": "Man resting after exercise",
+    "ตรวจสอบกล่องบรรจุภัณฑ์ยา": "Inspecting medication packaging",
+    "เลือกหน้าบทความ": "Article pages",
+    "ขั้นตอนการดูแล หน้า": "Care steps, page"
+  } : null;
   var pending = false, mo = null, ownsLang = false;
 
   /* Two of these pages (doctor and adviser profiles) carry no language control
@@ -1617,6 +1655,14 @@
   }
 
   function englishText(text) {
+    if (landingCopy) {
+      if (Object.prototype.hasOwnProperty.call(landingCopy, text)) return landingCopy[text];
+      var landingMatch;
+      if ((landingMatch = text.match(/^แพทย์แนะนำโปรแกรม (re:[a-z]+)$/))) return "Doctor introducing " + landingMatch[1];
+      if ((landingMatch = text.match(/^ขั้นตอนการดูแล หน้า (\d+)$/))) return "Care steps, page " + landingMatch[1];
+      if ((landingMatch = text.match(/^บทความ หน้าที่ (\d+)$/))) return "Articles, page " + landingMatch[1];
+      if ((landingMatch = text.match(/^ดูรีวิว คุณ(เมย์|พา|พลอย|แป้ง|ฝน| ต\.)$/))) return "Watch " + ({"เมย์":"May","พา":"Pha","พลอย":"Ploy","แป้ง":"Pang","ฝน":"Fon"," ต.":"T."})[landingMatch[1]] + "'s review";
+    }
     if (EN[text] !== undefined) return EN[text];
     var match;
     if ((match = text.match(/^ไปหน้าความคิดเห็น (\d+)$/))) return "Go to comments page " + match[1];
