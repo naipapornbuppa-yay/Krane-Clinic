@@ -20,18 +20,11 @@
  const label=key=>words[key][english()?1:0];
  const valid=record=>record&&record.version===VERSION&&record.necessary===true&&record.analytics===false&&record.advertising===false&&['necessary_only','accept_all','save'].includes(record.decision)&&typeof record.savedAt==='string'&&Number.isFinite(Date.parse(record.savedAt));
  function read(){for(const name of ['localStorage','sessionStorage'])try{const record=JSON.parse(window[name].getItem(KEY));if(valid(record))return record;}catch{}return null;}
- let current=read(),banner,dialog,sheet,returnFocus,status,statusKey,statusTimer,dismissed=false,preferencesReturnPending=false;
+ let current=read(),banner,dialog,sheet,returnFocus,status,statusKey,statusTimer,preferencesReturnPending=false;
  function syncNotice(){
   if(!banner||dialog.open)return;
-  banner.hidden=Boolean(current)||dismissed;
-  if(banner.hidden){
-   if(sheet.open)sheet.close();
-  }else if(!sheet.open){
-   sheet.showModal();
-   banner.querySelector('h2').focus({preventScroll:true});
-  }
+  sheet.hidden=Boolean(current);
  }
- function dismissNotice(){dismissed=true;syncNotice();}
  function restoreNotice(){
   // A queued close event from an earlier opening must not reveal the notice
   // or move focus out of newly reopened preferences.
@@ -51,10 +44,6 @@
   returnFocus=opener||document.activeElement;
   if(!dialog.open){
    translate();preferencesReturnPending=true;sheet.classList.add('is-obscured');
-   // Hiding an open native dialog leaves its Escape close watcher active.
-   // End the notice modal before opening preferences; restoreNotice reopens
-   // unanswered notices after preferences close, keeping one modal at a time.
-   if(sheet.open)sheet.close();
    dialog.showModal();dialog.querySelector('h2').focus();
   }
  }
@@ -78,7 +67,7 @@
  function save(decision){
   current={version:VERSION,necessary:true,analytics:false,advertising:false,decision,savedAt:new Date().toISOString()};
   let stored='memory';for(const name of ['localStorage','sessionStorage'])try{window[name].setItem(KEY,JSON.stringify(current));stored=name;break;}catch{}
-  banner.hidden=true;
+  sheet.hidden=true;
   if(dialog.open)closePreferences();
   syncNotice();
   statusKey=stored==='localStorage'?'saved':stored==='sessionStorage'?'session':'memory';status.textContent=label(statusKey);
@@ -86,22 +75,20 @@
   window.dispatchEvent(new CustomEvent('krane:cookiechange',{detail:{...current}}));
  }
  function boot(){
-  banner=document.createElement('aside');banner.className='krane-cookie-banner';banner.dataset.cookieBanner='';banner.hidden=Boolean(current);
-  banner.innerHTML='<div class="krane-cookie-copy"><h2 id="krane-cookie-notice-heading" tabindex="-1">'+span('title')+'</h2><p>'+span('intro')+'</p><a href="'+policy+'">'+span('policy')+'</a></div><div class="krane-cookie-actions">'+button('open','settings')+button('accept','noticeAccept')+'</div>';
+  banner=document.createElement('aside');banner.className='krane-cookie-banner';banner.dataset.cookieBanner='';
+  banner.innerHTML='<div class="krane-cookie-copy"><h2 id="krane-cookie-notice-heading">'+span('title')+'</h2><p>'+span('intro')+'</p><a href="'+policy+'">'+span('policy')+'</a></div><div class="krane-cookie-actions">'+button('open','settings')+button('accept','noticeAccept')+'</div>';
   dialog=document.createElement('dialog');dialog.className='krane-cookie-dialog';dialog.dataset.cookiePreferences='';dialog.setAttribute('aria-labelledby','krane-cookie-heading');dialog.setAttribute('aria-describedby','krane-cookie-description');
   dialog.innerHTML='<div class="krane-cookie-handle" aria-hidden="true"></div><button type="button" class="krane-cookie-close" data-cookie-action="close" data-cookie-label="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button><h2 id="krane-cookie-heading" tabindex="-1">'+span('preferences')+'</h2><p id="krane-cookie-description">'+span('explanation')+'</p><div class="krane-cookie-category"><label><input type="checkbox" checked disabled><strong>'+span('necessary')+'</strong></label><span class="krane-cookie-tag">'+span('always')+'</span><p>'+span('necessaryCopy')+'</p></div>'+['analytics','advertising'].map(key=>'<div class="krane-cookie-category"><label><input type="checkbox" disabled data-cookie-category="'+key+'"><strong>'+span(key)+'</strong></label><span class="krane-cookie-tag">'+span('off')+'</span><p>'+span('notUsed')+'</p></div>').join('')+'<a href="'+policy+'">'+span('policy')+'</a><div class="krane-cookie-dialog-actions">'+button('save','save')+'<div>'+button('reject','reject')+button('accept','accept')+'</div></div>';
   status=document.createElement('div');status.className='krane-cookie-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  sheet=document.createElement('dialog');sheet.className='krane-cookie-sheet';sheet.setAttribute('aria-labelledby','krane-cookie-notice-heading');
+  sheet=document.createElement('div');sheet.className='krane-cookie-sheet';sheet.hidden=true;
   sheet.append(banner);
   document.body.append(sheet,dialog,status);
-  sheet.addEventListener('cancel',event=>{event.preventDefault();if(!dialog.open&&!preferencesReturnPending)dismissNotice();});
-  sheet.addEventListener('click',event=>{if(event.target===sheet){const r=sheet.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dismissNotice();}});
   [banner,dialog].forEach(root=>root.addEventListener('click',event=>{const action=event.target.closest('[data-cookie-action]')?.dataset.cookieAction;if(action==='open')open(event.target.closest('button'));else if(action==='close')closePreferences();else if(action)save(action==='reject'?'necessary_only':action==='accept'?'accept_all':'save');}));
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closePreferences();}});
   dialog.addEventListener('cancel',event=>{event.preventDefault();closePreferences();});
   dialog.addEventListener('close',restoreNotice);
   new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();dismissed=false;if(dialog.open)closePreferences();syncNotice();}});
+  window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){current=read();if(dialog.open)closePreferences();syncNotice();}});
   translate();syncNotice();
   if(location.pathname.endsWith('/cookies.html')&&location.hash==='#controls')open();
  }

@@ -29,7 +29,7 @@ async function escapeCookie(p){
  if(preferencesOpen){
   await dialog(p).waitFor({state:'hidden'});
   await p.waitForFunction(()=>!document.querySelector('.krane-cookie-sheet').classList.contains('is-obscured'));
- }else await banner(p).waitFor({state:'hidden'});
+ }else await banner(p).waitFor({state:'visible'});
 }
 
 async function checkPlacement(p,locator,label){
@@ -60,9 +60,10 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  const bannerBox=await banner(p).boundingBox();check(bannerBox.width<=width&&bannerBox.y>=0&&bannerBox.y+bannerBox.height<=901,'Responsive banner fits viewport');
  await checkPlacement(p,banner(p),'First-visit notice '+width+'/'+lang);
  check(bannerBox.height<=(width<=760?560:160),'Notice stays compact');
- check(await p.locator('.krane-cookie-sheet').evaluate(e=>e.matches(':modal')),'Notice uses native modal');
- await p.keyboard.press('Tab');check(await banner(p).evaluate(e=>e.contains(document.activeElement)),'Notice traps keyboard focus');
- check(await banner(p).locator('button').evaluateAll(buttons=>buttons.length===2&&buttons[0].dataset.cookieAction==='accept'&&buttons[1].dataset.cookieAction==='open'&&Math.abs(buttons[0].getBoundingClientRect().top-buttons[1].getBoundingClientRect().top)<1),'Notice offers two side-by-side actions');
+ check(await p.locator('.krane-cookie-sheet').evaluate(e=>!e.matches(':modal')),'Notice is passive');
+ check(await p.evaluate(()=>!document.querySelector('[data-cookie-banner]').contains(document.activeElement)),'Notice does not autofocus');
+ check(await p.evaluate(()=>document.querySelectorAll(':modal').length===0),'No modal or backdrop before a user choice');
+ check(await banner(p).locator('button').evaluateAll(buttons=>buttons.length===2&&buttons.some(b=>b.dataset.cookieAction==='accept')&&buttons.some(b=>b.dataset.cookieAction==='open')&&Math.abs(buttons[0].getBoundingClientRect().top-buttons[1].getBoundingClientRect().top)<1),'Notice offers two side-by-side actions');
  check(await banner(p).locator('button').evaluateAll(es=>es.filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44})),'Notice actions retain 44px targets');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
  check((await banner(p).locator('a').boundingBox()).height>=44,'Banner policy link has a 44px touch target');
@@ -76,7 +77,7 @@ for(const width of [390,1440])for(const lang of ['th','en']){
    window.__cookieQAEvents.push({type,target:el.className,open:el.open,noticeHidden:notice.hidden,noticeParent:notice.parentElement.className});
   },{capture:true});
  });
- await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible(),'Preferences open');check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Preferences do not leave a second native cookie modal open');await checkPlacement(p,dialog(p),'Preferences '+width+'/'+lang);
+ await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible()&&await dialog(p).evaluate(e=>e.matches(':modal')),'Preferences are explicitly opened as a native modal');check(!await banner(p).isVisible(),'Preferences hide the passive notice temporarily');await checkPlacement(p,dialog(p),'Preferences '+width+'/'+lang);
  check((await dialog(p).locator('a').boundingBox()).height>=44,'Dialog policy link has a 44px touch target');
  check(await dialog(p).locator('input:checked:disabled').count()===1,'Necessary always active');
  check(await dialog(p).locator('[data-cookie-category]:not(:checked):disabled').count()===2,'Unavailable optional categories stay off');
@@ -85,7 +86,7 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  const escapedState=JSON.stringify(await cookieUIState(p));
  check(!await dialog(p).isVisible(),'Escape closes preferences '+width+'/'+lang+' '+escapedState);
  check(await banner(p).isVisible(),'Escape restores unanswered notice '+width+'/'+lang+' '+escapedState);
- check(await p.locator('.krane-cookie-sheet:modal').count()===1,'Escape restores exactly one notice modal '+escapedState);
+ check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Escape restores the passive notice without a modal '+escapedState);
  check(await consent(p)===null,'Dismissal is not consent');
  check(await banner(p).locator('[data-cookie-action=open]').evaluate(e=>e===document.activeElement),'Escape returns focus to opener');
  await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).screenshot({path:join(out,`preferences-${width}-${lang}.png`)});
@@ -134,21 +135,33 @@ for(const viewport of [{width:320,height:320},{width:640,height:320},{width:720,
  check(await banner(p).isVisible()&&await consent(p)===null,'Short-viewport dismissal preserves unanswered notice '+label);
  await checkPlacement(p,banner(p),'Notice after preferences close '+label);await ctx.close();
 }
-// Closing the mobile notice never grants consent, and breakpoint changes retain one notice.
+// Real pointer, keyboard and wheel input can reach the underlying page with unanswered notice visible.
 for(const lang of ['th','en']){
  const ctx=await browser.newContext({viewport:{width:390,height:844}}),p=await ctx.newPage();monitor(p);
  await open(p,'krane-b2c-landing.html?lang='+lang);await banner(p).waitFor();
- await p.mouse.click(10,10);
- check(!await banner(p).isVisible()&&await consent(p)===null,'Close dismisses without consent '+lang);
- check(await p.locator('dialog:modal').count()===0,'Close releases native modal '+lang);
- await p.reload({waitUntil:'domcontentloaded'});await banner(p).waitFor();
+ await p.evaluate(()=>{
+  for(let i=0;i<2;i++){
+   const button=document.createElement('button');
+   button.id='cookie-qa-underlying-'+i;button.textContent='Underlying QA '+i;
+   Object.assign(button.style,{position:'fixed',inset:'80px auto auto '+(16+160*i)+'px',zIndex:'9999'});
+   button.onclick=()=>button.dataset.clicked='true';document.body.append(button);
+  }
+ });
+ const first=p.locator('#cookie-qa-underlying-0'), second=p.locator('#cookie-qa-underlying-1');
+ await first.click();
+ check(await first.getAttribute('data-clicked')==='true','Real pointer click reaches underlying page '+lang);
+ await first.focus();await p.keyboard.press('Tab');
+ check(await second.evaluate(e=>document.activeElement===e),'Tab is not trapped in notice '+lang);
+ await p.keyboard.press('Enter');
+ check(await second.getAttribute('data-clicked')==='true','Keyboard activates underlying control '+lang);
+ await p.mouse.move(12,150);await p.mouse.wheel(0,220);await p.waitForFunction(()=>window.scrollY>0);
+ check(await banner(p).isVisible()&&await consent(p)===null,'Normal browsing leaves notice visible without granting consent '+lang);
  await escapeCookie(p);
- check(!await banner(p).isVisible()&&await consent(p)===null,'Escape dismisses notice without consent '+lang);
- await p.reload({waitUntil:'domcontentloaded'});await banner(p).waitFor();
+ check(await banner(p).isVisible()&&await consent(p)===null,'Escape leaves passive notice visible without granting consent '+lang);
  await p.setViewportSize({width:1440,height:900});await checkPlacement(p,banner(p),'Resized desktop notice '+lang);
- check(await p.locator('.krane-cookie-sheet:modal').count()===1,'Desktop notice retains one modal '+lang);
+ check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Desktop notice stays passive '+lang);
  await p.setViewportSize({width:390,height:844});await checkPlacement(p,banner(p),'Resized mobile notice '+lang);
- check(await p.locator('.krane-cookie-sheet:modal').count()===1,'Returning to mobile restores modal '+lang);
+ check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Returning to mobile keeps notice passive '+lang);
  await banner(p).locator('[data-cookie-action=open]').click();await escapeCookie(p);
  check(await banner(p).isVisible()&&await consent(p)===null,'Settings dismissal restores unanswered mobile sheet '+lang);
  await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();
@@ -166,7 +179,7 @@ for(const lang of ['th','en']){
 // Cross-tab synchronization and malformed/versioned storage are separate fresh contexts.
 {
  const ctx=await browser.newContext();const p=await ctx.newPage(),other=await ctx.newPage();monitor(p);monitor(other);await open(p,'doctors.html?lang=en');await open(other,'condition-detail.html?condition=weight&lang=en');
- await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();await other.waitForFunction(()=>document.querySelector('[data-cookie-banner]').hidden);check(!await banner(other).isVisible(),'Choice synchronized to another tab');
+ await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();await banner(other).waitFor({state:'hidden'});check(!await banner(other).isVisible(),'Choice synchronized to another tab');
  await p.evaluate(key=>localStorage.removeItem(key),KEY);await banner(other).waitFor();check(await banner(other).isVisible(),'Removing choice prompts other tabs again');
  await p.evaluate(key=>localStorage.setItem(key,JSON.stringify({version:99,necessary:true,analytics:true,advertising:true})),KEY);await p.reload({waitUntil:'domcontentloaded'});check(await banner(p).isVisible(),'Unknown/corrupt version never grants consent');check(!await p.evaluate(()=>KraneCookieConsent.isAllowed('analytics')),'Untrusted record cannot enable analytics');await ctx.close();
 }
