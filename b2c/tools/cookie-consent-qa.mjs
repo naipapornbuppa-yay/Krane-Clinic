@@ -63,7 +63,15 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(await p.locator('.krane-cookie-sheet').evaluate(e=>!e.matches(':modal')),'Notice is passive');
  check(await p.evaluate(()=>!document.querySelector('[data-cookie-banner]').contains(document.activeElement)),'Notice does not autofocus');
  check(await p.evaluate(()=>document.querySelectorAll(':modal').length===0),'No modal or backdrop before a user choice');
- check(await banner(p).locator('button').evaluateAll(buttons=>buttons.length===2&&buttons.some(b=>b.dataset.cookieAction==='accept')&&buttons.some(b=>b.dataset.cookieAction==='open')&&Math.abs(buttons[0].getBoundingClientRect().top-buttons[1].getBoundingClientRect().top)<1),'Notice offers two side-by-side actions');
+ check(await banner(p).evaluate(notice=>{
+  const buttons=[...notice.querySelectorAll('button')];
+  const settings=notice.querySelector('.krane-cookie-copy > button[data-cookie-action="open"]');
+  const actions=notice.querySelector('.krane-cookie-actions');
+  const accept=actions?.querySelector(':scope > button[data-cookie-action="accept"]');
+  if(buttons.length!==2||!settings||!accept||actions.children.length!==1)return false;
+  const row=actions.getBoundingClientRect(),cta=accept.getBoundingClientRect();
+  return settings.getClientRects().length>0&&row.width>0&&Math.abs(cta.left-row.left)<1&&Math.abs(cta.right-row.right)<1;
+ }),'Notice keeps Settings inline and one full-width primary Accept');
  check(await banner(p).locator('button').evaluateAll(es=>es.filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.height>=44&&r.width>=44})),'Notice actions retain 44px targets');
  check((await banner(p).innerText()).includes(lang==='en'?'No analytics or advertising':'ไม่มีเครื่องมือวิเคราะห์'),'Accurate current inventory copy');
  check((await banner(p).locator('a').boundingBox()).height>=44,'Banner policy link has a 44px touch target');
