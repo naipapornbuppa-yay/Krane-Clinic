@@ -18,10 +18,6 @@ body.prepend(takeaways);
 const intro=document.createElement('div');intro.className='article-reading__intro';
 [...takeaways.children].filter(node=>!node.matches('h2,h3,blockquote,ul,ol')).forEach(node=>intro.append(node));
 if(intro.childNodes.length)takeaways.after(intro);
-if(article.id==='library-obesity-01'&&!en){
-const concise=['GLP-1 เลียนแบบฮอร์โมนอิ่ม เพื่อช่วยดูแลน้ำหนัก','ไม่เหมาะกับทุกคน ต้องให้แพทย์ประเมินก่อนใช้','ชนิดฉีดในไทยต้องมีใบสั่งแพทย์และจ่ายผ่านเภสัชกร','ใช้ควบคู่กับการกิน การออกกำลังกาย และติดตามผลระยะยาว'];
-takeaways.querySelectorAll('li').forEach((li,i)=>{if(concise[i])li.textContent=concise[i]});
-}
 }
 const toc=body.querySelector('details.article-toc');if(toc){const aside=document.createElement('aside');aside.className=toc.className;const title=document.createElement('h2');title.textContent=toc.querySelector('summary').textContent;aside.append(title,toc.querySelector('nav'));toc.replaceWith(aside)}
 reading.querySelector('.article-editorial-footer')?.remove();
