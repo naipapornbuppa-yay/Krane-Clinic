@@ -136,9 +136,15 @@ for(const viewport of [{width:320,height:320},{width:640,height:320},{width:720,
  check(Math.abs(before.x-after.x)<2&&Math.abs(before.y-after.y)<2,'Notice stays fixed while page scrolls '+label);
  await banner(p).locator('[data-cookie-action=open]').click();
  await checkPlacement(p,dialog(p),'Short-viewport preferences '+label);
- check(await dialog(p).evaluate(e=>e.scrollHeight>e.clientHeight&&getComputedStyle(e).overflowY==='auto'),'Tall preferences scroll within viewport '+label);
- await dialog(p).locator('[data-cookie-action=save]').scrollIntoViewIfNeeded();
- check(await dialog(p).locator('[data-cookie-action=save]').isVisible(),'Save remains reachable '+label);
+ const content=dialog(p).locator('.krane-cookie-dialog-content');
+ check(await content.evaluate(e=>e.clientHeight>0&&getComputedStyle(e).overflowY==='auto'),'Tall preferences content scrolls within viewport '+label);
+ const accept=content.locator('[data-cookie-action=accept]');
+ await accept.scrollIntoViewIfNeeded();
+ check(await accept.evaluate(e=>{const r=e.getBoundingClientRect(),c=e.closest('.krane-cookie-dialog-content').getBoundingClientRect();return r.height>=44&&r.top>=c.top-1&&r.bottom<=c.bottom+1;}),'Scrollable consent action is reachable '+label);
+ for(const action of ['save','close']){
+  const control=dialog(p).locator('.krane-cookie-dialog-actions [data-cookie-action='+action+']');
+  check(await control.evaluate(e=>{const r=e.getBoundingClientRect(),d=e.closest('dialog').getBoundingClientRect();return r.height>=44&&r.top>=d.top-1&&r.bottom<=d.bottom+1&&r.bottom<=innerHeight+1;}),'Fixed preferences '+action+' stays reachable '+label);
+ }
  await escapeCookie(p);
  check(await banner(p).isVisible()&&await consent(p)===null,'Short-viewport dismissal preserves unanswered notice '+label);
  await checkPlacement(p,banner(p),'Notice after preferences close '+label);await ctx.close();
