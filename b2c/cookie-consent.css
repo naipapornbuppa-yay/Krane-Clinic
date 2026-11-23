@@ -34,3 +34,35 @@
  .krane-cookie-tag{font-size:10px;right:12px}
 }
 @media(prefers-reduced-motion:reduce){.krane-cookie-banner,.krane-cookie-dialog{scroll-behavior:auto}}
+
+/* Passive notice keeps settings an inline action; the explicit preferences sheet is modal. */
+.krane-cookie-copy [data-cookie-action="open"] {
+  display:inline-flex;align-items:center;min-height:44px;margin-inline-start:12px;padding:0;
+  border:0;border-radius:0;background:transparent;color:var(--color-accent,#395aa4);
+  text-decoration:underline;text-underline-offset:3px;font:inherit;font-size:13px;cursor:pointer;
+}
+.krane-cookie-actions { grid-template-columns:minmax(0,1fr); }
+.krane-cookie-alternatives { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
+.krane-cookie-alternatives button {
+  flex:1 1 140px;min-height:44px;padding:10px 12px;border:1px solid var(--color-line,#dce1e8);
+  border-radius:var(--control-radius,12px);background:#fff;color:var(--color-ink,#1a1e28);
+  font:inherit;cursor:pointer;
+}
+.krane-cookie-dialog-actions > button[data-cookie-action="save"] {
+  background:var(--color-accent,#395aa4);border-color:var(--color-accent,#395aa4);color:#fff;
+}
+.krane-cookie-dialog-actions > button[data-cookie-action="close"] {
+  background:#fff;border-color:var(--color-accent,#395aa4);color:var(--color-accent,#395aa4);
+}
+@media (max-width:760px) {
+  .krane-cookie-copy [data-cookie-action="open"] { margin-inline-start:8px; }
+  .krane-cookie-dialog[open] { display:flex;flex-direction:column;padding:0;overflow:hidden; }
+  .krane-cookie-dialog-content {
+    position:relative;min-height:0;overflow:auto;overscroll-behavior:contain;
+    padding:60px max(24px,env(safe-area-inset-right)) 8px max(24px,env(safe-area-inset-left));
+  }
+  .krane-cookie-dialog-actions {
+    flex:0 0 auto;margin-top:0;background:#fff;border-top:1px solid var(--color-line,#e4e7ed);
+    padding:12px max(24px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
+  }
+}
