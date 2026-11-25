@@ -200,6 +200,8 @@
     "Modern":"การดูแลสุขภาพ","healthcare,":"ยุคใหม่","personalized":"ออกแบบ","for you.":"เพื่อคุณ","Modern healthcare, personalized for you.":"การดูแลสุขภาพ ที่ออกแบบเพื่อคุณ","Consult. Treat. Thrive.":"ปรึกษา รักษา ดูแลต่อเนื่อง",
     "Delivered":"จัดส่งถึง","to your":"หน้าบ้าน","door.":"คุณ","Delivered to your door.":"รับการดูแลต่อเนื่อง ส่งถึงบ้านคุณ","Discreet. Unbranded. Yours.":"เป็นส่วนตัว ไม่ระบุชนิดยา ส่งถึงคุณ",
     /* ---- concern / category ---- */
+    "General symptom consultation":"ปรึกษาอาการทั่วไป",
+    "Common symptoms such as colds, sore throat, allergies, bronchitis and acid reflux.":"อาการป่วยเบื้องต้น เช่น ไข้หวัด คออักเสบ ภูมิแพ้ หลอดลมอักเสบ กรดไหลย้อน",
     "What kind of care do you need?":"คุณต้องการการดูแลแบบไหน?","Tap a category to begin. If your concern doesn't fit one, choose General consultation.":"แตะหมวดเพื่อเริ่ม ถ้าไม่ตรงหมวดไหน เลือกปรึกษาทั่วไป",
     "General consultation":"ปรึกษาทั่วไป","General health consultation":"โปรแกรมปรึกษาสุขภาพทั่วไป","General / Not sure":"ปรึกษาทั่วไป / ไม่แน่ใจ","Common symptoms such as a cold, sore throat, or runny nose / Not sure":"อาการทั่วไป เช่น ไข้หวัด เจ็บคอ มีน้ำมูก / ไม่แน่ใจ","Not sure where to start? Talk to a doctor without choosing a disease path.":"ไม่รู้จะเริ่มตรงไหน? คุยกับแพทย์ได้โดยไม่ต้องเลือกโรค",
     "Hair, skin & appearance":"ผม ผิว และรูปลักษณ์","Hair loss, scalp, skin and appearance-related care.":"ดูแลปัญหาผมร่วง หนังศีรษะ ผิว และรูปลักษณ์","Hair loss & scalp":"ผมร่วงและหนังศีรษะ","Hair thinning, shedding and scalp concerns.":"ผมบาง ผมร่วง และปัญหาหนังศีรษะ","Skin & acne":"ผิวและสิว","Acne, irritation and other skin concerns.":"สิว การระคายเคือง และปัญหาผิว",
