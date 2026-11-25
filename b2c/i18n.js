@@ -2347,6 +2347,8 @@
     "ปิดหน้าช่วยเหลือ": "Close help",
     "เติมยาหลายใบสั่งพร้อมกัน": "Refill several prescriptions at once",
     "เลือกวันและเวลาที่คุณสะดวก": "Choose a day and time that suits you",
+    "เลื่อนดูวันก่อนหน้า": "Scroll to earlier days",
+    "เลื่อนดูวันถัดไป": "Scroll to later days",
     "รอปรึกษาแพทย์": "Waiting for the doctor",
     "ต้องการดำเนินการต่อไหม?": "Do you want to carry on?",
     "คุณมีคิวปรึกษาแพทย์ที่ยังค้างอยู่": "You have a consultation still holding in the queue",

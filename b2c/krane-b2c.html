@@ -248,6 +248,15 @@
     .intake-safety-dialog [data-step]:empty{display:none}
     #consent-terms .consent-agree{align-items:center}
     #consent-terms .consent-agree .check{margin-block:0}
+    .appointment-day-picker__header{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
+    .appointment-day-picker__controls{display:flex;gap:4px}
+    .appointment-day-picker__controls button{display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:var(--color-field);color:var(--color-accent);cursor:pointer}
+    .appointment-day-picker__controls button:disabled{color:var(--color-muted);opacity:.5;cursor:default}
+    .appointment-day-picker__controls .ui-icon{width:18px;height:18px}
+    #appointment .appointment-days{min-width:0;padding-block:4px 6px;scrollbar-width:thin}
+    #appointment .appointment-days::-webkit-scrollbar{display:block;height:4px}
+    #appointment .appointment-days::-webkit-scrollbar-thumb{border-radius:4px;background:var(--color-line-strong)}
+    #appointment .appointment-day:focus-visible{outline-offset:-3px}
     @media(max-width:36rem){
       :is(#red-flag-modal,#obesity-risk-modal){align-items:end;padding-bottom:0}
       .intake-safety-dialog{border-radius:24px 24px 0 0}
@@ -1830,10 +1839,16 @@
       </header>
 
       <div class="stack-2">
-        <span class="section-label">เลือกวัน</span>
-        <div class="appointment-days" role="radiogroup" aria-label="เลือกวัน">
+        <div class="appointment-day-picker__header">
+          <span class="section-label" id="appointment-days-label">เลือกวัน</span>
+          <div class="appointment-day-picker__controls">
+            <button type="button" data-appointment-day-scroll="-1" aria-label="เลื่อนดูวันก่อนหน้า" aria-controls="appointment-days" disabled><i data-lucide="chevron-left" class="ui-icon" aria-hidden="true"></i></button>
+            <button type="button" data-appointment-day-scroll="1" aria-label="เลื่อนดูวันถัดไป" aria-controls="appointment-days"><i data-lucide="chevron-right" class="ui-icon" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="appointment-days" id="appointment-days" role="radiogroup" aria-labelledby="appointment-days-label">
           <button class="appointment-day" type="button" role="radio" aria-checked="true" data-appointment-day data-day-label="วันนี้"><span class="appointment-day__name">วันนี้</span><span class="appointment-day__date">31 ส.ค.</span></button>
-          <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="พรุ่งนี้"><span class="appointment-day__name">พรุ่งนี้</span><span class="appointment-day__date">1 ก.ย.</span></button>
+          <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="อังคาร"><span class="appointment-day__name">อังคาร</span><span class="appointment-day__date">1 ก.ย.</span></button>
           <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="อังคาร"><span class="appointment-day__name">อังคาร</span><span class="appointment-day__date">2 ก.ย.</span></button>
           <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="พุธ"><span class="appointment-day__name">พุธ</span><span class="appointment-day__date">3 ก.ย.</span></button>
           <button class="appointment-day" type="button" role="radio" aria-checked="false" data-appointment-day data-day-label="พฤหัสบดี"><span class="appointment-day__name">พฤหัสบดี</span><span class="appointment-day__date">4 ก.ย.</span></button>
@@ -2854,9 +2869,6 @@
 
   <!-- ===================== PROFILE (home, bottom nav) ===================== -->
   <style>
-    #profile .ed-booking-banner{display:flex;align-items:center;gap:12px;padding:14px 16px;border:0;border-radius:14px;background:#edf7f0;color:#17543b}
-    .ed-booking-banner>[data-ed-booking-copy]{display:grid;gap:2px;min-width:0}
-    .ed-booking-banner>[data-ed-booking-copy]>span{font-size:var(--fs-sm)}
     [data-ed-booking-surface][hidden]{display:none!important}
   </style>
   <section class="screen screen--web" id="profile">
@@ -2909,9 +2921,6 @@
       </div>
     </header>
     <div class="screen__body stack-5">
-      <section class="ed-booking-banner" data-ed-booking-surface hidden role="status">
-        <i data-lucide="calendar-check" class="ui-icon" aria-hidden="true"></i><span data-ed-booking-copy><strong data-ed-booking-title></strong><span data-ed-booking-when></span></span>
-      </section>
       <!-- Follow-up is not a quick action any more (client, 17 Sep): the banner below
            already carries the booked visit, and the list stays in the menu. -->
       <section class="profile-quick" aria-label="เมนูด่วน">
@@ -7689,15 +7698,20 @@
       .map(date => ({date,when:followUpAppointmentFor(date)}))
       .filter(item => item.when)
       .sort((a,b) => a.when-b.when);
-    const next=candidates.find(item => item.when.getTime()-Date.now()>=-FOLLOWUP_GRACE_MS);
-    const has=candidates.length>0;
-    const remaining=next ? next.when.getTime()-Date.now() : Infinity;
-    const soon=Boolean(next && remaining<=FOLLOWUP_NOTICE_MS && remaining>=-FOLLOWUP_GRACE_MS);
+    const now=Date.now();
+    const booking=readEdBookingFeedback();
+    const bookedAt=booking ? new Date(booking.at) : null;
+    const booked=Boolean(bookedAt && bookedAt.getTime()-now>=-FOLLOWUP_GRACE_MS);
+    const next=booked ? {when:bookedAt} : candidates.find(item => item.when.getTime()-now>=-FOLLOWUP_GRACE_MS);
+    const has=booked||candidates.length>0;
+    const remaining=next ? next.when.getTime()-now : Infinity;
+    const soon=Boolean(next && (booked||remaining<=FOLLOWUP_NOTICE_MS));
     /* Someone already under a doctor is not starting from "choose what is
        worrying you" (client, 23 Aug), so the big CTA stays out of their way
        whether or not the reminder is showing. */
     cta.hidden=has;
     toast.hidden=!soon;
+    toast.toggleAttribute('data-booked-appointment',booked);
     if(!soon) return;
     /* Copy the date from its own node. Slicing the sentence on "·" used to run
        before the i18n pass and banked the English half, which the banner then
@@ -7719,11 +7733,13 @@
     const untilRoomOpens=Math.max(0,remaining-FOLLOWUP_JOIN_MS);
     if(state) state.textContent=ready
       ? (thai ? 'เข้าห้อง' : 'Join')
-      : `${thai ? 'เข้าห้องใน' : 'Join in'} ${formatFollowUpPill(untilRoomOpens)}`;
+      : remaining>FOLLOWUP_NOTICE_MS
+        ? (thai ? 'รอเข้าห้อง' : 'Waiting to join')
+        : `${thai ? 'เข้าห้องใน' : 'Join in'} ${formatFollowUpPill(untilRoomOpens)}`;
     toast.disabled=!ready;
     toast.setAttribute('aria-disabled',String(!ready));
     toast.classList.toggle('is-ready',ready);
-    toast.dataset.category=next.date.dataset.followupCase || '';
+    toast.dataset.category=next.date?.dataset.followupCase || '';
   }
 
   window.setInterval(() => {
@@ -9245,6 +9261,29 @@
   const appointmentTime = minutes => `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;
   const appointmentDayIndex = () => [...document.querySelectorAll('#appointment [data-appointment-day]')]
     .findIndex(day => day.getAttribute('aria-checked')==='true');
+  const appointmentRail=document.getElementById('appointment-days');
+  const appointmentDayScrollers=[...document.querySelectorAll('[data-appointment-day-scroll]')];
+  function syncAppointmentRail(){
+    const offset=appointmentRail.scrollLeft;
+    const limit=appointmentRail.scrollWidth-appointmentRail.clientWidth;
+    appointmentDayScrollers[0].disabled=offset<=1;
+    appointmentDayScrollers[1].disabled=offset>=limit-1;
+  }
+  appointmentRail.addEventListener('scroll',syncAppointmentRail,{passive:true});
+  new ResizeObserver(syncAppointmentRail).observe(appointmentRail);
+  appointmentDayScrollers.forEach(button=>button.addEventListener('click',()=>{
+    appointmentRail.scrollBy({left:Number(button.dataset.appointmentDayScroll)*appointmentRail.clientWidth*.75,behavior:reduceMotion?'instant':'smooth'});
+  }));
+  appointmentRail.addEventListener('keydown',event=>{
+    const day=event.target.closest('[data-appointment-day]');
+    if(!day || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+    event.preventDefault();
+    const choices=[...appointmentRail.querySelectorAll('[data-appointment-day]')];
+    const index=choices.indexOf(day);
+    const next=event.key==='Home'?0:event.key==='End'?choices.length-1:index+(event.key==='ArrowRight'?1:-1);
+    choices[next]?.focus();
+    choices[next]?.click();
+  });
   function appointmentSlotUnavailable(minutes,dayIndex,now){
     const date=new Date(now);date.setDate(date.getDate()+dayIndex);
     const day=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
@@ -9287,7 +9326,7 @@
       const [hour,minute]=time.split(':');
       slots.push(`<button class="appointment-slot${unavailable ? ' is-taken' : ''}" type="button" role="radio" aria-label="${time}" aria-checked="${appointmentSlot===time}"${unavailable ? ' aria-disabled="true"' : ''} data-appointment-slot style="grid-row:${hourRow};grid-column:${hourColumn}" data-appointment-time="${time}"><span>${hour}</span>:<span>${minute}</span></button>`);
     }
-    grid.innerHTML=slots.length?slots.join(''):`<p class="hint" style="grid-column:1/-1" role="status">${thai?'วันนี้ไม่มีเวลาว่าง กรุณาเลือกวันอื่น':'No appointments available on this date. Choose another day.'}</p>`;
+    grid.innerHTML=slots.length?slots.join(''):`<p class="hint" style="grid-column:1/-1" role="status">${thai?'วันที่เลือกไม่มีเวลาว่าง กรุณาเลือกวันอื่น':'No appointments available on this date. Choose another day.'}</p>`;
     syncAppointment();
   }
   function syncAppointment(){
@@ -9317,9 +9356,7 @@
       const when=new Date();
       when.setHours(0,0,0,0);
       when.setDate(when.getDate()+index);
-      const name=index===0 ? (thai ? 'วันนี้' : 'Today')
-        : index===1 ? (thai ? 'พรุ่งนี้' : 'Tomorrow')
-        : days[when.getDay()];
+      const name=index===0 ? (thai ? 'วันนี้' : 'Today') : days[when.getDay()];
       const date=`${when.getDate()} ${months[when.getMonth()]}`;
       const nameEl=chip.querySelector('.appointment-day__name');
       const dateEl=chip.querySelector('.appointment-day__date');
@@ -9333,11 +9370,11 @@
     if(!scr) return;
     appointmentSlot='';
     const now=new Date();
-    const currentMinutes=now.getHours()*60+now.getMinutes();
     // If the remaining part of today is inside the 15-minute lead time, open
     // tomorrow instead of presenting a whole day of unavailable times.
-    const availableDay=[0,1,2,3].find(index=>{const d=new Date(now);d.setDate(d.getDate()+index);return window.KraneClinical.slots(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`).length;});
-    const defaultDayIndex=availableDay??0;
+    const days=[...scr.querySelectorAll('[data-appointment-day]')];
+    const availableDay=days.findIndex((_,index)=>{const d=new Date(now);d.setDate(d.getDate()+index);return window.KraneClinical.slots(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`).length;});
+    const defaultDayIndex=Math.max(0,availableDay);
     scr.querySelectorAll('[data-appointment-day]').forEach((day,index) =>
       day.setAttribute('aria-checked',String(index===defaultDayIndex)));
     const day=scr.querySelector('[data-appointment-day][aria-checked="true"]');
@@ -9622,15 +9659,17 @@
     const clinical=window.KraneClinical;
     const current=clinical?.current();
     const shared=flowState.sharedEncounterId || (current?.id!=='CONS-2041' && current?.id);
-    let when=String(flowState.appointmentWhen || '').trim();
+    const locale=document.documentElement.lang==='en' ? 'en-GB' : 'th-TH';
+    const format=new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'});
+    const at=Date.parse(flowState.appointmentAt);
+    let when=Number.isFinite(at) ? format.format(new Date(at)) : String(flowState.appointmentWhen || '').trim();
     if(shared){
       // Only the selected patient's existing booked encounter can supply the
       // canonical confirmation timestamp. Other appointments remain in history.
       const booking=current?.id===shared && clinical.records('appointment').find(item=>
         item.encounterId===shared && item.patientId===current.patientId && item.status==='booked' &&
         Number.isFinite(Date.parse(item.at)));
-      const locale=document.body.classList.contains('lang-en') || document.documentElement.lang==='en' ? 'en-GB' : 'th-TH';
-      when=booking ? new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(new Date(booking.at)) : '';
+      when=booking ? format.format(new Date(booking.at)) : '';
     }
     screen.querySelectorAll('[data-booking-confirmed]').forEach(node => { node.hidden=!when; });
     screen.querySelectorAll('[data-booking-unavailable]').forEach(node => { node.hidden=Boolean(when); });
@@ -11597,7 +11636,15 @@
     const followUpEditSymptoms=e.target.closest('[data-followup-edit-symptoms]');
     if(followUpEditSymptoms){ show('intake1'); return; }
     const profileFollowup=e.target.closest('[data-profile-followup]');
-    if(profileFollowup){ beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId); return; }
+    if(profileFollowup){
+      if(profileFollowup.disabled)return;
+      if(profileFollowup.hasAttribute('data-booked-appointment')){
+        show('waitroom');
+      }else{
+        beginAssignedDoctorFlow(profileFollowup.dataset.category || selectedCategoryId);
+      }
+      return;
+    }
     /* "Consult now" duplicated the two appointment actions beside it and the
        button at the bottom of every treatment card. The slot carries the
        referral instead, which had nowhere to live (client, 10 Sep). */
