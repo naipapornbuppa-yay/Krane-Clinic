@@ -18,16 +18,65 @@
    }box.append(card);
   }
  }
- document.addEventListener('krane:clinical-selected',()=>{const upload=document.querySelector('[data-clinical-upload-submit]');if(upload){upload.disabled=false;upload.textContent='ส่งใบสั่งยาให้แพทย์ทบทวน';}const refill=document.querySelector('[data-clinical-refill-submit]');if(refill){refill.disabled=false;refill.textContent='ขอให้แพทย์ทบทวนการเติมยา';}});
  if(api.role==='patient'){
-  const upload=document.querySelector('#upload-rx .screen__body');if(upload){const input=el('input');input.type='file';input.accept='image/png,image/jpeg,application/pdf';input.setAttribute('aria-label','เลือกไฟล์ใบสั่งยา');input.onchange=()=>input.setCustomValidity('');upload.prepend(input);
-   const submit=document.querySelector('#upload-rx .screen__footer button');submit.dataset.clinicalUploadSubmit='';submit.removeAttribute('data-go');submit.onclick=async()=>{const f=input.files[0];if(!f||f.size>4*1024*1024||!['image/png','image/jpeg','application/pdf'].includes(f.type)){input.setCustomValidity('เลือกภาพหรือ PDF ขนาดไม่เกิน 4 MB');input.reportValidity();return;}
-    const encounter=api.id();submit.disabled=true;
-    try{const assetId='FILE-'+crypto.randomUUID();await window.KraneClinicalAssets.put(assetId,f);if(api.id()!==encounter)throw Error('Encounter changed');api.request({kind:'ตรวจใบสั่งยาที่อัปโหลด',note:f.name,fileName:f.name,assetId});submit.textContent='ส่งคำขอแล้ว';}catch{submit.disabled=false;submit.textContent='บันทึกไม่สำเร็จ ลองอีกครั้ง';}
-
+  const copy=(th,en)=>document.documentElement.lang.startsWith('en')?en:th;
+  const input=document.getElementById('prescription-file');
+  const submit=document.querySelector('#upload-rx .screen__footer button');
+  const feedback=document.getElementById('prescription-file-feedback');
+  if(input&&submit&&feedback){
+   const showFeedback=(message,error=false)=>{
+    if(error&&input.files[0]){input.value='';}
+    feedback.textContent=message;
+    feedback.hidden=!message;
+    feedback.toggleAttribute('data-error',error);
    };
+   const restoreUpload=()=>{input.disabled=false;submit.disabled=false;submit.hidden=false;};
+   const invalidFile=(file)=>!file||file.size>4*1024*1024||!['image/png','image/jpeg','application/pdf'].includes(file.type);
+   const selectionHint=()=>copy('เลือกภาพหรือ PDF ขนาดไม่เกิน 4 MB','Choose an image or PDF no larger than 4 MB.');
+   function showSelection(){
+    const file=input.files[0];
+    if(file&&invalidFile(file)){showFeedback(selectionHint(),true);return;}
+    showFeedback(file?.name||'');
+   }
+   input.addEventListener('change',showSelection);
+   submit.dataset.clinicalRequestSubmit='';
+   submit.removeAttribute('data-go');
+   submit.onclick=async()=>{
+    const file=input.files[0];
+    if(invalidFile(file)){showFeedback(selectionHint(),true);input.focus();return;}
+    const encounter=api.id();
+    input.disabled=true;submit.disabled=true;
+    try{
+     const assetId='FILE-'+crypto.randomUUID();
+     await window.KraneClinicalAssets.put(assetId,file);
+     if(api.id()!==encounter)return;
+     api.request({kind:'ตรวจใบสั่งยาที่อัปโหลด',note:file.name,fileName:file.name,assetId});
+     submit.hidden=true;
+     showFeedback(copy('ส่งใบสั่งยาให้ตรวจสอบแล้ว','Prescription submitted for review.'));
+    }catch{
+     if(api.id()!==encounter)return;
+     restoreUpload();
+     showFeedback(copy('บันทึกไม่สำเร็จ ลองอีกครั้ง','Could not save. Try again.'));
+    }
+   };
+   document.addEventListener('krane:clinical-selected',()=>{input.value='';restoreUpload();showFeedback('');});
   }
-  const refill=document.querySelector('#refill-sheet .modal-dialog');if(refill){const button=el('button','ขอให้แพทย์ทบทวนการเติมยา');button.type='button';button.dataset.clinicalRefillSubmit='';button.className='btn btn--secondary';button.onclick=()=>{try{api.request({kind:'ทบทวนการเติมยา',note:api.current().category});button.textContent='ส่งคำขอแล้ว';button.disabled=true;}catch{button.textContent='ส่งไม่สำเร็จ ลองอีกครั้ง';}};refill.append(button);}
+  const refill=document.querySelector('#refill-sheet .refill-sheet__content');
+  if(refill){
+   const label=()=>copy('ขอให้แพทย์ทบทวนการเติมยา','Ask a doctor to review the refill');
+   const button=el('button',label());
+   button.type='button';
+   button.dataset.clinicalRefillSubmit='';
+   button.dataset.clinicalRequestSubmit='';
+   button.className='btn btn--secondary';
+   button.onclick=()=>{
+    button.disabled=true;
+    try{api.request({kind:'ทบทวนการเติมยา',note:api.current().category});button.hidden=true;}
+    catch{button.disabled=false;button.textContent=copy('ส่งไม่สำเร็จ ลองอีกครั้ง','Could not send. Try again.');}
+   };
+   document.addEventListener('krane:clinical-selected',()=>{button.disabled=false;button.hidden=false;button.textContent=label();});
+   refill.append(button);
+  }
  }
  window.addEventListener('krane:clinical-change',render);render();
 })();
