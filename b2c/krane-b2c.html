@@ -248,10 +248,6 @@
     .intake-safety-dialog [data-step]:empty{display:none}
     #consent-terms .consent-agree{align-items:center}
     #consent-terms .consent-agree .check{margin-block:0}
-    @media(min-width:761px){
-      [data-acceptplan-modal]{position:fixed;place-items:center;padding:var(--sp-5)}
-      [data-acceptplan-modal] .map-modal__sheet{width:min(480px,100%);border-radius:var(--radius-xl)}
-    }
     @media(max-width:36rem){
       :is(#red-flag-modal,#obesity-risk-modal){align-items:end;padding-bottom:0}
       .intake-safety-dialog{border-radius:24px 24px 0 0}
@@ -869,16 +865,7 @@
       cursor: pointer;
     }
     #profile .profile-shell-nav__account-label { display:none; }
-    #profile .profile-shell-nav__account-avatar {
-      display: grid;
-      width: 22px;
-      height: 22px;
-      place-items: center;
-      border: 0;
-      border-radius: 50%;
-      font-size: 15px;
-      line-height: 1;
-    }
+    #profile .profile-shell-nav__account svg{display:block;width:17px;height:17px}
     #profile .profile-shell-nav__mobile { display: none; }
     #profile .profile-shell-nav :is(a, button, select, summary):focus-visible {
       outline: 3px solid rgba(70, 104, 177, .32);
@@ -1024,11 +1011,6 @@
         border: 0;
         background: #f1f4f8;
         color: var(--profile-nav-ink);
-      }
-      #profile .profile-shell-nav__account-avatar {
-        width: 100%;
-        height: 100%;
-        border: 0;
       }
       #profile .profile-shell-nav__account-label { display: none; }
       #profile .profile-shell-nav__mobile {
@@ -1251,8 +1233,8 @@
   #social-confirm [data-social-dob] .float-field__box {padding-inline:12px;}
 }
 </style>
-<link rel="stylesheet" href="treatment-folders.css?v=20261126-refill-sheet">
-<link rel="stylesheet" href="modal-chrome.css?v=20261125-order-history">
+<link rel="stylesheet" href="treatment-folders.css?v=20261126-refill-breakpoint">
+<link rel="stylesheet" href="modal-chrome.css?v=20261126-responsive-modals">
 <link rel="stylesheet" href="article-reading.css?v=20261121-article-license">
 <script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261120-incoming-bubble"><link rel="stylesheet" href="consultation-interactions.css?v=20261120-face-time-pip">
 </head>
@@ -2905,7 +2887,7 @@
           <select data-language aria-label="Language"><option value="th">TH</option><option value="en">EN</option></select>
         </label>
         <button class="profile-shell-nav__account" type="button" data-go="settings" aria-label="เปิดบัญชีของฉัน">
-          <span class="profile-shell-nav__account-avatar" aria-hidden="true">P</span>
+          <i data-lucide="user-round" aria-hidden="true"></i>
           <span class="profile-shell-nav__account-label">โปรไฟล์</span>
         </button>
         <details class="profile-shell-nav__mobile">
@@ -7904,27 +7886,25 @@
       block.append(facts);
       return block;
     };
-    const medicineGroups=[
-      {key:'ordered',title:'รายการที่สั่งซื้อ',items:list.filter(item => item.ordered !== false)},
-      {key:'not-ordered',title:'รายการที่ไม่ได้สั่งซื้อ',items:list.filter(item => item.ordered === false)}
-    ];
-    medicines.replaceChildren(...medicineGroups.filter(group => group.items.length).map(group => {
+    const ordered=list.filter(item => item.ordered !== false);
+    medicines.replaceChildren();
+    if(ordered.length){
       const section=document.createElement('section');
-      section.className=`treatment-medicine-group treatment-medicine-group--${group.key}`;
+      section.className='treatment-medicine-group treatment-medicine-group--ordered';
       const heading=document.createElement('h3');
       heading.className='treatment-medicine-group__title';
       const label=document.createElement('span');
-      label.textContent=group.title;
+      label.textContent='รายการที่สั่งซื้อ';
       const count=document.createElement('span');
       count.className='treatment-medicine-group__count';
-      count.textContent=`${group.items.length} รายการ`;
+      count.textContent=`${ordered.length} รายการ`;
       heading.append(label,count);
       const contents=document.createElement('div');
       contents.className='treatment-medicine-group__items';
-      contents.replaceChildren(...group.items.map(makeMedicineBlock));
+      contents.append(...ordered.map(makeMedicineBlock));
       section.append(heading,contents);
-      return section;
-    }));
+      medicines.append(section);
+    }
     // The blocks are built after the page's icon pass, so run it over them.
     if(window.krane_normalizeIcons) window.krane_normalizeIcons();
     syncFollowUpDates();
