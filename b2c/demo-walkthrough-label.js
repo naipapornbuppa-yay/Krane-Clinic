@@ -43,75 +43,26 @@
  new MutationObserver(localize).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  if(!safe)return;
 
- // Keep the signup step visible in a public assessment walkthrough. Only
- // its primary button can invoke the app's isolated, in-memory guest account.
- // Never collect phone/password or invoke social sign-in from this guest copy.
- const signup=document.getElementById('signup');
- const submit=signup?.querySelector('[data-signup-phone]');
- if(submit){
-  const intro=signup.querySelector('.auth-screen__intro');
-  const note=document.createElement('p');
-  note.className='hint';
-  note.style.marginTop='8px';
-  intro?.append(note);
-  signup.querySelectorAll('input,[data-password-toggle],[data-social],.auth-screen__create').forEach(control=>{
-   control.disabled=true;
-   if(control.matches('input'))control.autocomplete='off';
+ // Preserve the normal login and sign-up UI in the public review build.
+ // Only the submit actions change here. They run the isolated sample instead
+ // of accepting a phone number, storing credentials, or launching OAuth.
+ const authScreens=['login','signup'].map(id=>document.getElementById(id)).filter(Boolean);
+ for(const screen of authScreens){
+  screen.querySelectorAll('input').forEach(input=>{
+   input.readOnly=true;
+   input.autocomplete='off';
   });
-  signup.querySelectorAll('.auth-screen__new,.auth-screen__separator,.auth-screen__social').forEach(group=>{
-   group.hidden=true; group.style.display='none';
-  });
-  submit.removeAttribute('data-signup-phone');
-  submit.dataset.staticGuestAccount='';
-  submit.type='button';
-  const refreshSignup=()=>{
-   const en=document.documentElement.lang.startsWith('en');
-   const available=isSample();
-   submit.disabled=!available;
-   submit.setAttribute('aria-disabled',String(!available));
-   submit.textContent=en?'Create Account':'สร้างบัญชี';
-   note.textContent=available
-    ? (en?'No phone number or password is required. This does not create a real account.':'ไม่ต้องกรอกเบอร์โทรหรือรหัสผ่าน ขั้นตอนนี้ไม่สร้างบัญชีจริง')
-    : (en?'Demo disabled for this case. Open a fresh private window.':'เดโมใช้กับเคสนี้ไม่ได้ กรุณาเปิดหน้าต่างส่วนตัวใหม่');
-  };
-  refreshSignup();
-  window.addEventListener('krane:clinical-change',refreshSignup);
-  new MutationObserver(refreshSignup).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  const bridge=document.createElement('button');
+  bridge.type='button';
+  bridge.hidden=true;
+  bridge.dataset.staticGuestAccount='';
+  screen.append(bridge);
+  screen.addEventListener('click',event=>{
+   const action=event.target.closest('[data-login-submit],[data-signup-phone],[data-social],[data-login-forgot]');
+   if(!action)return;
+   event.preventDefault();
+   event.stopImmediatePropagation();
+   if(isSample()&&!action.matches('[data-login-forgot]'))bridge.click();
+  },true);
  }
-
- // Leave the existing simulated login shortcut unchanged.
- const login=document.getElementById('login');
- const body=login?.querySelector('.screen__body');
- if(body){
-  const trigger=document.createElement('button');
-  trigger.type='button';
-  trigger.hidden=true;
-  trigger.dataset.staticGuestAccount='';
-  body.replaceChildren(trigger);
-  let active=false;
-  const advance=()=>{
-   const next=login.classList.contains('active');
-   if(next===active)return;
-   active=next;
-   if(active&&isSample())trigger.click();
-  };
-  new MutationObserver(advance).observe(login,{attributes:true,attributeFilter:['class']});
-  advance();
- }
-})();
-/* Visible disclosure only. Does not change routing, consent, payment or admission. */
-(() => {
-  const q=new URLSearchParams(location.search);
-  if(q.get('demoMode')!=='walkthrough'||!q.get('demoStage'))return;
-  const refresh=()=>{
-    const fixture=window.KraneClinical?.id()==='CONS-2041';
-    const en=document.documentElement.lang.startsWith('en');
-    document.querySelectorAll('section.screen').forEach(screen=>{
-      let note=screen.querySelector('[data-walkthrough-notice]');
-      if(!note){note=document.createElement('p');note.dataset.walkthroughNotice='';note.setAttribute('role','status');note.style.cssText='margin:0;padding:8px 16px;background:#e7eefb;color:#395aa4;font-size:12px;line-height:1.5;flex:none';screen.prepend(note);}
-      note.textContent=fixture?(en?'DEMO · Existing sample case. No real appointment, payment or doctor connection.':'เดโม · เคสตัวอย่างเดิม ไม่ใช่การนัดหมาย ชำระเงิน หรือเชื่อมต่อแพทย์จริง'):(en?'Quick demo is inactive for this case. Use a fresh private window for the sample walkthrough; this case still needs its clinician.':'เดโมแบบเร็วไม่ทำงานกับเคสนี้ เปิดหน้าต่างส่วนตัวใหม่เพื่อดูเคสตัวอย่าง เคสนี้ยังต้องรอแพทย์รับเข้าห้อง');
-    });
-  };
-  refresh();window.addEventListener('krane:clinical-change',refresh);
-  new MutationObserver(refresh).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 })();
