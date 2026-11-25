@@ -6614,7 +6614,14 @@
       const flagged=[...question.querySelectorAll('[data-flag]')];
       return flagged.length?flagged.map(option=>({title:option.textContent.trim(),yes:option,no:null,source:question,stopsCare:true})):[{title:question.querySelector('.section-label').textContent.trim(),yes:question.querySelectorAll('.option')[0],no:question.querySelectorAll('.option')[1],source:question,stopsCare:Boolean(redFlagSource(question))}];
     });
-    const answers=entries.map(entry=>entry.yes.getAttribute('aria-selected')==='true'?'yes':entry.no?.getAttribute('aria-selected')==='true'?'no':null);
+    const answers=entries.map(entry=>entry.yes.getAttribute('aria-selected')==='true'?'yes':'no');
+    function recordAnswer(index,value){
+      answers[index]=value;
+      const entry=entries[index];
+      if(entry.no)entry.source.querySelectorAll('.option').forEach(option=>option.setAttribute('aria-selected','false'));
+      entry.yes.setAttribute('aria-selected',String(value==='yes'));
+      entry.no?.setAttribute('aria-selected',String(value==='no'));
+    }
     let step=0;
     const modal=document.createElement('div');
     modal.id='red-flag-modal';modal.className='modal-layer';
@@ -6648,17 +6655,18 @@
       entries.slice(step*3,step*3+3).forEach((entry,offset)=>{
         const i=step*3+offset,field=document.createElement('fieldset'),legend=document.createElement('legend');field.className='partner-history-field';field.dataset.questionId=entry.source.dataset.questionId||'';legend.textContent=/[?？]$/.test(entry.title)?entry.title:entry.title+(document.documentElement.lang==='en'?'?':' ใช่หรือไม่?');field.append(legend);
         const options=document.createElement('div');options.className='partner-binary';options.setAttribute('role','radiogroup');options.setAttribute('aria-label',entry.title);
-        ['no','yes'].forEach(value=>{const button=document.createElement('button');button.type='button';button.className='partner-binary__option';button.setAttribute('role','radio');button.setAttribute('aria-checked',String(answers[i]===value));button.textContent=value==='yes'?'ใช่':'ไม่ใช่';button.onclick=()=>{answers[i]=value;if(entry.no)entry.source.querySelectorAll('.option').forEach(option=>option.setAttribute('aria-selected','false'));entry.yes.setAttribute('aria-selected',String(value==='yes'));entry.no?.setAttribute('aria-selected',String(value==='no'));saveIntakeDraft();render();};options.append(button);});field.append(options);host.append(field);
+        ['no','yes'].forEach(value=>{const button=document.createElement('button');button.type='button';button.className='partner-binary__option';button.setAttribute('role','radio');button.setAttribute('aria-checked',String(answers[i]===value));button.textContent=value==='yes'?'ใช่':'ไม่ใช่';button.onclick=()=>{recordAnswer(i,value);saveIntakeDraft();render();};options.append(button);});field.append(options);host.append(field);
       });
       const flagged=hasFlaggedAnswer();
       warning.hidden=!flagged;
-      nextButton.disabled=flagged||answers.slice(step*3,step*3+3).some(value=>value===null);
+      nextButton.disabled=flagged;
     }
     modal.querySelector('[data-prev]').onclick=back;modal.querySelector('.modal-layer__scrim').onclick=back;closeButton.onclick=back;
     modal.onkeydown=event=>{if(event.key==='Escape'){event.stopPropagation();back();}};
     nextButton.onclick=()=>{
       if(hasFlaggedAnswer())return;
       if((step+1)*3<entries.length){step++;render();return;}
+      answers.forEach((value,index)=>recordAnswer(index,value));
       sources.filter(question=>question.querySelector('[data-flag]')).forEach(question=>question.querySelectorAll(".option:not([data-flag])").forEach(option=>option.setAttribute('aria-selected','true')));
       state.body.dataset.intakeQuestionIndex=String(lastIndex);
       saveIntakeDraft();close();syncIntakeDropdownContinue(screen);
