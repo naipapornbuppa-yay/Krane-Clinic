@@ -1660,7 +1660,7 @@
     "บริการปรึกษาแพทย์ทางไกล แพทย์ประเมินและให้คำแนะนำตามข้อมูลสุขภาพของแต่ละคน": "An online doctor consultation service. Your doctor assesses your health information and gives advice based on your circumstances.",
     "ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล": "Results vary from person to person",
     "ผลลัพธ์แตกต่างกันในแต่ละบุคคล": "Results vary from person to person",
-    "พิเศษ! สมัครสมาชิกวันนี้ ปรึกษาแพทย์ฟรี": "Special offer: Sign up today for a free consultation",
+    "พิเศษ! สมัครบัญชีใหม่วันนี้ ปรึกษาแพทย์และจัดส่งฟรี": "Special! Create an account today for a free consultation and delivery",
     "มีแพทย์ประจำตัว": "A dedicated doctor",
     "ราคาโปรแกรม": "Programme pricing",
     "สิ่งที่ควรรู้ก่อนเริ่มใช้บริการ": "What to know before starting",

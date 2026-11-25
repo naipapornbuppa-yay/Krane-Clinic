@@ -88,29 +88,37 @@ const kraneFictionalProvinces = [
 ];
 
 let kraneFictionalReviewGroupId = 0;
-window.KraneFictionalReviewGroup = (category, railClass, heading) => {
+window.KraneFictionalReviewGroup = (category, railClass, heading, {compactHeading = false} = {}) => {
   const entries = kraneFictionalReviewCopy[category];
   if (!entries?.length) return null;
   const group = document.createElement('section');
   group.className = 'public-review-demo';
-  const label = document.createElement(heading ? 'p' : 'h4');
-  label.className = 'public-review-demo__label';
-  label.id = 'fictional-review-group-' + (++kraneFictionalReviewGroupId);
+  const groupId = 'fictional-review-group-' + (++kraneFictionalReviewGroupId);
+  const label = compactHeading && heading ? null : document.createElement(heading ? 'p' : 'h4');
+  if (label) {
+    label.className = 'public-review-demo__label';
+    label.id = groupId;
+    group.append(label);
+  }
   if (heading) {
-    heading.id ||= label.id + '-title';
+    heading.id ||= groupId + '-title';
     group.setAttribute('aria-labelledby', heading.id);
-    group.setAttribute('aria-describedby', label.id);
+    if (label) group.setAttribute('aria-describedby', label.id);
   } else {
     group.setAttribute('aria-labelledby', label.id);
   }
   const rail = document.createElement('div');
   rail.className = railClass;
   rail.tabIndex = 0;
-  group.append(label, rail);
+  group.append(rail);
   function render() {
     const en = document.documentElement.lang === 'en';
-    if (heading) heading.textContent = en ? 'What our patients say' : 'เสียงจากผู้ใช้บริการ';
-    label.textContent = en ? 'Fictional reviews for demo' : 'รีวิวจำลองเพื่อสาธิต';
+    if (heading) {
+      heading.textContent = compactHeading
+        ? (en ? 'Sample reviews' : 'ความคิดเห็นตัวอย่าง')
+        : (en ? 'What our patients say' : 'เสียงจากผู้ใช้บริการ');
+    }
+    if (label) label.textContent = en ? 'Fictional reviews for demo' : 'รีวิวจำลองเพื่อสาธิต';
     rail.dataset.carouselRail = en ? 'Reviews, page' : 'ความคิดเห็น หน้า';
     rail.replaceChildren(...entries.map(([rating, captionTh, captionEn, quoteTh, quoteEn], index) =>
       window.KraneReviewCard({name: 'ABCDEF'[index], rating, province: kraneFictionalProvinces[index],

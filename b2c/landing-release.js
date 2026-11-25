@@ -98,6 +98,17 @@
     new MutationObserver(syncPreviews).observe(document.documentElement, {attributes:true, attributeFilter:['class']});
   }
 
+  for (const chapter of document.querySelectorAll('.care-chapter[data-review-category]')) {
+    const section = document.createElement('div');
+    section.className = 'care-chapter__reviews';
+    const title = document.createElement('h3');
+    const group = window.KraneFictionalReviewGroup(chapter.dataset.reviewCategory, 'care-chapter__review-rail', title, {compactHeading: true});
+    if (group) {
+      section.append(title, group);
+      chapter.querySelector('.care-chapter__note').before(section);
+    }
+  }
+
   document.addEventListener('click', event => {
     const button = event.target.closest('.landing-stories [data-landing-review]');
     if (!button) return;
