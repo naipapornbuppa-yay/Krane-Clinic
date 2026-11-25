@@ -252,13 +252,11 @@ body.menu-open{overflow:hidden}
 .site-header .header-access{border-color:currentColor;background:transparent;color:var(--landing-navy)}
 .site-header .menu-toggle{background:transparent;color:var(--landing-ink)}
 
-/* ---- Drawer ---------------------------------------------------------------
-   One contract for every right-edge sheet on the public site: the nav drawer,
-   the landing doctor sheet and the doctors-page doctor sheet. They were three
-   separate implementations with three widths, two surfaces and two close
-   buttons — the two doctor sheets are the same component and now say so.
-   Consumers keep their own content styles; only the shell lives here. */
-.drawer{
+/* Shared shell for the public navigation, doctor previews and safety content. */
+:is(.drawer, .ks-dialog){
+  box-sizing:border-box;
+  position:fixed;
+  inset:0;
   width:min(420px,88%);
   max-width:none;
   height:100vh;
@@ -270,6 +268,8 @@ body.menu-open{overflow:hidden}
   overscroll-behavior:contain;
   border:0;
   border-radius:0;
+}
+.drawer{
   background:var(--surface-card);
   color:var(--landing-ink);
   box-shadow:-18px 0 60px rgba(18,24,36,.22);
@@ -287,6 +287,10 @@ body.menu-open{overflow:hidden}
 .drawer__close svg{width:22px;height:22px}
 @media(min-width:861px){
   .drawer{width:min(560px,46vw)}
+}
+dialog:is(.expert-dialog,.doctor-profile-dialog,.ks-dialog){width:min(560px,100%)}
+@media(max-width:760px){
+  dialog:is(.expert-dialog,.doctor-profile-dialog,.ks-dialog){width:100%}
 }
 /* The nav drawer has no .drawer__panel to carry an inner gutter, so its content
    went flush to the shell's edges as soon as .drawer{padding:0} started winning
