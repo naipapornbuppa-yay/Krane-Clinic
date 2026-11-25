@@ -1884,6 +1884,7 @@
     "ข้อมูลผู้รับบริการ":"Patient details",
     "ยืนยันชื่อและเบอร์โทรศัพท์":"Confirm your name and phone number",
     "ยืนยันข้อมูลส่วนตัว":"Confirm your personal details",
+    "ยืนยันข้อมูลความปลอดภัยก่อนพบแพทย์":"Confirm safety information before your consultation",
     "ข้อมูลส่วนตัว":"Personal details",
     "เบอร์โทรศัพท์ที่ยืนยันแล้ว":"Verified phone number",
     "ยืนยันด้วยรหัส OTP แล้ว":"Verified by OTP",
@@ -2166,7 +2167,8 @@
     "เป็นโรคไตวายระยะสุดท้าย ใช่หรือไม่":"Do you have end-stage kidney failure?",
     "เป็นโรคตับแข็งระยะสุดท้าย หรือเคยตับอ่อนอักเสบไม่ทราบสาเหตุ ใช่หรือไม่":"End-stage cirrhosis, or pancreatitis with no known cause?",
     "กำลังตั้งครรภ์หรือให้นมบุตร ใช่หรือไม่":"Are you pregnant or breastfeeding?",
-    "ยาลดน้ำหนักทางออนไลน์อาจไม่ปลอดภัยสำหรับคุณ":"Online weight-loss medicine may not be safe for you",
+    "เพื่อความปลอดภัยของคุณ":"For your safety",
+    "จากคำตอบของคุณ การเริ่มรักษาทางออนไลน์อาจไม่ปลอดภัย แนะนำให้พบแพทย์ที่โรงพยาบาลเพื่อประเมินและวางแผนการดูแลที่เหมาะกับคุณค่ะ":"Based on your answers, starting treatment online may not be safe for you. We recommend seeing a doctor at a hospital to assess your needs and discuss the right care for you.",
     "หากตอบ \"ใช่\" ข้อใดข้อหนึ่ง แพทย์แนะนำให้พบแพทย์ด้วยตนเองก่อนเริ่มยา":"If you answered \"Yes\" to any of these, see a doctor in person before starting medicine.",
     "ต้องปรึกษาแพทย์ใหม่":"New consultation needed",
     "กรุณาทำขั้นตอนที่จำเป็นให้ครบก่อน":"Please complete the required steps first",
@@ -2306,6 +2308,7 @@
        Thai, so neither the English-source table nor its derived reverse had
        anything to match. */
     "ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ": "Next step: your details",
+    "ขั้นตอนต่อไป ยืนยันข้อมูลส่วนตัว": "Next step: confirm your personal details",
     "แก้ไขรายการ": "Edit items",
     "จำนวน": "Quantity",
     "รับได้ไม่เกินจำนวนที่แพทย์สั่ง": "You can take no more than the doctor prescribed",

@@ -28,10 +28,6 @@
       url.hash = 'consent-terms';
       canonicalized = true;
     }
-    if (url.searchParams.get('sandbox') === 'guest' && url.hash === '#signup') {
-      url.hash = '#login';
-      canonicalized = true;
-    }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
     // Public Pages is a review build. Isolate only a new programme launch,
     // before any account or queue state is restored. A resumed/shared queue,
@@ -88,8 +84,8 @@
 <script src="../krane-clinical-workflow.js?v=20261119-guest"></script>
 <link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261124-booking-confirmation">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
-<script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261124-programme-refill" defer></script>
+<script src="custom-select.js?v=20261126-native-health-select" defer></script>
+<script src="i18n.js?v=20261126-intake-safety" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -244,13 +240,22 @@
     .otp-entry__cell{width:auto;height:58px;border-radius:12px;font-size:24px}
     .otp-entry{width:100%}
   }
-    #obesity-risk-modal [data-obesity-risk-warning]{margin-top:20px;padding:16px;gap:12px}
-    #obesity-risk-modal .modal-dialog__actions{margin-top:24px}
-
-    #red-flag-modal,#obesity-risk-modal{align-items:end;padding-bottom:0}
-    #red-flag-modal .modal-dialog,#obesity-risk-modal .modal-dialog{border-radius:24px 24px 0 0;max-height:90dvh;overflow:auto;margin-bottom:0}
-    #red-flag-modal fieldset{border:0;padding:0;margin:0 0 20px;min-width:0}
-    #red-flag-modal legend{font-weight:600;line-height:1.5;margin-bottom:12px}
+    .intake-safety-dialog{max-height:90dvh;overflow:auto;overscroll-behavior:contain}
+    .intake-safety-dialog [data-intake-safety-warning]{margin-top:20px;padding:16px;gap:12px;align-items:flex-start}
+    .intake-safety-dialog [data-intake-safety-warning] .a-title{font-weight:var(--fw-semibold)}
+    .intake-safety-dialog .modal-dialog__actions{margin-top:24px}
+    .intake-safety-dialog .partner-clinical-grid{margin-top:var(--sp-4)}
+    .intake-safety-dialog [data-step]:empty{display:none}
+    #consent-terms .consent-agree{align-items:center}
+    #consent-terms .consent-agree .check{margin-block:0}
+    @media(min-width:761px){
+      [data-acceptplan-modal]{position:fixed;place-items:center;padding:var(--sp-5)}
+      [data-acceptplan-modal] .map-modal__sheet{width:min(480px,100%);border-radius:var(--radius-xl)}
+    }
+    @media(max-width:36rem){
+      :is(#red-flag-modal,#obesity-risk-modal){align-items:end;padding-bottom:0}
+      .intake-safety-dialog{border-radius:24px 24px 0 0}
+    }
     #csat-modal .csat-dialog{scrollbar-width:none;-ms-overflow-style:none}
     #csat-modal .csat-dialog::-webkit-scrollbar{display:none;width:0;height:0}
 
@@ -1574,7 +1579,7 @@
            puts its fields straight on the page; this was the only one in a card. -->
       <div class="partner-health-card">
         <div class="partner-health-grid">
-          <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex"><option value=""></option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
+          <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex" data-native-select><option value="" selected disabled hidden></option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
           <div class="field grow float-field float-field--date-placeholder-only"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" data-patient-dob autocomplete="bday" aria-label="วันเกิด (อายุ)" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
         </div>
         <div class="partner-health-grid">
@@ -1633,8 +1638,9 @@
         <span class="state-view__badge"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
       </div>
       <div class="state-view__copy">
-        <h2 class="h1">You need in-person care</h2>
-        <p class="muted">Your answers point to something online care cannot treat safely.</p>
+        <h2 class="h1">เพื่อความปลอดภัยของคุณ</h2>
+        <p class="muted">จากคำตอบของคุณ การเริ่มรักษาทางออนไลน์อาจไม่ปลอดภัย แนะนำให้พบแพทย์ที่โรงพยาบาลเพื่อประเมินและวางแผนการดูแลที่เหมาะกับคุณค่ะ</p>
+        <p class="muted">If symptoms are severe or life-threatening, seek emergency care now.</p>
       </div>
     <div class="screen__footer stack-2"><button class="btn btn--primary" data-go="landing">Back to home</button><button class="btn btn--ghost" data-go="intake4">ย้อนกลับ</button></div>
   </section>
@@ -3617,7 +3623,8 @@
   <button class="modal-layer__scrim" type="button" data-obesity-risk-close aria-label="ปิดหน้าต่าง"></button>
   <!-- Questions mirror Doctor Review > Review obesity / weight loss. Any "yes"
        raises the same warning and sends the patient to in-person care. -->
-  <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="obesity-risk-title">
+  <section class="modal-dialog health-history-dialog intake-safety-dialog" role="dialog" aria-modal="true" aria-labelledby="obesity-risk-title">
+    <button class="modal-dialog__close" type="button" data-obesity-risk-dismiss aria-label="ปิดหน้าต่าง"><i data-lucide="x" class="ui-icon" aria-hidden="true"></i></button>
     <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="obesity-risk-title">ยืนยันข้อมูลความปลอดภัย</h2>
     <div class="partner-clinical-grid">
@@ -3650,7 +3657,10 @@
               </div>
             </fieldset>
     </div>
-    <div class="alert alert--warning" data-obesity-risk-warning role="status" hidden><span class="a-ic"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span><div><div class="a-title">ยาลดน้ำหนักทางออนไลน์อาจไม่ปลอดภัยสำหรับคุณ</div></div></div>
+    <div class="alert alert--warning" data-intake-safety-warning role="status" hidden>
+      <span class="a-ic"><i data-lucide="triangle-alert" class="ui-icon" aria-hidden="true"></i></span>
+      <div><div class="a-title">เพื่อความปลอดภัยของคุณ</div><div class="hint">จากคำตอบของคุณ การเริ่มรักษาทางออนไลน์อาจไม่ปลอดภัย แนะนำให้พบแพทย์ที่โรงพยาบาลเพื่อประเมินและวางแผนการดูแลที่เหมาะกับคุณค่ะ</div></div>
+    </div>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-obesity-risk-confirm>ยืนยันและไปต่อ</button><button class="btn btn--ghost" type="button" data-obesity-risk-close>ย้อนกลับ</button></div>
   </section>
 </div>
@@ -3658,7 +3668,7 @@
   <button class="modal-layer__scrim" type="button" data-health-history-close aria-label="ปิดหน้าต่าง"></button>
   <section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="health-history-title">
     <div class="modal-dialog__icon"><i data-lucide="shield-plus" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
-    <h2 id="health-history-title">ยืนยันข้อมูลส่วนตัวและสุขภาพ</h2>
+    <h2 id="health-history-title">ยืนยันข้อมูลความปลอดภัยก่อนพบแพทย์</h2>
     <p class="muted" data-partner-safety-intro hidden>สามข้อนี้จำเป็นต่อความปลอดภัยในการสั่งยา แพทย์จะเห็นก่อนเริ่มปรึกษา</p>
     <div class="partner-clinical-grid">
             <fieldset class="partner-history-field" data-direct-history="conditions">
@@ -3701,7 +3711,7 @@
     </svg>
     </div>
     <h2 id="signup-done-title">สมัครสมาชิกสำเร็จ</h2>
-    <p id="signup-done-description" data-signup-done-description>ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ</p>
+    <p id="signup-done-description" data-signup-done-description>ขั้นตอนต่อไป ยืนยันข้อมูลส่วนตัว</p>
     <div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-signup-done-continue>ดำเนินการต่อ</button></div>
   </section>
 </div>
@@ -4111,6 +4121,7 @@
     passwordSet:false,
     passwordResetPending:false,
     signupDonePending:false,
+    patientInfoOtpRequired:false,
     patientInfoComplete:false,
     identityVerified:false,
     returningIdentityValid:false,
@@ -4303,6 +4314,7 @@
     // In-memory sample identity. The review site never submits credentials.
     Object.assign(flowState,{accountCreated:true,otpVerified:true,passwordSet:true,patientInfoComplete:true,
       identityVerified:true,returningIdentityValid:true,patientName:'Guest Demo',profileDisplayName:'Guest Demo',
+      verifiedPhone:'0800000000',
       authProvider:'static-guest',signupDonePending:isSignup});
     show(isSignup ? 'consent-terms' : nextAfterAuthentication(postAuthNext));
   });
@@ -4321,7 +4333,7 @@
     delete flowState.addressDraft;
     delete flowState.addressSearchDraft;
     Object.assign(flowState,{
-      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,appointmentWhen:"",appointmentAt:"",pendingEdBookingHomeAt:"", 
+      draftReady:false,accountCreated:false,otpVerified:false,passwordSet:false,passwordResetPending:false,signupDonePending:false,patientInfoComplete:false,patientInfoOtpRequired:false,appointmentWhen:"",appointmentAt:"",pendingEdBookingHomeAt:"",
       identityVerified:false,returningIdentityValid:false,consentsComplete:false,
       verifiedPhone:'',phoneOtpPending:false,pendingPhone:'',phoneOtpReturn:'',
       phoneOtpDestination:'',phoneOtpCompletesAuth:false,lastRequiredScreen:'concern',patientName:'',
@@ -6622,8 +6634,29 @@
     });
     const answers=entries.map(entry=>entry.yes.getAttribute('aria-selected')==='true'?'yes':entry.no?.getAttribute('aria-selected')==='true'?'no':null);
     let step=0;
-    const modal=document.createElement('div');modal.id='red-flag-modal';modal.className='modal-layer';
-    modal.innerHTML='<button class="modal-layer__scrim" type="button" aria-label="ย้อนกลับ"></button><section class="modal-dialog health-history-dialog" role="dialog" aria-modal="true" aria-labelledby="red-flag-title"><div class="modal-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="ui-icon ui-icon--md" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M21.73 18.5 13.73 4.5a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-2.5Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div><h2 id="red-flag-title">ยืนยันข้อมูลความปลอดภัย</h2><p class="hint" data-step></p><div data-questions></div><div class="modal-dialog__actions"><button class="btn btn--primary" type="button" data-next>ถัดไป</button><button class="btn btn--ghost" type="button" data-prev>ย้อนกลับ</button></div></section>';
+    const modal=document.createElement('div');
+    modal.id='red-flag-modal';modal.className='modal-layer';
+    modal.innerHTML=`
+      <button class="modal-layer__scrim" type="button" aria-label="ปิดหน้าต่าง"></button>
+      <section class="modal-dialog health-history-dialog intake-safety-dialog" role="dialog" aria-modal="true" aria-labelledby="red-flag-title">
+        <button class="modal-dialog__close" type="button" aria-label="ปิดหน้าต่าง"></button>
+        <div class="modal-dialog__icon" aria-hidden="true"></div>
+        <h2 id="red-flag-title">ยืนยันข้อมูลความปลอดภัย</h2>
+        <p class="hint" data-step></p>
+        <div class="partner-clinical-grid" data-questions></div>
+        <div class="modal-dialog__actions">
+          <button class="btn btn--primary" type="button" data-next>ถัดไป</button>
+          <button class="btn btn--ghost" type="button" data-prev>ย้อนกลับ</button>
+        </div>
+      </section>`;
+    const safety=document.querySelector('#obesity-risk-modal');
+    const warning=safety.querySelector('[data-intake-safety-warning]').cloneNode(true);
+    const closeButton=modal.querySelector('.modal-dialog__close');
+    closeButton.append(safety.querySelector('.modal-dialog__close').firstElementChild.cloneNode(true));
+    modal.querySelector('.modal-dialog__icon').append(safety.querySelector('.modal-dialog__icon').firstElementChild.cloneNode(true));
+    const nextButton=modal.querySelector('[data-next]');
+    nextButton.parentNode.before(warning);
+    const hasFlaggedAnswer=()=>answers.some((value,i)=>value==='yes'&&entries[i].stopsCare);
     document.body.append(modal);document.body.classList.add('modal-open');
     const close=()=>{modal.remove();document.body.classList.remove('modal-open');};
     const back=()=>{if(step){step--;render();}else{close();state.body.dataset.intakeQuestionIndex=String(index);if(index>0)activateIntakeQuestionPage(screen,index-1);else screen.querySelector('[data-back]')?.click();}};
@@ -6631,16 +6664,18 @@
       modal.querySelector('[data-step]').textContent=entries.length>3?`${step+1} / ${Math.ceil(entries.length/3)}`:'';
       const host=modal.querySelector('[data-questions]');host.replaceChildren();
       entries.slice(step*3,step*3+3).forEach((entry,offset)=>{
-        const i=step*3+offset,field=document.createElement('fieldset'),legend=document.createElement('legend');field.dataset.questionId=entry.source.dataset.questionId||'';legend.textContent=/[?？]$/.test(entry.title)?entry.title:entry.title+(document.documentElement.lang==='en'?'?':' ใช่หรือไม่?');field.append(legend);
+        const i=step*3+offset,field=document.createElement('fieldset'),legend=document.createElement('legend');field.className='partner-history-field';field.dataset.questionId=entry.source.dataset.questionId||'';legend.textContent=/[?？]$/.test(entry.title)?entry.title:entry.title+(document.documentElement.lang==='en'?'?':' ใช่หรือไม่?');field.append(legend);
         const options=document.createElement('div');options.className='partner-binary';options.setAttribute('role','radiogroup');options.setAttribute('aria-label',entry.title);
         ['no','yes'].forEach(value=>{const button=document.createElement('button');button.type='button';button.className='partner-binary__option';button.setAttribute('role','radio');button.setAttribute('aria-checked',String(answers[i]===value));button.textContent=value==='yes'?'ใช่':'ไม่ใช่';button.onclick=()=>{answers[i]=value;if(entry.no)entry.source.querySelectorAll('.option').forEach(option=>option.setAttribute('aria-selected','false'));entry.yes.setAttribute('aria-selected',String(value==='yes'));entry.no?.setAttribute('aria-selected',String(value==='no'));saveIntakeDraft();render();};options.append(button);});field.append(options);host.append(field);
       });
-      modal.querySelector('[data-next]').disabled=answers.slice(step*3,step*3+3).some(value=>value===null);
+      const flagged=hasFlaggedAnswer();
+      warning.hidden=!flagged;
+      nextButton.disabled=flagged||answers.slice(step*3,step*3+3).some(value=>value===null);
     }
-    modal.querySelector('[data-prev]').onclick=back;modal.querySelector('.modal-layer__scrim').onclick=back;
+    modal.querySelector('[data-prev]').onclick=back;modal.querySelector('.modal-layer__scrim').onclick=back;closeButton.onclick=back;
     modal.onkeydown=event=>{if(event.key==='Escape'){event.stopPropagation();back();}};
-    modal.querySelector('[data-next]').onclick=()=>{
-      if(answers.some((value,i)=>value==='yes'&&entries[i].stopsCare)){close();document.querySelector('#ineligible .btn--ghost').dataset.go=screen.id;show('ineligible');return;}
+    nextButton.onclick=()=>{
+      if(hasFlaggedAnswer())return;
       if((step+1)*3<entries.length){step++;render();return;}
       sources.filter(question=>question.querySelector('[data-flag]')).forEach(question=>question.querySelectorAll(".option:not([data-flag])").forEach(option=>option.setAttribute('aria-selected','true')));
       state.body.dataset.intakeQuestionIndex=String(lastIndex);
@@ -8530,7 +8565,7 @@
     if(hint) hint.hidden=false;
     if(submit) submit.textContent='ยืนยันข้อมูลและดำเนินการต่อ';
     const safetyTitle=document.getElementById('health-history-title');
-    if(safetyTitle) safetyTitle.textContent=partner ? 'ยืนยันข้อมูลความปลอดภัย' : 'ยืนยันข้อมูลส่วนตัวและสุขภาพ';
+    if(safetyTitle) safetyTitle.textContent=partner ? 'ยืนยันข้อมูลความปลอดภัย' : 'ยืนยันข้อมูลความปลอดภัยก่อนพบแพทย์';
     const safetyIntro=document.querySelector('[data-partner-safety-intro]');
     if(safetyIntro) safetyIntro.hidden=!partner;
     const medicinesQuestion=document.querySelector('[data-medications-question]');
@@ -8672,6 +8707,7 @@
       if(!btn && !lockedInput) return;
       const trigger = btn || lockedInput;
       const screen = trigger.closest('.screen');
+      if(screen?.id==='patient-info' && isStaticGuestWalkthrough()) return;
       const input = screen && screen.querySelector('[data-phone-input]');
       const note = screen && screen.querySelector('[data-phone-note]');
       const editButton = btn || (screen && screen.querySelector('[data-phone-edit]'));
@@ -8800,6 +8836,7 @@
      payment. Everything the patient knows about themselves is now asked in one
      run, and only then does the app go looking for a doctor. */
   function directNextAfterPatientInfo(){
+    if(flowState.entryChannel==='direct' && !flowState.draftReady) return 'profile';
     if(flowState.entryChannel==='direct' && !flowState.directGeneralHealthComplete) return 'intake-general';
     return directClinicalStartTarget();
   }
@@ -9692,7 +9729,7 @@
       consultationFeeAcknowledged:false,
       consultationPaid:false,
       paymentResolution:'',
-      lastRequiredScreen:'login'
+      lastRequiredScreen:'signup'
     });
     flowState.orderState.checkoutOrigin='consultation';
     persistFlowState();
@@ -9707,7 +9744,7 @@
       show(nextAfterAuthentication(directClinicalStartTarget()));
       return;
     }
-    show('login');
+    show('signup');
   }
   function skipForwardFrom(id){
     const seq = categoryNeedsPhotos()?['intake1','intake2','intake3','intake5','intake4']:['intake1','intake2','intake3','intake4'];
@@ -10227,7 +10264,7 @@
       const forward = skipForwardFrom(target);
       // Deep link into a screen this route never asks: the questionnaire is
       // already done, so resolve to whatever follows it.
-      if(!forward) return flowState.entryChannel==='partner' ? 'intake-concern' : 'login';
+      if(!forward) return flowState.entryChannel==='partner' ? 'intake-concern' : 'signup';
       target = forward;
     }
     if(target==='intake-concern' && !sharedConcernRequired()) return 'intake1';
@@ -10235,7 +10272,7 @@
        restored browser tab must never expose the end state with all choices
        ticked while the CTA is still disabled because OTP has not happened. */
     if(target==='consent-terms'){
-      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
+      if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(flowState.entryChannel==='partner' && !flowState.partnerPhoneVerified) return 'partner-patient-info';
@@ -10259,7 +10296,7 @@
     }
     if(target==='intake-general' && flowState.entryChannel==='direct'){
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
+      if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -10276,14 +10313,13 @@
       // Asked for on a route that no longer has this step: send them on.
       if(!identityRequired()) return flowState.patientInfoComplete ? directClinicalStartTarget() : 'patient-info';
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
+      if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
     }
     if(target==='patient-info'){
-      if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
+      if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -10299,7 +10335,7 @@
       (identityRequired() ? flowState.identityVerified : flowState.patientInfoComplete);
     if(REQUIRED_CARE_TARGETS.has(target) && !signupChainDone){
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
+      if(!flowState.accountCreated) return 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -11376,7 +11412,15 @@
     const phone=document.getElementById('patient-phone');
     if(first) first.value=saved.firstName;
     if(last) last.value=saved.lastName;
-    if(phone) phone.value=flowState.verifiedPhone ? formatPhoneForDisplay(flowState.verifiedPhone) : '';
+    if(phone) {
+      phone.value=flowState.verifiedPhone ? formatPhoneForDisplay(flowState.verifiedPhone) : '';
+      if(isStaticGuestWalkthrough()){
+        phone.readOnly=true;
+        phone.setAttribute('aria-readonly','true');
+        const edit=document.querySelector('#patient-info [data-phone-edit]');
+        if(edit) edit.hidden=true;
+      }
+    }
   }
   function nextAfterAuthentication(destination){
     if(!flowState.draftReady) return destination || postAuthNext || 'profile';
@@ -11840,6 +11884,16 @@
           const edit=document.querySelector('#patient-info [data-phone-edit]');
           if(note) note.textContent='ยืนยันด้วยรหัส OTP แล้ว';
           if(edit) edit.textContent='เปลี่ยนเบอร์';
+          if(destination){
+            flowState.patientInfoComplete=true;
+            flowState.patientInfoOtpRequired=false;
+            flowState.lastRequiredScreen=destination;
+            persistFlowState();
+            if(destination==='insurance') insuranceEntry='profile';
+            showActionToast('ยืนยันเบอร์โทรศัพท์แล้ว','success');
+            show(destination);
+            return;
+          }
           showActionToast('ยืนยันเบอร์โทรศัพท์ใหม่แล้ว','success');
           returnFromPhoneOtp(returnTarget);
         });
@@ -12043,6 +12097,30 @@
         ? (document.querySelector('#patient-info [data-patient-payment-choice-value][aria-selected="true"]')?.dataset.patientPaymentChoiceValue || '')
         : 'self-pay';
       if(!name){ showActionToast('กรุณากรอกชื่อและนามสกุล','warning'); return; }
+      if(flowState.patientInfoOtpRequired){
+        const phone=normalizePhone(phoneInput?.value || flowState.verifiedPhone);
+        if(!isValidThaiMobile(phone)){
+          showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
+          phoneInput?.focus();
+          return;
+        }
+        if(!paymentChoice){ showActionToast('กรุณาเลือกว่าจะใช้สิทธิ์ประกันหรือชำระเอง','warning'); return; }
+        submitOnce('patient-info',patientInfoContinue,() => {
+          flowState.patientName=name;
+          flowState.profileDisplayName=name;
+          flowState.paymentPreference=paymentChoice;
+          if(paymentChoice==='self-pay') flowState.coverage={provider:'',policyId:'',consultationCredit:0,medicineCredit:0};
+          flowState.pendingPhone=phone;
+          flowState.phoneOtpPending=true;
+          flowState.phoneOtpReturn='patient-info';
+          flowState.phoneOtpDestination=paymentChoice==='insurance' ? 'insurance' : directNextAfterPatientInfo();
+          flowState.phoneOtpCompletesAuth=false;
+          flowState.lastRequiredScreen='otp';
+          persistFlowState();
+          show('otp');
+        });
+        return;
+      }
       if(phoneInput && !phoneInput.readOnly){
         if(!isValidThaiMobile(phoneInput.value)){
           showActionToast('กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง','warning');
@@ -12125,24 +12203,25 @@
           recordedAt:acceptedAt
         };
         const consentSource=flowState.entryChannel==='partner' ? 'partner' : 'direct';
+        const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
         saveConsentRecords(consentSource,records);
         if(consentSource==='partner') flowState.partnerConsentComplete=true;
         else {
           flowState.consentsComplete=true;
           // Consent starts a fresh pre-doctor confirmation cycle. Keep the
           // saved values, but require the patient to review and submit them.
-          if(flowState.draftReady && !isStaticGuestWalkthrough()) flowState.patientInfoComplete=false;
+          if(showSignupDone || (flowState.draftReady && !isStaticGuestWalkthrough())) flowState.patientInfoComplete=false;
+          if(showSignupDone) flowState.patientInfoOtpRequired=true;
         }
         // Personal details must be reviewed immediately after consent, including
         // for returning patients. Only after that confirmation may the route open
         // general health or continue toward doctor matching.
         const consentNext = consentSource==='partner'
           ? 'partner-idcard'
-          : ((!flowState.draftReady || isStaticGuestWalkthrough())
+          : (showSignupDone ? 'patient-info' : (!flowState.draftReady || isStaticGuestWalkthrough())
               ? nextAfterAuthentication()
               : 'patient-info');
         flowState.lastRequiredScreen=consentNext;
-        const showSignupDone = consentSource==='direct' && Boolean(flowState.signupDonePending);
         if(showSignupDone) flowState.signupDonePending=false;
         persistFlowState();
         showActionToast('บันทึกความยินยอมแล้ว','success');
@@ -13504,7 +13583,7 @@
       show(partnerClinicalStartTarget());
       return;
     }
-    flowState.lastRequiredScreen='login';
+    flowState.lastRequiredScreen='signup';
     persistFlowState();
     saveIntakeDraft();
     postAuthNext='matching';
@@ -13514,7 +13593,7 @@
       show(nextAfterAuthentication(directClinicalStartTarget()));
       return;
     }
-    show('login');
+    show('signup');
   }
 
   /* CSAT is asked once per order, at the moment it is paid for. Skipping is
@@ -14087,11 +14166,9 @@
   const signupDoneModal = document.getElementById('signup-done-modal');
   let signupDoneTarget = '';
   let signupDoneReturnFocus = null;
-  /* The message has to name the step the button really leads to. A sign-up that
-     began inside an intake goes back to the questions, one started from the
-     log-in page goes to the account (client, 20 Sep). */
+  /* The message names the next step in the account flow. */
   const SIGNUP_DONE_DESCRIPTION = {
-    'patient-info':'ขั้นตอนต่อไป กรอกข้อมูลผู้รับบริการ',
+    'patient-info':'ขั้นตอนต่อไป ยืนยันข้อมูลส่วนตัว',
     'profile':'ขั้นตอนต่อไป เริ่มใช้งานบัญชี',
     'consent-terms':'ขั้นตอนต่อไป ยืนยันความยินยอมและการรักษาทางไกล'
   };
@@ -14136,7 +14213,7 @@
     return Boolean(obesityRiskModal?.querySelector('[data-obesity-risk-choice="yes"][aria-checked="true"]'));
   }
   function syncObesityRiskWarning(){
-    const warning=obesityRiskModal?.querySelector('[data-obesity-risk-warning]');
+    const warning=obesityRiskModal?.querySelector('[data-intake-safety-warning]');
     const flagged=obesityRiskFlagged();
     if(warning) warning.hidden=!flagged;
     const confirm=obesityRiskModal?.querySelector("[data-obesity-risk-confirm]");
@@ -14165,6 +14242,11 @@
   }
   if(obesityRiskModal){
     obesityRiskModal.addEventListener('click', event => {
+      if(event.target.closest('[data-obesity-risk-dismiss]')){
+        closeObesityRiskModal();
+        document.querySelector('#intake3 .screen__footer [data-go]')?.focus();
+        return;
+      }
       if(event.target.closest('[data-obesity-risk-close]')){
         if(obesityRiskStep>0){obesityRiskStep--;renderObesityRiskStep();return;}
         closeObesityRiskModal();

@@ -169,7 +169,7 @@
   }
 
   function enhance(select){
-    if(!(select instanceof HTMLSelectElement))return;
+    if(!(select instanceof HTMLSelectElement) || select.hasAttribute('data-native-select'))return;
     /* Enhanced and provably alive: no-op, so enhance() is safely idempotent. */
     if(liveRecordFor(select))return;
     /* Wrapper but no live record means copied or restored markup. Tear the dead
