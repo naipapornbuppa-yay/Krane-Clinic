@@ -1,14 +1,6 @@
 <!doctype html>
 <html lang="th" data-landing-canvas="true">
 <head>
-<script>
-  const incomingGuestUrl = new URL(location.href);
-  if (incomingGuestUrl.searchParams.get("sandbox") === "guest") {
-    incomingGuestUrl.searchParams.delete("sandbox");
-    if (incomingGuestUrl.hash === "#signup") incomingGuestUrl.hash = "#login";
-    history.replaceState(history.state, "", incomingGuestUrl);
-  }
-</script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -34,6 +26,10 @@
     if (url.searchParams.get('entry') === 'partner' && (!url.hash || url.hash === '#landing')) {
       url.searchParams.set('fresh', '1');
       url.hash = 'consent-terms';
+      canonicalized = true;
+    }
+    if (url.searchParams.get('sandbox') === 'guest' && url.hash === '#signup') {
+      url.hash = '#login';
       canonicalized = true;
     }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
@@ -1883,7 +1879,7 @@
       </div>
       <div class="state-view__timer" data-appointment-when data-booking-confirmed hidden></div>
       <div class="state-view__copy" data-booking-unavailable>
-        <h2 class="h1">ไม่พบรายละเอียดการนัดหมาย</h2>
+        <h2 class="h1" data-booking-closed-title>ห้องถูกปิดไปแล้ว</h2>
         <p class="muted">กลับหน้าหลักเพื่อดูการนัดหมายของคุณ</p>
       </div>
       <div class="state-view__action"><button class="btn btn--primary" data-go="profile">กลับหน้าหลัก</button></div>
@@ -4289,16 +4285,15 @@
       && window.KraneClinical?.id()==='CONS-2041' && !flowState.sharedEncounterId;
   }
   document.addEventListener('click',event=>{
-    if(!event.target.closest('[data-static-guest-account]')||!isStaticGuestWalkthrough())return;
-    // In-memory synthetic identity only; never sign in, register, send OTP or store auth.
+    const authFixture=event.target.closest('[data-static-guest-account]');
+    if(!authFixture||!isStaticGuestWalkthrough())return;
+    const screen=authFixture.closest('.screen');
+    const isSignup=screen?.id==='signup';
+    // In-memory sample identity. The review site never submits credentials.
     Object.assign(flowState,{accountCreated:true,otpVerified:true,passwordSet:true,patientInfoComplete:true,
-      identityVerified:true,returningIdentityValid:true,patientName:'Guest Demo',profileDisplayName:'Guest Demo',authProvider:'static-guest'});
-    const destination=nextAfterAuthentication(postAuthNext);
-    const bridge=event.target.closest('.screen');
-    // The automatic guest account bridge is not a page the visitor can return to.
-    if(bridge?.classList.contains('active') && ['signup','login'].includes(bridge.id)
-      && history[history.length-1]===bridge.id) replaceCurrent(destination);
-    else show(destination);
+      identityVerified:true,returningIdentityValid:true,patientName:'Guest Demo',profileDisplayName:'Guest Demo',
+      authProvider:'static-guest',signupDonePending:isSignup});
+    show(isSignup ? 'consent-terms' : nextAfterAuthentication(postAuthNext));
   });
   // Explicit fixture-only walkthrough. Never accelerates a shared encounter.
   function isFixtureWalkthrough(){
@@ -9601,6 +9596,10 @@
     screen.querySelectorAll('[data-booking-confirmed]').forEach(node => { node.hidden=!when; });
     screen.querySelectorAll('[data-booking-unavailable]').forEach(node => { node.hidden=Boolean(when); });
     screen.querySelector('[data-appointment-when]').textContent=when;
+    const english=document.documentElement.lang==='en';
+    screen.querySelector('[data-booking-closed-title]').textContent=english ? 'This room is closed' : 'ห้องถูกปิดไปแล้ว';
+    const progress=screen.querySelector('.care-journey');
+    if(progress) progress.hidden=!when || flowState.entryChannel==='partner';
   }
   function refreshActiveBookedAppointment(){
     if(document.getElementById('appointment-booked')?.classList.contains('active')) syncBookedAppointmentView();
@@ -9616,7 +9615,7 @@
     const previous=readEdBookingFeedback();
     flowState.pendingEdBookingHomeAt='';
     saveEdBookingFeedback(previous?.at===at ? previous : {at,read:false});
-    show('profile');
+    show(target);
   }
   function consultationHandoffTarget(){
     const timing=flowState.consultationPaymentTiming === 'before' ? 'before' : 'after';
@@ -15063,5 +15062,5 @@
 <script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
 <script src="../krane-clinical-requests.js?v=20261121-hide-empty-patient"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
 <script src="../krane-clinical-workspace.js?v=20261124-booking-confirmation"></script>
-<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261120-remove-rx-modal"></script><script src="demo-walkthrough-label.js?v=20261124-guest-signup"></script><script src="order-reference-copy.js?v=20261120-order-copy" defer></script><script src="treatment-archive.js?v=20261120" defer></script></body>
+<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261120-remove-rx-modal"></script><script src="demo-walkthrough-label.js?v=20261126-normal-auth-preview"></script><script src="order-reference-copy.js?v=20261120-order-copy" defer></script><script src="treatment-archive.js?v=20261120" defer></script></body>
 </html>
