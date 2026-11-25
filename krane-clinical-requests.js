@@ -61,22 +61,6 @@
    };
    document.addEventListener('krane:clinical-selected',()=>{input.value='';restoreUpload();showFeedback('');});
   }
-  const refill=document.querySelector('#refill-sheet .refill-sheet__content');
-  if(refill){
-   const label=()=>copy('ขอให้แพทย์ทบทวนการเติมยา','Ask a doctor to review the refill');
-   const button=el('button',label());
-   button.type='button';
-   button.dataset.clinicalRefillSubmit='';
-   button.dataset.clinicalRequestSubmit='';
-   button.className='btn btn--secondary';
-   button.onclick=()=>{
-    button.disabled=true;
-    try{api.request({kind:'ทบทวนการเติมยา',note:api.current().category});button.hidden=true;}
-    catch{button.disabled=false;button.textContent=copy('ส่งไม่สำเร็จ ลองอีกครั้ง','Could not send. Try again.');}
-   };
-   document.addEventListener('krane:clinical-selected',()=>{button.disabled=false;button.hidden=false;button.textContent=label();});
-   refill.append(button);
-  }
  }
  window.addEventListener('krane:clinical-change',render);render();
 })();

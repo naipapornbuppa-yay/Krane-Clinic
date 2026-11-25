@@ -13,7 +13,7 @@
   }
 
   // Both states share one outer contour, so selection changes only the fill,
-  // never the house, parcel or person silhouette. Motion stays on the SVG.
+  // never the house or parcel silhouette. Motion stays on the SVG.
   var navMaskCounter = 0;
   function setNavPairedIcon(node, name, active) {
     if (!node || node.dataset.iconReady) return;
@@ -21,13 +21,6 @@
     var outer = name === 'house'
       ? 'M11.1 2.8a1.5 1.5 0 0 1 1.8 0L21 8.9a1.5 1.5 0 0 1 .6 1.2v9.7a1.7 1.7 0 0 1-1.7 1.7H4.1a1.7 1.7 0 0 1-1.7-1.7v-9.7c0-.5.2-.9.6-1.2l8.1-6.1Z'
       : 'M11.25 2.65a1.7 1.7 0 0 1 1.5 0l7.9 4a1.7 1.7 0 0 1 .85 1.47v8.76a1.7 1.7 0 0 1-.85 1.47l-7.9 4a1.7 1.7 0 0 1-1.5 0l-7.9-4a1.7 1.7 0 0 1-.85-1.47V8.12a1.7 1.7 0 0 1 .85-1.47l7.9-4Z';
-    if (name === 'user-round') {
-      node.dataset.iconReady = name;
-      node.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon--md nav-icon--paired" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-        '<circle cx="12" cy="7.4" r="4" fill="' + (active ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.9"/>' +
-        '<path d="M4.2 20.7v-.8c0-3.45 3.5-6.1 7.8-6.1s7.8 2.65 7.8 6.1v.8Z" fill="' + (active ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>';
-      return;
-    }
     var cutout = name === 'house'
       ? '<path d="M9.8 24v-8.6a2.2 2.2 0 0 1 4.4 0V24Z" fill="#000" stroke="none"/>'
       : '<path d="M3.2 7.35 12 11.85l8.8-4.5M12 11.85v9.35" fill="none" stroke="#000" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -60,7 +53,7 @@
   function normalize() {
     // Use the same person contour in the desktop header and mobile account tab.
     document.querySelectorAll('.profile-shell-nav__account-avatar').forEach(function (node) {
-      setNavPairedIcon(node, 'user-round', false);
+      setIcon(node, 'user-round', 'ui-icon--md');
     });
     document.querySelectorAll('.screen__top .back').forEach(function (node) {
       setIcon(node, 'arrow-left', 'ui-icon--md');
@@ -107,7 +100,7 @@
       // glyphs have to change here too.
       var name = target === 'profile' ? 'house' : target.includes('activit') || target === 'tracking' ? 'package' :
         target === 'notifications' ? 'bell' : target === 'settings' ? 'user-round' : 'house';
-      if (name === 'house' || name === 'package' || name === 'user-round') {
+      if (name === 'house' || name === 'package') {
         setNavPairedIcon(link.querySelector('.ic'), name, link.getAttribute('aria-current') === 'page');
       } else {
         setIcon(link.querySelector('.ic'), name, 'ui-icon--md');
