@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="th" data-landing-canvas="true">
 <head>
+<script>
+  const incomingGuestUrl = new URL(location.href);
+  if (incomingGuestUrl.searchParams.get("sandbox") === "guest") {
+    incomingGuestUrl.searchParams.delete("sandbox");
+    if (incomingGuestUrl.hash === "#signup") incomingGuestUrl.hash = "#login";
+    history.replaceState(history.state, "", incomingGuestUrl);
+  }
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F7F7F7">
@@ -9670,7 +9679,7 @@
       consultationFeeAcknowledged:false,
       consultationPaid:false,
       paymentResolution:'',
-      lastRequiredScreen:'signup'
+      lastRequiredScreen:'login'
     });
     flowState.orderState.checkoutOrigin='consultation';
     persistFlowState();
@@ -9685,7 +9694,7 @@
       show(nextAfterAuthentication(directClinicalStartTarget()));
       return;
     }
-    show('signup');
+    show('login');
   }
   function skipForwardFrom(id){
     const seq = categoryNeedsPhotos()?['intake1','intake2','intake3','intake5','intake4']:['intake1','intake2','intake3','intake4'];
@@ -10205,7 +10214,7 @@
       const forward = skipForwardFrom(target);
       // Deep link into a screen this route never asks: the questionnaire is
       // already done, so resolve to whatever follows it.
-      if(!forward) return flowState.entryChannel==='partner' ? 'intake-concern' : 'signup';
+      if(!forward) return flowState.entryChannel==='partner' ? 'intake-concern' : 'login';
       target = forward;
     }
     if(target==='intake-concern' && !sharedConcernRequired()) return 'intake1';
@@ -10213,7 +10222,7 @@
        restored browser tab must never expose the end state with all choices
        ticked while the CTA is still disabled because OTP has not happened. */
     if(target==='consent-terms'){
-      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(flowState.entryChannel==='partner' && !flowState.partnerPhoneVerified) return 'partner-patient-info';
@@ -10237,7 +10246,7 @@
     }
     if(target==='intake-general' && flowState.entryChannel==='direct'){
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -10254,14 +10263,14 @@
       // Asked for on a route that no longer has this step: send them on.
       if(!identityRequired()) return flowState.patientInfoComplete ? directClinicalStartTarget() : 'patient-info';
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
     }
     if(target==='patient-info'){
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -10277,7 +10286,7 @@
       (identityRequired() ? flowState.identityVerified : flowState.patientInfoComplete);
     if(REQUIRED_CARE_TARGETS.has(target) && !signupChainDone){
       if(!flowState.draftReady) return 'intake1';
-      if(!flowState.accountCreated) return 'signup';
+      if(!flowState.accountCreated) return flowState.entryChannel==='direct' && flowState.draftReady ? 'login' : 'signup';
       if(!flowState.otpVerified) return 'otp';
       if(!flowState.passwordSet && !flowState.returningIdentityValid) return 'set-password';
       if(!flowState.consentsComplete) return 'consent-terms';
@@ -13482,7 +13491,7 @@
       show(partnerClinicalStartTarget());
       return;
     }
-    flowState.lastRequiredScreen='signup';
+    flowState.lastRequiredScreen='login';
     persistFlowState();
     saveIntakeDraft();
     postAuthNext='matching';
@@ -13492,7 +13501,7 @@
       show(nextAfterAuthentication(directClinicalStartTarget()));
       return;
     }
-    show('signup');
+    show('login');
   }
 
   /* CSAT is asked once per order, at the moment it is paid for. Skipping is
