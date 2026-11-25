@@ -1,161 +1,47 @@
-(function () {
-  const rail=document.querySelector('.doctor-directory__viewport');
-  if(rail){
-    rail.addEventListener('keydown', event => {
-      if (event.target !== rail || !['ArrowLeft','ArrowRight'].includes(event.key)) return;
-      if (!rail.firstElementChild) return;
-      const gap = parseFloat(getComputedStyle(rail).gap) || 0;
-      const step = rail.firstElementChild.offsetWidth + gap;
-      event.preventDefault();
-      rail.scrollBy({left:event.key === 'ArrowRight' ? step : -step,
-        behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'instant' : 'smooth'});
-    });
-    window.lucide?.createIcons();
-  }
-  const profiles = {
-    "1": {name:"นพ. ไพรัช เกตุรัตนกุล",role:"ผู้อำนวยการแพทย์",specialty:"อายุรศาสตร์ · อนุสาขาโรคระบบการหายใจ",education:"แพทยศาสตรบัณฑิต · วิทยาศาสตรบัณฑิต จุฬาลงกรณ์มหาวิทยาลัย",bio:"ดูแลทิศทางและมาตรฐานทางการแพทย์ของ Krane พร้อมให้คำปรึกษาโดยพิจารณาจากข้อมูลสุขภาพและความเหมาะสมของผู้รับบริการแต่ละคน",image:"assets/landing-figma-20261115/doctor-portrait-1.webp",w:954,h:1200},
-    "2": {name:"พญ. กรผกา ขันติโกสุม",role:"แพทย์ที่ปรึกษา Krane · เส้นผมและผิวหนัง",specialty:"ตจวิทยา (ผิวหนัง)",education:"แพทยศาสตรบัณฑิต ศิริราชพยาบาล มหาวิทยาลัยมหิดล · วุฒิบัตรตจวิทยา จุฬาลงกรณ์มหาวิทยาลัย",bio:"ให้คำปรึกษาด้านเส้นผม หนังศีรษะ และผิวหนัง พร้อมออกแบบแนวทางการดูแลตามอาการ ประวัติสุขภาพ และความเหมาะสมของแต่ละคน",image:"assets/landing-figma-20261115/doctor-portrait-2.webp",w:674,h:1200},
-    "3": {name:"อ.นพ. พหล สโรจวิสุทธิ์ ว.",role:"แพทย์ที่ปรึกษา Krane · การลดน้ำหนัก",specialty:"อายุรศาสตร์ · อนุสาขาโภชนศาสตร์คลินิก",education:"แพทยศาสตรบัณฑิต มหาวิทยาลัยรังสิต · วุฒิบัตรอายุรศาสตร์ และอนุสาขาโภชนศาสตร์คลินิก",bio:"ให้คำปรึกษาด้านการควบคุมน้ำหนักและโภชนศาสตร์คลินิก โดยทบทวนปัจจัยสุขภาพ เป้าหมาย และความเหมาะสมก่อนวางแผนร่วมกับผู้รับบริการ",image:"assets/landing-figma-20261115/doctor-portrait-3.webp",w:901,h:1200},
-    "4": {name:"อ.นพ. ชวลิต หงส์เลิศสกุล ว.",role:"แพทย์ที่ปรึกษา Krane · สุขภาพทางเพศ",specialty:"ศัลยศาสตร์ยูโรวิทยา",education:"ข้อมูลการศึกษาอยู่ระหว่างการตรวจสอบและอัปเดต",bio:"ให้คำปรึกษาเรื่องสุขภาพผู้ชายและระบบทางเดินปัสสาวะอย่างเป็นส่วนตัว พร้อมอธิบายทางเลือกและข้อควรระวังตามการประเมินทางการแพทย์",initials:"ชห"}
-  };
-  profiles["3"].name = "อ.นพ. พหล สโรจวิสุทธิ์";
-  profiles["4"].name = "อ.นพ. ชวลิต หงส์เลิศสกุล";
-  Object.assign(profiles["4"], {image:"assets/landing-figma-20261115/doctor-portrait-4.webp",w:901,h:1200});
-  profiles["preview-a"] = profiles["4"];
-  profiles["preview-b"] = profiles["3"];
-  profiles['5']||={name:'นพ. กฤติน สกุลเชี่ยวชาญ',role:'แพทย์ผู้ออกแบบโปรแกรม re:flow',specialty:'ศัลยศาสตร์ระบบปัสสาวะ',education:'',bio:'',initials:'กส'};
-  const dialog=document.querySelector("[data-doctor-dialog]");
-  const closeButton=document.querySelector("[data-doctor-close]");
-  const media=document.querySelector("[data-doctor-dialog-media]");
-  const name=document.querySelector("[data-doctor-dialog-name]");
-  const role=document.querySelector("[data-doctor-dialog-role]");
-  const bio=document.querySelector("[data-doctor-dialog-bio]");
-  const specialty=document.querySelector("[data-doctor-dialog-specialty]");
-  const education=document.querySelector("[data-doctor-dialog-education]");
-  let returnFocus=null;
-  function renderMedia(profile){
-    if(profile.image){const image=document.createElement("img");image.src=profile.image;image.alt=profile.name;image.width=profile.w||674;image.height=profile.h||1200;media.replaceChildren(image);media.classList.remove("doctor-profile-dialog__media--identity");return;}
-    const identity=document.createElement("span");identity.className="doctor-profile-dialog__identity";const initials=document.createElement("b");initials.textContent=profile.initials;const label=document.createElement("small");label.textContent=profile.specialty;identity.append(initials,label);media.replaceChildren(identity);media.classList.add("doctor-profile-dialog__media--identity");
-  }
-  function openProfile(trigger) {
-    if (!dialog || typeof dialog.showModal !== "function") return false;
-    const profile = profiles[trigger.dataset.doctorId];
-    if (!profile) return false;
-    if (dialog.open) return true;
-    resetDrag();
-    returnFocus = trigger;
-    renderMedia(profile);
-    name.textContent = profile.name;
-    role.textContent = profile.role;
-    bio.textContent = profile.bio;
-    bio.hidden = !profile.bio;
-    specialty.textContent = profile.specialty;
-    education.textContent = profile.education;
-    education.closest("div").hidden = !profile.education;
-    dialog.classList.add("is-opening");
-    dialog.showModal();
-    document.body.classList.add("doctor-dialog-open");
-    dialog.scrollTop = 0;
-    closeButton?.focus({ preventScroll: true });
-    return true;
-  }
-  document.querySelectorAll("[data-doctor-open]").forEach(trigger => {
-    trigger.addEventListener("click", event => {
-      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      if (openProfile(trigger)) event.preventDefault();
-    });
-  });
-
-  dialog?.addEventListener("animationend", event => {
-    if (event.target === dialog && event.animationName === "doctor-dialog-enter") {
-      dialog.classList.remove("is-opening");
+(() => {
+  const grid = document.querySelector('.doctor-directory__grid');
+  if (grid) {
+    const pageSize = 12;
+    const nav = document.createElement('nav');
+    const previous = document.createElement('button');
+    const next = document.createElement('button');
+    const indicator = document.createElement('span');
+    for (const button of [previous, next]) {
+      button.type = 'button';
+      button.setAttribute('aria-controls', grid.id);
     }
-  });
-  closeButton?.addEventListener("click", () => dialog.close());
-  dialog?.addEventListener("click", event => {
-    if (event.target !== dialog) return;
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right ||
-        event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-  });
-  dialog?.addEventListener("close", () => {
-    if (dialog.open) return;
-    document.body.classList.remove("doctor-dialog-open");
-    resetDrag();
-    returnFocus?.focus({ preventScroll: true });
-    returnFocus = null;
-  });
+    nav.className = 'doctor-directory__pagination';
+    indicator.setAttribute('aria-live', 'polite');
+    nav.append(previous, indicator, next);
+    grid.after(nav);
+    const cards = () => [...grid.children].filter(node => node.matches('.doctor-directory-card'));
+    const doctor = new URLSearchParams(location.search).get('doctor');
+    let page = Math.max(0, Math.floor(cards().findIndex(card => card.dataset.doctorId === doctor) / pageSize));
 
-  // Keep vertical scrolling independent of horizontal swipe dismissal.
-  let dragId = null, startX = 0, startY = 0, dx = 0, axis = "";
-  let cancelTransition = null;
-  function resetDrag() {
-    cancelTransition?.();
-    dragId = null;
-    dx = 0;
-    axis = "";
-    if (!dialog) return;
-    dialog.classList.remove("is-opening", "is-dragging", "is-settling", "is-dismissing");
-    dialog.style.transform = "";
-  }
-  function settle() {
-    const dismiss = dx > Math.min(120, dialog.getBoundingClientRect().width * 0.28);
-    dragId = null;
-    dialog.classList.add(dismiss ? "is-dismissing" : "is-settling");
-    dialog.classList.remove("is-dragging");
-    dialog.style.transform = "";
-    const finish = event => {
-      if (event && (event.target !== dialog || event.propertyName !== "transform")) return;
-      if (dismiss && dialog.open) dialog.close();
-      resetDrag();
-    };
-    const timer = window.setTimeout(finish, 280);
-    dialog.addEventListener("transitionend", finish);
-    cancelTransition = () => {
-      window.clearTimeout(timer);
-      dialog.removeEventListener("transitionend", finish);
-      cancelTransition = null;
-    };
-  }
-  dialog?.addEventListener("pointerdown",(event)=>{
-    if(event.pointerType==="mouse" || dragId!==null || cancelTransition) return;
-    if(event.target.closest("a,button")) return;
-    dragId=event.pointerId;startX=event.clientX;startY=event.clientY;dx=0;axis="";
-  });
-  dialog?.addEventListener("pointermove",(event)=>{
-    if(event.pointerId!==dragId) return;
-    const moveX=event.clientX-startX, moveY=event.clientY-startY;
-    if(!axis){
-      if(Math.abs(moveX)<8 && Math.abs(moveY)<8) return;
-      axis=Math.abs(moveX)>Math.abs(moveY)*1.3 ? "x" : "y";
-      if(axis==="y"){dragId=null;return;}
-      dialog.classList.remove("is-opening");
-      dialog.classList.add("is-dragging");
-      dialog.setPointerCapture?.(event.pointerId);
+    function render() {
+      const results = cards();
+      const count = Math.max(1, Math.ceil(results.length / pageSize));
+      page = Math.min(page, count - 1);
+      results.forEach((card, index) => { card.hidden = Math.floor(index / pageSize) !== page; });
+      nav.hidden = count === 1;
+      previous.disabled = page === 0;
+      next.disabled = page === count - 1;
+      const english = document.documentElement.lang === 'en';
+      nav.setAttribute('aria-label', english ? 'Doctor directory pages' : 'หน้ารายชื่อแพทย์');
+      previous.textContent = english ? 'Previous' : 'ก่อนหน้า';
+      next.textContent = english ? 'Next' : 'ถัดไป';
+      indicator.textContent = english ? `Page ${page + 1} of ${count}` : `หน้า ${page + 1} จาก ${count}`;
     }
-    dx=Math.max(0,moveX);
-    dialog.style.transform="translateX("+dx+"px)";
-  });
-  ["pointerup","pointercancel"].forEach((type)=>{
-    dialog?.addEventListener(type,(event)=>{
-      if(event.pointerId!==dragId) return;
-      if(axis!=="x"){dragId=null;axis="";return;}
-      if(type==="pointercancel")dx=0;
-      settle();
-    });
-  });
-  const requestedDoctor = new URLSearchParams(location.search).get("doctor");
-  if (requestedDoctor && Object.hasOwn(profiles, requestedDoctor)) {
-    const trigger = [...document.querySelectorAll("[data-doctor-open]")]
-      .find(item => item.dataset.doctorId === requestedDoctor);
-    openProfile(trigger || {
-      dataset: { doctorId: requestedDoctor },
-      focus: options => document.querySelector(".public-back")?.focus(options),
-    });
+
+    previous.addEventListener('click', () => { page -= 1; render(); });
+    next.addEventListener('click', () => { page += 1; render(); });
+    new MutationObserver(render).observe(grid, {childList:true});
+    new MutationObserver(render).observe(document.documentElement, {attributes:true,attributeFilter:['lang']});
+    render();
   }
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
     const stories=document.querySelectorAll('.doctor-work__story');
     const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{entry.target.classList.toggle('is-revealed',entry.isIntersecting);entry.target.classList.toggle('is-above',!entry.isIntersecting&&entry.boundingClientRect.bottom<0);});},{threshold:.12});
     stories.forEach(story=>{story.classList.add('will-reveal');observer.observe(story);});
   }
-}());
+})();

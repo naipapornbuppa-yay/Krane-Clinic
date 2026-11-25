@@ -20,8 +20,8 @@
     const en=document.documentElement.lang==='en';
     const card=(role,name,notes=[],photo='',license='')=>{
       const item=el('div','article-credit'),copy=el('span','article-credit__copy');
-      // Portraits belong only to a confirmed medical reviewer, never the writer.
-      if(photo){const avatar=el('img','article-credit__avatar');avatar.src=photo;avatar.alt=name;avatar.width=48;avatar.height=48;item.append(avatar);}
+      // The reviewer image is decorative because the name appears beside it.
+      if(photo){const avatar=el('img','article-credit__avatar');avatar.src=photo;avatar.alt="";avatar.width=48;avatar.height=48;item.append(avatar);}
       const identity=el('span','article-credit__identity');
       identity.append(el('strong','',name));
       if(license) identity.append(el('span','article-credit__license',license));
@@ -44,10 +44,15 @@
     const specialty=physician?(hair?(en?'Dermatology · Hair/scalp · Hair transplant':'ตจวิทยา · เส้นผม/หนังศีรษะ · ปลูกผม'):weight?(en?'Internal medicine · Clinical nutrition':'อายุรศาสตร์ · โภชนศาสตร์คลินิก'):''):'';
     const license=confirmedHairReviewer?(en?'License 47576':'ว. 47576'):
       physician?(en?'Medical license pending verification':'เลข ว. รอยืนยัน'):'';
+    const reviewerPhoto = physician?.th === 'พญ. กรผกา ขันติโกสุม'
+      ? 'assets/landing-573/doctors/client-doctor-ploy.png'
+      : physician?.th === 'อ.นพ. พหล สโรจวิสุทธิ์'
+        ? 'assets/landing-figma-20261115/doctor-portrait-3.webp'
+        : 'assets/product-hero/general-consultation-stethoscope-20261125.png';
     const reviewer=card(en?'Medical reviewer':'แพทย์ผู้ตรวจทาน',physician?(en?physician.en:physician.th):(en?'Reviewer to be confirmed':'รอยืนยันชื่อผู้ตรวจทาน'),[
       specialty,
       !confirmed?(en?'Review completion not confirmed':'ยังไม่ยืนยันการตรวจทาน'):null
-    ],confirmedHairReviewer?'assets/landing-573/doctors/client-doctor-ploy.png':'',license);
+    ],reviewerPhoto,license);
     return [reviewer,writer];
   }
   function renderFeed(){
