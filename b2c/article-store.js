@@ -3,6 +3,8 @@
 (function(){
  'use strict';
  const key='krane-editorial-demo-v1',clone=x=>JSON.parse(JSON.stringify(x));
+ // Invalidate only stale public demo snapshots; do not delete a local editor draft.
+ const publicationEpoch='20261124-docs-parity';
  function records(){
   let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch{}
   if(!saved||typeof saved!=='object'||Array.isArray(saved))saved={};
@@ -18,7 +20,10 @@
   for(const url of [draft.image,draft.author?.photo,draft.source])if(url&&!/^(https?:\/\/|assets\/)/.test(url))throw Error('ใช้ลิงก์ https หรือรูปจาก assets เท่านั้น');
   for(const section of draft.sections){const media=section.media;if(media?.src&&(!/^((https:\/\/)|assets\/)[^\s<>]+$/.test(media.src)||!media.alt?.trim()))throw Error('รูปในเนื้อหาต้องใช้ลิงก์ https หรือ assets พร้อมคำอธิบายภาพ');}
   record.draft=clone({...draft,id});record.status=status;
-  if(status==='Published')record.published=clone({...record.draft,publicationApproved:true});
+  if(status==='Published'){
+   record.published=clone({...record.draft,publicationApproved:true});
+   record.publicationEpoch=publicationEpoch;
+  }
   localStorage.setItem(key,JSON.stringify(Object.fromEntries(all.map(r=>[r.id,r]))));
   window.dispatchEvent(new CustomEvent('krane-articles-changed'));
   return clone(record);
@@ -28,6 +33,10 @@
   Object.assign(draft,{id,title:'บทความใหม่',summary:'',sections:[{heading:'',copy:''}]});delete draft.manuscriptMarkdown;delete draft.en;delete draft.publicationApproved;delete draft.editorialReview;delete draft.manuscriptUrl;
   all.push({id,status:'Draft',draft,published:null});
   localStorage.setItem(key,JSON.stringify(Object.fromEntries(all.map(r=>[r.id,r]))));return id;
- },published:()=>records().filter(record=>record.published?.publicationApproved).map(record=>clone(record.published))};
+ },published:()=>{
+  const canonical=new Map(KraneArticleSeed.map(seed=>[seed.id,seed]));
+  return records().map(record=>record.publicationEpoch===publicationEpoch && record.published?.publicationApproved
+    ? record.published : canonical.get(record.id)).filter(article=>article?.publicationApproved).map(clone);
+ }};
  window.addEventListener('storage',e=>{if(e.key===key)window.dispatchEvent(new CustomEvent('krane-articles-changed'))});
 })();

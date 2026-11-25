@@ -1011,6 +1011,10 @@
     "ดูประวัติ อ.นพ. ชวลิต หงส์เลิศสกุล":"See Dr. Chawalit Hongloetsakul's profile",
     "แพทย์ก่อนหน้า":"Previous doctor",
     "แพทย์ถัดไป":"Next doctor",
+    "ว. รอยืนยัน":"License pending verification",
+    "อายุรศาสตร์":"Internal medicine",
+    "โรคระบบการหายใจ":"Respiratory medicine",
+    "ทีมแพทย์ สไลด์ที่":"Care team slides",
     "ทีมแพทย์ของเรา":"Our doctors",
     "การดูแลของ Krane ออกแบบและทบทวนโดยทีมแพทย์เฉพาะทางที่ได้รับใบอนุญาต ทุกแผนเริ่มจากข้อมูลสุขภาพจริงของคุณ และปรับตามความเหมาะสมทางคลินิกเมื่อข้อมูลเปลี่ยนไป":"Krane's care is designed and reviewed by licensed specialists. Every plan starts from your own health information and is adjusted on clinical grounds as that information changes.",
     "วิธีที่ทีมแพทย์ร่วมออกแบบการดูแล":"How the doctors shape your care",
@@ -1639,6 +1643,50 @@
     "เลือกหน้าบทความ": "Article pages",
     "ขั้นตอนการดูแล หน้า": "Care steps, page"
   } : null;
+  /* Exact, page-scoped translations of the canonical programme copy. */
+  var programmeCopy = document.querySelector("main[data-programme]") ? {
+    "6 เดือนขึ้นไป": "6 months and up",
+    "4 เดือนขึ้นไป": "4 months and up",
+    "re:hair · เส้นผม": "re:hair · Hair care",
+    "re:body · น้ำหนัก": "re:body · Weight care",
+    "ขึ้นด้วยวิธีที่มีงานวิจัยรองรับ": "with research-backed care",
+    "คุณฝน": "Fon",
+    "ค่าจัดส่งและระยะเวลาขึ้นอยู่กับพื้นที่และวิธีส่ง ระบบจะแสดงข้อมูลก่อนยืนยันคำสั่งซื้อ": "Shipping costs and delivery times depend on your area and delivery method. You’ll see these details before confirming your order.",
+    "ช่วงเวลาการดูแล": "Care duration",
+    "ช่วงแรกอาจยังไม่เห็นความเปลี่ยนแปลงชัดเจน และบางคนอาจมีผมเส้นเล็กที่ร่วงมากกว่าปกติเล็กน้อย ซึ่งเป็นเรื่องที่พบได้และมักเกิดขึ้นชั่วคราว หากกังวล นัดปรึกษาแพทย์ประจำตัวของคุณได้เสมอ": "Changes may not be noticeable at first. Some people may shed slightly more fine hairs than usual. This can happen and is often temporary. If you’re concerned, you can make an appointment with your doctor.",
+    "ดูแลอย่างต่อเนื่องกับแพทย์ และทบทวนผลเมื่อถึงเวลานัด": "Continue care with your doctor and review your progress at follow-up appointments.",
+    "ติดตามผลและทบทวนการตอบสนองกับแพทย์ เพื่อปรับแผนตามความเหมาะสม": "Follow up with your doctor to review your response and adjust the plan as needed.",
+    "ทีมที่เกี่ยวข้องใช้ข้อมูลตามความจำเป็นในการดูแล อ่านรายละเอียดในนโยบายความเป็นส่วนตัว": "Relevant team members use your information as needed to provide care. See the Privacy Policy for details.",
+    "บริการปรึกษาแพทย์ทางไกล แพทย์ประเมินและให้คำแนะนำตามข้อมูลสุขภาพของแต่ละคน": "An online doctor consultation service. Your doctor assesses your health information and gives advice based on your circumstances.",
+    "ผลลัพธ์ขึ้นอยู่กับแต่ละบุคคล": "Results vary from person to person",
+    "ผลลัพธ์แตกต่างกันในแต่ละบุคคล": "Results vary from person to person",
+    "พิเศษ! สมัครสมาชิกวันนี้ ปรึกษาแพทย์ฟรี": "Special offer: Sign up today for a free consultation",
+    "มีแพทย์ประจำตัว": "A dedicated doctor",
+    "ราคาโปรแกรม": "Programme pricing",
+    "สิ่งที่ควรรู้ก่อนเริ่มใช้บริการ": "What to know before starting",
+    "หลังแพทย์ออกใบสั่งยา คุณสามารถตรวจสอบรายการยาและรายละเอียดการจัดส่งได้ในบัญชี": "After your doctor issues a prescription, you can see your medicines and delivery details in your account.",
+    "ออนไลน์ 100%": "100% online",
+    "เติมยาออนไลน์": "Refill online",
+    "เริ่มเลย": "Get started",
+    "เริ่มเห็นผล": "Seeing initial results",
+    "แพทย์จะพิจารณาจากข้อมูลสุขภาพและความเหมาะสมก่อนสั่งยา": "Your doctor reviews your health information and considers whether medication is suitable before prescribing.",
+    "ไทม์ไลน์การดูแล": "Care timeline",
+    "จัดส่งแบบควบคุมอุณหภูมิ": "Temperature-controlled delivery",
+    "ทบทวนผลกับแพทย์และวางแผนระยะยาว เพื่อให้ดูแลพฤติกรรมการกินและการออกกำลังกายได้อย่างต่อเนื่อง": "Review your progress with your doctor and make a longer-term plan to maintain your eating and exercise habits.",
+    "เดือนที่ 1": "Month 1",
+    "เดือนที่ 2–3": "Months 2–3",
+    "แพทย์จะติดตามผลและปรับแผนให้เหมาะกับร่างกายของคุณ พร้อมวางแผนการกินและการออกกำลังกายเฉพาะบุคคล": "Your doctor will follow your progress and adjust your plan to suit you, with an individual eating and exercise plan.",
+    "แพทย์ประจำตัวจะประเมินสุขภาพ ตั้งเป้าหมายร่วมกับคุณ และเริ่มแผนดูแลอย่างค่อยเป็นค่อยไป ช่วงแรกร่างกายกำลังปรับตัว บางคนอาจรู้สึกอิ่มเร็วขึ้นหรือคลื่นไส้เล็กน้อย ซึ่งพบได้และมักดีขึ้นเอง หากกังวล นัดปรึกษาแพทย์ประจำตัวได้เสมอ": "Your doctor will assess your health, set goals with you and start your care plan gradually. While your body adjusts, some people may feel full sooner or experience mild nausea. This can happen and often improves on its own. If you’re concerned, you can make an appointment with your doctor.",
+    "ซองที่ไม่ระบุชื่อสินค้า": "Packaging without the product name",
+    "นัดติดตามครั้งถัดไป": "Next follow-up",
+    "ปรึกษาครั้งแรก": "First consultation",
+    "ปรึกษาแพทย์ 1:1": "One-to-one doctor consultation",
+    "สัปดาห์ที่ 2–4": "Weeks 2–4",
+    "หาแผนที่ใช่": "Finding the right plan",
+    "แพทย์นรินทร์ ทานากะ": "Dr. Narin Tanaka",
+    "แพทย์ประจำตัวจะประเมินสุขภาพ ประวัติการใช้ยา และปัจจัยที่อาจเกี่ยวข้อง เช่น ความดันหรือน้ำตาลในเลือด ก่อนออกแบบแผนดูแลเฉพาะบุคคล ยาจัดส่งถึงบ้านในบรรจุภัณฑ์ที่เป็นส่วนตัว": "Your doctor assesses your health, medication history and potentially relevant factors such as blood pressure or blood sugar before making an individual care plan. Medicine is delivered to your home in discreet packaging.",
+    "16 พ.ย. 2026": "16 Nov 2026"
+  } : null;
   var pending = false, mo = null, ownsLang = false;
 
   /* Two of these pages (doctor and adviser profiles) carry no language control
@@ -1655,6 +1703,24 @@
   }
 
   function englishText(text) {
+    if (programmeCopy) {
+      if (Object.prototype.hasOwnProperty.call(programmeCopy, text)) return programmeCopy[text];
+      var programmeMatch;
+      if ((programmeMatch = text.match(/^(re:(?:body|hair|flow)) · (เริ่มต้น|เริ่มเห็นผล|ดูแลต่อเนื่อง|หาแผนที่ใช่)$/))) {
+        var stages = { "เริ่มต้น":"Getting started", "เริ่มเห็นผล":"Seeing initial results", "ดูแลต่อเนื่อง":"Continuing care", "หาแผนที่ใช่":"Finding the right plan" };
+        return programmeMatch[1] + " · " + stages[programmeMatch[2]];
+      }
+      if ((programmeMatch = text.match(/^ราคาโปรแกรม (re:(?:body|hair|flow))$/))) return programmeMatch[1] + " programme pricing";
+      if ((programmeMatch = text.match(/^เรื่องราวก่อนและหลัง หน้า(?: (\d+))?$/))) return "Before-and-after stories, page" + (programmeMatch[1] ? " " + programmeMatch[1] : "");
+      if ((programmeMatch = text.match(/^บทความ หน้า(?: (\d+))?$/))) return "Articles, page" + (programmeMatch[1] ? " " + programmeMatch[1] : "");
+      if ((programmeMatch = text.match(/^ดูวิดีโอประสบการณ์ของ คุณ(เมย์|พลอย|ฝน|พา|แป้ง|ต้น)$/))) {
+        var names = {เมย์:"May",พลอย:"Ploy",ฝน:"Fon",พา:"Pha",แป้ง:"Pang",ต้น:"Ton"};
+        return "Watch " + names[programmeMatch[1]] + "’s story";
+      }
+      if (text === "เรื่องราวก่อนและหลัง ใช้ปุ่มลูกศรซ้ายหรือขวาเพื่อเลื่อนดู") return "Before-and-after stories. Use the left or right arrow key to browse.";
+      if (text === "ภาพก่อน") return "Before photo";
+      if (text === "ภาพหลัง") return "After photo";
+    }
     if (landingCopy) {
       if (Object.prototype.hasOwnProperty.call(landingCopy, text)) return landingCopy[text];
       var landingMatch;
@@ -1665,6 +1731,7 @@
     }
     if (EN[text] !== undefined) return EN[text];
     var match;
+    if ((match = text.match(/^ทีมแพทย์ สไลด์ที่ (\d+)$/))) return "Care team, slide " + match[1];
     if ((match = text.match(/^ไปหน้าความคิดเห็น (\d+)$/))) return "Go to comments page " + match[1];
     if ((match = text.match(/^([\d.]+) จาก 5 ดาว$/))) return match[1] + " out of 5 stars";
     if ((match = text.match(/^(\d+) การประเมิน$/))) return match[1] + " ratings";

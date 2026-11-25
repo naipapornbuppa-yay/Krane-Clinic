@@ -21,7 +21,7 @@
     "by word rise has room to read and does not compete with the hero headline.",
     "treatment-detail Documents tab, 11 Sep: client moved the medical certificate",
     "to the end of the treatment plan and the receipt to the paid tracking step.",
-    "All documents are now indexed by the searchable My Documents profile page."
+    "The treatment certificate is now reached through Related Documents or the searchable My Documents library; the receipt remains linked from tracking."
   ],
   "screens": [
     "account",
@@ -145,8 +145,16 @@
       "why": "Receipt is linked from the paid step in order tracking."
     },
     {
-      "selector": "#treatment-plan-panel [data-doc-open='cert']",
-      "why": "The treatment's medical certificate is the final section of its treatment plan."
+      "selector": "#treatment-detail [data-related-documents-open][aria-controls='related-documents-sheet']",
+      "why": "Treatment detail links to Related Documents without repeating the certificate in the treatment plan."
+    },
+    {
+      "selector": "#related-documents-sheet [data-doc-open='cert']",
+      "why": "The treatment certificate is discoverable in the Related Documents sheet."
+    },
+    {
+      "selector": "#my-documents [data-doc-open='cert'][data-document-item]",
+      "why": "Issued certificates also remain discoverable through the searchable My Documents library."
     },
     {
       "selector": "#settings [data-go='my-documents']",
@@ -444,13 +452,13 @@
       "absent": "img[src*='krane-logo-navy'], img[src*='krane-logo-cream'], img[src*='krane-logo-15jul'], img[src*='krane-logo-16jul'], img[src*='krane-clinic-logo'], img[src*='_retired-logos']"
     },
     {
-      "name": "Mission statement leads into the doctor directory",
+      "name": "Mission, supplied patient stories, then doctor profiles",
       "page": "krane-b2c-landing.html",
       "count": [
-        ".positioning-section + #experts.experts",
+        ".positioning-section + #reviews.landing-stories + #experts.experts",
         1
       ],
-      "why": "6008126 removes both oversized scroll phrases at the client request. Preserve the mission statement followed by the doctor directory, without restoring deleted copy."
+      "why": "Current landing composition inserts the supplied patient stories between positioning and the doctor rail."
     },
     {
       "name": "Scroll text never opens the page",
@@ -523,12 +531,14 @@
       "absent": "#treatment-detail [data-doc-open='receipt']"
     },
     {
-      "name": "ED product artwork stays fully inside its service card",
+      "name": "re:flow lifestyle artwork covers its clipped service card",
       "page": "krane-b2c-landing.html",
       "containedImage": [
-        "#services [data-category='sexual-health'] .service-tile__bg--ed-product",
-        "#services [data-category='sexual-health']"
-      ]
+        "#services [data-category='sexual-health'] .service-tile__bg--ed-lifestyle",
+        "#services [data-category='sexual-health']",
+        "cover"
+      ],
+      "why": "The re:flow landing tile now uses full-bleed lifestyle artwork, not product artwork."
     },
     {
       "name": "Every how-it-works step uses a recorded app preview",
@@ -641,77 +651,105 @@
       "absent": "#weight-program .weight-catalogue, #weight-program .weight-results"
     },
     {
-      "name": "Landing shows all six distinct supplied review videos in the original composition",
+      "name": "Landing provides six distinct supplied video entry points",
       "page": "krane-b2c-landing.html",
-      "count": [
-        "#reviews figure[data-start-face=\"video\"]:not([aria-hidden=\"true\"]) video source",
-        6
+      "uniqueValues": [
+        "#reviews .landing-review-gallery button[data-landing-review]",
+        "data-landing-review",
+        [
+          "weight-02",
+          "weight-04",
+          "weight-05",
+          "hair-pha",
+          "hair-03",
+          "confidence-real-med"
+        ]
       ],
-      "why": "Client, 22 October: use all supplied review clips from the downloaded รีวิว folder, rather than repeating one person. Only duplicate marquee loops are aria-hidden. review-rhythm.js now creates a separate quotation face per person; count the original video faces and verify distinct supplied sources in public-redesign-qa.mjs."
+      "why": "Landing now plays supplied clips in a viewer opened by a poster; responsive repeats are not additional stories."
     },
     {
       "name": "weight landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#weight-program .pc-goals a[data-route=\"intake1\"][data-category]",
+        "#weight-program .care-chapter__goals a[data-route='intake1'][data-category='weight'][href*='category=weight#intake1']",
         4
       ],
-      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
+      "why": "Four programme-specific goal links lead to the correct intake; the separate details link does not count."
     },
     {
       "name": "hair landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#hair-program .pc-goals a[data-route=\"intake1\"][data-category]",
+        "#hair-program .care-chapter__goals a[data-route='intake1'][data-category='hair-skin'][href*='category=hair-skin#intake1']",
         4
       ],
-      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
+      "why": "Four programme-specific goal links lead to the correct intake; the separate details link does not count."
     },
     {
       "name": "ed landing retains four programme question choices",
       "page": "krane-b2c-landing.html",
       "count": [
-        "#ed-program .pc-goals a[data-route=\"intake1\"][data-category]",
+        "#ed-program .care-chapter__goals a[data-route='intake1'][data-category='sexual-health'][href*='category=sexual-health#intake1']",
         4
       ],
-      "why": "069cf91 preserves four goal links per programme in the new chapter composition."
+      "why": "Four programme-specific goal links lead to the correct intake; the separate details link does not count."
     },
     {
-      "name": "Programme review galleries use supplied video without mock comparisons or stock testimonials",
+      "name": "Landing authentic review gallery keeps supplied entries separate from fictional cards",
       "page": "krane-b2c-landing.html",
-      "absent": ".program-review-gallery source[src*=\"pexels\"], .weight-story-gallery__comparison-slide img[src*=\"figma-draft\"], .programme-story-image, #reviews source[src*=\"pexels\"], #reviews .cd-review--story:not(.review-video)",
-      "why": "9ffb651 replaces the main interview with a labelled landscape illustration, separate from two supplied supporting reviews. Preserve weight-04 and weight-05, excluding decorative marquee copies. Existing complete review-data and detail review coverage remains unchanged.",
-      "count": [
-        "#weight-program .pc-stories [data-pc-video]:not([data-rail-clone]) source:is([src=\"assets/reviews/weight-04.mp4\"],[src=\"assets/reviews/weight-05.mp4\"])",
-        2
-      ]
+      "absent": "#reviews source[src*='pexels'], #reviews .public-review-card, #reviews .public-review-demo, .public-review-demo [data-landing-review]",
+      "uniqueValues": [
+        "#reviews .landing-review-mobile button[data-landing-review]",
+        "data-landing-review",
+        [
+          "weight-02",
+          "weight-04",
+          "weight-05"
+        ]
+      ],
+      "why": "The current mobile gallery still presents the three supplied weight clips. Fictional cards are explicitly labelled, outside the supplied gallery."
     },
     {
-      "name": "weight detail retains the programme ratings and filterable comments",
-      "page": "condition-detail.html?condition=weight",
+      "name": "rebody preserves a separated and labelled six-card fictional review rail",
+      "page": "rebody-opt1/index.html?lang=th",
       "count": [
-        "#reviews.programme-csat .programme-comment",
-        12
+        ".public-review-demo .public-review-card",
+        6
       ],
-      "why": "Nov 3 user requested more mock comments: each programme has 12 clearly labeled fictional examples. Supplied review clips remain separate in the landing marquee."
+      "textEquals": [
+        ".public-review-demo > .public-review-demo__label",
+        "รีวิวจำลองเพื่อสาธิต"
+      ],
+      "absent": ".public-review-demo [data-story], .public-review-supplied .public-review-card__stars",
+      "why": "User approved six starred fictional cards with one shared disclosure, separate from supplied reviews. The retired filterable composition and its twelve rows must not be reinstated."
     },
     {
-      "name": "hair-loss detail retains the programme ratings and filterable comments",
-      "page": "condition-detail.html?condition=hair-loss",
+      "name": "rehair preserves a separated and labelled six-card fictional review rail",
+      "page": "rehair-opt1/index.html?lang=th",
       "count": [
-        "#reviews.programme-csat .programme-comment",
-        12
+        ".public-review-demo .public-review-card",
+        6
       ],
-      "why": "Nov 3 user requested more mock comments: each programme has 12 clearly labeled fictional examples. Supplied review clips remain separate in the landing marquee."
+      "textEquals": [
+        ".public-review-demo > .public-review-demo__label",
+        "รีวิวจำลองเพื่อสาธิต"
+      ],
+      "absent": ".public-review-demo [data-story], .public-review-supplied .public-review-card__stars",
+      "why": "User approved six starred fictional cards with one shared disclosure, separate from supplied reviews. The retired filterable composition and its twelve rows must not be reinstated."
     },
     {
-      "name": "re-flow detail retains the programme ratings and filterable comments",
-      "page": "condition-detail.html?condition=re-flow",
+      "name": "reflow preserves a separated and labelled six-card fictional review rail",
+      "page": "reflow-opt1/index.html?lang=th",
       "count": [
-        "#reviews.programme-csat .programme-comment",
-        12
+        ".public-review-demo .public-review-card",
+        6
       ],
-      "why": "Nov 3 user requested more mock comments: each programme has 12 clearly labeled fictional examples. Supplied review clips remain separate in the landing marquee."
+      "textEquals": [
+        ".public-review-demo > .public-review-demo__label",
+        "รีวิวจำลองเพื่อสาธิต"
+      ],
+      "absent": ".public-review-demo [data-story], .public-review-supplied .public-review-card__stars",
+      "why": "User approved six starred fictional cards with one shared disclosure, separate from supplied reviews. The retired filterable composition and its twelve rows must not be reinstated."
     },
     {
       "name": "Footer information template remains available: about",
@@ -819,49 +857,88 @@
       "why": "Client, 22 October: prescription delivery from the footer must open prescription upload, not unrelated clinical intake. Submission and checkout retain their existing guards."
     },
     {
-      "name": "Programme chapter supplied story: weight-program",
-      "page": "krane-b2c-landing.html",
-      "count": [
-        "#weight-program [data-pc-video]:not([data-rail-clone]) video",
-        3
+      "name": "rebody retains the six exact supplied story entries",
+      "page": "rebody-opt1/index.html",
+      "uniqueValues": [
+        "#programme-stories button[data-story]",
+        "data-story",
+        [
+          "weight-02",
+          "weight-04",
+          "weight-05",
+          "hair-pha",
+          "hair-03",
+          "confidence-real-med"
+        ]
       ],
-      "why": "069cf91 retains three original video cards: one main video and two supporting stories. The client-requested looping marquee repeats the supporting cards with data-rail-clone and aria-hidden; copies must not count as additional original stories. 011b17f explicitly removes weight comparison photographs."
+      "why": "Supplied video playback now starts from programme story posters. Check every ID, not repeated clones or an inline video count."
     },
     {
-      "name": "Programme chapter supplied story: hair-program",
-      "page": "krane-b2c-landing.html",
-      "count": [
-        "#hair-program .pc-checkins img:is([src=\"assets/optimized-web/hair-pha-before.webp\"],[src=\"assets/optimized-web/hair-pha-after.webp\"])",
-        2
+      "name": "rehair retains the six exact supplied story entries",
+      "page": "rehair-opt1/index.html",
+      "uniqueValues": [
+        "#programme-stories button[data-story]",
+        "data-story",
+        [
+          "weight-02",
+          "weight-04",
+          "weight-05",
+          "hair-pha",
+          "hair-03",
+          "confidence-real-med"
+        ]
       ],
-      "why": "5c387ab introduces the labelled AI concept scan in the main panel and retains the authentic same-person before/after pair in the tracking card. Assert those exact two supplied images, not AI process illustrations."
+      "why": "Supplied video playback now starts from programme story posters. Check every ID, not repeated clones or an inline video count."
     },
     {
-      "name": "Programme chapter supplied story: ed-program",
-      "page": "krane-b2c-landing.html",
+      "name": "re:flow keeps private care packaging without a fabricated supplied story",
+      "page": "reflow-opt1/index.html",
       "count": [
-        "#ed-program .pc-private-review blockquote",
+        "#care-benefits .landing-benefits__package img[src='assets/landing-exact/2d6f9.png']",
         1
       ],
-      "why": "0ee2f98 presents an anonymous concise testimonial with private consultation, preserving the requested ED privacy."
+      "absent": "#programme-stories, .opt-comparison, .public-review-supplied",
+      "why": "Current re:flow detail explains discreet fulfilment; it intentionally does not show identification-enabling comparisons or present fictional comments as supplied stories."
     },
     {
       "name": "Programme photos retain matching before-and-after pairs: weight",
-      "page": "condition-detail.html?condition=weight",
-      "count": [
-        ".photo-reviews__set:not([aria-hidden=\"true\"]) .photo-review__pair",
-        3
+      "page": "rebody-opt1/index.html",
+      "pairedImages": [
+        ".opt-comparison .opt-pair",
+        [
+          [
+            "assets/reviews/weight-02-before.jpg",
+            "assets/reviews/weight-02-after.jpg"
+          ],
+          [
+            "assets/reviews/weight-04-before.jpg",
+            "assets/reviews/weight-04-after.jpg"
+          ],
+          [
+            "assets/reviews/weight-05-before.jpg",
+            "assets/reviews/weight-05-after.jpg"
+          ]
+        ]
       ],
-      "why": "photo-reviews.js owns supplied same-person pairs in a separate rail; 7162830 removes the duplicate video section without removing these photographs."
+      "why": "Assert the exact before/after assets grouped under the same person, in the current canonical programme comparison rail."
     },
     {
       "name": "Programme photos retain matching before-and-after pairs: hair-loss",
-      "page": "condition-detail.html?condition=hair-loss",
-      "count": [
-        ".photo-reviews__set:not([aria-hidden=\"true\"]) .photo-review__pair",
-        2
+      "page": "rehair-opt1/index.html",
+      "pairedImages": [
+        ".opt-comparison .opt-pair",
+        [
+          [
+            "assets/reviews/hair-pha-before.jpg",
+            "assets/reviews/hair-pha-after.jpg"
+          ],
+          [
+            "assets/reviews/hair-03-before.jpg",
+            "assets/reviews/hair-03-after.jpg"
+          ]
+        ]
       ],
-      "why": "photo-reviews.js owns supplied same-person pairs in a separate rail; 7162830 removes the duplicate video section without removing these photographs."
+      "why": "Assert the exact before/after assets grouped under the same person, in the current canonical programme comparison rail."
     }
   ]
 }

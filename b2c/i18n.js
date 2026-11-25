@@ -207,6 +207,9 @@
     "Weight care & metabolism":"ดูแลน้ำหนักและระบบเผาผลาญ","Weight goals, metabolic health and doctor-led treatment options.":"เป้าหมายน้ำหนัก สุขภาพเมตาบอลิก และแนวทางรักษาที่แพทย์ดูแล","Hormones & TRT":"ฮอร์โมนและ TRT",
     "Sexual health":"สุขภาพเพศชาย","ED, performance concerns and related men's health questions.":"ปัญหาสมรรถภาพ และเรื่องสุขภาพเพศชายอื่น ๆ",
     "Sleep & stress":"การนอนและความเครียด","Sleep quality, stress, energy and daily functioning.":"คุณภาพการนอน ความเครียด พลังงาน และการใช้ชีวิตประจำวัน",
+    "Weight management with GLP-1":"ดูแลและควบคุมน้ำหนักผ่าน GLP-1",
+    "Care for hair loss and thinning":"ดูแลผมร่วง ผมบาง",
+    "Care for male sexual function":"ดูแลสมรรถภาพเพศชาย",
     "Balanced Sleep Programme":"ปรับการนอนให้กลับมาสมดุล","Safe Weight Progress":"ลดน้ำหนักอย่างปลอดภัย","Obesity treatment":"รักษาโรคอ้วน","Ongoing Hair Recovery":"ฟื้นฟูเส้นผมอย่างต่อเนื่อง","Confidence Recovery Programme":"กลับมามั่นใจอีกครั้ง","Erectile dysfunction":"ภาวะหย่อนสมรรถภาพ",
     "Everyday health":"สุขภาพทั่วไป","General symptoms, wellness checks and care navigation.":"อาการทั่วไป ตรวจสุขภาพ และคำแนะนำการดูแล",
     "Choose a category":"เลือกหมวด","Choose a condition":"เลือกอาการ","What would you like to discuss today?":"วันนี้อยากปรึกษาเรื่องอะไร","Pick the closest match. You can still explain the details during intake.":"เลือกที่ใกล้เคียงที่สุด อธิบายรายละเอียดเพิ่มได้ตอนทำแบบสอบถาม",
@@ -1162,6 +1165,9 @@
     "รายการที่สั่ง":"Items ordered",
     "Lalamove ภายในวัน":"Lalamove, same day",
     "แนะนำเพื่อน":"Refer a friend",
+    "ดูแลและควบคุมน้ำหนักผ่าน GLP-1":"Weight management with GLP-1",
+    "ดูแลผมร่วง ผมบาง":"Care for hair loss and thinning",
+    "ดูแลสมรรถภาพเพศชาย":"Care for male sexual function",
     "รักษาโรคอ้วน":"Obesity treatment",
     "ดูแผนการรักษา":"View the treatment plan",
     "อาการที่พบ":"Symptoms found",
@@ -1997,6 +2003,7 @@
     "เปิดโปรแกรมการรักษา #KR-10170":"Open treatment programme #KR-10170",
     "เปิดโปรแกรมการรักษา #KR-10042":"Open treatment programme #KR-10042",
     "เอกสารของฉัน":"My Documents",
+    "เอกสารที่เกี่ยวข้อง":"Related Documents",
     "ใบสั่งยา ใบรับรองแพทย์ และใบเสร็จทั้งหมด":"All prescriptions, medical certificates and receipts",
     "เอกสารการรักษา":"Treatment document",
     "ออกโดยแพทย์ผู้ตรวจ · เปิดดูหรือดาวน์โหลด":"Issued by your doctor · open or download",
@@ -2629,7 +2636,7 @@
 
   function swap(th) {
     var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-      acceptNode: function (n) { var p = n.parentNode && n.parentNode.nodeName; return (p === "SCRIPT" || p === "STYLE") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
+      acceptNode: function (n) { var p = n.parentNode && n.parentNode.nodeName; return (p === "SCRIPT" || p === "STYLE" || n.parentElement?.hasAttribute("data-programme-brand")) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
     });
     var nodes = [], n; while ((n = w.nextNode())) nodes.push(n);
     nodes.forEach(function (node) {

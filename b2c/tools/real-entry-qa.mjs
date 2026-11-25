@@ -1,3 +1,4 @@
+import {selectPatientDob} from './patient-dob-test-fixture.mjs';
 import {chromium} from 'playwright';
 import {createServer} from 'node:http';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
@@ -24,7 +25,7 @@ for(const method of ['insurance','selfpay'])await test('partner-real-'+method,as
 if(method==='insurance'){
   await step('patient details', 'insurance');
   await p.locator('#insurance-id').fill('1234567890123');
-  await p.locator('#insurance-dob').fill('1997-09-01');
+  await selectPatientDob(p,'#insurance-dob','1997-09-01');
   await p.locator('#insurance [data-insurance-confirm]').click();
   await step('eligibility check', 'partner-insurance');
   await p.locator('#partner-insurance [data-partner-payment="insurance"]').click();
@@ -61,7 +62,7 @@ await step('payment choice','intake-concern');
   if (JSON.stringify(healthPrefill) !== JSON.stringify(['',method==='insurance'?'1997-09-01':'','',''])) {
     fail('partner DOB prefill', JSON.stringify(healthPrefill));
   }
-  if(method==='selfpay')await p.locator('#intake-dob').fill('1997-09-01');
+  if(method==='selfpay')await selectPatientDob(p,'#intake-dob','1997-09-01');
   await p.locator('#intake-sex').selectOption('female');
   await p.locator('#intake-height').fill('175');
   await p.locator('#intake-weight').fill('70');

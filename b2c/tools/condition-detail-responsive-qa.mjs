@@ -1,4 +1,4 @@
-/* Hero breakpoint and illustrative-comment regression coverage. */
+/* Canonical public programme routes and responsive review coverage. */
 import {chromium} from 'playwright';
 import {createServer} from 'node:http';
 import {readFile,stat,mkdir} from 'node:fs/promises';
@@ -11,59 +11,84 @@ const server=createServer(async(req,res)=>{try{const f=join(root,decodeURICompon
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox']});
 let checks=0;const check=(v,label)=>{assert(v,label);checks++;};
-try{
-for(const width of [390,599,600,760,761,800,820,821,1024,1440]){
- const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});await necessaryConsent(context);
- const page=await context.newPage();
- for(const lang of ['th','en']){
- await page.goto(`http://127.0.0.1:${server.address().port}/b2c/condition-detail.html?condition=hair-loss&lang=${lang}`,{waitUntil:'domcontentloaded'});
- await page.waitForSelector('.programme-comment');await page.evaluate(()=>document.fonts.ready);
- const boxes=await page.evaluate(()=>{const hero=document.querySelector('.condition-hero'),copy=hero.querySelector('.public-hero__copy'),image=hero.querySelector('.public-hero__media');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};return {hero:box(hero),copy:box(copy),image:box(image)};});
- if(width>760){check(Math.abs(boxes.image.y-boxes.copy.y)<1,`same hero row ${width}`);check(Math.abs(boxes.copy.right-boxes.image.x)<1,`no blank column ${width}`);check(Math.abs(boxes.image.right-boxes.hero.right)<1,`image fills right ${width}`);}else{check(Math.abs(boxes.image.width-boxes.hero.width)<1,`full mobile image ${width}`);check(Math.abs(boxes.copy.width-boxes.hero.width)<1,`full mobile copy ${width}`);}
- check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`page overflow ${width}`);
- check(await page.locator('.programme-comments__list').evaluate(list=>{
-  const r=list.getBoundingClientRect(),cards=[...list.querySelectorAll('.programme-comment')],heading=document.querySelector('.programme-comments__toolbar').getBoundingClientRect();
-  return Math.abs(r.left)<1&&Math.abs(r.right-innerWidth)<1&&Math.abs(cards[0].getBoundingClientRect().left-heading.left)<1&&cards.some(card=>{const c=card.getBoundingClientRect();return c.left<r.right&&c.right>r.right+1;})&&getComputedStyle(list).overflowX==='auto';
- }),'review rail reaches viewport edge with next-card peek and aligned first card');
- const articles=page.locator('.cd-articles .cd-rail');
- if(await articles.count())check(await articles.evaluate(list=>{const r=list.getBoundingClientRect();return Math.abs(r.left)<1&&Math.abs(r.right-innerWidth)<1&&getComputedStyle(list).overflowX==='auto';}),'article rail bleeds to viewport edges');
-
- check(await page.locator('.programme-comment').count()===12,'12 illustrative comments');
- check((await page.locator('.programme-comments__disclosure').innerText()).includes(lang==='en'?'not real patient':'ไม่ใช่รีวิว'),'clear mock disclosure');
- const dots=page.locator('.programme-comments__dots button');check(await dots.count()===(width<600?12:width<=1100?6:3),'responsive page count');
- check(await page.locator('.programme-comments__dots').evaluate(nav=>{
-  const buttons=[...nav.querySelectorAll('button')],rect=nav.getBoundingClientRect();
-  return nav.classList.contains('carousel-dots')&&rect.width<=buttons.length*16+1&&buttons.every(button=>{
-   const r=button.getBoundingClientRect(),dot=getComputedStyle(button,'::before');
-   return Math.abs(r.width-16)<1&&Math.abs(r.height-24)<1&&['6px','8px'].includes(dot.width);
-  });
- }),'canonical compact dot targets');
- check(await page.locator('.programme-comment blockquote').first().evaluate(e=>parseFloat(getComputedStyle(e).fontSize)<=15),'readable compact review type');
- check(await page.locator('.programme-intro__copy .programme-designer').count()===0,'no duplicate right-side doctor card');
- check(await page.locator('.programme-interview-label strong').count()===0,'removed doctor introduction caption heading');
- check(await page.locator('.programme-interview-placeholder > .programme-designer').count()===1,'one existing designer profile over video');
- check(await page.locator('.programme-interview-label').innerText()===(lang==='en'?'Illustration · Doctor interview coming soon':'ภาพประกอบ · เตรียมพบกับบทสัมภาษณ์คุณหมอ'),'stock footage disclosure remains visible');
- check(await page.locator('.programme-interview-placeholder').evaluate(media=>{
-  const frame=media.getBoundingClientRect(),link=media.querySelector('.programme-designer'),r=link.getBoundingClientRect();
-  return r.left>=frame.left&&r.right<=frame.right&&r.top>=frame.top&&r.bottom<=frame.bottom-44&&Boolean(link.getAttribute('href'))&&getComputedStyle(media,'::after').backgroundImage.includes('linear-gradient');
- }),'designer overlay and dark gradient remain inside video above controls');
- if(width>760)check(await page.locator('.programme-intro').evaluate(intro=>{
-  const media=intro.querySelector('.programme-intro__media').getBoundingClientRect(),copy=intro.querySelector('.programme-intro__copy').getBoundingClientRect();
-  return Math.abs(media.top-copy.top)<1&&Math.abs(media.bottom-copy.bottom)<1;
- }),'desktop video and benefit copy align to equal height');
- if(width>=600&&width<=1100)check(await page.locator('.programme-comments__list').evaluate(list=>{
-  const cards=list.querySelectorAll('.programme-comment');return cards[1].getBoundingClientRect().right<=list.getBoundingClientRect().right+1;
- }),'two readable review cards on intermediate widths');
- await dots.last().click();await page.waitForTimeout(100);check(await dots.last().getAttribute('aria-current')==='page','last dot active');
- check(await page.locator('.programme-comments__list').evaluate(e=>Math.abs(e.scrollWidth-e.clientWidth-e.scrollLeft)<2),'last page reachable');
- await page.locator('.programme-comments__filters button').last().click();check(await page.locator('.programme-comment').count()===1,'one-star filter');
- await page.locator('.programme-comments__filters button').first().click();
- await page.locator('.programme-comments__toolbar select').selectOption('lowest');check(await page.locator('.programme-comment').first().getAttribute('data-rating')==='1','ascending sort');
- await page.locator('.programme-comments__toolbar select').selectOption('highest');check(await page.locator('.programme-comment').first().getAttribute('data-rating')==='5','descending sort');
- await page.locator('.programme-comments__toolbar select').selectOption('newest');check(await page.locator('.programme-comment time').first().getAttribute('datetime')==='2026-10-22','date sort');
- if([390,600,800,1440].includes(width)){await page.locator('.condition-hero').screenshot({path:`${out}/hero-${width}-${lang}.png`});await page.locator('.programme-comments').screenshot({path:`${out}/comments-${width}-${lang}.png`});}
- }
- await context.close();
+const sizes=[390,599,600,760,761,800,820,821,1024,1440];
+const cases=[['hair-loss','rehair'],['weight','rebody'],['re-flow','reflow']];
+const near=(a,b)=>Math.abs(a-b)<2;
+const origin=`http://127.0.0.1:${server.address().port}`;
+try {
+for (const width of sizes) {
+  const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
+  await necessaryConsent(ctx);
+  try {
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    for (const lang of ['th','en']) {
+      const routes=[cases[0], ...([390,800,1440].includes(width)?cases.slice(1):[])];
+      for (const [condition,key] of routes) {
+        // The supported legacy URL now routes users to the same canonical programme.
+        const legacy=new URL(`/b2c/condition-detail.html?condition=${condition}&lang=${lang}#hero`,origin);
+        await page.goto(legacy.href,{waitUntil:'domcontentloaded'});
+        await page.waitForURL(u=>u.pathname===`/b2c/${key}-opt1/index.html`);
+        const url=new URL(page.url());
+        check(url.hash==='#top'&&url.searchParams.get('lang')===lang&&!url.searchParams.has('condition'),'canonical destination and safe query/section mapping');
+        const programme=page.locator(`main[data-programme="${key}"]`);
+        await programme.locator('.opt-feedback .public-review-card').first().waitFor();
+        await page.evaluate(()=>document.fonts.ready);
+        check(await page.locator('html').getAttribute('lang')===lang,'document language follows originating URL');
+        if(lang==='en') {
+          await page.waitForFunction(()=>document.querySelector('.opt-price h2')?.textContent.trim()==='Programme pricing');
+          const leaked=await page.evaluate(()=>{
+            const thai=/[\u0e01-\u0e5b]/;
+            const rendered=el=>Boolean(el?.getClientRects().length)&&getComputedStyle(el).visibility==='visible'&&!el.closest('script,style,noscript,[hidden]');
+            const text=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+            const values=[];
+            while(text.nextNode()) {
+              const n=text.currentNode;
+              if(rendered(n.parentElement)&&thai.test(n.nodeValue))values.push(n.nodeValue.trim());
+            }
+            for(const el of document.querySelectorAll('[aria-label],[title],[alt]')){
+              if(!rendered(el)||el.closest('[aria-hidden=true]'))continue;
+              for(const name of ['aria-label','title','alt']) { const v=el.getAttribute(name);if(v&&thai.test(v))values.push(v); }
+            }
+            return [...new Set(values)];
+          });
+          check(leaked.length===0,`no visible or accessible Thai in English ${key} ${width}: ${leaked.join(' / ')}`);
+        }
+        const loc=programme.locator('.opt-hero');
+        const box=await loc.boundingBox(),vid=await loc.locator('video').boundingBox();
+        check(box&&vid&&box.width>0&&box.height>0&&near(vid.x,box.x)&&near(vid.y,box.y)&&near(vid.width,box.width)&&near(vid.height,box.height),`hero media fills frame ${key} ${width}`);
+        check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`no page overflow ${key} ${width}`);
+        const group=programme.locator('.opt-feedback .public-review-demo');
+        const disclosure=group.locator('.public-review-demo__label');
+        check(await disclosure.isVisible()&&(await disclosure.innerText())===(lang==='en'?'Fictional reviews for demo':'รีวิวจำลองเพื่อสาธิต'),'invented review copy is visibly disclosed in both languages');
+        check(await group.getAttribute('aria-describedby')===await disclosure.getAttribute('id'),'disclosure bound to review group for assistive technology');
+        const cards=group.locator('.public-review-card');
+        check(await cards.count()===6,'exactly six disclosed demo cards');
+        check(await cards.evaluateAll(list=>list.every(card=>card.querySelector('blockquote')&&card.querySelector('[role="img"][aria-label]'))),'all demo cards have a quotation and accessible rating');
+        const rail=group.locator('.rebody-review-rail');
+        check(await rail.evaluate(e=>e.scrollWidth>e.clientWidth+2&&['auto','scroll'].includes(getComputedStyle(e).overflowX)),'review rail is scrollable');
+        const dots=group.locator('.carousel-dots button');const first=dots.first(),last=dots.last();
+        await first.waitFor();
+        check(await dots.count()>1,'review rail exposes multiple page controls');
+        await first.focus();
+        await first.press('End');
+        await page.waitForFunction(()=>document.querySelector('.opt-feedback .carousel-dots button:last-child')?.getAttribute('aria-current')==='page');
+        check(await last.getAttribute('aria-current')==='page','keyboard End activates last page');
+        check(await rail.evaluate(e=>e.scrollLeft>0&&Math.abs(e.scrollWidth-e.clientWidth-e.scrollLeft)<3),'last review page fully reachable');
+        await last.press('Home');
+        await page.waitForFunction(()=>document.querySelector('.opt-feedback .carousel-dots button:first-child')?.getAttribute('aria-current')==='page');
+        check(await rail.evaluate(e=>Math.abs(e.scrollLeft)<2),'keyboard Home restores first page');
+        const articles=programme.locator('.opt-article-rail');
+        check(await articles.locator('a[href*="?article="]').count()>0,'articles expose valid detail links');
+        check(await articles.evaluate(e=>['auto','scroll'].includes(getComputedStyle(e).overflowX)),'article rail retains horizontal navigation');
+        check(errors.length===0,`no programme page JavaScript errors: ${errors.join('; ')}`);
+        if(key==='rehair'&&[390,600,800,1440].includes(width)) {
+          await loc.screenshot({path:`${out}/hero-${width}-${lang}.png`});
+          await group.screenshot({path:`${out}/reviews-${width}-${lang}.png`});
+        }
+      }
+    }
+  } finally {await ctx.close();}
 }
 console.log(`PASS ${checks} condition-detail assertions; screenshots ${out}`);
-}finally{await browser.close();server.close();}
+} finally {await browser.close();server.close();}

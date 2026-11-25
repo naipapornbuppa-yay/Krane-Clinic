@@ -88,7 +88,6 @@
     connection.textContent=reconnecting ? T('แพทย์กำลังเชื่อมต่อใหม่ ข้อความของคุณยังอยู่ครบ','Your clinician is reconnecting. Messages remain saved.') : '';
    }
    const documentBox=block('#my-documents .screen__body','all-documents',T('เอกสารจากแพทย์','Documents from your clinician'));if(documentBox)documents(documentBox,c);
-   const booking=block('#appointment-booked .screen__body','booking',T('นัดหมายของฉัน','My appointments'));if(booking){appointments.filter(a=>a.patientId===c.patientId&&a.status==='booked').forEach(a=>booking.append(node('p',format(a.at)+' · '+(api.doctors.find(d=>d.id===a.doctorId)?.name||a.doctorId))));}
   }
  }catch(e){let box=document.querySelector('[data-workflow-error]');if(!box){box=node('p',undefined,'clinical-workspace');box.dataset.workflowError='';box.setAttribute('role','alert');(document.querySelector('main')||document.body).prepend(box);}box.textContent=e.message;}}
  const languageObserver=new MutationObserver(()=>{const lang=T('th','en');if(window.__kraneWorkspaceLang!==lang){window.__kraneWorkspaceLang=lang;signature='';render();}});languageObserver.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});languageObserver.observe(document.body,{attributes:true,attributeFilter:['class']});

@@ -43,31 +43,61 @@
  new MutationObserver(localize).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  if(!safe)return;
 
- // Reuse the app's existing synthetic identity handler. It rechecks host,
- // fixture and no shared encounter before advancing to the usual next screen.
- // The bridge is never a button the visitor has to see or operate.
- const bridges=[];
- for(const id of ['signup','login']){
-  const screen=document.getElementById(id);
-  const body=screen?.querySelector('.screen__body');
-  if(!body)continue;
+ // Keep the signup step visible in a public assessment walkthrough. Only
+ // its primary button can invoke the app's isolated, in-memory guest account.
+ // Never collect phone/password or invoke social sign-in from this guest copy.
+ const signup=document.getElementById('signup');
+ const submit=signup?.querySelector('[data-signup-phone]');
+ if(submit){
+  const intro=signup.querySelector('.auth-screen__intro');
+  const note=document.createElement('p');
+  note.className='hint';
+  note.style.marginTop='8px';
+  intro?.append(note);
+  signup.querySelectorAll('input,[data-password-toggle],[data-social],.auth-screen__create').forEach(control=>{
+   control.disabled=true;
+   if(control.matches('input'))control.autocomplete='off';
+  });
+  signup.querySelectorAll('.auth-screen__new,.auth-screen__separator,.auth-screen__social').forEach(group=>{
+   group.hidden=true; group.style.display='none';
+  });
+  submit.removeAttribute('data-signup-phone');
+  submit.dataset.staticGuestAccount='';
+  submit.type='button';
+  const refreshSignup=()=>{
+   const en=document.documentElement.lang.startsWith('en');
+   const available=isSample();
+   submit.disabled=!available;
+   submit.setAttribute('aria-disabled',String(!available));
+   submit.textContent=en?'Create Account':'สร้างบัญชี';
+   note.textContent=available
+    ? (en?'No phone number or password is required. This does not create a real account.':'ไม่ต้องกรอกเบอร์โทรหรือรหัสผ่าน ขั้นตอนนี้ไม่สร้างบัญชีจริง')
+    : (en?'Demo disabled for this case. Open a fresh private window.':'เดโมใช้กับเคสนี้ไม่ได้ กรุณาเปิดหน้าต่างส่วนตัวใหม่');
+  };
+  refreshSignup();
+  window.addEventListener('krane:clinical-change',refreshSignup);
+  new MutationObserver(refreshSignup).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ }
+
+ // Leave the existing simulated login shortcut unchanged.
+ const login=document.getElementById('login');
+ const body=login?.querySelector('.screen__body');
+ if(body){
   const trigger=document.createElement('button');
   trigger.type='button';
   trigger.hidden=true;
   trigger.dataset.staticGuestAccount='';
   body.replaceChildren(trigger);
-  bridges.push({screen,trigger});
+  let active=false;
+  const advance=()=>{
+   const next=login.classList.contains('active');
+   if(next===active)return;
+   active=next;
+   if(active&&isSample())trigger.click();
+  };
+  new MutationObserver(advance).observe(login,{attributes:true,attributeFilter:['class']});
+  advance();
  }
- let previous=null;
- const advance=()=>{
-  const bridge=bridges.find(item=>item.screen.classList.contains('active')) || null;
-  if(bridge===previous)return;
-  previous=bridge;
-  if(bridge && isSample())bridge.trigger.click();
- };
- const activation=new MutationObserver(advance);
- bridges.forEach(({screen})=>activation.observe(screen,{attributes:true,attributeFilter:['class']}));
- advance();
 })();
 /* Visible disclosure only. Does not change routing, consent, payment or admission. */
 (() => {

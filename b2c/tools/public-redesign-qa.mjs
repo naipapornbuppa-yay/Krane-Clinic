@@ -14,138 +14,82 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,ar
 const results=[],errors=[];let checks=0;
 const check=(value,label)=>{assert(value,label);checks++};
 const thai=page=>page.evaluate(()=>{const found=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())if(!n.parentElement.closest('script,style,noscript')&&/[ก-๛]/.test(n.textContent))found.add(n.textContent.trim());for(const e of document.querySelectorAll('[aria-label],[placeholder],[alt],[title]'))for(const k of ['aria-label','placeholder','alt','title'])if(/[ก-๛]/.test(e.getAttribute(k)||''))found.add(e.getAttribute(k));return [...found]});
-// November screenshot polish: run in both languages in the existing viewport pass.
+// Assert the shipping Landing composition, not the October prototype cards.
+const programmes=[['weight','weight','rebody'],['hair','hair-skin','rehair'],['ed','sexual-health','reflow']];
 const checkLandingPolish=async(page,width)=>{
- await page.evaluate(()=>document.fonts.ready);
- const language=await page.locator('html').getAttribute('lang');
- const label=`Landing polish ${language} ${width}`;
- check(await page.locator('#ed-program .pc-ad-kicker, #ed-program .pc-ad-progress').count()===0,label+' removes the private-care eyebrow and four-step progress bar');
- check(await page.locator('#hair-program .pc-hair-scan__label').count()===0,label+' removes the visible AI chip');
- check(/AI/i.test(await page.locator('#hair-program [data-hair-scan]').getAttribute('aria-label')||''),label+' retains accessible AI disclosure');
- const hairFrame=await page.locator('#hair-program .pc-photo-card').evaluate(card=>{
-  const style=getComputedStyle(card),photo=card.querySelector('.pc-hair-scan');
-  const frame=card.getBoundingClientRect(),image=photo.getBoundingClientRect();
-  return {
-   borderless:['Top','Right','Bottom','Left'].every(side=>parseFloat(style[`border${side}Width`])===0&&parseFloat(style[`padding${side}`])===0),
-   transparent:style.backgroundColor==='rgba(0, 0, 0, 0)'&&style.backgroundImage==='none',
-   filled:frame.width>0&&frame.height>0&&['left','top','width','height'].every(edge=>Math.abs(frame[edge]-image[edge])<=.5)
-  };
- });
- check(hairFrame.borderless&&hairFrame.transparent,label+' removes all hair comparison card border, padding and background');
- check(hairFrame.filled,label+' fills the hair comparison card edge to edge without an image inset');
- const trackingBadges=[];
- for(const kind of ['weight','hair']){
-  const tracking=page.locator(`#${kind}-program .pc-tracking`);await tracking.scrollIntoViewIfNeeded();
-  await page.waitForFunction(kind=>document.querySelector(`#${kind}-program .pc-tracking`).classList.contains('is-complete'),kind);
-  const badge=await tracking.evaluate((section,width)=>{
-   const header=section.querySelector('.pc-tracking-header'),heading=header.querySelector('h3'),tag=header.querySelector('.pc-complete');
-   const h=heading.getBoundingClientRect(),b=tag.getBoundingClientRect(),r=header.getBoundingClientRect(),css=getComputedStyle(tag);
-   const narrow=section.clientWidth-parseFloat(getComputedStyle(section).paddingLeft)-parseFloat(getComputedStyle(section).paddingRight)<550;
-   return {one:section.querySelectorAll('.pc-complete').length===1&&Boolean(tag.textContent.trim()),
-    placed:narrow?css.position==='absolute'&&b.width<=1&&b.height<=1&&css.clipPath==='inset(50%)':Math.abs(b.right-r.right)<=1&&b.left>=h.right&&Math.abs((b.top+b.bottom-h.top-h.bottom)/2)<=1,
-    visible:Number(css.opacity)===1&&css.display!=='none'&&css.visibility!=='hidden',
-    style:[css.fontSize,css.lineHeight,css.borderRadius,css.borderWidth,css.backgroundColor].join('|')};
-  },width);
-  check(badge.one&&badge.placed&&badge.visible,label+' '+kind+' completion badge stays accessible, hiding visually in narrow cards and inline at the right in wide cards');
-  trackingBadges.push(badge.style);
- }
- check(trackingBadges[0]===trackingBadges[1],label+' gives both tracking completion badges identical UI styling');
- if(width>=1100){
-  const composition=await page.locator('#ed-program').evaluate(e=>{const box=s=>e.querySelector(s).getBoundingClientRect(),phone=box('.pc-consult'),privacy=box('.pc-privacy'),goals=box('.pc-goals'),review=box('.pc-private-review');return Math.abs(phone.top-privacy.top)<1&&privacy.left>phone.right&&Math.abs(goals.left-privacy.left)<1&&goals.top>=privacy.bottom&&review.top>=Math.max(phone.bottom,goals.bottom)&&review.width>phone.width+privacy.width;});
-  check(composition,'Privacy section balances phone beside stacked privacy and goals');
- }
- const goals=await page.locator('#weight-program .pc-goals, #hair-program .pc-goals').evaluateAll(panels=>panels.map(panel=>{
-  const heading=getComputedStyle(panel.querySelector('h3')),style=getComputedStyle(panel);
-  return {heading:heading.fontSize,inset:style.padding,border:style.borderWidth,buttons:[...panel.querySelectorAll('a')].map(a=>{
-   const css=getComputedStyle(a);return {font:css.fontSize,minHeight:parseFloat(css.minHeight),height:a.getBoundingClientRect().height,padding:css.padding,border:css.borderWidth};
-  })};
- }));
- check(goals.length===2&&goals.every(panel=>panel.buttons.length===4&&panel.buttons.every(button=>button.font==='14px'&&button.minHeight>=58&&button.height>=58)),label+' keeps eight readable 14px goal buttons with 58px targets');
- check(goals[0].heading===goals[1].heading&&goals[0].inset===goals[1].inset&&goals[0].buttons.every((button,i)=>button.padding===goals[1].buttons[i].padding),label+' matches goal heading type and panel/button insets');
- check(goals.every(panel=>panel.border==='0px'&&panel.buttons.every(button=>button.border==='0px')),label+' removes goal panel and button outlines');
- check(await page.locator('.programme-chapter .pc-actions a:not(.pc-primary)').evaluateAll(links=>links.every(link=>parseFloat(getComputedStyle(link).borderTopWidth)>0)),label+' preserves Learn more outlines');
- if(width>=761&&width<1100){
-  const readable=await page.locator('#weight-program, #hair-program').evaluateAll(sections=>sections.every(section=>{
-   const goals=section.querySelector('.pc-goals'),feature=section.querySelector('.pc-feature'),g=goals.getBoundingClientRect(),f=feature.getBoundingClientRect();
-   const links=[...goals.querySelectorAll('a')],first=links[0].getBoundingClientRect(),second=links[1].getBoundingClientRect();
-   return g.top>=f.bottom&&Math.abs(g.width-f.width)<=1&&Math.abs(first.top-second.top)<=1&&second.left>first.right&&links.every(link=>{
-    const text=link.querySelector('span'),style=getComputedStyle(text);return text.getBoundingClientRect().height<=parseFloat(style.lineHeight)+1&&link.scrollWidth<=link.clientWidth;
-   });
-  }));
-  check(readable,label+' stacks media above full-width two-column goals with unwrapped labels');
- }
- const privacyCard=await page.locator('#ed-program .pc-privacy').evaluate(e=>({
-  background:getComputedStyle(e).backgroundColor,title:getComputedStyle(e.querySelector('h3')).color,
-  bounded:e.getBoundingClientRect().bottom-e.querySelector('figcaption').getBoundingClientRect().bottom<=parseFloat(getComputedStyle(e).paddingBottom)+2,border:getComputedStyle(e).borderTopWidth
- }));
- check(privacyCard.background==='rgb(238, 235, 230)'&&privacyCard.title==='rgb(26, 30, 40)',label+' gives the blue mailer a neutral backdrop and dark readable heading');
- check(privacyCard.bounded&&privacyCard.border==='0px',label+' keeps the privacy card content-height without an empty stretched border');
- if(width<1024)return;
- await page.evaluate(()=>window.scrollTo({top:0,behavior:"instant"}));
- const hero=await page.evaluate(()=>{
-  const title=document.querySelector('#hero-title').getBoundingClientRect(),benefits=document.querySelector('#top .hero-draft__marquee').getBoundingClientRect();
-  const badges=document.querySelector('.care-banner--weight .care-banner__product-badges'),wrapperStyle=getComputedStyle(badges);
-  const subtitle=document.querySelector('.care-banner--weight .care-banner__copy > small').getBoundingClientRect();
-  const wrapperVisible=wrapperStyle.display!=='none'&&wrapperStyle.visibility!=='hidden'&&parseFloat(wrapperStyle.opacity)>0;
-  const badgeClear=[...badges.querySelectorAll('em')].every(badge=>{
-   const style=getComputedStyle(badge),rect=badge.getBoundingClientRect();
-   const visible=wrapperVisible&&style.display!=='none'&&style.visibility!=='hidden'&&parseFloat(style.opacity)>0&&rect.width>0&&rect.height>0;
-   return !visible||rect.top>=subtitle.bottom+8;
-  });
-  const nav=document.querySelector('.site-header').getBoundingClientRect();
-  const items=[...document.querySelectorAll('.hero-draft__benefits li:not(.is-clone) strong')].map(e=>e.getBoundingClientRect());
-  const process=[...document.querySelectorAll('.hero__benefit-list li')].map(e=>e.getBoundingClientRect());
-  return {sameRow:Math.abs(title.top-benefits.top)<=1&&Math.abs(title.height-benefits.height)<=1,badgeClear,
-   navClear:title.top-nav.bottom>=47,
-   optical:items.length===4&&Math.abs(items[0].top-title.top-(document.documentElement.lang==='en'?7:2))<=1&&items[3].bottom<=title.bottom-7&&items.every((r,i)=>!i||r.top>=items[i-1].bottom+1),
-   compactProcess:process.length===3&&process.every(r=>Math.abs(r.top-process[0].top)<=1)};
- });
- check(hero.sameRow,label+' aligns hero heading and benefits to equal-height columns');
- check(hero.navClear,label+' leaves at least 48px below the navbar for the hero');
- check(hero.optical,label+' aligns visible benefit rows inside the title with optical bottom inset');
- check(hero.compactProcess,label+' keeps the three supporting steps on one desktop line');
- check(hero.badgeClear,label+' places visible product badges below the subtitle');
- for(const kind of ['weight','hair']){
-  const button=page.locator(`#${kind}-program .pc-goals a`).first();
-  await button.scrollIntoViewIfNeeded();await page.mouse.move(0,0);
-  const measure=el=>{const css=getComputedStyle(el),r=el.getBoundingClientRect();return {background:css.backgroundColor,border:css.borderTopColor,box:[r.x,r.y,r.width,r.height]}};
-  const before=await button.evaluate(measure);await button.hover();
-  await page.waitForFunction(({kind,before})=>{const style=getComputedStyle(document.querySelector(`#${kind}-program .pc-goals a`));return style.backgroundColor!==before.background},{kind,before});
-  const after=await button.evaluate(measure);
-  check(before.background!==after.background,label+' '+kind+' desktop hover changes tonal fill');
-  check(before.box.every((value,i)=>Math.abs(value-after.box[i])<=.5),label+' '+kind+' hover has no layout shift');
-  await page.mouse.move(0,0);
+ for(const [kind,category,slug] of programmes){
+  const chapter=page.locator('#'+kind+'-program'), goals=chapter.locator('.care-chapter__goals a[data-category]');
+  check(await chapter.isVisible(),'Programme chapter visible '+kind);
+  check(await goals.count()===4,'Four meaningful programme goal controls '+kind);
+  check(await goals.evaluateAll((links,category)=>links.every(a=>{const u=new URL(a.href),r=a.getBoundingClientRect();return u.pathname.endsWith('/krane-b2c.html')&&u.searchParams.get('category')===category&&u.hash==='#intake1'&&a.textContent.trim();}),category),'Every goal opens correct intake '+kind);
+  check(await chapter.locator('.care-chapter__banner img').count()===1,'One programme hero asset '+kind);
+  const image=chapter.locator('.care-chapter__banner img');await image.evaluate(e=>{e.loading='eager'});
+  await page.waitForFunction(kind=>{const e=document.querySelector('#'+kind+'-program .care-chapter__banner img');return e?.complete&&e.naturalWidth>0},kind);
+  const details=chapter.locator('.care-chapter__more');
+  check(new URL(await details.getAttribute('href'),page.url()).pathname.endsWith('/'+slug+'-opt1/index.html'),'Details uses canonical programme '+kind);
+  if(width===390){
+    const primary=page.locator('#services a[data-category="'+category+'"]');
+    check(await primary.isVisible(),'Visible mobile top entry '+kind);
+    const url=await primary.evaluate(e=>e.href);
+    const receiving=await page.context().newPage();try{
+     await receiving.goto(url,{waitUntil:'domcontentloaded'});await receiving.locator('#intake1.active').waitFor();
+     check(await receiving.evaluate(()=>selectedCategoryId)===category,'Real intake selects the programme '+kind);
+    }finally{await receiving.close();}
+  }
  }
 };
+const checkEditorialSnapshots=async()=>{
+ const ctx=await browser.newContext();
+ try{
+  await necessaryConsent(ctx);
+  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
+  const id='library-obesity-05',url=`${base}/b2c/articles.html?lang=th&article=${id}`;
+  const read=async()=>({title:await p.locator('[data-article-title]').textContent(),body:await p.locator('[data-article-body]').textContent()});
+  await p.goto(url,{waitUntil:'domcontentloaded'});
+  const clean=await read();
+  check(clean.title.includes('NuSH-based therapies')&&clean.body.includes('ประเด็นสำคัญ'),'Clean Thai reader shows the approved Obesity 05 manuscript');
+  const stale='QA legacy editorial snapshot',current='QA current editorial snapshot';
+  await p.evaluate(({id,stale})=>{
+   const article={...KraneArticleStore.records().find(r=>r.id===id).draft,title:stale,manuscriptMarkdown:'## '+stale};
+   localStorage.setItem('krane-editorial-demo-v1',JSON.stringify({[id]:{id,status:'Published',draft:article,published:article}}));
+  },{id,stale});
+  await p.reload({waitUntil:'domcontentloaded'});
+  const after=await read();
+  check(after.title===clean.title&&after.body===clean.body,'A pre-version CMS snapshot cannot override the approved title or manuscript');
+  const draft=await p.evaluate(({id,current})=>{
+   const existing=KraneArticleStore.records().find(r=>r.id===id).draft;
+   KraneArticleStore.save(id,{...existing,title:current,manuscriptMarkdown:'## '+current},'Draft');
+   return {retained:existing.title,published:KraneArticleStore.published().find(a=>a.id===id).title};
+  },{id,current});
+  check(draft.retained===stale&&draft.published===clean.title,'Stale drafts remain editable and a new Draft stays private');
+  await p.evaluate(id=>{const record=KraneArticleStore.records().find(r=>r.id===id);KraneArticleStore.save(id,record.draft,'Published');},id);
+  await p.locator('[data-article-title]').filter({hasText:current}).waitFor();
+  await p.reload({waitUntil:'domcontentloaded'});
+  const published=await read();
+  check(published.title===current&&published.body.includes(current),'Current CMS demo Publish propagates and survives reload');
+ }finally{await ctx.close();}
+};
 try{
+await checkEditorialSnapshots();
 for(const width of [390,800,1024,1440]){
  const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
  await necessaryConsent(ctx);ctx.setDefaultNavigationTimeout(60000);ctx.setDefaultTimeout(10000);
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
  const routes=width===800||width===1024?['krane-b2c-landing.html']:['krane-b2c-landing.html','doctors.html',...['weight','hair-loss','re-flow'].map(c=>'condition-detail.html?condition='+c)];
  for(const route of routes){
-  await p.goto(`${base}/b2c/${route}${route.includes('?')?'&':'?'}lang=en`,{waitUntil:'domcontentloaded'});await p.waitForTimeout(1800);
+  const condition=route.startsWith('condition-detail')?new URLSearchParams(route.split('?')[1]).get('condition'):null;
+  const expectedProgramme=condition&&({'weight':'rebody','hair-loss':'rehair','re-flow':'reflow'})[condition];
+  await p.goto(`${base}/b2c/${route}${route.includes('?')?'&':'?'}lang=en${condition?'#pricing':''}`,{waitUntil:'domcontentloaded'});
+  if(condition){
+   await p.waitForURL(url=>url.pathname.endsWith('/'+expectedProgramme+'-opt1/index.html')&&url.hash==='#program-pricing');
+   check(new URL(p.url()).searchParams.get('lang')==='en','Condition redirect retains language '+condition);
+   await p.locator('#program-pricing').waitFor({state:'visible'});
+  }
+  await p.waitForTimeout(1800);
   check((await thai(p)).length===0,route+' English: '+JSON.stringify(await thai(p)));
   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),route+' page overflow '+width);
   if(route.startsWith('krane-b2c-landing')){
    await checkLandingPolish(p,width);
-   const expected=['weight-02','weight-04','weight-05','hair-pha','hair-03','confidence-real-med'];
-   const clips=await p.locator('#reviews figure[data-start-face="video"]:not([aria-hidden="true"]) source').evaluateAll(es=>es.map(e=>e.getAttribute('src').split('/').pop().replace('.mp4','')));
-   check(JSON.stringify([...clips].sort())===JSON.stringify(expected.sort()),'All six distinct supplied clips');
-   for(const kind of ['weight','hair','ed']){
-    const category=({weight:'weight',hair:'hair-skin',ed:'sexual-health'})[kind];
-    const links=await p.locator(`#${kind}-program .pc-goals a`).evaluateAll(es=>es.map(e=>e.getAttribute('href')));
-    check(links.length===4&&links.every(h=>h.includes('category='+category)&&h.endsWith('#intake1')),'Four matching goal destinations '+kind);
-    const palette=await p.locator(`#${kind}-program`).evaluate((section,kind)=>{const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number),lum=c=>c.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0),contrast=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05),style=getComputedStyle(section),bg=rgb(style.backgroundColor),button=getComputedStyle(section.querySelector('.pc-primary')),buttonBg=rgb(button.backgroundColor),approved=({weight:[153,94,71],hair:[73,103,98],ed:[59,73,101]})[kind];return {approvedSurface:bg.every((v,i)=>v===approved[i]),bodyContrast:contrast(rgb(style.color),bg)>=4.5,ctaContrast:contrast(rgb(button.color),buttonBg)>=4.5,darkerCta:lum(buttonBg)<lum(bg),secondaryContrast:contrast(rgb(getComputedStyle(section.querySelector('.pc-actions a:not(.pc-primary)')).color),bg)>=4.5};},kind);
-    for(const [key,ok] of Object.entries(palette))check(ok,'Approved programme palette (03cde97) '+kind+' '+key);
-
-    if(width===390){
-     const receiving=await ctx.newPage();await receiving.goto(new URL(links[0],p.url()).href,{waitUntil:'domcontentloaded'});
-     await receiving.locator('#intake1.active').waitFor();
-     check(await receiving.evaluate(()=>selectedCategoryId)===category,'Goal opens matching clinical intake '+kind);
-     await receiving.close();
-    }
-   }
    const steps=p.locator('[data-how-slide]'),expectedPreviews=['assessment','video-consultation','delivery','follow-up'];
    check(await steps.count()===expectedPreviews.length,'Four approved how steps including follow-up');
    for(const [i,stem] of expectedPreviews.entries()){
@@ -158,93 +102,21 @@ for(const width of [390,800,1024,1440]){
     check(await image.evaluate((e,stem)=>new URL(e.currentSrc).pathname.endsWith('/'+stem+'.png')&&new URL(e.src).pathname.endsWith('/'+stem+'.gif'),stem),stem+' uses reduced-motion still and matching normal-motion preview');
    }
    check(await p.locator('.how-video-preview-label').textContent()==='Video consultation preview','Video consultation preview label is localized in EN');
-   await p.locator('[data-how-prev]').click();await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='2');check(await steps.nth(2).getAttribute('aria-hidden')==='false','How previous moves from follow-up to delivery');
-   // The landscape interview has its own player; selfie stories use the rail viewer.
-   const interviewOpener=p.locator('#weight-program .pc-main-media .pc-story-open');
-   await interviewOpener.click();await p.locator('.pc-interview-player[open]').waitFor();
-   await p.waitForFunction(()=>{const v=document.querySelector('.pc-interview-player video');return v.readyState>=1&&Boolean(v.currentSrc)});
-   check(await p.locator('.pc-story-viewer[open]').count()===0,'Interview does not open selfie viewer');
-   check(await p.evaluate(()=>{const source=document.querySelector('#weight-program .pc-main-media video'),v=document.querySelector('.pc-interview-player video');return v.currentSrc===source.querySelector('source').src&&v.poster===source.poster&&v.controls&&v.playsInline}),'Interview player retains supplied source, poster and native controls');
-   await p.keyboard.press('Escape');await p.waitForFunction(()=>{const d=document.querySelector('.pc-interview-player'),v=d.querySelector('video');return !d.open&&v.paused&&!v.hasAttribute('src')});
-   check(await interviewOpener.evaluate(e=>document.activeElement===e),'Interview closing returns keyboard focus');
-   // The weight chapter now changes stories in-frame. The review gallery owns the full-screen viewer.
-   const gallery=p.locator('#reviews[data-vertical-gallery]'),storyOpener=gallery.locator('.review-vertical-watch');
-   const activeId=(await storyOpener.getAttribute('aria-controls')).replace('review-excerpt-','');
-   const panels=gallery.locator('.review-vertical-excerpt');
-   const expectedStories=await panels.evaluateAll(es=>es.map(e=>({id:e.id.replace('review-excerpt-',''),quote:e.querySelector('blockquote').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim(),person:e.querySelector('cite').innerText.trim()})));
-   const active=expectedStories.findIndex(item=>item.id===activeId),current=expectedStories[active];
-   const source=await gallery.locator('figure[data-review-id="'+activeId+'"][data-start-face="video"]:not([aria-hidden="true"]) source').getAttribute('src');
-   await storyOpener.click();await p.locator('.pc-story-viewer[open]').waitFor();
-   check(await p.locator('.pc-story-viewer video').evaluate((v,src)=>v.src===new URL(src,location.href).href,source),'Viewer assigns the selected source synchronously');
-   await p.waitForFunction(src=>{const v=document.querySelector('.pc-story-viewer video');return v.readyState>=1&&v.currentSrc===new URL(src,location.href).href},source,{timeout:30000});
-   check(await p.locator('dialog[open]').count()===1,'Gallery story opens exactly one viewer');
-   await p.waitForTimeout(150);
-   check((await thai(p)).length===0,'English story modal labels: '+JSON.stringify(await thai(p)));
-   const ugc=await p.evaluate(expected=>{const viewer=document.querySelector('.pc-story-viewer'),caption=viewer.querySelector('.pc-story-caption'),fade=getComputedStyle(viewer.querySelector('.pc-story-stage'),'::after'),rect=caption.getBoundingClientRect(),bounds=viewer.getBoundingClientRect();return {copy:caption.querySelector('p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===expected.quote,person:caption.querySelector('strong').textContent===expected.person,route:caption.querySelector('a').href.includes('category=weight#intake1'),unboxed:getComputedStyle(caption).backgroundColor==='rgba(0, 0, 0, 0)'&&getComputedStyle(caption).borderRadius==='0px',fade:fade.backgroundImage.includes('linear-gradient')&&fade.pointerEvents==='none',contained:rect.left>=bounds.left&&rect.right<=bounds.right&&rect.bottom<=bounds.bottom};},current);
-   for(const [key,ok] of Object.entries(ugc))check(ok,'UGC integrated caption '+key);
-   await p.keyboard.press('ArrowRight');
-   await p.waitForFunction(text=>document.querySelector('.pc-story-caption p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===text,expectedStories[active+1].quote);
-   check((await p.locator('.pc-story-caption p').innerText()).replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===expectedStories[active+1].quote,'UGC next quote retains approved wording');
-   await p.keyboard.press('ArrowLeft');
-   await p.waitForFunction(text=>document.querySelector('.pc-story-caption p').innerText.replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===text,current.quote);
-   check((await p.locator('.pc-story-caption p').innerText()).replace(/[“”]/g,'').replace(/\s+/g,' ').trim()===current.quote,'UGC previous story restores its caption');
-   const sound=p.locator('dialog[open] [data-story-sound]');
-   await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Mute','Unmuting updates the accessible action');
-   await sound.click();await p.waitForTimeout(150);check(await sound.getAttribute('aria-label')==='Unmute','Muting updates the accessible action');
-   await p.keyboard.press('Escape');await p.locator('.pc-story-viewer[open]').waitFor({state:'hidden'});check(await p.locator('dialog[open]').count()===0,'Escape closes story');check(await storyOpener.evaluate(e=>document.activeElement===e),'UGC closing returns keyboard focus');
+   await p.locator('[data-how-viewport]').focus();await p.keyboard.press('ArrowLeft');await p.waitForFunction(()=>document.querySelector('#how').dataset.howActive==='2');check(await steps.nth(2).getAttribute('aria-hidden')==='false','How keyboard previous moves from follow-up to delivery');
+   const reviews=p.locator('#reviews');
+   check(await reviews.isVisible(),'Approved review section remains present');
+   const articles=p.locator('#articles-preview .articles-row a');
+   check(await articles.count()===15,'All fifteen approved article links are discoverable');
+   check(await articles.evaluateAll(links=>new Set(links.map(a=>new URL(a.href).searchParams.get('article'))).size===links.length&&links.every(a=>a.textContent.trim()&&new URL(a.href).pathname.endsWith('/articles.html'))),'Article destinations unique and nonempty');
   } else if(route.startsWith('condition-detail')){
-   const kind=new URLSearchParams(route.split('?')[1]).get('condition');
-   if(kind!=='re-flow')check(await p.locator('.photo-reviews__set').count()===2,'Reduced motion never appends hidden loop copies');
-   // cb6f4a2 restored the disclosed interview placeholder in place of category stories.
-   const overviewMedia=p.locator('.programme-intro__media.programme-interview-placeholder'),overviewVideo=overviewMedia.locator('video');
-   check(await overviewVideo.count()===1,'One disclosed programme interview placeholder '+kind);
-   await p.waitForFunction(()=>{const v=document.querySelector('.programme-interview-placeholder video');return v.readyState>=1&&Boolean(v.currentSrc)});
-   check(await overviewVideo.evaluate(v=>v.currentSrc.endsWith('/assets/landing/interview-off-camera-pexels-6602739.mp4')&&v.poster.endsWith('/assets/landing/interview-off-camera-poster.jpg')),'Programme interview retains supplied media '+kind);
-   check(await overviewVideo.evaluate(v=>v.controls&&v.playsInline&&v.muted&&v.loop),'Programme interview retains silent inline playback and native controls '+kind);
-   await overviewVideo.scrollIntoViewIfNeeded();
-   await p.waitForFunction(()=>{const v=document.querySelector('.programme-interview-placeholder video');return !v.autoplay&&v.paused});
-   const stillAt=await overviewVideo.evaluate(v=>v.currentTime);await p.waitForTimeout(250);
-   check(await overviewVideo.evaluate((v,t)=>!v.autoplay&&v.paused&&Math.abs(v.currentTime-t)<.02,stillAt),'Reduced motion prevents visible interview autoplay '+kind);
-   // Explicit user playback remains available even when automatic playback is disabled.
-   await overviewVideo.evaluate(v=>v.play());const playingAt=await overviewVideo.evaluate(v=>v.currentTime);
-   await p.waitForFunction(t=>{const v=document.querySelector('.programme-interview-placeholder video');return !v.paused&&Math.abs(v.currentTime-t)>.08},playingAt);
-   check(await overviewVideo.evaluate(v=>!v.paused&&!v.autoplay),'Explicit interview play works with reduced motion '+kind);
-   await overviewVideo.evaluate(v=>v.pause());
-   check(await overviewVideo.getAttribute('aria-label')==='Illustrative interview video; awaiting the doctor’s programme introduction video','Interview is explicitly disclosed as illustrative '+kind);
-   check(await overviewMedia.locator('.programme-interview-label span').textContent()==='Illustration · Doctor interview coming soon','Visible interview placeholder disclosure '+kind);
-   const points=p.locator('.programme-selling-points');await points.scrollIntoViewIfNeeded();
-   await p.waitForFunction(()=>document.querySelector('.programme-selling-points').classList.contains('is-visible'));
-   check(await points.locator('li').evaluateAll(es=>es.length>0&&es.every(e=>e.textContent.trim()&&getComputedStyle(e).animationName==='none'&&Number(getComputedStyle(e).opacity)>0)),'Reduced-motion selling points remain visible and still '+kind);
-   await p.emulateMedia({reducedMotion:'no-preference'});
-   await p.waitForFunction(()=>[...document.querySelectorAll('.programme-selling-points li')].every(e=>getComputedStyle(e).animationName==='programme-point-in'));
-   check(await points.evaluate(e=>e.getAnimations({subtree:true}).length>0),'Programme selling-point entrance animations are enabled '+kind);
-   await p.emulateMedia({reducedMotion:'reduce'});
-   await p.waitForFunction(()=>[...document.querySelectorAll('.programme-selling-points li')].every(e=>getComputedStyle(e).animationName==='none'));
-   check(await points.evaluate(e=>e.getAnimations({subtree:true}).length===0),'Selling points respond to reduced-motion preference '+kind);
-   // programme-timeline moves the practical guide into this standalone section.
-   const journey=p.locator('.programme-start-section .programme-journey'),tabs=journey.locator('[role="tab"]');
-   check(await tabs.count()===5,'All five practical care steps remain available '+kind);
-   await tabs.last().click();
-   check(await tabs.last().getAttribute('aria-selected')==='true'&&await journey.locator('#journey-panel-4').isVisible(),'Explicit journey tab selects its matching panel '+kind);
-   check(await journey.locator('[role="tabpanel"]:visible').count()===1,'Only selected journey panel is visible '+kind);
-   await p.keyboard.press('Home');
-   check(await tabs.first().evaluate(e=>e.getAttribute('aria-selected')==='true'&&document.activeElement===e)&&await journey.locator('#journey-panel-0').isVisible(),'Journey Home key restores first step and focus '+kind);
-   check((await thai(p)).length===0,'Programme guide remains English '+kind);
-   // With focus outside the visible guide, reduced motion must still prevent its 6s auto-advance.
-   await p.locator('[data-cd-tab="overview"]').evaluate(e=>e.focus({preventScroll:true}));await journey.scrollIntoViewIfNeeded();
-   await p.waitForTimeout(6300);
-   check(await tabs.first().getAttribute('aria-selected')==='true','Reduced motion prevents journey auto-advance '+kind);
-   await overviewMedia.screenshot({path:join(out,`interview-${kind}-${width}.png`),animations:'disabled'});
-
-   const expected=kind==='weight'?['weight-02','weight-04','weight-05']:kind==='hair-loss'?['hair-pha','hair-03']:[];
-   const photos=await p.locator('.photo-reviews__set:not([aria-hidden="true"]) .photo-review').evaluateAll(es=>es.map(e=>({id:e.dataset.reviewId,images:[...e.querySelectorAll('img')].map(i=>i.getAttribute('src'))})));
-   check(photos.length===expected.length&&photos.every((x,i)=>x.id===expected[i]&&x.images[0].includes(x.id+'-before')&&x.images[1].includes(x.id+'-after')),'Matching supplied photo pairs '+kind);
-
-   await p.locator('[data-cd-tab="reviews"]').click();check(await p.locator('#reviews.programme-csat').count()===1,'Review navigation targets ratings');
-   const filters=p.locator('.programme-comments__filters button');await filters.nth(2).click();await p.waitForTimeout(150);check(await p.locator('.programme-comment').count()===4 && await p.locator('.programme-comment').evaluateAll(es=>es.every(e=>e.dataset.rating==='4')),'4-star filter retains exactly the four matching mock comments');
-   check((await thai(p)).length===0,'Translated filtered comments: '+JSON.stringify(await thai(p)));await filters.first().click();await p.locator('.programme-comments select').selectOption('lowest');await p.waitForTimeout(150);
-   check(await p.locator('.programme-comment').evaluateAll(es=>es.length===12&&es[0].dataset.rating==='1'&&es.every((e,i)=>i===0||Number(es[i-1].dataset.rating)<=Number(e.dataset.rating))),'Lowest-rating sort orders all twelve illustrative comments');
-   check((await thai(p)).length===0,'Translated sorted comments: '+JSON.stringify(await thai(p)));
+   const programme=p.locator('[data-programme="'+expectedProgramme+'"]');
+   check(await programme.isVisible(),'Expected programme root visible '+condition);
+   const timeline=programme.locator('#steps');
+   check(await timeline.isVisible(),'Canonical practical care timeline is visible '+condition);
+   const primary=programme.locator('a[href*="#intake1"]:visible').first();
+   check(await primary.count()===1,'Programme has a visible consultation entry '+condition);
+   const category=({'weight':'weight','hair-loss':'hair-skin','re-flow':'sexual-health'})[condition];
+   check(new URL(await primary.evaluate(e=>e.href)).searchParams.get('category')===category,'Programme entry selects matching intake '+condition);
   } else {
    for(const profile of await p.locator('[data-doctor-open]').all()){await profile.click();await p.waitForTimeout(150);check((await thai(p)).length===0,'Translated doctor preview: '+JSON.stringify(await thai(p)));await p.keyboard.press('Escape');}
   }

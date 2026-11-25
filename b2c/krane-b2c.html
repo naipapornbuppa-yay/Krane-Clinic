@@ -81,10 +81,10 @@
 <link rel="stylesheet" href="platform-compat.css?v=20261120-borderless">
 <script src="../krane-clinical-demo.js?v=20261119-guest"></script>
 <script src="../krane-clinical-workflow.js?v=20261119-guest"></script>
-<link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261017-workflow">
+<link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261124-booking-confirmation">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20260930-address-autosave-v241" defer></script>
-<script src="i18n.js?v=20261123-booking-fallback" defer></script>
+<script src="i18n.js?v=20261124-programme-refill" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -1571,7 +1571,7 @@
       <div class="partner-health-card">
         <div class="partner-health-grid">
           <div class="field grow float-field float-field--label-as-placeholder"><div class="float-field__box"><span class="float-field__slot"><select class="select" id="intake-sex"><option value=""></option><option value="male">ชาย</option><option value="female">หญิง</option></select><label for="intake-sex">เพศกำเนิด</label></span></div></div>
-          <div class="field grow float-field float-field--date-placeholder-only"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" autocomplete="bday" aria-label="วันเกิด (อายุ)" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
+          <div class="field grow float-field float-field--date-placeholder-only"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-dob" type="date" data-patient-dob autocomplete="bday" aria-label="วันเกิด (อายุ)" required><label for="intake-dob">วันเกิด (อายุ)</label></span></div></div>
         </div>
         <div class="partner-health-grid">
           <div class="field grow float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="intake-height" inputmode="numeric" placeholder=" "><label for="intake-height">ส่วนสูง</label></span></div></div>
@@ -1752,7 +1752,7 @@
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-first-name" autocomplete="given-name" placeholder=" "><label for="social-first-name">First name</label></span></div></div>
         <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-last-name" autocomplete="family-name" placeholder=" "><label for="social-last-name">Last name</label></span></div></div>
       </div>
-      <div class="auth-name-grid"><div class="field float-field" data-social-dob><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-birth-date" type="date" autocomplete="bday" required><label for="social-birth-date">Date of birth</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-phone" type="tel" autocomplete="tel" placeholder=" "><label for="social-phone">Phone number</label></span></div></div></div>
+      <div class="auth-name-grid"><div class="field float-field" data-social-dob><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-birth-date" type="date" data-patient-dob autocomplete="bday" required><label for="social-birth-date">Date of birth</label></span></div></div><div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-phone" type="tel" autocomplete="tel" placeholder=" "><label for="social-phone">Phone number</label></span></div></div></div>
       <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="social-email" type="email" autocomplete="email" data-auth-email-input placeholder=" "><label for="social-email">Email</label></span></div></div>
       <label class="auth-check"><span class="check"><input type="checkbox" checked><span class="box"></span></span><span class="hint">I confirm these details are mine and may be used for appointment updates, prescriptions and delivery.</span></label>
     </div>
@@ -2727,7 +2727,7 @@
         <div class="partner-binary partner-binary--accent" role="tablist" aria-label="ประเภทเอกสาร"><button class="partner-binary__option" type="button" role="tab" data-toggle data-insurance-doc="id" aria-selected="true">บัตรประชาชน</button><button class="partner-binary__option" type="button" role="tab" data-toggle data-insurance-doc="passport" aria-selected="false">หนังสือเดินทาง</button></div>
       </div>
       <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-id" inputmode="numeric" maxlength="17" autocomplete="off" data-national-id placeholder="0-0000-00000-00-0"><label for="insurance-id">เลขบัตรประชาชน</label></span></div></div>
-      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-dob" type="date" autocomplete="bday" required><label for="insurance-dob">วันเกิด</label></span></div></div>
+      <div class="field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="insurance-dob" type="date" data-patient-dob autocomplete="bday" required><label for="insurance-dob">วันเกิด</label></span></div></div>
       <div class="card card--pad-sm stack-2" data-insurance-order>
         <div class="between"><span class="muted">Order total</span><span class="amt">฿ 558</span></div>
         <div class="between"><span class="muted">Use insurance credit</span><span class="amt">฿ 558</span></div>
@@ -2959,11 +2959,11 @@
              The card itself is the affordance. Tapping a card opens its
              refill; the follow-up keeps its own entry point in the banner above,
              which already names the doctor and the next date. -->
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="weight" data-treatment-date="20/06/2026" data-treatment-refill-text="12 วัน · เติมยาได้ 17 ก.ย. 2026" data-treatment-rx="RX-2026-10288" data-treatment-note='{"goals":["ลดน้ำหนักอย่างปลอดภัยและยั่งยืน","ลดรอบเอวและความเสี่ยงจากโรคอ้วน"],"findings":["น้ำหนักเริ่มต้น 89.0 กก. ปัจจุบัน 82.6 กก.","น้ำหนักลดลง 7.2% จากน้ำหนักเริ่มต้น","รับประทานอาหารและออกกำลังกายตามแผนได้สม่ำเสมอ"],"assessment":["โรคอ้วนที่ตอบสนองต่อแผนการรักษา","ยังไม่พบอาการไม่พึงประสงค์ที่ต้องหยุดการรักษา"],"plan":["ใช้ยาตามใบสั่งยาและขนาดที่แพทย์กำหนด","ชั่งน้ำหนักสัปดาห์ละครั้งในช่วงเวลาเดิม","เน้นโปรตีน ผัก และน้ำให้เพียงพอ","ติดตามอาการและประเมินแผนอีกครั้งตามนัด"]}' data-treatment-medicines='[{"name":"Semaglutide","photo":"assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png","kind":"ยาควบคุมน้ำหนักชนิดฉีด","purpose":"ใช้ร่วมกับการปรับพฤติกรรมเพื่อดูแลโรคอ้วนตามที่แพทย์ประเมิน","ordered":true,"facts":["ฉีดสัปดาห์ละครั้งตามขนาดที่แพทย์กำหนด","ใช้วันเดิมของแต่ละสัปดาห์","ติดตามน้ำหนักและอาการทางระบบทางเดินอาหาร","หากมีอาการรุนแรงให้หยุดยาและติดต่อแพทย์"]},{"name":"Tirzepatide","photo":"assets/medicine/weight-diecut-v1/mounjaro-kwikpen-diecut-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับการดูแลโรคอ้วนเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ฉีดสัปดาห์ละครั้งตามคำสั่งแพทย์","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกันโดยไม่ได้รับคำแนะนำ","ติดตามผลข้างเคียงตามนัด"]}]' data-treatment-diagnosis="โรคอ้วนที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ดำเนินแผนควบคุมน้ำหนักต่อเนื่อง ใช้ยาตามใบสั่งแพทย์ และติดตามน้ำหนัก รอบเอว และอาการทุกสัปดาห์">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="weight" data-demo-last-refill-days="8" data-demo-refills-remaining="1" data-treatment-date="20/06/2026" data-treatment-refill-text="12 วัน · เติมยาได้ 17 ก.ย. 2026" data-treatment-rx="RX-2026-10288" data-treatment-note='{"goals":["ลดน้ำหนักอย่างปลอดภัยและยั่งยืน","ลดรอบเอวและความเสี่ยงจากโรคอ้วน"],"findings":["น้ำหนักเริ่มต้น 89.0 กก. ปัจจุบัน 82.6 กก.","น้ำหนักลดลง 7.2% จากน้ำหนักเริ่มต้น","รับประทานอาหารและออกกำลังกายตามแผนได้สม่ำเสมอ"],"assessment":["โรคอ้วนที่ตอบสนองต่อแผนการรักษา","ยังไม่พบอาการไม่พึงประสงค์ที่ต้องหยุดการรักษา"],"plan":["ใช้ยาตามใบสั่งยาและขนาดที่แพทย์กำหนด","ชั่งน้ำหนักสัปดาห์ละครั้งในช่วงเวลาเดิม","เน้นโปรตีน ผัก และน้ำให้เพียงพอ","ติดตามอาการและประเมินแผนอีกครั้งตามนัด"]}' data-treatment-medicines='[{"name":"Semaglutide","photo":"assets/medicine/weight-diecut-v1/wegovy-flex-touch-diecut-v1.png","kind":"ยาควบคุมน้ำหนักชนิดฉีด","purpose":"ใช้ร่วมกับการปรับพฤติกรรมเพื่อดูแลโรคอ้วนตามที่แพทย์ประเมิน","ordered":true,"facts":["ฉีดสัปดาห์ละครั้งตามขนาดที่แพทย์กำหนด","ใช้วันเดิมของแต่ละสัปดาห์","ติดตามน้ำหนักและอาการทางระบบทางเดินอาหาร","หากมีอาการรุนแรงให้หยุดยาและติดต่อแพทย์"]},{"name":"Tirzepatide","photo":"assets/medicine/weight-diecut-v1/mounjaro-kwikpen-diecut-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับการดูแลโรคอ้วนเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ฉีดสัปดาห์ละครั้งตามคำสั่งแพทย์","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกันโดยไม่ได้รับคำแนะนำ","ติดตามผลข้างเคียงตามนัด"]}]' data-treatment-diagnosis="โรคอ้วนที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ดำเนินแผนควบคุมน้ำหนักต่อเนื่อง ใช้ยาตามใบสั่งแพทย์ และติดตามน้ำหนัก รอบเอว และอาการทุกสัปดาห์">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
-              <strong>Safe Weight Progress</strong>
-              <span class="treatment-card__programme">Obesity treatment</span>
+              <strong data-programme-brand>re:body</strong>
+              <span class="treatment-card__programme">Weight management with GLP-1</span>
             </span>
             <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
@@ -2973,11 +2973,11 @@
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-treatment-date="30/06/2026" data-treatment-refill-text="24 วัน · เติมยาได้ 19 ก.ย. 2026" data-treatment-rx="RX-2026-10293" data-treatment-note='{"goals":["ชะลอผมร่วงบริเวณกลางศีรษะและกรอบหน้า","เห็นความหนาแน่นของเส้นผมเพิ่มขึ้นภายใน 6 เดือน"],"findings":["ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน","แนวผมด้านหน้าร่นขึ้นเล็กน้อย","หนังศีรษะไม่มีผื่นหรือการอักเสบ"],"assessment":["ภาวะผมร่วงจากพันธุกรรมระยะเริ่มต้น","ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้"],"plan":["ใช้ยาตามใบสั่งยา RX-2026-10293 อย่างต่อเนื่อง","ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน","ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม","หากมีอาการผิดปกติให้หยุดยาและติดต่อแพทย์"]}' data-treatment-medicines='[{"name":"Finasteride 1 mg","photo":"assets/medicine/finasteride-bottle-cutout.png","kind":"ยารับประทานสำหรับผมร่วง","purpose":"ช่วยชะลอผมร่วงจากพันธุกรรมตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานครั้งละ 1 เม็ด","วันละ 1 ครั้ง เวลาเดิมทุกวัน","ควรใช้ต่อเนื่องตามแผนแพทย์","หากมีอาการผิดปกติให้ติดต่อแพทย์"]},{"name":"Minoxidil 5% topical","photo":"assets/medicine/minoxidil-pump-cutout.png","kind":"ยาทาสำหรับผมร่วง","purpose":"ช่วยกระตุ้นการงอกและเพิ่มความหนาแน่นของเส้นผม","ordered":true,"facts":["ใช้บนหนังศีรษะที่แห้งตามปริมาณที่แพทย์แนะนำ","ล้างมือหลังใช้ทุกครั้ง","หลีกเลี่ยงการสัมผัสดวงตา","อาจระคายเคืองหนังศีรษะในบางราย"]},{"name":"Dutasteride 0.5 mg","photo":"assets/medicine/real-v1/generic-tablet-blister-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับผมร่วงจากพันธุกรรมเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["ใช้ตามใบสั่งแพทย์เท่านั้น","แพทย์จะประเมินประวัติสุขภาพก่อนเริ่มยา","ไม่ควรปรับขนาดยาด้วยตนเอง","ติดตามผลตามนัด"]}]' data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ใช้ยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับแพทย์นรินทร์ตามนัด">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="hair-skin" data-demo-last-refill-days="21" data-demo-refills-remaining="3" data-treatment-date="30/06/2026" data-treatment-refill-text="24 วัน · เติมยาได้ 19 ก.ย. 2026" data-treatment-rx="RX-2026-10293" data-treatment-note='{"goals":["ชะลอผมร่วงบริเวณกลางศีรษะและกรอบหน้า","เห็นความหนาแน่นของเส้นผมเพิ่มขึ้นภายใน 6 เดือน"],"findings":["ผมบางบริเวณกลางศีรษะ สังเกตมาประมาณ 6 เดือน","แนวผมด้านหน้าร่นขึ้นเล็กน้อย","หนังศีรษะไม่มีผื่นหรือการอักเสบ"],"assessment":["ภาวะผมร่วงจากพันธุกรรมระยะเริ่มต้น","ไม่พบสัญญาณที่ต้องส่งตรวจเพิ่มเติมในขณะนี้"],"plan":["ใช้ยาตามใบสั่งยา RX-2026-10293 อย่างต่อเนื่อง","ผลมักเห็นชัดหลังใช้ต่อเนื่อง 3 ถึง 6 เดือน","ถ่ายรูปบริเวณที่กังวลทุกเดือนด้วยมุมและระยะเดิม","หากมีอาการผิดปกติให้หยุดยาและติดต่อแพทย์"]}' data-treatment-medicines='[{"name":"Finasteride 1 mg","photo":"assets/medicine/finasteride-bottle-cutout.png","kind":"ยารับประทานสำหรับผมร่วง","purpose":"ช่วยชะลอผมร่วงจากพันธุกรรมตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานครั้งละ 1 เม็ด","วันละ 1 ครั้ง เวลาเดิมทุกวัน","ควรใช้ต่อเนื่องตามแผนแพทย์","หากมีอาการผิดปกติให้ติดต่อแพทย์"]},{"name":"Minoxidil 5% topical","photo":"assets/medicine/minoxidil-pump-cutout.png","kind":"ยาทาสำหรับผมร่วง","purpose":"ช่วยกระตุ้นการงอกและเพิ่มความหนาแน่นของเส้นผม","ordered":true,"facts":["ใช้บนหนังศีรษะที่แห้งตามปริมาณที่แพทย์แนะนำ","ล้างมือหลังใช้ทุกครั้ง","หลีกเลี่ยงการสัมผัสดวงตา","อาจระคายเคืองหนังศีรษะในบางราย"]},{"name":"Dutasteride 0.5 mg","photo":"assets/medicine/real-v1/generic-tablet-blister-v1.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับผมร่วงจากพันธุกรรมเมื่อแพทย์ประเมินว่าเหมาะสม","ordered":false,"facts":["ใช้ตามใบสั่งแพทย์เท่านั้น","แพทย์จะประเมินประวัติสุขภาพก่อนเริ่มยา","ไม่ควรปรับขนาดยาด้วยตนเอง","ติดตามผลตามนัด"]}]' data-treatment-diagnosis="ภาวะผมร่วงที่ตอบสนองต่อแผนการรักษา" data-treatment-plan="ใช้ยาตามแผน บันทึกอาการและผลข้างเคียง และติดตามผลกับแพทย์นรินทร์ตามนัด">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
-              <strong>Ongoing Hair Recovery</strong>
-              <span class="treatment-card__programme">Hair loss &amp; scalp</span>
+              <strong data-programme-brand>re:hair</strong>
+              <span class="treatment-card__programme">Care for hair loss and thinning</span>
             </span>
             <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
@@ -2988,11 +2988,11 @@
           </span>
           <span class="treatment-card__go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sexual-health" data-treatment-date="18/07/2026" data-treatment-refill-text="18 วัน · เติมยาได้ 25 ก.ย. 2026" data-treatment-rx="RX-2026-10304" data-treatment-note='{"goals":["กลับมามั่นใจในความสัมพันธ์","คงการแข็งตัวได้เพียงพอสำหรับกิจกรรมทางเพศ"],"findings":["มีอาการเป็นบางครั้งในช่วง 4 เดือนที่ผ่านมา","ไม่มีอาการเจ็บหน้าอกหรือเป็นลมขณะออกแรง","ไม่ได้ใช้ยาไนเตรตหรือยาแก้เจ็บหน้าอก"],"assessment":["ภาวะหย่อนสมรรถภาพระดับเล็กน้อยถึงปานกลาง","เหมาะสำหรับติดตามผลผ่านระบบแพทย์ทางไกล"],"plan":["ใช้ยาตามใบสั่งแพทย์ก่อนกิจกรรมทางเพศ","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ใช้เกินขนาดหรือความถี่ที่แพทย์กำหนด","ติดต่อแพทย์ทันทีหากมีอาการผิดปกติรุนแรง"]}' data-treatment-medicines='[{"name":"Sildenafil 50 mg","photo":"assets/medicine/ed-sheet-v1/viagra-100mg-vgr100-cutout.png","kind":"ยารับประทานสำหรับภาวะหย่อนสมรรถภาพ","purpose":"ช่วยเพิ่มการไหลเวียนเลือดเมื่อมีการกระตุ้นทางเพศตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานตามขนาดที่แพทย์กำหนด","ใช้ก่อนกิจกรรมทางเพศตามคำแนะนำ","ห้ามใช้ร่วมกับยาไนเตรต","หากมีอาการเจ็บหน้าอกหรืออาการรุนแรงให้ไปโรงพยาบาล"]},{"name":"Tadalafil 10 mg","photo":"assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับภาวะหย่อนสมรรถภาพที่ออกฤทธิ์นานกว่า","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกัน","ติดตามอาการและผลข้างเคียงกับแพทย์"]}]' data-treatment-diagnosis="ภาวะหย่อนสมรรถภาพที่ตอบสนองต่อการรักษา" data-treatment-plan="ใช้ยาตามใบสั่งแพทย์เฉพาะเมื่อจำเป็น หลีกเลี่ยงยาที่มีข้อห้ามร่วม และติดตามผลตามนัด">
+        <button class="card card--pad-sm stack-3 treatment-card" type="button" data-treatment-open data-category="sexual-health" data-demo-last-refill-days="35" data-demo-refills-remaining="2" data-treatment-date="18/07/2026" data-treatment-refill-text="18 วัน · เติมยาได้ 25 ก.ย. 2026" data-treatment-rx="RX-2026-10304" data-treatment-note='{"goals":["กลับมามั่นใจในความสัมพันธ์","คงการแข็งตัวได้เพียงพอสำหรับกิจกรรมทางเพศ"],"findings":["มีอาการเป็นบางครั้งในช่วง 4 เดือนที่ผ่านมา","ไม่มีอาการเจ็บหน้าอกหรือเป็นลมขณะออกแรง","ไม่ได้ใช้ยาไนเตรตหรือยาแก้เจ็บหน้าอก"],"assessment":["ภาวะหย่อนสมรรถภาพระดับเล็กน้อยถึงปานกลาง","เหมาะสำหรับติดตามผลผ่านระบบแพทย์ทางไกล"],"plan":["ใช้ยาตามใบสั่งแพทย์ก่อนกิจกรรมทางเพศ","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ใช้เกินขนาดหรือความถี่ที่แพทย์กำหนด","ติดต่อแพทย์ทันทีหากมีอาการผิดปกติรุนแรง"]}' data-treatment-medicines='[{"name":"Sildenafil 50 mg","photo":"assets/medicine/ed-sheet-v1/viagra-100mg-vgr100-cutout.png","kind":"ยารับประทานสำหรับภาวะหย่อนสมรรถภาพ","purpose":"ช่วยเพิ่มการไหลเวียนเลือดเมื่อมีการกระตุ้นทางเพศตามที่แพทย์ประเมิน","ordered":true,"facts":["รับประทานตามขนาดที่แพทย์กำหนด","ใช้ก่อนกิจกรรมทางเพศตามคำแนะนำ","ห้ามใช้ร่วมกับยาไนเตรต","หากมีอาการเจ็บหน้าอกหรืออาการรุนแรงให้ไปโรงพยาบาล"]},{"name":"Tadalafil 10 mg","photo":"assets/medicine/ed-sheet-v1/cialis-20mg-c20-cutout.png","kind":"ทางเลือกที่แพทย์อาจพิจารณา","purpose":"อีกทางเลือกสำหรับภาวะหย่อนสมรรถภาพที่ออกฤทธิ์นานกว่า","ordered":false,"facts":["แพทย์เป็นผู้ประเมินความเหมาะสมและขนาดยา","ห้ามใช้ร่วมกับยาไนเตรต","ไม่ควรใช้ร่วมกับยากลุ่มเดียวกัน","ติดตามอาการและผลข้างเคียงกับแพทย์"]}]' data-treatment-diagnosis="ภาวะหย่อนสมรรถภาพที่ตอบสนองต่อการรักษา" data-treatment-plan="ใช้ยาตามใบสั่งแพทย์เฉพาะเมื่อจำเป็น หลีกเลี่ยงยาที่มีข้อห้ามร่วม และติดตามผลตามนัด">
           <span class="treatment-card__head">
             <span class="treatment-card__title">
-              <strong>Confidence Recovery Programme</strong>
-              <span class="treatment-card__programme">Erectile dysfunction</span>
+              <strong data-programme-brand>re:flow</strong>
+              <span class="treatment-card__programme">Care for male sexual function</span>
             </span>
             <span class="badge badge--ok" data-treatment-status>กำลังรักษา</span>
           </span>
@@ -3900,9 +3900,9 @@
   <script src="qa-session-reset.js?v=20260920-float-v1"></script>
   <script src="shared-view-components.js?v=20261010-shared-views-v272"></script>
   <script src="article-data.js?v=20261122-krane-editorial-copy"></script>
-  <script src="article-store.js?v=20261025-cms-publish"></script>
+  <script src="article-store.js?v=20261124-docs-parity"></script>
   <script src="article-mocks.js?v=20261121-article-license"></script>
-<script src="patient-date-picker.js?v=20261121-mobile-dob"></script>
+<script src="patient-date-picker.js?v=20261124-wheel-only-dob"></script>
 <script>
   // Keep every primary action outside the scrolling content region. Some legacy
   // prototype sections close their body after the footer; normalising that DOM
@@ -9072,12 +9072,18 @@
     card.querySelector('.treatment-pause-status')?.remove();
     card.classList.add('refill-card');
     card.setAttribute('role','listitem');
-    const supply=((source.dataset.treatmentRefillText || '').match(/^(\d+\s*วัน)/) || [])[1] || '';
+    const en=document.documentElement.lang.startsWith('en');
+    const days=source.dataset.demoLastRefillDays;
+    const remaining=source.dataset.demoRefillsRemaining;
+    const lastRefill=days==='never' ? (en ? 'Never refilled' : 'ยังไม่เคยเติมยา')
+      : !/^\d+$/.test(days||'') ? '—' : days==='0' ? (en ? 'Today' : 'วันนี้') : en ? `${days} day${days==='1'?'':'s'} ago` : `${days} วันที่แล้ว`;
+    const refillCount=!/^\d+$/.test(remaining||'') ? '—'
+      : en ? `${remaining} refill${remaining==='1'?'':'s'}` : `${remaining} ครั้ง`;
     const opens=treatmentRefillOpensOn(category);
     const expired=Boolean(REFILL_EXPIRES[category]) && new Date(REFILL_EXPIRES[category])<today;
-    const due=!expired && (!opens || opens.date<=today);
-    const rows=[['ยาคงเหลือ',supply],['เติมยาได้',expired ? 'ใบสั่งยาหมดอายุ' : (due ? 'วันนี้' : opens.label)]]
-      .filter(([,value]) => value)
+    const exhausted=remaining==='0';
+    const due=!expired && !exhausted && (!opens || opens.date<=today);
+    const rows=[[en?'Last refill':'เติมยาครั้งล่าสุด',lastRefill],[en?'Refills remaining':'จำนวนครั้งที่เติมยาได้อีก',refillCount]]
       .map(([label,value]) => {
         const row=document.createElement('span');
         row.className='followup-row';
@@ -9093,7 +9099,7 @@
     const badge=card.querySelector('.badge');
     if(badge){
       badge.removeAttribute('data-treatment-status');
-      badge.textContent=due ? 'เติมยาได้' : (expired ? 'หมดอายุ' : 'ยังไม่ถึงรอบ');
+      badge.textContent=en ? (due ? 'Refill available' : expired ? 'Expired' : exhausted ? 'No refills left' : 'Not yet available') : (due ? 'เติมยาได้' : expired ? 'หมดอายุ' : exhausted ? 'ไม่มีสิทธิ์เติมยาเหลือ' : 'ยังไม่ถึงรอบ');
       badge.className=due ? 'badge badge--ok' : 'badge';
     }
     if(due) card.dataset.refillChoice=category;
@@ -9105,11 +9111,17 @@
     if(sourceFolder){const folder=sourceFolder.cloneNode(false);folder.removeAttribute('id');sourceFolder.querySelectorAll('.treatment-folder__sheet').forEach(sheet=>folder.append(sheet.cloneNode(true)));folder.append(card);window.kraneTreatmentFolders?.outline(card,folder);return folder;}
     return card;
   }
+  function renderRefillChoices(){
+    const today=new Date(); today.setHours(0,0,0,0);
+    const list=refillSheet?.querySelector('[data-refill-cards]');
+    if(list) list.replaceChildren(...[...document.querySelectorAll('#profile .treatment-card[data-category]:not([data-category="general"])')].map(source => refillCardFor(source,today)));
+  }
+  document.addEventListener('krane:languagechange',()=>{
+    if(refillSheet && !refillSheet.hidden) renderRefillChoices();
+  });
   function openRefillSheet(){
     if(!refillSheet) return;
-    const today=new Date(); today.setHours(0,0,0,0);
-    const list=refillSheet.querySelector('[data-refill-cards]');
-    if(list) list.replaceChildren(...[...document.querySelectorAll('#profile .treatment-card[data-category]:not([data-category="general"])')].map(source => refillCardFor(source,today)));
+    renderRefillChoices();
     refillSheet.dataset.refillGated='1';
     // "All refillable" only means something when more than one refill is open.
     const allOption=refillSheet.querySelector('[data-refill-choice="all"]');
@@ -9557,14 +9569,32 @@
       if(node.hasAttribute('data-ed-booking-notification')) node.classList.toggle('notif--unread',Boolean(booking&&!booking.read));
     });
   }
-  function syncBookedAppointmentView(appointmentWhen){
+  function syncBookedAppointmentView(){
     const screen=document.getElementById('appointment-booked');
     if(!screen) return;
-    const when=String(appointmentWhen || '').trim();
+    const clinical=window.KraneClinical;
+    const current=clinical?.current();
+    const shared=flowState.sharedEncounterId || (current?.id!=='CONS-2041' && current?.id);
+    let when=String(flowState.appointmentWhen || '').trim();
+    if(shared){
+      // Only the selected patient's existing booked encounter can supply the
+      // canonical confirmation timestamp. Other appointments remain in history.
+      const booking=current?.id===shared && clinical.records('appointment').find(item=>
+        item.encounterId===shared && item.patientId===current.patientId && item.status==='booked' &&
+        Number.isFinite(Date.parse(item.at)));
+      const locale=document.body.classList.contains('lang-en') || document.documentElement.lang==='en' ? 'en-GB' : 'th-TH';
+      when=booking ? new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(new Date(booking.at)) : '';
+    }
     screen.querySelectorAll('[data-booking-confirmed]').forEach(node => { node.hidden=!when; });
     screen.querySelectorAll('[data-booking-unavailable]').forEach(node => { node.hidden=Boolean(when); });
     screen.querySelector('[data-appointment-when]').textContent=when;
   }
+  function refreshActiveBookedAppointment(){
+    if(document.getElementById('appointment-booked')?.classList.contains('active')) syncBookedAppointmentView();
+  }
+  window.addEventListener('krane:clinical-change',refreshActiveBookedAppointment);
+  document.addEventListener('krane:clinical-selected',refreshActiveBookedAppointment);
+  document.addEventListener('krane:languagechange',refreshActiveBookedAppointment);
   function finishConsultationHandoff(){
     const target=consultationHandoffTarget();
     if(target!=='appointment-booked' || !pendingEdBookingHome()){ show(target); return; }
@@ -10517,7 +10547,7 @@
     if(id==='profile') syncHomeFollowUpCta();
     if(id==='appointment'){ syncAppointmentDays(); resetAppointment(); }
     if(id==='appointment-booked'){
-      syncBookedAppointmentView(flowState.appointmentWhen);
+      syncBookedAppointmentView();
     }
     /* Client, 22 Sep: this used to raise a toast on arrival saying the fee is
        settled with the medicine. The notice above the pay button says the same
@@ -11626,7 +11656,7 @@
     if(authContinue){
       const phone=document.getElementById('social-phone')?.value.trim() || '';
       const birthDate=document.getElementById('social-birth-date');
-      if(!birthDate?.value){
+      if(!(window.KranePatientDatePicker?.valid(birthDate) ?? Boolean(birthDate?.value))){
         showActionToast('กรุณาเลือกวันเกิด','warning');
         if(window.KranePatientDatePicker) window.KranePatientDatePicker.focus(birthDate);
         else birthDate?.focus();
@@ -12372,9 +12402,10 @@
         insuranceId?.focus();
         return;
       }
-      if(!insuranceDob?.value){
+      if(!(window.KranePatientDatePicker?.valid(insuranceDob) ?? Boolean(insuranceDob?.value))){
         showActionToast('กรุณาเลือกวันเกิด','warning');
-        insuranceDob?.focus();
+        if(window.KranePatientDatePicker) window.KranePatientDatePicker.focus(insuranceDob);
+        else insuranceDob?.focus();
         return;
       }
       if(insuranceEntry === 'partner'){
@@ -13374,9 +13405,10 @@
     }
     if(intakeComplete.closest('#intake-general')){
       const dob=document.getElementById('intake-dob');
-      if(!dob?.value){
+      if(!(window.KranePatientDatePicker?.valid(dob) ?? Boolean(dob?.value))){
         showActionToast('กรุณาเลือกวันเกิด','warning');
-        dob?.focus();
+        if(window.KranePatientDatePicker) window.KranePatientDatePicker.focus(dob);
+        else dob?.focus();
         return;
       }
       /* The three safety answers decide whether it is safe to prescribe, so
@@ -14211,8 +14243,7 @@
     // Written by script, so it takes the language from the page rather than
     // from the dictionary, which only swaps text that was in the markup.
     if(!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return isEnglishUi() ? 'DD / MM / YYYY' : 'วว / ดด / ปปปป';
-    const [year,month,day]=value.split('-');
-    return `${day} / ${month} / ${year}`;
+    return window.KranePatientDatePicker?.format(value,isEnglishUi()) || value;
   }
   function syncPatientDateField(input){
     const field=input.closest('.float-field');
@@ -14225,7 +14256,7 @@
     value.classList.toggle('is-placeholder',!input.value);
   }
   function syncPatientDateFields(){
-    document.querySelectorAll('.date-control>input[type="date"]').forEach(syncPatientDateField);
+    document.querySelectorAll('.date-control>input[data-patient-dob]').forEach(syncPatientDateField);
   }
   document.addEventListener('krane:languagechange',syncPatientDateFields);
   document.addEventListener('krane:languagechange',()=>document.querySelectorAll('[data-order-progress][data-progress-label-en]').forEach(bar=>{
@@ -14248,10 +14279,10 @@
   }
   function enhancePatientDateFields(){
     const today=new Date().toISOString().slice(0,10);
-    document.querySelectorAll('input[type="date"].input').forEach(input => {
+    document.querySelectorAll('input[data-patient-dob].input').forEach(input => {
       input.min=input.min || '1900-01-01';
       input.max=input.max || today;
-      if(input.closest('.date-control')){ syncPatientDateField(input); return; }
+      if(input.closest('.date-control')){ window.KranePatientDatePicker?.enhance(input); syncPatientDateField(input); return; }
       const control=document.createElement('div');
       control.className='date-control';
       input.parentNode.insertBefore(control,input);
@@ -14261,7 +14292,7 @@
       display.setAttribute('aria-hidden','true');
       display.innerHTML='<span></span><span class="date-control__value is-placeholder"></span><svg class="date-control__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>';
       control.appendChild(display);
-      if(input.id==='social-birth-date') window.KranePatientDatePicker?.enhance(input);
+      window.KranePatientDatePicker?.enhance(input);
       input.addEventListener('input',() => syncPatientDateField(input));
       input.addEventListener('change',() => syncPatientDateField(input));
       input.addEventListener('click',event => {
@@ -14978,6 +15009,6 @@
 <script src="../krane-clinical-ui.js?v=20261017-workflow"></script>
 <script src="../krane-chat-typing.js?v=20261119-typing-inline"></script>
 <script src="../krane-clinical-requests.js?v=20261121-hide-empty-patient"></script><script src="../krane-clinical-assets.js?v=20261017-workflow"></script>
-<script src="../krane-clinical-workspace.js?v=20261115-chat-clinician"></script>
-<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261120-remove-rx-modal"></script><script src="demo-walkthrough-label.js?v=20261120-guest-inline"></script><script src="order-reference-copy.js?v=20261120-order-copy" defer></script><script src="treatment-archive.js?v=20261120" defer></script></body>
+<script src="../krane-clinical-workspace.js?v=20261124-booking-confirmation"></script>
+<script src="ui-arrows.js?v=20261118" defer></script><script src="consultation-interactions.js?v=20261120-remove-rx-modal"></script><script src="demo-walkthrough-label.js?v=20261124-guest-signup"></script><script src="order-reference-copy.js?v=20261120-order-copy" defer></script><script src="treatment-archive.js?v=20261120" defer></script></body>
 </html>

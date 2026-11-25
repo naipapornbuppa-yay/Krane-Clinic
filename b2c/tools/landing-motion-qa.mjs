@@ -8,77 +8,43 @@ import assert from 'node:assert/strict';
 const root=resolve(import.meta.dirname,'../..'),out=process.env.QA_OUTPUT||'/tmp/krane-motion-qa';await mkdir(out,{recursive:true});
 const server=createServer(async(req,res)=>{try{const f=join(root,decodeURIComponent(req.url.split('?')[0]));if(!(await stat(f)).isFile())throw Error();res.setHeader('Content-Type',({'.js':'text/javascript','.html':'text/html','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.mp4':'video/mp4'})[extname(f)]||'application/octet-stream');res.end(await readFile(f))}catch{res.writeHead(404).end()}});await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=(process.env.KRANE_BASE||`http://127.0.0.1:${server.address().port}`).replace(/\/$/,''),browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox']});let checks=0;const errors=[],check=(v,label)=>{assert(v,label);checks++};
-try{for(const width of [390,1440]){
- const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'no-preference'});await necessaryConsent(ctx);const p=await ctx.newPage();p.setDefaultTimeout(12000);p.on('pageerror',e=>errors.push(e.message));
+// The shipped Landing uses the four-screen How carousel, not the retired
+// pc-* card demos. Verify actual decoded assets and input/preference changes.
+try {
+for(const width of [390,1440]){
+ const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'no-preference'});await necessaryConsent(ctx);
+ const p=await ctx.newPage();p.setDefaultTimeout(15000);p.on('pageerror',e=>errors.push(e.message));
  await p.goto(base+'/b2c/krane-b2c-landing.html?lang=en',{waitUntil:'domcontentloaded'});
- await p.locator('.programme-chapter img').evaluateAll(async es=>{for(const e of es){e.loading='eager';await e.decode().catch(()=>{})}});await p.evaluate(()=>document.fonts.ready);
- const links=await p.locator('.pc-actions a').evaluateAll(es=>es.map(e=>e.href));
- await p.waitForFunction(()=>document.querySelector('.hero__intro-copy h1').dataset.motionState==='complete');
- check(await p.locator('[data-motion-kind="hero-product"]').count()===3,'Three supplied hero products staged '+width);
- const hair=p.locator('.pc-hair .pc-checkin>div').first();await hair.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));
- await p.waitForFunction(()=>document.querySelector('.pc-hair .pc-checkin>div').dataset.motionState==='running');
- const timing=await hair.evaluate(e=>e.getAnimations().find(a=>a.id==='krane-hair-record').effect.getTiming());check(timing.iterations===1&&timing.duration<=700,'Hair motion is finite and bounded '+width);
- await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('.pc-hair .pc-checkin>div').dataset.motionState==='paused');
- const time=await hair.evaluate(async e=>{const a=e.getAnimations().find(a=>a.id==='krane-hair-record');await a.ready;return a.currentTime});await p.waitForTimeout(200);
- check(await hair.evaluate((e,t)=>Math.abs(e.getAnimations().find(a=>a.id==='krane-hair-record').currentTime-t)<2,time),'Offscreen animation time freezes '+width);
- await hair.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('.pc-hair .pc-checkin>div').dataset.motionState==='complete');
- check(await hair.evaluate(e=>e.getAnimations().filter(a=>a.id.startsWith('krane-')).length===0),'Finished motion releases its animation '+width);
- const chart=p.locator('[data-weight-motion]');await p.locator('.pc-chart').evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>Number(document.querySelector('[data-weight-number]').textContent)<82.4);
- await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-weight-motion]').dataset.motionRunning==='false');const number=await p.locator('[data-weight-number]').textContent();await p.waitForTimeout(500);check(await p.locator('[data-weight-number]').textContent()===number,'Chart clock pauses offscreen '+width);
- await p.locator('.pc-chart').evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('[data-weight-motion]').classList.contains('is-complete'));check(await p.locator('[data-weight-number]').textContent()==='72.0','Existing illustrative chart completes unchanged '+width);
- // Exercise the restored phone conversation and synchronized explanatory bubbles.
- const chat=p.locator('[data-chat-motion]'),toggle=chat.locator('.pc-chat-toggle');
- check(await chat.count()===1&&await toggle.count()===1,'One restored conversation and inline animation control '+width);
- check(await p.locator('[data-feature-film], [data-feature-film-toggle]').count()===0,'Rejected film and circular overlay are absent '+width);
- await p.waitForFunction(()=>{const e=document.querySelector('[data-chat-motion]');return !/[\u0e00-\u0e7f]/.test(e.textContent)&&[...e.querySelectorAll('[aria-label], [placeholder]')].every(n=>!/[\u0e00-\u0e7f]/.test((n.getAttribute('aria-label')||'')+(n.getAttribute('placeholder')||'')))});check(true,'Every phone message, date, cue and accessible label is English '+width);
- check(await chat.locator('.pc-messages p').count()===8&&await chat.locator('.pc-chat-pill').count()===3,'Eight approved messages and three explanatory bubbles '+width);
- check(await chat.locator('.pc-device-frame').count()===0,'Distorted photographic phone overlay is absent '+width);
- check(await chat.locator('.pc-chat-header').count()===0&&await chat.locator('.pc-app-journey>span').count()===3,'App header uses the real three-step journey, not an invented doctor row '+width);
- check(await chat.locator('.pc-app-bar img').evaluateAll(es=>es.length===1&&es.every(img=>img.complete&&img.naturalWidth>0)),'Canonical Krane lockup loads '+width);
- check(await chat.evaluate(e=>{const c=e.getBoundingClientRect(),phone=e.querySelector('.pc-device').getBoundingClientRect();return Math.abs((c.left+c.right)/2-(phone.left+phone.right)/2)<2}),'Phone is centered within the main card '+width);
- if(width>=1024)check(await chat.locator('.pc-device').evaluate(e=>Math.abs(e.getBoundingClientRect().width-280)<1),'Desktop phone keeps compact 280px width '+width);
- const oneCue=async()=>check(await chat.locator('.pc-chat-pill').evaluateAll(es=>es.filter(e=>getComputedStyle(e).display!=='none'&&getComputedStyle(e).visibility!=='hidden').length===1),'Exactly one explanatory cue is visible '+width);
- const checkCuePosition=async key=>{const result=await chat.evaluate((e,key)=>{const style=getComputedStyle(e),wide=e.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)>=800,p=e.querySelector('.pc-device').getBoundingClientRect(),cue=e.querySelector('[data-chat-pill="'+key+'"]').getBoundingClientRect();return {wide,safe:!wide?cue.bottom<=p.top+1:key==='4'?cue.left>=p.right-1:cue.right<=p.left+1,level:!wide?cue.top<p.top:(key==='0'?cue.top<p.top+p.height*.3:key==='4'?cue.top>p.top+p.height*.35&&cue.top<p.top+p.height*.6:cue.top>p.top+p.height*.65)}} ,key);check(result.safe&&result.level,'Care cue '+key+' follows its side/height without covering the screen '+width)};
- await oneCue();
- const checkCueText=async()=>{const result=await chat.locator('.pc-chat-pill').evaluateAll(es=>es.map(e=>{const before=e.getAttribute('style');e.style.display='flex';e.style.visibility='hidden';const span=e.querySelector('span'),small=e.querySelector('small'),r=document.createRange();const text=[...span.childNodes].find(n=>n.nodeType===Node.TEXT_NODE);r.selectNodeContents(text);const singleHeading=r.getClientRects().length===1&&small.getBoundingClientRect().height<=parseFloat(getComputedStyle(small).lineHeight)+1;const noOverflow=span.scrollWidth<=span.clientWidth+1&&small.scrollWidth<=small.clientWidth+1;const normalBreak=getComputedStyle(span).overflowWrap!=='anywhere';if(before===null)e.removeAttribute('style');else e.setAttribute('style',before);return {singleHeading,noOverflow,normalBreak}}));check(result.every(x=>x.noOverflow&&x.normalBreak),'All cue copy fits without forced word breaks '+width);if(await p.locator('html').getAttribute('lang')==='th')check(result.every(x=>x.singleHeading),'Thai cue heading and subtext each stay on one intact line '+width)};
- await checkCueText();
- check(await chat.locator('.pc-reply').first().evaluate(e=>getComputedStyle(e).backgroundColor==='rgb(183, 198, 232)'),'Patient bubbles use the actual app slate-blue token '+width);
- if(width>=761){const layout=await chat.evaluate(e=>{const c=e.getBoundingClientRect(),sidebar=document.querySelector('#ed-program .pc-privacy').getBoundingClientRect();return {chat:c.width,sidebar:sidebar.width,left:c.left,right:sidebar.left}});check(layout.chat>layout.sidebar&&layout.left<layout.right,'Chat leads the wide primary column '+width);}
- const showChat=async()=>{await chat.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').getBoundingClientRect().bottom>0)};
- const hideChat=async()=>{await p.evaluate(()=>scrollTo(0,0));await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='false')};
- const snapshot=()=>chat.evaluate(e=>JSON.stringify({scene:e.dataset.chatScene,messages:[...e.querySelectorAll('.pc-messages p')].map(m=>m.className),typing:e.querySelector('.pc-typing').className,pills:[...e.querySelectorAll('.pc-chat-pill')].map(p=>p.className)}));
- const checkFrozen=async label=>{const before=await snapshot();await p.waitForTimeout(2100);check(await snapshot()===before,label+' '+width);check(await chat.locator('.pc-chat-pill.is-active').evaluateAll(es=>es.every(e=>getComputedStyle(e).animationPlayState.split(',').every(s=>s.trim()==='paused'))),'Floating bubble animation pauses '+width)};
- const waitRunning=()=>p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='true');
- check(await toggle.evaluate(e=>getComputedStyle(e).clipPath==='inset(50%)'&&e.getBoundingClientRect().width<=1&&e.tabIndex===0&&!!e.getAttribute('aria-label')),'Standalone pause is visually hidden but keyboard accessible '+width);
- const checkToggle=async paused=>{const text=paused?'Play animation':'Pause animation';await p.waitForFunction(text=>document.querySelector('.pc-chat-toggle').getAttribute('aria-label')===text,text);check(await toggle.getAttribute('aria-label')===text&&await toggle.getAttribute('aria-pressed')===String(paused),'English icon control matches pause state '+width);check(await toggle.textContent()===''&&await toggle.locator('svg').count()===1,'Pause control is icon-only '+width)};
- await showChat();await waitRunning();await p.waitForFunction(()=>document.querySelector('[data-chat-motion] .pc-messages p.is-shown'));
- check(await chat.locator('[data-chat-pill="0"]').evaluate(e=>e.classList.contains('is-active')),'First care bubble accompanies the conversation '+width);await checkCuePosition('0');await checkToggle(false);
- await hideChat();await checkFrozen('Offscreen conversation freezes');await showChat();await waitRunning();
- await p.keyboard.press('Tab');await toggle.focus();check(await toggle.evaluate(e=>e.matches(':focus-visible')&&getComputedStyle(e).clipPath==='none'),'Keyboard focus reveals accessible pause control '+width);await p.keyboard.press('Space');await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').dataset.motionRunning==='false');await checkFrozen('Manual pause freezes conversation');await checkToggle(true);
- await hideChat();await showChat();await checkFrozen('Manual pause survives viewport re-entry');
- await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));
- check(await chat.locator('.pc-messages p.is-shown').count()===8,'Reduced motion reveals every example message '+width);
- check(await toggle.isHidden(),'Reduced motion needs no animation control '+width);
- check(await p.locator('[data-motion-kind]').evaluateAll(es=>es.every(e=>e.dataset.motionState==='complete')),'Preference change completes all entrance motion '+width);
- await p.emulateMedia({reducedMotion:'no-preference'});await checkToggle(true);await checkFrozen('Manual pause survives motion preference changes');
- await p.keyboard.press('Tab');await toggle.focus();check(await toggle.evaluate(e=>e.matches(':focus-visible')&&getComputedStyle(e).clipPath==='none'),'Keyboard focus reveals accessible pause control '+width);await p.keyboard.press('Space');await waitRunning();await checkToggle(false);
- await p.waitForFunction(()=>document.querySelector('[data-chat-motion] .pc-messages p.is-shown'));
- await hideChat();await checkFrozen('Manually resumed conversation still pauses offscreen');await showChat();await waitRunning();
- await p.waitForFunction(()=>document.querySelector('[data-chat-pill="4"]').classList.contains('is-active'),null,{timeout:22000});check(true,'Health-assessment bubble follows its matching message '+width);await oneCue();await checkCuePosition('4');
- await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:22000});
- check(await chat.locator('.pc-messages p.is-shown').count()===8&&await chat.locator('[data-chat-pill="7"]').evaluate(e=>e.classList.contains('is-active')),'Conversation completes with the final care bubble '+width);await oneCue();await checkCuePosition('7');
- await p.waitForFunction(()=>!document.querySelector('[data-chat-motion]').classList.contains('is-complete'),null,{timeout:8000});check(true,'Visible conversation repeats after its reading hold '+width);
- await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));
- check(await chat.evaluate(e=>e.getAnimations({subtree:true}).length===0),'Reduced motion stops bubbles and device transitions '+width);
- await p.evaluate(()=>{document.documentElement.lang='th';document.dispatchEvent(new Event('krane:languagechange'))});await p.waitForTimeout(150);await checkCueText();await p.evaluate(()=>{document.documentElement.lang='en';document.dispatchEvent(new Event('krane:languagechange'))});await p.waitForTimeout(150);
- check(await p.locator('.programme-chapter').count()===3,'All programme chapters remain present '+width);
- check(JSON.stringify(await p.locator('.pc-actions a').evaluateAll(es=>es.map(e=>e.href)))===JSON.stringify(links),'CTA destinations unchanged '+width);
- check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
- await p.locator('#ed-program .pc-head').scrollIntoViewIfNeeded();await p.screenshot({path:join(out,'private-'+width+'.png'),animations:'disabled'});
+ const section=p.locator('[data-how-carousel]'), slides=section.locator('[data-how-slide]'), viewport=section.locator('[data-how-viewport]');
+ const stems=['assessment','video-consultation','delivery','follow-up'];
+ check(await slides.count()===4,'All four service previews exist '+width);
+ const current=()=>section.getAttribute('data-how-active');
+ const set=async i=>{await section.locator('[data-how-go="'+i+'"]').click();await p.waitForFunction(i=>document.querySelector('[data-how-carousel]').dataset.howActive===String(i),i);};
+ const source=async (i,ext)=>{
+  const preview=slides.nth(i).locator('picture img');
+  await preview.evaluate(img=>{img.loading='eager'});
+  await p.waitForFunction(({i,ext,stem})=>{const img=document.querySelectorAll('[data-how-slide]')[i].querySelector('picture img');return img.complete&&img.naturalWidth>0&&new URL(img.currentSrc).pathname.endsWith('/'+stem+'.'+ext)},{i,ext,stem:stems[i]});
+  check(await preview.evaluate((img,ext)=>new URL(img.currentSrc).pathname.endsWith('.'+ext),ext),'Selected asset decodes '+stems[i]+' '+ext+' '+width);
+ };
+ await set(1);await source(1,'gif');
+ await p.emulateMedia({reducedMotion:'reduce'});await source(1,'png');
+ for(let i=0;i<4;i++){
+  await set(i);await source(i,'png');
+  check(await slides.nth(i).getAttribute('aria-hidden')==='false'&&await section.locator('[aria-current="step"]').getAttribute('data-how-go')===String(i),'Accessible selection matches slide '+i+' '+width);
+ }
+ await viewport.focus(); await p.keyboard.press('ArrowLeft');
+ await p.waitForFunction(()=>document.querySelector('[data-how-carousel]').dataset.howActive==='2');
+ check(await current()==='2','Keyboard navigation works with reduced motion '+width);
+ await p.evaluate(()=>{document.activeElement.blur();scrollTo({top:0,behavior:'instant'})});await p.waitForTimeout(8300);
+ check(await current()==='2','No offscreen auto-advance with reduced motion '+width);
+ await viewport.evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForTimeout(8300);
+ check(await current()==='2','No visible auto-advance with reduced motion '+width);
+ await p.emulateMedia({reducedMotion:'no-preference'});await source(2,'gif');
  await p.emulateMedia({reducedMotion:'reduce'});await p.reload({waitUntil:'domcontentloaded'});
- check(await p.locator('[data-motion-kind]').evaluateAll(es=>es.every(e=>e.dataset.motionState==='complete'&&Number(getComputedStyle(e).opacity)>0)),'Initial reduced-motion content is visible '+width);
- check(await p.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('krane-')).length===0),'Initial reduced-motion has no new animations '+width);
- await showChat();await p.waitForFunction(()=>document.querySelector('[data-chat-motion]').classList.contains('is-complete'));check(await chat.locator('.pc-messages p.is-shown').count()===8,'Initial reduced motion presents the complete conversation '+width);check(await toggle.isHidden(),'Initial reduced motion hides animation control '+width);await hideChat();await showChat();check(await chat.locator('.pc-messages p.is-shown').count()===8,'Reduced motion prevents viewport replay '+width);
- await p.evaluate(()=>scrollTo(0,0));
- await p.screenshot({path:join(out,'hero-'+width+'.png'),animations:'disabled'});await ctx.close();
-}check(errors.length===0,'No browser errors: '+errors.join('; '));await writeFile(join(out,'results.json'),JSON.stringify({checks,errors},null,2));console.log(`Landing motion QA: ${checks} checks passed.`)}finally{await browser.close();await new Promise(r=>server.close(r))}
+ await set(3);await source(3,'png');
+ check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal page overflow '+width);
+ await p.screenshot({path:join(out,'how-'+width+'.png'),animations:'disabled'});await ctx.close();
+}
+check(errors.length===0,'No browser errors: '+errors.join('; '));
+await writeFile(join(out,'results.json'),JSON.stringify({checks,errors},null,2));console.log(`Landing motion QA: ${checks} checks passed.`);
+} finally {await browser.close();await new Promise(r=>server.close(r))}

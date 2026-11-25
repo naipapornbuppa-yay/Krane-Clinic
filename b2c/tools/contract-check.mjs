@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {selectPatientDob} from './patient-dob-test-fixture.mjs';
 import {necessaryConsent} from './consent-test-fixture.mjs';
 /*
  * Regression lock for the Krane B2C prototype.
@@ -208,7 +209,7 @@ try {
   await completePartnerIdentity(partnerJourney);
   await step('patient details', 'insurance');
   await partnerJourney.locator('#insurance-id').fill('1234567890123');
-  await partnerJourney.locator('#insurance-dob').fill('1997-09-01');
+  await selectPatientDob(partnerJourney,'#insurance-dob','1997-09-01');
   await partnerJourney.locator('#insurance [data-insurance-confirm]').click();
   await step('eligibility check', 'partner-insurance');
   await partnerJourney.locator('#partner-insurance [data-partner-payment="insurance"]').click();
@@ -288,6 +289,37 @@ for (const item of contract.components) {
   const count = await app.evaluate(sel => document.querySelectorAll(sel).length, item.selector);
   const need = item.minCount || 1;
   if (count < need) fail('component missing', `${item.selector} (found ${count}, need ${need}) — ${item.why}`);
+}
+
+/* The treatment plan no longer duplicates certificates. Verify the two real
+   affordances and intercept window.open so this synthetic test never opens a PDF. */
+const documents = await ctx.newPage();
+await documents.addInitScript(() => {
+  window.open = (href, target) => { window.__qaOpenedDocument = { href, target }; };
+});
+try {
+  for (const source of ['treatment-detail', 'my-documents']) {
+    did();
+    await documents.goto(`${base}/b2c/krane-b2c.html#${source}`, { waitUntil: 'domcontentloaded' });
+    const screen = documents.locator(`#${source}.active`);
+    let entry = screen.locator("[data-doc-open='cert'][data-document-item]").first();
+    if (source === 'treatment-detail') {
+      if (await screen.locator("#treatment-plan-panel [data-doc-open='cert']").count()) {
+        fail('certificate discovery', 'certificate is duplicated directly in the treatment plan');
+      }
+      await screen.locator('[data-related-documents-open]').click();
+      entry = documents.locator("#related-documents-sheet[open] [data-doc-open='cert']");
+    }
+    await entry.click();
+    const opened = await documents.evaluate(() => window.__qaOpenedDocument);
+    if (!opened || !/^https?:\/\//.test(opened.href) || opened.target !== '_blank') {
+      fail('certificate discovery', `${source} did not open the document viewer`);
+    }
+  }
+} catch (error) {
+  fail('certificate discovery', error.message);
+} finally {
+  await documents.close();
 }
 
 /* ---- flows ---------------------------------------------------------------- */
@@ -409,6 +441,31 @@ for (const rule of contract.rules) {
       const found = await page.evaluate(s => document.querySelectorAll(s).length, sel);
       if (found !== n) fail('rule', `${rule.name}: ${sel} found ${found}, expected ${n}`);
     }
+    if (rule.uniqueValues) {
+      const [selector, attribute, expected] = rule.uniqueValues;
+      const actual = await page.locator(selector).evaluateAll(
+        (elements, attr) => [...new Set(elements.map(el => el.getAttribute(attr)))], attribute
+      );
+      if (JSON.stringify([...actual].sort()) !== JSON.stringify([...expected].sort())) {
+        fail('rule', `${rule.name}: ${attribute} found ${JSON.stringify(actual)}, expected ${JSON.stringify(expected)}`);
+      }
+    }
+    if (rule.textEquals) {
+      const [selector, expected] = rule.textEquals;
+      const actual = await page.locator(selector).allTextContents();
+      if (actual.length !== 1 || actual[0].trim() !== expected) {
+        fail('rule', `${rule.name}: expected a single disclosure "${expected}", got ${JSON.stringify(actual)}`);
+      }
+    }
+    if (rule.pairedImages) {
+      const [selector, expected] = rule.pairedImages;
+      const actual = await page.locator(selector).evaluateAll(
+        cards => cards.map(card => [...card.querySelectorAll('img')].map(image => image.getAttribute('src')))
+      );
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        fail('rule', `${rule.name}: grouped pairs ${JSON.stringify(actual)}, expected ${JSON.stringify(expected)}`);
+      }
+    }
     if (rule.maxHeight) {
       const [sel, max] = rule.maxHeight;
       const height = await page.evaluate(s => {
@@ -437,22 +494,24 @@ for (const rule of contract.rules) {
       }
     }
     if (rule.containedImage) {
-      const [imageSelector, frameSelector] = rule.containedImage;
-      const got = await page.evaluate(([imageSel, frameSel]) => {
+      const [imageSelector, frameSelector, fit = 'contain'] = rule.containedImage;
+      const got = await page.evaluate(([imageSel, frameSel, fit]) => {
         const image = document.querySelector(imageSel);
         const frame = document.querySelector(frameSel);
         if (!image || !frame) return null;
         const art = image.getBoundingClientRect();
         const card = frame.getBoundingClientRect();
-        return {
-          fit:getComputedStyle(image).objectFit,
-          inside:art.left >= card.left - 1 && art.top >= card.top - 1 &&
-            art.right <= card.right + 1 && art.bottom <= card.bottom + 1
-        };
-      }, [imageSelector, frameSelector]);
+        const frameStyle = getComputedStyle(frame);
+        const inside = art.left >= card.left - 1 && art.top >= card.top - 1 &&
+          art.right <= card.right + 1 && art.bottom <= card.bottom + 1;
+        const coversClippedFrame = [frameStyle.overflowX, frameStyle.overflowY].every(value => ['hidden', 'clip'].includes(value)) &&
+          art.left <= card.left + 1 && art.top <= card.top + 1 &&
+          art.right >= card.right - 1 && art.bottom >= card.bottom - 1;
+        return {fit:getComputedStyle(image).objectFit, inside:fit === 'cover' ? coversClippedFrame : inside};
+      }, [imageSelector, frameSelector, fit]);
       if (!got) fail('rule', `${rule.name}: image or frame not found`);
-      else if (got.fit !== 'contain' || !got.inside) {
-        fail('rule', `${rule.name}: expected contained artwork inside its card, got object-fit=${got.fit}, inside=${got.inside}`);
+      else if (got.fit !== fit || !got.inside) {
+        fail('rule', `${rule.name}: expected ${fit} artwork inside its card, got object-fit=${got.fit}, inside=${got.inside}`);
       }
     }
     /* Checkout reads in the order a delivery app puts it — where it goes, what

@@ -1,13 +1,25 @@
-/* Keep the native date input as the form value and validation source. */
+/* Mobile DOB values stay ISO, without any interactive native date control. */
 (() => {
   const mobile = matchMedia('(max-width:760px), (pointer:coarse)');
   const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
   const dateParts = value => value.split('-').map(Number);
+  const format = (value, english) => {
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return '';
+    const [year,month,day]=dateParts(value);
+    return [day,month,english?year:year+543].map(n=>String(n).padStart(2,'0')).join(' / ');
+  };
   const localToday = () => {
     const now = new Date();
     return [now.getFullYear(), now.getMonth() + 1, now.getDate()];
   };
   const daysInMonth = (year, month) => new Date(year, month, 0).getDate();
+  function valid(input){
+    const value=input?.value;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return false;
+    const [year,month,day]=dateParts(value);
+    return year>=1&&month>=1&&month<=12&&day>=1&&day<=daysInMonth(year,month)
+      &&(!input.min||value>=input.min)&&(!input.max||value<=input.max);
+  }
   const range = (first, last) => Array.from({length:last - first + 1}, (_, i) => first + i);
   let sheet;
   const triggers = new WeakMap();
@@ -27,20 +39,38 @@
     trigger.style.cssText = 'position:absolute;z-index:3;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:inherit;background:transparent;cursor:pointer;touch-action:manipulation';
     const originalDisplay = input.style.display;
     const originalTabIndex = input.getAttribute('tabindex');
+    const originalHidden = input.getAttribute('aria-hidden');
+    const originalInputMode = input.getAttribute('inputmode');
     function update() {
       const useWheel = intercepts();
+      input.setCustomValidity(useWheel && input.value && !valid(input) ? 'Invalid date' : '');
       const label = input.closest('.float-field')?.querySelector('label')?.textContent?.trim() || 'Date of birth';
-      const value = input.value ? dateParts(input.value).reverse().map(n => String(n).padStart(2, '0')).join(' / ') : '';
+      const value = format(input.value,document.documentElement.lang==='en');
       trigger.setAttribute('aria-label', value ? label + ', ' + value : label);
       trigger.disabled = input.disabled || input.readOnly;
       trigger.style.display = useWheel ? 'block' : 'none';
+      // Even if iOS forwards a tap to the label's associated input, there
+      // is no type=date for WebKit to activate while the wheel owns the field.
+      input.type = useWheel ? 'text' : 'date';
       input.style.display = useWheel ? 'none' : originalDisplay;
-      if (useWheel) input.tabIndex = -1;
-      else if (originalTabIndex === null) input.removeAttribute('tabindex');
-      else input.setAttribute('tabindex', originalTabIndex);
+      if(useWheel){
+        input.tabIndex=-1;
+        input.setAttribute('aria-hidden','true');
+        input.setAttribute('inputmode','none');
+      }else{
+        for(const [name,value] of [['tabindex',originalTabIndex],['aria-hidden',originalHidden],['inputmode',originalInputMode]]){
+          if(value===null)input.removeAttribute(name);
+          else input.setAttribute(name,value);
+        }
+      }
     }
     triggers.set(input, trigger);
     control.appendChild(trigger);
+    input.closest('.float-field')?.querySelector('label')?.addEventListener('click',event=>{
+      if(!intercepts())return;
+      event.preventDefault();
+      if(!trigger.disabled){trigger.focus({preventScroll:true});trigger.click();}
+    });
     trigger.addEventListener('click', () => {
       if (intercepts() && !input.disabled && !input.readOnly) window.KranePatientDatePicker.open(input);
     });
@@ -63,14 +93,14 @@
   }
 
   window.KranePatientDatePicker = {
-    intercepts, enhance, focus,
+    intercepts, enhance, focus, format, valid,
     open(input) {
       if (sheet?.open) return;
       const english = document.documentElement.lang === 'en';
       const labels = english ? ['Day', 'Month', 'Year'] : ['วัน', 'เดือน', 'ปี'];
       const [minYear, minMonth, minDay] = dateParts(input.min);
       const [maxYear, maxMonth, maxDay] = dateParts(input.max);
-      let [year, month, day] = input.value ? dateParts(input.value) : localToday();
+      let [year, month, day] = valid(input) ? dateParts(input.value) : localToday();
       year = Math.max(minYear, Math.min(maxYear, year));
       const monthFormat = new Intl.DateTimeFormat(english ? 'en' : 'th', {month:'short', timeZone:'UTC'});
 
@@ -182,7 +212,7 @@
       }, {once:true});
       document.body.append(sheet);
       sheet.showModal();
-      wheels[2].set(range(minYear, maxYear), year);
+      wheels[2].set(range(minYear, maxYear), year, value=>String(english?value:value+543));
       refreshLimits();
       wheels[0].wheel.focus({preventScroll:true});
     }

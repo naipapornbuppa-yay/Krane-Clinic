@@ -5,8 +5,16 @@ const stages=['contract-check.mjs','public-redesign-qa.mjs','cookie-consent-qa.m
 const failures=[];
 for(const stage of stages){
  console.log(`\n=== UI gate: ${stage} ===`);
- const result=spawnSync(process.execPath,[fileURLToPath(new URL(stage,import.meta.url))],{stdio:'inherit',env:process.env});
- if(result.error||result.signal||result.status!==0){failures.push(stage);console.error(`UI gate FAILED: ${stage}`,result.error?.message||result.signal||result.status)}
+ const checks=stage==='contract-check.mjs'?[stage,'signup-flow-check.cjs']:[stage];
+ let failed=false;
+ for(const check of checks){
+  const result=spawnSync(process.execPath,[fileURLToPath(new URL(check,import.meta.url))],{stdio:'inherit',env:process.env});
+  if(result.error||result.signal||result.status!==0){
+   failed=true;
+   console.error(`UI gate FAILED: ${check}`,result.error?.message||result.signal||result.status);
+  }
+ }
+ if(failed)failures.push(stage);
  else console.log(`UI gate PASSED: ${stage}`);
 }
 console.log(`\nUI gate summary: ${stages.length-failures.length}/${stages.length} stages passed.`);
