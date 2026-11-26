@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const headings = document.querySelectorAll(
-    '#tracking .postpay-tracking-topbar__title > strong, #order-summary .postpay-summary-status > span > strong'
+    '#tracking .postpay-tracking-topbar__title > strong, #order-summary .postpay-summary-status > span > strong, #tracking [data-tracking-number]'
   );
   if (!headings.length) return;
 
@@ -17,7 +17,10 @@
   document.head.append(style);
 
   const english = () => document.documentElement.lang.toLowerCase().startsWith('en');
-  const label = () => english() ? 'Copy order number' : 'คัดลอกเลขคำสั่งซื้อ';
+  function label(parcel) {
+    if (parcel) return english() ? 'Copy tracking number' : 'คัดลอกเลขพัสดุ';
+    return english() ? 'Copy order number' : 'คัดลอกเลขคำสั่งซื้อ';
+  }
 
   function legacyCopy(text, button) {
     const field = document.createElement('textarea');
@@ -43,20 +46,23 @@
 
   const controls = [];
   for (const heading of headings) {
+    const parcel = heading.hasAttribute('data-tracking-number');
     const group = document.createElement('span');
     group.className = 'kr-order-copy';
     const button = document.createElement('button');
     button.type = 'button';
-    button.setAttribute('aria-label', label());
+    button.setAttribute('aria-label', label(parcel));
     button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
-    controls.push(button);
+    controls.push({button, parcel});
 
     let pending = false;
     button.addEventListener('click', async () => {
       if (pending) return;
       pending = true;
       // Read only this heading, preserving the currently displayed reference.
-      const ref = heading.textContent.match(/(?:^|[#\s])(KR-\d+)\b/i)?.[1];
+      const ref = parcel
+        ? heading.textContent.trim()
+        : heading.textContent.match(/(?:^|[#\s])(KR-\d+)\b/i)?.[1];
       let copied = false;
       if (ref) {
         try {
@@ -71,7 +77,7 @@
         }
       }
       pending = false;
-      document.dispatchEvent(new CustomEvent('krane:order-reference-copy', {detail:{copied}}));
+      document.dispatchEvent(new CustomEvent('krane:order-reference-copy', {detail:{copied, parcel}}));
     });
 
     heading.before(group);
@@ -79,6 +85,6 @@
   }
 
   new MutationObserver(() => {
-    for (const button of controls) button.setAttribute('aria-label', label());
+    for (const {button, parcel} of controls) button.setAttribute('aria-label', label(parcel));
   }).observe(document.documentElement, {attributes:true, attributeFilter:['lang']});
 })();
