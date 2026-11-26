@@ -57,7 +57,7 @@
   section.setAttribute('aria-labelledby', 'programme-feedback-title');
   section.innerHTML = '<header class="rebody-review-header"><h2 id="programme-feedback-title"></h2></header>';
   const title = section.querySelector('#programme-feedback-title');
-  const demo = window.KraneFictionalReviewGroup(quotesByProgramme[key], 'rebody-review-rail', title);
+  const demo = window.KraneFictionalReviewGroup(quotesByProgramme[key], 'rebody-review-rail', title, {compactHeading:true});
   if (demo) {
     section.append(demo);
     page.querySelector('.opt-interview').after(section);
