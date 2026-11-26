@@ -8,6 +8,10 @@
 (function () {
   var TH = {
     "Loading...": "กำลังโหลด...",
+    "Choose a screen": "เลือกหน้าจอ",
+    "Search by name or SID": "ค้นหาชื่อหน้า หรือ SID",
+    "Search screens": "ค้นหาหน้าจอ",
+    "No matching screens": "ไม่พบหน้าจอที่ตรงกับคำค้น",
     "Request a refill review": "ขอให้แพทย์ทบทวนการเติมยา",
     "Choose a prescription file": "เลือกไฟล์ใบสั่งยา",
     "Prescription review requests": "คำขอทบทวนใบสั่งยา",
