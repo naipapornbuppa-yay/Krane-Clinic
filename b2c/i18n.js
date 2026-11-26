@@ -7,6 +7,7 @@
    ============================================================ */
 (function () {
   var TH = {
+    "Loading...": "กำลังโหลด...",
     "Request a refill review": "ขอให้แพทย์ทบทวนการเติมยา",
     "Choose a prescription file": "เลือกไฟล์ใบสั่งยา",
     "Prescription review requests": "คำขอทบทวนใบสั่งยา",

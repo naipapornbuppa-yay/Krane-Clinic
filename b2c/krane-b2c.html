@@ -14,7 +14,7 @@
     const url = new URL(window.location.href);
     let canonicalized = false;
     /* Two versions of this app, and the URL should say which one you are on:
-       ?screens=1 carries the screen inventory down the side, no parameter is
+       ?screens=1 enables the screen picker, no parameter is
        the plain patient app. Older links — only-me=1, with_screen_tab=1 —
        keep working and are rewritten to it (client, 6 Oct). */
     if (url.searchParams.get("only-me") === "1" || url.searchParams.get("with_screen_tab") === "1") {
@@ -54,7 +54,7 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261115-cookie-notice-bottom"></script>
+<script src="review-tools.js?v=20261126-screen-picker"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -85,7 +85,7 @@
 <link rel="stylesheet" href="../krane-clinical-workspace.css?v=20261124-booking-confirmation">
 <script src="../krane-golden-fixture.js?v=20261011-final-brand-v274"></script>
 <script src="custom-select.js?v=20261126-native-health-select" defer></script>
-<script src="i18n.js?v=20261126-hair-area-options" defer></script>
+<script src="i18n.js?v=20261126-loading-dots" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
 
 <style>
@@ -109,15 +109,37 @@
     pointer-events:none;
   }
   .proto{display:flex;width:100%;max-width:100%;min-height:100vh;height:100dvh;overflow:hidden}
-  .rail{display:none;width:286px;min-width:0;flex:none;background:var(--color-surface);border-right:1px solid var(--color-line);padding:0 var(--sp-3) var(--sp-5);position:sticky;top:0;height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;transition:width .22s ease,padding .22s ease}
-  .rail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-5) 40px var(--sp-4) var(--sp-2);background:var(--color-surface);border-bottom:1px solid var(--color-line)}
-  .rail-head .logo{display:flex;align-items:center;margin:0}
-  .rail-logo{display:block;width:96px;height:auto;max-height:25px;object-fit:contain;object-position:left center}
-  .rail-head__label{font-size:11px;font-weight:var(--fw-semibold);color:var(--color-ink-3);text-transform:uppercase;letter-spacing:0}
-  .rail-toggle{position:absolute;top:50%;right:4px;width:30px;height:30px;display:grid;place-items:center;padding:0;border:1px solid var(--color-line);border-radius:10px;background:var(--color-surface);color:var(--color-ink);cursor:pointer;transform:translateY(-50%);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
-  .rail-toggle:hover{border-color:var(--color-line-strong);background:var(--color-bg-2)}
-  .rail-toggle:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
-  .rail-toggle__icon{width:8px;height:8px;border-left:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg);transition:transform .22s ease}
+  .rail{display:none}
+  html.review-tools-enabled .proto{flex-direction:column}
+  html.review-tools-enabled .rail{
+    position:relative;z-index:70;display:grid;justify-items:center;flex:none;
+    height:auto;max-height:none;padding:8px 14px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-line)
+  }
+  .rail-picker{position:relative;width:min(100%,480px)}
+  .rail-picker>summary{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;
+    padding:0 14px;border:1px solid var(--color-line);border-radius:12px;
+    background:var(--color-bg);color:var(--color-ink);font-weight:var(--fw-semibold);cursor:pointer
+  }
+  .rail-picker>summary::after{
+    content:"";width:7px;height:7px;margin-right:3px;border:solid currentColor;
+    border-width:0 1.5px 1.5px 0;transform:translateY(-2px) rotate(45deg)
+  }
+  .rail-picker[open]>summary::after{transform:translateY(2px) rotate(225deg)}
+  .rail-picker__panel{
+    position:absolute;inset:calc(100% + 6px) 0 auto;display:flex;flex-direction:column;gap:8px;
+    max-height:min(65dvh,560px);padding:10px;border:1px solid var(--color-line);border-radius:14px;
+    background:var(--color-surface);box-shadow:var(--shadow-lg)
+  }
+  .rail-picker__search{
+    width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--color-line-strong);
+    border-radius:9px;background:var(--color-bg);color:var(--color-ink);font:inherit;font-size:16px
+  }
+  .rail-picker__results{min-height:0;overflow:auto;overscroll-behavior:contain}
+  .rail-picker__empty{margin:4px 6px 8px;color:var(--color-ink-2);font-size:14px}
+  .rail :is(summary,input,a):focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px}
+  .rail [hidden]{display:none!important}
   .rail details,.rail details>summary,.rail-group__body,.rail a{max-width:100%;min-width:0}
   .rail details>summary{list-style:none;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
   .rail details>summary::-webkit-details-marker{display:none}
@@ -141,19 +163,6 @@
   .rail-state{font-size:10px;color:var(--color-ink-3);margin-left:4px}
   .rail-screen-id{display:inline-block;margin-left:6px;color:var(--color-ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:var(--fw-medium);letter-spacing:-.01em;white-space:nowrap;opacity:.8}
   .rail a.current .rail-screen-id{color:inherit;opacity:.68}
-  .rail-legend{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding:8px;border-bottom:1px solid var(--color-line);font-size:10px;font-weight:var(--fw-medium);color:var(--color-ink-3)}
-  .rail-legend span{display:inline-flex;align-items:center;gap:5px}
-  .rail-legend .rail-legend__screen-id{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;opacity:.82}
-  .rail-legend i{width:6px;height:6px;border-radius:50%;background:var(--color-ink)}
-  .rail-legend .is-error{color:var(--color-danger-ink)}
-  .rail-legend .is-error i{background:var(--color-danger-ink)}
-  .rail-error-menu{margin:5px 8px 4px 30px;padding:6px 0 2px;border-left:1px solid var(--color-danger-ink)}
-  .rail-error-menu a{margin:0;padding:6px 8px 6px 14px;font-size:11.5px}
-  .rail-error-tag{display:inline-block;margin-right:4px;font-size:10px;font-weight:var(--fw-semibold);letter-spacing:.02em;text-transform:uppercase}
-  /* Error and empty-state screens read in dark red so they are distinguishable
-     from happy-path entries at a glance. Colour comes from the token library
-     (--color-danger-ink), never a literal. Applies to the link and its inline
-     state caption; the active state keeps the dark chip so it stays legible. */
   .rail a.is-exception,.rail-sub a.is-exception{color:var(--color-danger-ink);font-weight:var(--fw-medium)}
   .rail a.is-exception .rail-state{color:inherit;opacity:.82}
   .rail a.is-exception:hover{background:var(--color-danger-soft);color:var(--color-danger-ink)}
@@ -166,17 +175,8 @@
   .rail a.is-eligibility:hover{background:var(--color-blue-soft);color:var(--color-blue-hover)}
   .rail a.is-alternative{color:var(--color-ink-3)}
   .stage{width:100%;min-width:0;max-width:100vw;height:100vh;height:100dvh;flex:1;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden;padding:0;background:var(--color-surface);transition:width .22s ease,max-width .22s ease}
-  html.review-tools-enabled .rail{display:block}
-  html.review-tools-enabled .stage{width:calc(100% - 286px);max-width:calc(100vw - 286px)}
-  html.review-tools-enabled body.rail-is-collapsed .rail{width:56px;padding-inline:8px;overflow-y:hidden}
-  html.review-tools-enabled body.rail-is-collapsed .rail-head{height:72px;justify-content:center;padding:0;border-bottom:0}
-  html.review-tools-enabled body.rail-is-collapsed .rail-head .logo,
-  html.review-tools-enabled body.rail-is-collapsed .rail-head__label,
-  html.review-tools-enabled body.rail-is-collapsed .rail-legend,
-  html.review-tools-enabled body.rail-is-collapsed .rail>.rail-group{display:none}
-  html.review-tools-enabled body.rail-is-collapsed .rail-toggle{right:auto;left:50%;transform:translate(-50%,-50%)}
-  html.review-tools-enabled body.rail-is-collapsed .rail-toggle__icon{transform:rotate(225deg)}
-  html.review-tools-enabled body.rail-is-collapsed .stage{width:calc(100% - 56px);max-width:calc(100vw - 56px)}
+  html.review-tools-enabled .stage{height:auto;min-height:0;isolation:isolate}
+  html.review-tools-enabled .stage>.screen{height:100%;min-height:0;max-height:100%}
   .screen{display:none;min-width:0}
   .screen.active{display:flex}
   /* The web landing is an embedded full-bleed surface, not a phone card. Keep
@@ -192,9 +192,9 @@
   }
   .note-bar{display:none}
   @media(max-width:780px){
-    .rail,html.review-tools-enabled .rail{display:none}.note-bar{left:0}
+    .note-bar{left:0}
     .proto{width:100%;min-height:100dvh;height:100dvh;overflow:hidden}
-    .stage,html.review-tools-enabled .stage,html.review-tools-enabled body.rail-is-collapsed .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
+    .stage{width:100%;min-width:0;max-width:100%;height:100dvh;gap:0;padding:0;overflow:hidden}
     .stage .screen{width:100%;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none}
     html,body,.proto,.stage,.stage>.screen--web,.stage>.screen--web>iframe{
       width:100%!important;max-width:100%!important;min-width:0!important;
@@ -588,24 +588,30 @@
       transform-origin:center;
       animation:loading-illustration-float 3.2s var(--ease-inout) infinite
     }
-    /* The spinner is for the general page preloader only. In-flow waiting
+    /* The dots are for the general page preloader only. In-flow waiting
        screens retain their own illustrations and progress copy. */
-    #preloader .state-view__visual.state-view__visual--loading {
-      width:64px!important;height:64px!important;min-height:64px;
-      aspect-ratio:1;display:grid;place-items:center;background:none;
-      border:0;box-shadow:none;isolation:isolate;
+    #preloader .page-loading{gap:16px;padding:0 var(--sp-4)}
+    #preloader .page-loading__dots{
+      position:relative;display:grid;grid-template-columns:repeat(3,24px);place-items:center;
+      gap:3px;width:78px;max-width:78px;height:24px;color:var(--color-promo-bar,#5871b5)
     }
-    #preloader .state-view__visual--loading > * {display:none!important}
-    #preloader .state-view__visual--loading::before {display:none!important}
-    #preloader .state-view__visual--loading::after {
-      content:"";position:static;display:block;width:40px;height:40px;
-      border:3px solid #e7eefb;border-top-color:var(--brand,#395aa4);
-      border-radius:50%;background:none;box-shadow:none;
-      animation:krane-app-loading .9s linear infinite;
+    .page-loading__dots span{width:7px;height:7px;border:1px solid currentColor;border-radius:99px}
+    .page-loading__dots::after{
+      content:"";position:absolute;top:8.5px;left:0;width:24px;height:7px;
+      border-radius:99px;background:currentColor;
+      animation:krane-app-loading 2.4s ease-in-out infinite
     }
-    @keyframes krane-app-loading {to{transform:rotate(360deg)}}
+    .page-loading__label{margin:0;color:var(--color-ink-2);font:400 14px/22px var(--font-base)}
+    body:has(#preloader.active)>.krane-cookie-sheet{display:none}
+    @keyframes krane-app-loading{
+      0%,6%,100%{transform:translateX(0)}
+      14%,86%{transform:translate(13.5px,-5px) scaleX(.76)}
+      22%,28%,72%,78%{transform:translateX(27px)}
+      36%,64%{transform:translate(40.5px,-5px) scaleX(.76)}
+      45%,55%{transform:translateX(54px)}
+    }
     @media(prefers-reduced-motion:reduce){
-      #preloader .state-view__visual--loading::after{animation:none}
+      .page-loading__dots::after{animation:none}
     }
     @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
@@ -1286,12 +1292,15 @@
 <div class="proto">
 
   <!-- ================= SCREEN INDEX (prototype only) ================= -->
-  <nav class="rail" id="prototype-rail" aria-label="Prototype patient journey">
-    <div class="rail-head"><div class="logo"><img class="rail-logo" src="../assets/brand-final/krane-logotype.svg" width="286" height="72" alt="Krane"></div><span class="rail-head__label">Patient journey</span><button class="rail-toggle" type="button" aria-controls="prototype-rail" aria-expanded="true" aria-label="ย่อเมนูเส้นทาง" title="ย่อเมนูเส้นทาง"><span class="rail-toggle__icon" aria-hidden="true"></span></button></div>
-    <div class="rail-legend" aria-label="Prototype menu legend"><span><i></i>Happy flow</span><span class="is-error"><i></i>Error case</span><span class="rail-legend__screen-id">SID ซ้ำ = ใช้หน้าจอเดียวกัน</span></div>
-
-    <!-- Groups and links are rendered from review-tools.js. Keeping the
-         directory outside this page prevents stale, duplicated Screen Tabs. -->
+  <nav class="rail" id="prototype-rail" aria-label="เลือกหน้าจอ">
+    <details class="rail-picker">
+      <summary>เลือกหน้าจอ</summary>
+      <div class="rail-picker__panel">
+        <input class="rail-picker__search" type="search" placeholder="ค้นหาชื่อหน้า หรือ SID" aria-label="ค้นหาหน้าจอ" autocomplete="off">
+        <div class="rail-picker__results"></div>
+        <p class="rail-picker__empty" role="status" hidden>ไม่พบหน้าจอที่ตรงกับคำค้น</p>
+      </div>
+    </details>
   </nav>
 
   <main class="stage">
@@ -3552,10 +3561,9 @@
   </section>
 
   <section class="screen" id="preloader">
-    <div class="screen__body state-view center" role="status" aria-live="polite">
-      <div class="state-view__visual state-view__visual--loading" aria-label="Preparing your information">
-      </div>
-      <div class="state-view__copy"><h2 class="h1">Preparing your information</h2><p class="muted">This may take a moment.</p></div>
+    <div class="screen__body state-view page-loading" role="status">
+      <div class="page-loading__dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="page-loading__label">Loading...</p>
     </div>
   </section>
 
@@ -3904,35 +3912,16 @@
   // contexts to the same component without creating another screen identity.
   const reviewScreenIds=window.KraneReviewTools.screenIds;
   const prototypeRail = document.querySelector('#prototype-rail');
-  window.KraneReviewTools.renderRail(prototypeRail, screens);
+  window.KraneReviewTools.renderScreenPicker(prototypeRail, screens);
   screens.forEach(screen => {
     const reviewId=reviewScreenIds[screen.id];
     if(reviewId) screen.dataset.reviewScreenId=reviewId;
   });
   const railLinks = [...document.querySelectorAll('.rail a[data-go]')];
-  const railToggle = prototypeRail?.querySelector('.rail-toggle');
-  const railCollapseStorageKey = 'krane-prototype-rail-collapsed';
   function isEnglishUi(){
     if(document.documentElement.lang === 'en' || /[?&#]lang=en\b/.test(window.location.href)) return true;
     try{ return window.localStorage.getItem('krane_lang') === 'en'; }catch(error){ return false; }
   }
-  function setPrototypeRailCollapsed(collapsed, persist = true){
-    document.body.classList.toggle('rail-is-collapsed', collapsed);
-    if(railToggle){
-      const english=isEnglishUi();
-      const railLabel=english
-        ? (collapsed ? 'Expand the step menu' : 'Collapse the step menu')
-        : (collapsed ? 'ขยายเมนูเส้นทาง' : 'ย่อเมนูเส้นทาง');
-      railToggle.setAttribute('aria-expanded', String(!collapsed));
-      railToggle.setAttribute('aria-label', railLabel);
-      railToggle.title = railLabel;
-    }
-    if(persist){
-      try{ window.localStorage.setItem(railCollapseStorageKey, collapsed ? '1' : '0'); }catch(error){}
-    }
-  }
-  try{ setPrototypeRailCollapsed(window.localStorage.getItem(railCollapseStorageKey) === '1', false); }catch(error){ setPrototypeRailCollapsed(false, false); }
-  railToggle?.addEventListener('click', () => setPrototypeRailCollapsed(!document.body.classList.contains('rail-is-collapsed')));
   document.querySelectorAll('.rail a[data-go],.rail a[data-screen-ref]').forEach(link => {
     if(link.querySelector('.rail-screen-id')) return;
     const screenId=link.dataset.go || link.dataset.screenRef;
@@ -4054,7 +4043,9 @@
   const CONSENT_RECORD_KEY = guestStorageKey('krane-p01-consent-records-v1');
   const FOLLOWUP_RECORD_KEY = guestStorageKey('krane-p01-followup-record-v1');
   const QUEUE_KEY=guestStorageKey('krane-pending-consultation-v1');
-  const queuePreview=new URLSearchParams(location.search).has('demoStage');
+  const previewParams=new URLSearchParams(location.search);
+  const loadingPreview=previewParams.get('preview')==='loading' && location.hash==='#preloader';
+  const queuePreview=previewParams.has('demoStage') || loadingPreview;
   let queueDismissOnce=false;
   let pendingQueue=(queuePreview || (STATIC_GUEST_URL && new URLSearchParams(location.search).get('fresh')==='1')) ? null : readLocalJson(QUEUE_KEY);
   if(!pendingQueue?.startedAt) pendingQueue=null;
@@ -8758,17 +8749,10 @@
     document.querySelectorAll('.review-modal-veil').forEach(veil => veil.remove());
     const link = railLinks.find(a => a.dataset.go === id);
     if(!link) return;
-    /* Following the current screen opens its group and closes the others, so
-       the rail always shows one journey at a time. The edge cases inside it
-       are already expanded — there is no second accordion to open. */
-    const activeGroup = link.closest('.rail-group');
-    if(activeGroup){
-      prototypeRail?.querySelectorAll(':scope > .rail-group[open]').forEach(group => {
-        if(group !== activeGroup) group.open = false;
-      });
-      activeGroup.open = true;
+    if(!prototypeRail.querySelector('.rail-picker__search').value.trim()){
+      const activeGroup = link.closest('.rail-group');
+      prototypeRail.querySelectorAll('.rail-group').forEach(group => { group.open = group === activeGroup; });
     }
-    if(link.scrollIntoView) link.scrollIntoView({ block:'nearest' });
   }
   function replaceCurrent(id){
     if(history.length) history[history.length - 1] = id;
@@ -10525,7 +10509,12 @@
     if(shouldShowSignupIntakeToast){
       window.requestAnimationFrame(() => showActionToast('ทำแบบประเมินเรียบร้อยแล้ว','success'));
     }
-    railLinks.forEach(a => a.classList.toggle('current', a.dataset.go === id));
+    railLinks.forEach(link => {
+      const current=link.dataset.go === id;
+      link.classList.toggle('current',current);
+      if(current) link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
+    });
     const orderQuery=activityTrackingOrder ? '?order='+encodeURIComponent(activityTrackingOrder.reference) : '';
     try { window.history.replaceState(null,'','#'+id+orderQuery); } catch(error) {}
     syncRailPath(id);
@@ -10719,7 +10708,7 @@
        their clinical documents are now available, then let the CTA open tracking. */
     clearTimeout(paymentSuccessTimer);
     clearTimeout(preloaderTimer);
-    if(id==='preloader' && !window.KraneReviewTools?.enabled){
+    if(id==='preloader' && !loadingPreview && !window.KraneReviewTools?.enabled){
       preloaderTimer=setTimeout(() => {
         if(document.getElementById('preloader')?.classList.contains('active')) replaceCurrent('landing');
       },reduceMotion ? 350 : 1800);

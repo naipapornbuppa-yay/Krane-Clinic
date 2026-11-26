@@ -81,16 +81,12 @@ for (const id of contract.screens) {
   if (!presentScreens.includes(id)) fail('screen missing', `#${id}`);
 }
 
-/* ---- reviewer Screen Tab --------------------------------------------------
-   The left rail is the reviewer's map of the implementation. Every real
-   screen belongs there exactly once. Journey groups stay an accordion — one
-   open at a time — but inside a group there is no second accordion: opening
-   it shows the error and edge-case screens with the default ones
-   (client, 5 Oct). */
+/* The review picker lists each screen once. Before filtering, one journey
+   group is open and its edge cases are available alongside the default routes. */
 const railAudit = await app.evaluate(() => {
   const screens = [...document.querySelectorAll('section.screen[id]')].map(screen => screen.id);
   const links = [...document.querySelectorAll('#prototype-rail a[data-go]')].map(link => link.dataset.go);
-  const groups = [...document.querySelectorAll('#prototype-rail > .rail-group')];
+  const groups = [...document.querySelectorAll('#prototype-rail .rail-picker__results > .rail-group')];
   return {
     missing:screens.filter(id => !links.includes(id)),
     stale:links.filter(id => !screens.includes(id) && !(id === 'feedback' && document.querySelector('#csat-modal'))),
@@ -113,7 +109,7 @@ if (railAudit.openGroups !== 1 || railAudit.nestedBuckets) {
    already appear in their primary groups, and the start link begins the full
    sequence shown in the partner reference video. */
 const partnerRail = await app.evaluate(() => {
-  const group = [...document.querySelectorAll('#prototype-rail > .rail-group')]
+  const group = [...document.querySelectorAll('#prototype-rail .rail-picker__results > .rail-group')]
     .find(item => item.querySelector('.rail-step')?.textContent === '09');
   return group ? [...group.querySelectorAll('a[data-go]')].map(link => link.dataset.go) : [];
 });
@@ -123,7 +119,7 @@ if (JSON.stringify(partnerRail) !== JSON.stringify(['partner-idcard','partner-pa
 }
 did();
 const partnerStartLink = await app.evaluate(() => {
-  const group = [...document.querySelectorAll('#prototype-rail > .rail-group')]
+  const group = [...document.querySelectorAll('#prototype-rail .rail-picker__results > .rail-group')]
     .find(item => item.querySelector('.rail-step')?.textContent === '09');
   return group?.querySelector('a.is-key-route[href*="entry=partner"]')?.getAttribute('href') || '';
 });

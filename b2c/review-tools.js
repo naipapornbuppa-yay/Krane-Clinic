@@ -2,8 +2,8 @@
   "use strict";
 
   const params = new URLSearchParams(global.location.search);
-  /* Two versions of the same app: ?screens=1 is the one with the screen
-     inventory down the side, no parameter is the plain patient app. The old
+  /* Two versions of the same app: ?screens=1 enables the screen picker,
+     no parameter is the plain patient app. The old
      with_screen_tab=1 links keep working and get rewritten to ?screens=1
      (client, 6 Oct). */
   const screensParam = params.get("screens");
@@ -137,7 +137,7 @@
     {
       step: "10", th: "สถานะระบบ", en: "System states",
       screens: [
-        ["preloader", "SID-066", "กำลังเตรียมข้อมูล", "Pre-loader overlay"],
+        ["preloader", "SID-066", "กำลังโหลด", "Loading animation"],
         ["queue-resume", "SID-067", "กลับมาที่คิวที่ค้างอยู่", "Resume a held queue"]
       ]
     }
@@ -151,20 +151,33 @@
   const canonicalScreenIds = Object.freeze(Object.fromEntries(Object.entries(screenIds).map(([route,sid])=>[route,screenIds[canonicalRoutes[route]] || sid])));
 
   function isThai() {
-    if (params.get("lang") === "en") return false;
+    const locale = params.get("lang");
+    if (locale === "en" || locale === "th") return locale === "th";
     try { return global.localStorage.getItem("krane_lang") !== "en"; } catch (error) { return true; }
   }
 
-  function renderRail(rail, screenElements) {
-    if (!rail) return [];
-    rail.querySelectorAll(":scope > .rail-group").forEach(node => node.remove());
+  function renderScreenPicker(rail, screenElements) {
+    if (!enabled || !rail) return [];
     const thai = isThai();
+    const picker = rail.querySelector('.rail-picker');
+    const trigger = picker.querySelector(':scope > summary');
+    const search = picker.querySelector('.rail-picker__search');
+    const results = picker.querySelector('.rail-picker__results');
+    const empty = picker.querySelector('.rail-picker__empty');
+    if (!thai) {
+      trigger.textContent = 'Choose a screen';
+      rail.setAttribute('aria-label', 'Choose a screen');
+      search.placeholder = 'Search by name or SID';
+      search.setAttribute('aria-label', 'Search screens');
+      empty.textContent = 'No matching screens';
+    }
     const fragment = global.document.createDocumentFragment();
     const registered = new Set();
 
     SCREEN_DIRECTORY.forEach((group, groupIndex) => {
       const details = global.document.createElement("details");
       details.className = "rail-group";
+      details.dataset.searchText = `${group.th} ${group.en}`;
       /* One journey group open at a time, so a long inventory stays scannable.
          What changed on 5 Oct is inside a group, not this: the error and
          edge-case screens no longer sit behind a second accordion of their
@@ -190,7 +203,10 @@
         if (registered.has(id)) return null;
         registered.add(id);
         const link = global.document.createElement("a");
+        link.href = `#${id}`;
         link.dataset.go = id;
+        link.dataset.searchText = `${id} ${sid} ${canonicalScreenIds[id]} ${th} ${en}`;
+        if (id === 'preloader') link.dataset.searchText += ' หน้าโหลด spinner carousel pre-loader';
         link.textContent = (thai ? th : en) + (canonicalRoutes[id] ? (thai ? ' · หน้าร่วม' : ' · Shared view') : '');
         link.dataset.canonicalScreen = canonicalRoutes[id] || id;
         if(group.step==='09') link.dataset.entryChannel='partner';
@@ -212,7 +228,9 @@
 
       (group.variants || []).forEach(variant => {
         const link = global.document.createElement("a");
+        link.href = '#';
         link.textContent = thai ? variant.th : variant.en;
+        link.dataset.searchText = `${variant.th} ${variant.en} ${variant.ref || ''}`;
         if (variant.ref) link.dataset.screenRef = variant.ref;
         if (variant.action) link.setAttribute(variant.action, "");
         if (variant.exception) link.classList.add("is-exception");
@@ -233,7 +251,7 @@
     const implemented = new Set(Array.from(screenElements || [], screen => screen.id).filter(Boolean));
     const missing = Array.from(implemented).filter(id => !registered.has(id));
     const stale = Array.from(registered).filter(id => !implemented.has(id));
-    if (true) {
+    {
       const details = global.document.createElement("details");
       details.className = "rail-group";
       details.innerHTML = `<summary><span class="rail-step">!</span><span>${thai ? "Modal และ Bottom sheet" : "Modals and bottom sheets"}</span></summary>`;
@@ -241,6 +259,7 @@
       body.className = "rail-group__body";
       missing.forEach(id => {
         const link = global.document.createElement("a");
+        link.href = `#${id}`;
         link.dataset.go = id;
         link.className = "is-exception";
         link.textContent = id;
@@ -315,17 +334,17 @@
           }
           if(item.documentPath){
             preview.classList.add('review-cookie-policy');
-            preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});
+            preview.addEventListener('close',()=>{preview.remove();trigger.focus();},{once:true});
             global.document.body.append(preview);
             preview.showModal();
             return;
           }
-          preview.addEventListener('close',()=>{preview.remove();link.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';if(isCookieNotice)veil.classList.add('review-modal-veil--cookie-notice');const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
+          preview.addEventListener('close',()=>{preview.remove();trigger.focus();},{once:true});const veil=global.document.createElement('div');veil.className='review-modal-veil';if(isCookieNotice)veil.classList.add('review-modal-veil--cookie-notice');const main=global.document.querySelector('main');const bounds=main?.getBoundingClientRect();veil.style.left=Math.max(0,bounds?.left||0)+'px';veil.append(preview);global.document.body.append(veil);preview.show();veil.addEventListener('click',e=>{if(e.target===veil)preview.close();});preview.addEventListener('close',()=>veil.remove(),{once:true});
         });body.append(link);
       });
       details.appendChild(body);
       fragment.appendChild(details);
-      console.warn("[Krane Screen Tab] registry mismatch", { missing, stale });
+      if (missing.length || stale.length) console.warn("[Krane screen picker] registry mismatch", { missing, stale });
     }
 
     // Design-only toast catalogue, using the same component classes as the app.
@@ -360,25 +379,86 @@
         const text=global.document.createElement('span');text.textContent=sample.message;toast.append(icon,text);section.append(toast);panel.append(section);
       });
       veil.append(panel);global.document.body.append(veil);panel.show();
-      panel.addEventListener('close',()=>{veil.remove();toastLink.focus();},{once:true});
+      panel.addEventListener('close',()=>{veil.remove();trigger.focus();},{once:true});
       veil.addEventListener('click',e=>{if(e.target===veil)panel.close();});
       panel.addEventListener('keydown',e=>{if(e.key==='Escape')panel.close();});
     });
     toastBody.append(toastLink);toastGroup.append(toastBody);fragment.append(toastGroup);
 
-    rail.appendChild(fragment);
-    rail.querySelectorAll(":scope > .rail-group").forEach(details => {
+    results.replaceChildren(fragment);
+    const groups = Array.from(results.children);
+    groups.forEach(details => {
       details.addEventListener("toggle", () => {
-        if (!details.open) return;
-        rail.querySelectorAll(":scope > .rail-group[open]").forEach(other => {
+        if (!details.open || search.value.trim()) return;
+        groups.forEach(other => {
           if (other !== details) other.open = false;
         });
       });
     });
+
+    const normalize = text => text.normalize('NFKC').toLowerCase();
+    const indexedGroups = groups.map(group => {
+      const name = group.dataset.searchText || group.querySelector('summary').textContent;
+      const entries = Array.from(group.querySelectorAll('a'), link => ({
+        link, keywords: normalize(`${name} ${link.textContent} ${link.dataset.searchText || ''} ${link.dataset.modalPreview || ''}`)
+      }));
+      return { group, entries };
+    });
+    function filter() {
+      const terms = normalize(search.value).trim().split(/\s+/).filter(Boolean);
+      const currentGroup = results.querySelector('a.current')?.closest('.rail-group') || groups[0];
+      let anyMatches = false;
+      indexedGroups.forEach(({group, entries}) => {
+        let hasMatch = false;
+        entries.forEach(({link, keywords}) => {
+          const matches = terms.every(term => keywords.includes(term));
+          link.hidden = !matches;
+          hasMatch ||= matches;
+        });
+        group.hidden = !hasMatch;
+        group.open = terms.length ? hasMatch : group === currentGroup;
+        anyMatches ||= hasMatch;
+      });
+      empty.hidden = anyMatches;
+    }
+    search.addEventListener('input', filter);
+    search.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown' && event.key !== 'Enter') return;
+      if (event.isComposing) return;
+      const first = results.querySelector('.rail-group[open]:not([hidden]) a:not([hidden])');
+      if (!first) return;
+      event.preventDefault();
+      if (event.key === 'Enter' && search.value.trim()) first.click();
+      else first.focus();
+    });
+    picker.addEventListener('toggle', () => {
+      if (picker.open) {
+        search.focus();
+      } else if (search.value) {
+        search.value = '';
+        filter();
+      }
+    });
+    picker.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !picker.open) return;
+      event.preventDefault();
+      picker.open = false;
+      trigger.focus();
+    });
+    global.document.addEventListener('pointerdown', event => {
+      if (picker.open && !picker.contains(event.target)) picker.open = false;
+    });
+    results.addEventListener('click', event => {
+      const link = event.target.closest('a');
+      if (!link) return;
+      if (link.getAttribute('href')?.startsWith('#')) event.preventDefault();
+      picker.open = false;
+      if (!link.dataset.modalPreview && !link.hasAttribute('data-toast-gallery')) trigger.focus();
+    }, true);
     rail.dataset.screenCount = String(implemented.size);
     return missing;
   }
 
   global.document.documentElement.classList.toggle("review-tools-enabled", enabled);
-  global.KraneReviewTools = Object.freeze({ enabled, directory: SCREEN_DIRECTORY, screenIds: canonicalScreenIds, canonicalRoutes, renderRail });
+  global.KraneReviewTools = Object.freeze({ enabled, directory: SCREEN_DIRECTORY, screenIds: canonicalScreenIds, canonicalRoutes, renderScreenPicker });
 })(window);
