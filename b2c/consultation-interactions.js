@@ -31,13 +31,53 @@
   const updateLabels=()=>{attach.setAttribute('aria-label',t('แนบไฟล์','Attach file'));};updateLabels();composer.prepend(attach);
   attach.onclick=()=>{
     open(t('แนบไฟล์','Attach file'),attach);
-    dialog.append(node('p',t('รูปหรือ PDF ไม่เกิน 10 MB · ไฟล์อยู่ในแท็บนี้ ไม่ได้ส่งถึงแพทย์','Image or PDF, up to 10 MB. Files stay in this tab and are not sent to a doctor.')));
-    const input=node('input');input.type='file';input.accept='image/jpeg,image/png,image/webp,application/pdf';input.setAttribute('aria-label',t('เลือกไฟล์','Choose file'));
-    const error=node('p');error.dataset.fileError='';error.setAttribute('role','status');
-    const add=node('button',t('เพิ่มในแชท','Add to chat'),'btn btn--primary');add.type='button';add.disabled=true;
-    input.onchange=()=>{pending=null;add.disabled=true;error.textContent='';const file=input.files?.[0];if(!file)return;if(!['image/jpeg','image/png','image/webp','application/pdf'].includes(file.type)||file.size>10*1024*1024){error.textContent=t('กรุณาเลือกภาพ JPG, PNG, WebP หรือ PDF ไม่เกิน 10 MB','Choose JPG, PNG, WebP or PDF up to 10 MB.');return;}pending=file;add.disabled=false;error.textContent=file.name;};
+    dialog.append(node('p',t('ไฟล์อยู่ในแท็บนี้ ยังไม่ได้ส่งถึงแพทย์','Files stay in this tab and are not sent to a doctor.'),'consult-attachment-note'));
+    const input=node('input',undefined,'sr-only');
+    input.type='file';
+    input.accept='image/jpeg,image/png,image/webp,application/pdf';
+    input.tabIndex=-1;
+    input.setAttribute('aria-label',t('เลือกไฟล์','Choose file'));
+
+    const picker=node('button',undefined,'upload consult-attachment-picker');
+    picker.type='button';
+    const uploadIcon=document.querySelector('#intake5 .upload .up-ic')?.cloneNode(true);
+    if(uploadIcon)picker.append(uploadIcon);
+    const fileTitle=node('span',t('เลือกไฟล์','Choose file'),'up-title');
+    fileTitle.setAttribute('aria-live','polite');
+    const formats=t('JPG, PNG, WebP หรือ PDF · ไม่เกิน 10 MB','JPG, PNG, WebP or PDF · up to 10 MB');
+    const fileHint=node('span',formats,'up-sub');
+    picker.append(fileTitle,fileHint);
+    picker.onclick=()=>input.click();
+
+    const error=node('p');
+    error.dataset.fileError='';
+    error.setAttribute('role','alert');
+    error.hidden=true;
+    const add=node('button',t('เพิ่มในแชท','Add to chat'),'btn btn--primary');
+    add.type='button';
+    add.disabled=true;
+    input.onchange=()=>{
+      pending=null;
+      add.disabled=true;
+      error.textContent='';
+      error.hidden=true;
+      fileTitle.textContent=t('เลือกไฟล์','Choose file');
+      fileHint.textContent=formats;
+      const file=input.files?.[0];
+      if(!file)return;
+      if(!['image/jpeg','image/png','image/webp','application/pdf'].includes(file.type)||file.size>10*1024*1024){
+        error.textContent=t('กรุณาเลือกภาพ JPG, PNG, WebP หรือ PDF ไม่เกิน 10 MB','Choose JPG, PNG, WebP or PDF up to 10 MB.');
+        error.hidden=false;
+        input.value='';
+        return;
+      }
+      pending=file;
+      add.disabled=false;
+      fileTitle.textContent=file.name;
+      fileHint.textContent=t('เลือกไฟล์อื่น','Choose another file');
+    };
     add.onclick=()=>{if(!pending)return;const file=pending,id=crypto.randomUUID();files.set(id,file);const bubble=node('div',undefined,'bubble bubble--out consult-file-bubble');bubble.dataset.localFile=id;const b=node('button',file.name);b.type='button';b.onclick=()=>{open(file.name,b);preview(file);actions();};bubble.append(b,node('div',t('เฉพาะแท็บนี้ · ยังไม่ได้ส่งถึงแพทย์','This tab only · Not sent to a doctor'),'consult-file-note'));screen.querySelector('.chat-body').append(bubble);close();bubble.scrollIntoView({block:'nearest'});};
-    dialog.append(input,error);actions(add);
+    dialog.append(picker,input,error);actions(add);
   };
   new MutationObserver(updateLabels).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   function clearFiles(){files.clear();screen.querySelectorAll('[data-local-file]').forEach(n=>n.remove());if(dialog.open)close();releaseUrl();pending=null;}
