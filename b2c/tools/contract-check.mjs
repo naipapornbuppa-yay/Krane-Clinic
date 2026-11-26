@@ -70,7 +70,7 @@ ctx.on('page', page => page.on('pageerror', e => consoleErrors.push(String(e))))
 
 console.log('QA: page, route inventory and partner flows');
 const app = await ctx.newPage();
-await app.goto(`${base}/b2c/krane-b2c.html`, { waitUntil: 'domcontentloaded' });
+await app.goto(`${base}/b2c/krane-b2c.html?screens=1#landing`, { waitUntil: 'domcontentloaded' });
 await app.waitForTimeout(1800);
 
 /* ---- screens -------------------------------------------------------------- */
