@@ -12,21 +12,30 @@
 }
 
 .page-loading__dots span {
-  --direction: 1;
   position: absolute;
-  top: 7px;
-  left: 12px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  top: 7.5px;
+  height: 9px;
+  border-radius: 999px;
   background: currentColor;
-  animation: krane-dot-collision 2.4s infinite;
 }
 
-.page-loading__dots span + span {
+.page-loading__dot {
+  --direction: 1;
+  left: 7.5px;
+  width: 9px;
+  animation: krane-dot-handoff 2.4s infinite;
+}
+
+.page-loading__dot:last-child {
   --direction: -1;
-  left: 56px;
+  left: 61.5px;
   animation-delay: -1.2s;
+}
+
+.page-loading__center {
+  left: 30px;
+  width: 18px;
+  animation: krane-center-handoff 2.4s infinite;
 }
 
 .page-loading__label {
@@ -35,28 +44,51 @@
   font: 400 14px/22px var(--font-base, system-ui);
 }
 
-/* At 18% the two dots meet. The receiving dot expands and recoils,
-   then returns the impact half a cycle later. */
-@keyframes krane-dot-collision {
-  0%, 39%, 68%, 100% {
-    transform: translateX(0) scale(1);
+/* Each dot hits the middle, recoils, and stretches when the middle
+   returns the impact. The second dot runs half a cycle ahead. */
+@keyframes krane-dot-handoff {
+  0%, 100% {
+    transform: translateX(calc(4px * var(--direction))) scaleX(1);
     animation-timing-function: ease-in;
   }
-  18% {
-    transform: translateX(calc(34px * var(--direction))) scale(1);
+  14% {
+    transform: translateX(calc(13.5px * var(--direction))) scaleX(1);
     animation-timing-function: ease-out;
   }
-  22% {
-    transform: translateX(calc(26px * var(--direction))) scale(.94);
+  24%, 78% {
+    transform: translateX(0) scaleX(1);
     animation-timing-function: ease-out;
   }
-  74% {
-    transform: translateX(calc(-5px * var(--direction))) scale(1.45);
+  85% {
+    transform: translateX(0) scaleX(2.45);
+    animation-timing-function: ease-in-out;
+  }
+  91% {
+    transform: translateX(calc(3px * var(--direction))) scaleX(2.3);
     animation-timing-function: ease-out;
   }
-  86% {
-    transform: translateX(calc(-2px * var(--direction))) scale(1.08);
+}
+
+@keyframes krane-center-handoff {
+  0%, 14%, 50%, 64%, 100% {
+    transform: translateX(0) scaleX(1);
+    animation-timing-function: ease-in-out;
+  }
+  28% {
+    transform: translateX(9px) scaleX(1.5);
     animation-timing-function: ease-out;
+  }
+  38% {
+    transform: translateX(2px) scaleX(.72);
+    animation-timing-function: ease-in-out;
+  }
+  78% {
+    transform: translateX(-9px) scaleX(1.5);
+    animation-timing-function: ease-out;
+  }
+  88% {
+    transform: translateX(-2px) scaleX(.72);
+    animation-timing-function: ease-in-out;
   }
 }
 
