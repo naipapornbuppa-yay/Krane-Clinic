@@ -15,25 +15,26 @@
   position: absolute;
   top: 7.5px;
   height: 9px;
-  border-radius: 999px;
+  border-radius: 4.5px;
   background: currentColor;
+  transform: translateX(-50%);
 }
 
 .page-loading__dot {
   --direction: 1;
-  left: 7.5px;
+  left: 12px;
   width: 9px;
   animation: krane-dot-handoff 2.4s infinite;
 }
 
 .page-loading__dot:last-child {
   --direction: -1;
-  left: 61.5px;
+  left: 66px;
   animation-delay: -1.2s;
 }
 
 .page-loading__center {
-  left: 30px;
+  left: 39px;
   width: 18px;
   animation: krane-center-handoff 2.4s infinite;
 }
@@ -44,50 +45,60 @@
   font: 400 14px/22px var(--font-base, system-ui);
 }
 
-/* Each dot hits the middle, recoils, and stretches when the middle
-   returns the impact. The second dot runs half a cycle ahead. */
+/* Animate width so the 4.5px semicircular ends retain their shape. The
+   opposite dot follows the same motion half a cycle ahead. */
 @keyframes krane-dot-handoff {
   0%, 100% {
-    transform: translateX(calc(4px * var(--direction))) scaleX(1);
+    width: 9px;
+    transform: translateX(calc(-50% + 4px * var(--direction)));
     animation-timing-function: ease-in;
   }
   14% {
-    transform: translateX(calc(13.5px * var(--direction))) scaleX(1);
+    width: 9px;
+    transform: translateX(calc(-50% + 13.5px * var(--direction)));
     animation-timing-function: ease-out;
   }
   24%, 78% {
-    transform: translateX(0) scaleX(1);
+    width: 9px;
+    transform: translateX(-50%);
     animation-timing-function: ease-out;
   }
   85% {
-    transform: translateX(0) scaleX(2.45);
+    width: 22px;
+    transform: translateX(-50%);
     animation-timing-function: ease-in-out;
   }
   91% {
-    transform: translateX(calc(3px * var(--direction))) scaleX(2.3);
+    width: 21px;
+    transform: translateX(calc(-50% + 3px * var(--direction)));
     animation-timing-function: ease-out;
   }
 }
 
 @keyframes krane-center-handoff {
   0%, 14%, 50%, 64%, 100% {
-    transform: translateX(0) scaleX(1);
+    width: 18px;
+    transform: translateX(-50%);
     animation-timing-function: ease-in-out;
   }
   28% {
-    transform: translateX(9px) scaleX(1.5);
+    width: 27px;
+    transform: translateX(calc(-50% + 9px));
     animation-timing-function: ease-out;
   }
   38% {
-    transform: translateX(2px) scaleX(.72);
+    width: 13px;
+    transform: translateX(calc(-50% + 2px));
     animation-timing-function: ease-in-out;
   }
   78% {
-    transform: translateX(-9px) scaleX(1.5);
+    width: 27px;
+    transform: translateX(calc(-50% - 9px));
     animation-timing-function: ease-out;
   }
   88% {
-    transform: translateX(-2px) scaleX(.72);
+    width: 13px;
+    transform: translateX(calc(-50% - 2px));
     animation-timing-function: ease-in-out;
   }
 }

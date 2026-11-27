@@ -28,7 +28,7 @@ const SITE_NAV_SERVICES = [
   ["rehair-opt1/index.html", "re:hair"],
   ["reflow-opt1/index.html", "re:flow"],
   ["krane-b2c.html?v=20260922-general-care-picker-v17&entry=direct#conditions", "ปรึกษาทั่วไป", "conditions"],
-  ["krane-b2c.html#profile", "เติมยา", "profile"],
+  ["online-refills.html", "เติมยา", "refill"],
   ["krane-b2c.html?v=20260920-float-v1#upload-rx", "อัพโหลดใบสั่งยา", "upload-rx"]
 ];
 const SITE_NAV_LINKS = [
@@ -40,6 +40,7 @@ const SITE_NAV_LINKS = [
 const SITE_NAV_HOME = "krane-b2c-landing.html#top";
 
 function siteNavAttrs(route) {
+  if (route === "refill") return ' target="_top"';
   return route ? ' target="_parent" data-route="' + route + '"' : "";
 }
 /* A link to a section of the page you are already on is an anchor, not a

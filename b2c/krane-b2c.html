@@ -28,6 +28,12 @@
       url.hash = 'consent-terms';
       canonicalized = true;
     }
+    if (url.searchParams.get('publicPage') === 'online-refills') {
+      url.searchParams.delete('publicPage');
+      url.searchParams.set('refill', '1');
+      url.hash = 'profile';
+      canonicalized = true;
+    }
     const initialRoute = url.hash.slice(1).split('?')[0] || 'landing';
     // Public Pages is a review build. Isolate only a new programme launch,
     // before any account or queue state is restored. A resumed/shared queue,
@@ -54,8 +60,9 @@
     }
   })();
 </script>
-<script src="review-public-pages.js?v=20261127-public-review"></script>
-<script src="review-tools.js?v=20261127-public-review"></script>
+<script src="review-public-pages.js?v=20261127-refill-picker"></script>
+<script src="review-safety.js?v=20261127-separate-safety"></script>
+<script src="review-tools.js?v=20261127-review-parity"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -88,7 +95,7 @@
 <script src="custom-select.js?v=20261126-native-health-select" defer></script>
 <script src="i18n.js?v=20261126-loading-screen-picker" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
-<link rel="stylesheet" href="page-loading.css?v=20261127-dot-handoff">
+<link rel="stylesheet" href="page-loading.css?v=20261127-fixed-caps">
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -1229,6 +1236,7 @@
 </style>
 <link rel="stylesheet" href="treatment-folders.css?v=20261126-refill-card-parity">
 <link rel="stylesheet" href="modal-chrome.css?v=20261126-responsive-modals">
+<link rel="stylesheet" href="review-visuals.css?v=20261127-review-parity">
 <script src="video-defaults.js?v=20261023" ></script><link rel="stylesheet" href="cookie-consent.css?v=20261115-cookie-notice-bottom"><script src="cookie-consent.js?v=20261115-cookie-primary-right" defer></script><link rel="stylesheet" href="../krane-chat-typing.css?v=20261120-incoming-bubble"><link rel="stylesheet" href="consultation-interactions.css?v=20261126-shared-attachment-picker">
 </head>
 <body class="hide-feat">
@@ -3414,9 +3422,10 @@
     <div class="screen__body stack-4">
       <div class="stack-2"><h2 class="h1">Order with your own prescription</h2></div>
       <input class="sr-only" id="prescription-file" type="file" accept="image/png,image/jpeg,application/pdf" aria-describedby="prescription-file-feedback">
-      <label class="card card--pad-sm row prescription-file-picker" for="prescription-file">
-        <span class="ic" data-demo-icon="upload"></span>
-        <span class="grow"><strong>Upload prescription</strong><span class="hint">Photo or PDF from a licensed doctor.</span></span><span class="muted">Choose</span>
+      <label class="upload" for="prescription-file">
+        <span class="up-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5"/><path d="M12 15V4M8 8l4-4 4 4"/></svg></span>
+        <span class="up-title">Upload prescription</span>
+        <span class="up-sub">Photo or PDF from a licensed doctor.</span>
       </label>
       <p class="hint" id="prescription-file-feedback" role="status" hidden></p>
       <div class="alert"><span class="a-ic">i</span><div><div class="a-title">A pharmacist reviews first</div><div class="hint">A licensed pharmacist checks your prescription before the order is accepted.</div></div></div>
@@ -3853,14 +3862,14 @@
 
 <div class="modal-layer" id="promo-modal" hidden aria-hidden="true">
   <button class="modal-layer__scrim" type="button" data-promo-close aria-label="ปิดหน้าต่างโค้ดส่วนลด"></button>
-  <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="promo-title" aria-describedby="promo-description">
+  <section class="modal-dialog promo-dialog" role="dialog" aria-modal="true" aria-labelledby="promo-title" aria-describedby="promo-description">
     <div class="modal-dialog__icon"><i data-lucide="tag" class="ui-icon ui-icon--md" aria-hidden="true"></i></div>
     <h2 id="promo-title">โค้ดส่วนลด</h2>
     <p id="promo-description">เลือกโค้ดที่มีอยู่ หรือกรอกโค้ดของคุณเอง</p>
     <div class="payment-method-list" role="listbox" aria-label="โค้ดส่วนลดที่ใช้ได้">
       <button class="option payment-method-option" type="button" aria-selected="false" data-promo-option="WELCOME100" data-promo-amount="100">
         <span class="opt-icon"><i data-lucide="sparkles" class="ui-icon" aria-hidden="true"></i></span>
-        <span class="opt-body"><span class="opt-title">WELCOME100</span><span class="opt-sub">ลด ฿ 100 สำหรับคำสั่งซื้อแรก</span></span><span class="opt-check"></span>
+        <span class="opt-body"><span class="opt-title">WELCOME100</span><span class="opt-sub">ลด ฿ 100 สำหรับคำสั่งซื้อแรก</span></span><i data-lucide="chevron-right" class="promo-option__arrow ui-icon" aria-hidden="true"></i>
       </button>
     </div>
     <div class="field promo-code-field float-field"><div class="float-field__box"><span class="float-field__slot"><input class="input" id="promoInput" autocapitalize="characters" placeholder="กรอกโค้ดส่วนลด"><label for="promoInput">หรือกรอกโค้ดเอง</label></span></div></div>
@@ -9183,15 +9192,12 @@
     return true;
   }
   document.body.addEventListener('click', event => {
-    /* Client, 15 Sep: pressing refill from inside a treatment already answers
-       the sheet's only question — this is that treatment's prescription — so it
-       goes straight to the checkout. The sheet is for the quick menu, which is
-       reached with no treatment in hand. */
-    if(event.target.closest('[data-refill-treatment]')){
-      if(!startRefill(selectedCategoryId)) openRefillSheet();
+    if(event.target.closest('[data-refill-treatment],[data-refill-open]')){
+      event.preventDefault();
+      if(!document.getElementById('profile').classList.contains('active') && event.target.closest('#prototype-rail')) show('profile');
+      openRefillSheet();
       return;
     }
-    if(event.target.closest('[data-refill-open]')){ openRefillSheet(); return; }
     if(event.target.closest('[data-refill-sheet-close]')){ closeRefillSheet(); return; }
     const choice=event.target.closest('#refill-sheet [data-refill-choice]');
     if(choice) startRefill(choice.dataset.refillChoice);
@@ -14505,7 +14511,11 @@
       window.kraneDemoStatus=demoStatus;
     }
   })();
-  if(pendingQueue && !queuePreview && !(flowConfig.get('entry')==='partner' && flowConfig.get('fresh')==='1')){pendingQueue.suspended=true;history=['landing'];show('queue-resume',false);}
+  if(flowConfig.get('refill') === '1' && location.hash === '#profile'){
+    applyHash();
+    if(document.getElementById('profile').classList.contains('active')) openRefillSheet();
+  }
+  else if(pendingQueue && !queuePreview && !(flowConfig.get('entry')==='partner' && flowConfig.get('fresh')==='1')){pendingQueue.suspended=true;history=['landing'];show('queue-resume',false);}
   else if(location.hash) applyHash();
   else if(window.kraneDemoStage){
     /* Embedded landing showcases opt in with ?demoStage= rather than a hash.

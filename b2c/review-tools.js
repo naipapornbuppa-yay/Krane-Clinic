@@ -9,7 +9,7 @@
   const screensParam = params.get("screens");
   const enabled = screensParam === "1" || screensParam === "" || screensParam === "true"
     || params.get("with_screen_tab") === "1";
-  const publicGroups = global.KraneReviewPublicPages || [];
+  const publicGroups = [...(global.KraneReviewPublicPages || []), ...(global.KraneReviewSafetyGroups || [])];
   const publicPages = new Map(publicGroups.flatMap(group => group.pages.map(page => [page[0], page])));
   let selectedPublic = enabled ? publicPages.get(params.get("publicPage")) : null;
   let defaultLandingSource;
@@ -17,6 +17,7 @@
   function resetPublicPreview() {
     if (!selectedPublic) return;
     selectedPublic = null;
+    delete global.document.documentElement.dataset.reviewSafety;
     const url = new URL(global.location.href);
     url.searchParams.delete("publicPage");
     global.history.replaceState(global.history.state, "", url);
@@ -45,15 +46,17 @@
       destination.searchParams.set("lang", thai ? "th" : "en");
       landing.src = destination.href;
       landing.title = selectedPublic[thai ? 2 : 3];
+      global.document.documentElement.toggleAttribute('data-review-safety',
+        destination.pathname.endsWith('/review-safety.html'));
     }
     publicGroups.forEach((group, index) => {
       const details = global.document.createElement("details");
       details.className = "rail-group";
-      details.dataset.searchText = "landing website public " + group.th + " " + group.en;
+      details.dataset.searchText = group.th + " " + group.en + (group.safety ? " red flag safety" : " landing website public");
       const summary = global.document.createElement("summary");
       const number = global.document.createElement("span");
       number.className = "rail-step";
-      number.textContent = "W" + (index + 1);
+      number.textContent = group.safety ? "!" : "W" + (index + 1);
       summary.append(number, global.document.createTextNode(thai ? group.th : group.en));
       const body = global.document.createElement("div");
       body.className = "rail-group__body";
@@ -192,7 +195,7 @@
         ["referral", "SID-061", "แนะนำเพื่อน", "Refer a friend"]
       ],
       variants: [
-        { action: "data-refill-open", th: "เติมยาตามแผนการรักษา", en: "Refill treatment" }
+        { action: "data-refill-open", th: "เติมยาออนไลน์ · เลือกใบสั่งยา", en: "Online refills · Choose prescription", keywords: "online-refills เติมยาตามแผนการรักษา" }
       ]
     },
     {
@@ -301,7 +304,7 @@
         const link = global.document.createElement("a");
         link.href = '#';
         link.textContent = thai ? variant.th : variant.en;
-        link.dataset.searchText = `${variant.th} ${variant.en} ${variant.ref || ''}`;
+        link.dataset.searchText = `${variant.th} ${variant.en} ${variant.ref || ''} ${variant.keywords || ''}`;
         if (variant.ref) link.dataset.screenRef = variant.ref;
         if (variant.action) link.setAttribute(variant.action, "");
         if (variant.exception) link.classList.add("is-exception");
@@ -336,8 +339,8 @@
         link.textContent = id;
         body.appendChild(link);
       });
-      const previews=[...global.document.querySelectorAll('.modal-layer[id], dialog[id]')].map(node=>({id:node.id,node}));
-      [{id:'address-delete-confirm',title:'ยืนยันลบที่อยู่',text:'ต้องการลบที่อยู่นี้ใช่ไหม?',actions:['ยกเลิก','ลบที่อยู่']},{id:'red-flag-modal',title:'คำถามคัดกรองความปลอดภัย',text:'ตัวอย่างคำถามคัดกรอง · สูงสุด 3 คำถามต่อขั้นตอน',actions:['ไม่ใช่','ใช่','ถัดไป']}].forEach(item=>{if(!previews.some(p=>p.id===item.id))previews.push(item);});
+      const previews=[...global.document.querySelectorAll('.modal-layer[id], dialog[id]')].filter(node=>!['red-flag-modal','obesity-risk-modal','refill-sheet'].includes(node.id)).map(node=>({id:node.id,node}));
+      [{id:'address-delete-confirm',title:'ยืนยันลบที่อยู่',text:'ต้องการลบที่อยู่นี้ใช่ไหม?',actions:['ยกเลิก','ลบที่อยู่']}].forEach(item=>{if(!previews.some(p=>p.id===item.id))previews.push(item);});
       previews.unshift(
         {id:'cookie-policy',title:thai?'นโยบายคุกกี้':'Cookie policy',documentPath:'cookies.html'},
         {id:'cookie-notice',title:thai?'ประกาศคุกกี้':'Cookie notice',selector:'[data-cookie-banner]'},
@@ -355,8 +358,27 @@
           global.document.querySelectorAll('.modal-layer').forEach(layer=>{layer.hidden=true;layer.setAttribute('aria-hidden','true');layer.style.removeProperty('visibility');});
           global.document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());
           global.document.body.classList.remove('modal-open');
+          if(item.id==='cookie-preferences'){
+            // Open the production component with isolated sample controls.
+            const preferences=source.cloneNode(true);
+            preferences.removeAttribute('data-cookie-preferences');
+            preferences.dataset.reviewCookiePreferences='';
+            ['aria-labelledby','aria-describedby'].forEach(attribute=>{
+              preferences.setAttribute(attribute,'review-'+preferences.getAttribute(attribute));
+            });
+            preferences.querySelectorAll('[id]').forEach(node=>{node.id='review-'+node.id;});
+            preferences.addEventListener('click',event=>{
+              if(event.target.closest('[data-cookie-action]')) preferences.close();
+            });
+            preferences.addEventListener('close',()=>{preferences.remove();trigger.focus();},{once:true});
+            global.document.body.append(preferences);
+            preferences.showModal();
+            preferences.querySelector('h2').focus();
+            return;
+          }
           const isCookieNotice=item.id==='cookie-notice';
           const preview=global.document.createElement('dialog');preview.className='review-modal-preview';if(item.selector||item.documentPath)preview.classList.add('review-cookie-preview');preview.setAttribute('aria-label',link.textContent);
+          if(item.id==='promo-modal') preview.classList.add('review-promo-preview');
           if(isCookieNotice){
             preview.addEventListener('keydown',event=>{
               if(event.key==='Escape'){event.preventDefault();preview.close();}
