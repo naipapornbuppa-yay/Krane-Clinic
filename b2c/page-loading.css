@@ -1,0 +1,65 @@
+.page-loading {
+  gap: 16px;
+  padding-inline: var(--sp-4, 16px);
+}
+
+#preloader .page-loading__dots {
+  position: relative;
+  width: 78px;
+  max-width: 78px;
+  height: 24px;
+  color: var(--color-promo-bar, #5871b5);
+}
+
+.page-loading__dots span {
+  --direction: 1;
+  position: absolute;
+  top: 7px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: krane-dot-collision 2.4s infinite;
+}
+
+.page-loading__dots span + span {
+  --direction: -1;
+  left: 56px;
+  animation-delay: -1.2s;
+}
+
+.page-loading__label {
+  margin: 0;
+  color: var(--color-ink-2, #485263);
+  font: 400 14px/22px var(--font-base, system-ui);
+}
+
+/* At 18% the two dots meet. The receiving dot expands and recoils,
+   then returns the impact half a cycle later. */
+@keyframes krane-dot-collision {
+  0%, 39%, 68%, 100% {
+    transform: translateX(0) scale(1);
+    animation-timing-function: ease-in;
+  }
+  18% {
+    transform: translateX(calc(34px * var(--direction))) scale(1);
+    animation-timing-function: ease-out;
+  }
+  22% {
+    transform: translateX(calc(26px * var(--direction))) scale(.94);
+    animation-timing-function: ease-out;
+  }
+  74% {
+    transform: translateX(calc(-5px * var(--direction))) scale(1.45);
+    animation-timing-function: ease-out;
+  }
+  86% {
+    transform: translateX(calc(-2px * var(--direction))) scale(1.08);
+    animation-timing-function: ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-loading__dots span { animation: none; }
+}

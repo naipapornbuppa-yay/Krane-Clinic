@@ -9,6 +9,76 @@
   const screensParam = params.get("screens");
   const enabled = screensParam === "1" || screensParam === "" || screensParam === "true"
     || params.get("with_screen_tab") === "1";
+  const publicGroups = global.KraneReviewPublicPages || [];
+  const publicPages = new Map(publicGroups.flatMap(group => group.pages.map(page => [page[0], page])));
+  let selectedPublic = enabled ? publicPages.get(params.get("publicPage")) : null;
+  let defaultLandingSource;
+
+  function resetPublicPreview() {
+    if (!selectedPublic) return;
+    selectedPublic = null;
+    const url = new URL(global.location.href);
+    url.searchParams.delete("publicPage");
+    global.history.replaceState(global.history.state, "", url);
+    const landing = global.document.querySelector("#landing iframe");
+    landing.src = defaultLandingSource;
+    landing.title = "Krane B2C landing";
+    global.document.querySelector("[data-review-public][aria-current]")?.removeAttribute("aria-current");
+    global.document.querySelector("[data-review-public].current")?.classList.remove("current");
+  }
+
+  function syncPublicSelection(active) {
+    if (!selectedPublic) return null;
+    const link = global.document.querySelector('[data-review-public="' + selectedPublic[0] + '"]');
+    if (!link) return null;
+    link.classList.toggle("current", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+    return active ? link : null;
+  }
+
+  function renderPublicGroups(fragment, thai) {
+    if (selectedPublic) {
+      const landing = global.document.querySelector("#landing iframe");
+      defaultLandingSource = landing.getAttribute("src");
+      const destination = new URL(selectedPublic[1], global.location.href);
+      destination.searchParams.set("lang", thai ? "th" : "en");
+      landing.src = destination.href;
+      landing.title = selectedPublic[thai ? 2 : 3];
+    }
+    publicGroups.forEach((group, index) => {
+      const details = global.document.createElement("details");
+      details.className = "rail-group";
+      details.dataset.searchText = "landing website public " + group.th + " " + group.en;
+      const summary = global.document.createElement("summary");
+      const number = global.document.createElement("span");
+      number.className = "rail-step";
+      number.textContent = "W" + (index + 1);
+      summary.append(number, global.document.createTextNode(thai ? group.th : group.en));
+      const body = global.document.createElement("div");
+      body.className = "rail-group__body";
+      group.pages.forEach(([id, path, th, en]) => {
+        const target = new URL(global.location.pathname, global.location.href);
+        target.searchParams.set("screens", "1");
+        target.searchParams.set("lang", thai ? "th" : "en");
+        target.searchParams.set("publicPage", id);
+        target.hash = "landing";
+        const link = global.document.createElement("a");
+        link.href = target.href;
+        link.dataset.reviewPublic = id;
+        link.dataset.searchText = id + " " + path + " " + th + " " + en;
+        link.textContent = thai ? th : en;
+        if (selectedPublic?.[0] === id) {
+          link.classList.add("current");
+          link.setAttribute("aria-current", "page");
+          details.open = true;
+        }
+        body.append(link);
+      });
+      details.append(summary, body);
+      fragment.append(details);
+    });
+  }
 
   /*
    * Reviewer navigation has one source of truth.
@@ -174,6 +244,7 @@
     const fragment = global.document.createDocumentFragment();
     const registered = new Set();
 
+    renderPublicGroups(fragment, thai);
     SCREEN_DIRECTORY.forEach((group, groupIndex) => {
       const details = global.document.createElement("details");
       details.className = "rail-group";
@@ -182,7 +253,7 @@
          What changed on 5 Oct is inside a group, not this: the error and
          edge-case screens no longer sit behind a second accordion of their
          own — opening a group shows them with its default state. */
-      if (groupIndex === 0) details.open = true;
+      if (groupIndex === 0 && !selectedPublic) details.open = true;
       const summary = global.document.createElement("summary");
       summary.innerHTML = `<span class="rail-step">${group.step}</span><span>${thai ? group.th : group.en}</span>`;
       const body = global.document.createElement("div");
@@ -211,7 +282,7 @@
         link.dataset.canonicalScreen = canonicalRoutes[id] || id;
         if(group.step==='09') link.dataset.entryChannel='partner';
         else if(/^intake[1-5]$/.test(id)){link.dataset.entryChannel='direct';link.dataset.category='hair-skin';}
-        if (id === "landing") link.classList.add("current");
+        if (id === "landing" && !selectedPublic) link.classList.add("current");
         if (state === "featured") link.classList.add("is-key-route");
         if (state === "exception") link.classList.add("is-exception");
         if (state === "eligibility") link.classList.add("is-eligibility");
@@ -460,5 +531,8 @@
   }
 
   global.document.documentElement.classList.toggle("review-tools-enabled", enabled);
-  global.KraneReviewTools = Object.freeze({ enabled, directory: SCREEN_DIRECTORY, screenIds: canonicalScreenIds, canonicalRoutes, renderScreenPicker });
+  global.KraneReviewTools = Object.freeze({
+    enabled, directory: SCREEN_DIRECTORY, screenIds: canonicalScreenIds, canonicalRoutes,
+    renderScreenPicker, resetPublicPreview, syncPublicSelection
+  });
 })(window);

@@ -54,7 +54,8 @@
     }
   })();
 </script>
-<script src="review-tools.js?v=20261126-screen-picker"></script>
+<script src="review-public-pages.js?v=20261127-public-review"></script>
+<script src="review-tools.js?v=20261127-public-review"></script>
 <title>Krane Clinic · Online Care</title>
 <meta name="description" content="Private online consultation, doctor-led treatment and discreet delivery from Krane Clinic.">
 <meta property="og:type" content="website">
@@ -87,6 +88,7 @@
 <script src="custom-select.js?v=20261126-native-health-select" defer></script>
 <script src="i18n.js?v=20261126-loading-screen-picker" defer></script>
 <script src="../krane-golden-patient.js?v=20261010-handoff-v273" defer></script>
+<link rel="stylesheet" href="page-loading.css?v=20261127-colliding-dots">
 
 <style>
   /* prototype chrome only (not part of the product) */
@@ -113,14 +115,14 @@
   html.review-tools-enabled .proto{flex-direction:column}
   html.review-tools-enabled .rail{
     position:relative;z-index:70;display:grid;justify-items:center;flex:none;
-    height:auto;max-height:none;padding:8px 14px;
+    height:auto;max-height:none;padding:5px 12px;
     background:var(--color-surface);border-bottom:1px solid var(--color-line)
   }
-  .rail-picker{position:relative;width:min(100%,480px)}
+  .rail-picker{position:relative;width:min(100%,320px)}
   .rail-picker>summary{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;
-    padding:0 14px;border:1px solid var(--color-line);border-radius:12px;
-    background:var(--color-bg);color:var(--color-ink);font-weight:var(--fw-semibold);cursor:pointer
+    display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px;
+    padding:0 10px;border:1px solid var(--color-line);border-radius:8px;
+    background:var(--color-bg);color:var(--color-ink);font-size:13px;font-weight:var(--fw-medium);cursor:pointer
   }
   .rail-picker>summary::after{
     content:"";width:7px;height:7px;margin-right:3px;border:solid currentColor;
@@ -139,6 +141,7 @@
   .rail-picker__results{min-height:0;overflow:auto;overscroll-behavior:contain}
   .rail-picker__empty{margin:4px 6px 8px;color:var(--color-ink-2);font-size:14px}
   .rail :is(summary,input,a):focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px}
+  .rail-picker>summary:focus-visible{outline-width:1px;outline-offset:1px}
   .rail [hidden]{display:none!important}
   .rail details,.rail details>summary,.rail-group__body,.rail a{max-width:100%;min-width:0}
   .rail details>summary{list-style:none;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
@@ -588,31 +591,7 @@
       transform-origin:center;
       animation:loading-illustration-float 3.2s var(--ease-inout) infinite
     }
-    /* The dots are for the general page preloader only. In-flow waiting
-       screens retain their own illustrations and progress copy. */
-    #preloader .page-loading{gap:16px;padding:0 var(--sp-4)}
-    #preloader .page-loading__dots{
-      position:relative;display:grid;grid-template-columns:repeat(3,24px);place-items:center;
-      gap:3px;width:78px;max-width:78px;height:24px;color:var(--color-promo-bar,#5871b5)
-    }
-    .page-loading__dots span{width:7px;height:7px;border:1px solid currentColor;border-radius:99px}
-    .page-loading__dots::after{
-      content:"";position:absolute;top:8.5px;left:0;width:24px;height:7px;
-      border-radius:99px;background:currentColor;
-      animation:krane-app-loading 2.4s ease-in-out infinite
-    }
-    .page-loading__label{margin:0;color:var(--color-ink-2);font:400 14px/22px var(--font-base)}
     body:has(#preloader.active)>.krane-cookie-sheet{display:none}
-    @keyframes krane-app-loading{
-      0%,6%,100%{transform:translateX(0)}
-      14%,86%{transform:translate(13.5px,-5px) scaleX(.76)}
-      22%,28%,72%,78%{transform:translateX(27px)}
-      36%,64%{transform:translate(40.5px,-5px) scaleX(.76)}
-      45%,55%{transform:translateX(54px)}
-    }
-    @media(prefers-reduced-motion:reduce){
-      .page-loading__dots::after{animation:none}
-    }
     @keyframes ks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes ks-retry{0%,22%,100%{transform:rotate(0)}58%{transform:rotate(30deg)}}
     @keyframes ks-draw{0%,18%{stroke-dashoffset:54}45%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:-54}}
@@ -3562,7 +3541,7 @@
 
   <section class="screen" id="preloader">
     <div class="screen__body state-view page-loading" role="status">
-      <div class="page-loading__dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="page-loading__dots" aria-hidden="true"><span></span><span></span></div>
       <p class="page-loading__label">Loading...</p>
     </div>
   </section>
@@ -8747,7 +8726,8 @@
        after the reviewer chooses a real screen makes the new route look broken
        even though its hash and active screen are correct. */
     document.querySelectorAll('.review-modal-veil').forEach(veil => veil.remove());
-    const link = railLinks.find(a => a.dataset.go === id);
+    const link = (id === 'landing' && prototypeRail.querySelector('[data-review-public][aria-current="page"]'))
+      || railLinks.find(a => a.dataset.go === id);
     if(!link) return;
     if(!prototypeRail.querySelector('.rail-picker__search').value.trim()){
       const activeGroup = link.closest('.rail-group');
@@ -10509,8 +10489,9 @@
     if(shouldShowSignupIntakeToast){
       window.requestAnimationFrame(() => showActionToast('ทำแบบประเมินเรียบร้อยแล้ว','success'));
     }
+    const activePublicPreview=window.KraneReviewTools.syncPublicSelection(id==='landing');
     railLinks.forEach(link => {
-      const current=link.dataset.go === id;
+      const current=!activePublicPreview && link.dataset.go === id;
       link.classList.toggle('current',current);
       if(current) link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
@@ -12651,6 +12632,7 @@
       // re-consulting from a treatment card must not re-ask which condition.
       if(go.dataset.category) setSelectedCategory(go.dataset.category);
       if(go.closest('.rail')){
+        if(go.dataset.go === 'landing') window.KraneReviewTools.resetPublicPreview();
         if(go.dataset.entryChannel){
           flowState.entryChannel=go.dataset.entryChannel;
           persistFlowState();
