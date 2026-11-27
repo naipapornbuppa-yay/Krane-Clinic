@@ -12,7 +12,7 @@
     ] },
     { id: 'about', title: ['เกี่ยวกับเรา', 'About Us'], items: [
       ['เกี่ยวกับ Krane', 'About Krane', 'about.html'],
-      ['วิธีใช้งาน', 'How It Works', 'how-it-works.html'],
+      ['วิธีใช้งาน', 'How It Works', 'krane-b2c-landing.html#how'],
       ['ทีมแพทย์ของเรา', 'Our Medical Team', 'doctors.html'],
       ['คลังความรู้สุขภาพ', 'Health Library', 'articles.html'],
       ['ร่วมงานกับเรา', 'Careers', 'careers.html']
@@ -43,7 +43,9 @@
   const link = (item, key) => {
     const [th, en, href, route] = item;
     if (!href) return unavailable(key, [th, en]);
-    return '<a href="' + escape(href) + '"' + (href==='cookies.html#controls' ? ' data-cookie-settings' : '') + (href==='online-refills.html' ? ' target="_top"' : '') + (route ? ' target="_parent" data-route="' + escape(route) + '"' : '') + '>' + label(key, [th, en]) + '</a>';
+    const destination = href === 'krane-b2c-landing.html#how' && document.body?.id === 'landing-page'
+      ? new URL('#how', location.href).href : href;
+    return '<a href="' + escape(destination) + '"' + (href==='cookies.html#controls' ? ' data-cookie-settings' : '') + (href==='online-refills.html' ? ' target="_top"' : '') + (route ? ' target="_parent" data-route="' + escape(route) + '"' : '') + '>' + label(key, [th, en]) + '</a>';
   };
   const chevron = '<svg class="kf__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 

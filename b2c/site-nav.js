@@ -50,7 +50,10 @@ function siteNavHref(href) {
   const hash = href.indexOf("#");
   if (hash < 1) return href;
   const page = href.slice(0, hash).split("?")[0];
-  return location.pathname.endsWith("/" + page) ? href.slice(hash) : href;
+  const landing = page === "krane-b2c-landing.html" && document.body?.id === "landing-page";
+  if (!landing && !location.pathname.endsWith("/" + page)) return href;
+  const fragment = href.slice(hash);
+  return document.querySelector("base[href]") ? new URL(fragment, location.href).href : fragment;
 }
 function siteNavBrand() {
   return '<img class="brand-lockup" src="' + SITE_NAV_BRAND.src + '" width="' + SITE_NAV_BRAND.width +

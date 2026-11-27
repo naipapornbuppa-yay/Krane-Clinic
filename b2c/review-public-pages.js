@@ -5,7 +5,7 @@ window.KraneReviewPublicPages = [
     ["rebody", "rebody-opt1/index.html", "re:body", "re:body"],
     ["rehair", "rehair-opt1/index.html", "re:hair", "re:hair"],
     ["reflow", "reflow-opt1/index.html", "re:flow", "re:flow"],
-    ["how-it-works", "how-it-works.html", "วิธีใช้งาน", "How it works"],
+    ["how-it-works", "krane-b2c-landing.html#how", "วิธีใช้งาน · บนหน้าหลัก", "How it works · Landing section"],
     ["prescription-delivery", "prescription-delivery.html", "จัดส่งยาตามใบสั่งยา", "Prescription delivery"],
     ["doctors", "doctors.html", "ทีมแพทย์ของเรา", "Our doctors"],
     ["pricing", "pricing.html", "ราคา", "Pricing"],
