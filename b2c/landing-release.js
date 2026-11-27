@@ -13,15 +13,15 @@
     }
     window.dispatchEvent(new Event('krane-articles-changed'));
   }
-  const smallScreen = matchMedia('(max-width: 760px)');
+  const compactHero = matchMedia('(max-width: 760px), (max-width: 1024px) and (orientation: portrait)');
   const highlights = document.querySelector('.hero-draft__marquee');
   const placeHighlights = () => {
-    const slot = document.querySelector(smallScreen.matches ? '.hero-mobile-benefits' : '.hero-draft__intro');
+    const slot = document.querySelector(compactHero.matches ? '.hero-mobile-benefits' : '.hero-draft__intro');
     slot.prepend(highlights);
   };
   if (highlights) {
     placeHighlights();
-    smallScreen.addEventListener('change', placeHighlights);
+    compactHero.addEventListener('change', placeHighlights);
   }
 
   const gallery = document.querySelector('.landing-review-gallery');
