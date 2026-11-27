@@ -87,6 +87,8 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  });
  await banner(p).locator('[data-cookie-action=open]').click();check(await dialog(p).isVisible()&&await dialog(p).evaluate(e=>e.matches(':modal')),'Preferences are explicitly opened as a native modal');check(!await banner(p).isVisible(),'Preferences hide the passive notice temporarily');await checkPlacement(p,dialog(p),'Preferences '+width+'/'+lang);
  check((await dialog(p).locator('a').boundingBox()).height>=44,'Dialog policy link has a 44px touch target');
+ check(await dialog(p).locator('button').count()===2,'Preferences contains a single primary CTA and the close control');
+ check(await dialog(p).locator('.krane-cookie-dialog-actions > button[data-cookie-action=save]').count()===1,'Save preferences is the only footer action');
  check(await dialog(p).locator('input:checked:disabled').count()===1,'Necessary always active');
  check(await dialog(p).locator('[data-cookie-category]:not(:checked):disabled').count()===2,'Unavailable optional categories stay off');
  await p.keyboard.press('Tab');check(await p.evaluate(()=>document.querySelector('[data-cookie-preferences]').contains(document.activeElement)),'Keyboard stays in native modal');
@@ -98,17 +100,17 @@ for(const width of [390,1440])for(const lang of ['th','en']){
  check(await consent(p)===null,'Dismissal is not consent');
  check(await banner(p).locator('[data-cookie-action=open]').evaluate(e=>e===document.activeElement),'Escape returns focus to opener');
  await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).screenshot({path:join(out,`preferences-${width}-${lang}.png`)});
- await dialog(p).locator('[data-cookie-action=reject]').click();let saved=await consent(p);
- check(saved.decision==='necessary_only'&&saved.necessary&&!saved.analytics&&!saved.advertising,'Necessary-only choice persisted');
- check(await p.evaluate(()=>localStorage.getItem('krane-cookie-qa-sentinel'))==='preserve','Rejecting optional storage preserves unrelated user data');
+ await dialog(p).locator('[data-cookie-action=save]').click();const saved=await consent(p);
+ check(saved.decision==='save'&&saved.necessary&&!saved.analytics&&!saved.advertising,'Save preferences persists necessary-only storage');
+ check(await p.evaluate(()=>localStorage.getItem('krane-cookie-qa-sentinel'))==='preserve','Saving preferences preserves unrelated user data');
  check(!await banner(p).isVisible(),'Choice dismisses notice');
  await p.reload({waitUntil:'domcontentloaded'});check(!await banner(p).isVisible(),'Choice survives reload');
  await open(p,'condition-detail.html?condition=hair-loss&lang='+lang);check(!await banner(p).isVisible(),'Choice survives page navigation');
  const settings=p.locator('a[data-cookie-settings]').first();if(!await settings.isVisible())await p.locator('details[data-footer-group]').filter({has:settings}).locator('summary').click();await settings.click();check(await dialog(p).isVisible(),'Footer reopens settings');
  const other=lang==='en'?'th':'en';await p.evaluate(value=>{document.documentElement.lang=value;document.dispatchEvent(new CustomEvent('krane:languagechange',{detail:{lang:value}}));},other);await p.waitForTimeout(80);
  check((await dialog(p).innerText()).includes(other==='en'?'Privacy preferences':'การตั้งค่าความเป็นส่วนตัว'),'Open dialog language updates');
- await dialog(p).locator('[data-cookie-action=accept]').click();saved=await consent(p);
- check(saved.decision==='accept_all'&&!saved.analytics&&!saved.advertising,'Accept all acknowledges available storage without enabling absent trackers');
+ await dialog(p).locator('[data-cookie-action=close]').click();
+ assert.deepEqual(await consent(p),saved,'Closing preferences preserves the saved choice');
  await open(p,'cookies.html?lang='+lang+'#controls');check(await dialog(p).isVisible(),'Policy deep link opens settings');
  await dialog(p).locator('[data-cookie-action=save]').click();check((await consent(p)).decision==='save','Save preferences persists');
  await open(p,'krane-b2c.html?lang='+lang+'&public=1&screens=1#landing');check(!await banner(p).isVisible(),'Shared consent reaches application shell');
@@ -138,13 +140,13 @@ for(const viewport of [{width:320,height:320},{width:640,height:320},{width:720,
  await checkPlacement(p,dialog(p),'Short-viewport preferences '+label);
  const content=dialog(p).locator('.krane-cookie-dialog-content');
  check(await content.evaluate(e=>e.clientHeight>0&&getComputedStyle(e).overflowY==='auto'),'Tall preferences content scrolls within viewport '+label);
- const accept=content.locator('[data-cookie-action=accept]');
- await accept.scrollIntoViewIfNeeded();
- check(await accept.evaluate(e=>{const r=e.getBoundingClientRect(),c=e.closest('.krane-cookie-dialog-content').getBoundingClientRect();return r.height>=44&&r.top>=c.top-1&&r.bottom<=c.bottom+1;}),'Scrollable consent action is reachable '+label);
- for(const action of ['save','close']){
-  const control=dialog(p).locator('.krane-cookie-dialog-actions [data-cookie-action='+action+']');
-  check(await control.evaluate(e=>{const r=e.getBoundingClientRect(),d=e.closest('dialog').getBoundingClientRect();return r.height>=44&&r.top>=d.top-1&&r.bottom<=d.bottom+1&&r.bottom<=innerHeight+1;}),'Fixed preferences '+action+' stays reachable '+label);
- }
+ const close=dialog(p).locator('button[data-cookie-action=close]');
+ check(await close.isVisible(),'Close control is available '+label);
+ const policy=content.locator('a');
+ await policy.scrollIntoViewIfNeeded();
+ check(await policy.evaluate(e=>{const r=e.getBoundingClientRect(),c=e.closest('.krane-cookie-dialog-content').getBoundingClientRect();return r.height>=44&&r.top>=c.top-1&&r.bottom<=c.bottom+1;}),'Policy link is reachable in the scroll area '+label);
+ const save=dialog(p).locator('.krane-cookie-dialog-actions [data-cookie-action=save]');
+ check(await save.evaluate(e=>{const r=e.getBoundingClientRect(),d=e.closest('dialog').getBoundingClientRect();return r.height>=44&&r.top>=d.top-1&&r.bottom<=d.bottom+1&&r.bottom<=innerHeight+1;}),'Save preferences stays reachable '+label);
  await escapeCookie(p);
  check(await banner(p).isVisible()&&await consent(p)===null,'Short-viewport dismissal preserves unanswered notice '+label);
  await checkPlacement(p,banner(p),'Notice after preferences close '+label);await ctx.close();
@@ -178,9 +180,9 @@ for(const lang of ['th','en']){
  check(await p.locator('.krane-cookie-sheet:modal').count()===0,'Returning to mobile keeps notice passive '+lang);
  await banner(p).locator('[data-cookie-action=open]').click();await escapeCookie(p);
  check(await banner(p).isVisible()&&await consent(p)===null,'Settings dismissal restores unanswered mobile sheet '+lang);
- await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();
+ await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=save]').click();
  check(await p.locator('dialog:modal').count()===0,'Consent releases all modal layers '+lang);
- check((await consent(p)).decision==='necessary_only','Mobile necessary-only decision retained '+lang);await ctx.close();
+ check((await consent(p)).decision==='save','Mobile preference save retained '+lang);await ctx.close();
 }
 // A first-time application entry owns the banner above its embedded landing.
 {
@@ -193,15 +195,15 @@ for(const lang of ['th','en']){
 // Cross-tab synchronization and malformed/versioned storage are separate fresh contexts.
 {
  const ctx=await browser.newContext();const p=await ctx.newPage(),other=await ctx.newPage();monitor(p);monitor(other);await open(p,'doctors.html?lang=en');await open(other,'condition-detail.html?condition=weight&lang=en');
- await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();await banner(other).waitFor({state:'hidden'});check(!await banner(other).isVisible(),'Choice synchronized to another tab');
+ await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=save]').click();await banner(other).waitFor({state:'hidden'});check(!await banner(other).isVisible(),'Choice synchronized to another tab');
  await p.evaluate(key=>localStorage.removeItem(key),KEY);await banner(other).waitFor();check(await banner(other).isVisible(),'Removing choice prompts other tabs again');
  await p.evaluate(key=>localStorage.setItem(key,JSON.stringify({version:99,necessary:true,analytics:true,advertising:true})),KEY);await p.reload({waitUntil:'domcontentloaded'});check(await banner(p).isVisible(),'Unknown/corrupt version never grants consent');check(!await p.evaluate(()=>KraneCookieConsent.isAllowed('analytics')),'Untrusted record cannot enable analytics');await ctx.close();
 }
 {
- const ctx=await browser.newContext();await ctx.addInitScript(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(this===localStorage)throw new DOMException('Blocked','SecurityError');return original.call(this,k,v)};});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c-landing.html?lang=en');await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();check((await p.locator('.krane-cookie-status').innerText()).includes('tab session'),'Blocked persistent storage reports session fallback');await p.reload({waitUntil:'domcontentloaded'});check(!await banner(p).isVisible(),'Session fallback survives reload');await ctx.close();
+ const ctx=await browser.newContext();await ctx.addInitScript(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(this===localStorage)throw new DOMException('Blocked','SecurityError');return original.call(this,k,v)};});const p=await ctx.newPage();monitor(p);await open(p,'krane-b2c-landing.html?lang=en');await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=save]').click();check((await p.locator('.krane-cookie-status').innerText()).includes('tab session'),'Blocked persistent storage reports session fallback');await p.reload({waitUntil:'domcontentloaded'});check(!await banner(p).isVisible(),'Session fallback survives reload');await ctx.close();
 }
 {
- const ctx=await browser.newContext();await ctx.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException('Blocked','SecurityError')};});const p=await ctx.newPage();monitor(p);await open(p,'doctors.html?lang=en');await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=reject]').click();check((await p.locator('.krane-cookie-status').innerText()).includes('page only'),'Fully blocked storage reports memory-only choice');check(!await banner(p).isVisible(),'Memory-only choice dismisses banner for current page');await ctx.close();
+ const ctx=await browser.newContext();await ctx.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException('Blocked','SecurityError')};});const p=await ctx.newPage();monitor(p);await open(p,'doctors.html?lang=en');await banner(p).locator('[data-cookie-action=open]').click();await dialog(p).locator('[data-cookie-action=save]').click();check((await p.locator('.krane-cookie-status').innerText()).includes('page only'),'Fully blocked storage reports memory-only choice');check(!await banner(p).isVisible(),'Memory-only choice dismisses banner for current page');await ctx.close();
 }
 check(external.size===0,'No third-party requests before or after consent: '+[...external].join(', '));check(errors.length===0,'No browser errors: '+errors.join('; '));
 await writeFile(join(out,'results.json'),JSON.stringify({checks,results,externalRequests:[...external],errors},null,2));console.log(`Cookie consent QA: ${checks} checks passed; no third-party requests observed.`);
